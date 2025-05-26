@@ -182,6 +182,12 @@
         }
 
         .external-link.webcam-link::after {
+            content: "⊙";
+            font-size: 0.8rem;
+            opacity: 1;
+        }
+
+        .external-link.ai-link::after {
             content: "⟡";
             font-size: 0.8rem;
             opacity: 1;
@@ -350,7 +356,7 @@
             .spots-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .controls {
                 flex-direction: column;
                 align-items: center;
@@ -360,11 +366,11 @@
                 width: 100%;
                 max-width: 400px;
             }
-            
+
             .weather-table {
                 font-size: 0.85rem;
             }
-            
+
             .weather-table th,
             .weather-table td {
                 padding: 8px 4px;
@@ -419,7 +425,7 @@
     <div class="container">
         <div class="header">
             <h1>VARUN.SURF</h1>
-            <p>simplified forecast and real-time wind conditions dashboard for kitesurfers</p>
+            <p>simplified average weather forecast and real-time wind conditions dashboard for kitesurfers</p>
         </div>
 
         <div class="controls">
@@ -440,7 +446,7 @@
         <footer class="footer">
             <div class="footer-content">
                 <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
-                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a></p>
+                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v. 0.0.1</p>
             </div>
         </footer>
     </div>
@@ -578,7 +584,7 @@
             let tableRows = '';
             spot.forecast.forEach(day => {
                 let rowClass, windClass;
-                
+
                 if (day.wind < 12) {
                     rowClass = 'weak-wind';
                     windClass = 'wind-weak';
@@ -592,7 +598,7 @@
                     rowClass = 'extreme-wind';
                     windClass = 'wind-extreme';
                 }
-                
+
                 const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
                 const arrow = getWindArrow(day.direction);
                 const precipitationClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
@@ -614,7 +620,7 @@
             let currentConditionsRow = '';
             if (spot.currentConditions) {
                 let currentRowClass, currentWindClass;
-                
+
                 if (spot.currentConditions.wind < 12) {
                     currentRowClass = 'weak-wind';
                     currentWindClass = 'wind-weak';
@@ -628,10 +634,10 @@
                     currentRowClass = 'extreme-wind';
                     currentWindClass = 'wind-extreme';
                 }
-                
+
                 const currentTempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
                 const currentArrow = getWindArrow(spot.currentConditions.direction);
-                
+
                 currentConditionsRow = `
                     <tr class="${currentRowClass}" style="border-top: 2px solid #404040;">
                         <td>
@@ -692,8 +698,8 @@
             const grid = document.getElementById('spotsGrid');
             grid.innerHTML = '';
 
-            const filteredData = filterCountry === 'all' 
-                ? weatherData 
+            const filteredData = filterCountry === 'all'
+                ? weatherData
                 : weatherData.filter(spot => spot.country === filterCountry);
 
             filteredData.forEach(spot => {
@@ -703,7 +709,7 @@
 
         function setupFilters() {
             const filterButtons = document.querySelectorAll('.filter-btn');
-            
+
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     // Remove active class from all buttons
