@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 -m http.server 8000
+http-server . -p 8001 --cors

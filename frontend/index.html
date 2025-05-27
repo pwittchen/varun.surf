@@ -82,6 +82,86 @@
             gap: 30px;
         }
 
+        /* Error message styles */
+        .error-message {
+            background: linear-gradient(145deg, #4b0404, #550303);
+            border: 1px solid #840808;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
+        .error-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .error-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .error-description {
+            color: #fca5a5;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .retry-button {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .retry-button:hover {
+            background: linear-gradient(145deg, #b91c1c, #991b1b);
+            transform: translateY(-1px);
+        }
+
+        .loading-message {
+            background: #1a1a1a;
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #262626;
+            border-top: 3px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #9ca3af;
+            font-size: 1rem;
+            vertical-align: middle;
+        }
+
         .spot-card {
             background: #1a1a1a;
             border-radius: 12px;
@@ -375,6 +455,18 @@
             .weather-table td {
                 padding: 8px 4px;
             }
+
+            .error-message {
+                padding: 20px;
+            }
+
+            .error-title {
+                font-size: 1.1rem;
+            }
+
+            .error-description {
+                font-size: 0.85rem;
+            }
         }
 
         .footer {
@@ -452,122 +544,70 @@
     </div>
 
     <script>
-        function fetchWeatherData() {
-            return [
-            {
-                    name: "Jastarnia",
-                    country: "Poland",
-                    windguruUrl: "https://www.windguru.cz/station/327",
-                    windfinderUrl: "https://www.windfinder.com/forecast/tarifa",
-                    webcamUrl: "https://www.windfinder.com/webcams/c/tarifa",
-                    locationUrl: "https://maps.google.com/maps?q=Tarifa,Spain",
-                    lastUpdated: "2025-05-26 14:23",
-                    currentConditions: { wind: 16, gusts: 22, direction: "W", temp: 21 },
-                    forecast: [
-                        { date: "Today", wind: 18, gusts: 24, direction: "W", temp: 22, precipitation: 0 },
-                        { date: "Tomorrow", wind: 15, gusts: 20, direction: "NW", temp: 20, precipitation: 5 },
-                        { date: "Day 3", wind: 22, gusts: 28, direction: "W", temp: 23, precipitation: 0 },
-                        { date: "Day 4", wind: 8, gusts: 12, direction: "SW", temp: 25, precipitation: 10 },
-                        { date: "Day 5", wind: 16, gusts: 22, direction: "W", temp: 21, precipitation: 0 }
-                    ]
+        function fetchWeatherDataPromise() {
+            const apiUrl = 'http://localhost:8001/mock-data.json';
+            
+            return fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                {
-                    name: "Tarifa",
-                    country: "Spain",
-                    windguruUrl: "https://www.windguru.cz/station/327",
-                    windfinderUrl: "https://www.windfinder.com/forecast/tarifa",
-                    webcamUrl: "https://www.windfinder.com/webcams/c/tarifa",
-                    locationUrl: "https://maps.google.com/maps?q=Tarifa,Spain",
-                    lastUpdated: "2025-05-26 14:23",
-                    currentConditions: { wind: 16, gusts: 22, direction: "W", temp: 21 },
-                    forecast: [
-                        { date: "Today", wind: 18, gusts: 24, direction: "W", temp: 22, precipitation: 0 },
-                        { date: "Tomorrow", wind: 15, gusts: 20, direction: "NW", temp: 20, precipitation: 5 },
-                        { date: "Day 3", wind: 22, gusts: 28, direction: "W", temp: 23, precipitation: 0 },
-                        { date: "Day 4", wind: 8, gusts: 12, direction: "SW", temp: 25, precipitation: 10 },
-                        { date: "Day 5", wind: 16, gusts: 22, direction: "W", temp: 21, precipitation: 0 }
-                    ]
-                },
-                {
-                    name: "Lagos",
-                    country: "Portugal",
-                    windguruUrl: "https://www.windguru.cz/station/785",
-                    windfinderUrl: "https://www.windfinder.com/forecast/lagos_portugal",
-                    locationUrl: "https://maps.google.com/maps?q=Lagos,Portugal",
-                    lastUpdated: "2025-05-26 14:18",
-                    forecast: [
-                        { date: "Today", wind: 12, gusts: 16, direction: "NW", temp: 19, precipitation: 0 },
-                        { date: "Tomorrow", wind: 9, gusts: 13, direction: "W", temp: 18, precipitation: 15 },
-                        { date: "Day 3", wind: 14, gusts: 19, direction: "NW", temp: 20, precipitation: 0 },
-                        { date: "Day 4", wind: 6, gusts: 10, direction: "SW", temp: 22, precipitation: 5 },
-                        { date: "Day 5", wind: 11, gusts: 15, direction: "W", temp: 19, precipitation: 0 }
-                    ]
-                },
-                {
-                    name: "Marseille",
-                    country: "France",
-                    windguruUrl: "https://www.windguru.cz/station/156",
-                    windfinderUrl: "https://www.windfinder.com/forecast/marseille",
-                    webcamUrl: "https://www.windfinder.com/webcams/c/marseille",
-                    locationUrl: "https://maps.google.com/maps?q=Marseille,France",
-                    lastUpdated: "2025-05-26 14:31",
-                    currentConditions: { wind: 24, gusts: 31, direction: "N", temp: 17 },
-                    forecast: [
-                        { date: "Today", wind: 25, gusts: 32, direction: "N", temp: 16, precipitation: 0 },
-                        { date: "Tomorrow", wind: 28, gusts: 35, direction: "N", temp: 15, precipitation: 0 },
-                        { date: "Day 3", wind: 20, gusts: 26, direction: "NW", temp: 17, precipitation: 5 },
-                        { date: "Day 4", wind: 15, gusts: 20, direction: "W", temp: 19, precipitation: 10 },
-                        { date: "Day 5", wind: 10, gusts: 14, direction: "SW", temp: 21, precipitation: 20 }
-                    ]
-                },
-                {
-                    name: "Cagliari",
-                    country: "Italy",
-                    windguruUrl: "https://www.windguru.cz/station/912",
-                    windfinderUrl: "https://www.windfinder.com/forecast/cagliari",
-                    locationUrl: "https://maps.google.com/maps?q=Cagliari,Italy",
-                    lastUpdated: "2025-05-26 14:15",
-                    forecast: [
-                        { date: "Today", wind: 13, gusts: 18, direction: "NW", temp: 24, precipitation: 0 },
-                        { date: "Tomorrow", wind: 16, gusts: 21, direction: "N", temp: 22, precipitation: 0 },
-                        { date: "Day 3", wind: 7, gusts: 11, direction: "SW", temp: 26, precipitation: 15 },
-                        { date: "Day 4", wind: 19, gusts: 25, direction: "NW", temp: 23, precipitation: 0 },
-                        { date: "Day 5", wind: 12, gusts: 16, direction: "W", temp: 25, precipitation: 5 }
-                    ]
-                },
-                {
-                    name: "Mykonos",
-                    country: "Greece",
-                    windguruUrl: "https://www.windguru.cz/station/493",
-                    windfinderUrl: "https://www.windfinder.com/forecast/mykonos",
-                    webcamUrl: "https://www.windfinder.com/webcams/c/mykonos",
-                    locationUrl: "https://maps.google.com/maps?q=Mykonos,Greece",
-                    lastUpdated: "2025-05-26 14:27",
-                    currentConditions: { wind: 28, gusts: 36, direction: "N", temp: 19 },
-                    forecast: [
-                        { date: "Today", wind: 30, gusts: 38, direction: "N", temp: 20, precipitation: 0 },
-                        { date: "Tomorrow", wind: 26, gusts: 33, direction: "N", temp: 19, precipitation: 0 },
-                        { date: "Day 3", wind: 22, gusts: 28, direction: "NW", temp: 21, precipitation: 0 },
-                        { date: "Day 4", wind: 18, gusts: 24, direction: "NW", temp: 23, precipitation: 5 },
-                        { date: "Day 5", wind: 8, gusts: 12, direction: "SW", temp: 25, precipitation: 10 }
-                    ]
-                },
-                {
-                    name: "Cádiz",
-                    country: "Spain",
-                    windguruUrl: "https://www.windguru.cz/station/421",
-                    windfinderUrl: "https://www.windfinder.com/forecast/cadiz",
-                    locationUrl: "https://maps.google.com/maps?q=Cadiz,Spain",
-                    lastUpdated: "2025-05-26 14:20",
-                    forecast: [
-                        { date: "Today", wind: 14, gusts: 19, direction: "W", temp: 23, precipitation: 0 },
-                        { date: "Tomorrow", wind: 11, gusts: 15, direction: "SW", temp: 24, precipitation: 10 },
-                        { date: "Day 3", wind: 17, gusts: 22, direction: "W", temp: 22, precipitation: 0 },
-                        { date: "Day 4", wind: 5, gusts: 8, direction: "S", temp: 26, precipitation: 20 },
-                        { date: "Day 5", wind: 20, gusts: 26, direction: "NW", temp: 21, precipitation: 0 }
-                    ]
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
                 }
-            ];
+                return response.json();
+            })
+            .catch(error => {
+                console.error('Error fetching weather data:', error);
+                throw new Error(`Failed to fetch weather data: ${error.message}`);
+            });
+        }
+
+        function showLoadingMessage() {
+            const grid = document.getElementById('spotsGrid');
+            grid.innerHTML = `
+                <div class="loading-message">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">Loading weather data...</span>
+                </div>
+            `;
+        }
+
+        function showErrorMessage(error, retryCallback) {
+            const grid = document.getElementById('spotsGrid');
+            
+            // Determine error type and customize message
+            let errorTitle = 'Failed to Load Weather Data';
+            let errorDescription = 'Unable to fetch the latest weather information.';
+            
+            if (error.message.includes('HTTP Error: 404')) {
+                errorTitle = 'Data Source Not Found';
+                errorDescription = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
+            } else if (error.message.includes('HTTP Error: 500')) {
+                errorTitle = 'Server Error';
+                errorDescription = 'The weather service is experiencing technical difficulties. Please try again later.';
+            } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                errorTitle = 'Connection Error';
+                errorDescription = 'Unable to connect to the weather service. Please check your internet connection and try again.';
+            } else if (error.message.includes('JSON')) {
+                errorTitle = 'Data Format Error';
+                errorDescription = 'The weather data received is corrupted or in an unexpected format.';
+            }
+            
+            grid.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">⚠️</span>
+                    <div class="error-title">${errorTitle}</div>
+                    <div class="error-description">
+                        ${errorDescription}<br/>
+                    </div>
+                    <button class="retry-button" onclick="retryLoadData()">
+                        Try Again
+                    </button>
+                </div>
+            `;
         }
 
         function getWindArrow(direction) {
@@ -696,18 +736,34 @@
             return card;
         }
 
+        let currentFilter = 'all';
+
         function renderSpots(filterCountry = 'all') {
+            currentFilter = filterCountry;
             const grid = document.getElementById('spotsGrid');
-            grid.innerHTML = '';
-            const weatherData = fetchWeatherData();
+            
+            showLoadingMessage();
 
-            const filteredData = filterCountry === 'all'
-                ? weatherData
-                : weatherData.filter(spot => spot.country === filterCountry);
+            fetchWeatherDataPromise()
+                .then(weatherData => {
+                    console.log('Weather data loaded:', weatherData);
+                    const filteredData = filterCountry === 'all'
+                        ? weatherData
+                        : weatherData.filter(spot => spot.country === filterCountry);
 
-            filteredData.forEach(spot => {
-                grid.appendChild(createSpotCard(spot));
-            });
+                    grid.innerHTML = '';
+                    filteredData.forEach(spot => {
+                        grid.appendChild(createSpotCard(spot));
+                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load weather:', error.message);
+                    showErrorMessage(error);
+                });
+        }
+
+        function retryLoadData() {
+            renderSpots(currentFilter);
         }
 
         function setupFilters() {
@@ -715,17 +771,13 @@
 
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    // Remove active class from all buttons
                     filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
                     button.classList.add('active');
-                    // Filter spots
                     renderSpots(button.dataset.country);
                 });
             });
         }
 
-        // Initialize the dashboard
         document.addEventListener('DOMContentLoaded', () => {
             renderSpots();
             setupFilters();
