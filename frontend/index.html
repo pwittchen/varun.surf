@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VARUN.SURF</title>
     <style>
+       /* Main styles */
         * {
             margin: 0;
             padding: 0;
@@ -43,6 +44,8 @@
             font-weight: 400;
         }
 
+       /* Controls */
+
         .controls {
             display: flex;
             justify-content: center;
@@ -74,12 +77,6 @@
             border-color: #0059be;
             color: white;
             box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
-        }
-
-        .spots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-            gap: 30px;
         }
 
         /* Error message styles */
@@ -162,6 +159,15 @@
             vertical-align: middle;
         }
 
+        /* Spots */
+
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+        }
+
+
         .spot-card {
             background: #1a1a1a;
             border-radius: 12px;
@@ -241,6 +247,7 @@
             font-weight: 500;
             border: 1px solid #333333;
             transition: all 0.15s ease;
+            cursor: pointer;
         }
 
         .external-link:hover {
@@ -267,10 +274,136 @@
             opacity: 1;
         }
 
+        .external-link.ai-link {
+            border: 1px solid #1f7987;
+        }
+
         .external-link.ai-link::after {
             content: "⟡";
             font-size: 0.8rem;
             opacity: 1;
+        }
+
+        /* Modal Styles */
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(145deg, #0854ab, #216ebb);
+            padding: 20px 24px;
+            border-bottom: 1px solid #333333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-content {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        }
+
+        .ai-analysis {
+            color: #e8e8e8;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .ai-analysis h3 {
+            color: #4a9eff;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .ai-analysis p {
+            margin-bottom: 16px;
+        }
+
+        .ai-analysis ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .ai-analysis li {
+            margin-bottom: 8px;
+        }
+
+        .ai-highlight {
+            background: rgba(74, 158, 255, 0.1);
+            color: #4a9eff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .weather-table {
@@ -377,6 +510,7 @@
         }
 
         /* Live indicator styles */
+
         .live-indicator {
             display: inline-flex;
             align-items: center;
@@ -469,6 +603,8 @@
             }
         }
 
+        /* Footer */
+
         .footer {
             margin-top: 60px;
             padding: 30px 0;
@@ -543,7 +679,26 @@
         </footer>
     </div>
 
+    <div class="modal-overlay" id="aiModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>⟡</span>
+                    <span id="modalSpotName">AI Analysis</span>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="ai-analysis" id="aiAnalysisContent">
+                    <!-- AI analysis content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let globalWeatherData = [];
+
         function fetchWeatherData() {
             const apiUrl = 'http://localhost:8001/mock-data.json';
             
@@ -615,6 +770,30 @@
                 'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
             };
             return arrows[direction] || '•';
+        }
+
+        function openAIModal(spotName) {
+            const spot = globalWeatherData.find(s => s.name === spotName);
+            if (!spot) return;
+            
+            const modal = document.getElementById('aiModal');
+            const modalSpotName = document.getElementById('modalSpotName');
+            const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+            
+            modalSpotName.textContent = `AI Analysis - ${spotName}`;
+            aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
+            modal.classList.add('active');
+            
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAIModal() {
+            const modal = document.getElementById('aiModal');
+            modal.classList.remove('active');
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
         }
 
         function createSpotCard(spot) {
@@ -713,6 +892,7 @@
                     <a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">Webcam</a>` : ''}
                     <a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>
+                    ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI Analysis</span>` : ''}
                 </div>
                 <table class="weather-table">
                     <thead>
@@ -745,7 +925,7 @@
 
             fetchWeatherData()
                 .then(weatherData => {
-                    console.log('Weather data loaded:', weatherData);
+                    globalWeatherData = weatherData
                     const filteredData = filterCountry === 'all'
                         ? weatherData
                         : weatherData.filter(spot => spot.country === filterCountry);
@@ -777,9 +957,36 @@
             });
         }
 
+        function setupModal() {
+            const modal = document.getElementById('aiModal');
+            const modalClose = document.getElementById('modalClose');
+            
+            // Close modal when clicking the close button
+            modalClose.addEventListener('click', closeAIModal);
+            
+            // Close modal when clicking outside of it
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeAIModal();
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeAIModal();
+                }
+            });
+        }
+
+        // Make functions globally available
+        window.openAIModal = openAIModal;
+        window.closeAIModal = closeAIModal;
+
         document.addEventListener('DOMContentLoaded', () => {
             renderSpots();
             setupFilters();
+            setupModal();
         });
     </script>
 </body>
