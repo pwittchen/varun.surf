@@ -544,7 +544,7 @@
     </div>
 
     <script>
-        function fetchWeatherDataPromise() {
+        function fetchWeatherData() {
             const apiUrl = 'http://localhost:8001/mock-data.json';
             
             return fetch(apiUrl, {
@@ -744,7 +744,7 @@
             
             showLoadingMessage();
 
-            fetchWeatherDataPromise()
+            fetchWeatherData()
                 .then(weatherData => {
                     console.log('Weather data loaded:', weatherData);
                     const filteredData = filterCountry === 'all'
