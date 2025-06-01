@@ -897,6 +897,7 @@
                     <span class="external-link refresh-link" onclick="retryLoadData()"></span>
                     <a href="${spot.windguruUrl}" target="_blank" class="external-link">Windguru</a>
                     <a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>
+                    ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">Webcam</a>` : ''}
                     <a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>
                     ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI Analysis</span>` : ''}

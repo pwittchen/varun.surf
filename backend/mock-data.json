@@ -4,6 +4,7 @@
         "country": "Poland",
         "windguruUrl": "https://www.windguru.cz/station/327",
         "windfinderUrl": "https://www.windfinder.com/forecast/jastarnia",
+        "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
         "webcamUrl": "https://www.windfinder.com/webcams/c/jastarnia",
         "locationUrl": "https://maps.google.com/maps?q=Jastarnia,Poland",
         "lastUpdated": "2025-05-26 14:23",
