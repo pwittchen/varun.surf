@@ -789,16 +789,12 @@
             modalSpotName.textContent = `AI Analysis - ${spotName}`;
             aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
             modal.classList.add('active');
-            
-            // Prevent body scroll when modal is open
             document.body.style.overflow = 'hidden';
         }
 
         function closeAIModal() {
             const modal = document.getElementById('aiModal');
             modal.classList.remove('active');
-            
-            // Restore body scroll
             document.body.style.overflow = 'auto';
         }
 
@@ -969,17 +965,14 @@
             const modal = document.getElementById('aiModal');
             const modalClose = document.getElementById('modalClose');
             
-            // Close modal when clicking the close button
             modalClose.addEventListener('click', closeAIModal);
             
-            // Close modal when clicking outside of it
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeAIModal();
                 }
             });
             
-            // Close modal with Escape key
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modal.classList.contains('active')) {
                     closeAIModal();
@@ -987,7 +980,6 @@
             });
         }
 
-        // Make functions globally available
         window.openAIModal = openAIModal;
         window.closeAIModal = closeAIModal;
 
