@@ -5,5 +5,5 @@ npx html-minifier-terser index.full.html -o index.min.html \
   --remove-comments \
   --minify-js true \
   --minify-css true
-sed -r 's/ {3,}/  /g' index.min.html > index.html
+sed -r 's/ {2,}/  /g' index.min.html > index.html
 rm index.min.html
