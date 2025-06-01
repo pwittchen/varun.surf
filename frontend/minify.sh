@@ -1,6 +1,9 @@
 #!/bin/bash
-npx html-minifier-terser index.full.html -o index.html \
+npx html-minifier-terser index.full.html -o index.min.html \
   --collapse-whitespace \
+  --custom-attr-collapse \
   --remove-comments \
   --minify-js true \
   --minify-css true
+sed -r 's/ {3,}/  /g' index.min.html > index.html
+rm index.min.html
