@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>VARUN.SURF</title>
     <style>
-       /* Main styles */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +12,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f0f0f;
             color: #e8e8e8;
             min-height: 100vh;
@@ -33,7 +32,7 @@
         .header h1 {
             font-size: 2.8rem;
             font-weight: 100;
-            color: #ffffff;
+            color: #fff;
             margin-bottom: 8px;
             letter-spacing: -0.02em;
         }
@@ -44,42 +43,142 @@
             font-weight: 400;
         }
 
-       /* Controls */
-
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
 
-        .filter-btn {
-            background: transparent;
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .dropdown-button {
+            background: linear-gradient(145deg, #1d1d1d, #2c2c2c);
             border: 1px solid #555;
             color: #e0e0e0;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 12px 40px 12px 16px;
+            border-radius: 12px;
             cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            width: 100%;
+            text-align: left;
             transition: all 0.3s ease;
-            font-weight: 100;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .filter-btn:hover {
-            background: linear-gradient(145deg, #1d1d1d, #2c2c2c);
+        .dropdown-button:hover {
+            background: linear-gradient(145deg, #2c2c2c, #3d3d3d);
+            border-color: #666;
         }
 
-        .filter-btn.active {
+        .dropdown-button.active {
             background: linear-gradient(145deg, #00397b, #1663b0);
             border-color: #0059be;
-            color: white;
+            color: #fff;
             box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
         }
 
-        /* Error message styles */
+        .dropdown-arrow {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+            color: #9ca3af;
+        }
+
+        .dropdown-button.active .dropdown-arrow {
+            color: #fff;
+        }
+
+        .dropdown-button.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-top: 4px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #262626;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-option:hover {
+            background: #262626;
+            color: #fff;
+        }
+
+        .dropdown-option.selected {
+            background: linear-gradient(145deg, #00397b, #1663b0);
+            color: #fff;
+        }
+
+        .dropdown-option:first-child {
+            border-radius: 11px 11px 0 0;
+        }
+
+        .dropdown-option:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        /* Custom scrollbar for dropdown */
+        .dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-track {
+            background: #262626;
+            border-radius: 3px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 3px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
         .error-message {
             background: linear-gradient(145deg, #4b0404, #550303);
             border: 1px solid #840808;
@@ -99,7 +198,7 @@
         .error-title {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #ffffff;
+            color: #fff;
             margin-bottom: 8px;
         }
 
@@ -113,7 +212,7 @@
         .retry-button {
             background: linear-gradient(145deg, #dc2626, #b91c1c);
             border: none;
-            color: white;
+            color: #fff;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -159,14 +258,11 @@
             vertical-align: middle;
         }
 
-        /* Spots */
-
         .spots-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
             gap: 30px;
         }
-
 
         .spot-card {
             background: #1a1a1a;
@@ -180,7 +276,7 @@
         .spot-card:hover {
             transform: none;
             box-shadow: none;
-            border-color: #333333;
+            border-color: #333;
         }
 
         .spot-header {
@@ -208,7 +304,7 @@
         .spot-name {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #ffffff;
+            color: #fff;
         }
 
         .last-updated {
@@ -245,14 +341,14 @@
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 500;
-            border: 1px solid #333333;
+            border: 1px solid #333;
             transition: all 0.15s ease;
             cursor: pointer;
         }
 
         .external-link:hover {
             background: #262626;
-            color: #ffffff;
+            color: #fff;
             border-color: #404040;
         }
 
@@ -290,8 +386,6 @@
             opacity: 1;
         }
 
-        /* Modal Styles */
-
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -313,7 +407,7 @@
 
         .modal {
             background: #1a1a1a;
-            border: 1px solid #333333;
+            border: 1px solid #333;
             border-radius: 16px;
             width: 90%;
             max-width: 600px;
@@ -326,14 +420,14 @@
         .modal-header {
             background: linear-gradient(145deg, #0854ab, #216ebb);
             padding: 20px 24px;
-            border-bottom: 1px solid #333333;
+            border-bottom: 1px solid #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .modal-title {
-            color: white;
+            color: #fff;
             font-size: 1.2rem;
             font-weight: 600;
             display: flex;
@@ -344,7 +438,7 @@
         .modal-close {
             background: transparent;
             border: none;
-            color: white;
+            color: #fff;
             font-size: 1.5rem;
             cursor: pointer;
             padding: 4px;
@@ -417,12 +511,12 @@
             border-collapse: collapse;
             margin-top: 15px;
             border-radius: 8px;
-            overflow: hidden; /* Optional: clips inner corners */
+            overflow: hidden;
         }
 
         .weather-table th {
             background: #262626;
-            color: #ffffff;
+            color: #fff;
             padding: 12px 8px;
             text-align: center;
             font-weight: 600;
@@ -474,48 +568,22 @@
             transition: transform 0.3s ease;
         }
 
-        .wind-weak {
-            color: #6b7280;
-        }
+        .wind-weak { color: #6b7280; }
+        .wind-moderate { color: #22c55e; font-weight: 600; }
+        .wind-strong { color: #f59e0b; font-weight: 600; }
+        .wind-extreme { color: #ef4444; font-weight: 600; }
 
-        .wind-moderate {
-            color: #22c55e;
-            font-weight: 600;
-        }
+        .temp-positive { color: #f97316; }
+        .temp-negative { color: #06b6d4; }
 
-        .wind-strong {
-            color: #f59e0b;
-            font-weight: 600;
-        }
-
-        .wind-extreme {
-            color: #ef4444;
-            font-weight: 600;
-        }
-
-        .temp-positive {
-            color: #f97316;
-        }
-
-        .temp-negative {
-            color: #06b6d4;
-        }
-
-        .precipitation {
-            color: #3b82f6;
-        }
-
-        .precipitation-none {
-            color: #6b7280;
-        }
+        .precipitation { color: #3b82f6; }
+        .precipitation-none { color: #6b7280; }
 
         .date-header {
             background: linear-gradient(145deg, #4a9eff, #357abd);
-            color: white;
+            color: #fff;
             font-weight: 700;
         }
-
-        /* Live indicator styles */
 
         .live-indicator {
             display: inline-flex;
@@ -547,29 +615,14 @@
         }
 
         @keyframes pulse-glow {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
         @keyframes pulse-ring {
-            0% {
-                transform: scale(1);
-                opacity: 0.4;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0.2;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
+            0% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.5); opacity: 0.2; }
+            100% { transform: scale(2); opacity: 0; }
         }
 
         @media (max-width: 768px) {
@@ -580,11 +633,12 @@
             .controls {
                 flex-direction: column;
                 align-items: center;
+                gap: 16px;
             }
 
-            .filter-btn {
+            .dropdown-container {
                 width: 100%;
-                max-width: 400px;
+                max-width: 500px;
             }
 
             .weather-table {
@@ -608,8 +662,6 @@
                 font-size: 0.85rem;
             }
         }
-
-        /* Footer */
 
         .footer {
             margin-top: 60px;
@@ -643,14 +695,16 @@
             margin-top: 12px;
         }
 
-        .footer-link a, .footer-disclaimer a {
+        .footer-disclaimer a,
+        .footer-link a {
             color: #4a9eff;
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
-        .footer-link a:hover, .footer-disclaimer a:hover {
-            color: #ffffff;
+        .footer-disclaimer a:hover,
+        .footer-link a:hover {
+            color: #fff;
             text-decoration: underline;
         }
     </style>
@@ -663,14 +717,22 @@
         </div>
 
         <div class="controls">
-            <button class="filter-btn active" data-country="all">🌎 ALL</button>
-            <button class="filter-btn" data-country="Poland">🇵🇱 PL</button>
-            <button class="filter-btn" data-country="Austria">🇦🇹 AT</button>
-            <button class="filter-btn" data-country="Lithuania">🇱🇹 LT</button>
-            <button class="filter-btn" data-country="Denmark">🇩🇰 DK</button>
-            <button class="filter-btn" data-country="Spain">🇪🇸 ES</button>
-            <button class="filter-btn" data-country="Portugal">🇵🇹 PT</button>
-            <button class="filter-btn" data-country="Italy">🇮🇹 IT</button>
+            <div class="dropdown-container">
+                <button class="dropdown-button" id="dropdownButton">
+                    <span id="selectedCountry">🌎 All</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-option selected" data-country="all">🌎 All</div>
+                    <div class="dropdown-option" data-country="Poland">🇵🇱 POLAND</div>
+                    <div class="dropdown-option" data-country="Austria">🇦🇹 AUSTRIA</div>
+                    <div class="dropdown-option" data-country="Lithuania">🇱🇹 LITHUANIA</div>
+                    <div class="dropdown-option" data-country="Denmark">🇩🇰 DENMARK</div>
+                    <div class="dropdown-option" data-country="Spain">🇪🇸 SPAIN</div>
+                    <div class="dropdown-option" data-country="Portugal">🇵🇹 PORTUGAL</div>
+                    <div class="dropdown-option" data-country="Italy">🇮🇹 ITALY</div>
+                </div>
+            </div>
         </div>
 
         <div class="spots-grid" id="spotsGrid">
@@ -679,12 +741,23 @@
 
         <footer class="footer">
             <div class="footer-content">
-                <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
-                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v. 0.0.1</p>
+                <p class="footer-disclaimer">
+                    weather data provided by 
+                    <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, 
+                    <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, 
+                    <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, 
+                    <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a>
+                </p>
+                <p class="footer-link">
+                    &copy; 2025 <a href="https://varun.surf">varun.surf</a> | 
+                    made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | 
+                    v. 0.0.1
+                </p>
             </div>
         </footer>
     </div>
 
+    <!-- Modal for AI Analysis -->
     <div class="modal-overlay" id="aiModal">
         <div class="modal">
             <div class="modal-header">
@@ -706,13 +779,11 @@
         let globalWeatherData = [];
 
         function fetchWeatherData() {
-            const apiUrl = 'http://localhost:8001/mock-data.json';
-            
-            return fetch(apiUrl, {
+            return fetch('http://localhost:8001/mock-data.json', {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                },
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => {
                 if (!response.ok) {
@@ -727,8 +798,7 @@
         }
 
         function showLoadingMessage() {
-            const grid = document.getElementById('spotsGrid');
-            grid.innerHTML = `
+            document.getElementById('spotsGrid').innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
                     <span class="loading-text">Loading weather data...</span>
@@ -736,32 +806,32 @@
             `;
         }
 
-        function showErrorMessage(error, retryCallback) {
+        function showErrorMessage(error, context) {
             const grid = document.getElementById('spotsGrid');
             
-            let errorTitle = 'Failed to Load Weather Data';
-            let errorDescription = 'Unable to fetch the latest weather information.';
+            let title = 'Failed to Load Weather Data';
+            let description = 'Unable to fetch the latest weather information.';
             
             if (error.message.includes('HTTP Error: 404')) {
-                errorTitle = 'Data Source Not Found';
-                errorDescription = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
+                title = 'Data Source Not Found';
+                description = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
             } else if (error.message.includes('HTTP Error: 500')) {
-                errorTitle = 'Server Error';
-                errorDescription = 'The weather service is experiencing technical difficulties. Please try again later.';
+                title = 'Server Error';
+                description = 'The weather service is experiencing technical difficulties. Please try again later.';
             } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                errorTitle = 'Connection Error';
-                errorDescription = 'Unable to connect to the weather service. Please check your internet connection and try again.';
+                title = 'Connection Error';
+                description = 'Unable to connect to the weather service. Please check your internet connection and try again.';
             } else if (error.message.includes('JSON')) {
-                errorTitle = 'Data Format Error';
-                errorDescription = 'The weather data received is corrupted or in an unexpected format.';
+                title = 'Data Format Error';
+                description = 'The weather data received is corrupted or in an unexpected format.';
             }
             
             grid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⚠️</span>
-                    <div class="error-title">${errorTitle}</div>
+                    <div class="error-title">${title}</div>
                     <div class="error-description">
-                        ${errorDescription}<br/>
+                        ${description}<br/>
                     </div>
                     <button class="retry-button" onclick="retryLoadData()">
                         Try Again
@@ -788,6 +858,7 @@
             
             modalSpotName.textContent = `AI Analysis - ${spotName}`;
             aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
+            
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -802,83 +873,81 @@
             const card = document.createElement('div');
             card.className = 'spot-card';
             card.dataset.country = spot.country;
-
-            let tableRows = '';
+            
+            let forecastRows = '';
             spot.forecast.forEach(day => {
-                let rowClass, windClass;
-
+                let windClass, windColorClass;
                 if (day.wind < 12) {
-                    rowClass = 'weak-wind';
-                    windClass = 'wind-weak';
+                    windClass = 'weak-wind';
+                    windColorClass = 'wind-weak';
                 } else if (day.wind >= 12 && day.wind < 15) {
-                    rowClass = 'moderate-wind';
-                    windClass = 'wind-moderate';
+                    windClass = 'moderate-wind';
+                    windColorClass = 'wind-moderate';
                 } else if (day.wind >= 15 && day.wind <= 22) {
-                    rowClass = 'strong-wind';
-                    windClass = 'wind-strong';
+                    windClass = 'strong-wind';
+                    windColorClass = 'wind-strong';
                 } else {
-                    rowClass = 'extreme-wind';
-                    windClass = 'wind-extreme';
+                    windClass = 'extreme-wind';
+                    windColorClass = 'wind-extreme';
                 }
-
+                
                 const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
                 const arrow = getWindArrow(day.direction);
-                const precipitationClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
-
-                tableRows += `
-                    <tr class="${rowClass}">
+                const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+                
+                forecastRows += `
+                    <tr class="${windClass}">
                         <td><strong>${day.date}</strong></td>
-                        <td class="${windClass}">${day.wind} kts</td>
-                        <td class="${windClass}">${day.gusts} kts</td>
-                        <td class="${windClass}">
+                        <td class="${windColorClass}">${day.wind} kts</td>
+                        <td class="${windColorClass}">${day.gusts} kts</td>
+                        <td class="${windColorClass}">
                             <span class="wind-arrow">${arrow}</span> ${day.direction}
                         </td>
                         <td class="${tempClass}">${day.temp}°C</td>
-                        <td class="${precipitationClass}">${day.precipitation}%</td>
+                        <td class="${precipClass}">${day.precipitation}%</td>
                     </tr>
                 `;
             });
-
-            let currentConditionsRow = '';
+            
+            let liveRow = '';
             if (spot.currentConditions) {
-                let currentRowClass, currentWindClass;
-
+                let windClass, windColorClass;
                 if (spot.currentConditions.wind < 12) {
-                    currentRowClass = 'weak-wind';
-                    currentWindClass = 'wind-weak';
+                    windClass = 'weak-wind';
+                    windColorClass = 'wind-weak';
                 } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
-                    currentRowClass = 'moderate-wind';
-                    currentWindClass = 'wind-moderate';
+                    windClass = 'moderate-wind';
+                    windColorClass = 'wind-moderate';
                 } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
-                    currentRowClass = 'strong-wind';
-                    currentWindClass = 'wind-strong';
+                    windClass = 'strong-wind';
+                    windColorClass = 'wind-strong';
                 } else {
-                    currentRowClass = 'extreme-wind';
-                    currentWindClass = 'wind-extreme';
+                    windClass = 'extreme-wind';
+                    windColorClass = 'wind-extreme';
                 }
-
-                const currentTempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                const currentArrow = getWindArrow(spot.currentConditions.direction);
-
-                currentConditionsRow = `
-                    <tr class="${currentRowClass}" style="border-top: 2px solid #404040;">
+                
+                const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const arrow = getWindArrow(spot.currentConditions.direction);
+                
+                liveRow = `
+                    <tr class="${windClass}" style="border-top: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong>NOW</strong>
                                 <div class="live-dot"></div>
                             </div>
                         </td>
-                        <td class="${currentWindClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${currentWindClass}">${spot.currentConditions.gusts} kts</td>
-                        <td class="${currentWindClass}">
-                            <span class="wind-arrow">${currentArrow}</span> ${spot.currentConditions.direction}
+                        <td class="${windColorClass}">${spot.currentConditions.wind} kts</td>
+                        <td class="${windColorClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${windColorClass}">
+                            <span class="wind-arrow">${arrow}</span> ${spot.currentConditions.direction}
                         </td>
-                        <td class="${currentTempClass}">${spot.currentConditions.temp}°C</td>
+                        <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
                         <td>-</td>
                     </tr>
                 `;
             }
-
+            
             card.innerHTML = `
                 <div class="spot-header">
                     <div class="spot-title">
@@ -910,30 +979,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${tableRows}
-                        ${currentConditionsRow}
+                        ${forecastRows}
+                        ${liveRow}
                     </tbody>
                 </table>
             `;
-
+            
             return card;
         }
 
         let currentFilter = 'all';
 
-        function renderSpots(filterCountry = 'all') {
-            currentFilter = filterCountry;
+        function renderSpots(filter = 'all') {
+            currentFilter = filter;
             const grid = document.getElementById('spotsGrid');
             
             showLoadingMessage();
-
+            
             fetchWeatherData()
-                .then(weatherData => {
-                    globalWeatherData = weatherData
-                    const filteredData = filterCountry === 'all'
-                        ? weatherData
-                        : weatherData.filter(spot => spot.country === filterCountry);
-
+                .then(data => {
+                    globalWeatherData = data;
+                    const filteredData = filter === 'all' ? data : data.filter(spot => spot.country === filter);
+                    
                     grid.innerHTML = '';
                     filteredData.forEach(spot => {
                         grid.appendChild(createSpotCard(spot));
@@ -949,23 +1016,76 @@
             renderSpots(currentFilter);
         }
 
-        function setupFilters() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderSpots(button.dataset.country);
+        function setupDropdown() {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const selectedCountry = document.getElementById('selectedCountry');
+            const dropdownOptions = document.querySelectorAll('.dropdown-option');
+            
+            // Toggle dropdown
+            dropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = dropdownMenu.classList.contains('open');
+                
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    openDropdown();
+                }
+            });
+            
+            // Handle option selection
+            dropdownOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // Update selected option
+                    dropdownOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    // Update button text
+                    selectedCountry.textContent = option.textContent;
+                    
+                    // Filter spots
+                    const country = option.dataset.country;
+                    renderSpots(country);
+                    
+                    // Close dropdown
+                    closeDropdown();
                 });
             });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+            
+            // Close dropdown on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
+                    closeDropdown();
+                    dropdownButton.focus();
+                }
+            });
+            
+            function openDropdown() {
+                dropdownButton.classList.add('open', 'active');
+                dropdownMenu.classList.add('open');
+            }
+            
+            function closeDropdown() {
+                dropdownButton.classList.remove('open', 'active');
+                dropdownMenu.classList.remove('open');
+            }
         }
 
         function setupModal() {
             const modal = document.getElementById('aiModal');
-            const modalClose = document.getElementById('modalClose');
+            const closeButton = document.getElementById('modalClose');
             
-            modalClose.addEventListener('click', closeAIModal);
+            closeButton.addEventListener('click', closeAIModal);
             
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -980,12 +1100,14 @@
             });
         }
 
+        // Make functions globally available
         window.openAIModal = openAIModal;
         window.closeAIModal = closeAIModal;
 
+        // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             renderSpots();
-            setupFilters();
+            setupDropdown();
             setupModal();
         });
     </script>
