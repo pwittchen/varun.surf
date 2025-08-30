@@ -2,9 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>VARUN.SURF</title>
     <style>
+        :root {
+            /* Dark theme variables */
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #262626;
+            --text-primary: #e8e8e8;
+            --text-secondary: #9ca3af;
+            --text-tertiary: #5e6165;
+            --border-primary: #262626;
+            --border-secondary: #333;
+            --border-hover: #404040;
+            --accent-primary: #4a9eff;
+            --accent-secondary: #216ebb;
+            --gradient-button: linear-gradient(145deg, #1d1d1d, #2c2c2c);
+            --gradient-button-hover: linear-gradient(145deg, #2c2c2c, #3d3d3d);
+            --gradient-active: linear-gradient(145deg, #00397b, #1663b0);
+            --gradient-header: linear-gradient(145deg, #0854ab, #216ebb);
+            --shadow-card: 0 8px 32px rgba(0,0,0,.6);
+            --error-bg: linear-gradient(145deg, #4b0404, #550303);
+            --error-border: #840808;
+            --error-text: #fca5a5;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        [data-theme="light"] {
+            /* Light theme variables */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-tertiary: #adb5bd;
+            --border-primary: #dee2e6;
+            --border-secondary: #ced4da;
+            --border-hover: #adb5bd;
+            --accent-primary: #0d6efd;
+            --accent-secondary: #0a58ca;
+            --gradient-button: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            --gradient-button-hover: linear-gradient(145deg, #e9ecef, #dee2e6);
+            --gradient-active: linear-gradient(145deg, #0d6efd, #0a58ca);
+            --gradient-header: linear-gradient(145deg, #0d6efd, #0a58ca);
+            --shadow-card: 0 8px 32px rgba(0,0,0,.1);
+            --error-bg: linear-gradient(145deg, #f8d7da, #f5c6cb);
+            --error-border: #f1aeb5;
+            --error-text: #721c24;
+            --success-color: #198754;
+            --warning-color: #fd7e14;
+            --danger-color: #dc3545;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,10 +65,11 @@
 
         body {
             font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f0f0f;
-            color: #e8e8e8;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -27,6 +80,7 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
+            position: relative;
         }
 
         .header h1 {
@@ -34,13 +88,45 @@
             font-weight: 100;
             color: #fff;
             margin-bottom: 8px;
-            letter-spacing: -0.02em;
+            letter-spacing: -.02em;
+        }
+
+        [data-theme="light"] .header h1 {
+            color: #000;
         }
 
         .header p {
-            color: #9ca3af;
+            color: var(--text-secondary);
             font-size: 1rem;
             font-weight: 400;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gradient-button);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--gradient-button-hover);
+            border-color: var(--border-hover);
+        }
+
+        .theme-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
         }
 
         .controls {
@@ -58,39 +144,47 @@
         }
 
         .dropdown-button {
-            background: linear-gradient(145deg, #1d1d1d, #2c2c2c);
-            border: 1px solid #555;
+            background: var(--gradient-button);
+            border: 1px solid var(--border-secondary);
             color: #e0e0e0;
             padding: 12px 40px 12px 16px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: .9rem;
             font-weight: 500;
             width: 100%;
             text-align: left;
-            transition: all 0.3s ease;
+            transition: all .3s ease;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
+        [data-theme="light"] .dropdown-button {
+            color: #212529;
+        }
+
         .dropdown-button:hover {
-            background: linear-gradient(145deg, #2c2c2c, #3d3d3d);
-            border-color: #666;
+            background: var(--gradient-button-hover);
+            border-color: var(--border-hover);
         }
 
         .dropdown-button.active {
-            background: linear-gradient(145deg, #00397b, #1663b0);
-            border-color: #0059be;
+            background: var(--gradient-active);
+            border-color: var(--accent-primary);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(74,158,255,.4);
         }
 
         .dropdown-arrow {
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
+            font-size: .8rem;
+            transition: transform .3s ease;
             color: #9ca3af;
+        }
+
+        [data-theme="light"] .dropdown-arrow {
+            color: #6c757d;
         }
 
         .dropdown-button.active .dropdown-arrow {
@@ -106,16 +200,16 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: #1a1a1a;
-            border: 1px solid #333;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
             border-radius: 12px;
             margin-top: 4px;
             z-index: 100;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            transition: all .3s ease;
+            box-shadow: var(--shadow-card);
             backdrop-filter: blur(10px);
             max-height: 300px;
             overflow-y: auto;
@@ -130,12 +224,17 @@
         .dropdown-option {
             padding: 12px 16px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #262626;
-            font-size: 0.9rem;
+            transition: all .2s ease;
+            border-bottom: 1px solid var(--border-primary);
+            font-size: .9rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: #e8e8e8;
+        }
+
+        [data-theme="light"] .dropdown-option {
+            color: #212529;
         }
 
         .dropdown-option:last-child {
@@ -143,12 +242,16 @@
         }
 
         .dropdown-option:hover {
-            background: #262626;
+            background: var(--bg-tertiary);
             color: #fff;
         }
 
+        [data-theme="light"] .dropdown-option:hover {
+            color: #000;
+        }
+
         .dropdown-option.selected {
-            background: linear-gradient(145deg, #00397b, #1663b0);
+            background: var(--gradient-active);
             color: #fff;
         }
 
@@ -160,33 +263,32 @@
             border-radius: 0 0 11px 11px;
         }
 
-        /* Custom scrollbar for dropdown */
         .dropdown-menu::-webkit-scrollbar {
             width: 6px;
         }
 
         .dropdown-menu::-webkit-scrollbar-track {
-            background: #262626;
+            background: var(--border-primary);
             border-radius: 3px;
         }
 
         .dropdown-menu::-webkit-scrollbar-thumb {
-            background: #404040;
+            background: var(--border-hover);
             border-radius: 3px;
         }
 
         .dropdown-menu::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: var(--text-tertiary);
         }
 
         .error-message {
-            background: linear-gradient(145deg, #4b0404, #550303);
-            border: 1px solid #840808;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
             border-radius: 12px;
             padding: 24px;
             margin: 20px 0;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+            box-shadow: 0 4px 12px rgba(220,38,38,.2);
         }
 
         .error-icon {
@@ -202,33 +304,36 @@
             margin-bottom: 8px;
         }
 
+        [data-theme="light"] .error-title {
+            color: #721c24;
+        }
+
         .error-description {
-            color: #fca5a5;
-            font-size: 0.9rem;
+            color: var(--error-text);
+            font-size: .9rem;
             margin-bottom: 16px;
             line-height: 1.5;
         }
 
         .retry-button {
-            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            background: var(--gradient-active);
             border: none;
             color: #fff;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            font-size: .9rem;
+            transition: all .3s ease;
         }
 
         .retry-button:hover {
-            background: linear-gradient(145deg, #b91c1c, #991b1b);
             transform: translateY(-1px);
         }
 
         .loading-message {
-            background: #1a1a1a;
-            border: 1px solid #262626;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
             border-radius: 12px;
             padding: 24px;
             margin: 20px 0;
@@ -239,8 +344,8 @@
             display: inline-block;
             width: 24px;
             height: 24px;
-            border: 3px solid #262626;
-            border-top: 3px solid #4a9eff;
+            border: 3px solid var(--border-primary);
+            border-top: 3px solid var(--accent-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-right: 12px;
@@ -258,6 +363,10 @@
             vertical-align: middle;
         }
 
+        [data-theme="light"] .loading-text {
+            color: #6c757d;
+        }
+
         .spots-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
@@ -265,18 +374,18 @@
         }
 
         .spot-card {
-            background: #1a1a1a;
+            background: var(--bg-secondary);
             border-radius: 12px;
             padding: 24px;
             box-shadow: none;
-            border: 1px solid #262626;
-            transition: border-color 0.2s ease;
+            border: 1px solid var(--border-primary);
+            transition: border-color .2s ease;
         }
 
         .spot-card:hover {
             transform: none;
             box-shadow: none;
-            border-color: #333;
+            border-color: var(--border-secondary);
         }
 
         .spot-header {
@@ -285,7 +394,7 @@
             align-items: flex-start;
             margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 1px solid #262626;
+            border-bottom: 1px solid var(--border-primary);
         }
 
         .spot-title {
@@ -307,20 +416,32 @@
             color: #fff;
         }
 
+        [data-theme="light"] .spot-name {
+            color: #000;
+        }
+
         .last-updated {
-            font-size: 0.75rem;
+            font-size: .75rem;
             color: #5e6165;
             font-weight: 400;
         }
 
+        [data-theme="light"] .last-updated {
+            color: #adb5bd;
+        }
+
         .country-tag {
-            background: #262626;
+            background: var(--bg-tertiary);
             padding: 4px 10px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: .75rem;
             color: #9ca3af;
             border: none;
             font-weight: 500;
+        }
+
+        [data-theme="light"] .country-tag {
+            color: #6c757d;
         }
 
         .external-links {
@@ -339,34 +460,42 @@
             text-decoration: none;
             padding: 6px 12px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: .75rem;
             font-weight: 500;
-            border: 1px solid #333;
-            transition: all 0.15s ease;
+            border: 1px solid var(--border-secondary);
+            transition: all .15s ease;
             cursor: pointer;
         }
 
+        [data-theme="light"] .external-link {
+            color: #6c757d;
+        }
+
         .external-link:hover {
-            background: #262626;
+            background: var(--bg-tertiary);
             color: #fff;
-            border-color: #404040;
+            border-color: var(--border-hover);
+        }
+
+        [data-theme="light"] .external-link:hover {
+            color: #000;
         }
 
         .external-link::after {
             content: "↗";
-            font-size: 0.7rem;
-            opacity: 0.6;
+            font-size: .7rem;
+            opacity: .6;
         }
 
         .external-link.location-link::after {
             content: "⚲";
-            font-size: 0.8rem;
+            font-size: .8rem;
             opacity: 1;
         }
 
         .external-link.webcam-link::after {
             content: "⊙";
-            font-size: 0.8rem;
+            font-size: .8rem;
             opacity: 1;
         }
 
@@ -376,13 +505,13 @@
 
         .external-link.ai-link::after {
             content: "⟡";
-            font-size: 0.8rem;
+            font-size: .8rem;
             opacity: 1;
         }
 
         .external-link.refresh-link::after {
             content: "↺";
-            font-size: 0.8rem;
+            font-size: .8rem;
             opacity: 1;
         }
 
@@ -392,13 +521,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0,0,0,.8);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn .3s ease;
         }
 
         .modal-overlay.active {
@@ -406,21 +535,21 @@
         }
 
         .modal {
-            background: #1a1a1a;
-            border: 1px solid #333;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
             border-radius: 16px;
             width: 90%;
             max-width: 600px;
             max-height: 80vh;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            animation: modalSlideIn 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,.5);
+            animation: modalSlideIn .3s ease;
         }
 
         .modal-header {
-            background: linear-gradient(145deg, #0854ab, #216ebb);
+            background: var(--gradient-header);
             padding: 20px 24px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border-secondary);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -443,11 +572,11 @@
             cursor: pointer;
             padding: 4px;
             border-radius: 4px;
-            transition: background 0.2s ease;
+            transition: background .2s ease;
         }
 
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,.1);
         }
 
         .modal-content {
@@ -459,7 +588,11 @@
         .ai-analysis {
             color: #e8e8e8;
             line-height: 1.6;
-            font-size: 0.95rem;
+            font-size: .95rem;
+        }
+
+        [data-theme="light"] .ai-analysis {
+            color: #212529;
         }
 
         .ai-analysis h3 {
@@ -467,6 +600,10 @@
             margin-bottom: 12px;
             font-size: 1.1rem;
             font-weight: 600;
+        }
+
+        [data-theme="light"] .ai-analysis h3 {
+            color: #0d6efd;
         }
 
         .ai-analysis p {
@@ -483,11 +620,15 @@
         }
 
         .ai-highlight {
-            background: rgba(74, 158, 255, 0.1);
+            background: rgba(74,158,255,.1);
             color: #4a9eff;
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: 500;
+        }
+
+        [data-theme="light"] .ai-highlight {
+            color: #0d6efd;
         }
 
         @keyframes fadeIn {
@@ -498,7 +639,7 @@
         @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px) scale(0.95);
+                transform: translateY(-20px) scale(.95);
             }
             to {
                 opacity: 1;
@@ -515,15 +656,19 @@
         }
 
         .weather-table th {
-            background: #262626;
+            background: var(--bg-tertiary);
             color: #fff;
             padding: 12px 8px;
             text-align: center;
             font-weight: 600;
             border-bottom: none;
-            font-size: 0.8rem;
+            font-size: .8rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: .05em;
+        }
+
+        [data-theme="light"] .weather-table th {
+            color: #000;
         }
 
         .weather-table th:first-child {
@@ -533,9 +678,92 @@
         .weather-table td {
             padding: 12px 8px;
             text-align: center;
-            border-bottom: 1px solid #1f1f1f;
+            border-bottom: 1px solid var(--border-primary);
             transition: none;
-            font-size: 0.875rem;
+            font-size: .875rem;
+            color: #e8e8e8;
+        }
+
+        [data-theme="light"] .weather-table td {
+            color: #212529;
+        }
+
+        /* Weather condition row overrides - but NOT for temp and precipitation columns */
+        .weather-table tr.weak-wind td:nth-child(2),
+        .weather-table tr.weak-wind td:nth-child(3),
+        .weather-table tr.weak-wind td:nth-child(4) {
+            color: #6b7280 !important;
+        }
+
+        .weather-table tr.moderate-wind td:nth-child(2),
+        .weather-table tr.moderate-wind td:nth-child(3),
+        .weather-table tr.moderate-wind td:nth-child(4) {
+            color: #22c55e !important;
+        }
+
+        .weather-table tr.strong-wind td:nth-child(2),
+        .weather-table tr.strong-wind td:nth-child(3),
+        .weather-table tr.strong-wind td:nth-child(4) {
+            color: #f59e0b !important;
+        }
+
+        .weather-table tr.extreme-wind td:nth-child(2),
+        .weather-table tr.extreme-wind td:nth-child(3),
+        .weather-table tr.extreme-wind td:nth-child(4) {
+            color: #ef4444 !important;
+        }
+
+        /* Individual cell overrides for specific conditions */
+        .weather-table td.wind-weak {
+            color: #6b7280 !important;
+        }
+
+        .weather-table td.wind-moderate {
+            color: #22c55e !important;
+            font-weight: 600;
+        }
+
+        .weather-table td.wind-strong {
+            color: #f59e0b !important;
+            font-weight: 600;
+        }
+
+        .weather-table td.wind-extreme {
+            color: #ef4444 !important;
+            font-weight: 600;
+        }
+
+        .weather-table td.temp-positive {
+            color: #f97316 !important;
+        }
+
+        .weather-table td.temp-negative {
+            color: #06b6d4 !important;
+        }
+
+        .weather-table td.precipitation {
+            color: #3b82f6 !important;
+        }
+
+        .weather-table td.precipitation-none {
+            color: #6b7280 !important;
+        }
+
+        /* Also apply to elements without td prefix for broader compatibility */
+        .temp-positive {
+            color: #f97316 !important;
+        }
+
+        .temp-negative {
+            color: #06b6d4 !important;
+        }
+
+        .precipitation {
+            color: #3b82f6 !important;
+        }
+
+        .precipitation-none {
+            color: #6b7280 !important;
         }
 
         .weather-table td:first-child {
@@ -544,43 +772,67 @@
 
         .weather-table tr.weak-wind {
             background: transparent;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
 
         .weather-table tr.moderate-wind {
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
+            background: rgba(34,197,94,.1);
+            color: var(--success-color);
         }
 
         .weather-table tr.strong-wind {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
+            background: rgba(245,158,11,.1);
+            color: var(--warning-color);
         }
 
         .weather-table tr.extreme-wind {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
+            background: rgba(239,68,68,.1);
+            color: var(--danger-color);
         }
 
         .wind-arrow {
             display: inline-block;
             font-size: 1.2rem;
-            transition: transform 0.3s ease;
+            transition: transform .3s ease;
         }
 
-        .wind-weak { color: #6b7280; }
-        .wind-moderate { color: #22c55e; font-weight: 600; }
-        .wind-strong { color: #f59e0b; font-weight: 600; }
-        .wind-extreme { color: #ef4444; font-weight: 600; }
+        .wind-weak {
+            color: var(--text-secondary);
+        }
 
-        .temp-positive { color: #f97316; }
-        .temp-negative { color: #06b6d4; }
+        .wind-moderate {
+            color: var(--success-color);
+            font-weight: 600;
+        }
 
-        .precipitation { color: #3b82f6; }
-        .precipitation-none { color: #6b7280; }
+        .wind-strong {
+            color: var(--warning-color);
+            font-weight: 600;
+        }
+
+        .wind-extreme {
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .temp-positive {
+            color: #f97316;
+        }
+
+        .temp-negative {
+            color: #06b6d4;
+        }
+
+        .precipitation {
+            color: #3b82f6;
+        }
+
+        .precipitation-none {
+            color: #6b7280;
+        }
 
         .date-header {
-            background: linear-gradient(145deg, #4a9eff, #357abd);
+            background: var(--gradient-active);
             color: #fff;
             font-weight: 700;
         }
@@ -594,7 +846,7 @@
         .live-dot {
             width: 8px;
             height: 8px;
-            background: #22c55e;
+            background: var(--success-color);
             border-radius: 50%;
             position: relative;
             animation: pulse-glow 2s ease-in-out infinite;
@@ -608,21 +860,36 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: #22c55e;
+            background: var(--success-color);
             border-radius: 50%;
-            opacity: 0.4;
+            opacity: .4;
             animation: pulse-ring 2s ease-in-out infinite;
         }
 
         @keyframes pulse-glow {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: .8;
+                transform: scale(1.1);
+            }
         }
 
         @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 0.4; }
-            50% { transform: scale(1.5); opacity: 0.2; }
-            100% { transform: scale(2); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: .4;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: .2;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
         }
 
         @media (max-width: 768px) {
@@ -642,11 +909,10 @@
             }
 
             .weather-table {
-                font-size: 0.85rem;
+                font-size: .85rem;
             }
 
-            .weather-table th,
-            .weather-table td {
+            .weather-table td, .weather-table th {
                 padding: 8px 4px;
             }
 
@@ -659,14 +925,26 @@
             }
 
             .error-description {
-                font-size: 0.85rem;
+                font-size: .85rem;
+            }
+
+            .theme-toggle {
+                position: static;
+                margin-bottom: 20px;
+                align-self: center;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header {
+                position: static;
             }
         }
 
         .footer {
             margin-top: 60px;
             padding: 30px 0;
-            border-top: 1px solid #262626;
+            border-top: 1px solid var(--border-primary);
             text-align: center;
         }
 
@@ -677,8 +955,12 @@
 
         .footer-content p {
             color: #9ca3af;
-            font-size: 0.875rem;
+            font-size: .875rem;
             margin-bottom: 8px;
+        }
+
+        [data-theme="light"] .footer-content p {
+            color: #6c757d;
         }
 
         .footer-content p:last-child {
@@ -686,32 +968,42 @@
         }
 
         .footer-disclaimer {
-            font-size: 0.75rem;
-            opacity: 0.8;
+            font-size: .75rem;
+            opacity: .8;
         }
 
         .footer-link {
-            font-size: 0.75rem;
+            font-size: .75rem;
             margin-top: 12px;
         }
 
-        .footer-disclaimer a,
-        .footer-link a {
+        .footer-disclaimer a, .footer-link a {
             color: #4a9eff;
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color .2s ease;
         }
 
-        .footer-disclaimer a:hover,
-        .footer-link a:hover {
+        .footer-disclaimer a:hover, .footer-link a:hover {
             color: #fff;
             text-decoration: underline;
+        }
+
+        [data-theme="light"] .footer-disclaimer a, [data-theme="light"] .footer-link a {
+            color: #0d6efd;
+        }
+
+        [data-theme="light"] .footer-disclaimer a:hover, [data-theme="light"] .footer-link a:hover {
+            color: #000;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
             <h1>VARUN.SURF</h1>
             <p>weather forecast and real-time wind conditions dashboard for kitesurfers</p>
         </div>
@@ -741,18 +1033,8 @@
 
         <footer class="footer">
             <div class="footer-content">
-                <p class="footer-disclaimer">
-                    weather data provided by 
-                    <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, 
-                    <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, 
-                    <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, 
-                    <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a>
-                </p>
-                <p class="footer-link">
-                    &copy; 2025 <a href="https://varun.surf">varun.surf</a> | 
-                    made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | 
-                    v. 0.0.1
-                </p>
+                <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
+                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v. 0.0.1</p>
             </div>
         </footer>
     </div>
@@ -778,6 +1060,36 @@
     <script>
         let globalWeatherData = [];
 
+        // Theme functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            function updateTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                if (theme === 'light') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            // Set initial theme
+            updateTheme(savedTheme);
+
+            // Theme toggle event
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                updateTheme(newTheme);
+            });
+        }
+
         function fetchWeatherData() {
             return fetch('http://localhost:8001/mock-data.json', {
                 method: 'GET',
@@ -798,7 +1110,8 @@
         }
 
         function showLoadingMessage() {
-            document.getElementById('spotsGrid').innerHTML = `
+            const spotsGrid = document.getElementById('spotsGrid');
+            spotsGrid.innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
                     <span class="loading-text">Loading weather data...</span>
@@ -806,32 +1119,32 @@
             `;
         }
 
-        function showErrorMessage(error, context) {
-            const grid = document.getElementById('spotsGrid');
+        function showErrorMessage(error, retryFunction) {
+            const spotsGrid = document.getElementById('spotsGrid');
             
-            let title = 'Failed to Load Weather Data';
-            let description = 'Unable to fetch the latest weather information.';
+            let errorTitle = 'Failed to Load Weather Data';
+            let errorMessage = 'Unable to fetch the latest weather information.';
             
             if (error.message.includes('HTTP Error: 404')) {
-                title = 'Data Source Not Found';
-                description = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
+                errorTitle = 'Data Source Not Found';
+                errorMessage = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
             } else if (error.message.includes('HTTP Error: 500')) {
-                title = 'Server Error';
-                description = 'The weather service is experiencing technical difficulties. Please try again later.';
+                errorTitle = 'Server Error';
+                errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
             } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                title = 'Connection Error';
-                description = 'Unable to connect to the weather service. Please check your internet connection and try again.';
+                errorTitle = 'Connection Error';
+                errorMessage = 'Unable to connect to the weather service. Please check your internet connection and try again.';
             } else if (error.message.includes('JSON')) {
-                title = 'Data Format Error';
-                description = 'The weather data received is corrupted or in an unexpected format.';
+                errorTitle = 'Data Format Error';
+                errorMessage = 'The weather data received is corrupted or in an unexpected format.';
             }
             
-            grid.innerHTML = `
+            spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⚠️</span>
-                    <div class="error-title">${title}</div>
+                    <div class="error-title">${errorTitle}</div>
                     <div class="error-description">
-                        ${description}<br/>
+                        ${errorMessage}<br/>
                     </div>
                     <button class="retry-button" onclick="retryLoadData()">
                         Try Again
@@ -842,20 +1155,26 @@
 
         function getWindArrow(direction) {
             const arrows = {
-                'N': '↑', 'NE': '↗', 'E': '→', 'SE': '↘',
-                'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
+                'N': '↑',
+                'NE': '↗',
+                'E': '→',
+                'SE': '↘',
+                'S': '↓',
+                'SW': '↙',
+                'W': '←',
+                'NW': '↖'
             };
             return arrows[direction] || '•';
         }
 
         function openAIModal(spotName) {
-            const spot = globalWeatherData.find(s => s.name === spotName);
+            const spot = globalWeatherData.find(spot => spot.name === spotName);
             if (!spot) return;
-            
+
             const modal = document.getElementById('aiModal');
             const modalSpotName = document.getElementById('modalSpotName');
             const aiAnalysisContent = document.getElementById('aiAnalysisContent');
-            
+
             modalSpotName.textContent = `AI Analysis - ${spotName}`;
             aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
             
@@ -873,63 +1192,63 @@
             const card = document.createElement('div');
             card.className = 'spot-card';
             card.dataset.country = spot.country;
-            
+
             let forecastRows = '';
             spot.forecast.forEach(day => {
-                let windClass, windColorClass;
+                let windClass, windTextClass;
                 if (day.wind < 12) {
                     windClass = 'weak-wind';
-                    windColorClass = 'wind-weak';
+                    windTextClass = 'wind-weak';
                 } else if (day.wind >= 12 && day.wind < 15) {
                     windClass = 'moderate-wind';
-                    windColorClass = 'wind-moderate';
+                    windTextClass = 'wind-moderate';
                 } else if (day.wind >= 15 && day.wind <= 22) {
                     windClass = 'strong-wind';
-                    windColorClass = 'wind-strong';
+                    windTextClass = 'wind-strong';
                 } else {
                     windClass = 'extreme-wind';
-                    windColorClass = 'wind-extreme';
+                    windTextClass = 'wind-extreme';
                 }
-                
+
                 const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                const arrow = getWindArrow(day.direction);
+                const windArrow = getWindArrow(day.direction);
                 const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
-                
+
                 forecastRows += `
                     <tr class="${windClass}">
                         <td><strong>${day.date}</strong></td>
-                        <td class="${windColorClass}">${day.wind} kts</td>
-                        <td class="${windColorClass}">${day.gusts} kts</td>
-                        <td class="${windColorClass}">
-                            <span class="wind-arrow">${arrow}</span> ${day.direction}
+                        <td class="${windTextClass}">${day.wind} kts</td>
+                        <td class="${windTextClass}">${day.gusts} kts</td>
+                        <td class="${windTextClass}">
+                            <span class="wind-arrow">${windArrow}</span> ${day.direction}
                         </td>
                         <td class="${tempClass}">${day.temp}°C</td>
                         <td class="${precipClass}">${day.precipitation}%</td>
                     </tr>
                 `;
             });
-            
-            let liveRow = '';
+
+            let currentConditionsRow = '';
             if (spot.currentConditions) {
-                let windClass, windColorClass;
+                let windClass, windTextClass;
                 if (spot.currentConditions.wind < 12) {
                     windClass = 'weak-wind';
-                    windColorClass = 'wind-weak';
+                    windTextClass = 'wind-weak';
                 } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
                     windClass = 'moderate-wind';
-                    windColorClass = 'wind-moderate';
+                    windTextClass = 'wind-moderate';
                 } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
                     windClass = 'strong-wind';
-                    windColorClass = 'wind-strong';
+                    windTextClass = 'wind-strong';
                 } else {
                     windClass = 'extreme-wind';
-                    windColorClass = 'wind-extreme';
+                    windTextClass = 'wind-extreme';
                 }
-                
+
                 const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                const arrow = getWindArrow(spot.currentConditions.direction);
-                
-                liveRow = `
+                const windArrow = getWindArrow(spot.currentConditions.direction);
+
+                currentConditionsRow = `
                     <tr class="${windClass}" style="border-top: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
@@ -937,17 +1256,17 @@
                                 <div class="live-dot"></div>
                             </div>
                         </td>
-                        <td class="${windColorClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${windColorClass}">${spot.currentConditions.gusts} kts</td>
-                        <td class="${windColorClass}">
-                            <span class="wind-arrow">${arrow}</span> ${spot.currentConditions.direction}
+                        <td class="${windTextClass}">${spot.currentConditions.wind} kts</td>
+                        <td class="${windTextClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${windTextClass}">
+                            <span class="wind-arrow">${windArrow}</span> ${spot.currentConditions.direction}
                         </td>
                         <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
                         <td>-</td>
                     </tr>
                 `;
             }
-            
+
             card.innerHTML = `
                 <div class="spot-header">
                     <div class="spot-title">
@@ -980,11 +1299,11 @@
                     </thead>
                     <tbody>
                         ${forecastRows}
-                        ${liveRow}
+                        ${currentConditionsRow}
                     </tbody>
                 </table>
             `;
-            
+
             return card;
         }
 
@@ -992,18 +1311,18 @@
 
         function renderSpots(filter = 'all') {
             currentFilter = filter;
-            const grid = document.getElementById('spotsGrid');
+            const spotsGrid = document.getElementById('spotsGrid');
             
             showLoadingMessage();
             
             fetchWeatherData()
                 .then(data => {
                     globalWeatherData = data;
-                    const filteredData = filter === 'all' ? data : data.filter(spot => spot.country === filter);
+                    const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
                     
-                    grid.innerHTML = '';
-                    filteredData.forEach(spot => {
-                        grid.appendChild(createSpotCard(spot));
+                    spotsGrid.innerHTML = '';
+                    filteredSpots.forEach(spot => {
+                        spotsGrid.appendChild(createSpotCard(spot));
                     });
                 })
                 .catch(error => {
@@ -1021,78 +1340,61 @@
             const dropdownMenu = document.getElementById('dropdownMenu');
             const selectedCountry = document.getElementById('selectedCountry');
             const dropdownOptions = document.querySelectorAll('.dropdown-option');
-            
-            // Toggle dropdown
+
+            function closeDropdown() {
+                dropdownButton.classList.remove('open', 'active');
+                dropdownMenu.classList.remove('open');
+            }
+
             dropdownButton.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const isOpen = dropdownMenu.classList.contains('open');
-                
-                if (isOpen) {
+                if (dropdownMenu.classList.contains('open')) {
                     closeDropdown();
                 } else {
-                    openDropdown();
+                    dropdownButton.classList.add('open', 'active');
+                    dropdownMenu.classList.add('open');
                 }
             });
-            
-            // Handle option selection
+
             dropdownOptions.forEach(option => {
                 option.addEventListener('click', (e) => {
                     e.stopPropagation();
                     
-                    // Update selected option
                     dropdownOptions.forEach(opt => opt.classList.remove('selected'));
                     option.classList.add('selected');
                     
-                    // Update button text
                     selectedCountry.textContent = option.textContent;
-                    
-                    // Filter spots
-                    const country = option.dataset.country;
-                    renderSpots(country);
-                    
-                    // Close dropdown
+                    renderSpots(option.dataset.country);
                     closeDropdown();
                 });
             });
-            
-            // Close dropdown when clicking outside
+
             document.addEventListener('click', (e) => {
                 if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     closeDropdown();
                 }
             });
-            
-            // Close dropdown on escape key
+
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
                     closeDropdown();
                     dropdownButton.focus();
                 }
             });
-            
-            function openDropdown() {
-                dropdownButton.classList.add('open', 'active');
-                dropdownMenu.classList.add('open');
-            }
-            
-            function closeDropdown() {
-                dropdownButton.classList.remove('open', 'active');
-                dropdownMenu.classList.remove('open');
-            }
         }
 
         function setupModal() {
             const modal = document.getElementById('aiModal');
             const closeButton = document.getElementById('modalClose');
-            
+
             closeButton.addEventListener('click', closeAIModal);
-            
+
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeAIModal();
                 }
             });
-            
+
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modal.classList.contains('active')) {
                     closeAIModal();
@@ -1100,12 +1402,12 @@
             });
         }
 
-        // Make functions globally available
+        // Make functions global for onclick handlers
         window.openAIModal = openAIModal;
         window.closeAIModal = closeAIModal;
 
-        // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
             renderSpots();
             setupDropdown();
             setupModal();
