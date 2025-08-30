@@ -8,13 +8,13 @@
         "webcamUrl": "https://www.windfinder.com/webcams/c/jastarnia",
         "locationUrl": "https://maps.google.com/maps?q=Jastarnia,Poland",
         "lastUpdated": "2025-05-26 14:23",
-        "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 18, "wave": 1.2 },
+        "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 18 },
         "forecast": [
-            { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 19, "precipitation": 0, "wave": 1.4 },
-            { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 17, "precipitation": 5, "wave": 1.1 },
-            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 20, "precipitation": 0, "wave": 1.8 },
-            { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 22, "precipitation": 10, "wave": 0.5 },
-            { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 19, "precipitation": 0, "wave": 1.0 }
+            { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 19, "precipitation": 0 },
+            { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 17, "precipitation": 5 },
+            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 20, "precipitation": 0 },
+            { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 22, "precipitation": 10 },
+            { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 19, "precipitation": 0 }
         ],
         "aiAnalysis": "\n<h3>🏄‍♂️ Session Recommendation</h3>\n<p>Jastarnia is showing <span class=\"ai-highlight\">excellent conditions</span> for the next few days! The consistent westerly winds are perfect for the main beach launch.</p>\n\n<h3>📊 Wind Analysis</h3>\n<p>Current 16kt winds with 22kt gusts provide solid intermediate conditions. Day 3 looks particularly promising with <span class=\"ai-highlight\">22kt sustained winds</span> - perfect for advanced sessions and big air attempts.</p>\n\n<h3>🎯 Best Session Times</h3>\n<ul>\n    <li><strong>Today:</strong> Afternoon sessions recommended (18kt sustained)</li>\n    <li><strong>Day 3:</strong> All-day conditions with strong westerly (22kt)</li>\n    <li><strong>Avoid Day 4:</strong> Light winds (8kt) - better for beginners or SUP</li>\n</ul>\n\n<h3>🌊 Local Conditions</h3>\n<p>West winds are offshore at Jastarnia\"s main spot, creating clean, organized waves. Water temperature around 12-15°C requires a good wetsuit. The sandy bottom and wide beach make it perfect for launching in these conditions.</p>\n                "
     },
@@ -26,13 +26,13 @@
         "webcamUrl": "https://www.windfinder.com/webcams/c/tarifa",
         "locationUrl": "https://maps.google.com/maps?q=Tarifa,Spain",
         "lastUpdated": "2025-05-26 14:23",
-        "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 21, "wave": 0.8 },
+        "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 21 },
         "forecast": [
-            { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 22, "precipitation": 0, "wave": 1.0 },
-            { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 20, "precipitation": 5, "wave": 0.7 },
-            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 23, "precipitation": 0, "wave": 1.5 },
-            { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10, "wave": 0.4 },
-            { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 21, "precipitation": 0, "wave": 0.9 }
+            { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 22, "precipitation": 0 },
+            { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 20, "precipitation": 5 },
+            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 23, "precipitation": 0 },
+            { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10 },
+            { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 21, "precipitation": 0 }
         ],
         "aiAnalysis": "\n<h3>🌪️ Legendary Conditions Ahead</h3>\n<p>Tarifa is living up to its reputation as Europe\"s wind capital! <span class=\"ai-highlight\">Consistent westerly flow</span> with building intensity through Day 3.</p>\n\n<h3>🎯 Spot Selection</h3>\n<ul>\n    <li><strong>Punta Paloma:</strong> Perfect for current W/NW winds - flatwater freestyle paradise</li>\n    <li><strong>Los Lances:</strong> Great for wave riding when winds hit 22kt on Day 3</li>\n    <li><strong>Valdevaqueros:</strong> Best backup if winds get too strong</li>\n</ul>\n\n<h3>⚡ Power Days</h3>\n<p>Day 3 is shaping up to be <span class=\"ai-highlight\">epic</span> with 22kt sustained and 28kt gusts. Perfect conditions for powered sessions and big jumps. The thermal enhancement typical of Tarifa should add 3-5kts in the afternoon.</p>\n\n<h3>🌡️ Comfort Factor</h3>\n<p>Excellent temperatures (20-25°C) mean comfortable sessions in shorty wetsuits or even boardshorts. The levante isn\"t showing up, so expect manageable sea state throughout the forecast period.</p>\n                "
     },
@@ -50,7 +50,7 @@
             { "date": "Day 4", "wind": 6, "gusts": 10, "direction": "SW", "temp": 22, "precipitation": 5 },
             { "date": "Day 5", "wind": 11, "gusts": 15, "direction": "W", "temp": 19, "precipitation": 0 }
         ],
-        "aiAnalysis": "\n<h3>🌊 Moderate Conditions - Perfect for Progression</h3>\n<p>Lagos is showing <span class=\"ai-highlight\">ideal learning conditions</span> with moderate winds and manageable sea state. Great opportunity for skill development and relaxed sessions.</p>\n\n<h3>📚 Session Planning</h3>\n<ul>\n    <li><strong>Today & Day 3:</strong> Best sessions (12-14kt) - perfect for intermediate riders</li>\n    <li><strong>Tomorrow:</strong> Light winds + rain - indoor theory day</li>\n    <li><strong>Day 4:</strong> Very light (6kt) - SUP or light wind practice</li>\n</ul>\n\n<h3>�️ Spot Recommendations</h3>\n<p>The northwest winds are perfect for <span class=\"ai-highlight\">Meia Praia</span> - Lagos\" main kitesurfing beach. The long sandy beach provides plenty of space for safe launching and landing. Protected bay conditions mean smaller waves, ideal for freestyle practice.</p>\n\n<h3>🎓 Skills Focus</h3>\n<p>These moderate conditions are perfect for working on transitions, jumps, and new tricks. The forgiving wind strength allows for progression without being overpowering. Consider larger kite sizes (12-14m) for optimal performance.</p>\n                "
+        "aiAnalysis": "\n<h3>🌊 Moderate Conditions - Perfect for Progression</h3>\n<p>Lagos is showing <span class=\"ai-highlight\">ideal learning conditions</span> with moderate winds and manageable sea state. Great opportunity for skill development and relaxed sessions.</p>\n\n<h3>📚 Session Planning</h3>\n<ul>\n    <li><strong>Today & Day 3:</strong> Best sessions (12-14kt) - perfect for intermediate riders</li>\n    <li><strong>Tomorrow:</strong> Light winds + rain - indoor theory day</li>\n    <li><strong>Day 4:</strong> Very light (6kt) - SUP or light wind practice</li>\n</ul>\n\n<h3>🏖️ Spot Recommendations</h3>\n<p>The northwest winds are perfect for <span class=\"ai-highlight\">Meia Praia</span> - Lagos\" main kitesurfing beach. The long sandy beach provides plenty of space for safe launching and landing. Protected bay conditions mean smaller waves, ideal for freestyle practice.</p>\n\n<h3>🎓 Skills Focus</h3>\n<p>These moderate conditions are perfect for working on transitions, jumps, and new tricks. The forgiving wind strength allows for progression without being overpowering. Consider larger kite sizes (12-14m) for optimal performance.</p>\n                "
     },
     {
         "name": "Marseille",
@@ -60,13 +60,13 @@
         "webcamUrl": "https://www.windfinder.com/webcams/c/marseille",
         "locationUrl": "https://maps.google.com/maps?q=Marseille,France",
         "lastUpdated": "2025-05-26 14:31",
-        "currentConditions": { "wind": 24, "gusts": 31, "direction": "N", "temp": 17, "wave": 2.1 },
+        "currentConditions": { "wind": 24, "gusts": 31, "direction": "N", "temp": 17 },
         "forecast": [
-            { "date": "Today", "wind": 25, "gusts": 32, "direction": "N", "temp": 16, "precipitation": 0, "wave": 2.3 },
-            { "date": "Tomorrow", "wind": 28, "gusts": 35, "direction": "N", "temp": 15, "precipitation": 0, "wave": 2.8 },
-            { "date": "Day 3", "wind": 20, "gusts": 26, "direction": "NW", "temp": 17, "precipitation": 5, "wave": 1.7 },
-            { "date": "Day 4", "wind": 15, "gusts": 20, "direction": "W", "temp": 19, "precipitation": 10, "wave": 1.2 },
-            { "date": "Day 5", "wind": 10, "gusts": 14, "direction": "SW", "temp": 21, "precipitation": 20, "wave": 0.8 }
+            { "date": "Today", "wind": 25, "gusts": 32, "direction": "N", "temp": 16, "precipitation": 0 },
+            { "date": "Tomorrow", "wind": 28, "gusts": 35, "direction": "N", "temp": 15, "precipitation": 0 },
+            { "date": "Day 3", "wind": 20, "gusts": 26, "direction": "NW", "temp": 17, "precipitation": 5 },
+            { "date": "Day 4", "wind": 15, "gusts": 20, "direction": "W", "temp": 19, "precipitation": 10 },
+            { "date": "Day 5", "wind": 10, "gusts": 14, "direction": "SW", "temp": 21, "precipitation": 20 }
         ]   
     },
     {
@@ -83,7 +83,7 @@
             { "date": "Day 4", "wind": 19, "gusts": 25, "direction": "NW", "temp": 23, "precipitation": 0 },
             { "date": "Day 5", "wind": 12, "gusts": 16, "direction": "W", "temp": 25, "precipitation": 5 }
         ],
-        "aiAnalysis": "\n<h3>🛏️ Sardinian Sessions - Variable but Promising</h3>\n<p>Cagliari shows <span class=\"ai-highlight\">mixed conditions</span> with some excellent sessions bookending lighter days. The Mediterranean\"s thermal effects will enhance afternoon winds.</p>\n\n<h3>📅 Session Planner</h3>\n<ul>\n    <li><strong>Today:</strong> Moderate NW winds (13kt) - good for progression</li>\n    <li><strong>Tomorrow:</strong> Solid conditions (16kt N) - best day of forecast</li>\n    <li><strong>Day 3:</strong> Too light (7kt) - rest day or SUP</li>\n    <li><strong>Day 4:</strong> Strong return (19kt NW) - powered sessions</li>\n</ul>\n\n<h3>🌡️ Mediterranean Advantage</h3>\n<p>Excellent water temperatures (20-22°C) and air temps (22-26°C) mean comfortable sessions in minimal gear. The warm conditions make even the lighter wind days enjoyable for relaxed cruising.</p>\n\n<h3>🖏️ Spot Selection</h3>\n<p><strong>Poetto Beach</strong> is perfect for the NW winds - long sandy beach with good space. When winds turn northerly tomorrow, consider <strong>Calamosca</strong> for more protected conditions and stunning scenery.</p>\n                "
+        "aiAnalysis": "\n<h3>🏛️ Sardinian Sessions - Variable but Promising</h3>\n<p>Cagliari shows <span class=\"ai-highlight\">mixed conditions</span> with some excellent sessions bookending lighter days. The Mediterranean\"s thermal effects will enhance afternoon winds.</p>\n\n<h3>📅 Session Planner</h3>\n<ul>\n    <li><strong>Today:</strong> Moderate NW winds (13kt) - good for progression</li>\n    <li><strong>Tomorrow:</strong> Solid conditions (16kt N) - best day of forecast</li>\n    <li><strong>Day 3:</strong> Too light (7kt) - rest day or SUP</li>\n    <li><strong>Day 4:</strong> Strong return (19kt NW) - powered sessions</li>\n</ul>\n\n<h3>🌡️ Mediterranean Advantage</h3>\n<p>Excellent water temperatures (20-22°C) and air temps (22-26°C) mean comfortable sessions in minimal gear. The warm conditions make even the lighter wind days enjoyable for relaxed cruising.</p>\n\n<h3>🏖️ Spot Selection</h3>\n<p><strong>Poetto Beach</strong> is perfect for the NW winds - long sandy beach with good space. When winds turn northerly tomorrow, consider <strong>Calamosca</strong> for more protected conditions and stunning scenery.</p>\n                "
     },
     {
         "name": "Mykonos",
@@ -93,13 +93,13 @@
         "webcamUrl": "https://www.windfinder.com/webcams/c/mykonos",
         "locationUrl": "https://maps.google.com/maps?q=Mykonos,Greece",
         "lastUpdated": "2025-05-26 14:27",
-        "currentConditions": { "wind": 28, "gusts": 36, "direction": "N", "temp": 19, "wave": 3.2 },
+        "currentConditions": { "wind": 28, "gusts": 36, "direction": "N", "temp": 19 },
         "forecast": [
-            { "date": "Today", "wind": 30, "gusts": 38, "direction": "N", "temp": 20, "precipitation": 0, "wave": 3.5 },
-            { "date": "Tomorrow", "wind": 26, "gusts": 33, "direction": "N", "temp": 19, "precipitation": 0, "wave": 2.9 },
-            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "NW", "temp": 21, "precipitation": 0, "wave": 2.2 },
-            { "date": "Day 4", "wind": 18, "gusts": 24, "direction": "NW", "temp": 23, "precipitation": 5, "wave": 1.8 },
-            { "date": "Day 5", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10, "wave": 0.6 }
+            { "date": "Today", "wind": 30, "gusts": 38, "direction": "N", "temp": 20, "precipitation": 0 },
+            { "date": "Tomorrow", "wind": 26, "gusts": 33, "direction": "N", "temp": 19, "precipitation": 0 },
+            { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "NW", "temp": 21, "precipitation": 0 },
+            { "date": "Day 4", "wind": 18, "gusts": 24, "direction": "NW", "temp": 23, "precipitation": 5 },
+            { "date": "Day 5", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10 }
         ],
         "aiAnalysis": "\n<h3>🌪️ Meltemi Madness - Epic Conditions!</h3>\n<p>The famous <span class=\"ai-highlight\">Meltemi winds</span> are delivering absolutely incredible conditions! 30kt sustained with 38kt gusts - this is world-class kitesurfing territory.</p>\n\n<h3>⚡ Power Sessions Only</h3>\n<p><span class=\"ai-highlight\">Expert riders only</span> for the next 3 days. These are seriously powered conditions that require advanced skills, small kites (5-7m), and complete comfort in strong winds.</p>\n\n<h3>🏝️ Greek Island Paradise</h3>\n<ul>\n    <li><strong>Kalafatis Beach:</strong> Main spot - perfect for these northerly Meltemi winds</li>\n    <li><strong>Ftelia Beach:</strong> Alternative option with slightly more protection</li>\n    <li><strong>Water temp:</strong> 18-20°C - wetsuit recommended</li>\n</ul>\n\n<h3>📊 Wind Evolution</h3>\n<p>Peak power today and tomorrow (26-30kt), then gradual decrease. Day 4-5 offer more accessible conditions (18kt down to 8kt) perfect for less experienced riders or gear testing.</p>\n\n<h3>🎯 Pro Tip</h3>\n<p>The Meltemi is remarkably consistent and clean - expect steady power without the gustiness of many other strong wind locations. Perfect for big air, speed runs, and advanced freestyle.</p>\n                "
     },
@@ -117,6 +117,7 @@
             { "date": "Day 4", "wind": 5, "gusts": 8, "direction": "S", "temp": 26, "precipitation": 20 },
             { "date": "Day 5", "wind": 20, "gusts": 26, "direction": "NW", "temp": 21, "precipitation": 0 }
         ],
-        "aiAnalysis": "\n<h3>🏰 Historic Cadiz - Varied Conditions</h3>\n<p>Cádiz is showing a <span class=\"ai-highlight\">rollercoaster forecast</span> - from solid sessions to light winds and back to powered conditions. Perfect for a varied kitesurfing week!</p>\n\n<h3>📈 Session Strategy</h3>\n<ul>\n    <li><strong>Today:</strong> Good intermediate conditions (14kt W)</li>\n    <li><strong>Tomorrow:</strong> Light + rainy - equipment maintenance day</li>\n    <li><strong>Day 3:</strong> Solid return (17kt W) - great session day</li>\n    <li><strong>Day 4:</strong> Too light (5kt) - explore the beautiful old town</li>\n    <li><strong>Day 5:</strong> Strong finish (20kt NW) - powered session</li>\n</ul>\n\n<h3>🌊 Atlantic Edge</h3>\n<p>Cádiz benefits from its Atlantic exposure with consistent swells and clean wind patterns. The westerly winds create excellent wave sailing opportunities, while the sandy beaches provide safe launching.</p>\n\n<h3>🖏️ Spot Recommendations</h3>\n<p><strong>Playa de la Victoria</strong> works well for most wind directions, while <strong>El Palmar</strong> (20min drive) offers world-class wave conditions when the winds pick up on Days 3 and 5.</p>\n                "
+        "aiAnalysis": "\n<h3>🏰 Historic Cadiz - Varied Conditions</h3>\n<p>Cádiz is showing a <span class=\"ai-highlight\">rollercoaster forecast</span> - from solid sessions to light winds and back to powered conditions. Perfect for a varied kitesurfing week!</p>\n\n<h3>📈 Session Strategy</h3>\n<ul>\n    <li><strong>Today:</strong> Good intermediate conditions (14kt W)</li>\n    <li><strong>Tomorrow:</strong> Light + rainy - equipment maintenance day</li>\n    <li><strong>Day 3:</strong> Solid return (17kt W) - great session day</li>\n    <li><strong>Day 4:</strong> Too light (5kt) - explore the beautiful old town</li>\n    <li><strong>Day 5:</strong> Strong finish (20kt NW) - powered session</li>\n</ul>\n\n<h3>🌊 Atlantic Edge</h3>\n<p>Cádiz benefits from its Atlantic exposure with consistent swells and clean wind patterns. The westerly winds create excellent wave sailing opportunities, while the sandy beaches provide safe launching.</p>\n\n<h3>🏖️ Spot Recommendations</h3>\n<p><strong>Playa de la Victoria</strong> works well for most wind directions, while <strong>El Palmar</strong> (20min drive) offers world-class wave conditions when the winds pick up on Days 3 and 5.</p>\n                "
     }
+        
 ]

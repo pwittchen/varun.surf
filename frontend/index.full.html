@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>VARUN.SURF</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='ocean' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%231e40af;stop-opacity:1' /%3e%3cstop offset='50%25' style='stop-color:%234a9eff;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%2306b6d4;stop-opacity:1' /%3e%3c/linearGradient%3e%3clinearGradient id='wave' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.9' /%3e%3cstop offset='100%25' style='stop-color:%23f0f9ff;stop-opacity:0.7' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23ocean)'/%3e%3cpath d='M0 60 Q15 45 30 60 T60 55 T90 60 T120 55 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.8'/%3e%3cpath d='M0 70 Q20 55 40 70 T80 65 T120 70 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.6'/%3e%3cpath d='M0 80 Q25 65 50 80 T100 75 T150 80 L150 100 L0 100 Z' fill='url(%23wave)' opacity='0.4'/%3e%3ccircle cx='75' cy='25' r='8' fill='%23fbbf24' opacity='0.9'/%3e%3cpath d='M70 30 Q75 35 80 30' fill='none' stroke='%23fbbf24' stroke-width='1' opacity='0.6'/%3e%3cpath d='M10 40 Q15 35 20 40 Q25 45 30 40' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3cpath d='M40 35 Q45 30 50 35 Q55 40 60 35' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3c/svg%3e">
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='ocean' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%231e40af;stop-opacity:1' /%3e%3cstop offset='50%25' style='stop-color:%234a9eff;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%2306b6d4;stop-opacity:1' /%3e%3c/linearGradient%3e%3clinearGradient id='wave' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.9' /%3e%3cstop offset='100%25' style='stop-color:%23f0f9ff;stop-opacity:0.7' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23ocean)'/%3e%3cpath d='M0 60 Q15 45 30 60 T60 55 T90 60 T120 55 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.8'/%3e%3cpath d='M0 70 Q20 55 40 70 T80 65 T120 70 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.6'/%3e%3cpath d='M0 80 Q25 65 50 80 T100 75 T150 80 L150 100 L0 100 Z' fill='url(%23wave)' opacity='0.4'/%3e%3ccircle cx='75' cy='25' r='8' fill='%23fbbf24' opacity='0.9'/%3e%3cpath d='M70 30 Q75 35 80 30' fill='none' stroke='%23fbbf24' stroke-width='1' opacity='0.6'/%3e%3cpath d='M10 40 Q15 35 20 40 Q25 45 30 40' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3cpath d='M40 35 Q45 30 50 35 Q55 40 60 35' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3c/svg%3e">
     <style>
         :root {
             /* Dark theme variables */
@@ -681,7 +680,6 @@
             padding: 12px 8px;
             text-align: center;
             border-bottom: 1px solid var(--border-primary);
-            transition: none;
             font-size: .875rem;
             color: #e8e8e8;
         }
@@ -690,86 +688,83 @@
             color: #212529;
         }
 
-        /* Weather condition row overrides - but NOT for temp and precipitation columns */
-        .weather-table tr.weak-wind td:nth-child(2),
-        .weather-table tr.weak-wind td:nth-child(3),
-        .weather-table tr.weak-wind td:nth-child(4) {
-            color: #6b7280 !important;
-        }
-
-        .weather-table tr.moderate-wind td:nth-child(2),
-        .weather-table tr.moderate-wind td:nth-child(3),
-        .weather-table tr.moderate-wind td:nth-child(4) {
-            color: #22c55e !important;
-        }
-
-        .weather-table tr.strong-wind td:nth-child(2),
-        .weather-table tr.strong-wind td:nth-child(3),
-        .weather-table tr.strong-wind td:nth-child(4) {
-            color: #f59e0b !important;
-        }
-
-        .weather-table tr.extreme-wind td:nth-child(2),
-        .weather-table tr.extreme-wind td:nth-child(3),
-        .weather-table tr.extreme-wind td:nth-child(4) {
-            color: #ef4444 !important;
-        }
-
-        /* Individual cell overrides for specific conditions */
-        .weather-table td.wind-weak {
-            color: #6b7280 !important;
-        }
-
-        .weather-table td.wind-moderate {
-            color: #22c55e !important;
-            font-weight: 600;
-        }
-
-        .weather-table td.wind-strong {
-            color: #f59e0b !important;
-            font-weight: 600;
-        }
-
-        .weather-table td.wind-extreme {
-            color: #ef4444 !important;
-            font-weight: 600;
-        }
-
-        .weather-table td.temp-positive {
-            color: #f97316 !important;
-        }
-
-        .weather-table td.temp-negative {
-            color: #06b6d4 !important;
-        }
-
-        .weather-table td.precipitation {
-            color: #3b82f6 !important;
-        }
-
-        .weather-table td.precipitation-none {
-            color: #6b7280 !important;
-        }
-
-        /* Also apply to elements without td prefix for broader compatibility */
-        .temp-positive {
-            color: #f97316 !important;
-        }
-
-        .temp-negative {
-            color: #06b6d4 !important;
-        }
-
-        .precipitation {
-            color: #3b82f6 !important;
-        }
-
-        .precipitation-none {
-            color: #6b7280 !important;
-        }
-
         .weather-table td:first-child {
             text-align: left;
+        }
+
+        /* Force color overrides with higher specificity */
+        .weather-table tbody tr.weak-wind td:nth-child(2),
+        .weather-table tbody tr.weak-wind td:nth-child(3),
+        .weather-table tbody tr.weak-wind td:nth-child(4) {
+            color: #6b7280 !important;
+        }
+
+        .weather-table tbody tr.moderate-wind td:nth-child(2),
+        .weather-table tbody tr.moderate-wind td:nth-child(3),
+        .weather-table tbody tr.moderate-wind td:nth-child(4) {
+            color: #22c55e !important;
+        }
+
+        .weather-table tbody tr.strong-wind td:nth-child(2),
+        .weather-table tbody tr.strong-wind td:nth-child(3),
+        .weather-table tbody tr.strong-wind td:nth-child(4) {
+            color: #f59e0b !important;
+        }
+
+        .weather-table tbody tr.extreme-wind td:nth-child(2),
+        .weather-table tbody tr.extreme-wind td:nth-child(3),
+        .weather-table tbody tr.extreme-wind td:nth-child(4) {
+            color: #ef4444 !important;
+        }
+
+        /* Individual cell color overrides */
+        .weather-table tbody td.wind-weak {
+            color: #6b7280 !important;
+        }
+
+        .weather-table tbody td.wind-moderate {
+            color: #22c55e !important;
+            font-weight: 600;
+        }
+
+        .weather-table tbody td.wind-strong {
+            color: #f59e0b !important;
+            font-weight: 600;
+        }
+
+        .weather-table tbody td.wind-extreme {
+            color: #ef4444 !important;
+            font-weight: 600;
+        }
+
+        .weather-table tbody td.temp-positive {
+            color: #f97316 !important;
+        }
+
+        .weather-table tbody td.temp-negative {
+            color: #06b6d4 !important;
+        }
+
+        .weather-table tbody td.precipitation {
+            color: #3b82f6 !important;
+        }
+
+        .weather-table tbody td.precipitation-none {
+            color: #6b7280 !important;
+        }
+
+        .weather-table tbody td.wave-small {
+            color: #22c55e !important;
+        }
+
+        .weather-table tbody td.wave-moderate {
+            color: #f59e0b !important;
+            font-weight: 600;
+        }
+
+        .weather-table tbody td.wave-large {
+            color: #ef4444 !important;
+            font-weight: 600;
         }
 
         .weather-table tr.weak-wind {
@@ -831,6 +826,20 @@
 
         .precipitation-none {
             color: #6b7280;
+        }
+
+        .wave-small {
+            color: #22c55e;
+        }
+
+        .wave-moderate {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .wave-large {
+            color: #ef4444;
+            font-weight: 600;
         }
 
         .date-header {
@@ -1025,6 +1034,8 @@
                     <div class="dropdown-option" data-country="Spain">🇪🇸 SPAIN</div>
                     <div class="dropdown-option" data-country="Portugal">🇵🇹 PORTUGAL</div>
                     <div class="dropdown-option" data-country="Italy">🇮🇹 ITALY</div>
+                    <div class="dropdown-option" data-country="Greece">🇬🇷 GREECE</div>
+                    <div class="dropdown-option" data-country="France">🇫🇷 FRANCE</div>
                 </div>
             </div>
         </div>
@@ -1157,14 +1168,14 @@
 
         function getWindArrow(direction) {
             const arrows = {
-                'N': '↑',
-                'NE': '↗',
-                'E': '→',
-                'SE': '↘',
-                'S': '↓',
-                'SW': '↙',
-                'W': '←',
-                'NW': '↖'
+                'N': '↓',
+                'NE': '↙',
+                'E': '←',
+                'SE': '↖',
+                'S': '↑',
+                'SW': '↗',
+                'W': '→',
+                'NW': '↘'
             };
             return arrows[direction] || '•';
         }
@@ -1195,6 +1206,10 @@
             card.className = 'spot-card';
             card.dataset.country = spot.country;
 
+            // Check if spot has wave data
+            const hasWaveData = spot.forecast.some(day => day.wave !== undefined) || 
+                               (spot.currentConditions && spot.currentConditions.wave !== undefined);
+
             let forecastRows = '';
             spot.forecast.forEach(day => {
                 let windClass, windTextClass;
@@ -1215,6 +1230,20 @@
                 const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
                 const windArrow = getWindArrow(day.direction);
                 const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+                
+                // Wave classes
+                let waveClass = '';
+                let waveText = '-';
+                if (day.wave !== undefined) {
+                    if (day.wave < 1.0) {
+                        waveClass = 'wave-small';
+                    } else if (day.wave >= 1.0 && day.wave < 2.0) {
+                        waveClass = 'wave-moderate';
+                    } else {
+                        waveClass = 'wave-large';
+                    }
+                    waveText = `${day.wave}`;
+                }
 
                 forecastRows += `
                     <tr class="${windClass}">
@@ -1226,6 +1255,7 @@
                         </td>
                         <td class="${tempClass}">${day.temp}°C</td>
                         <td class="${precipClass}">${day.precipitation}%</td>
+                        ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
                     </tr>
                 `;
             });
@@ -1249,6 +1279,20 @@
 
                 const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
                 const windArrow = getWindArrow(spot.currentConditions.direction);
+                
+                // Current wave conditions
+                let currentWaveClass = '';
+                let currentWaveText = '-';
+                if (spot.currentConditions.wave !== undefined) {
+                    if (spot.currentConditions.wave < 1.0) {
+                        currentWaveClass = 'wave-small';
+                    } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
+                        currentWaveClass = 'wave-moderate';
+                    } else {
+                        currentWaveClass = 'wave-large';
+                    }
+                    currentWaveText = `${spot.currentConditions.wave}`;
+                }
 
                 currentConditionsRow = `
                     <tr class="${windClass}" style="border-top: 2px solid #404040;">
@@ -1265,6 +1309,7 @@
                         </td>
                         <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
                         <td>-</td>
+                        ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
                     </tr>
                 `;
             }
@@ -1297,6 +1342,7 @@
                             <th>Direction</th>
                             <th>Temp</th>
                             <th>Rain</th>
+                            ${hasWaveData ? '<th>Wave</th>' : ''}
                         </tr>
                     </thead>
                     <tbody>
@@ -1407,6 +1453,7 @@
         // Make functions global for onclick handlers
         window.openAIModal = openAIModal;
         window.closeAIModal = closeAIModal;
+        window.retryLoadData = retryLoadData;
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
