@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARUN.SURF</title>
+    <style>
+        :root {
+            /* Dark theme (default) */
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #262626;
+            --text-primary: #e8e8e8;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --border-primary: #262626;
+            --border-secondary: #333333;
+            --accent-blue: #4a9eff;
+            --accent-blue-hover: #2b7bc7;
+            --gradient-start: #00397b;
+            --gradient-end: #1663b0;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --modal-overlay: rgba(0, 0, 0, 0.8);
+        }
+
+        [data-theme="light"] {
+            /* Light theme */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-primary: #e2e8f0;
+            --border-secondary: #cbd5e1;
+            --accent-blue: #0ea5e9;
+            --accent-blue-hover: #0284c7;
+            --gradient-start: #0ea5e9;
+            --gradient-end: #0284c7;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --modal-overlay: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 100;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .theme-toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-toggle-icon {
+            transform: scale(1.1);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            min-width: 360px;
+        }
+
+        .dropdown-button {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 12px;
+        }
+
+        .dropdown-button:hover {
+            background: linear-gradient(145deg, var(--bg-tertiary), var(--border-secondary));
+            border-color: var(--accent-blue);
+        }
+
+        .dropdown-button.open {
+            background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+            border-color: var(--accent-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+        }
+
+        .dropdown-arrow {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-button.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            margin-top: 4px;
+        }
+
+        .dropdown-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .dropdown-item.selected {
+            background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .dropdown-item.selected:hover {
+            background: linear-gradient(145deg, var(--accent-blue), var(--accent-blue-hover));
+        }
+
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+        }
+
+        .spot-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: none;
+            border: 1px solid var(--border-primary);
+            transition: all 0.3s ease;
+        }
+
+        .spot-card:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--border-secondary);
+        }
+
+        .spot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .spot-title {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .spot-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .spot-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .last-updated {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .country-tag {
+            background: var(--bg-tertiary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border: none;
+            font-weight: 500;
+        }
+
+        .external-links {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .external-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: transparent;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border-secondary);
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .external-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--accent-blue);
+        }
+
+        .external-link::after {
+            content: "↗";
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .external-link.location-link::after {
+            content: "⚲";
+            font-size: 0.8rem;
+            opacity: 1;
+        }
+
+        .external-link.webcam-link::after {
+            content: "⊙";
+            font-size: 0.8rem;
+            opacity: 1;
+        }
+
+        .external-link.ai-link {
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .external-link.ai-link:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .external-link.ai-link::after {
+            content: "⟡";
+            font-size: 0.8rem;
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end));
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-content {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        }
+
+        .ai-analysis {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .ai-analysis h3 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .ai-analysis p {
+            margin-bottom: 16px;
+        }
+
+        .ai-analysis ul {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .ai-analysis li {
+            margin-bottom: 8px;
+        }
+
+        .ai-highlight {
+            background: rgba(74, 158, 255, 0.2);
+            color: var(--accent-blue);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .weather-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .weather-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .weather-table th:first-child {
+            text-align: left;
+        }
+
+        .weather-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-primary);
+            transition: none;
+            font-size: 0.875rem;
+        }
+
+        .weather-table td:first-child {
+            text-align: left;
+        }
+
+        .weather-table tr.weak-wind {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .weather-table tr.moderate-wind {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .weather-table tr.strong-wind {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .weather-table tr.extreme-wind {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .wind-arrow {
+            display: inline-block;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .wind-weak {
+            color: var(--text-muted);
+        }
+
+        .wind-moderate {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .wind-strong {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .wind-extreme {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .temp-positive {
+            color: #f97316;
+        }
+
+        .temp-negative {
+            color: #06b6d4;
+        }
+
+        .precipitation {
+            color: #3b82f6;
+        }
+
+        .precipitation-none {
+            color: var(--text-muted);
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            position: relative;
+            animation: pulse-glow 2s ease-in-out infinite;
+            margin-left: 8px;
+        }
+
+        .live-dot::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: #22c55e;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.2;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .spots-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                padding: 0 20px;
+            }
+
+            .dropdown-container {
+                min-width: 100%;
+            }
+
+            .weather-table {
+                font-size: 0.85rem;
+            }
+
+            .weather-table th,
+            .weather-table td {
+                padding: 8px 4px;
+            }
+
+            .modal {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .modal-content {
+                padding: 16px;
+            }
+
+            .theme-toggle {
+                position: static;
+                margin: 0 auto 20px auto;
+            }
+
+            .header {
+                text-align: center;
+            }
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 1px solid var(--border-primary);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-content p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+
+        .footer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .footer-link {
+            font-size: 0.75rem;
+            margin-top: 12px;
+        }
+
+        .footer-link a, .footer-disclaimer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link a:hover, .footer-disclaimer a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </div>
+            <h1>VARUN.SURF</h1>
+            <p>weather forecast and real-time wind conditions dashboard for kitesurfers</p>
+        </div>
+
+        <div class="controls" id="countryFilters">
+            <div class="dropdown-container">
+                <button class="dropdown-button" id="dropdownButton">
+                    <span id="dropdownLabel">🌍 All</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <!-- Dropdown items will be generated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <div class="spots-grid" id="spotsGrid">
+            <!-- Spots will be generated by JavaScript -->
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
+                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v. 0.0.1</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- AI Analysis Modal -->
+    <div class="modal-overlay" id="aiModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>⟡</span>
+                    <span id="modalSpotName">AI Analysis</span>
+                </div>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="ai-analysis" id="aiAnalysisContent">
+                    <!-- AI analysis content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        function getStoredTheme() {
+            return localStorage.getItem('theme') || 'dark';
+        }
+
+        function setStoredTheme(theme) {
+            localStorage.setItem('theme', theme);
+        }
+
+        function updateThemeUI(theme) {
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (theme === 'light') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+                document.documentElement.removeAttribute('data-theme');
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = getStoredTheme();
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setStoredTheme(newTheme);
+            updateThemeUI(newTheme);
+        }
+
+        // Initialize theme
+        function initializeTheme() {
+            const storedTheme = getStoredTheme();
+            updateThemeUI(storedTheme);
+            
+            // Add click listener to theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        }
+
+        // Country configuration - easy to extend
+        const COUNTRY_CONFIG = {
+            'Poland': { flag: '🇵🇱', code: 'PL' },
+            'Austria': { flag: '🇦🇹', code: 'AT' },
+            'Lithuania': { flag: '🇱🇹', code: 'LT' },
+            'Denmark': { flag: '🇩🇰', code: 'DK' },
+            'Spain': { flag: '🇪🇸', code: 'ES' },
+            'Portugal': { flag: '🇵🇹', code: 'PT' },
+            'Italy': { flag: '🇮🇹', code: 'IT' },
+            'France': { flag: '🇫🇷', code: 'FR' },
+            'Greece': { flag: '🇬🇷', code: 'GR' }
+        };
+
+        const weatherData = [
+            {
+                name: "Jastarnia",
+                country: "Poland",
+                windguruUrl: "https://www.windguru.cz/station/327",
+                windfinderUrl: "https://www.windfinder.com/forecast/lagos_portugal",
+                locationUrl: "https://maps.google.com/maps?q=Lagos,Portugal",
+                lastUpdated: "2025-05-26 14:18",
+                forecast: [
+                    { date: "Today", wind: 12, gusts: 16, direction: "NW", temp: 19, precipitation: 0 },
+                    { date: "Tomorrow", wind: 9, gusts: 13, direction: "W", temp: 18, precipitation: 15 },
+                    { date: "Day 3", wind: 14, gusts: 19, direction: "NW", temp: 20, precipitation: 0 },
+                    { date: "Day 4", wind: 6, gusts: 10, direction: "SW", temp: 22, precipitation: 5 },
+                    { date: "Day 5", wind: 11, gusts: 15, direction: "W", temp: 19, precipitation: 0 }
+                ],
+                aiAnalysis: `
+                    <h3>Moderate Conditions - Perfect for Progression</h3>
+                    <p>Lagos is showing <span class="ai-highlight">ideal learning conditions</span> with moderate winds and manageable sea state. Great opportunity for skill development and relaxed sessions.</p>
+                    
+                    <h3>Session Planning</h3>
+                    <ul>
+                        <li><strong>Today & Day 3:</strong> Best sessions (12-14kt) - perfect for intermediate riders</li>
+                        <li><strong>Tomorrow:</strong> Light winds + rain - indoor theory day</li>
+                        <li><strong>Day 4:</strong> Very light (6kt) - SUP or light wind practice</li>
+                    </ul>
+                    
+                    <h3>Spot Recommendations</h3>
+                    <p>The northwest winds are perfect for <span class="ai-highlight">Meia Praia</span> - Lagos' main kitesurfing beach. The long sandy beach provides plenty of space for safe launching and landing. Protected bay conditions mean smaller waves, ideal for freestyle practice.</p>
+                    
+                    <h3>Skills Focus</h3>
+                    <p>These moderate conditions are perfect for working on transitions, jumps, and new tricks. The forgiving wind strength allows for progression without being overpowering. Consider larger kite sizes (12-14m) for optimal performance.</p>
+                `
+            },
+            {
+                name: "Marseille",
+                country: "France",
+                windguruUrl: "https://www.windguru.cz/station/156",
+                windfinderUrl: "https://www.windfinder.com/forecast/marseille",
+                webcamUrl: "https://www.windfinder.com/webcams/c/marseille",
+                locationUrl: "https://maps.google.com/maps?q=Marseille,France",
+                lastUpdated: "2025-05-26 14:31",
+                currentConditions: { wind: 24, gusts: 31, direction: "N", temp: 17 },
+                forecast: [
+                    { date: "Today", wind: 25, gusts: 32, direction: "N", temp: 16, precipitation: 0 },
+                    { date: "Tomorrow", wind: 28, gusts: 35, direction: "N", temp: 15, precipitation: 0 },
+                    { date: "Day 3", wind: 20, gusts: 26, direction: "NW", temp: 17, precipitation: 5 },
+                    { date: "Day 4", wind: 15, gusts: 20, direction: "W", temp: 19, precipitation: 10 },
+                    { date: "Day 5", wind: 10, gusts: 14, direction: "SW", temp: 21, precipitation: 20 }
+                ]   
+            },
+            {
+                name: "Cagliari",
+                country: "Italy",
+                windguruUrl: "https://www.windguru.cz/station/912",
+                windfinderUrl: "https://www.windfinder.com/forecast/cagliari",
+                locationUrl: "https://maps.google.com/maps?q=Cagliari,Italy",
+                lastUpdated: "2025-05-26 14:15",
+                forecast: [
+                    { date: "Today", wind: 13, gusts: 18, direction: "NW", temp: 24, precipitation: 0 },
+                    { date: "Tomorrow", wind: 16, gusts: 21, direction: "N", temp: 22, precipitation: 0 },
+                    { date: "Day 3", wind: 7, gusts: 11, direction: "SW", temp: 26, precipitation: 15 },
+                    { date: "Day 4", wind: 19, gusts: 25, direction: "NW", temp: 23, precipitation: 0 },
+                    { date: "Day 5", wind: 12, gusts: 16, direction: "W", temp: 25, precipitation: 5 }
+                ]
+            },
+            {
+                name: "Mykonos",
+                country: "Greece",
+                windguruUrl: "https://www.windguru.cz/station/493",
+                windfinderUrl: "https://www.windfinder.com/forecast/mykonos",
+                webcamUrl: "https://www.windfinder.com/webcams/c/mykonos",
+                locationUrl: "https://maps.google.com/maps?q=Mykonos,Greece",
+                lastUpdated: "2025-05-26 14:27",
+                currentConditions: { wind: 28, gusts: 36, direction: "N", temp: 19 },
+                forecast: [
+                    { date: "Today", wind: 30, gusts: 38, direction: "N", temp: 20, precipitation: 0 },
+                    { date: "Tomorrow", wind: 26, gusts: 33, direction: "N", temp: 19, precipitation: 0 },
+                    { date: "Day 3", wind: 22, gusts: 28, direction: "NW", temp: 21, precipitation: 0 },
+                    { date: "Day 4", wind: 18, gusts: 24, direction: "NW", temp: 23, precipitation: 5 },
+                    { date: "Day 5", wind: 8, gusts: 12, direction: "SW", temp: 25, precipitation: 10 }
+                ]
+            },
+            {
+                name: "Cádiz",
+                country: "Spain",
+                windguruUrl: "https://www.windguru.cz/station/421",
+                windfinderUrl: "https://www.windfinder.com/forecast/cadiz",
+                locationUrl: "https://maps.google.com/maps?q=Cadiz,Spain",
+                lastUpdated: "2025-05-26 14:20",
+                forecast: [
+                    { date: "Today", wind: 14, gusts: 19, direction: "W", temp: 23, precipitation: 0 },
+                    { date: "Tomorrow", wind: 11, gusts: 15, direction: "SW", temp: 24, precipitation: 10 },
+                    { date: "Day 3", wind: 17, gusts: 22, direction: "W", temp: 22, precipitation: 0 },
+                    { date: "Day 4", wind: 5, gusts: 8, direction: "S", temp: 26, precipitation: 20 },
+                    { date: "Day 5", wind: 20, gusts: 26, direction: "NW", temp: 21, precipitation: 0 }
+                ]
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        // Utility functions
+        function getWindArrow(direction) {
+            const arrows = {
+                'N': '↑', 'NE': '↗', 'E': '→', 'SE': '↘',
+                'S': '↓', 'SW': '↙', 'W': '←', 'NW': '↖'
+            };
+            return arrows[direction] || '•';
+        }
+
+        function getUniqueCountries() {
+            const countries = new Set();
+            weatherData.forEach(spot => countries.add(spot.country));
+            return Array.from(countries).sort();
+        }
+
+        function generateCountryFilters() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const countries = getUniqueCountries();
+            
+            // Clear existing items
+            dropdownMenu.innerHTML = '';
+            
+            // Add "All" option with globe emoji
+            const allItem = document.createElement('div');
+            allItem.className = 'dropdown-item selected';
+            allItem.dataset.country = 'all';
+            allItem.innerHTML = '🌍 All';
+            dropdownMenu.appendChild(allItem);
+            
+            // Add country options dynamically
+            countries.forEach(country => {
+                if (COUNTRY_CONFIG[country]) {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.dataset.country = country;
+                    item.innerHTML = `${COUNTRY_CONFIG[country].flag} ${country}`;
+                    dropdownMenu.appendChild(item);
+                }
+            });
+        }
+
+        function updateDropdownLabel(country) {
+            const dropdownLabel = document.getElementById('dropdownLabel');
+            if (country === 'all') {
+                dropdownLabel.innerHTML = '🌍 All';
+            } else if (COUNTRY_CONFIG[country]) {
+                dropdownLabel.innerHTML = `${COUNTRY_CONFIG[country].flag} ${country}`;
+            }
+        }
+
+        function toggleDropdown() {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            const isOpen = dropdownMenu.classList.contains('open');
+            
+            if (isOpen) {
+                dropdownButton.classList.remove('open');
+                dropdownMenu.classList.remove('open');
+            } else {
+                dropdownButton.classList.add('open');
+                dropdownMenu.classList.add('open');
+            }
+        }
+
+        function closeDropdown() {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            dropdownButton.classList.remove('open');
+            dropdownMenu.classList.remove('open');
+        }
+
+        function openAIModal(spotName) {
+            const spot = weatherData.find(s => s.name === spotName);
+            if (!spot || !spot.aiAnalysis) return;
+            
+            const modal = document.getElementById('aiModal');
+            const modalSpotName = document.getElementById('modalSpotName');
+            const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+            
+            modalSpotName.textContent = `AI Analysis - ${spotName}`;
+            aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
+            modal.classList.add('active');
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAIModal() {
+            const modal = document.getElementById('aiModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function createSpotCard(spot) {
+            const card = document.createElement('div');
+            card.className = 'spot-card';
+            card.dataset.country = spot.country;
+
+            let tableRows = '';
+            spot.forecast.forEach(day => {
+                let rowClass, windClass;
+
+                if (day.wind < 12) {
+                    rowClass = 'weak-wind';
+                    windClass = 'wind-weak';
+                } else if (day.wind >= 12 && day.wind < 15) {
+                    rowClass = 'moderate-wind';
+                    windClass = 'wind-moderate';
+                } else if (day.wind >= 15 && day.wind <= 22) {
+                    rowClass = 'strong-wind';
+                    windClass = 'wind-strong';
+                } else {
+                    rowClass = 'extreme-wind';
+                    windClass = 'wind-extreme';
+                }
+
+                const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const arrow = getWindArrow(day.direction);
+                const precipitationClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+
+                tableRows += `
+                    <tr class="${rowClass}">
+                        <td><strong>${day.date}</strong></td>
+                        <td class="${windClass}">${day.wind} kts</td>
+                        <td class="${windClass}">${day.gusts} kts</td>
+                        <td class="${windClass}">
+                            <span class="wind-arrow">${arrow}</span> ${day.direction}
+                        </td>
+                        <td class="${tempClass}">${day.temp}°C</td>
+                        <td class="${precipitationClass}">${day.precipitation}%</td>
+                    </tr>
+                `;
+            });
+
+            let currentConditionsRow = '';
+            if (spot.currentConditions) {
+                let currentRowClass, currentWindClass;
+
+                if (spot.currentConditions.wind < 12) {
+                    currentRowClass = 'weak-wind';
+                    currentWindClass = 'wind-weak';
+                } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
+                    currentRowClass = 'moderate-wind';
+                    currentWindClass = 'wind-moderate';
+                } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
+                    currentRowClass = 'strong-wind';
+                    currentWindClass = 'wind-strong';
+                } else {
+                    currentRowClass = 'extreme-wind';
+                    currentWindClass = 'wind-extreme';
+                }
+
+                const currentTempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const currentArrow = getWindArrow(spot.currentConditions.direction);
+
+                currentConditionsRow = `
+                    <tr class="${currentRowClass}" style="border-top: 2px solid var(--border-secondary);">
+                        <td>
+                            <div class="live-indicator">
+                                <strong>NOW</strong>
+                                <div class="live-dot"></div>
+                            </div>
+                        </td>
+                        <td class="${currentWindClass}">${spot.currentConditions.wind} kts</td>
+                        <td class="${currentWindClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${currentWindClass}">
+                            <span class="wind-arrow">${currentArrow}</span> ${spot.currentConditions.direction}
+                        </td>
+                        <td class="${currentTempClass}">${spot.currentConditions.temp}°C</td>
+                        <td>-</td>
+                    </tr>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="spot-header">
+                    <div class="spot-title">
+                        <div class="spot-name">${spot.name}</div>
+                    </div>
+                    <div class="spot-meta">
+                        <div class="country-tag">${spot.country}</div>
+                        <div class="last-updated">${spot.lastUpdated}</div>
+                    </div>
+                </div>
+                <div class="external-links">
+                    <a href="${spot.windguruUrl}" target="_blank" class="external-link">Windguru</a>
+                    <a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>
+                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">Webcam</a>` : ''}
+                    <a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>
+                    ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI Analysis</span>` : ''}
+                </div>
+                <table class="weather-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Wind</th>
+                            <th>Gusts</th>
+                            <th>Direction</th>
+                            <th>Temp</th>
+                            <th>Rain</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                        ${currentConditionsRow}
+                    </tbody>
+                </table>
+            `;
+
+            return card;
+        }
+
+        function renderSpots(filterCountry = 'all') {
+            const grid = document.getElementById('spotsGrid');
+            grid.innerHTML = '';
+
+            const filteredData = filterCountry === 'all'
+                ? weatherData
+                : weatherData.filter(spot => spot.country === filterCountry);
+
+            filteredData.forEach(spot => {
+                grid.appendChild(createSpotCard(spot));
+            });
+        }
+
+        function setupFilters() {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+
+            // Toggle dropdown on button click
+            dropdownButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+
+            // Handle dropdown item selection
+            dropdownMenu.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dropdown-item')) {
+                    const selectedCountry = e.target.dataset.country;
+                    
+                    // Update selected state
+                    dropdownMenu.querySelectorAll('.dropdown-item').forEach(item => 
+                        item.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    
+                    // Update label and filter
+                    updateDropdownLabel(selectedCountry);
+                    currentFilter = selectedCountry;
+                    renderSpots(currentFilter);
+                    
+                    // Close dropdown
+                    closeDropdown();
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown-container')) {
+                    closeDropdown();
+                }
+            });
+
+            // Close dropdown on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+        }
+
+        function setupModal() {
+            const modal = document.getElementById('aiModal');
+            const modalClose = document.getElementById('modalClose');
+            
+            modalClose.addEventListener('click', closeAIModal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeAIModal();
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeAIModal();
+                }
+            });
+        }
+
+        // Make functions globally available
+        window.openAIModal = openAIModal;
+        window.closeAIModal = closeAIModal;
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            generateCountryFilters();
+            renderSpots();
+            setupFilters();
+            setupModal();
+        });
+    </script>
+</body>
+</html>
