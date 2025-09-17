@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>VARUN.SURF</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='ocean' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%231e40af;stop-opacity:1' /%3e%3cstop offset='50%25' style='stop-color:%234a9eff;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%2306b6d4;stop-opacity:1' /%3e%3c/linearGradient%3e%3clinearGradient id='wave' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.9' /%3e%3cstop offset='100%25' style='stop-color:%23f0f9ff;stop-opacity:0.7' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23ocean)'/%3e%3cpath d='M0 60 Q15 45 30 60 T60 55 T90 60 T120 55 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.8'/%3e%3cpath d='M0 70 Q20 55 40 70 T80 65 T120 70 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.6'/%3e%3cpath d='M0 80 Q25 65 50 80 T100 75 T150 80 L150 100 L0 100 Z' fill='url(%23wave)' opacity='0.4'/%3e%3ccircle cx='75' cy='25' r='8' fill='%23fbbf24' opacity='0.9'/%3e%3cpath d='M70 30 Q75 35 80 30' fill='none' stroke='%23fbbf24' stroke-width='1' opacity='0.6'/%3e%3cpath d='M10 40 Q15 35 20 40 Q25 45 30 40' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3cpath d='M40 35 Q45 30 50 35 Q55 40 60 35' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3c/svg%3e">
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='ocean' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%231e40af;stop-opacity:1' /%3e%3cstop offset='50%25' style='stop-color:%234a9eff;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%2306b6d4;stop-opacity:1' /%3e%3c/linearGradient%3e%3clinearGradient id='wave' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.9' /%3e%3cstop offset='100%25' style='stop-color:%23f0f9ff;stop-opacity:0.7' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23ocean)'/%3e%3cpath d='M0 60 Q15 45 30 60 T60 55 T90 60 T120 55 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.8'/%3e%3cpath d='M0 70 Q20 55 40 70 T80 65 T120 70 L120 100 L0 100 Z' fill='url(%23wave)' opacity='0.6'/%3e%3cpath d='M0 80 Q25 65 50 80 T100 75 T150 80 L150 100 L0 100 Z' fill='url(%23wave)' opacity='0.4'/%3e%3ccircle cx='75' cy='25' r='8' fill='%23fbbf24' opacity='0.9'/%3e%3cpath d='M70 30 Q75 35 80 30' fill='none' stroke='%23fbbf24' stroke-width='1' opacity='0.6'/%3e%3cpath d='M10 40 Q15 35 20 40 Q25 45 30 40' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3cpath d='M40 35 Q45 30 50 35 Q55 40 60 35' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.5'/%3e%3c/svg%3e">
     <style>
         :root {
             /* Dark theme variables */
@@ -23,7 +24,7 @@
             --gradient-button-hover: linear-gradient(145deg, #2c2c2c, #3d3d3d);
             --gradient-active: linear-gradient(145deg, #00397b, #1663b0);
             --gradient-header: linear-gradient(145deg, #0854ab, #216ebb);
-            --shadow-card: 0 8px 32px rgba(0,0,0,.6);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, .6);
             --error-bg: linear-gradient(145deg, #4b0404, #550303);
             --error-border: #840808;
             --error-text: #fca5a5;
@@ -49,7 +50,7 @@
             --gradient-button-hover: linear-gradient(145deg, #e9ecef, #dee2e6);
             --gradient-active: linear-gradient(145deg, #0d6efd, #0a58ca);
             --gradient-header: linear-gradient(145deg, #0d6efd, #0a58ca);
-            --shadow-card: 0 8px 32px rgba(0,0,0,.1);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, .1);
             --error-bg: linear-gradient(145deg, #f8d7da, #f5c6cb);
             --error-border: #f1aeb5;
             --error-text: #721c24;
@@ -198,7 +199,7 @@
             background: var(--gradient-active);
             border-color: var(--accent-primary);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(74,158,255,.4);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, .4);
         }
 
         .dropdown-arrow {
@@ -294,7 +295,7 @@
             padding: 24px;
             margin: 20px 0;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(220,38,38,.2);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, .2);
         }
 
         .error-icon {
@@ -343,8 +344,12 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-text {
@@ -511,7 +516,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,.8);
+            background: rgba(0, 0, 0, .8);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
@@ -532,7 +537,7 @@
             max-width: 600px;
             max-height: 80vh;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
             animation: modalSlideIn .3s ease;
         }
 
@@ -566,7 +571,7 @@
         }
 
         .modal-close:hover {
-            background: rgba(255,255,255,.1);
+            background: rgba(255, 255, 255, .1);
         }
 
         .modal-content {
@@ -610,7 +615,7 @@
         }
 
         .ai-highlight {
-            background: rgba(74,158,255,.1);
+            background: rgba(74, 158, 255, .1);
             color: #4a9eff;
             padding: 2px 6px;
             border-radius: 4px;
@@ -673,8 +678,12 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes modalSlideIn {
@@ -811,17 +820,17 @@
         }
 
         .weather-table tr.moderate-wind {
-            background: rgba(34,197,94,.1);
+            background: rgba(34, 197, 94, .1);
             color: var(--success-color);
         }
 
         .weather-table tr.strong-wind {
-            background: rgba(245,158,11,.1);
+            background: rgba(245, 158, 11, .1);
             color: var(--warning-color);
         }
 
         .weather-table tr.extreme-wind {
-            background: rgba(239,68,68,.1);
+            background: rgba(239, 68, 68, .1);
             color: var(--danger-color);
         }
 
@@ -1013,170 +1022,176 @@
     </style>
 </head>
 <body>
-    <!-- FIXED HEADER -->
-    <div class="fixed-header">
-        <div class="header-content">
-            <div class="header-controls">
-                <button class="theme-toggle" id="themeToggle">
-                    <span class="theme-icon" id="themeIcon">🌙</span>
-                    <span id="themeText">Dark</span>
+<!-- FIXED HEADER -->
+<div class="fixed-header">
+    <div class="header-content">
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+            <div class="dropdown-container">
+                <button class="dropdown-button" id="dropdownButton">
+                    <span id="selectedCountry">🌎 All</span>
+                    <span class="dropdown-arrow">▼</span>
                 </button>
-                <div class="dropdown-container">
-                    <button class="dropdown-button" id="dropdownButton">
-                        <span id="selectedCountry">🌎 All</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <!-- Dropdown options will be populated dynamically -->
-                    </div>
-                </div>
-            </div>
-            <h1 class="header-title">VARUN.SURF</h1>
-        </div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <div class="container">
-            <div class="spots-grid" id="spotsGrid">
-                <!-- Spots will be generated by JavaScript -->
-            </div>
-        </div>
-
-        <footer class="footer">
-            <div class="footer-content">
-                <p>weather forecast and real-time wind conditions dashboard for kitesurfers</p>
-                <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank" class="footer-external-link">windguru.cz</a>, <a href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
-                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v. 0.0.1</p>
-            </div>
-        </footer>
-    </div>
-
-    <!-- Modal for AI Analysis -->
-    <div class="modal-overlay" id="aiModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <span>⟡</span>
-                    <span id="modalSpotName">AI Analysis</span>
-                </div>
-                <button class="modal-close" id="modalClose">&times;</button>
-            </div>
-            <div class="modal-content">
-                <div class="ai-analysis" id="aiAnalysisContent">
-                    <!-- AI analysis content will be inserted here -->
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <!-- Dropdown options will be populated dynamically -->
                 </div>
             </div>
         </div>
+        <h1 class="header-title">VARUN.SURF</h1>
     </div>
+</div>
 
-    <!-- Modal for Spot Info -->
-    <div class="modal-overlay" id="infoModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <span>ℹ</span>
-                    <span id="infoModalSpotName">Spot Information</span>
-                </div>
-                <button class="modal-close" id="infoModalClose">&times;</button>
-            </div>
-            <div class="modal-content">
-                <div class="spot-info" id="spotInfoContent">
-                    <!-- Spot information content will be inserted here -->
-                </div>
-            </div>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container">
+        <div class="spots-grid" id="spotsGrid">
+            <!-- Spots will be generated by JavaScript -->
         </div>
     </div>
 
-    <script>
-        let globalWeatherData = [];
-        let availableCountries = new Set();
+    <footer class="footer">
+        <div class="footer-content">
+            <p>weather forecast and real-time wind conditions dashboard for kitesurfers</p>
+            <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank"
+                                                                     class="footer-external-link">windguru.cz</a>, <a
+                    href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a
+                    href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a
+                    href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
+            <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a
+                    href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v.
+                0.0.1</p>
+        </div>
+    </footer>
+</div>
 
-        // Configuration
-        const API_ENDPOINT = 'http://localhost:8001/mock-data.json';
+<!-- Modal for AI Analysis -->
+<div class="modal-overlay" id="aiModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>⟡</span>
+                <span id="modalSpotName">AI Analysis</span>
+            </div>
+            <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="ai-analysis" id="aiAnalysisContent">
+                <!-- AI analysis content will be inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Theme functionality
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-            
-            function updateTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                if (theme === 'light') {
-                    themeIcon.textContent = '☀️';
-                    themeText.textContent = 'Light';
-                } else {
-                    themeIcon.textContent = '🌙';
-                    themeText.textContent = 'Dark';
-                }
-                localStorage.setItem('theme', theme);
+<!-- Modal for Spot Info -->
+<div class="modal-overlay" id="infoModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>ℹ</span>
+                <span id="infoModalSpotName">Spot Information</span>
+            </div>
+            <button class="modal-close" id="infoModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="spot-info" id="spotInfoContent">
+                <!-- Spot information content will be inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let globalWeatherData = [];
+    let availableCountries = new Set();
+
+    // Configuration
+    const API_ENDPOINT = 'http://localhost:8001/mock-data.json';
+
+    // Theme functionality
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+
+        function updateTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'light') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
             }
-
-            // Set initial theme
-            updateTheme(savedTheme);
-
-            // Theme toggle event
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                updateTheme(newTheme);
-            });
+            localStorage.setItem('theme', theme);
         }
 
-        async function fetchWeatherData() {
-            try {
-                const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!Array.isArray(data)) {
-                    throw new Error('Invalid data format: Expected array of spots');
-                }
-                
-                return data;
-            } catch (error) {
-                console.error('Error fetching weather data:', error);
-                throw error;
-            }
-        }
+        // Set initial theme
+        updateTheme(savedTheme);
 
-        function showLoadingMessage() {
-            const spotsGrid = document.getElementById('spotsGrid');
-            spotsGrid.innerHTML = `
+        // Theme toggle event
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            updateTheme(newTheme);
+        });
+    }
+
+    async function fetchWeatherData() {
+        try {
+            const response = await fetch(API_ENDPOINT, {cache: 'no-store'});
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!Array.isArray(data)) {
+                throw new Error('Invalid data format: Expected array of spots');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            throw error;
+        }
+    }
+
+    function showLoadingMessage() {
+        const spotsGrid = document.getElementById('spotsGrid');
+        spotsGrid.innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
                     <span class="loading-text">Loading weather data...</span>
                 </div>
             `;
+    }
+
+    function showErrorMessage(error) {
+        const spotsGrid = document.getElementById('spotsGrid');
+
+        let errorTitle = 'Failed to Load Weather Data';
+        let errorMessage = 'Unable to fetch the latest weather information from the server.';
+
+        if (error.message.includes('HTTP Error: 404')) {
+            errorTitle = 'Data Source Not Found';
+            errorMessage = 'The weather data endpoint is not available. Please check if the server is running on http://localhost:8001.';
+        } else if (error.message.includes('HTTP Error: 500')) {
+            errorTitle = 'Server Error';
+            errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorTitle = 'Connection Error';
+            errorMessage = 'Unable to connect to the weather service at http://localhost:8001. Please check your internet connection and ensure the server is running.';
+        } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
+            errorTitle = 'Data Format Error';
+            errorMessage = 'The weather data received is corrupted or in an unexpected format.';
         }
 
-        function showErrorMessage(error) {
-            const spotsGrid = document.getElementById('spotsGrid');
-            
-            let errorTitle = 'Failed to Load Weather Data';
-            let errorMessage = 'Unable to fetch the latest weather information from the server.';
-            
-            if (error.message.includes('HTTP Error: 404')) {
-                errorTitle = 'Data Source Not Found';
-                errorMessage = 'The weather data endpoint is not available. Please check if the server is running on http://localhost:8001.';
-            } else if (error.message.includes('HTTP Error: 500')) {
-                errorTitle = 'Server Error';
-                errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
-            } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                errorTitle = 'Connection Error';
-                errorMessage = 'Unable to connect to the weather service at http://localhost:8001. Please check your internet connection and ensure the server is running.';
-            } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
-                errorTitle = 'Data Format Error';
-                errorMessage = 'The weather data received is corrupted or in an unexpected format.';
-            }
-            
-            spotsGrid.innerHTML = `
+        spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⚠️</span>
                     <div class="error-title">${errorTitle}</div>
@@ -1187,98 +1202,98 @@
                     </div>
                 </div>
             `;
-        }
+    }
 
-        function getWindArrow(direction) {
-            const arrows = {
-                'N': '↓',
-                'NE': '↙',
-                'E': '←',
-                'SE': '↖',
-                'S': '↑',
-                'SW': '↗',
-                'W': '→',
-                'NW': '↘'
-            };
-            return arrows[direction] || '•';
-        }
+    function getWindArrow(direction) {
+        const arrows = {
+            'N': '↓',
+            'NE': '↙',
+            'E': '←',
+            'SE': '↖',
+            'S': '↑',
+            'SW': '↗',
+            'W': '→',
+            'NW': '↘'
+        };
+        return arrows[direction] || '•';
+    }
 
-        function populateCountryDropdown(data) {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            availableCountries.clear();
-            
-            // Collect all unique countries from the data
-            data.forEach(spot => {
-                if (spot.country) {
-                    availableCountries.add(spot.country);
-                }
-            });
-            
-            // Sort countries alphabetically
-            const sortedCountries = Array.from(availableCountries).sort();
-            
-            // Build dropdown HTML
-            let dropdownHTML = '<div class="dropdown-option selected" data-country="all">🌎 All</div>';
-            
-            sortedCountries.forEach(country => {
-                const countryFlag = getCountryFlag(country);
-                dropdownHTML += `<div class="dropdown-option" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
-            });
-            
-            dropdownMenu.innerHTML = dropdownHTML;
-            
-            // Re-attach event listeners for the new dropdown options
-            setupDropdownEvents();
-        }
+    function populateCountryDropdown(data) {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        availableCountries.clear();
 
-        function getCountryFlag(country) {
-            const flags = {
-                'Poland': '🇵🇱',
-                'Austria': '🇦🇹',
-                'Lithuania': '🇱🇹',
-                'Denmark': '🇩🇰',
-                'Spain': '🇪🇸',
-                'Portugal': '🇵🇹',
-                'Italy': '🇮🇹',
-                'Greece': '🇬🇷',
-                'France': '🇫🇷',
-                'Germany': '🇩🇪',
-                'Netherlands': '🇳🇱',
-                'Croatia': '🇭🇷',
-                'Turkey': '🇹🇷',
-                'Morocco': '🇲🇦',
-                'Egypt': '🇪🇬'
-            };
-            return flags[country] || '🏴';
-        }
+        // Collect all unique countries from the data
+        data.forEach(spot => {
+            if (spot.country) {
+                availableCountries.add(spot.country);
+            }
+        });
 
-        function openAIModal(spotName) {
-            const spot = globalWeatherData.find(spot => spot.name === spotName);
-            if (!spot || !spot.aiAnalysis) return;
+        // Sort countries alphabetically
+        const sortedCountries = Array.from(availableCountries).sort();
 
-            const modal = document.getElementById('aiModal');
-            const modalSpotName = document.getElementById('modalSpotName');
-            const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+        // Build dropdown HTML
+        let dropdownHTML = '<div class="dropdown-option selected" data-country="all">🌎 All</div>';
 
-            modalSpotName.textContent = `AI Analysis - ${spotName}`;
-            aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
-            
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+        sortedCountries.forEach(country => {
+            const countryFlag = getCountryFlag(country);
+            dropdownHTML += `<div class="dropdown-option" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
+        });
 
-        function openInfoModal(spotName) {
-            const spot = globalWeatherData.find(spot => spot.name === spotName);
-            if (!spot || !spot.spotInfo) return;
+        dropdownMenu.innerHTML = dropdownHTML;
 
-            const modal = document.getElementById('infoModal');
-            const modalSpotName = document.getElementById('infoModalSpotName');
-            const spotInfoContent = document.getElementById('spotInfoContent');
+        // Re-attach event listeners for the new dropdown options
+        setupDropdownEvents();
+    }
 
-            modalSpotName.textContent = `${spotName}`;
-            
-            const info = spot.spotInfo;
-            spotInfoContent.innerHTML = `
+    function getCountryFlag(country) {
+        const flags = {
+            'Poland': '🇵🇱',
+            'Austria': '🇦🇹',
+            'Lithuania': '🇱🇹',
+            'Denmark': '🇩🇰',
+            'Spain': '🇪🇸',
+            'Portugal': '🇵🇹',
+            'Italy': '🇮🇹',
+            'Greece': '🇬🇷',
+            'France': '🇫🇷',
+            'Germany': '🇩🇪',
+            'Netherlands': '🇳🇱',
+            'Croatia': '🇭🇷',
+            'Turkey': '🇹🇷',
+            'Morocco': '🇲🇦',
+            'Egypt': '🇪🇬'
+        };
+        return flags[country] || '🏴';
+    }
+
+    function openAIModal(spotName) {
+        const spot = globalWeatherData.find(spot => spot.name === spotName);
+        if (!spot || !spot.aiAnalysis) return;
+
+        const modal = document.getElementById('aiModal');
+        const modalSpotName = document.getElementById('modalSpotName');
+        const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+
+        modalSpotName.textContent = `AI Analysis - ${spotName}`;
+        aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openInfoModal(spotName) {
+        const spot = globalWeatherData.find(spot => spot.name === spotName);
+        if (!spot || !spot.spotInfo) return;
+
+        const modal = document.getElementById('infoModal');
+        const modalSpotName = document.getElementById('infoModalSpotName');
+        const spotInfoContent = document.getElementById('spotInfoContent');
+
+        modalSpotName.textContent = `${spotName}`;
+
+        const info = spot.spotInfo;
+        spotInfoContent.innerHTML = `
                 <h3>🏄 Overview</h3>
                 <p>${info.description}</p>
                 
@@ -1312,69 +1327,69 @@
                 <h3>📅 Season</h3>
                 <p>${info.season}</p>
             `;
-            
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
 
-        function closeAIModal() {
-            const modal = document.getElementById('aiModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 
-        function closeInfoModal() {
-            const modal = document.getElementById('infoModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
+    function closeAIModal() {
+        const modal = document.getElementById('aiModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
 
-        function createSpotCard(spot) {
-            const card = document.createElement('div');
-            card.className = 'spot-card';
-            card.dataset.country = spot.country;
+    function closeInfoModal() {
+        const modal = document.getElementById('infoModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
 
-            // Check if spot has wave data
-            const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) || 
-                               (spot.currentConditions && spot.currentConditions.wave !== undefined);
+    function createSpotCard(spot) {
+        const card = document.createElement('div');
+        card.className = 'spot-card';
+        card.dataset.country = spot.country;
 
-            let forecastRows = '';
-            if (spot.forecast && Array.isArray(spot.forecast)) {
-                spot.forecast.forEach(day => {
-                    let windClass, windTextClass;
-                    if (day.wind < 12) {
-                        windClass = 'weak-wind';
-                        windTextClass = 'wind-weak';
-                    } else if (day.wind >= 12 && day.wind < 15) {
-                        windClass = 'moderate-wind';
-                        windTextClass = 'wind-moderate';
-                    } else if (day.wind >= 15 && day.wind <= 22) {
-                        windClass = 'strong-wind';
-                        windTextClass = 'wind-strong';
+        // Check if spot has wave data
+        const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
+            (spot.currentConditions && spot.currentConditions.wave !== undefined);
+
+        let forecastRows = '';
+        if (spot.forecast && Array.isArray(spot.forecast)) {
+            spot.forecast.forEach(day => {
+                let windClass, windTextClass;
+                if (day.wind < 12) {
+                    windClass = 'weak-wind';
+                    windTextClass = 'wind-weak';
+                } else if (day.wind >= 12 && day.wind < 15) {
+                    windClass = 'moderate-wind';
+                    windTextClass = 'wind-moderate';
+                } else if (day.wind >= 15 && day.wind <= 22) {
+                    windClass = 'strong-wind';
+                    windTextClass = 'wind-strong';
+                } else {
+                    windClass = 'extreme-wind';
+                    windTextClass = 'wind-extreme';
+                }
+
+                const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const windArrow = getWindArrow(day.direction);
+                const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+
+                // Wave classes
+                let waveClass = '';
+                let waveText = '-';
+                if (day.wave !== undefined) {
+                    if (day.wave < 1.0) {
+                        waveClass = 'wave-small';
+                    } else if (day.wave >= 1.0 && day.wave < 2.0) {
+                        waveClass = 'wave-moderate';
                     } else {
-                        windClass = 'extreme-wind';
-                        windTextClass = 'wind-extreme';
+                        waveClass = 'wave-large';
                     }
+                    waveText = `${day.wave}`;
+                }
 
-                    const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                    const windArrow = getWindArrow(day.direction);
-                    const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
-                    
-                    // Wave classes
-                    let waveClass = '';
-                    let waveText = '-';
-                    if (day.wave !== undefined) {
-                        if (day.wave < 1.0) {
-                            waveClass = 'wave-small';
-                        } else if (day.wave >= 1.0 && day.wave < 2.0) {
-                            waveClass = 'wave-moderate';
-                        } else {
-                            waveClass = 'wave-large';
-                        }
-                        waveText = `${day.wave}`;
-                    }
-
-                    forecastRows += `
+                forecastRows += `
                         <tr class="${windClass}">
                             <td><strong>${day.date}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
@@ -1387,44 +1402,44 @@
                             ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
                         </tr>
                     `;
-                });
+            });
+        }
+
+        let currentConditionsRow = '';
+        if (spot.currentConditions) {
+            let windClass, windTextClass;
+            if (spot.currentConditions.wind < 12) {
+                windClass = 'weak-wind';
+                windTextClass = 'wind-weak';
+            } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
+                windClass = 'moderate-wind';
+                windTextClass = 'wind-moderate';
+            } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
+                windClass = 'strong-wind';
+                windTextClass = 'wind-strong';
+            } else {
+                windClass = 'extreme-wind';
+                windTextClass = 'wind-extreme';
             }
 
-            let currentConditionsRow = '';
-            if (spot.currentConditions) {
-                let windClass, windTextClass;
-                if (spot.currentConditions.wind < 12) {
-                    windClass = 'weak-wind';
-                    windTextClass = 'wind-weak';
-                } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
-                    windClass = 'moderate-wind';
-                    windTextClass = 'wind-moderate';
-                } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
-                    windClass = 'strong-wind';
-                    windTextClass = 'wind-strong';
+            const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
+            const windArrow = getWindArrow(spot.currentConditions.direction);
+
+            // Current wave conditions
+            let currentWaveClass = '';
+            let currentWaveText = '-';
+            if (spot.currentConditions.wave !== undefined) {
+                if (spot.currentConditions.wave < 1.0) {
+                    currentWaveClass = 'wave-small';
+                } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
+                    currentWaveClass = 'wave-moderate';
                 } else {
-                    windClass = 'extreme-wind';
-                    windTextClass = 'wind-extreme';
+                    currentWaveClass = 'wave-large';
                 }
+                currentWaveText = `${spot.currentConditions.wave}`;
+            }
 
-                const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                const windArrow = getWindArrow(spot.currentConditions.direction);
-                
-                // Current wave conditions
-                let currentWaveClass = '';
-                let currentWaveText = '-';
-                if (spot.currentConditions.wave !== undefined) {
-                    if (spot.currentConditions.wave < 1.0) {
-                        currentWaveClass = 'wave-small';
-                    } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
-                        currentWaveClass = 'wave-moderate';
-                    } else {
-                        currentWaveClass = 'wave-large';
-                    }
-                    currentWaveText = `${spot.currentConditions.wave}`;
-                }
-
-                currentConditionsRow = `
+            currentConditionsRow = `
                     <tr class="${windClass}" style="border-top: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
@@ -1442,9 +1457,9 @@
                         ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
                     </tr>
                 `;
-            }
+        }
 
-            card.innerHTML = `
+        card.innerHTML = `
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
@@ -1482,29 +1497,29 @@
                 </table>
             `;
 
-            return card;
-        }
+        return card;
+    }
 
-        let currentFilter = 'all';
+    let currentFilter = 'all';
 
-        async function renderSpots(filter = 'all') {
-            currentFilter = filter;
-            const spotsGrid = document.getElementById('spotsGrid');
-            
-            showLoadingMessage();
-            
-            try {
-                const data = await fetchWeatherData();
-                globalWeatherData = data;
-                
-                // Populate country dropdown with available countries
-                populateCountryDropdown(data);
-                
-                const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
-                
-                spotsGrid.innerHTML = '';
-                if (filteredSpots.length === 0) {
-                    spotsGrid.innerHTML = `
+    async function renderSpots(filter = 'all') {
+        currentFilter = filter;
+        const spotsGrid = document.getElementById('spotsGrid');
+
+        showLoadingMessage();
+
+        try {
+            const data = await fetchWeatherData();
+            globalWeatherData = data;
+
+            // Populate country dropdown with available countries
+            populateCountryDropdown(data);
+
+            const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
+
+            spotsGrid.innerHTML = '';
+            if (filteredSpots.length === 0) {
+                spotsGrid.innerHTML = `
                         <div class="error-message">
                             <span class="error-icon">🔍</span>
                             <div class="error-title">No Spots Found</div>
@@ -1514,124 +1529,124 @@
                             </div>
                         </div>
                     `;
-                } else {
-                    filteredSpots.forEach(spot => {
-                        spotsGrid.appendChild(createSpotCard(spot));
-                    });
-                }
-            } catch (error) {
-                console.error('Failed to load weather:', error.message);
-                showErrorMessage(error);
+            } else {
+                filteredSpots.forEach(spot => {
+                    spotsGrid.appendChild(createSpotCard(spot));
+                });
             }
+        } catch (error) {
+            console.error('Failed to load weather:', error.message);
+            showErrorMessage(error);
         }
+    }
 
-        function setupDropdownEvents() {
-            const dropdownOptions = document.querySelectorAll('.dropdown-option');
-            const selectedCountry = document.getElementById('selectedCountry');
-            
-            dropdownOptions.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    
-                    dropdownOptions.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    
-                    selectedCountry.textContent = option.textContent;
-                    renderSpots(option.dataset.country);
-                    closeDropdown();
-                    
-                    // Scroll to top smoothly after country selection
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+    function setupDropdownEvents() {
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+        const selectedCountry = document.getElementById('selectedCountry');
+
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                dropdownOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                selectedCountry.textContent = option.textContent;
+                renderSpots(option.dataset.country);
+                closeDropdown();
+
+                // Scroll to top smoothly after country selection
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
                 });
             });
+        });
+    }
+
+    function setupDropdown() {
+        const dropdownButton = document.getElementById('dropdownButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        function closeDropdown() {
+            dropdownButton.classList.remove('open', 'active');
+            dropdownMenu.classList.remove('open');
         }
 
-        function setupDropdown() {
-            const dropdownButton = document.getElementById('dropdownButton');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-
-            function closeDropdown() {
-                dropdownButton.classList.remove('open', 'active');
-                dropdownMenu.classList.remove('open');
+        dropdownButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (dropdownMenu.classList.contains('open')) {
+                closeDropdown();
+            } else {
+                dropdownButton.classList.add('open', 'active');
+                dropdownMenu.classList.add('open');
             }
+        });
 
-            dropdownButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (dropdownMenu.classList.contains('open')) {
-                    closeDropdown();
-                } else {
-                    dropdownButton.classList.add('open', 'active');
-                    dropdownMenu.classList.add('open');
-                }
-            });
+        document.addEventListener('click', (e) => {
+            if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                closeDropdown();
+            }
+        });
 
-            document.addEventListener('click', (e) => {
-                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    closeDropdown();
-                }
-            });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
+                closeDropdown();
+                dropdownButton.focus();
+            }
+        });
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
-                    closeDropdown();
-                    dropdownButton.focus();
-                }
-            });
+        // Make closeDropdown available globally
+        window.closeDropdown = closeDropdown;
+    }
 
-            // Make closeDropdown available globally
-            window.closeDropdown = closeDropdown;
-        }
+    function setupModals() {
+        const aiModal = document.getElementById('aiModal');
+        const aiCloseButton = document.getElementById('modalClose');
+        const infoModal = document.getElementById('infoModal');
+        const infoCloseButton = document.getElementById('infoModalClose');
 
-        function setupModals() {
-            const aiModal = document.getElementById('aiModal');
-            const aiCloseButton = document.getElementById('modalClose');
-            const infoModal = document.getElementById('infoModal');
-            const infoCloseButton = document.getElementById('infoModalClose');
+        // AI Modal events
+        aiCloseButton.addEventListener('click', closeAIModal);
+        aiModal.addEventListener('click', (e) => {
+            if (e.target === aiModal) {
+                closeAIModal();
+            }
+        });
 
-            // AI Modal events
-            aiCloseButton.addEventListener('click', closeAIModal);
-            aiModal.addEventListener('click', (e) => {
-                if (e.target === aiModal) {
+        // Info Modal events
+        infoCloseButton.addEventListener('click', closeInfoModal);
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                closeInfoModal();
+            }
+        });
+
+        // Escape key for both modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (aiModal.classList.contains('active')) {
                     closeAIModal();
                 }
-            });
-
-            // Info Modal events
-            infoCloseButton.addEventListener('click', closeInfoModal);
-            infoModal.addEventListener('click', (e) => {
-                if (e.target === infoModal) {
+                if (infoModal.classList.contains('active')) {
                     closeInfoModal();
                 }
-            });
-
-            // Escape key for both modals
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (aiModal.classList.contains('active')) {
-                        closeAIModal();
-                    }
-                    if (infoModal.classList.contains('active')) {
-                        closeInfoModal();
-                    }
-                }
-            });
-        }
-
-        // Make functions global for onclick handlers
-        window.openAIModal = openAIModal;
-        window.closeAIModal = closeAIModal;
-        window.openInfoModal = openInfoModal;
-        window.closeInfoModal = closeInfoModal;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            renderSpots();
-            setupDropdown();
-            setupModals();
+            }
         });
-    </script>
+    }
+
+    // Make functions global for onclick handlers
+    window.openAIModal = openAIModal;
+    window.closeAIModal = closeAIModal;
+    window.openInfoModal = openInfoModal;
+    window.closeInfoModal = closeInfoModal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        renderSpots();
+        setupDropdown();
+        setupModals();
+    });
+</script>
 </body>
 </html>
