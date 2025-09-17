@@ -500,7 +500,7 @@
         }
 
         .external-link.info-link::after {
-            content: "ℹ";
+            content: "ⓘ";
             font-size: .8rem;
             opacity: 1;
         }
@@ -1027,7 +1027,16 @@
                         <span class="dropdown-arrow">▼</span>
                     </button>
                     <div class="dropdown-menu" id="dropdownMenu">
-                        <!-- Dropdown options will be populated dynamically -->
+                        <div class="dropdown-option selected" data-country="all">🌎 All</div>
+                        <div class="dropdown-option" data-country="Poland">🇵🇱 POLAND</div>
+                        <div class="dropdown-option" data-country="Austria">🇦🇹 AUSTRIA</div>
+                        <div class="dropdown-option" data-country="Lithuania">🇱🇹 LITHUANIA</div>
+                        <div class="dropdown-option" data-country="Denmark">🇩🇰 DENMARK</div>
+                        <div class="dropdown-option" data-country="Spain">🇪🇸 SPAIN</div>
+                        <div class="dropdown-option" data-country="Portugal">🇵🇹 PORTUGAL</div>
+                        <div class="dropdown-option" data-country="Italy">🇮🇹 ITALY</div>
+                        <div class="dropdown-option" data-country="Greece">🇬🇷 GREECE</div>
+                        <div class="dropdown-option" data-country="France">🇫🇷 FRANCE</div>
                     </div>
                 </div>
             </div>
@@ -1075,7 +1084,7 @@
         <div class="modal">
             <div class="modal-header">
                 <div class="modal-title">
-                    <span>ℹ</span>
+                    <span>ⓘ</span>
                     <span id="infoModalSpotName">Spot Information</span>
                 </div>
                 <button class="modal-close" id="infoModalClose">&times;</button>
@@ -1090,10 +1099,193 @@
 
     <script>
         let globalWeatherData = [];
-        let availableCountries = new Set();
 
-        // Configuration
-        const API_ENDPOINT = 'http://localhost:8001/mock-data.json';
+        // Mock data with enhanced spot information
+        const mockData = [
+            {
+                "name": "Jastarnia",
+                "country": "Poland",
+                "windguruUrl": "https://www.windguru.cz/station/327",
+                "windfinderUrl": "https://www.windfinder.com/forecast/jastarnia",
+                "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
+                "webcamUrl": "https://www.windfinder.com/webcams/c/jastarnia",
+                "locationUrl": "https://maps.google.com/maps?q=Jastarnia,Poland",
+                "lastUpdated": "2025-05-26 14:23",
+                "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 18, "wave": 1.2 },
+                "forecast": [
+                    { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 19, "precipitation": 0, "wave": 1.4 },
+                    { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 17, "precipitation": 5, "wave": 1.1 },
+                    { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 20, "precipitation": 0, "wave": 1.8 },
+                    { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 22, "precipitation": 10, "wave": 0.5 },
+                    { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 19, "precipitation": 0, "wave": 1.0 }
+                ],
+                "spotInfo": {
+                    "type": "Beach Break",
+                    "bestWind": "W, SW, NW",
+                    "waterTemp": "12-18°C",
+                    "experience": "Beginner to Advanced",
+                    "launch": "Sandy Beach",
+                    "hazards": "Shallow areas, swimmers in summer",
+                    "description": "Jastarnia is one of Poland's most popular kitesurfing spots, located on the Hel Peninsula. The spot offers excellent conditions with westerly winds and a wide sandy beach perfect for launching. The shallow lagoon side is ideal for beginners, while the open Baltic Sea side provides more challenging conditions for advanced riders."
+                },
+                "aiAnalysis": "<h3>🏄‍♂️ Session Recommendation</h3><p>Jastarnia is showing <span class=\"ai-highlight\">excellent conditions</span> for the next few days! The consistent westerly winds are perfect for the main beach launch.</p><h3>📊 Wind Analysis</h3><p>Current 16kt winds with 22kt gusts provide solid intermediate conditions. Day 3 looks particularly promising with <span class=\"ai-highlight\">22kt sustained winds</span> - perfect for advanced sessions and big air attempts.</p><h3>🎯 Best Session Times</h3><ul><li><strong>Today:</strong> Afternoon sessions recommended (18kt sustained)</li><li><strong>Day 3:</strong> All-day conditions with strong westerly (22kt)</li><li><strong>Avoid Day 4:</strong> Light winds (8kt) - better for beginners or SUP</li></ul><h3>🌊 Local Conditions</h3><p>West winds are offshore at Jastarnia's main spot, creating clean, organized waves. Water temperature around 12-15°C requires a good wetsuit. The sandy bottom and wide beach make it perfect for launching in these conditions.</p>"
+            },
+            {
+                "name": "Tarifa",
+                "country": "Spain",
+                "windguruUrl": "https://www.windguru.cz/station/327",
+                "windfinderUrl": "https://www.windfinder.com/forecast/tarifa",
+                "webcamUrl": "https://www.windfinder.com/webcams/c/tarifa",
+                "locationUrl": "https://maps.google.com/maps?q=Tarifa,Spain",
+                "lastUpdated": "2025-05-26 14:23",
+                "currentConditions": { "wind": 16, "gusts": 22, "direction": "W", "temp": 21, "wave": 0.8 },
+                "forecast": [
+                    { "date": "Today", "wind": 18, "gusts": 24, "direction": "W", "temp": 22, "precipitation": 0, "wave": 1.0 },
+                    { "date": "Tomorrow", "wind": 15, "gusts": 20, "direction": "NW", "temp": 20, "precipitation": 5, "wave": 0.7 },
+                    { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "W", "temp": 23, "precipitation": 0, "wave": 1.5 },
+                    { "date": "Day 4", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10, "wave": 0.4 },
+                    { "date": "Day 5", "wind": 16, "gusts": 22, "direction": "W", "temp": 21, "precipitation": 0, "wave": 0.9 }
+                ],
+                "spotInfo": {
+                    "type": "Multiple spots",
+                    "bestWind": "E (Levante), W (Poniente)",
+                    "waterTemp": "16-22°C",
+                    "experience": "All levels",
+                    "launch": "Various beaches",
+                    "hazards": "Strong currents, crowded in summer",
+                    "description": "Tarifa is the kitesurfing capital of Europe, located at the southern tip of Spain where the Mediterranean meets the Atlantic. The area offers multiple world-class spots including Punta Paloma (flat water), Los Lances (waves), and Valdevaqueros (all conditions). Famous for consistent winds and year-round kitesurfing."
+                },
+                "aiAnalysis": "<h3>🌪️ Legendary Conditions Ahead</h3><p>Tarifa is living up to its reputation as Europe's wind capital! <span class=\"ai-highlight\">Consistent westerly flow</span> with building intensity through Day 3.</p><h3>🎯 Spot Selection</h3><ul><li><strong>Punta Paloma:</strong> Perfect for current W/NW winds - flatwater freestyle paradise</li><li><strong>Los Lances:</strong> Great for wave riding when winds hit 22kt on Day 3</li><li><strong>Valdevaqueros:</strong> Best backup if winds get too strong</li></ul><h3>⚡ Power Days</h3><p>Day 3 is shaping up to be <span class=\"ai-highlight\">epic</span> with 22kt sustained and 28kt gusts. Perfect conditions for powered sessions and big jumps. The thermal enhancement typical of Tarifa should add 3-5kts in the afternoon.</p><h3>🌡️ Comfort Factor</h3><p>Excellent temperatures (20-25°C) mean comfortable sessions in shorty wetsuits or even boardshorts. The levante isn't showing up, so expect manageable sea state throughout the forecast period.</p>"
+            },
+            {
+                "name": "Lagos",
+                "country": "Portugal",
+                "windguruUrl": "https://www.windguru.cz/station/785",
+                "windfinderUrl": "https://www.windfinder.com/forecast/lagos_portugal",
+                "locationUrl": "https://maps.google.com/maps?q=Lagos,Portugal",
+                "lastUpdated": "2025-05-26 14:18",
+                "forecast": [
+                    { "date": "Today", "wind": 12, "gusts": 16, "direction": "NW", "temp": 19, "precipitation": 0 },
+                    { "date": "Tomorrow", "wind": 9, "gusts": 13, "direction": "W", "temp": 18, "precipitation": 15 },
+                    { "date": "Day 3", "wind": 14, "gusts": 19, "direction": "NW", "temp": 20, "precipitation": 0 },
+                    { "date": "Day 4", "wind": 6, "gusts": 10, "direction": "SW", "temp": 22, "precipitation": 5 },
+                    { "date": "Day 5", "wind": 11, "gusts": 15, "direction": "W", "temp": 19, "precipitation": 0 }
+                ],
+                "spotInfo": {
+                    "type": "Protected Bay",
+                    "bestWind": "NW, W, SW",
+                    "waterTemp": "16-20°C",
+                    "experience": "Beginner to Intermediate",
+                    "launch": "Sandy beach",
+                    "hazards": "Rocks on sides, boat traffic",
+                    "description": "Lagos offers excellent learning conditions in a protected bay setting on Portugal's stunning Algarve coast. Meia Praia is the main spot with a long sandy beach and generally flat water. The spot is perfect for progression with consistent moderate winds and beautiful surroundings."
+                },
+                "aiAnalysis": "<h3>🌊 Moderate Conditions - Perfect for Progression</h3><p>Lagos is showing <span class=\"ai-highlight\">ideal learning conditions</span> with moderate winds and manageable sea state. Great opportunity for skill development and relaxed sessions.</p><h3>📚 Session Planning</h3><ul><li><strong>Today & Day 3:</strong> Best sessions (12-14kt) - perfect for intermediate riders</li><li><strong>Tomorrow:</strong> Light winds + rain - indoor theory day</li><li><strong>Day 4:</strong> Very light (6kt) - SUP or light wind practice</li></ul><h3>🏖️ Spot Recommendations</h3><p>The northwest winds are perfect for <span class=\"ai-highlight\">Meia Praia</span> - Lagos' main kitesurfing beach. The long sandy beach provides plenty of space for safe launching and landing. Protected bay conditions mean smaller waves, ideal for freestyle practice.</p><h3>🎓 Skills Focus</h3><p>These moderate conditions are perfect for working on transitions, jumps, and new tricks. The forgiving wind strength allows for progression without being overpowering. Consider larger kite sizes (12-14m) for optimal performance.</p>"
+            },
+            {
+                "name": "Marseille",
+                "country": "France",
+                "windguruUrl": "https://www.windguru.cz/station/156",
+                "windfinderUrl": "https://www.windfinder.com/forecast/marseille",
+                "webcamUrl": "https://www.windfinder.com/webcams/c/marseille",
+                "locationUrl": "https://maps.google.com/maps?q=Marseille,France",
+                "lastUpdated": "2025-05-26 14:31",
+                "currentConditions": { "wind": 24, "gusts": 31, "direction": "N", "temp": 17, "wave": 2.1 },
+                "forecast": [
+                    { "date": "Today", "wind": 25, "gusts": 32, "direction": "N", "temp": 16, "precipitation": 0, "wave": 2.3 },
+                    { "date": "Tomorrow", "wind": 28, "gusts": 35, "direction": "N", "temp": 15, "precipitation": 0, "wave": 2.8 },
+                    { "date": "Day 3", "wind": 20, "gusts": 26, "direction": "NW", "temp": 17, "precipitation": 5, "wave": 1.7 },
+                    { "date": "Day 4", "wind": 15, "gusts": 20, "direction": "W", "temp": 19, "precipitation": 10, "wave": 1.2 },
+                    { "date": "Day 5", "wind": 10, "gusts": 14, "direction": "SW", "temp": 21, "precipitation": 20, "wave": 0.8 }
+                ],
+                "spotInfo": {
+                    "type": "Open Sea",
+                    "bestWind": "N (Mistral), NW",
+                    "waterTemp": "15-19°C",
+                    "experience": "Intermediate to Advanced",
+                    "launch": "Rocky/Sandy areas",
+                    "hazards": "Strong Mistral winds, choppy seas",
+                    "description": "Marseille benefits from the famous Mistral winds that create excellent but challenging conditions. The spot offers various launch points around the coast, with Plage du Prado being popular. When the Mistral blows, conditions can be very powerful - perfect for experienced riders seeking high-performance sessions."
+                }
+            },
+            {
+                "name": "Cagliari",
+                "country": "Italy",
+                "windguruUrl": "https://www.windguru.cz/station/912",
+                "windfinderUrl": "https://www.windfinder.com/forecast/cagliari",
+                "locationUrl": "https://maps.google.com/maps?q=Cagliari,Italy",
+                "lastUpdated": "2025-05-26 14:15",
+                "forecast": [
+                    { "date": "Today", "wind": 13, "gusts": 18, "direction": "NW", "temp": 24, "precipitation": 0 },
+                    { "date": "Tomorrow", "wind": 16, "gusts": 21, "direction": "N", "temp": 22, "precipitation": 0 },
+                    { "date": "Day 3", "wind": 7, "gusts": 11, "direction": "SW", "temp": 26, "precipitation": 15 },
+                    { "date": "Day 4", "wind": 19, "gusts": 25, "direction": "NW", "temp": 23, "precipitation": 0 },
+                    { "date": "Day 5", "wind": 12, "gusts": 16, "direction": "W", "temp": 25, "precipitation": 5 }
+                ],
+                "spotInfo": {
+                    "type": "Beach and Bay",
+                    "bestWind": "NW, N, W",
+                    "waterTemp": "18-24°C",
+                    "experience": "All levels",
+                    "launch": "Poetto Beach (sand)",
+                    "hazards": "Rocks at some spots, thermal winds",
+                    "description": "Cagliari on the southern coast of Sardinia offers excellent Mediterranean kitesurfing with warm water and reliable thermal winds. Poetto Beach is the main 8km stretch perfect for all levels. The spot benefits from both gradient and thermal winds, often picking up in the afternoon."
+                },
+                "aiAnalysis": "<h3>🛖 Sardinian Sessions - Variable but Promising</h3><p>Cagliari shows <span class=\"ai-highlight\">mixed conditions</span> with some excellent sessions bookending lighter days. The Mediterranean's thermal effects will enhance afternoon winds.</p><h3>📅 Session Planner</h3><ul><li><strong>Today:</strong> Moderate NW winds (13kt) - good for progression</li><li><strong>Tomorrow:</strong> Solid conditions (16kt N) - best day of forecast</li><li><strong>Day 3:</strong> Too light (7kt) - rest day or SUP</li><li><strong>Day 4:</strong> Strong return (19kt NW) - powered sessions</li></ul><h3>🌡️ Mediterranean Advantage</h3><p>Excellent water temperatures (20-22°C) and air temps (22-26°C) mean comfortable sessions in minimal gear. The warm conditions make even the lighter wind days enjoyable for relaxed cruising.</p><h3>🖖 Spot Selection</h3><p><strong>Poetto Beach</strong> is perfect for the NW winds - long sandy beach with good space. When winds turn northerly tomorrow, consider <strong>Calamosca</strong> for more protected conditions and stunning scenery.</p>"
+            },
+            {
+                "name": "Mykonos",
+                "country": "Greece",
+                "windguruUrl": "https://www.windguru.cz/station/493",
+                "windfinderUrl": "https://www.windfinder.com/forecast/mykonos",
+                "webcamUrl": "https://www.windfinder.com/webcams/c/mykonos",
+                "locationUrl": "https://maps.google.com/maps?q=Mykonos,Greece",
+                "lastUpdated": "2025-05-26 14:27",
+                "currentConditions": { "wind": 28, "gusts": 36, "direction": "N", "temp": 19, "wave": 3.2 },
+                "forecast": [
+                    { "date": "Today", "wind": 30, "gusts": 38, "direction": "N", "temp": 20, "precipitation": 0, "wave": 3.5 },
+                    { "date": "Tomorrow", "wind": 26, "gusts": 33, "direction": "N", "temp": 19, "precipitation": 0, "wave": 2.9 },
+                    { "date": "Day 3", "wind": 22, "gusts": 28, "direction": "NW", "temp": 21, "precipitation": 0, "wave": 2.2 },
+                    { "date": "Day 4", "wind": 18, "gusts": 24, "direction": "NW", "temp": 23, "precipitation": 5, "wave": 1.8 },
+                    { "date": "Day 5", "wind": 8, "gusts": 12, "direction": "SW", "temp": 25, "precipitation": 10, "wave": 0.6 }
+                ],
+                "spotInfo": {
+                    "type": "Exposed Beaches",
+                    "bestWind": "N (Meltemi), NW",
+                    "waterTemp": "18-23°C",
+                    "experience": "Intermediate to Expert",
+                    "launch": "Multiple beach breaks",
+                    "hazards": "Very strong Meltemi, large waves, rocks",
+                    "description": "Mykonos is famous for the powerful Meltemi winds that create world-class but challenging conditions. Kalafatis Beach and Ftelia Beach are the main spots. When the Meltemi blows (July-September especially), conditions are incredible but only suitable for experienced riders. Crystal clear Aegean waters and stunning scenery."
+                },
+                "aiAnalysis": "<h3>🌪️ Meltemi Madness - Epic Conditions!</h3><p>The famous <span class=\"ai-highlight\">Meltemi winds</span> are delivering absolutely incredible conditions! 30kt sustained with 38kt gusts - this is world-class kitesurfing territory.</p><h3>⚡ Power Sessions Only</h3><p><span class=\"ai-highlight\">Expert riders only</span> for the next 3 days. These are seriously powered conditions that require advanced skills, small kites (5-7m), and complete comfort in strong winds.</p><h3>🏝️ Greek Island Paradise</h3><ul><li><strong>Kalafatis Beach:</strong> Main spot - perfect for these northerly Meltemi winds</li><li><strong>Ftelia Beach:</strong> Alternative option with slightly more protection</li><li><strong>Water temp:</strong> 18-20°C - wetsuit recommended</li></ul><h3>📊 Wind Evolution</h3><p>Peak power today and tomorrow (26-30kt), then gradual decrease. Day 4-5 offer more accessible conditions (18kt down to 8kt) perfect for less experienced riders or gear testing.</p><h3>🎯 Pro Tip</h3><p>The Meltemi is remarkably consistent and clean - expect steady power without the gustiness of many other strong wind locations. Perfect for big air, speed runs, and advanced freestyle.</p>"
+            },
+            {
+                "name": "Cádiz",
+                "country": "Spain",
+                "windguruUrl": "https://www.windguru.cz/station/421",
+                "windfinderUrl": "https://www.windfinder.com/forecast/cadiz",
+                "locationUrl": "https://maps.google.com/maps?q=Cadiz,Spain",
+                "lastUpdated": "2025-05-26 14:20",
+                "forecast": [
+                    { "date": "Today", "wind": 14, "gusts": 19, "direction": "W", "temp": 23, "precipitation": 0 },
+                    { "date": "Tomorrow", "wind": 11, "gusts": 15, "direction": "SW", "temp": 24, "precipitation": 10 },
+                    { "date": "Day 3", "wind": 17, "gusts": 22, "direction": "W", "temp": 22, "precipitation": 0 },
+                    { "date": "Day 4", "wind": 5, "gusts": 8, "direction": "S", "temp": 26, "precipitation": 20 },
+                    { "date": "Day 5", "wind": 20, "gusts": 26, "direction": "NW", "temp": 21, "precipitation": 0 }
+                ],
+                "spotInfo": {
+                    "type": "Atlantic Coast",
+                    "bestWind": "W, NW, SW",
+                    "waterTemp": "16-21°C",
+                    "experience": "All levels",
+                    "launch": "Sandy beaches",
+                    "hazards": "Atlantic swells, currents",
+                    "description": "Cádiz offers authentic Spanish Atlantic coast kitesurfing with a rich historical backdrop. Playa de la Victoria in the city and nearby El Palmar provide excellent wave sailing opportunities. The area benefits from consistent Atlantic swells and good wind exposure. Less crowded than Mediterranean spots."
+                },
+                "aiAnalysis": "<h3>🏰 Historic Cadiz - Varied Conditions</h3><p>Cádiz is showing a <span class=\"ai-highlight\">rollercoaster forecast</span> - from solid sessions to light winds and back to powered conditions. Perfect for a varied kitesurfing week!</p><h3>📈 Session Strategy</h3><ul><li><strong>Today:</strong> Good intermediate conditions (14kt W)</li><li><strong>Tomorrow:</strong> Light + rainy - equipment maintenance day</li><li><strong>Day 3:</strong> Solid return (17kt W) - great session day</li><li><strong>Day 4:</strong> Too light (5kt) - explore the beautiful old town</li><li><strong>Day 5:</strong> Strong finish (20kt NW) - powered session</li></ul><h3>🌊 Atlantic Edge</h3><p>Cádiz benefits from its Atlantic exposure with consistent swells and clean wind patterns. The westerly winds create excellent wave sailing opportunities, while the sandy beaches provide safe launching.</p><h3>🖖 Spot Recommendations</h3><p><strong>Playa de la Victoria</strong> works well for most wind directions, while <strong>El Palmar</strong> (20min drive) offers world-class wave conditions when the winds pick up on Days 3 and 5.</p>"
+            }
+        ];
 
         // Theme functionality
         function initTheme() {
@@ -1125,25 +1317,13 @@
             });
         }
 
-        async function fetchWeatherData() {
-            try {
-                const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!Array.isArray(data)) {
-                    throw new Error('Invalid data format: Expected array of spots');
-                }
-                
-                return data;
-            } catch (error) {
-                console.error('Error fetching weather data:', error);
-                throw error;
-            }
+        function fetchWeatherData() {
+            // Simulate API call with mock data
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(mockData);
+                }, 1000);
+            });
         }
 
         function showLoadingMessage() {
@@ -1160,18 +1340,18 @@
             const spotsGrid = document.getElementById('spotsGrid');
             
             let errorTitle = 'Failed to Load Weather Data';
-            let errorMessage = 'Unable to fetch the latest weather information from the server.';
+            let errorMessage = 'Unable to fetch the latest weather information.';
             
             if (error.message.includes('HTTP Error: 404')) {
                 errorTitle = 'Data Source Not Found';
-                errorMessage = 'The weather data endpoint is not available. Please check if the server is running on http://localhost:8001.';
+                errorMessage = 'The weather data source is currently unavailable. This might be a temporary issue with the server.';
             } else if (error.message.includes('HTTP Error: 500')) {
                 errorTitle = 'Server Error';
                 errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
             } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                 errorTitle = 'Connection Error';
-                errorMessage = 'Unable to connect to the weather service at http://localhost:8001. Please check your internet connection and ensure the server is running.';
-            } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
+                errorMessage = 'Unable to connect to the weather service. Please check your internet connection and try again.';
+            } else if (error.message.includes('JSON')) {
                 errorTitle = 'Data Format Error';
                 errorMessage = 'The weather data received is corrupted or in an unexpected format.';
             }
@@ -1182,7 +1362,6 @@
                     <div class="error-title">${errorTitle}</div>
                     <div class="error-description">
                         ${errorMessage}<br/>
-                        <strong>Endpoint:</strong> ${API_ENDPOINT}<br/>
                         Please refresh the page to try again.
                     </div>
                 </div>
@@ -1201,55 +1380,6 @@
                 'NW': '↘'
             };
             return arrows[direction] || '•';
-        }
-
-        function populateCountryDropdown(data) {
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            availableCountries.clear();
-            
-            // Collect all unique countries from the data
-            data.forEach(spot => {
-                if (spot.country) {
-                    availableCountries.add(spot.country);
-                }
-            });
-            
-            // Sort countries alphabetically
-            const sortedCountries = Array.from(availableCountries).sort();
-            
-            // Build dropdown HTML
-            let dropdownHTML = '<div class="dropdown-option selected" data-country="all">🌎 All</div>';
-            
-            sortedCountries.forEach(country => {
-                const countryFlag = getCountryFlag(country);
-                dropdownHTML += `<div class="dropdown-option" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
-            });
-            
-            dropdownMenu.innerHTML = dropdownHTML;
-            
-            // Re-attach event listeners for the new dropdown options
-            setupDropdownEvents();
-        }
-
-        function getCountryFlag(country) {
-            const flags = {
-                'Poland': '🇵🇱',
-                'Austria': '🇦🇹',
-                'Lithuania': '🇱🇹',
-                'Denmark': '🇩🇰',
-                'Spain': '🇪🇸',
-                'Portugal': '🇵🇹',
-                'Italy': '🇮🇹',
-                'Greece': '🇬🇷',
-                'France': '🇫🇷',
-                'Germany': '🇩🇪',
-                'Netherlands': '🇳🇱',
-                'Croatia': '🇭🇷',
-                'Turkey': '🇹🇷',
-                'Morocco': '🇲🇦',
-                'Egypt': '🇪🇬'
-            };
-            return flags[country] || '🏴';
         }
 
         function openAIModal(spotName) {
@@ -1275,11 +1405,11 @@
             const modalSpotName = document.getElementById('infoModalSpotName');
             const spotInfoContent = document.getElementById('spotInfoContent');
 
-            modalSpotName.textContent = `${spotName}`;
+            modalSpotName.textContent = `${spotName} - Spot Information`;
             
             const info = spot.spotInfo;
             spotInfoContent.innerHTML = `
-                <h3>🏄 Overview</h3>
+                <h3>📍 Spot Overview</h3>
                 <p>${info.description}</p>
                 
                 <div class="info-grid">
@@ -1308,9 +1438,6 @@
                         <div class="info-value">${info.hazards}</div>
                     </div>
                 </div>
-                
-                <h3>📅 Season</h3>
-                <p>${info.season}</p>
             `;
             
             modal.classList.add('active');
@@ -1335,60 +1462,58 @@
             card.dataset.country = spot.country;
 
             // Check if spot has wave data
-            const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) || 
+            const hasWaveData = spot.forecast.some(day => day.wave !== undefined) || 
                                (spot.currentConditions && spot.currentConditions.wave !== undefined);
 
             let forecastRows = '';
-            if (spot.forecast && Array.isArray(spot.forecast)) {
-                spot.forecast.forEach(day => {
-                    let windClass, windTextClass;
-                    if (day.wind < 12) {
-                        windClass = 'weak-wind';
-                        windTextClass = 'wind-weak';
-                    } else if (day.wind >= 12 && day.wind < 15) {
-                        windClass = 'moderate-wind';
-                        windTextClass = 'wind-moderate';
-                    } else if (day.wind >= 15 && day.wind <= 22) {
-                        windClass = 'strong-wind';
-                        windTextClass = 'wind-strong';
+            spot.forecast.forEach(day => {
+                let windClass, windTextClass;
+                if (day.wind < 12) {
+                    windClass = 'weak-wind';
+                    windTextClass = 'wind-weak';
+                } else if (day.wind >= 12 && day.wind < 15) {
+                    windClass = 'moderate-wind';
+                    windTextClass = 'wind-moderate';
+                } else if (day.wind >= 15 && day.wind <= 22) {
+                    windClass = 'strong-wind';
+                    windTextClass = 'wind-strong';
+                } else {
+                    windClass = 'extreme-wind';
+                    windTextClass = 'wind-extreme';
+                }
+
+                const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const windArrow = getWindArrow(day.direction);
+                const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+                
+                // Wave classes
+                let waveClass = '';
+                let waveText = '-';
+                if (day.wave !== undefined) {
+                    if (day.wave < 1.0) {
+                        waveClass = 'wave-small';
+                    } else if (day.wave >= 1.0 && day.wave < 2.0) {
+                        waveClass = 'wave-moderate';
                     } else {
-                        windClass = 'extreme-wind';
-                        windTextClass = 'wind-extreme';
+                        waveClass = 'wave-large';
                     }
+                    waveText = `${day.wave}`;
+                }
 
-                    const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
-                    const windArrow = getWindArrow(day.direction);
-                    const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
-                    
-                    // Wave classes
-                    let waveClass = '';
-                    let waveText = '-';
-                    if (day.wave !== undefined) {
-                        if (day.wave < 1.0) {
-                            waveClass = 'wave-small';
-                        } else if (day.wave >= 1.0 && day.wave < 2.0) {
-                            waveClass = 'wave-moderate';
-                        } else {
-                            waveClass = 'wave-large';
-                        }
-                        waveText = `${day.wave}`;
-                    }
-
-                    forecastRows += `
-                        <tr class="${windClass}">
-                            <td><strong>${day.date}</strong></td>
-                            <td class="${windTextClass}">${day.wind} kts</td>
-                            <td class="${windTextClass}">${day.gusts} kts</td>
-                            <td class="${windTextClass}">
-                                <span class="wind-arrow">${windArrow}</span> ${day.direction}
-                            </td>
-                            <td class="${tempClass}">${day.temp}°C</td>
-                            <td class="${precipClass}">${day.precipitation}%</td>
-                            ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
-                        </tr>
-                    `;
-                });
-            }
+                forecastRows += `
+                    <tr class="${windClass}">
+                        <td><strong>${day.date}</strong></td>
+                        <td class="${windTextClass}">${day.wind} kts</td>
+                        <td class="${windTextClass}">${day.gusts} kts</td>
+                        <td class="${windTextClass}">
+                            <span class="wind-arrow">${windArrow}</span> ${day.direction}
+                        </td>
+                        <td class="${tempClass}">${day.temp}°C</td>
+                        <td class="${precipClass}">${day.precipitation}%</td>
+                        ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
+                    </tr>
+                `;
+            });
 
             let currentConditionsRow = '';
             if (spot.currentConditions) {
@@ -1447,20 +1572,20 @@
             card.innerHTML = `
                 <div class="spot-header">
                     <div class="spot-title">
-                        <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
+                        <div class="spot-name">${spot.name}</div>
                     </div>
                     <div class="spot-meta">
-                        <div class="country-tag">${spot.country || 'Unknown'}</div>
-                        <div class="last-updated">${spot.lastUpdated || 'No data'}</div>
+                        <div class="country-tag">${spot.country}</div>
+                        <div class="last-updated">${spot.lastUpdated}</div>
                     </div>
                 </div>
                 <div class="external-links">
                     ${spot.spotInfo ? `<span class="external-link info-link" onclick="openInfoModal('${spot.name}')"></span>` : ''}
-                    ${spot.windguruUrl ? `<a href="${spot.windguruUrl}" target="_blank" class="external-link">Windguru</a>` : ''}
-                    ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>` : ''}
+                    <a href="${spot.windguruUrl}" target="_blank" class="external-link">Windguru</a>
+                    <a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>
                     ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">Webcam</a>` : ''}
-                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>` : ''}
+                    <a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>
                     ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
                 <table class="weather-table">
@@ -1487,71 +1612,33 @@
 
         let currentFilter = 'all';
 
-        async function renderSpots(filter = 'all') {
+        function renderSpots(filter = 'all') {
             currentFilter = filter;
             const spotsGrid = document.getElementById('spotsGrid');
             
             showLoadingMessage();
             
-            try {
-                const data = await fetchWeatherData();
-                globalWeatherData = data;
-                
-                // Populate country dropdown with available countries
-                populateCountryDropdown(data);
-                
-                const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
-                
-                spotsGrid.innerHTML = '';
-                if (filteredSpots.length === 0) {
-                    spotsGrid.innerHTML = `
-                        <div class="error-message">
-                            <span class="error-icon">🔍</span>
-                            <div class="error-title">No Spots Found</div>
-                            <div class="error-description">
-                                No kitesurfing spots found for the selected filter.<br/>
-                                Try selecting "All" or a different country.
-                            </div>
-                        </div>
-                    `;
-                } else {
+            fetchWeatherData()
+                .then(data => {
+                    globalWeatherData = data;
+                    const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
+                    
+                    spotsGrid.innerHTML = '';
                     filteredSpots.forEach(spot => {
                         spotsGrid.appendChild(createSpotCard(spot));
                     });
-                }
-            } catch (error) {
-                console.error('Failed to load weather:', error.message);
-                showErrorMessage(error);
-            }
-        }
-
-        function setupDropdownEvents() {
-            const dropdownOptions = document.querySelectorAll('.dropdown-option');
-            const selectedCountry = document.getElementById('selectedCountry');
-            
-            dropdownOptions.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    
-                    dropdownOptions.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    
-                    selectedCountry.textContent = option.textContent;
-                    renderSpots(option.dataset.country);
-                    closeDropdown();
-                    
-                    // Scroll to top smoothly after country selection
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+                })
+                .catch(error => {
+                    console.error('Failed to load weather:', error.message);
+                    showErrorMessage(error);
                 });
-            });
         }
 
         function setupDropdown() {
             const dropdownButton = document.getElementById('dropdownButton');
             const dropdownMenu = document.getElementById('dropdownMenu');
+            const selectedCountry = document.getElementById('selectedCountry');
+            const dropdownOptions = document.querySelectorAll('.dropdown-option');
 
             function closeDropdown() {
                 dropdownButton.classList.remove('open', 'active');
@@ -1568,6 +1655,19 @@
                 }
             });
 
+            dropdownOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    dropdownOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    selectedCountry.textContent = option.textContent;
+                    renderSpots(option.dataset.country);
+                    closeDropdown();
+                });
+            });
+
             document.addEventListener('click', (e) => {
                 if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
                     closeDropdown();
@@ -1580,9 +1680,6 @@
                     dropdownButton.focus();
                 }
             });
-
-            // Make closeDropdown available globally
-            window.closeDropdown = closeDropdown;
         }
 
         function setupModals() {
@@ -1635,3 +1732,4 @@
     </script>
 </body>
 </html>
+                
