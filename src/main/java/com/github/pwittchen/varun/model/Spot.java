@@ -3,9 +3,15 @@ package com.github.pwittchen.varun.model;
 import java.util.List;
 
 public record Spot(
-        int id,
         String name,
-        long updated,
+        String country,
+        String windguruUrl,
+        String windFinderUrl,
+        String icmUrl,
+        String webcamUrl,
+        String locationUrl,
+        String lastUpdated,
+        WeatherLive currentConditions,
         List<WeatherForecast> forecast
 ) {
 }
