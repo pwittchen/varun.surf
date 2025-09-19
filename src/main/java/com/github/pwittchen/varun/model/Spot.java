@@ -1,4 +1,8 @@
 package com.github.pwittchen.varun.model;
 
-public class Spot {
+public record Spot(
+        int id,
+        String name,
+        long updated
+) {
 }
