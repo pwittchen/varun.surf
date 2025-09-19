@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.model;
+package com.github.pwittchen.varun.model.windguru;
 
 public record WeatherForecastWindguru(
         String label,
