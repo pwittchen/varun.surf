@@ -2,7 +2,6 @@ package com.github.pwittchen.varun.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pwittchen.varun.model.WeatherForecast;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
