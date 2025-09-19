@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.model;
+package com.github.pwittchen.varun.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,20 +6,19 @@ import reactor.test.StepVerifier;
 
 import static com.google.common.truth.Truth.assertThat;
 
+class WeatherForecastServiceTest {
 
-class WeatherForecastTest {
-
-    private WeatherForecast weatherForecast;
+    private WeatherForecastService weatherForecastService;
 
     @BeforeEach
     void setUp() {
-        weatherForecast = new WeatherForecast();
+        weatherForecastService = new WeatherForecastService();
     }
 
     @Test
     void shouldParseWeatherForecast() {
         StepVerifier
-                .create(weatherForecast.getForecast(43, "gfs"))
+                .create(weatherForecastService.getForecast(43, "gfs"))
                 .assertNext(weatherForecast -> {
                     assertThat(weatherForecast).isNotEmpty();
                 })
@@ -2578,5 +2577,4 @@ class WeatherForecastTest {
 
          */
     }
-
 }
