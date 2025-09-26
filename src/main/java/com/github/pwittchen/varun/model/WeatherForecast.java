@@ -4,7 +4,7 @@ public record WeatherForecast(
         String date,
         int wind,
         int gusts,
-        String direction,
+        WindDirection direction,
         int temp,
         int precipitation,
         float wave
