@@ -8,12 +8,12 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class StaticSpotsDataProviderTest {
+class JsonSpotsDataProviderTest {
     @Test
     void shouldLoadDataRegardingFirstSpotFromTheProvidedJsonFile() throws Exception {
         Gson gson = new Gson();
 
-        SpotsDataProvider provider = new StaticSpotsDataProvider(gson);
+        SpotsDataProvider provider = new JsonSpotsDataProvider(gson);
         List<Spot> spots = provider.getSpots();
 
         assertThat(spots).isNotNull();

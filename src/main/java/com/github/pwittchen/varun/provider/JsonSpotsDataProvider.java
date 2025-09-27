@@ -13,11 +13,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
-public class StaticSpotsDataProvider implements SpotsDataProvider {
+public class JsonSpotsDataProvider implements SpotsDataProvider {
     public static final String RESOURCE_FILE = "spots.json";
     private final List<Spot> spots = new LinkedList<>();
 
-    public StaticSpotsDataProvider(Gson gson) throws Exception {
+    public JsonSpotsDataProvider(Gson gson) throws Exception {
         try (Reader reader = new InputStreamReader(new ClassPathResource(RESOURCE_FILE).getInputStream())) {
             Type listType = new TypeToken<List<Spot>>() {}.getType();
             this.spots. addAll(gson.fromJson(reader, listType));
