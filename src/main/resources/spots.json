@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Jastarnia",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/500760",
+    "windFinderUrl": "https://www.windfinder.com/forecast/jastarnia",
+    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
+    "webcamUrl": "https://www.wiatrkadyny.pl/draga/index.php",
+    "locationUrl": "https://maps.app.goo.gl/yJJPfBtdGqUfFkAr6",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Bay, flat water",
+      "bestWind": "W, SW",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy Beach",
+      "hazards": "Shallow areas, swimmers in summer, fishing nets",
+      "season": "May-October (peak: Jul-Aug). Strong winds common in autumn/winter but cold water requires thick wetsuit. Summer offers warmest water but can be crowded.",
+      "description": "Jastarnia is one of Poland's most popular kitesurfing spots, located on the Hel Peninsula. The spot offers excellent conditions with westerly winds and a wide sandy beach perfect for launching. The shallow lagoon side is ideal for beginners, while the open Baltic Sea side provides more challenging conditions for advanced riders."
+    }
+  },
+  {
+    "name": "Chałupy",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/500761",
+    "windFinderUrl": "https://www.windfinder.com/forecast/chalupy",
+    "icmUrl": "https://www.meteo.pl/",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/6E4C1Lj5R3xHHuZK6",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "W, SW",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy Beach",
+      "hazards": "Crowded in summer, swimmers, fishing nets",
+      "season": "May-September. Very popular in summer, with many kiteschools and rental options.",
+      "description": "Chałupy is a famous kitesurfing village on the Hel Peninsula, well known among Polish kiters. It offers flat water in the Puck Bay lagoon and a lively kitesurfing community."
+    }
+  },
+  {
+    "name": "Rewa",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/102",
+    "windFinderUrl": "https://www.windfinder.com/forecast/rewa",
+    "icmUrl": "https://www.meteo.pl/",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/5oMEGqotocnL7kXh9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Sand spit, shallow water",
+      "bestWind": "W, NW, NE",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy Beach",
+      "hazards": "Shallow sandbanks, strong currents outside lagoon",
+      "season": "May-October, with best winds in autumn.",
+      "description": "Rewa is a very popular kitesurfing spot near Gdynia, known for its sand spit dividing the Puck Bay. It provides shallow, safe water for beginners and good training conditions."
+    }
+  }
+]

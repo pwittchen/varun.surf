@@ -1,0 +1,30 @@
+package com.github.pwittchen.varun.provider;
+
+import com.github.pwittchen.varun.model.Spot;
+import com.google.gson.Gson;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
+
+class StaticSpotsDataProviderTest {
+    @Test
+    void shouldLoadDataRegardingFirstSpotFromTheProvidedJsonFile() throws Exception {
+        Gson gson = new Gson();
+
+        SpotsDataProvider provider = new StaticSpotsDataProvider(gson);
+        List<Spot> spots = provider.getSpots();
+
+        assertThat(spots).isNotNull();
+        assertThat(spots).hasSize(3);
+
+        Spot spot = spots.getFirst();
+        assertThat(spot.name()).isEqualTo("Jastarnia");
+        assertThat(spot.country()).isEqualTo("Poland");
+        assertThat(spot.windguruUrl()).isEqualTo("https://www.windguru.cz/500760");
+
+        assertThat(spot.spotInfo()).isNotNull();
+        assertThat(spot.spotInfo().bestWind()).isEqualTo("W, SW");
+    }
+}
