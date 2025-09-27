@@ -38,11 +38,7 @@ public class ForecastService {
 
     public Mono<List<Forecast>> getForecast(int spotId, ForecastModel model) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
-
-        if (httpUrl == null) {
-            return Mono.empty();
-        }
-
+        if (httpUrl == null) return Mono.empty();
         return executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
@@ -113,9 +109,7 @@ public class ForecastService {
     private Optional<ForecastWg> parseLineToForecast(String line, Pattern row) {
         line = line.trim().replace('\u00A0', ' '); // non-breaking spaces → space
         Matcher m = row.matcher(line);
-        if (m.find()) {
-            return Optional.of(createForecast(line, m));
-        }
+        if (m.find()) return Optional.of(createForecast(line, m));
         return Optional.empty();
     }
 
