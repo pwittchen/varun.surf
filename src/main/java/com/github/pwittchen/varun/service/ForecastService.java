@@ -13,6 +13,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,9 +38,9 @@ public class ForecastService {
         this.mapper = mapper;
     }
 
-    public Mono<List<Forecast>> getForecast(int spotId, ForecastModel model) {
+    public Flux<Forecast> getForecast(int spotId, ForecastModel model) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
-        if (httpUrl == null) return Mono.empty();
+        if (httpUrl == null) return Flux.empty();
         return executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
@@ -50,7 +52,8 @@ public class ForecastService {
                 .get()
                 .build())
                 .map(this::retrieveWgForecasts)
-                .map(mapper::toWeatherForecasts);
+                .map(mapper::toWeatherForecastsFlux)
+                .flatMapMany(Function.identity());
     }
 
     private Mono<String> executeHttpRequest(final Request request) {

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
-import static com.google.common.truth.Truth.assertThat;
-
 class ForecastServiceTest {
 
     private ForecastService forecastService;
@@ -22,9 +20,7 @@ class ForecastServiceTest {
     void shouldParseWeatherForecast() {
         StepVerifier
                 .create(forecastService.getForecast(43, ForecastModel.GFS))
-                .assertNext(weatherForecast -> {
-                    assertThat(weatherForecast).isNotNull();
-                })
+                .expectNextCount(5)
                 .verifyComplete();
     }
 }

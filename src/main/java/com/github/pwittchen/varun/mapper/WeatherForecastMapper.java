@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.mapper;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.ForecastWg;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +16,10 @@ import java.util.stream.IntStream;
 public class WeatherForecastMapper {
     private static final List<String> DAYS = Arrays.asList("Today", "Tomorrow", "Day 3", "Day 4", "Day 5");
     private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
+
+    public Flux<Forecast> toWeatherForecastsFlux(List<ForecastWg> forecasts) {
+        return Flux.fromIterable(toWeatherForecasts(forecasts));
+    }
 
     public List<Forecast> toWeatherForecasts(List<ForecastWg> forecasts) {
         final Map<String, ForecastWg> wgForecastsByDay = getWgForecastMapByDay(forecasts);
