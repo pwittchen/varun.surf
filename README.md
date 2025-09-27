@@ -2,6 +2,8 @@
 
 weather forecast and real-time wind conditions dashboard for kitesurfers
 
+see it online at: https://varun.surf
+
 ## building the project
 
 ```
