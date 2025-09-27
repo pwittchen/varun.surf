@@ -31,7 +31,8 @@ public class StaticSpotsDataProvider implements SpotsDataProvider {
                         "Beginner to Advanced",
                         "Sandy Beach",
                         "Shallow areas, swimmers in summer, fishing nets",
-                        "May-October (peak: Jul-Aug). Strong winds common in autumn/winter but cold water requires thick wetsuit. Summer offers warmest water but can be crowded.", "Jastarnia is one of Poland's most popular kitesurfing spots, located on the Hel Peninsula. The spot offers excellent conditions with westerly winds and a wide sandy beach perfect for launching. The shallow lagoon side is ideal for beginners, while the open Baltic Sea side provides more challenging conditions for advanced riders."
+                        "May-October (peak: Jul-Aug). Strong winds common in autumn/winter but cold water requires thick wetsuit. Summer offers warmest water but can be crowded.",
+                        "Jastarnia is one of Poland's most popular kitesurfing spots, located on the Hel Peninsula. The spot offers excellent conditions with westerly winds and a wide sandy beach perfect for launching. The shallow lagoon side is ideal for beginners, while the open Baltic Sea side provides more challenging conditions for advanced riders."
                 ))
         );
 
