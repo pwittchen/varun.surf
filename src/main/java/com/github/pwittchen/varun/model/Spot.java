@@ -10,8 +10,11 @@ public record Spot(
         String icmUrl,
         String webcamUrl,
         String locationUrl,
-        String lastUpdated,
         LiveConditions currentConditions,
         List<Forecast> forecast
 ) {
+    public String wgId() {
+        String[] parts = this.windguruUrl.split("/");
+        return parts[parts.length - 1];
+    }
 }
