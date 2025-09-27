@@ -4,7 +4,7 @@ public record WeatherLive(
         String date,
         int wind,
         int gusts,
-        WindDirection direction,
+        String  direction,
         int temp,
         int precipitation,
         float wave
