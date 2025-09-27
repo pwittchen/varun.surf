@@ -8,10 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Component
-public class SpotsStaticDataProvider {
+public class StaticSpotsDataProvider implements SpotsDataProvider {
     private final List<Spot> spots = new LinkedList<>();
 
-    public SpotsStaticDataProvider() {
+    public StaticSpotsDataProvider() {
         spots.add(new Spot(
                 "Jastarnia",
                 "Poland",
@@ -27,6 +27,7 @@ public class SpotsStaticDataProvider {
         //todo: add more spots
     }
 
+    @Override
     public List<Spot> getSpots() {
         return spots;
     }
