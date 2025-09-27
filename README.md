@@ -4,22 +4,10 @@ weather forecast and real-time wind conditions dashboard for kitesurfers
 
 see it online at: https://varun.surf
 
-## building the project
-
-```
-./gradlew clean build
-```
-
-## building the executable jar file
+## building
 
 ```
 ./gradlew clean bootJar
-```
-
-## testing
-
-```
-./gradlew test
 ```
 
 ## running
@@ -28,8 +16,8 @@ see it online at: https://varun.surf
 java -jar build/libs/*.jar
 ```
 
-or:
+## testing
 
 ```
-./gradlew bootJar
+./gradlew test
 ```
