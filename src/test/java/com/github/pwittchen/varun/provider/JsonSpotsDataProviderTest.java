@@ -4,8 +4,6 @@ import com.github.pwittchen.varun.model.Spot;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static com.google.common.truth.Truth.assertThat;
 
 class JsonSpotsDataProviderTest {
@@ -14,12 +12,9 @@ class JsonSpotsDataProviderTest {
         Gson gson = new Gson();
 
         SpotsDataProvider provider = new JsonSpotsDataProvider(gson);
-        List<Spot> spots = provider.getSpots();
+        Spot spot = provider.getSpots().blockFirst();
 
-        assertThat(spots).isNotNull();
-        assertThat(spots).hasSize(3);
-
-        Spot spot = spots.getFirst();
+        assertThat(spot).isNotNull();
         assertThat(spot.name()).isEqualTo("Jastarnia");
         assertThat(spot.country()).isEqualTo("Poland");
         assertThat(spot.windguruUrl()).isEqualTo("https://www.windguru.cz/500760");

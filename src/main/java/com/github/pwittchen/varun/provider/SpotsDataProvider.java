@@ -1,9 +1,8 @@
 package com.github.pwittchen.varun.provider;
 
 import com.github.pwittchen.varun.model.Spot;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface SpotsDataProvider {
-    List<Spot> getSpots();
+    Flux<Spot> getSpots();
 }

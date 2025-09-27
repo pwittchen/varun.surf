@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -25,7 +26,7 @@ public class JsonSpotsDataProvider implements SpotsDataProvider {
     }
 
     @Override
-    public List<Spot> getSpots() {
-        return spots;
+    public Flux<Spot> getSpots() {
+        return Flux.fromIterable(spots);
     }
 }
