@@ -27,18 +27,12 @@ public class WeatherForecastMapper {
                         calculateGusts(windguruForecastMap, i),
                         calculateWindDirection(windguruForecastMap, i),
                         calculateTemperature(windguruForecastMap, i),
-                        calculatePrecipitation(windguruForecastMap, i),
-                        calculateWave()
+                        calculatePrecipitation(windguruForecastMap, i)
                 ))
                 .collect(Collectors.toList());
     }
 
-    private static int calculateWave() {
-        // right now in the micro forecast wave is not available, so we are having this placeholder here
-        return 0;
-    }
-
-    private static double calculatePrecipitation(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculatePrecipitation(Map<String, WeatherForecastWindguru> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -48,7 +42,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private static double calculateTemperature(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateTemperature(Map<String, WeatherForecastWindguru> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -58,7 +52,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private static String calculateWindDirection(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private String calculateWindDirection(Map<String, WeatherForecastWindguru> map, int dayIndex) {
         double avgWindDirectionDegrees = map
                 .entrySet()
                 .stream()
@@ -70,13 +64,13 @@ public class WeatherForecastMapper {
         return getWindDirection(avgWindDirectionDegrees);
     }
 
-    private static String getWindDirection(double degrees) {
+    private String getWindDirection(double degrees) {
         double normalized = (degrees % 360 + 360) % 360;
         int index = (int) Math.round(normalized / 45) % DIRECTIONS.size();
         return DIRECTIONS.get(index);
     }
 
-    private static double calculateGusts(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateGusts(Map<String, WeatherForecastWindguru> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -86,7 +80,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private static double calculateWind(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateWind(Map<String, WeatherForecastWindguru> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -96,7 +90,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private static Map<String, WeatherForecastWindguru> getWgForecastMapByDay(List<WeatherForecastWindguru> forecasts) {
+    private Map<String, WeatherForecastWindguru> getWgForecastMapByDay(List<WeatherForecastWindguru> forecasts) {
         final Map<String, WeatherForecastWindguru> windguruForecastMap = new HashMap<>();
         int dayIndex = 0;
         String labelPrefix = "";

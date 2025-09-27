@@ -6,7 +6,6 @@ public record WeatherForecast(
         double gusts,
         String direction,
         double temp,
-        double precipitation,
-        double wave
+        double precipitation
 ) {
 }
