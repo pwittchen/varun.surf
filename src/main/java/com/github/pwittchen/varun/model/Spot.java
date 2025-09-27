@@ -11,7 +11,9 @@ public record Spot(
         String webcamUrl,
         String locationUrl,
         LiveConditions currentConditions,
-        List<Forecast> forecast
+        List<Forecast> forecast,
+        String aiAnalysis,
+        SpotInfo spotInfo
 ) {
     public String wgId() {
         String[] parts = this.windguruUrl.split("/");
