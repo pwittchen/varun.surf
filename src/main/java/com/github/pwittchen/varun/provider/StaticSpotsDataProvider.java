@@ -19,7 +19,7 @@ public class StaticSpotsDataProvider implements SpotsDataProvider {
                 "https://www.windfinder.com/forecast/jastarnia",
                 "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
                 "https://www.wiatrkadyny.pl/draga/index.php",
-                "",
+                "https://maps.app.goo.gl/yJJPfBtdGqUfFkAr6",
                 new LiveConditions(),
                 new LinkedList<>()
         ));
