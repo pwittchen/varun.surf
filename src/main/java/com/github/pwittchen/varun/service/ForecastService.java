@@ -53,7 +53,8 @@ public class ForecastService {
                 .build())
                 .map(this::retrieveWgForecasts)
                 .map(mapper::toWeatherForecastsFlux)
-                .flatMapMany(Function.identity());
+                .flatMapMany(Function.identity())
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     private Mono<String> executeHttpRequest(final Request request) {
