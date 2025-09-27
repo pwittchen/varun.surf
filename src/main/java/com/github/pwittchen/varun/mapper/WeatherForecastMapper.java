@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class WeatherForecastMapper {
@@ -17,22 +19,18 @@ public class WeatherForecastMapper {
     private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
 
     public List<WeatherForecast> toWeatherForecasts(List<WeatherForecastWindguru> forecasts) {
-        final List<WeatherForecast> transformedWeatherForecasts = new ArrayList<>();
         final Map<String, WeatherForecastWindguru> windguruForecastMap = getWgForecastMapByDay(forecasts);
-
-        for (int i = 0; i < DAYS.size(); i++) {
-            transformedWeatherForecasts.add(new WeatherForecast(
-                    DAYS.get(i),
-                    calculateWind(windguruForecastMap, i),
-                    calculateGusts(windguruForecastMap, i),
-                    calculateWindDirection(windguruForecastMap, i),
-                    calculateTemperature(windguruForecastMap, i),
-                    calculatePrecipitation(windguruForecastMap, i),
-                    calculateWave()
-            ));
-        }
-
-        return transformedWeatherForecasts;
+        return IntStream.range(0, DAYS.size())
+                .mapToObj(i -> new WeatherForecast(
+                        DAYS.get(i),
+                        calculateWind(windguruForecastMap, i),
+                        calculateGusts(windguruForecastMap, i),
+                        calculateWindDirection(windguruForecastMap, i),
+                        calculateTemperature(windguruForecastMap, i),
+                        calculatePrecipitation(windguruForecastMap, i),
+                        calculateWave()
+                ))
+                .collect(Collectors.toList());
     }
 
     private static int calculateWave() {
