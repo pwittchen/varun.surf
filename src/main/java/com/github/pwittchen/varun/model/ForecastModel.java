@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.model.windguru;
+package com.github.pwittchen.varun.model;
 
-public enum ForecastModelWindguru {
+public enum ForecastModel {
     GFS, UWRFTAR, WRFGIS, ALL;
 
     @Override

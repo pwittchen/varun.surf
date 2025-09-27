@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.model.windguru;
+package com.github.pwittchen.varun.model;
 
-public record WeatherForecastWindguru(
+public record ForecastWg(
         String label,
         int windSpeed,
         int gust,

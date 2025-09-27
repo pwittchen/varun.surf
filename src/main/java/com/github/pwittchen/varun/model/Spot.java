@@ -11,7 +11,7 @@ public record Spot(
         String webcamUrl,
         String locationUrl,
         String lastUpdated,
-        WeatherLive currentConditions,
-        List<WeatherForecast> forecast
+        LiveConditions currentConditions,
+        List<Forecast> forecast
 ) {
 }

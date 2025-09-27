@@ -1,27 +1,27 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
-import com.github.pwittchen.varun.model.windguru.ForecastModelWindguru;
+import com.github.pwittchen.varun.model.ForecastModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class WeatherForecastServiceTest {
+class ForecastServiceTest {
 
-    private WeatherForecastService weatherForecastService;
+    private ForecastService forecastService;
 
     @BeforeEach
     void setUp() {
         final WeatherForecastMapper weatherForecastMapper = new WeatherForecastMapper();
-        weatherForecastService = new WeatherForecastService(weatherForecastMapper);
+        forecastService = new ForecastService(weatherForecastMapper);
     }
 
     @Test
     void shouldParseWeatherForecast() {
         StepVerifier
-                .create(weatherForecastService.getForecast(43, ForecastModelWindguru.GFS))
+                .create(forecastService.getForecast(43, ForecastModel.GFS))
                 .assertNext(weatherForecast -> {
                     assertThat(weatherForecast).isNotNull();
                 })

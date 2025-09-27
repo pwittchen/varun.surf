@@ -1,9 +1,9 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
-import com.github.pwittchen.varun.model.WeatherForecast;
-import com.github.pwittchen.varun.model.windguru.ForecastModelWindguru;
-import com.github.pwittchen.varun.model.windguru.WeatherForecastWindguru;
+import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastModel;
+import com.github.pwittchen.varun.model.ForecastWg;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -26,17 +26,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class WeatherForecastService {
+public class ForecastService {
     private static final String URL = "https://micro.windguru.cz";
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
 
-    public WeatherForecastService(WeatherForecastMapper mapper) {
+    public ForecastService(WeatherForecastMapper mapper) {
         this.httpClient = new OkHttpClient();
         this.mapper = mapper;
     }
 
-    public Mono<List<WeatherForecast>> getForecast(int spotId, ForecastModelWindguru model) {
+    public Mono<List<Forecast>> getForecast(int spotId, ForecastModel model) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
 
         if (httpUrl == null) {
@@ -84,7 +84,7 @@ public class WeatherForecastService {
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
-    private List<WeatherForecastWindguru> retrieveWgForecasts(final String microText) {
+    private List<ForecastWg> retrieveWgForecasts(final String microText) {
         String[] lines = microText.split("\\r?\\n");
         Pattern row = Pattern.compile(
                 "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s+\\d{1,2}\\.\\s+\\d{2}h\\s+" +    // date label groups: Ddd dd. Hhh
@@ -110,7 +110,7 @@ public class WeatherForecastService {
                 .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    private Optional<WeatherForecastWindguru> parseLineToForecast(String line, Pattern row) {
+    private Optional<ForecastWg> parseLineToForecast(String line, Pattern row) {
         line = line.trim().replace('\u00A0', ' '); // non-breaking spaces → space
         Matcher m = row.matcher(line);
         if (m.find()) {
@@ -119,8 +119,8 @@ public class WeatherForecastService {
         return Optional.empty();
     }
 
-    private WeatherForecastWindguru createForecast(String line, Matcher m) {
-        return new WeatherForecastWindguru(
+    private ForecastWg createForecast(String line, Matcher m) {
+        return new ForecastWg(
                 line.substring(0, line.indexOf('h') + 1),
                 parseNumber(m.group(2)).intValue(),
                 parseNumber(m.group(3)).intValue(),

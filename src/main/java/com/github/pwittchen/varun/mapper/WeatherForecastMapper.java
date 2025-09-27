@@ -1,10 +1,9 @@
 package com.github.pwittchen.varun.mapper;
 
-import com.github.pwittchen.varun.model.WeatherForecast;
-import com.github.pwittchen.varun.model.windguru.WeatherForecastWindguru;
+import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastWg;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +17,10 @@ public class WeatherForecastMapper {
     private static final List<String> DAYS = Arrays.asList("Today", "Tomorrow", "Day 3", "Day 4", "Day 5");
     private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
 
-    public List<WeatherForecast> toWeatherForecasts(List<WeatherForecastWindguru> forecasts) {
-        final Map<String, WeatherForecastWindguru> windguruForecastMap = getWgForecastMapByDay(forecasts);
+    public List<Forecast> toWeatherForecasts(List<ForecastWg> forecasts) {
+        final Map<String, ForecastWg> windguruForecastMap = getWgForecastMapByDay(forecasts);
         return IntStream.range(0, DAYS.size())
-                .mapToObj(i -> new WeatherForecast(
+                .mapToObj(i -> new Forecast(
                         DAYS.get(i),
                         calculateWind(windguruForecastMap, i),
                         calculateGusts(windguruForecastMap, i),
@@ -32,7 +31,7 @@ public class WeatherForecastMapper {
                 .collect(Collectors.toList());
     }
 
-    private double calculatePrecipitation(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculatePrecipitation(Map<String, ForecastWg> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -42,7 +41,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private double calculateTemperature(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateTemperature(Map<String, ForecastWg> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -52,7 +51,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private String calculateWindDirection(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private String calculateWindDirection(Map<String, ForecastWg> map, int dayIndex) {
         double avgWindDirectionDegrees = map
                 .entrySet()
                 .stream()
@@ -70,7 +69,7 @@ public class WeatherForecastMapper {
         return DIRECTIONS.get(index);
     }
 
-    private double calculateGusts(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateGusts(Map<String, ForecastWg> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -80,7 +79,7 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private double calculateWind(Map<String, WeatherForecastWindguru> map, int dayIndex) {
+    private double calculateWind(Map<String, ForecastWg> map, int dayIndex) {
         return map
                 .entrySet()
                 .stream()
@@ -90,12 +89,12 @@ public class WeatherForecastMapper {
                 .orElse(0);
     }
 
-    private Map<String, WeatherForecastWindguru> getWgForecastMapByDay(List<WeatherForecastWindguru> forecasts) {
-        final Map<String, WeatherForecastWindguru> windguruForecastMap = new HashMap<>();
+    private Map<String, ForecastWg> getWgForecastMapByDay(List<ForecastWg> forecasts) {
+        final Map<String, ForecastWg> windguruForecastMap = new HashMap<>();
         int dayIndex = 0;
         String labelPrefix = "";
 
-        for (WeatherForecastWindguru f : forecasts) {
+        for (ForecastWg f : forecasts) {
             if (dayIndex == DAYS.size() - 1) {
                 break;
             }
