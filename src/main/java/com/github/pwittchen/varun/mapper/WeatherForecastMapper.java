@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.mapper;
 
 import com.github.pwittchen.varun.model.WeatherForecast;
 import com.github.pwittchen.varun.model.windguru.WeatherForecastWindguru;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WeatherForecastWindguruToWeatherForecast {
+@Component
+public class WeatherForecastMapper {
 
     private static final List<String> DAYS = Arrays.asList("Today", "Tomorrow", "Day 3", "Day 4", "Day 5");
     private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
 
-    List<WeatherForecast> toWeatherForecasts(List<WeatherForecastWindguru> forecasts) {
+    public List<WeatherForecast> toWeatherForecasts(List<WeatherForecastWindguru> forecasts) {
         final List<WeatherForecast> transformedWeatherForecasts = new ArrayList<>();
         final Map<String, WeatherForecastWindguru> windguruForecastMap = getWgForecastMapByDay(forecasts);
 
@@ -102,7 +104,7 @@ public class WeatherForecastWindguruToWeatherForecast {
         String labelPrefix = "";
 
         for (WeatherForecastWindguru f : forecasts) {
-            if (dayIndex == DAYS.size()) {
+            if (dayIndex == DAYS.size() - 1) {
                 break;
             }
             if (!f.label().substring(0, 2).equals(labelPrefix) && !labelPrefix.isEmpty()) {

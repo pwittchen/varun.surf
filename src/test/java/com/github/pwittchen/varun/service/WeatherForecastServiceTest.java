@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.windguru.ForecastModelWindguru;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,8 @@ class WeatherForecastServiceTest {
 
     @BeforeEach
     void setUp() {
-        weatherForecastService = new WeatherForecastService();
+        final WeatherForecastMapper weatherForecastMapper = new WeatherForecastMapper();
+        weatherForecastService = new WeatherForecastService(weatherForecastMapper);
     }
 
     @Test
