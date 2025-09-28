@@ -31,11 +31,13 @@ public class AggregatorService {
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
     private final LiveConditionsService liveConditionsService;
+    private final AiService aiService;
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
             ForecastService forecastService,
-            LiveConditionsService liveConditionsService) {
+            LiveConditionsService liveConditionsService,
+            AiService aiService) {
         this.spots = new ArrayList<>();
         this.forecasts = new HashMap<>();
         this.liveConditions = new HashMap<>();
@@ -43,6 +45,7 @@ public class AggregatorService {
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.liveConditionsService = liveConditionsService;
+        this.aiService = aiService;
     }
 
     @PostConstruct
