@@ -49,7 +49,7 @@ public class AggregatorService {
     }
 
     @PostConstruct
-    public void init() {
+    void init() {
         log.info("Loading spots");
         spots = spotsDataProvider
                 .getSpots()
@@ -61,16 +61,19 @@ public class AggregatorService {
     void fetchForecastsEveryThreeHours() {
         try {
             log.info("Fetching forecasts");
-            forecasts.clear();
-            forecasts = fetchForecasts();
+            fetchForecasts();
         } catch (Exception e) {
             //todo: consider using resilience4j and add retry here
             log.error("Could not fetch forecasts", e);
         }
     }
 
+    public List<Spot> getSpots() {
+        return spots;
+    }
+
     @SuppressWarnings("preview")
-    public Map<Integer, List<Forecast>> fetchForecasts() throws Exception {
+    private void fetchForecasts() throws Exception {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
@@ -81,11 +84,17 @@ public class AggregatorService {
 
             scope.join().throwIfFailed();
 
-            return tasks
+            forecasts.clear();
+            forecasts = tasks
                     .stream()
                     .map(StructuredTaskScope.Subtask::get)
-                    .filter(pair -> pair.getValue1() != null)
+                    .filter(pair -> !pair.getValue1().isEmpty())
                     .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+            spots.forEach(spot -> {
+                spot.forecast().clear();
+                spot.forecast().addAll(forecasts.get(spot.wgId()));
+            });
         }
     }
 }
