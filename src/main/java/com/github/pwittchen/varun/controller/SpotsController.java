@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/")
 public class SpotsController {
@@ -23,7 +25,7 @@ public class SpotsController {
     }
 
     @GetMapping("health")
-    public Mono<String> health() {
-        return Mono.just("UP");
+    public Mono<Map<String, String>> health() {
+        return Mono.just(Map.of("status", "UP"));
     }
 }
