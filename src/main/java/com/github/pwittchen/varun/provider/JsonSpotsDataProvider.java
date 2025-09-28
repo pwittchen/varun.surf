@@ -6,7 +6,6 @@ import com.google.gson.reflect.TypeToken;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -29,8 +28,6 @@ public class JsonSpotsDataProvider implements SpotsDataProvider {
 
     @Override
     public Flux<Spot> getSpots() {
-        return Flux
-                .fromIterable(spots)
-                .subscribeOn(Schedulers.boundedElastic());
+        return Flux.fromIterable(spots);
     }
 }
