@@ -48,7 +48,7 @@ public class AggregatorService {
     @PostConstruct
     public void init() {
         log.info("Loading spots");
-        this.spots = spotsDataProvider
+        spots = spotsDataProvider
                 .getSpots()
                 .toStream()
                 .toList();
@@ -58,8 +58,8 @@ public class AggregatorService {
     void fetchForecastsEveryThreeHours() {
         try {
             log.info("Fetching forecasts");
-            this.forecasts.clear();
-            this.forecasts = fetchForecasts();
+            forecasts.clear();
+            forecasts = fetchForecasts();
         } catch (Exception e) {
             log.error("Could not fetch forecasts", e);
         }
