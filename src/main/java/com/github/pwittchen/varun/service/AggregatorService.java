@@ -71,7 +71,7 @@ public class AggregatorService {
 
     @Recover
     void recoverFromFetchingForecasts(FetchingForecastException e) {
-        log.error("Failed while fetching forecasts in 3 attempts", e);
+        log.error("Failed while fetching forecasts after 3 attempts", e);
     }
 
     public List<Spot> getSpots() {
