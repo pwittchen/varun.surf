@@ -1,8 +1,8 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.exception.FetchingForecastException;
-import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.CurrentConditions;
+import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import jakarta.annotation.PostConstruct;
@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("preview")
 public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
@@ -70,7 +70,7 @@ public class AggregatorService {
     }
 
     @Recover
-    public void recoverFromFetchingForecasts(FetchingForecastException e) {
+    void recoverFromFetchingForecasts(FetchingForecastException e) {
         log.error("Failed while fetching forecasts in 3 attempts", e);
     }
 
@@ -78,7 +78,6 @@ public class AggregatorService {
         return spots;
     }
 
-    @SuppressWarnings("preview")
     private void fetchForecasts() throws FetchingForecastException {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
@@ -98,7 +97,6 @@ public class AggregatorService {
         }
     }
 
-    @SuppressWarnings("preview")
     private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, List<Forecast>>>> tasks) {
         forecasts.clear();
         forecasts = tasks
