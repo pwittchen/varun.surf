@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.model;
 
-public final class EmptyCurrentConditionsFilter {
+public final class LiveConditionsEmptyFilter {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof LiveConditions(

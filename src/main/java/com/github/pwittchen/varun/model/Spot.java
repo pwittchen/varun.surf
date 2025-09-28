@@ -14,7 +14,7 @@ public record Spot(
         String icmUrl,
         String webcamUrl,
         String locationUrl,
-        @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = EmptyCurrentConditionsFilter.class)
+        @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LiveConditionsEmptyFilter.class)
         LiveConditions currentConditions,
         List<Forecast> forecast,
         String aiAnalysis,
