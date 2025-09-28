@@ -61,6 +61,7 @@ public class AggregatorService {
             forecasts.clear();
             forecasts = fetchForecasts();
         } catch (Exception e) {
+            //todo: consider using resilience4j and add retry here
             log.error("Could not fetch forecasts", e);
         }
     }
