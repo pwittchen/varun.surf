@@ -76,7 +76,7 @@ public class AggregatorService {
     private void fetchForecasts() throws Exception {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
-        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
             var tasks = spotWgIds
                     .stream()
                     .map(id -> scope.fork(() -> Pair.with(id, forecastService.getForecast(id).block())))
@@ -84,21 +84,27 @@ public class AggregatorService {
 
             scope.join().throwIfFailed();
 
-            forecasts.clear();
-            forecasts = tasks
-                    .stream()
-                    .map(StructuredTaskScope.Subtask::get)
-                    .filter(pair -> !pair.getValue1().isEmpty())
-                    .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
-
-            spots.forEach(spot -> {
-                spot.forecast().clear();
-                spot.forecast().addAll(forecasts.get(spot.wgId()));
-            });
-
-            spots = spots
-                    .stream()
-                    .map(Spot::withUpdatedTimestamp).toList();
+            updateSpotsAndForecasts(tasks);
         }
+    }
+
+    @SuppressWarnings("preview")
+    private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, List<Forecast>>>> tasks) {
+        forecasts.clear();
+        forecasts = tasks
+                .stream()
+                .map(StructuredTaskScope.Subtask::get)
+                .filter(pair -> !pair.getValue1().isEmpty())
+                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        spots.forEach(spot -> {
+            spot.forecast().clear();
+            spot.forecast().addAll(forecasts.get(spot.wgId()));
+        });
+
+        spots = spots
+                .stream()
+                .map(Spot::withUpdatedTimestamp)
+                .toList();
     }
 }
