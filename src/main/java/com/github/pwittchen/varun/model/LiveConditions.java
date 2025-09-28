@@ -8,7 +8,4 @@ public record LiveConditions(
         int temp,
         int precipitation
 ) {
-    public LiveConditions() {
-        this("0",0,0,"",0,0);
-    }
 }

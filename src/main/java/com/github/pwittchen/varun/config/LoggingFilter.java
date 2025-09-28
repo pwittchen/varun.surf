@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 @Configuration
 public class LoggingFilter {
-
     private static final Logger log = LoggerFactory.getLogger(LoggingFilter.class);
 
     @Bean
