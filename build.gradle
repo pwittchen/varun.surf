@@ -26,6 +26,10 @@ tasks.withType(JavaExec) {
     jvmArgs '--enable-preview'
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
 repositories {
     mavenCentral()
 }
@@ -51,8 +55,4 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
     }
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
