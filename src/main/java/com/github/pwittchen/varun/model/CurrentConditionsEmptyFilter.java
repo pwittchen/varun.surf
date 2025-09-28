@@ -1,9 +1,9 @@
 package com.github.pwittchen.varun.model;
 
-public final class LiveConditionsEmptyFilter {
+public final class CurrentConditionsEmptyFilter {
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof LiveConditions(
+        if (!(obj instanceof CurrentConditions(
                 String date,
                 int wind,
                 int gusts,

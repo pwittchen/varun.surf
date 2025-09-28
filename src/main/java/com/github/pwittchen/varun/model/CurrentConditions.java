@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.model;
 
-public record LiveConditions(
+public record CurrentConditions(
         String date,
         int wind,
         int gusts,

@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.LiveConditions;
+import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import jakarta.annotation.PostConstruct;
@@ -25,26 +25,26 @@ public class AggregatorService {
 
     private List<Spot> spots;
     private Map<Integer, List<Forecast>> forecasts;
-    private Map<Integer, LiveConditions> liveConditions;
+    private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
 
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
-    private final LiveConditionsService liveConditionsService;
+    private final CurrentConditionsService currentConditionsService;
     private final AiService aiService;
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
             ForecastService forecastService,
-            LiveConditionsService liveConditionsService,
+            CurrentConditionsService currentConditionsService,
             AiService aiService) {
         this.spots = new ArrayList<>();
         this.forecasts = new HashMap<>();
-        this.liveConditions = new HashMap<>();
+        this.currentConditions = new HashMap<>();
         this.aiAnalysis = new HashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
-        this.liveConditionsService = liveConditionsService;
+        this.currentConditionsService = currentConditionsService;
         this.aiService = aiService;
     }
 
