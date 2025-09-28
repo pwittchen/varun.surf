@@ -1,5 +1,9 @@
 package com.github.pwittchen.varun.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public record Spot(
@@ -10,13 +14,33 @@ public record Spot(
         String icmUrl,
         String webcamUrl,
         String locationUrl,
+        @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = EmptyCurrentConditionsFilter.class)
         LiveConditions currentConditions,
         List<Forecast> forecast,
         String aiAnalysis,
-        SpotInfo spotInfo
+        SpotInfo spotInfo,
+        String lastUpdated
 ) {
     public int wgId() {
         String[] parts = this.windguruUrl.split("/");
         return Integer.parseInt(parts[parts.length - 1]);
     }
+
+    public Spot withUpdatedTimestamp() {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windFinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.forecast,
+                this.aiAnalysis,
+                this.spotInfo,
+                ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+        );
+    }
+
 }

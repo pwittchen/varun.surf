@@ -95,6 +95,10 @@ public class AggregatorService {
                 spot.forecast().clear();
                 spot.forecast().addAll(forecasts.get(spot.wgId()));
             });
+
+            spots = spots
+                    .stream()
+                    .map(Spot::withUpdatedTimestamp).toList();
         }
     }
 }
