@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Spot;
@@ -8,6 +9,9 @@ import jakarta.annotation.PostConstruct;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Collectors;
 
@@ -58,14 +63,15 @@ public class AggregatorService {
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
-    void fetchForecastsEveryThreeHours() {
-        try {
-            log.info("Fetching forecasts");
-            fetchForecasts();
-        } catch (Exception e) {
-            //todo: consider using resilience4j and add retry here
-            log.error("Could not fetch forecasts", e);
-        }
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 3000))
+    void fetchForecastsEveryThreeHours() throws FetchingForecastException {
+        log.info("Fetching forecasts");
+        fetchForecasts();
+    }
+
+    @Recover
+    public void recoverFromFetchingForecasts(FetchingForecastException e) {
+        log.error("Failed while fetching forecasts in 3 attempts", e);
     }
 
     public List<Spot> getSpots() {
@@ -73,7 +79,7 @@ public class AggregatorService {
     }
 
     @SuppressWarnings("preview")
-    private void fetchForecasts() throws Exception {
+    private void fetchForecasts() throws FetchingForecastException {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
@@ -82,7 +88,11 @@ public class AggregatorService {
                     .map(id -> scope.fork(() -> Pair.with(id, forecastService.getForecast(id).block())))
                     .toList();
 
-            scope.join().throwIfFailed();
+            try {
+                scope.join().throwIfFailed();
+            } catch (Exception e) {
+                throw new FetchingForecastException(e.getMessage());
+            }
 
             updateSpotsAndForecasts(tasks);
         }
