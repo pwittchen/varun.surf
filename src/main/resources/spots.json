@@ -24,7 +24,7 @@
   {
     "name": "Chałupy",
     "country": "Poland",
-    "windguruUrl": "https://www.windguru.cz/500761",
+    "windguruUrl": "https://www.windguru.cz/500757",
     "windFinderUrl": "https://www.windfinder.com/forecast/chalupy",
     "icmUrl": "https://www.meteo.pl/",
     "webcamUrl": "",
@@ -46,7 +46,7 @@
   {
     "name": "Rewa",
     "country": "Poland",
-    "windguruUrl": "https://www.windguru.cz/102",
+    "windguruUrl": "https://www.windguru.cz/500761",
     "windFinderUrl": "https://www.windfinder.com/forecast/rewa",
     "icmUrl": "https://www.meteo.pl/",
     "webcamUrl": "",
