@@ -9,9 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class Application {
-
+    @SuppressWarnings("UnnecessaryModifier")
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
 }
