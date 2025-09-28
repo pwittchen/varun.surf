@@ -15,8 +15,8 @@ public record Spot(
         String aiAnalysis,
         SpotInfo spotInfo
 ) {
-    public String wgId() {
+    public int wgId() {
         String[] parts = this.windguruUrl.split("/");
-        return parts[parts.length - 1];
+        return Integer.parseInt(parts[parts.length - 1]);
     }
 }

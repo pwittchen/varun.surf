@@ -13,7 +13,7 @@ see it online at: https://varun.surf
 ## running
 
 ```
-java -jar build/libs/*.jar
+java --enable-preview -jar build/libs/*.jar
 ```
 
 ## testing

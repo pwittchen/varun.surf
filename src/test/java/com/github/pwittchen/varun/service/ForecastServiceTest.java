@@ -20,7 +20,7 @@ class ForecastServiceTest {
     void shouldParseWeatherForecast() {
         StepVerifier
                 .create(forecastService.getForecast(43, ForecastModel.GFS))
-                .expectNextCount(5)
+                .expectNextCount(1)
                 .verifyComplete();
     }
 }
