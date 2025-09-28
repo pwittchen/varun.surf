@@ -67,24 +67,15 @@ public class AggregatorService {
 
     @SuppressWarnings("preview")
     public Map<Integer, List<Forecast>> fetchForecasts() throws Exception {
-        var spotWgIds = spots
-                .stream()
-                .map(Spot::wgId)
-                .toList();
+        var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
             var tasks = spotWgIds
                     .stream()
-                    .map(id -> scope.fork(() -> {
-                        // we are operating inside the virtual thread, so blocking operations are allowed here
-                        List<Forecast> forecasts = forecastService.getForecast(id).block();
-                        return Pair.with(id, forecasts);
-                    }))
+                    .map(id -> scope.fork(() -> Pair.with(id, forecastService.getForecast(id).block())))
                     .toList();
 
-            scope
-                    .join()
-                    .throwIfFailed();
+            scope.join().throwIfFailed();
 
             return tasks
                     .stream()
