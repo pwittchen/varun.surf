@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
-    
     private static final String URL = "https://micro.windguru.cz";
     private static final String FORECAST_MODEL = "gfs";
+    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1";
 
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
@@ -48,6 +48,7 @@ public class ForecastService {
                         .newBuilder()
                         .addQueryParameter("s", String.valueOf(wgSpotId))
                         .addQueryParameter("m", FORECAST_MODEL)
+                        .addQueryParameter("v", FORECAST_PARAMS)
                         .build()
                         .toString())
                 .get()
@@ -85,24 +86,21 @@ public class ForecastService {
 
     private List<ForecastWg> retrieveWgForecasts(final String microText) {
         String[] lines = microText.split("\\r?\\n");
+
+        // Example line:
+        // " Mon 29. 02h      15      20     257      20       -"
         Pattern row = Pattern.compile(
-                "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s+\\d{1,2}\\.\\s+\\d{2}h\\s+" +    // date label groups: Ddd dd. Hhh
-                        "(-?\\d+)?\\s+" +                                           // WSPD
-                        "(-?\\d+)?\\s+" +                                           // GUST
-                        "([A-Z]{1,3})\\s+" +                                        // WDIRN
-                        "(-?\\d+)?\\s+" +                                           // WDEG
-                        "(-?\\d+)?\\s+" +                                           // TMP
-                        "(-?\\d+)?\\s+" +                                           // SLP
-                        "(-|\\d{1,3})\\s+" +                                        // HCLD %
-                        "(-|\\d{1,3})\\s+" +                                        // MCLD %
-                        "(-|\\d{1,3})\\s+" +                                        // LCLD %
-                        "(-|\\d+(?:\\.\\d+)?)\\s+" +                                // APCP mm/3h or '-'
-                        "(-|\\d+(?:\\.\\d+)?)\\s+" +                                // APCP1 mm/1h or '-'
-                        "(-|\\d{1,3})$"                                             // RH %
+                        "^\\s*" +                             // leading spaces
+                        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +     // weekday
+                        "\\s+\\d{1,2}\\.\\s+\\d{2}h\\s+" +    // date label: "dd. hh"
+                        "(-?\\d+)\\s+" +                      // WSPD
+                        "(-?\\d+)\\s+" +                      // GUST
+                        "(-?\\d+)\\s+" +                      // WDEG  (degrees)
+                        "(-?\\d+)\\s+" +                      // TMP   (C)
+                        "(-|\\d+(?:\\.\\d+)?)\\s*$"           // APCP1 (mm/1h or '-')
         );
 
-        return Arrays
-                .stream(lines)
+        return Arrays.stream(lines)
                 .map(line -> parseLineToForecast(line, row))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -118,19 +116,12 @@ public class ForecastService {
 
     private ForecastWg createForecast(String line, Matcher m) {
         return new ForecastWg(
-                line.substring(0, line.indexOf('h') + 1),
+                m.group(1),
                 parseNumber(m.group(2)).intValue(),
                 parseNumber(m.group(3)).intValue(),
-                m.group(4),
+                parseNumber(m.group(4)).intValue(),
                 parseNumber(m.group(5)).intValue(),
-                parseNumber(m.group(6)).intValue(),
-                parseNumber(m.group(7)).intValue(),
-                parseNumber(m.group(8)).intValue(),
-                parseNumber(m.group(9)).intValue(),
-                parseNumber(m.group(10)).intValue(),
-                parseNumber(m.group(11)).intValue(),
-                parseNumber(m.group(12)).intValue(),
-                parseNumber(m.group(13)).intValue()
+                parseNumber(m.group(6)).intValue()
         );
     }
 
