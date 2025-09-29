@@ -5,7 +5,6 @@ public record CurrentConditions(
         int wind,
         int gusts,
         String  direction,
-        int temp,
-        int precipitation
+        int temp
 ) {
 }
