@@ -11,7 +11,7 @@
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Bay, flat water",
+      "type": "Lagoon, flat water",
       "bestWind": "W, SW",
       "waterTemp": "10-18°C",
       "experience": "Beginner to Advanced",
@@ -26,19 +26,19 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500757",
     "windFinderUrl": "https://www.windfinder.com/forecast/chalupy",
-    "icmUrl": "https://www.meteo.pl/",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/6E4C1Lj5R3xHHuZK6",
+    "icmUrl": "",
+    "webcamUrl": "https://surfpeople.pl/pogoda-chalupy-hel/",
+    "locationUrl": "https://maps.app.goo.gl/2TvyaY61UvBiRjU19",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Lagoon, flat water",
+      "type": "Lagoon, flat water, small chop",
       "bestWind": "W, SW",
       "waterTemp": "10-20°C",
       "experience": "Beginner to Advanced",
-      "launch": "Sandy Beach",
-      "hazards": "Crowded in summer, swimmers, fishing nets",
+      "launch": "Usually grass on the bay side, Sandy Beach on the sea side",
+      "hazards": "Crowded in summer, swimmers, fishing nets, campings near the shore",
       "season": "May-September. Very popular in summer, with many kiteschools and rental options.",
       "description": "Chałupy is a famous kitesurfing village on the Hel Peninsula, well known among Polish kiters. It offers flat water in the Puck Bay lagoon and a lively kitesurfing community."
     }
@@ -48,21 +48,21 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500761",
     "windFinderUrl": "https://www.windfinder.com/forecast/rewa",
-    "icmUrl": "https://www.meteo.pl/",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/5oMEGqotocnL7kXh9",
+    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=206&lang=pl",
+    "webcamUrl": "https://www.wiatrkadyny.pl/rewa/index.php",
+    "locationUrl": "https://maps.app.goo.gl/SJS6gR7Xxv14WwY86",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Sand spit, shallow water",
-      "bestWind": "W, NW, NE",
+      "type": "Sand spit, shallow water near spit, deep water further",
+      "bestWind": "W, NW, NE, E",
       "waterTemp": "10-18°C",
       "experience": "Beginner to Intermediate",
       "launch": "Sandy Beach",
-      "hazards": "Shallow sandbanks, strong currents outside lagoon",
+      "hazards": "Shallow sandbanks, strong currents outside lagoon, depending on wind direction you may be offshore",
       "season": "May-October, with best winds in autumn.",
-      "description": "Rewa is a very popular kitesurfing spot near Gdynia, known for its sand spit dividing the Puck Bay. It provides shallow, safe water for beginners and good training conditions."
+      "description": "Rewa is a very popular kitesurfing spot near Gdynia, known for its sand spit dividing the Puck Bay. It provides shallow, safe water near shore for beginners and good training conditions. Depending on the wind direction (W or E), on the one side of the spit, we can have completely flat water great for kite freestyle enthusiasts."
     }
   }
 ]
