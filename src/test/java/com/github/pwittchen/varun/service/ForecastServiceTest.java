@@ -1,7 +1,6 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
-import com.github.pwittchen.varun.model.ForecastModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
@@ -19,7 +18,7 @@ class ForecastServiceTest {
     @Test
     void shouldParseWeatherForecast() {
         StepVerifier
-                .create(forecastService.getForecast(43, ForecastModel.GFS))
+                .create(forecastService.getForecast(43))
                 .expectNextCount(1)
                 .verifyComplete();
     }

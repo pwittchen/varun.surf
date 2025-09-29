@@ -2,7 +2,6 @@ package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.ForecastModel;
 import com.github.pwittchen.varun.model.ForecastWg;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +26,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class ForecastService {
+    // for help regarding website usage, visit: https://micro.windguru.cz/help.php
+    
     private static final String URL = "https://micro.windguru.cz";
+    private static final String FORECAST_MODEL = "gfs";
+
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
 
@@ -37,10 +40,6 @@ public class ForecastService {
     }
 
     public Mono<List<Forecast>> getForecast(int wgSpotId) {
-        return getForecast(wgSpotId, ForecastModel.GFS);
-    }
-
-    public Mono<List<Forecast>> getForecast(int wgSpotId, ForecastModel model) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
         if (httpUrl == null) return Mono.empty();
         return executeHttpRequest(new Request
@@ -48,7 +47,7 @@ public class ForecastService {
                 .url(httpUrl
                         .newBuilder()
                         .addQueryParameter("s", String.valueOf(wgSpotId))
-                        .addQueryParameter("m", model.toString())
+                        .addQueryParameter("m", FORECAST_MODEL)
                         .build()
                         .toString())
                 .get()
