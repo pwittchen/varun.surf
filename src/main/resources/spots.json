@@ -301,7 +301,7 @@
       "bestWind": "SW",
       "waterTemp": "10-20°C",
       "experience": "Advanced",
-      "launch": "wide grass field",
+      "launch": "Grass field / meadow",
       "hazards": "Variable gusty winds, trees on the shore, narrow entrance to the water, wind shadows in the entrance with eastern winds, rocky bottom on the left from the entrance",
       "season": "April-October",
       "description": "Large reservoir in Silesia, one of the best kite spots in the southern Poland."
@@ -437,6 +437,28 @@
       "hazards": "Swimmers in summer, gusty wind, trees near the shore, fishermen, possible issues with the water cleanliness. The best wind is NW, but we can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water",
       "season": "April-September",
       "description": "Lake near the Gliwice"
+    }
+  },
+  {
+    "name": "Rybnik",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/29289",
+    "windfinderUrl": "https://www.windfinder.com/forecast/rybnik",
+    "icmUrl": "",
+    "webcamUrl": "https://fundacjaelektrownirybnik.pl/kamera/",
+    "locationUrl": "https://maps.app.goo.gl/VoxWnGG9gc8CxfvV9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lake",
+      "bestWind": "NW",
+      "waterTemp": "10-20°C",
+      "experience": "Advanced",
+      "launch": "Grass field / meadow",
+      "hazards": "Trees near the shore, wind shadows during the entrance, pier, concrete elements",
+      "season": "April-September",
+      "description": "Lake near the Rybnik."
     }
   },
   {
