@@ -8,9 +8,8 @@ public final class CurrentConditionsEmptyFilter {
                 int wind,
                 int gusts,
                 String direction,
-                int temp,
-                int precipitation
+                int temp
         ))) return false;
-        return date == null && direction == null && wind == 0 && gusts == 0 && temp == 0 && precipitation == 0;
+        return date == null && direction == null && wind == 0 && gusts == 0 && temp == 0;
     }
 }
