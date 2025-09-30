@@ -473,6 +473,28 @@
             cursor: grabbing;
         }
 
+        .favorite-icon {
+            position: absolute;
+            top: 21px;
+            right: 165px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            user-select: none;
+            z-index: 10;
+            filter: grayscale(100%);
+        }
+
+        .favorite-icon:hover {
+            filter: grayscale(0%);
+        }
+
+        .favorite-icon.favorited {
+            color: #fbbf24;
+            filter: grayscale(0%);
+        }
+
         .spot-header {
             display: flex;
             justify-content: space-between;
@@ -1137,6 +1159,9 @@
                 <span class="theme-icon" id="themeIcon">🌙</span>
                 <span id="themeText">Dark</span>
             </button>
+            <button class="theme-toggle" id="favoritesToggle" title="View favorites">
+                ⭐ Favorites
+            </button>
             <div class="search-container">
                 <input type="text"
                        class="search-input"
@@ -1223,9 +1248,52 @@
     let globalWeatherData = [];
     let availableCountries = new Set();
     let currentSearchQuery = '';
+    let showingFavorites = false;
 
     // Configuration
     const API_ENDPOINT = '/api/v1/spots';
+
+    // Favorites management
+    function getFavorites() {
+        const favorites = localStorage.getItem('favoriteSpots');
+        return favorites ? JSON.parse(favorites) : [];
+    }
+
+    function saveFavorites(favorites) {
+        localStorage.setItem('favoriteSpots', JSON.stringify(favorites));
+    }
+
+    function isFavorite(spotName) {
+        const favorites = getFavorites();
+        return favorites.includes(spotName);
+    }
+
+    function toggleFavorite(spotName) {
+        let favorites = getFavorites();
+        const index = favorites.indexOf(spotName);
+
+        if (index > -1) {
+            // Remove from favorites
+            favorites.splice(index, 1);
+        } else {
+            // Add to favorites
+            favorites.push(spotName);
+        }
+
+        saveFavorites(favorites);
+
+        // Update the UI
+        const favoriteIcon = document.querySelector(`.spot-card:has(.spot-name:contains("${spotName}")) .favorite-icon`);
+        if (favoriteIcon) {
+            favoriteIcon.classList.toggle('favorited');
+            favoriteIcon.title = isFavorite(spotName) ? 'Remove from favorites' : 'Add to favorites';
+        }
+
+        // If showing favorites, re-render to reflect changes
+        if (showingFavorites) {
+            renderFavorites();
+        }
+    }
 
     // Theme functionality
     function initTheme() {
@@ -1605,8 +1673,13 @@
                 `;
         }
 
+        // Check if spot is favorited
+        const isFavorited = isFavorite(spot.name);
+        const favoriteClass = isFavorited ? 'favorited' : '';
+
         card.innerHTML = `
                 <div class="drag-handle" draggable="true">𓃌</div>
+                <div class="favorite-icon ${favoriteClass}" onclick="toggleFavorite('${spot.name}')" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}">⭐</div>
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
@@ -1742,6 +1815,12 @@
                 // Save selected country to localStorage
                 localStorage.setItem('selectedCountry', country);
 
+                // Deselect favorites if changing country
+                if (showingFavorites) {
+                    showingFavorites = false;
+                    document.getElementById('favoritesToggle').classList.remove('active');
+                }
+
                 renderSpots(country, searchInput.value);
                 closeDropdown();
 
@@ -1838,6 +1917,12 @@
                 searchClear.classList.add('visible');
             } else {
                 searchClear.classList.remove('visible');
+            }
+
+            // Deselect favorites if searching
+            if (showingFavorites && value.trim() !== '') {
+                showingFavorites = false;
+                document.getElementById('favoritesToggle').classList.remove('active');
             }
 
             // Debounce search
@@ -1970,11 +2055,72 @@
         }
     }
 
+    // Favorites rendering
+    async function renderFavorites() {
+        showingFavorites = true;
+        const favoritesButton = document.getElementById('favoritesToggle');
+        favoritesButton.classList.add('active');
+
+        const spotsGrid = document.getElementById('spotsGrid');
+        const favorites = getFavorites();
+
+        if (favorites.length === 0) {
+            spotsGrid.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">⭐</span>
+                    <div class="error-title">No Favorites Yet</div>
+                    <div class="error-description">
+                        Click the star icon on any spot card to add it to your favorites.
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        showLoadingMessage();
+
+        try {
+            if (globalWeatherData.length === 0) {
+                const data = await fetchWeatherData();
+                globalWeatherData = data;
+            }
+
+            const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+
+            spotsGrid.innerHTML = '';
+            favoriteSpots.forEach(spot => {
+                spotsGrid.appendChild(createSpotCard(spot));
+            });
+            loadCardOrder();
+        } catch (error) {
+            console.error('Failed to load favorites:', error.message);
+            showErrorMessage(error);
+        }
+    }
+
+    function setupFavorites() {
+        const favoritesButton = document.getElementById('favoritesToggle');
+
+        favoritesButton.addEventListener('click', () => {
+            if (showingFavorites) {
+                // Exit favorites mode
+                showingFavorites = false;
+                favoritesButton.classList.remove('active');
+                const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+                renderSpots(savedCountry, '');
+            } else {
+                // Enter favorites mode
+                renderFavorites();
+            }
+        });
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
     window.openInfoModal = openInfoModal;
     window.closeInfoModal = closeInfoModal;
+    window.toggleFavorite = toggleFavorite;
 
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
@@ -1985,6 +2131,7 @@
         setupModals();
         setupSearch();
         setupDragAndDrop();
+        setupFavorites();
     });
 </script>
 </body>
