@@ -62,6 +62,10 @@ public class AggregatorService {
                 .toList();
     }
 
+    public List<Spot> getSpots() {
+        return spots;
+    }
+
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 3000))
     void fetchForecastsEveryThreeHours() throws FetchingForecastException {
@@ -72,10 +76,6 @@ public class AggregatorService {
     @Recover
     void recoverFromFetchingForecasts(FetchingForecastException e) {
         log.error("Failed while fetching forecasts after 3 attempts", e);
-    }
-
-    public List<Spot> getSpots() {
-        return spots;
     }
 
     private void fetchForecasts() throws FetchingForecastException {
