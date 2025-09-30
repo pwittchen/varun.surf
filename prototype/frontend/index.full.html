@@ -168,6 +168,57 @@
             width: 180px;
         }
 
+        .search-container {
+            position: relative;
+            width: 220px;
+        }
+
+        .search-input {
+            background: var(--gradient-button);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 12px 32px 12px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, .2);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+            display: none;
+            transition: color 0.2s ease;
+        }
+
+        .search-clear:hover {
+            color: var(--text-primary);
+        }
+
+        .search-clear.visible {
+            display: block;
+        }
+
         .dropdown-button {
             background: var(--gradient-button);
             border: 1px solid var(--border-secondary);
@@ -936,7 +987,7 @@
 
             .header-controls {
                 position: static;
-                flex-direction: row;
+                flex-direction: column;
                 align-items: center;
                 gap: 12px;
                 margin-bottom: 15px;
@@ -950,6 +1001,11 @@
                 min-width: 80px;
             }
 
+            .search-container {
+                width: 100%;
+                max-width: 300px;
+            }
+
             .dropdown-container {
                 width: auto;
                 max-width: none;
@@ -957,7 +1013,7 @@
             }
 
             .main-content {
-                margin-top: 170px;
+                margin-top: 220px;
             }
 
             .info-grid {
@@ -1030,6 +1086,14 @@
                 <span class="theme-icon" id="themeIcon">🌙</span>
                 <span id="themeText">Dark</span>
             </button>
+            <div class="search-container">
+                <input type="text"
+                       class="search-input"
+                       id="searchInput"
+                       placeholder="Search spots..."
+                       autocomplete="off">
+                <button class="search-clear" id="searchClear">✕</button>
+            </div>
             <div class="dropdown-container">
                 <button class="dropdown-button" id="dropdownButton">
                     <span id="selectedCountry">🌎 All</span>
@@ -1054,14 +1118,15 @@
 
     <footer class="footer">
         <div class="footer-content">
-            <p>weather forecast and real-time wind conditions dashboard for kitesurfers</p>
+            <p class="footer-disclaimer">weather forecast and real-time wind conditions dashboard for kitesurfers</p>
             <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank"
                                                                      class="footer-external-link">windguru.cz</a>, <a
                     href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a
                     href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a
                     href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
-            <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> | made in 🇵🇱 by <a
-                    href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> | v.
+            <p class="footer-disclaimer">🪲 <a href="https://github.com/pwittchen/varun.surf/issues">report the bug or request a feature</a></p>
+            <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> • ⌨️ <a href="https://github.com/pwittchen/varun.surf">open-source</a> • made in 🇵🇱 by <a
+                    href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • v.
                 0.0.1</p>
         </div>
     </footer>
@@ -1106,6 +1171,7 @@
 <script>
     let globalWeatherData = [];
     let availableCountries = new Set();
+    let currentSearchQuery = '';
 
     // Configuration
     const API_ENDPOINT = 'http://localhost:8001/mock-data.json';
@@ -1516,8 +1582,23 @@
 
     let currentFilter = 'all';
 
-    async function renderSpots(filter = 'all') {
+    function filterSpots(data, countryFilter, searchQuery) {
+        let filtered = countryFilter === 'all' ? data : data.filter(spot => spot.country === countryFilter);
+
+        if (searchQuery && searchQuery.trim() !== '') {
+            const query = searchQuery.toLowerCase().trim();
+            filtered = filtered.filter(spot => {
+                return spot.name.toLowerCase().includes(query) ||
+                       (spot.country && spot.country.toLowerCase().includes(query));
+            });
+        }
+
+        return filtered;
+    }
+
+    async function renderSpots(filter = 'all', searchQuery = '') {
         currentFilter = filter;
+        currentSearchQuery = searchQuery;
         const spotsGrid = document.getElementById('spotsGrid');
 
         showLoadingMessage();
@@ -1529,17 +1610,20 @@
             // Populate country dropdown with available countries
             populateCountryDropdown(data);
 
-            const filteredSpots = filter === 'all' ? data : data.filter(spot => spot.country === filter);
+            const filteredSpots = filterSpots(data, filter, searchQuery);
 
             spotsGrid.innerHTML = '';
             if (filteredSpots.length === 0) {
+                const message = searchQuery ?
+                    `No spots found matching "${searchQuery}"` :
+                    'No kitesurfing spots found for the selected filter.';
                 spotsGrid.innerHTML = `
                         <div class="error-message">
                             <span class="error-icon">🔍</span>
                             <div class="error-title">No Spots Found</div>
                             <div class="error-description">
-                                No kitesurfing spots found for the selected filter.<br/>
-                                Try selecting "All" or a different country.
+                                ${message}<br/>
+                                Try adjusting your search or selecting "All" countries.
                             </div>
                         </div>
                     `;
@@ -1557,6 +1641,7 @@
     function setupDropdownEvents() {
         const dropdownOptions = document.querySelectorAll('.dropdown-option');
         const selectedCountry = document.getElementById('selectedCountry');
+        const searchInput = document.getElementById('searchInput');
 
         dropdownOptions.forEach(option => {
             option.addEventListener('click', (e) => {
@@ -1566,7 +1651,7 @@
                 option.classList.add('selected');
 
                 selectedCountry.textContent = option.textContent;
-                renderSpots(option.dataset.country);
+                renderSpots(option.dataset.country, searchInput.value);
                 closeDropdown();
 
                 // Scroll to top smoothly after country selection
@@ -1649,6 +1734,45 @@
         });
     }
 
+    function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchClear = document.getElementById('searchClear');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+
+            // Show/hide clear button
+            if (value.trim() !== '') {
+                searchClear.classList.add('visible');
+            } else {
+                searchClear.classList.remove('visible');
+            }
+
+            // Debounce search
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                renderSpots(currentFilter, value);
+            }, 300);
+        });
+
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClear.classList.remove('visible');
+            renderSpots(currentFilter, '');
+            searchInput.focus();
+        });
+
+        // Clear search on Escape key
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchInput.value !== '') {
+                searchInput.value = '';
+                searchClear.classList.remove('visible');
+                renderSpots(currentFilter, '');
+            }
+        });
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -1660,6 +1784,7 @@
         renderSpots();
         setupDropdown();
         setupModals();
+        setupSearch();
     });
 </script>
 </body>
