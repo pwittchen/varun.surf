@@ -1247,13 +1247,13 @@
 
         if (error.message.includes('HTTP Error: 404')) {
             errorTitle = 'Data Source Not Found';
-            errorMessage = 'The weather data endpoint is not available. Please check if the server is running on http://localhost:8001.';
+            errorMessage = 'The weather data endpoint is not available. Please check if the server is running.';
         } else if (error.message.includes('HTTP Error: 500')) {
             errorTitle = 'Server Error';
             errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
         } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
             errorTitle = 'Connection Error';
-            errorMessage = 'Unable to connect to the weather service at http://localhost:8001. Please check your internet connection and ensure the server is running.';
+            errorMessage = 'Unable to connect to the weather service. Please check your internet connection and ensure the server is running.';
         } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
             errorTitle = 'Data Format Error';
             errorMessage = 'The weather data received is corrupted or in an unexpected format.';
