@@ -14,11 +14,8 @@ backend:
 
 frontend:
 
-minimize and copy `prototype/frontend/index.full.html` file to the spring boot static resources
-(required only after editing `index.full.html` file)
-
 ```
-cd prototype/frontend && ./build.sh && cd -
+./build_frontend.sh
 ```
 
 ## running
