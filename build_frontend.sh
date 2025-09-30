@@ -8,7 +8,6 @@ npx html-minifier-terser index.full.html -o index.min.html \
   --minify-css true
 sed -r 's/ {2,}/  /g' index.min.html > index.html
 rm index.min.html
-sed -i '' "s|http://localhost:8001/mock-data.json|/api/v1/spots|g" index.html
 cp index.html src/main/resources/static/index.html
 rm index.html
 echo "frontend was build successfully"
