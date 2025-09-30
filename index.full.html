@@ -1707,6 +1707,10 @@
                             <span class="loading-text">Loading forecasts...</span>
                         </div>
                     `;
+                    // Retry loading after 5 seconds
+                    setTimeout(() => {
+                        renderSpots(filter, searchQuery);
+                    }, 5000);
                 } else {
                     filteredSpots.forEach(spot => {
                         spotsGrid.appendChild(createSpotCard(spot));
