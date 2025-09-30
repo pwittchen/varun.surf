@@ -426,6 +426,7 @@
             box-shadow: none;
             border: 1px solid var(--border-primary);
             transition: border-color .2s ease;
+            position: relative;
         }
 
         .spot-card:hover {
@@ -434,12 +435,52 @@
             border-color: var(--border-secondary);
         }
 
+        .spot-card.dragging {
+            opacity: 0.3;
+            cursor: grabbing;
+        }
+
+        .drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            opacity: 0.8;
+            transform: scale(1.05);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, .5);
+            cursor: grabbing;
+        }
+
+        .drag-handle {
+            position: absolute;
+            top: 18px;
+            left: 28px;
+            font-size: 1.2rem;
+            cursor: grab;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+            user-select: none;
+            z-index: 10;
+            margin-bottom: 20px;
+            padding-bottom: 41px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .drag-handle:hover {
+            color: var(--text-primary);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
         .spot-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            margin-left: 22px;
             margin-bottom: 20px;
-            padding-bottom: 16px;
+            padding-bottom: 20px;
+            padding-left: 5px;
             border-bottom: 1px solid var(--border-primary);
         }
 
@@ -1021,6 +1062,14 @@
             .info-grid {
                 grid-template-columns: 1fr !important;
             }
+
+            .drag-handle {
+                display: none;
+            }
+
+            .spot-header {
+                margin-left: 0;
+            }
         }
 
         .footer {
@@ -1542,6 +1591,7 @@
         }
 
         card.innerHTML = `
+                <div class="drag-handle" draggable="true">𓃌</div>
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
@@ -1633,6 +1683,7 @@
                 filteredSpots.forEach(spot => {
                     spotsGrid.appendChild(createSpotCard(spot));
                 });
+                loadCardOrder();
             }
         } catch (error) {
             console.error('Failed to load weather:', error.message);
@@ -1775,6 +1826,112 @@
         });
     }
 
+    // Drag and drop functionality with persistence
+    function setupDragAndDrop() {
+        const spotsGrid = document.getElementById('spotsGrid');
+        let draggedCard = null;
+        let dragGhost = null;
+
+        spotsGrid.addEventListener('dragstart', (e) => {
+            const handle = e.target.closest('.drag-handle');
+            if (!handle) {
+                e.preventDefault();
+                return;
+            }
+
+            draggedCard = e.target.closest('.spot-card');
+            if (draggedCard) {
+                draggedCard.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+
+                // Create a visual clone of the dragged card
+                dragGhost = draggedCard.cloneNode(true);
+                dragGhost.classList.add('drag-ghost');
+                dragGhost.classList.remove('dragging');
+                dragGhost.style.width = draggedCard.offsetWidth + 'px';
+                dragGhost.style.position = 'fixed';
+                dragGhost.style.left = '-9999px';
+                dragGhost.style.top = '-9999px';
+                document.body.appendChild(dragGhost);
+
+                // Set the drag image to the clone
+                e.dataTransfer.setDragImage(dragGhost, e.offsetX, e.offsetY);
+            }
+        });
+
+        spotsGrid.addEventListener('dragend', (e) => {
+            if (draggedCard) {
+                draggedCard.classList.remove('dragging');
+                draggedCard = null;
+                saveCardOrder();
+            }
+
+            // Remove the ghost element
+            if (dragGhost) {
+                dragGhost.remove();
+                dragGhost = null;
+            }
+        });
+
+        spotsGrid.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(spotsGrid, e.clientY);
+            if (draggedCard && afterElement == null) {
+                spotsGrid.appendChild(draggedCard);
+            } else if (draggedCard && afterElement) {
+                spotsGrid.insertBefore(draggedCard, afterElement);
+            }
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.spot-card:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+    }
+
+    function saveCardOrder() {
+        const spotsGrid = document.getElementById('spotsGrid');
+        const cards = spotsGrid.querySelectorAll('.spot-card');
+        const order = Array.from(cards).map(card => {
+            return card.querySelector('.spot-name').textContent;
+        });
+
+        const orderKey = `spotOrder_${currentFilter}_${currentSearchQuery}`;
+        localStorage.setItem(orderKey, JSON.stringify(order));
+    }
+
+    function loadCardOrder() {
+        const orderKey = `spotOrder_${currentFilter}_${currentSearchQuery}`;
+        const savedOrder = localStorage.getItem(orderKey);
+
+        if (!savedOrder) return;
+
+        try {
+            const order = JSON.parse(savedOrder);
+            const spotsGrid = document.getElementById('spotsGrid');
+            const cards = Array.from(spotsGrid.querySelectorAll('.spot-card'));
+
+            order.forEach(spotName => {
+                const card = cards.find(c => c.querySelector('.spot-name').textContent === spotName);
+                if (card) {
+                    spotsGrid.appendChild(card);
+                }
+            });
+        } catch (e) {
+            console.error('Failed to load card order:', e);
+        }
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -1787,6 +1944,7 @@
         setupDropdown();
         setupModals();
         setupSearch();
+        setupDragAndDrop();
     });
 </script>
 </body>
