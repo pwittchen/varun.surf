@@ -1016,6 +1016,32 @@
             }
         }
 
+        .hamburger-menu {
+            display: none;
+            background: var(--gradient-button);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .hamburger-menu:hover {
+            background: var(--gradient-button-hover);
+            border-color: var(--border-hover);
+        }
+
+        .hamburger-menu.active {
+            background: var(--gradient-active);
+            border-color: var(--accent-primary);
+            color: #fff;
+        }
+
         @media (max-width: 980px) {
             .spots-grid {
                 grid-template-columns: 1fr;
@@ -1055,6 +1081,10 @@
                 font-size: 2.2rem;
             }
 
+            .hamburger-menu {
+                display: block;
+            }
+
             .header-controls {
                 position: static;
                 flex-direction: column;
@@ -1063,6 +1093,27 @@
                 margin-bottom: 15px;
                 width: 100%;
                 justify-content: center;
+                max-height: 0;
+                overflow: visible;
+                opacity: 0;
+                transition: max-height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
+                pointer-events: none;
+            }
+
+            .header-controls.show {
+                max-height: 500px;
+                opacity: 1;
+                margin-bottom: 15px;
+                pointer-events: auto;
+            }
+
+            .header-controls > * {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .header-controls.show > * {
+                opacity: 1;
             }
 
             .theme-toggle {
@@ -1085,7 +1136,11 @@
             }
 
             .main-content {
-                margin-top: 295px;
+                margin-top: 165px;
+            }
+
+            .main-content.menu-open {
+                margin-top: 380px;
             }
 
             .info-grid {
@@ -1161,7 +1216,8 @@
 <!-- FIXED HEADER -->
 <div class="fixed-header">
     <div class="header-content">
-        <div class="header-controls">
+        <button class="hamburger-menu" id="hamburgerMenu">☰</button>
+        <div class="header-controls" id="headerControls">
             <button class="theme-toggle" id="themeToggle">
                 <span class="theme-icon" id="themeIcon">🌙</span>
                 <span id="themeText">Dark</span>
@@ -2142,6 +2198,35 @@
         }
     }
 
+    // Hamburger menu functionality
+    function setupHamburgerMenu() {
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const headerControls = document.getElementById('headerControls');
+        const mainContent = document.querySelector('.main-content');
+
+        if (!hamburgerMenu) return;
+
+        hamburgerMenu.addEventListener('click', () => {
+            const isOpen = headerControls.classList.contains('show');
+
+            if (isOpen) {
+                headerControls.classList.remove('show');
+                hamburgerMenu.classList.remove('active');
+                hamburgerMenu.textContent = '☰';
+                if (mainContent) {
+                    mainContent.classList.remove('menu-open');
+                }
+            } else {
+                headerControls.classList.add('show');
+                hamburgerMenu.classList.add('active');
+                hamburgerMenu.textContent = '✕';
+                if (mainContent) {
+                    mainContent.classList.add('menu-open');
+                }
+            }
+        });
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -2159,6 +2244,7 @@
         setupSearch();
         setupDragAndDrop();
         setupFavorites();
+        setupHamburgerMenu();
     });
 </script>
 </body>
