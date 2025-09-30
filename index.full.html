@@ -158,6 +158,13 @@
             border-color: var(--border-hover);
         }
 
+        .theme-toggle.active {
+            background: var(--gradient-active);
+            border-color: var(--accent-primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(74, 158, 255, .4);
+        }
+
         .theme-icon {
             font-size: 1rem;
             transition: transform 0.3s ease;
@@ -1160,7 +1167,7 @@
                 <span id="themeText">Dark</span>
             </button>
             <button class="theme-toggle" id="favoritesToggle" title="View favorites">
-                ⭐ Favorites
+                ⭐
             </button>
             <div class="search-container">
                 <input type="text"
@@ -1282,12 +1289,23 @@
 
         saveFavorites(favorites);
 
-        // Update the UI
-        const favoriteIcon = document.querySelector(`.spot-card:has(.spot-name:contains("${spotName}")) .favorite-icon`);
-        if (favoriteIcon) {
-            favoriteIcon.classList.toggle('favorited');
-            favoriteIcon.title = isFavorite(spotName) ? 'Remove from favorites' : 'Add to favorites';
-        }
+        // Update all instances of this spot's favorite icon
+        const allFavoriteIcons = document.querySelectorAll('.favorite-icon');
+        allFavoriteIcons.forEach(icon => {
+            const card = icon.closest('.spot-card');
+            if (card) {
+                const spotNameElement = card.querySelector('.spot-name');
+                if (spotNameElement && spotNameElement.textContent === spotName) {
+                    if (index > -1) {
+                        icon.classList.remove('favorited');
+                        icon.title = 'Add to favorites';
+                    } else {
+                        icon.classList.add('favorited');
+                        icon.title = 'Remove from favorites';
+                    }
+                }
+            }
+        });
 
         // If showing favorites, re-render to reflect changes
         if (showingFavorites) {
@@ -1818,6 +1836,7 @@
                 // Deselect favorites if changing country
                 if (showingFavorites) {
                     showingFavorites = false;
+                    localStorage.setItem('showingFavorites', 'false');
                     document.getElementById('favoritesToggle').classList.remove('active');
                 }
 
@@ -2105,14 +2124,22 @@
             if (showingFavorites) {
                 // Exit favorites mode
                 showingFavorites = false;
+                localStorage.setItem('showingFavorites', 'false');
                 favoritesButton.classList.remove('active');
                 const savedCountry = localStorage.getItem('selectedCountry') || 'all';
                 renderSpots(savedCountry, '');
             } else {
                 // Enter favorites mode
+                localStorage.setItem('showingFavorites', 'true');
                 renderFavorites();
             }
         });
+
+        // Restore favorites state on page load
+        const savedFavoritesState = localStorage.getItem('showingFavorites');
+        if (savedFavoritesState === 'true') {
+            renderFavorites();
+        }
     }
 
     // Make functions global for onclick handlers
