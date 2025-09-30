@@ -1695,10 +1695,24 @@
                         </div>
                     `;
             } else {
-                filteredSpots.forEach(spot => {
-                    spotsGrid.appendChild(createSpotCard(spot));
-                });
-                loadCardOrder();
+                // Check if all spots have empty forecasts
+                const allForecastsEmpty = filteredSpots.every(spot =>
+                    !spot.forecast || spot.forecast.length === 0
+                );
+
+                if (allForecastsEmpty) {
+                    spotsGrid.innerHTML = `
+                        <div class="loading-message">
+                            <div class="loading-spinner"></div>
+                            <span class="loading-text">Loading forecasts...</span>
+                        </div>
+                    `;
+                } else {
+                    filteredSpots.forEach(spot => {
+                        spotsGrid.appendChild(createSpotCard(spot));
+                    });
+                    loadCardOrder();
+                }
             }
         } catch (error) {
             console.error('Failed to load weather:', error.message);
