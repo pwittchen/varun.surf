@@ -1337,6 +1337,7 @@
 
     function populateCountryDropdown(data) {
         const dropdownMenu = document.getElementById('dropdownMenu');
+        const selectedCountry = document.getElementById('selectedCountry');
         availableCountries.clear();
 
         // Collect all unique countries from the data
@@ -1349,15 +1350,27 @@
         // Sort countries alphabetically
         const sortedCountries = Array.from(availableCountries).sort();
 
+        // Get saved country from localStorage
+        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+
         // Build dropdown HTML
-        let dropdownHTML = '<div class="dropdown-option selected" data-country="all">🌎 All</div>';
+        let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 All</div>`;
 
         sortedCountries.forEach(country => {
             const countryFlag = getCountryFlag(country);
-            dropdownHTML += `<div class="dropdown-option" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
+            const isSelected = savedCountry === country ? 'selected' : '';
+            dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
         });
 
         dropdownMenu.innerHTML = dropdownHTML;
+
+        // Update the selected country text in the button
+        if (savedCountry !== 'all') {
+            const countryFlag = getCountryFlag(savedCountry);
+            selectedCountry.textContent = `${countryFlag} ${savedCountry.toUpperCase()}`;
+        } else {
+            selectedCountry.textContent = '🌎 All';
+        }
 
         // Re-attach event listeners for the new dropdown options
         setupDropdownEvents();
@@ -1706,7 +1719,12 @@
                 option.classList.add('selected');
 
                 selectedCountry.textContent = option.textContent;
-                renderSpots(option.dataset.country, searchInput.value);
+                const country = option.dataset.country;
+
+                // Save selected country to localStorage
+                localStorage.setItem('selectedCountry', country);
+
+                renderSpots(country, searchInput.value);
                 closeDropdown();
 
                 // Scroll to top smoothly after country selection
@@ -1942,7 +1960,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
-        renderSpots();
+        // Load saved country filter or default to 'all'
+        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+        renderSpots(savedCountry);
         setupDropdown();
         setupModals();
         setupSearch();
