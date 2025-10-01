@@ -60,6 +60,7 @@ public class AggregatorService {
                 .getSpots()
                 .toStream()
                 .toList();
+        log.info("Loaded {} spots", spots.size());
     }
 
     public List<Spot> getSpots() {
@@ -90,8 +91,11 @@ public class AggregatorService {
             try {
                 scope.join().throwIfFailed();
             } catch (Exception e) {
+                log.error("Error while fetching forecasts", e);
                 throw new FetchingForecastException(e.getMessage());
             }
+
+            log.info("Forecasts fetched");
 
             updateSpotsAndForecasts(tasks);
         }
