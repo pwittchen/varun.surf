@@ -113,6 +113,27 @@
             align-items: center;
         }
 
+        .spot-counter {
+            background: var(--gradient-button);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+            padding: 12px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 80px;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .spot-counter-number {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
         .main-content {
             margin-top: 120px;
             padding: 20px;
@@ -1252,6 +1273,10 @@
                     <!-- Dropdown options will be populated dynamically -->
                 </div>
             </div>
+            <div class="spot-counter" id="spotCounter">
+                <span class="spot-counter-number" id="spotCounterNumber">0</span>
+                <span>spots</span>
+            </div>
         </div>
         <h1 class="header-title">VARUN.SURF</h1>
     </div>
@@ -1808,6 +1833,13 @@
 
     let currentFilter = 'all';
 
+    function updateSpotCounter(count) {
+        const spotCounterNumber = document.getElementById('spotCounterNumber');
+        if (spotCounterNumber) {
+            spotCounterNumber.textContent = count;
+        }
+    }
+
     function filterSpots(data, countryFilter, searchQuery) {
         let filtered = countryFilter === 'all' ? data : data.filter(spot => spot.country === countryFilter);
 
@@ -1840,6 +1872,7 @@
 
             spotsGrid.innerHTML = '';
             if (filteredSpots.length === 0) {
+                updateSpotCounter(0);
                 const message = searchQuery ?
                     `No spots found matching "${searchQuery}"` :
                     'No kitesurfing spots found for the selected filter.';
@@ -1871,6 +1904,7 @@
                         renderSpots(filter, searchQuery);
                     }, 5000);
                 } else {
+                    updateSpotCounter(filteredSpots.length);
                     filteredSpots.forEach(spot => {
                         spotsGrid.appendChild(createSpotCard(spot));
                     });
@@ -2152,6 +2186,7 @@
         const favorites = getFavorites();
 
         if (favorites.length === 0) {
+            updateSpotCounter(0);
             spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⭐</span>
@@ -2174,6 +2209,7 @@
 
             const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
+            updateSpotCounter(favoriteSpots.length);
             spotsGrid.innerHTML = '';
             favoriteSpots.forEach(spot => {
                 spotsGrid.appendChild(createSpotCard(spot));
