@@ -530,77 +530,77 @@
   {
     "name": "Svencele",
     "country": "Lithuania",
-    "windguruUrl": "https://www.windguru.cz/138030",
-    "windfinderUrl": "https://www.windfinder.com/forecast/svencele",
+    "windguruUrl": "https://www.windguru.cz/1025272",
+    "windfinderUrl": "https://www.windfinder.com/forecast/dreverna",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/HzZxZrNrg3rASQj67",
+    "locationUrl": "https://maps.app.goo.gl/aMkBk1WSw94PqxhR8",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
       "type": "Lagoon (Curonian Lagoon)",
-      "bestWind": "W, SW",
+      "bestWind": "W, SW, S, NW",
       "waterTemp": "10-20°C",
       "experience": "Beginner to Advanced",
-      "launch": "Sandy beach",
-      "hazards": "Shallow and muddy water",
+      "launch": "Grass field / meadow",
+      "hazards": "Shallow and muddy water, deep water near port",
       "season": "May-September",
-      "description": "Flat water paradise in the Curonian Lagoon, very popular in Baltic states."
+      "description": "Flat water paradise in the Curonian Lagoon with famous Fenas kite spot, very popular in Baltic region. We have campsite for tents and campers here. There is also marina with modern houses for the rent."
     }
   },
   {
-    "name": "Rozkos",
+    "name": "Rozkoš",
     "country": "Czechia",
-    "windguruUrl": "https://www.windguru.cz/47961",
-    "windfinderUrl": "",
+    "windguruUrl": "https://www.windguru.cz/4",
+    "windfinderUrl": "https://www.windfinder.com/forecast/rozkos_mala_laguna",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/pC59QEn5cFhLr7wr6",
+    "locationUrl": "https://maps.app.goo.gl/gu3M1wn75qiuU8RX6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
       "type": "Lake",
-      "bestWind": "W, NW",
+      "bestWind": "NE, W, SW",
       "waterTemp": "10-22°C",
       "experience": "Beginner",
       "launch": "Grass shore",
       "hazards": "Variable wind",
       "season": "April-September",
-      "description": "Inland Czech lake spot, calm and good for practice."
+      "description": "Inland Czech lake spot, calm and good for practice. Two spots - Sejki Beach and Mala Laguna, which we can choose depending on the wind direction."
     }
   },
   {
-    "name": "Nove Mlyny",
+    "name": "Nové Mlýny\n",
     "country": "Czechia",
-    "windguruUrl": "https://www.windguru.cz/47962",
-    "windfinderUrl": "",
+    "windguruUrl": "https://www.windguru.cz/3",
+    "windfinderUrl": "https://www.windfinder.com/forecast/nove_mlynyat_mushow_beach",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/pC59QEn5cFhLr7wr6",
+    "locationUrl": "https://maps.app.goo.gl/hZqQ2cJAx4FPeKMfA",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
       "type": "Lake",
-      "bestWind": "W, NW",
+      "bestWind": "N, NW, S, SE",
       "waterTemp": "10-22°C",
       "experience": "Beginner",
       "launch": "Grass shore",
       "hazards": "Variable wind",
       "season": "April-September",
-      "description": "Inland Czech lake spot, calm and good for practice."
+      "description": "Inland Czech lake spot. Depending on the wind direction, we can choose spot near Žluťák, Yacht Club (south) or Kitespot u drátů (north)"
     }
   },
   {
     "name": "Lo Stagnone",
     "country": "Italy",
-    "windguruUrl": "https://www.windguru.cz/47846",
-    "windfinderUrl": "https://www.windfinder.com/forecast/lo_stagnone",
+    "windguruUrl": "https://www.windguru.cz/542133",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lo-stagnone_kiteboarding-club",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/zj1EvJjMFLB5yWMB8",
+    "locationUrl": "https://maps.app.goo.gl/B4nsfbMNK6vzcB1j8",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -609,7 +609,7 @@
       "bestWind": "NW, N",
       "waterTemp": "15-28°C",
       "experience": "Beginner to Advanced",
-      "launch": "Sandy beaches",
+      "launch": "Sandy and grass beaches",
       "hazards": "Shallow, muddy bottom",
       "season": "March-November",
       "description": "World-famous flat water lagoon in Sicily, ideal for freestyle training."
@@ -618,11 +618,11 @@
   {
     "name": "Punta Trettu",
     "country": "Italy",
-    "windguruUrl": "https://www.windguru.cz/47850",
+    "windguruUrl": "https://www.windguru.cz/436366",
     "windfinderUrl": "https://www.windfinder.com/forecast/punta_trettu",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/Hc3AZyfrWp4Lg3Fo6",
+    "locationUrl": "https://maps.app.goo.gl/68hnsAoxCmasWqBd6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -640,11 +640,11 @@
   {
     "name": "Porto Pollo",
     "country": "Italy",
-    "windguruUrl": "https://www.windguru.cz/47848",
-    "windfinderUrl": "https://www.windfinder.com/forecast/porto_pollo",
+    "windguruUrl": "https://www.windguru.cz/49162",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sardinia_porto_pollo",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/zWYXXp8p49fJpB4S8",
+    "locationUrl": "https://maps.app.goo.gl/kS4DnZhFZ2656CK67",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -659,6 +659,9 @@
       "description": "One of the most iconic kite bays in Sardinia with reliable wind."
     }
   },
+
+
+
   {
     "name": "Tarifa",
     "country": "Spain",
