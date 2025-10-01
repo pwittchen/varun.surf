@@ -502,6 +502,16 @@
             filter: grayscale(0%);
         }
 
+        @keyframes favorite-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .favorite-icon.animate {
+            animation: favorite-pulse 0.4s ease-out;
+        }
+
         .spot-header {
             display: flex;
             justify-content: space-between;
@@ -1358,6 +1368,10 @@
                         icon.classList.add('favorited');
                         icon.title = 'Remove from favorites';
                     }
+
+                    // Add animation
+                    icon.classList.add('animate');
+                    setTimeout(() => icon.classList.remove('animate'), 400);
                 }
             }
         });
