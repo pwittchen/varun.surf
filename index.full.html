@@ -483,7 +483,7 @@
         .favorite-icon {
             position: absolute;
             top: 21px;
-            right: 165px;
+            right: 159px;
             font-size: 0.9rem;
             cursor: pointer;
             color: var(--text-secondary);
@@ -1260,7 +1260,6 @@
             <p class="footer-disclaimer">weather forecast and real-time wind conditions dashboard for kitesurfers</p>
             <p class="footer-disclaimer">weather data provided by <a href="https://windguru.cz" target="_blank"
                                                                      class="footer-external-link">windguru.cz</a>, <a
-                    href="https://windfinder.com" target="_blank" class="footer-external-link">windfinder.com</a>, <a
                     href="https://wiatrkadyny.pl" target="_blank" class="footer-external-link">wiatrkadyny.pl</a>, <a
                     href="https://kiteriders.at" target="_blank" class="footer-external-link">kiteriders.at</a></p>
             <p class="footer-disclaimer">🪲 <a href="https://github.com/pwittchen/varun.surf/issues">report the bug or request a feature</a></p>
@@ -1765,8 +1764,8 @@
                 </div>
                 <div class="external-links">
                     ${spot.spotInfo ? `<span class="external-link info-link" onclick="openInfoModal('${spot.name}')"></span>` : ''}
-                    ${spot.windguruUrl ? `<a href="${spot.windguruUrl}" target="_blank" class="external-link">Windguru</a>` : ''}
-                    ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">Windfinder</a>` : ''}
+                    ${spot.windguruUrl ? `<a href="${spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
+                    ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">Webcam</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">Location</a>` : ''}
