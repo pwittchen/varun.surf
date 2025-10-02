@@ -659,17 +659,14 @@
       "description": "One of the most iconic kite bays in Sardinia with reliable wind."
     }
   },
-
-
-
   {
     "name": "Tarifa",
     "country": "Spain",
-    "windguruUrl": "https://www.windguru.cz/34",
-    "windfinderUrl": "https://www.windfinder.com/forecast/tarifa",
+    "windguruUrl": "https://www.windguru.cz/976270",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_rio_jara",
     "icmUrl": "",
-    "webcamUrl": "https://www.windytv.com/webcams/spain/tarifa",
-    "locationUrl": "https://maps.app.goo.gl/Z4t6Gc8aErSRb9y87",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/4uqxzKkEYRaTuarA9",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -681,17 +678,17 @@
       "launch": "Long sandy beach",
       "hazards": "Very strong wind, crowds",
       "season": "Year-round",
-      "description": "Kitesurf capital of Europe with powerful Levante and Poniente winds."
+      "description": "Kitesurf capital of Europe with powerful Levante and a bit lighter Poniente winds. There are a few kite spots: Balneario (small, for pros, no rescue), Rio Jara (wide beach, rescue boats), and Valdevaqueros. It's recommended to buy Sea Rescue package in case of riding in Levante wind. When the wind is too strong (over 40 kts) and your are not professional big air kitesurfer, it's recommended to visit Palmones spot, where wind will be around 20-25 kts at the same time."
     }
   },
   {
     "name": "Palmones",
     "country": "Spain",
-    "windguruUrl": "https://www.windguru.cz/47843",
+    "windguruUrl": "https://www.windguru.cz/48785",
     "windfinderUrl": "https://www.windfinder.com/forecast/palmones",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/ggZkA4tMGa4hWZbi8",
+    "locationUrl": "https://maps.app.goo.gl/H6r4dHLVgb7eW1fS9",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -703,17 +700,17 @@
       "launch": "Sandy river delta",
       "hazards": "Currents, tides",
       "season": "Year-round",
-      "description": "Flat water alternative to Tarifa during Levante."
+      "description": "Flat water alternative to Tarifa during strong Levante wind."
     }
   },
   {
-    "name": "Canos de Meca",
+    "name": "Los Caños de Meca",
     "country": "Spain",
-    "windguruUrl": "https://www.windguru.cz/47641",
+    "windguruUrl": "https://www.windguru.cz/5691",
     "windfinderUrl": "https://www.windfinder.com/forecast/canos_de_meca",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/Skppqnx1TTzLZ4Fz6",
+    "locationUrl": "https://maps.app.goo.gl/mepQXz3niEz8hqyd9",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -731,11 +728,11 @@
   {
     "name": "La Manga",
     "country": "Spain",
-    "windguruUrl": "https://www.windguru.cz/47700",
-    "windfinderUrl": "https://www.windfinder.com/forecast/la_manga",
+    "windguruUrl": "https://www.windguru.cz/48827",
+    "windfinderUrl": "https://www.windfinder.com/forecast/mar_menor_la_manga",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/VPhk7pU6KPVHLPwJ7",
+    "locationUrl": "https://maps.app.goo.gl/Sye88Ge8FvaWbkoP7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
