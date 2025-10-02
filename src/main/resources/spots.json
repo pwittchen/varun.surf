@@ -660,6 +660,28 @@
     }
   },
   {
+    "name": "Colico (Lake Como)",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/766",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lake_como_colico",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/6MuCVHFUHVfHgzwh7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lake Como, thermal winds",
+      "bestWind": "Breva S, Tivano N",
+      "waterTemp": "10-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Lake shore beaches",
+      "hazards": "Changing winds, mountains",
+      "season": "April-September",
+      "description": "Beautiful alpine lake spot with reliable thermal winds. Wind will be stronger than in the global forecast due to the mountain region. It works mostly during the summer due to the termal winds."
+    }
+  },
+  {
     "name": "Tarifa",
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/976270",
@@ -1141,28 +1163,6 @@
       "hazards": "Cold water, altitude",
       "season": "June-September",
       "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds."
-    }
-  },
-  {
-    "name": "Colico (Lake Como)",
-    "country": "Italy",
-    "windguruUrl": "https://www.windguru.cz/176",
-    "windfinderUrl": "https://www.windfinder.com/forecast/colico",
-    "icmUrl": "",
-    "webcamUrl": "https://www.lakecomo.com/webcam/colico",
-    "locationUrl": "https://maps.app.goo.gl/ASVZx7LgF1rxR7xd7",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Lake Como, thermal winds",
-      "bestWind": "Breva S, Tivano N",
-      "waterTemp": "10-24°C",
-      "experience": "Beginner to Advanced",
-      "launch": "Lake shore beaches",
-      "hazards": "Changing winds, mountains",
-      "season": "April-September",
-      "description": "Beautiful alpine lake spot with reliable thermal winds."
     }
   },
   {
