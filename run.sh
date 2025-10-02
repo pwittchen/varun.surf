@@ -13,11 +13,11 @@ sed -r 's/ {2,}/  /g' index.min.html > index.html
 rm index.min.html
 cp index.html src/main/resources/static/index.html
 rm index.html
-echo "✅  frontend was build successfully"
+echo "✅  frontend was built successfully"
 
 echo "🚧  starting backend build..."
 ./gradlew clean bootJar
-echo "✅  backend was build successfully"
+echo "✅  backend was built successfully"
 
 echo "🚀  starting the app"
 java --enable-preview -jar build/libs/*.jar
