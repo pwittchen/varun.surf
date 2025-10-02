@@ -916,6 +916,12 @@
                 localStorage.setItem('showingFavorites', 'true');
                 renderFavorites();
             }
+
+            // Scroll to top after toggling favorites
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
         // Restore favorites state on page load
