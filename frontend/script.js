@@ -511,10 +511,17 @@
         return filtered;
     }
 
-    async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false) {
+    async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, forceRefresh = false) {
         currentFilter = filter;
         currentSearchQuery = searchQuery;
         const spotsGrid = document.getElementById('spotsGrid');
+
+        // If we already have data and not forcing refresh, use cached data
+        if (globalWeatherData.length > 0 && !forceRefresh) {
+            const filteredSpots = filterSpots(globalWeatherData, filter, searchQuery);
+            displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
+            return;
+        }
 
         // Show loading message immediately
         showLoadingMessage();
@@ -538,51 +545,54 @@
             populateCountryDropdown(data);
 
             const filteredSpots = filterSpots(data, filter, searchQuery);
-
-            spotsGrid.innerHTML = '';
-            if (filteredSpots.length === 0) {
-                updateSpotCounter(0);
-                const message = searchQuery ?
-                    `No spots found matching "${searchQuery}"` :
-                    'No kitesurfing spots found for the selected filter.';
-                spotsGrid.innerHTML = `
-                        <div class="error-message">
-                            <span class="error-icon">🔍</span>
-                            <div class="error-title">No Spots Found</div>
-                            <div class="error-description">
-                                ${message}<br/>
-                                Try adjusting your search or selecting "All" countries.
-                            </div>
-                        </div>
-                    `;
-            } else {
-                // Check if all spots have empty forecasts
-                const allForecastsEmpty = filteredSpots.every(spot =>
-                    !spot.forecast || spot.forecast.length === 0
-                );
-
-                if (allForecastsEmpty) {
-                    spotsGrid.innerHTML = `
-                        <div class="loading-message">
-                            <div class="loading-spinner"></div>
-                            <span class="loading-text">Loading forecasts...</span>
-                        </div>
-                    `;
-                    // Retry loading after 5 seconds
-                    setTimeout(() => {
-                        renderSpots(filter, searchQuery);
-                    }, 5000);
-                } else {
-                    updateSpotCounter(filteredSpots.length);
-                    filteredSpots.forEach(spot => {
-                        spotsGrid.appendChild(createSpotCard(spot));
-                    });
-                    loadCardOrder();
-                }
-            }
+            displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
         } catch (error) {
             console.error('Failed to load weather:', error.message);
             showErrorMessage(error);
+        }
+    }
+
+    function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
+        spotsGrid.innerHTML = '';
+        if (filteredSpots.length === 0) {
+            updateSpotCounter(0);
+            const message = searchQuery ?
+                `No spots found matching "${searchQuery}"` :
+                'No kitesurfing spots found for the selected filter.';
+            spotsGrid.innerHTML = `
+                    <div class="error-message">
+                        <span class="error-icon">🔍</span>
+                        <div class="error-title">No Spots Found</div>
+                        <div class="error-description">
+                            ${message}<br/>
+                            Try adjusting your search or selecting "All" countries.
+                        </div>
+                    </div>
+                `;
+        } else {
+            // Check if all spots have empty forecasts
+            const allForecastsEmpty = filteredSpots.every(spot =>
+                !spot.forecast || spot.forecast.length === 0
+            );
+
+            if (allForecastsEmpty) {
+                spotsGrid.innerHTML = `
+                    <div class="loading-message">
+                        <div class="loading-spinner"></div>
+                        <span class="loading-text">Loading forecasts...</span>
+                    </div>
+                `;
+                // Retry loading after 5 seconds
+                setTimeout(() => {
+                    renderSpots(filter, searchQuery, false, true);
+                }, 5000);
+            } else {
+                updateSpotCounter(filteredSpots.length);
+                filteredSpots.forEach(spot => {
+                    spotsGrid.appendChild(createSpotCard(spot));
+                });
+                loadCardOrder();
+            }
         }
     }
 
