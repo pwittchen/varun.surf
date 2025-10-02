@@ -1429,7 +1429,7 @@
                 <span>GFS 13 KM</span>
             </div>
         </div>
-        <h1 class="header-title">VARUN.SURF</h1>
+        <h1 class="header-title"><span style="cursor: pointer;" onclick="window.scrollTo(0, 0); window.location.reload();">VARUN.SURF</span></h1>
     </div>
 </div>
 
@@ -2063,15 +2063,27 @@
         return filtered;
     }
 
-    async function renderSpots(filter = 'all', searchQuery = '') {
+    async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false) {
         currentFilter = filter;
         currentSearchQuery = searchQuery;
         const spotsGrid = document.getElementById('spotsGrid');
 
+        // Show loading message immediately
         showLoadingMessage();
+
+        // Wait at least 2 seconds before showing any content (unless skipped)
+        const startTime = Date.now();
+        const minDelay = skipDelay ? 0 : 2000;
 
         try {
             const data = await fetchWeatherData();
+            const elapsed = Date.now() - startTime;
+            const remainingDelay = minDelay - elapsed;
+
+            if (remainingDelay > 0) {
+                await new Promise(resolve => setTimeout(resolve, remainingDelay));
+            }
+
             globalWeatherData = data;
 
             // Populate country dropdown with available countries
@@ -2151,7 +2163,7 @@
                     document.getElementById('favoritesToggle').classList.remove('active');
                 }
 
-                renderSpots(country, searchInput.value);
+                renderSpots(country, searchInput.value, true);
                 closeDropdown();
 
                 // Scroll to top smoothly after country selection
@@ -2255,11 +2267,7 @@
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
-            // Debounce search
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                renderSpots(currentFilter, value);
-            }, 300);
+            renderSpots(currentFilter, value, true);
         });
 
         searchClear.addEventListener('click', () => {
@@ -2407,8 +2415,6 @@
             `;
             return;
         }
-
-        showLoadingMessage();
 
         try {
             if (globalWeatherData.length === 0) {
