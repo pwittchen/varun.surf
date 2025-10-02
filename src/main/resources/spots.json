@@ -923,17 +923,14 @@
       "description": "Southern Portugal coast with variety of flat lagoons and wave beaches."
     }
   },
-
-
-
   {
     "name": "Büsum",
     "country": "Germany",
-    "windguruUrl": "https://www.windguru.cz/132",
-    "windfinderUrl": "https://www.windfinder.com/forecast/buesum",
+    "windguruUrl": "https://www.windguru.cz/48225",
+    "windfinderUrl": "https://www.windfinder.com/forecast/buesum-hafen",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/PyEtD7bXubg4No2B8",
+    "locationUrl": "https://maps.app.goo.gl/AF8PgcBA7ojfpak28",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -951,11 +948,11 @@
   {
     "name": "Sankt Peter Ording",
     "country": "Germany",
-    "windguruUrl": "https://www.windguru.cz/134",
-    "windfinderUrl": "https://www.windfinder.com/forecast/sankt_peter_ording",
+    "windguruUrl": "https://www.windguru.cz/233",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sankt_peter_ording_schleswig_holstein_germany",
     "icmUrl": "",
-    "webcamUrl": "https://www.spo-nordsee.de/live-webcam/",
-    "locationUrl": "https://maps.app.goo.gl/6fG7GpN7QMQ5nTgH9",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/UUgQuqpJGEum8Yeo6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -973,11 +970,11 @@
   {
     "name": "Sylt",
     "country": "Germany",
-    "windguruUrl": "https://www.windguru.cz/137",
-    "windfinderUrl": "https://www.windfinder.com/forecast/sylt",
+    "windguruUrl": "https://www.windguru.cz/500821",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sylt_rantum_k4",
     "icmUrl": "",
-    "webcamUrl": "https://www.sylt.de/livecams",
-    "locationUrl": "https://maps.app.goo.gl/CUEXDyCBoUEqYz3R6",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/S8xRVH75rxSzmCND6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -992,6 +989,9 @@
       "description": "Germany’s wave capital, hosting world cup windsurf/kitesurf events."
     }
   },
+
+
+
   {
     "name": "Rømø",
     "country": "Denmark",
