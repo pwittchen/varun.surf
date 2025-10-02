@@ -731,6 +731,7 @@
             // Add delay before triggering search
             searchTimeout = setTimeout(() => {
                 renderSpots(currentFilter, value, true);
+                window.scrollTo(0, 0);
             }, 300);
         });
 
@@ -738,6 +739,7 @@
             searchInput.value = '';
             searchClear.classList.remove('visible');
             renderSpots(currentFilter, '');
+            window.scrollTo(0, 0);
             searchInput.focus();
         });
 
