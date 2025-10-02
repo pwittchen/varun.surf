@@ -2602,8 +2602,14 @@
                 return;
             }
 
-            if (!riderWeight || riderWeight < 40 || riderWeight > 150) {
+            if (!riderWeight || riderWeight > 150) {
                 calcWarning.innerHTML = '⚠️ <strong>INVALID RIDER WEIGHT</strong><br><br>Please enter a valid rider weight between 40 and 150 kg.';
+                calcWarning.style.display = 'block';
+                return;
+            }
+
+            if (riderWeight < 40) {
+                calcWarning.innerHTML = '⚠️ <strong>WEIGHT TOO LOW</strong><br><br>Your weight is too low and riding may be dangerous. Kitesurfing requires sufficient body weight for control and safety.';
                 calcWarning.style.display = 'block';
                 return;
             }
