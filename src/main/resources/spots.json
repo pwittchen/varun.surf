@@ -1345,7 +1345,7 @@
     }
   },
   {
-    "name": "Sal (Cabo Verde)",
+    "name": "Sal",
     "country": "Cape Verde",
     "windguruUrl": "https://www.windguru.cz/540",
     "windfinderUrl": "https://www.windfinder.com/forecast/sal",
@@ -1539,7 +1539,7 @@
       "launch": "River beaches",
       "hazards": "Currents, obstacles",
       "season": "April-September",
-      "description": "Legendary US spot in Columbia River Gorge, strong thermal winds."
+      "description": "Legendary US spot in Columbia River Gorge, strong thermal winds. Works mostly in the summer."
     }
   }
 ]
