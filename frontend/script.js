@@ -354,7 +354,7 @@
                     windTextClass = 'wind-extreme';
                 }
 
-                const tempClass = day.temp >= 20 ? 'temp-positive' : 'temp-negative';
+                const tempClass = day.temp >= 18 ? 'temp-positive' : 'temp-negative';
                 const windArrow = getWindArrow(day.direction);
                 const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
 
