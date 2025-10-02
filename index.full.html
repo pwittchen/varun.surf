@@ -524,9 +524,15 @@
         }
 
         @keyframes favorite-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .favorite-icon.animate {
@@ -1438,7 +1444,10 @@
     <footer class="footer">
         <div class="footer-content">
             <p class="footer-disclaimer">weather forecast and real-time wind conditions dashboard for kitesurfers</p>
-            <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> • <a href="https://github.com/pwittchen/varun.surf">open-source</a> • made in 🇵🇱 by <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • v. 0.0.1</p>
+            <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> • <a
+                    href="https://github.com/pwittchen/varun.surf">open-source</a> • made in 🇵🇱 by <a
+                    href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • v.
+                0.0.1</p>
         </div>
     </footer>
 </div>
@@ -1492,12 +1501,14 @@
         <div class="modal-content">
             <div class="calc-input-group">
                 <label class="calc-label" for="windSpeed">Wind Speed (knots)</label>
-                <input type="number" id="windSpeed" class="calc-input" placeholder="Enter wind speed in knots" min="5" max="50" step="1">
+                <input type="number" id="windSpeed" class="calc-input" placeholder="Enter wind speed in knots" min="5"
+                       max="50" step="1">
             </div>
 
             <div class="calc-input-group">
                 <label class="calc-label" for="riderWeight">Rider Weight (kg)</label>
-                <input type="number" id="riderWeight" class="calc-input" placeholder="Enter your weight in kg" min="40" max="150" step="1">
+                <input type="number" id="riderWeight" class="calc-input" placeholder="Enter your weight in kg" min="40"
+                       max="150" step="1">
             </div>
 
             <div class="calc-input-group">
@@ -1529,7 +1540,9 @@
                     <div class="calc-result-value" id="boardSize">-</div>
                 </div>
                 <div class="calc-disclaimer">
-                    ⚠️ These are general recommendations. Actual equipment choice may vary based on specific kite model, board type, and personal preference. Always consult with experienced riders or instructors for your local conditions.
+                    ⚠️ These are general recommendations. Actual equipment choice may vary based on specific kite model,
+                    board type, and personal preference. Always consult with experienced riders or instructors for your
+                    local conditions.
                 </div>
             </div>
         </div>
@@ -2042,7 +2055,7 @@
             const query = searchQuery.toLowerCase().trim();
             filtered = filtered.filter(spot => {
                 return spot.name.toLowerCase().includes(query) ||
-                       (spot.country && spot.country.toLowerCase().includes(query));
+                    (spot.country && spot.country.toLowerCase().includes(query));
             });
         }
 
@@ -2330,11 +2343,11 @@
                 const offset = y - box.top - box.height / 2;
 
                 if (offset < 0 && offset > closest.offset) {
-                    return { offset: offset, element: child };
+                    return {offset: offset, element: child};
                 } else {
                     return closest;
                 }
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            }, {offset: Number.NEGATIVE_INFINITY}).element;
         }
     }
 
