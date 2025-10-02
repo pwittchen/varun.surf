@@ -68,16 +68,13 @@
         const savedTheme = localStorage.getItem('theme') || 'dark';
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-        const themeText = document.getElementById('themeText');
 
         function updateTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             if (theme === 'light') {
                 themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light';
             } else {
                 themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark';
             }
             localStorage.setItem('theme', theme);
         }
