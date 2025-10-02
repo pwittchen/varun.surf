@@ -104,7 +104,7 @@ public class WeatherForecastMapper {
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
-                .mapToInt(entry -> entry.getValue().apcpMm1h())
+                .mapToInt(entry -> entry.getValue().apcpMm1h() * 10)
                 .average()
                 .orElse(0);
     }
