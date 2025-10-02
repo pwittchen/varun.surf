@@ -2597,17 +2597,20 @@
 
             // Validation
             if (!windSpeed || windSpeed < 5 || windSpeed > 50) {
-                alert('Please enter a valid wind speed between 5 and 50 knots');
+                calcWarning.innerHTML = '⚠️ <strong>INVALID WIND SPEED</strong><br><br>Please enter a valid wind speed between 5 and 50 knots.';
+                calcWarning.style.display = 'block';
                 return;
             }
 
             if (!riderWeight || riderWeight < 40 || riderWeight > 150) {
-                alert('Please enter a valid rider weight between 40 and 150 kg');
+                calcWarning.innerHTML = '⚠️ <strong>INVALID RIDER WEIGHT</strong><br><br>Please enter a valid rider weight between 40 and 150 kg.';
+                calcWarning.style.display = 'block';
                 return;
             }
 
             if (!skillLevel) {
-                alert('Please select your skill level and conditions');
+                calcWarning.innerHTML = '⚠️ <strong>SKILL LEVEL REQUIRED</strong><br><br>Please select your skill level and conditions.';
+                calcWarning.style.display = 'block';
                 return;
             }
 
