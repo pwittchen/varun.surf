@@ -2267,7 +2267,15 @@
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
-            renderSpots(currentFilter, value, true);
+            // Clear existing timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            // Add delay before triggering search
+            searchTimeout = setTimeout(() => {
+                renderSpots(currentFilter, value, true);
+            }, 300);
         });
 
         searchClear.addEventListener('click', () => {
