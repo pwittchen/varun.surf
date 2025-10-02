@@ -1115,11 +1115,14 @@ body {
 
     .header-controls {
         position: static;
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         gap: 12px;
-        margin-bottom: 15px;
+        margin: 0 auto 15px auto;
         width: 100%;
+        max-width: 400px;
         justify-content: center;
         max-height: 0;
         overflow: visible;
@@ -1144,19 +1147,27 @@ body {
         opacity: 1;
     }
 
-    .theme-toggle {
-        width: 100%;
-        max-width: 300px;
+    /* Theme toggle, favorites, and kite calculator in a single row */
+    #themeToggle,
+    #favoritesToggle,
+    #kiteSizeToggle {
+        width: 92px;
+        flex: 0 0 auto;
+        order: 1;
     }
 
     .search-container {
         width: 100%;
         max-width: 300px;
+        flex: 0 0 100%;
+        order: 2;
     }
 
     .dropdown-container {
         width: 100%;
         max-width: 300px;
+        flex: 0 0 100%;
+        order: 3;
     }
 
     .dropdown-button {
@@ -1166,6 +1177,8 @@ body {
     .spot-counter {
         width: 100%;
         max-width: 300px;
+        flex: 0 0 100%;
+        order: 4;
     }
 
     .main-content {
