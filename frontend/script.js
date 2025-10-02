@@ -275,10 +275,11 @@
 
         const info = spot.spotInfo;
         spotInfoContent.innerHTML = `
-                <h3>Overview</h3>
-                <p>${info.description}</p>
-                
                 <div class="info-grid">
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <div class="info-label">Overview</div>
+                        <div class="info-value">${info.description}</div>
+                    </div>
                     <div class="info-item">
                         <div class="info-label">Spot Type</div>
                         <div class="info-value">${info.type}</div>
