@@ -923,6 +923,9 @@
       "description": "Southern Portugal coast with variety of flat lagoons and wave beaches."
     }
   },
+
+
+
   {
     "name": "Büsum",
     "country": "Germany",
@@ -1166,6 +1169,116 @@
     }
   },
   {
+    "name": "Leucate",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/53",
+    "windfinderUrl": "https://www.windfinder.com/forecast/leucate",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/5twqzXZNHkXc6kPe6",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon & sea",
+      "bestWind": "Tramontane N, Marin SE",
+      "waterTemp": "12-24°C",
+      "experience": "All levels",
+      "launch": "Sandy beaches",
+      "hazards": "Strong offshore wind in lagoon",
+      "season": "Year-round",
+      "description": "Southern France spot famous for strong Tramontane wind."
+    }
+  },
+  {
+    "name": "Noordwijk",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/210",
+    "windfinderUrl": "https://www.windfinder.com/forecast/noordwijk",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/jDpUBk9K2vA4oSGx5",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "W, NW",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate",
+      "launch": "Sandy beach",
+      "hazards": "Breakwaters, currents",
+      "season": "April-October",
+      "description": "Dutch North Sea spot with strong winds and good wave conditions."
+    }
+  },
+  {
+    "name": "Scheveningen",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/212",
+    "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
+    "icmUrl": "",
+    "webcamUrl": "https://www.scheveningenlive.nl/webcams",
+    "locationUrl": "https://maps.app.goo.gl/BjZx3EujFZQShM9A7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "W, NW",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Crowded, breakwaters",
+      "season": "April-October",
+      "description": "The Hague’s beach spot, popular for wave kiting and events."
+    }
+  },
+  {
+    "name": "Neretva",
+    "country": "Croatia",
+    "windguruUrl": "https://www.windguru.cz/31300",
+    "windfinderUrl": "https://www.windfinder.com/forecast/neretva",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/V7FddR9CZqvY5rQdA",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "River delta lagoon",
+      "bestWind": "NW thermal",
+      "waterTemp": "20-27°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach",
+      "hazards": "Shallow areas",
+      "season": "May-September",
+      "description": "Croatia’s flat water lagoon with reliable afternoon thermals."
+    }
+  },
+  {
+    "name": "Prasonisi",
+    "country": "Greece",
+    "windguruUrl": "https://www.windguru.cz/493",
+    "windfinderUrl": "https://www.windfinder.com/forecast/prasonisi",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/7DqYdUuFb2jbscF27",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Sand spit, flat & wave sides",
+      "bestWind": "Meltemi N, NW",
+      "waterTemp": "20-26°C",
+      "experience": "All levels",
+      "launch": "Sandy spit",
+      "hazards": "Strong wind, waves on sea side",
+      "season": "June-September",
+      "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side."
+    }
+  },
+  {
     "name": "Dakhla",
     "country": "Morocco",
     "windguruUrl": "https://www.windguru.cz/100",
@@ -1207,6 +1320,50 @@
       "hazards": "Coral reefs, shallow areas",
       "season": "Year-round",
       "description": "Red Sea spot with reliable winds and perfect lagoons."
+    }
+  },
+  {
+    "name": "Le Morne",
+    "country": "Mauritius",
+    "windguruUrl": "https://www.windguru.cz/542",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_morne",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/SZrj7bcxUt8ZC7K56",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon + reef waves",
+      "bestWind": "SE trade winds",
+      "waterTemp": "24-28°C",
+      "experience": "All levels",
+      "launch": "Lagoon beach",
+      "hazards": "Reef, currents",
+      "season": "May-November",
+      "description": "One of the most iconic kite spots worldwide, mix of flat lagoon and huge reef waves."
+    }
+  },
+  {
+    "name": "Sal (Cabo Verde)",
+    "country": "Cape Verde",
+    "windguruUrl": "https://www.windguru.cz/540",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sal",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/S4TzkEm6zLWNG1UL7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Atlantic island, waves & lagoons",
+      "bestWind": "NE trade winds",
+      "waterTemp": "22-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beaches",
+      "hazards": "Strong waves, reefs",
+      "season": "November-May",
+      "description": "Cape Verde’s Sal island is legendary for wave kiting and freestyle."
     }
   },
   {
@@ -1364,28 +1521,6 @@
     }
   },
   {
-    "name": "Le Morne",
-    "country": "Mauritius",
-    "windguruUrl": "https://www.windguru.cz/542",
-    "windfinderUrl": "https://www.windfinder.com/forecast/le_morne",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/SZrj7bcxUt8ZC7K56",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Lagoon + reef waves",
-      "bestWind": "SE trade winds",
-      "waterTemp": "24-28°C",
-      "experience": "All levels",
-      "launch": "Lagoon beach",
-      "hazards": "Reef, currents",
-      "season": "May-November",
-      "description": "One of the most iconic kite spots worldwide, mix of flat lagoon and huge reef waves."
-    }
-  },
-  {
     "name": "Hood River",
     "country": "USA",
     "windguruUrl": "https://www.windguru.cz/614",
@@ -1405,138 +1540,6 @@
       "hazards": "Currents, obstacles",
       "season": "April-September",
       "description": "Legendary US spot in Columbia River Gorge, strong thermal winds."
-    }
-  },
-  {
-    "name": "Sal (Cabo Verde)",
-    "country": "Cape Verde",
-    "windguruUrl": "https://www.windguru.cz/540",
-    "windfinderUrl": "https://www.windfinder.com/forecast/sal",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/S4TzkEm6zLWNG1UL7",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Atlantic island, waves & lagoons",
-      "bestWind": "NE trade winds",
-      "waterTemp": "22-26°C",
-      "experience": "Intermediate to Advanced",
-      "launch": "Sandy beaches",
-      "hazards": "Strong waves, reefs",
-      "season": "November-May",
-      "description": "Cape Verde’s Sal island is legendary for wave kiting and freestyle."
-    }
-  },
-  {
-    "name": "Prasonisi",
-    "country": "Greece",
-    "windguruUrl": "https://www.windguru.cz/493",
-    "windfinderUrl": "https://www.windfinder.com/forecast/prasonisi",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/7DqYdUuFb2jbscF27",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Sand spit, flat & wave sides",
-      "bestWind": "Meltemi N, NW",
-      "waterTemp": "20-26°C",
-      "experience": "All levels",
-      "launch": "Sandy spit",
-      "hazards": "Strong wind, waves on sea side",
-      "season": "June-September",
-      "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side."
-    }
-  },
-  {
-    "name": "Leucate",
-    "country": "France",
-    "windguruUrl": "https://www.windguru.cz/53",
-    "windfinderUrl": "https://www.windfinder.com/forecast/leucate",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/5twqzXZNHkXc6kPe6",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Lagoon & sea",
-      "bestWind": "Tramontane N, Marin SE",
-      "waterTemp": "12-24°C",
-      "experience": "All levels",
-      "launch": "Sandy beaches",
-      "hazards": "Strong offshore wind in lagoon",
-      "season": "Year-round",
-      "description": "Southern France spot famous for strong Tramontane wind."
-    }
-  },
-  {
-    "name": "Neretva",
-    "country": "Croatia",
-    "windguruUrl": "https://www.windguru.cz/31300",
-    "windfinderUrl": "https://www.windfinder.com/forecast/neretva",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/V7FddR9CZqvY5rQdA",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "River delta lagoon",
-      "bestWind": "NW thermal",
-      "waterTemp": "20-27°C",
-      "experience": "Beginner to Intermediate",
-      "launch": "Sandy beach",
-      "hazards": "Shallow areas",
-      "season": "May-September",
-      "description": "Croatia’s flat water lagoon with reliable afternoon thermals."
-    }
-  },
-  {
-    "name": "Noordwijk",
-    "country": "Netherlands",
-    "windguruUrl": "https://www.windguru.cz/210",
-    "windfinderUrl": "https://www.windfinder.com/forecast/noordwijk",
-    "icmUrl": "",
-    "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/jDpUBk9K2vA4oSGx5",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "North Sea, waves",
-      "bestWind": "W, NW",
-      "waterTemp": "8-18°C",
-      "experience": "Intermediate",
-      "launch": "Sandy beach",
-      "hazards": "Breakwaters, currents",
-      "season": "April-October",
-      "description": "Dutch North Sea spot with strong winds and good wave conditions."
-    }
-  },
-  {
-    "name": "Scheveningen",
-    "country": "Netherlands",
-    "windguruUrl": "https://www.windguru.cz/212",
-    "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
-    "icmUrl": "",
-    "webcamUrl": "https://www.scheveningenlive.nl/webcams",
-    "locationUrl": "https://maps.app.goo.gl/BjZx3EujFZQShM9A7",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "North Sea, waves",
-      "bestWind": "W, NW",
-      "waterTemp": "8-18°C",
-      "experience": "Intermediate to Advanced",
-      "launch": "Sandy beach",
-      "hazards": "Crowded, breakwaters",
-      "season": "April-October",
-      "description": "The Hague’s beach spot, popular for wave kiting and events."
     }
   }
 ]
