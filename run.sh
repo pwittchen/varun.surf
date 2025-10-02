@@ -6,7 +6,7 @@ echo "🚧  starting frontend build..."
 
 # First, inline CSS and JavaScript into index.full.html
 echo "Inlining CSS and JavaScript..."
-cp frontend/index.full.html index.temp.html
+cp frontend/index.html index.temp.html
 
 # Inline CSS
 if [ -f frontend/styles.css ]; then
@@ -52,7 +52,7 @@ echo "✅  frontend was built successfully"
 
 # Clean up temporary frontend files
 echo "Cleaning up temporary files..."
-rm -f index.temp.html index.temp2.html index.min.html index.html frontend/index.full.html.bak frontend/index.full.html.bak2
+rm -f index.temp.html index.temp2.html index.min.html index.html frontend/index.html.bak frontend/index.html.bak2
 echo "✅  temporary files cleaned up"
 
 echo "🚧  starting backend build..."
