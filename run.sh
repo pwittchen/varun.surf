@@ -19,7 +19,7 @@ echo "🚧 starting backend build..."
 ./gradlew clean bootJar
 echo "✅  backend was build successfully"
 
-echo "💥 starting the app"
+echo "🚀  starting the app"
 java --enable-preview -jar build/libs/*.jar
 
 echo "🛑 app was stopped"
