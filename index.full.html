@@ -106,7 +106,7 @@
 
         .header-controls {
             position: absolute;
-            top: 0;
+            top: 5px;
             right: 0;
             display: flex;
             gap: 12px;
@@ -1073,7 +1073,7 @@
             color: #fff;
         }
 
-        @media (max-width: 980px) {
+        @media (max-width: 1150px) {
             .spots-grid {
                 grid-template-columns: 1fr;
             }
@@ -1246,6 +1246,140 @@
         [data-theme="light"] .footer-disclaimer a:hover, [data-theme="light"] .footer-link a:hover {
             color: #000;
         }
+
+        /* Kite Size Calculator Styles */
+        .calc-input-group {
+            margin-bottom: 20px;
+        }
+
+        .calc-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .calc-input {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .calc-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+        }
+
+        .calc-select {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-primary);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calc-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+        }
+
+        .calc-button {
+            width: 100%;
+            background: var(--gradient-active);
+            border: 1px solid var(--accent-primary);
+            color: #fff;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .calc-button:hover {
+            background: var(--gradient-header);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, .4);
+        }
+
+        .calc-result {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .calc-result.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .calc-result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+        }
+
+        .calc-result-item {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .calc-result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .calc-result-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .calc-result-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calc-disclaimer {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .calc-warning {
+            display: none;
+            background: #681414;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -1260,6 +1394,9 @@
             </button>
             <button class="theme-toggle" id="favoritesToggle" title="View favorites">
                 ⭐
+            </button>
+            <button class="theme-toggle" id="kiteSizeToggle" title="Kite/Board Size Calculator">
+                🧮
             </button>
             <div class="search-container">
                 <input type="text"
@@ -1337,6 +1474,63 @@
         <div class="modal-content">
             <div class="spot-info" id="spotInfoContent">
                 <!-- Spot information content will be inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Kite Size Calculator -->
+<div class="modal-overlay" id="kiteSizeModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span>🧮</span>
+                <span>Kite & Board Size Calculator</span>
+            </div>
+            <button class="modal-close" id="kiteSizeModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <div class="calc-input-group">
+                <label class="calc-label" for="windSpeed">Wind Speed (knots)</label>
+                <input type="number" id="windSpeed" class="calc-input" placeholder="Enter wind speed in knots" min="5" max="50" step="1">
+            </div>
+
+            <div class="calc-input-group">
+                <label class="calc-label" for="riderWeight">Rider Weight (kg)</label>
+                <input type="number" id="riderWeight" class="calc-input" placeholder="Enter your weight in kg" min="40" max="150" step="1">
+            </div>
+
+            <div class="calc-input-group">
+                <label class="calc-label" for="skillLevel">Skill Level & Conditions</label>
+                <select id="skillLevel" class="calc-select">
+                    <option value="">Select skill level & conditions</option>
+                    <option value="beginner-flat">Beginner - Flat Water</option>
+                    <option value="beginner-small">Beginner - Small Waves</option>
+                    <option value="intermediate-flat">Intermediate - Flat Water</option>
+                    <option value="intermediate-medium">Intermediate - Medium Waves</option>
+                    <option value="advanced-flat">Advanced - Flat Water</option>
+                    <option value="advanced-medium">Advanced - Medium Waves</option>
+                    <option value="advanced-large">Advanced - Large Waves</option>
+                </select>
+            </div>
+
+            <button class="calc-button" id="calculateBtn">Calculate</button>
+
+            <div class="calc-warning" id="calcWarning"></div>
+
+            <div class="calc-result" id="calcResult">
+                <div class="calc-result-title">Recommended Equipment</div>
+                <div class="calc-result-item">
+                    <div class="calc-result-label">Kite Size</div>
+                    <div class="calc-result-value" id="kiteSize">-</div>
+                </div>
+                <div class="calc-result-item">
+                    <div class="calc-result-label">Board Size</div>
+                    <div class="calc-result-value" id="boardSize">-</div>
+                </div>
+                <div class="calc-disclaimer">
+                    ⚠️ These are general recommendations. Actual equipment choice may vary based on specific kite model, board type, and personal preference. Always consult with experienced riders or instructors for your local conditions.
+                </div>
             </div>
         </div>
     </div>
@@ -2276,6 +2470,191 @@
         });
     }
 
+    // Kite Size Calculator Functionality
+    function calculateKiteSize(windSpeed, riderWeight, skillLevel) {
+        // Base calculation: kite size (m²) = rider weight (kg) * factor / wind speed (kts)
+        let factor = 2.5; // Default factor for intermediate flat water
+
+        // Adjust factor based on skill level and conditions
+        const factorAdjustments = {
+            'beginner-flat': 3.0,         // Beginners need larger kites
+            'beginner-small': 2.8,        // Slightly smaller for small waves
+            'intermediate-flat': 2.5,     // Standard factor
+            'intermediate-medium': 2.3,   // Medium waves need smaller kites
+            'advanced-flat': 2.2,         // Advanced riders can use smaller kites
+            'advanced-medium': 2.0,       // Advanced with medium waves
+            'advanced-large': 1.8         // Advanced with large waves need smallest kites
+        };
+
+        if (skillLevel && factorAdjustments[skillLevel]) {
+            factor = factorAdjustments[skillLevel];
+        }
+
+        // Calculate base kite size
+        let kiteSize = (riderWeight * factor) / windSpeed;
+
+        // Round to nearest common kite size (7, 9, 10, 12, 14, 15, 17 m²)
+        const commonSizes = [7, 9, 10, 12, 14, 15, 17];
+        kiteSize = commonSizes.reduce((prev, curr) =>
+            Math.abs(curr - kiteSize) < Math.abs(prev - kiteSize) ? curr : prev
+        );
+
+        return kiteSize;
+    }
+
+    function calculateBoardSize(riderWeight, skillLevel, kiteSize) {
+        // Determine board type first
+        let boardType = 'Twin Tip';
+        if (skillLevel.includes('large') || (skillLevel.includes('medium') && skillLevel.includes('advanced'))) {
+            boardType = 'Surfboard/Directional 🏄';
+        }
+
+        if (boardType === 'Twin Tip') {
+            // Twin Tip calculation with realistic sizes (125-160 cm)
+            let baseSize = 125; // Minimum realistic size
+
+            // Add size based on weight (up to 115 kg)
+            const effectiveWeight = Math.min(riderWeight, 115);
+            baseSize += (effectiveWeight - 50) * 0.5; // ~32.5 cm range for 50-115 kg
+
+            // Adjust based on skill level
+            const sizeAdjustments = {
+                'beginner-flat': 1.15,          // Larger for stability
+                'beginner-small': 1.10,
+                'intermediate-flat': 1.0,       // Standard size
+                'intermediate-medium': 0.98,
+                'advanced-flat': 0.92,          // Smaller for maneuverability
+                'advanced-medium': 0.90
+            };
+
+            const adjustment = sizeAdjustments[skillLevel] || 1.0;
+            let boardSize = Math.round(baseSize * adjustment);
+
+            // Round to nearest 2 cm
+            boardSize = Math.round(boardSize / 2) * 2;
+
+            // Apply minimum and maximum size constraints
+            const minSize = 136; // Minimum board size
+            let maxSize = 160; // Default for beginners
+            if (skillLevel.includes('intermediate')) {
+                maxSize = 142;
+            } else if (skillLevel.includes('advanced')) {
+                maxSize = 142;
+            }
+            boardSize = Math.max(minSize, Math.min(boardSize, maxSize));
+
+            // Calculate width (typically 38-46 cm for twin tips)
+            let width = 38 + Math.floor((boardSize - 136) / 4);
+            width = Math.min(width, 46);
+
+            return `${boardSize} x ${width} cm (${boardType})`;
+        } else {
+            // Surfboard/Directional sizes (typically 5'4" to 6'2")
+            const sizeInFeet = riderWeight < 70 ? "5'6\"" : riderWeight < 85 ? "5'10\"" : "6'0\"";
+            return `${sizeInFeet} (${boardType})`;
+        }
+    }
+
+    function setupKiteSizeCalculator() {
+        const kiteSizeButton = document.getElementById('kiteSizeToggle');
+        const kiteSizeModal = document.getElementById('kiteSizeModal');
+        const kiteSizeCloseButton = document.getElementById('kiteSizeModalClose');
+        const calculateBtn = document.getElementById('calculateBtn');
+
+        // Open modal
+        kiteSizeButton.addEventListener('click', () => {
+            kiteSizeModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // Reset result visibility
+            document.getElementById('calcResult').classList.remove('show');
+        });
+
+        // Close modal
+        function closeKiteSizeModal() {
+            kiteSizeModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        kiteSizeCloseButton.addEventListener('click', closeKiteSizeModal);
+
+        kiteSizeModal.addEventListener('click', (e) => {
+            if (e.target === kiteSizeModal) {
+                closeKiteSizeModal();
+            }
+        });
+
+        // Calculate button
+        calculateBtn.addEventListener('click', () => {
+            const windSpeed = parseFloat(document.getElementById('windSpeed').value);
+            const riderWeight = parseFloat(document.getElementById('riderWeight').value);
+            const skillLevel = document.getElementById('skillLevel').value;
+            const calcWarning = document.getElementById('calcWarning');
+            const calcResult = document.getElementById('calcResult');
+
+            // Hide previous warnings and results
+            calcWarning.style.display = 'none';
+            calcResult.classList.remove('show');
+
+            // Validation
+            if (!windSpeed || windSpeed < 5 || windSpeed > 50) {
+                alert('Please enter a valid wind speed between 5 and 50 knots');
+                return;
+            }
+
+            if (!riderWeight || riderWeight < 40 || riderWeight > 150) {
+                alert('Please enter a valid rider weight between 40 and 150 kg');
+                return;
+            }
+
+            if (!skillLevel) {
+                alert('Please select your skill level and conditions');
+                return;
+            }
+
+            // Check for warning conditions
+            if (riderWeight > 120) {
+                calcWarning.innerHTML = '😉 Maybe you should lose some weight before going onto the water!';
+                calcWarning.style.display = 'block';
+                return;
+            }
+
+            if (windSpeed > 40) {
+                calcWarning.innerHTML = '⚠️ <strong>EXTREME CONDITIONS!</strong><br><br>Wind speeds above 40 knots are extremely dangerous. We strongly recommend NOT going onto the water in these conditions. Stay safe!';
+                calcWarning.style.display = 'block';
+                return;
+            }
+
+            if (windSpeed < 12) {
+                calcWarning.innerHTML = '💨 <strong>LOW WIND CONDITIONS</strong><br><br>There is not enough wind for riding with a regular setup. However, you could try going on a <strong>kite foil board</strong>, which works great in light wind conditions!';
+                calcWarning.style.display = 'block';
+                return;
+            }
+
+            // Check for low wind with medium or large waves
+            if (windSpeed < 15 && (skillLevel.includes('medium') || skillLevel.includes('large'))) {
+                calcWarning.innerHTML = '🌊 <strong>INSUFFICIENT WIND FOR WAVE CONDITIONS</strong><br><br>Wind speed below 15 knots is not enough for riding in medium or large waves. Waves create additional resistance and you need more wind power to maintain speed and control. We recommend NOT going onto the water in these conditions.';
+                calcWarning.style.display = 'block';
+                return;
+            }
+
+            // Calculate
+            const kiteSize = calculateKiteSize(windSpeed, riderWeight, skillLevel);
+            const boardSize = calculateBoardSize(riderWeight, skillLevel, kiteSize);
+
+            // Display results
+            document.getElementById('kiteSize').textContent = `${kiteSize} m²`;
+            document.getElementById('boardSize').textContent = boardSize;
+            calcResult.classList.add('show');
+        });
+
+        // Escape key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && kiteSizeModal.classList.contains('active')) {
+                closeKiteSizeModal();
+            }
+        });
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -2294,6 +2673,7 @@
         setupDragAndDrop();
         setupFavorites();
         setupHamburgerMenu();
+        setupKiteSizeCalculator();
     });
 </script>
 </body>
