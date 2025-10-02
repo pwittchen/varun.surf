@@ -448,7 +448,7 @@
 
         card.innerHTML = `
                 <div class="drag-handle" draggable="true">𓃌</div>
-                <div class="favorite-icon ${favoriteClass}" onclick="toggleFavorite('${spot.name}')" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}">⭐</div>
+                <div class="favorite-icon ${favoriteClass}" onclick="toggleFavorite('${spot.name}')" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}">★</div>
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name">${spot.name || 'Unknown Spot'}</div>

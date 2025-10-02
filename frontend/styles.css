@@ -494,9 +494,9 @@ body {
 
 .favorite-icon {
     position: absolute;
-    top: 21px;
-    right: 157px;
-    font-size: 0.9rem;
+    top: 23px;
+    right: 160px;
+    font-size: 1.2rem;
     cursor: pointer;
     color: var(--text-secondary);
     transition: all 0.3s ease;
