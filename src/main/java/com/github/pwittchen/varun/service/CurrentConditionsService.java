@@ -8,12 +8,14 @@ import okhttp3.ResponseBody;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class CurrentConditionsService {
-
-    public static final Map<Integer, String> LIVE_CONDITIONS_PL = Map.of(
+    private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
+    private static final Map<Integer, String> LIVE_CONDITIONS_PL = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
             14473, "https://www.wiatrkadyny.pl/krynica/wiatrkadyny.txt",
             509469, "https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt",
@@ -22,6 +24,7 @@ public class CurrentConditionsService {
             48009, "https://www.wiatrkadyny.pl/puck/wiatrkadyny.txt"
 
     );
+
     private final OkHttpClient httpClient = new OkHttpClient();
 
     /*
@@ -76,12 +79,35 @@ public class CurrentConditionsService {
                 String date = parts[0] + " " + parts[1];
                 int temp = (int) Math.round(Double.parseDouble(parts[2]));
                 int wind = (int) Math.round(Double.parseDouble(parts[6]));
-                String direction = parts[11];
+                String direction = normalizeDirection(parts[11]);
                 int gusts = (int) Math.round(Double.parseDouble(parts[26]));
 
                 return new CurrentConditions(date, wind, gusts, direction, temp);
             }
         });
+    }
+
+    private String normalizeDirection(String rawDirection) {
+        if (DIRECTIONS.contains(rawDirection)) {
+            return rawDirection;
+        }
+
+        return switch (rawDirection.toUpperCase()) {
+            case "NNE", "ENE" -> "NE";
+            case "ESE", "SSE" -> "SE";
+            case "SSW", "WSW" -> "SW";
+            case "WNW", "NNW" -> "NW";
+            default -> findClosestDirection(rawDirection);
+        };
+    }
+
+    private String findClosestDirection(String rawDirection) {
+        for (String direction : DIRECTIONS) {
+            if (rawDirection.toUpperCase().startsWith(direction)) {
+                return direction;
+            }
+        }
+        return "N";
     }
 
     public Mono<CurrentConditions> fetchKadynyForecast(int wgId) {

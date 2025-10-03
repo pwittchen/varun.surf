@@ -42,7 +42,7 @@ class CurrentConditionsServiceTest {
                     assertThat(conditions.date()).isEqualTo("29/09/25 23:08:31");
                     assertThat(conditions.temp()).isEqualTo(10);
                     assertThat(conditions.wind()).isEqualTo(7);
-                    assertThat(conditions.direction()).isEqualTo("ENE");
+                    assertThat(conditions.direction()).isEqualTo("NE");
                     assertThat(conditions.gusts()).isEqualTo(13);
                 })
                 .verifyComplete();
