@@ -68,7 +68,7 @@ public class AggregatorService {
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
-    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 3000))
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 5, backoff = @Backoff(delay = 3000))
     void fetchForecastsEveryThreeHours() throws FetchingForecastException {
         log.info("Fetching forecasts");
         fetchForecasts();
