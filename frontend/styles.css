@@ -163,6 +163,8 @@ body {
     gap: 8px;
     min-width: 10px;
     justify-content: center;
+    height: 40px;
+    width: 40px;
 }
 
 .theme-toggle:hover {
@@ -543,7 +545,7 @@ body {
 .favorite-icon {
     position: absolute;
     top: 23px;
-    right: 160px;
+    right: 120px;
     font-size: 1.2rem;
     cursor: pointer;
     color: var(--text-secondary);
