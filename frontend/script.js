@@ -445,13 +445,15 @@
 
         card.innerHTML = `
                 <div class="drag-handle" draggable="true">𓃌</div>
-                <div class="favorite-icon ${favoriteClass}" onclick="toggleFavorite('${spot.name}')" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}">★</div>
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
                     </div>
                     <div class="spot-meta">
-                        <div class="country-tag">${spot.country || 'Unknown'}</div>
+                        <div class="country-tag-wrapper">
+                            <div class="favorite-icon ${favoriteClass}" onclick="toggleFavorite('${spot.name}')" title="${isFavorited ? 'Remove from favorites' : 'Add to favorites'}">★</div>
+                            <div class="country-tag">${spot.country || 'Unknown'}</div>
+                        </div>
                         <div class="last-updated">${spot.lastUpdated || 'No data'}</div>
                     </div>
                 </div>

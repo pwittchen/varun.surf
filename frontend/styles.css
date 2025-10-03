@@ -457,10 +457,6 @@ body {
     max-width: 100%;
 }
 
-.spots-grid.three-columns .favorite-icon {
-    right: 120px;
-}
-
 .spots-grid.three-columns .external-link {
     font-size: 0.6rem;
 }
@@ -542,17 +538,20 @@ body {
     cursor: grabbing;
 }
 
+.country-tag-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .favorite-icon {
-    position: absolute;
-    top: 23px;
-    right: 120px;
     font-size: 1.2rem;
     cursor: pointer;
     color: var(--text-secondary);
     transition: all 0.3s ease;
     user-select: none;
-    z-index: 10;
     filter: grayscale(100%);
+    flex-shrink: 0;
 }
 
 .favorite-icon:hover {
