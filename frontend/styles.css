@@ -438,6 +438,54 @@ body {
     gap: 30px;
 }
 
+.spots-grid.three-columns {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.spots-grid.three-columns .spot-title {
+    max-width: 50%;
+    padding-top: 3px;
+}
+
+.spots-grid.three-columns .spot-name {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.spots-grid.three-columns .favorite-icon {
+    right: 120px;
+}
+
+.spots-grid.three-columns .external-link {
+    font-size: 0.6rem;
+}
+
+.spots-grid.three-columns .weather-table {
+    font-size: 0.75rem;
+}
+
+.spots-grid.three-columns .weather-table th {
+    font-size: 0.7rem;
+    padding: 8px 4px;
+}
+
+.spots-grid.three-columns .weather-table td {
+    padding: 8px 4px;
+    font-size: 0.75rem;
+}
+
+.spots-grid.three-columns .wind-arrow {
+    font-size: 1rem;
+}
+
+.spots-grid.three-columns .loading-message,
+.spots-grid.three-columns .error-message {
+    grid-column: 1 / -1;
+}
+
 .spot-card {
     background: var(--bg-secondary);
     border-radius: 12px;
@@ -1072,7 +1120,11 @@ body {
 
 @media (max-width: 1150px) {
     .spots-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+    }
+
+    .column-toggle {
+        display: none !important;
     }
 
     .weather-table {

@@ -802,7 +802,7 @@
 
         spotsGrid.addEventListener('dragover', (e) => {
             e.preventDefault();
-            const afterElement = getDragAfterElement(spotsGrid, e.clientY);
+            const afterElement = getDragAfterElement(spotsGrid, e.clientX, e.clientY);
             if (draggedCard && afterElement == null) {
                 spotsGrid.appendChild(draggedCard);
             } else if (draggedCard && afterElement) {
@@ -810,19 +810,44 @@
             }
         });
 
-        function getDragAfterElement(container, y) {
+        function getDragAfterElement(container, x, y) {
             const draggableElements = [...container.querySelectorAll('.spot-card:not(.dragging)')];
 
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
+            let closestElement = null;
+            let closestOffset = Number.NEGATIVE_INFINITY;
 
-                if (offset < 0 && offset > closest.offset) {
-                    return {offset: offset, element: child};
-                } else {
-                    return closest;
+            draggableElements.forEach(child => {
+                const box = child.getBoundingClientRect();
+                const centerY = box.top + box.height / 2;
+
+                // Calculate vertical and horizontal offsets
+                const offsetY = y - centerY;
+                const offsetX = x - (box.left + box.width / 2);
+
+                // We want elements that are AFTER the cursor position
+                // This means elements that are either:
+                // 1. Below the cursor (offsetY < 0)
+                // 2. To the right of cursor in same row (offsetX < 0 and on same row)
+
+                if (offsetY < 0) {
+                    // Element is below cursor - prioritize by vertical distance
+                    const offset = offsetY;
+                    if (offset > closestOffset) {
+                        closestOffset = offset;
+                        closestElement = child;
+                    }
+                } else if (offsetX < 0 && offsetY < box.height / 2) {
+                    // Element is to the right and roughly in same row
+                    // Use a combined offset that prioritizes horizontal over vertical
+                    const offset = offsetX / 2 + offsetY;
+                    if (offset > closestOffset) {
+                        closestOffset = offset;
+                        closestElement = child;
+                    }
                 }
-            }, {offset: Number.NEGATIVE_INFINITY}).element;
+            });
+
+            return closestElement;
         }
     }
 
@@ -833,19 +858,23 @@
             return card.querySelector('.spot-name').textContent;
         });
 
-        const orderKey = `spotOrder_${currentFilter}_${currentSearchQuery}`;
+        const isThreeColumns = spotsGrid.classList.contains('three-columns');
+        const columnMode = isThreeColumns ? '3col' : '2col';
+        const orderKey = `spotOrder_${columnMode}_${currentFilter}_${currentSearchQuery}`;
         localStorage.setItem(orderKey, JSON.stringify(order));
     }
 
     function loadCardOrder() {
-        const orderKey = `spotOrder_${currentFilter}_${currentSearchQuery}`;
+        const spotsGrid = document.getElementById('spotsGrid');
+        const isThreeColumns = spotsGrid.classList.contains('three-columns');
+        const columnMode = isThreeColumns ? '3col' : '2col';
+        const orderKey = `spotOrder_${columnMode}_${currentFilter}_${currentSearchQuery}`;
         const savedOrder = localStorage.getItem(orderKey);
 
         if (!savedOrder) return;
 
         try {
             const order = JSON.parse(savedOrder);
-            const spotsGrid = document.getElementById('spotsGrid');
             const cards = Array.from(spotsGrid.querySelectorAll('.spot-card'));
 
             order.forEach(spotName => {
@@ -1156,6 +1185,27 @@
         });
     }
 
+    function setupColumnToggle() {
+        const columnToggle = document.getElementById('columnToggle');
+        const spotsGrid = document.getElementById('spotsGrid');
+
+        // Load saved column preference (default is 2 columns)
+        const isThreeColumns = localStorage.getItem('threeColumns') === 'true';
+        if (isThreeColumns) {
+            spotsGrid.classList.add('three-columns');
+            columnToggle.classList.add('active');
+        }
+
+        columnToggle.addEventListener('click', () => {
+            spotsGrid.classList.toggle('three-columns');
+            columnToggle.classList.toggle('active');
+
+            // Save preference
+            const isThreeColumns = spotsGrid.classList.contains('three-columns');
+            localStorage.setItem('threeColumns', isThreeColumns);
+        });
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -1175,4 +1225,5 @@
         setupFavorites();
         setupHamburgerMenu();
         setupKiteSizeCalculator();
+        setupColumnToggle();
     });
