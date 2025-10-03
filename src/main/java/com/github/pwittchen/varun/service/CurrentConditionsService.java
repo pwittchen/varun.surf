@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Service
 public class CurrentConditionsService {
-    private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
+    private static final List<String> WIND_DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
             14473, "https://www.wiatrkadyny.pl/krynica/wiatrkadyny.txt",
@@ -88,7 +88,7 @@ public class CurrentConditionsService {
     }
 
     private String normalizeDirection(String rawDirection) {
-        if (DIRECTIONS.contains(rawDirection)) {
+        if (WIND_DIRECTIONS.contains(rawDirection)) {
             return rawDirection;
         }
 
@@ -102,7 +102,7 @@ public class CurrentConditionsService {
     }
 
     private String findClosestDirection(String rawDirection) {
-        for (String direction : DIRECTIONS) {
+        for (String direction : WIND_DIRECTIONS) {
             if (rawDirection.toUpperCase().startsWith(direction)) {
                 return direction;
             }
