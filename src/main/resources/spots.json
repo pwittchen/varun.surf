@@ -341,7 +341,7 @@
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "River",
+      "type": "Mountain River",
       "bestWind": "S",
       "waterTemp": "10-20°C",
       "experience": "Advanced",
@@ -1143,23 +1143,20 @@
       "description": "The heart of ‘Cold Hawaii’, world-famous wave riding spot."
     }
   },
-
-
-
   {
     "name": "Silvaplana",
     "country": "Switzerland",
-    "windguruUrl": "https://www.windguru.cz/171",
-    "windfinderUrl": "https://www.windfinder.com/forecast/silvaplana",
+    "windguruUrl": "https://www.windguru.cz/1584",
+    "windfinderUrl": "https://www.windfinder.com/forecast/silvaplana_see",
     "icmUrl": "",
-    "webcamUrl": "https://www.engadin.ch/en/webcams/",
-    "locationUrl": "https://maps.app.goo.gl/DpnDtxuYy4xtKHzT8",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/AHcupA1MNvUCDyNJ7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
       "type": "Mountain lake",
-      "bestWind": "Thermal (Maloja wind)",
+      "bestWind": "SW (Thermal, Maloja wind)",
       "waterTemp": "5-18°C",
       "experience": "Intermediate",
       "launch": "Lake shore",
