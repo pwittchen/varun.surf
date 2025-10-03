@@ -289,7 +289,7 @@
     "name": "Wolin",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/217357",
-    "windfinderUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wolin_west_pomerania_poland",
     "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/NX6zNv9Gv9Dcj9eAA",
@@ -789,6 +789,72 @@
       "hazards": "Shallow areas, seaweed",
       "season": "March-November",
       "description": "Huge flat water lagoon, great for freestyle and beginners."
+    }
+  },
+  {
+    "name": "El Médano  (Tenerife, Canary Islands)",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/207008",
+    "windfinderUrl": "https://www.windfinder.com/forecast/el_medano",
+    "icmUrl": "",
+    "webcamUrl": "https://www.canariansurffruit.com/webcam/",
+    "locationUrl": "https://maps.app.goo.gl/7zLyMRYixztSMsc57",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Ocean bay / waves",
+      "bestWind": "NE",
+      "waterTemp": "18-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach",
+      "hazards": "Waves, shorebreak, rocks on downwind side",
+      "season": "Year-round (best June-September)",
+      "description": "World-famous Canarian spot, reliable trade winds, mix of chop and waves. Popular for both windsurfing and kitesurfing."
+    }
+  },
+  {
+    "name": "Sotavento (Fuerteventura, Canary Islands)",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/49329",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sotavento",
+    "icmUrl": "",
+    "webcamUrl": "https://spainwebcam.com/90-rene-egli-sotavento-beach.html",
+    "locationUrl": "https://maps.app.goo.gl/P9FXVqZzQKM6Pog79",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon & Ocean",
+      "bestWind": "NE (Trade winds)",
+      "waterTemp": "18-23°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long sandy beach, lagoon areas",
+      "hazards": "Strong gusts, tides affect lagoon size",
+      "season": "March-October (peak in summer)",
+      "description": "Huge sandy lagoon with offshore winds and tidal pools. Famous kitesurfing venue, home to World Cup events."
+    }
+  },
+  {
+    "name": "Flag Beach (Fuerteventura, Canary Islands)",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/49341",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fuerteventura_flag_beach",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/ARBWaG8JYxb7BAkm7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Ocean / reef breaks",
+      "bestWind": "NE (Trade winds)",
+      "waterTemp": "18-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach with reef nearby",
+      "hazards": "Reefs, rocks, shorebreak",
+      "season": "Year-round (best May-September)",
+      "description": "Popular Fuerteventura spot near Corralejo dunes. Good trade winds, clear water, mix of flat sections and waves."
     }
   },
   {
