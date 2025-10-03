@@ -989,17 +989,14 @@
       "description": "Germany’s wave capital, hosting world cup windsurf/kitesurf events."
     }
   },
-
-
-
   {
     "name": "Rømø",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/144",
-    "windfinderUrl": "https://www.windfinder.com/forecast/romo",
+    "windguruUrl": "https://www.windguru.cz/1524",
+    "windfinderUrl": "https://www.windfinder.com/forecast/romo_surf_beach",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/gh3x2U8qLwoS9PpE6",
+    "locationUrl": "https://maps.app.goo.gl/GqKG8X6zEM4Nzecv7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1011,17 +1008,39 @@
       "launch": "Massive sandy beach",
       "hazards": "Tides, cars on beach",
       "season": "April-October",
-      "description": "Huge tidal beach, perfect for freeride and buggy/kite landboarding too."
+      "description": "Huge tidal beach, perfect for freeride and buggy/kite landboarding too. Water close to the shore is flat and shallow. Further we can expect small to medium waves. You can drive the car on the beach. The beach itself is MASSIVE!"
     }
   },
   {
-    "name": "Hvide Sande Syd",
+    "name": "Hvide Sande Nord",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/145",
+    "windguruUrl": "https://www.windguru.cz/48029",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hvide_sande_west_wind_nord",
+    "icmUrl": "",
+    "webcamUrl": "https://westwind.dk/pages/webcam",
+    "locationUrl": "https://maps.app.goo.gl/ydQm9vfX7G2n7TCE8",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "North Sea + Fjord (Ringkøbing Fjord), flat water",
+      "bestWind": "SW, W",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced (Fjord for all levels, Sea for advanced)",
+      "launch": "Grass and sandy areas",
+      "hazards": "Fishing nets, shallow areas, big waves and currents on the North Sea",
+      "season": "April-October",
+      "description": "Flat water paradise on the fjord side, perfect for freestyle, big waves on the North Sea."
+    }
+  },
+  {
+    "name": "Hvide Sande South",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48030",
     "windfinderUrl": "https://www.windfinder.com/forecast/hvide_sande",
     "icmUrl": "",
-    "webcamUrl": "https://hvidesande.dk/live-webcam/",
-    "locationUrl": "https://maps.app.goo.gl/sNPXPr9bYZc65ZjB6",
+    "webcamUrl": "https://westwind.dk/pages/webcam",
+    "locationUrl": "https://maps.app.goo.gl/wzpB55fpRYoukzUL7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1029,43 +1048,21 @@
       "type": "North Sea + Fjord (Ringkøbing Fjord)",
       "bestWind": "W, NW, SW",
       "waterTemp": "8-20°C",
-      "experience": "All levels",
-      "launch": "Sandy beaches",
-      "hazards": "Tides, fishing nets",
+      "experience": "All levels (Fjord for all levels, Sea for advanced)",
+      "launch": "Sandy beaches, grass field / meadow on the Fjord side",
+      "hazards": "Tides, fishing nets, big waves and currents on the North Sea",
       "season": "April-October",
-      "description": "Versatile spot: flat water in fjord, waves on the sea side."
-    }
-  },
-  {
-    "name": "Hvide Sande Nord",
-    "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/143",
-    "windfinderUrl": "https://www.windfinder.com/forecast/hvide_sande",
-    "icmUrl": "",
-    "webcamUrl": "https://hvidesande.dk/live-webcam/",
-    "locationUrl": "https://maps.app.goo.gl/DR7FVy6M9xqgnRzC7",
-    "currentConditions": {},
-    "forecast": [],
-    "aiAnalysis": "",
-    "spotInfo": {
-      "type": "Fjord (Ringkøbing Fjord), flat water",
-      "bestWind": "SW, W",
-      "waterTemp": "8-20°C",
-      "experience": "Beginner to Advanced",
-      "launch": "Grass and sandy areas",
-      "hazards": "Fishing nets, shallow areas",
-      "season": "April-October",
-      "description": "Flat water paradise on the fjord side, perfect for freestyle."
+      "description": "Versatile spot: flat water in fjord, North Sea with big waves on the sea side."
     }
   },
   {
     "name": "Kloster",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/1440",
-    "windfinderUrl": "https://www.windfinder.com/forecast/kloster",
+    "windguruUrl": "https://www.windguru.cz/500768",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ringk_bing_fjord_kloster",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/ynNYoR86Zr8BdZyM6",
+    "locationUrl": "https://maps.app.goo.gl/1j2ge6EmoLbfQvqb9",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1077,39 +1074,39 @@
       "launch": "Grass fields",
       "hazards": "Shallow areas",
       "season": "April-October",
-      "description": "Quiet flat water spot on Ringkøbing Fjord, less crowded than Hvide Sande."
+      "description": "Quiet flat water spot on Ringkøbing Fjord, less crowded than Hvide Sande. Nice for the freestyle riding and big air, but be careful about the shallow water areas. There are small cottages (Hyttas) on the spot"
     }
   },
   {
     "name": "Agger",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/146",
-    "windfinderUrl": "https://www.windfinder.com/forecast/agger",
+    "windguruUrl": "https://www.windguru.cz/48035",
+    "windfinderUrl": "https://www.windfinder.com/forecast/agger_dorf",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/yP6iRsrYHYzLJXSw5",
+    "locationUrl": "https://maps.app.goo.gl/zRfdiB8jBnYo7kCX7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "North Sea, waves",
+      "type": "Fjord with flat water + North Sea with waves",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Advanced",
       "launch": "Sandy beach",
-      "hazards": "Strong waves, currents",
+      "hazards": "Strong waves, currents on the sea, shallow areas on the fjord side",
       "season": "April-October",
-      "description": "Powerful wave spot on the Danish west coast."
+      "description": "Powerful wave spot on the Danish west coast with flat water spot on the other side."
     }
   },
   {
     "name": "Vorupør",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/147",
-    "windfinderUrl": "https://www.windfinder.com/forecast/vorupor",
+    "windguruUrl": "https://www.windguru.cz/48037",
+    "windfinderUrl": "https://www.windfinder.com/forecast/norre_vorupor_bay",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/pc8tPjFZ7jEorL9z5",
+    "locationUrl": "https://maps.app.goo.gl/KeT5W6kMtUSxt1Pq9",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1127,11 +1124,11 @@
   {
     "name": "Klitmøller",
     "country": "Denmark",
-    "windguruUrl": "https://www.windguru.cz/148",
+    "windguruUrl": "https://www.windguru.cz/11",
     "windfinderUrl": "https://www.windfinder.com/forecast/klitmoller",
     "icmUrl": "",
-    "webcamUrl": "https://coldhawaii.com/livecams",
-    "locationUrl": "https://maps.app.goo.gl/gJbYDnL8eXMm1o7A8",
+    "webcamUrl": "https://www.youtube.com/watch?v=SykOKOqIYm0",
+    "locationUrl": "https://maps.app.goo.gl/ENetNNFDKDJpZFJX8",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1146,6 +1143,9 @@
       "description": "The heart of ‘Cold Hawaii’, world-famous wave riding spot."
     }
   },
+
+
+
   {
     "name": "Silvaplana",
     "country": "Switzerland",
