@@ -79,6 +79,8 @@ public class AggregatorService {
         log.error("Failed while fetching forecasts after 3 attempts", e);
     }
 
+    //TODO add fetching current conditions here
+
     private void fetchForecasts() throws FetchingForecastException {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
 
