@@ -1165,14 +1165,17 @@
       "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds."
     }
   },
+
+
+
   {
     "name": "Leucate",
     "country": "France",
-    "windguruUrl": "https://www.windguru.cz/53",
-    "windfinderUrl": "https://www.windfinder.com/forecast/leucate",
+    "windguruUrl": "https://www.windguru.cz/258",
+    "windfinderUrl": "https://www.windfinder.com/forecast/leucate-plage",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/5twqzXZNHkXc6kPe6",
+    "locationUrl": "https://maps.app.goo.gl/qMgJnEQiT7tUzYzNA",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
