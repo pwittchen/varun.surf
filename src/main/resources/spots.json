@@ -286,6 +286,28 @@
     }
   },
   {
+    "name": "Wolin",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/217357",
+    "windfinderUrl": "",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/NX6zNv9Gv9Dcj9eAA",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon / Baltic Sea",
+      "bestWind": "W, NW, SW",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Beaches and lagoon areas",
+      "hazards": "Shallow areas, seaweed, gusty winds near forest",
+      "season": "May-September",
+      "description": "Polish island on the Baltic, flat water lagoons and open sea. Good summer spot with variable wind directions."
+    }
+  },
+  {
     "name": "Goczałkowice",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/799881",
@@ -1345,7 +1367,7 @@
     }
   },
   {
-    "name": "Sal",
+    "name": "Sal (Kite Beach)",
     "country": "Cape Verde",
     "windguruUrl": "https://www.windguru.cz/540",
     "windfinderUrl": "https://www.windfinder.com/forecast/sal",
