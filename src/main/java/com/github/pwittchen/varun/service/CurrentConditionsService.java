@@ -22,8 +22,6 @@ public class CurrentConditionsService {
             500760, "https://www.wiatrkadyny.pl/draga/wiatrkadyny.txt",
             4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt",
             48009, "https://www.wiatrkadyny.pl/puck/wiatrkadyny.txt"
-
-
     );
 
     private static final String KITERIDERS_AT_URL = "https://www.kiteriders.at/wind/weatherstat_kn.html";
