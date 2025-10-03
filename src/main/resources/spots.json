@@ -1234,11 +1234,11 @@
   {
     "name": "Neretva",
     "country": "Croatia",
-    "windguruUrl": "https://www.windguru.cz/31300",
+    "windguruUrl": "https://www.windguru.cz/275794",
     "windfinderUrl": "https://www.windfinder.com/forecast/neretva",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/V7FddR9CZqvY5rQdA",
+    "locationUrl": "https://maps.app.goo.gl/CJmFg5t8VAJXkM6TA",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1256,11 +1256,11 @@
   {
     "name": "Prasonisi",
     "country": "Greece",
-    "windguruUrl": "https://www.windguru.cz/493",
+    "windguruUrl": "https://www.windguru.cz/805332",
     "windfinderUrl": "https://www.windfinder.com/forecast/prasonisi",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/7DqYdUuFb2jbscF27",
+    "locationUrl": "https://maps.app.goo.gl/sg9Ffw2qqQsWZLzf6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1275,6 +1275,9 @@
       "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side."
     }
   },
+
+
+
   {
     "name": "Dakhla",
     "country": "Morocco",
