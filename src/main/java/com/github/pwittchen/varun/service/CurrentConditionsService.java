@@ -23,34 +23,21 @@ public class CurrentConditionsService {
             4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt",
             48009, "https://www.wiatrkadyny.pl/puck/wiatrkadyny.txt"
 
+
     );
+    private static final String KITERIDERS_AT_URL = "https://www.kiteriders.at/wind/weatherstat_kn.html";
+    private static final int PODERSDORF_WG_ID = 859182;
 
     private final OkHttpClient httpClient = new OkHttpClient();
 
-    /*
-     *    Data sources to use:
-     *
-     *       AT:
-     *
-     *       https://www.kiteriders.at/wind/weatherstat_kn.html
-     *
-     *       example (first row after header)
-     *
-     *       <tr style="background:#3dfa8e;"><td style="background:#3dfa8e;">29/09/2025</td><td style="background:#3dfa8e;">23:14</td><td style="background:#3dfa8e;">NNW</td><td style="background:#3dfa8e;"><b> 3 Bft</b></td><td style="background:#3dfa8e;">&nbsp;<b> 10.5 kn</b>&nbsp;</td><td style="background:#3dfa8e;"> 4 Bft</td><td style="background:#3dfa8e;">&nbsp; 12.2 kn&nbsp;</td><td style="background:#3dfa8e;">11.2 °C</td><td style="background:#3dfa8e;"> 5.1 °C</td><td style="background:#3dfa8e;">1023 mbar</td><td style="background:#3dfa8e;">+0.68</td></tr>
-     *
-     *       PL:
-     *
-     *       www.wiatrkadyny.pl/wiatrkadyny.txt - dla stacji Kadyny
-     *       www.wiatrkadyny.pl/krynicwha/wiatrkadyny.txt - dla stacji Krynica Morska
-     *       www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt - dla stacji Kuźnica
-     *       www.wiatrkadyny.pl/draga/wiatrkadyny.txt - dla stacji Draga
-     *       www.wiatrkadyny.pl/rewa/wiatrkadyny.txt - dla stacji Rewa
-     *       www.wiatrkadyny.pl/puck/wiatrkadyny.txt - dla stacji Puck
-     *
-     *                    tmp               wd wdir                                                               gust
-     *  29/09/25 23:08:31 10.1 74.9 5.9 4.7 7.0 65 0 0 1029.4 ENE 3 kts C hPa mm 346.88 0.4 0 0 0 10.1 74.9 7.1 0 12.9 23:36 9.7 2025-09-29 21:47:26 12.8 23:03 17.1 21:19 1029.5 22:54 1027.8 02:01 0 0 0 0 0 0 0 0 65 0 0 0 0 ENE 1718 m 10.1 12.56 0 0
-     *
-     */
+    public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
+        if (LIVE_CONDITIONS_URLS.containsKey(wgId)) {
+            return fetchWiatrKadynyForecast(LIVE_CONDITIONS_URLS.get(wgId));
+        } else if (wgId == PODERSDORF_WG_ID) {
+            return fetchPodersdorfForecast();
+        }
+        return Mono.empty();
+    }
 
     Mono<CurrentConditions> fetchWiatrKadynyForecast(String url) {
         return Mono.fromCallable(() -> {
@@ -73,9 +60,6 @@ public class CurrentConditionsService {
                 String body = responseBody.string();
                 String[] parts = body.trim().split("\\s+");
 
-                // Parse based on the format:
-                // 29/09/25 23:08:31 10.1 74.9 5.9 4.7 7.0 65 0 0 1029.4 ENE ...
-                // [0] date, [1] time, [2] temp, [6] wind, [11] direction, [26] gust
                 String date = parts[0] + " " + parts[1];
                 int temp = (int) Math.round(Double.parseDouble(parts[2]));
                 int wind = (int) Math.round(Double.parseDouble(parts[6]));
@@ -110,8 +94,78 @@ public class CurrentConditionsService {
         return "N";
     }
 
-    public Mono<CurrentConditions> fetchKadynyForecast(int wgId) {
-        return fetchWiatrKadynyForecast(LIVE_CONDITIONS_URLS.get(wgId));
+    public Mono<CurrentConditions> fetchPodersdorfForecast() {
+        return fetchPodersdorfForecast(KITERIDERS_AT_URL);
     }
 
+    Mono<CurrentConditions> fetchPodersdorfForecast(String url) {
+        return Mono.fromCallable(() -> {
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+
+            try (Response response = httpClient.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new RuntimeException("Failed to fetch forecast: " + response);
+                }
+
+                ResponseBody responseBody = response.body();
+
+                if (responseBody == null) {
+                    throw new RuntimeException("Failed to fetch forecast: " + response);
+                }
+
+                String body = responseBody.string();
+                String[] lines = body.split("\n");
+
+                String dataRow = null;
+
+                int trCount = 0;
+                for (String line : lines) {
+                    if (line.trim().startsWith("<tr")) {
+                        trCount++;
+                        if (trCount == 2) {
+                            dataRow = line;
+                            break;
+                        }
+                    }
+                }
+
+                if (dataRow == null) {
+                    throw new RuntimeException("No data row found");
+                }
+
+                String[] cells = dataRow.split("</td>");
+
+                String dateCell = extractTextFromTd(cells[0]);
+                String timeCell = extractTextFromTd(cells[1]);
+                String directionCell = extractTextFromTd(cells[2]);
+                String windCell = extractTextFromTd(cells[4]);
+                String gustCell = extractTextFromTd(cells[6]);
+                String tempCell = extractTextFromTd(cells[7]);
+
+                String date = dateCell + " " + timeCell;
+                String direction = normalizeDirection(directionCell);
+                int wind = (int) Math.round(parseKnots(windCell));
+                int gusts = (int) Math.round(parseKnots(gustCell));
+                int temp = (int) Math.round(parseTemperature(tempCell));
+
+                return new CurrentConditions(date, wind, gusts, direction, temp);
+            }
+        });
+    }
+
+    private String extractTextFromTd(String tdContent) {
+        String text = tdContent.replaceAll("<[^>]*>", "").trim();
+        text = text.replace("&nbsp;", "");
+        return text.trim();
+    }
+
+    private double parseKnots(String value) {
+        return Double.parseDouble(value.replace("kn", "").trim());
+    }
+
+    private double parseTemperature(String value) {
+        return Double.parseDouble((value.split(" ")[0]).trim());
+    }
 }
