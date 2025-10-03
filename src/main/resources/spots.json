@@ -1363,17 +1363,14 @@
       "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side."
     }
   },
-
-
-
   {
     "name": "Dakhla",
     "country": "Morocco",
-    "windguruUrl": "https://www.windguru.cz/100",
-    "windfinderUrl": "https://www.windfinder.com/forecast/dakhla",
+    "windguruUrl": "https://www.windguru.cz/49315",
+    "windfinderUrl": "https://www.windfinder.com/forecast/dakhla_attitude",
     "icmUrl": "",
     "webcamUrl": "https://dakhlakitesurfhotels.com/webcam",
-    "locationUrl": "https://maps.app.goo.gl/QssEyFZfBtJ7ThPb9",
+    "locationUrl": "https://maps.app.goo.gl/JoRCGYfiBZfrEMYW6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1385,17 +1382,17 @@
       "launch": "Wide sandy shores",
       "hazards": "Strong offshore wind in places",
       "season": "Year-round",
-      "description": "World-class kitesurfing destination with flat lagoon and Atlantic waves."
+      "description": "World-class kitesurfing destination with flat lagoon and Atlantic waves. From the main spot, you can do the downwind to White Dune or the Speed Spot."
     }
   },
   {
     "name": "El Gouna",
     "country": "Egypt",
-    "windguruUrl": "https://www.windguru.cz/64",
+    "windguruUrl": "https://www.windguru.cz/1250511",
     "windfinderUrl": "https://www.windfinder.com/forecast/el_gouna",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/b6Q8m6hMS1DnC7Jp7",
+    "locationUrl": "https://maps.app.goo.gl/vEEwLr6iam7gygZ56",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1405,7 +1402,7 @@
       "waterTemp": "20-28°C",
       "experience": "Beginner to Advanced",
       "launch": "Resort beaches",
-      "hazards": "Coral reefs, shallow areas",
+      "hazards": "Coral reefs (water boots recommended), shallow areas",
       "season": "Year-round",
       "description": "Red Sea spot with reliable winds and perfect lagoons."
     }
@@ -1413,11 +1410,11 @@
   {
     "name": "Le Morne",
     "country": "Mauritius",
-    "windguruUrl": "https://www.windguru.cz/542",
-    "windfinderUrl": "https://www.windfinder.com/forecast/le_morne",
+    "windguruUrl": "https://www.windguru.cz/1122030",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_morne_mauritius",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/SZrj7bcxUt8ZC7K56",
+    "locationUrl": "https://maps.app.goo.gl/upvtoNx2E1nG6Wqo7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1435,11 +1432,11 @@
   {
     "name": "Sal (Kite Beach)",
     "country": "Cape Verde",
-    "windguruUrl": "https://www.windguru.cz/540",
-    "windfinderUrl": "https://www.windfinder.com/forecast/sal",
+    "windguruUrl": "https://www.windguru.cz/896357",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kitebeach-sal_cabo-verde",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/S4TzkEm6zLWNG1UL7",
+    "locationUrl": "https://maps.app.goo.gl/L7ccH6UjYtDt7XUg7",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
