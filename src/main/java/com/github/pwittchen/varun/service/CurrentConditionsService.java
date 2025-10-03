@@ -25,6 +25,7 @@ public class CurrentConditionsService {
 
 
     );
+
     private static final String KITERIDERS_AT_URL = "https://www.kiteriders.at/wind/weatherstat_kn.html";
     private static final int PODERSDORF_WG_ID = 859182;
 
@@ -34,7 +35,7 @@ public class CurrentConditionsService {
         if (LIVE_CONDITIONS_URLS.containsKey(wgId)) {
             return fetchWiatrKadynyForecast(LIVE_CONDITIONS_URLS.get(wgId));
         } else if (wgId == PODERSDORF_WG_ID) {
-            return fetchPodersdorfForecast();
+            return fetchPodersdorfForecast(KITERIDERS_AT_URL);
         }
         return Mono.empty();
     }
@@ -92,10 +93,6 @@ public class CurrentConditionsService {
             }
         }
         return "N";
-    }
-
-    public Mono<CurrentConditions> fetchPodersdorfForecast() {
-        return fetchPodersdorfForecast(KITERIDERS_AT_URL);
     }
 
     Mono<CurrentConditions> fetchPodersdorfForecast(String url) {
