@@ -31,14 +31,14 @@ public class CurrentConditionsService {
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
         if (LIVE_CONDITIONS_URLS.containsKey(wgId)) {
-            return fetchWiatrKadynyForecast(LIVE_CONDITIONS_URLS.get(wgId));
+            return fetchWKCurrentConditions(LIVE_CONDITIONS_URLS.get(wgId));
         } else if (wgId == PODERSDORF_WG_ID) {
-            return fetchPodersdorfForecast(KITERIDERS_AT_URL);
+            return fetchKRCurrentConditions(KITERIDERS_AT_URL);
         }
         return Mono.empty();
     }
 
-    Mono<CurrentConditions> fetchWiatrKadynyForecast(String url) {
+    Mono<CurrentConditions> fetchWKCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request
                     .Builder()
@@ -93,7 +93,7 @@ public class CurrentConditionsService {
         return "N";
     }
 
-    Mono<CurrentConditions> fetchPodersdorfForecast(String url) {
+    Mono<CurrentConditions> fetchKRCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request.Builder()
                     .url(url)

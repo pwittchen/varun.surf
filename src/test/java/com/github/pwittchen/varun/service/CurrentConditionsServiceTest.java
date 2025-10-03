@@ -37,7 +37,7 @@ class CurrentConditionsServiceTest {
         String url = mockWebServer.url("/wiatrkadyny.txt").toString();
 
         StepVerifier
-                .create(service.fetchWiatrKadynyForecast(url))
+                .create(service.fetchWKCurrentConditions(url))
                 .assertNext(conditions -> {
                     assertThat(conditions.date()).isEqualTo("29/09/25 23:08:31");
                     assertThat(conditions.temp()).isEqualTo(10);
@@ -55,7 +55,7 @@ class CurrentConditionsServiceTest {
         String url = mockWebServer.url("/wiatrkadyny.txt").toString();
 
         StepVerifier
-                .create(service.fetchWiatrKadynyForecast(url))
+                .create(service.fetchWKCurrentConditions(url))
                 .expectError(RuntimeException.class)
                 .verify();
     }
@@ -82,7 +82,7 @@ class CurrentConditionsServiceTest {
         String url = mockWebServer.url("/weatherstat_kn.html").toString();
 
         StepVerifier
-                .create(service.fetchPodersdorfForecast(url))
+                .create(service.fetchKRCurrentConditions(url))
                 .assertNext(conditions -> {
                     assertThat(conditions.date()).isEqualTo("29/09/2025 23:14");
                     assertThat(conditions.temp()).isEqualTo(11);
