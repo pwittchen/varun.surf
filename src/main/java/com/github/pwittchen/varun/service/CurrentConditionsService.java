@@ -15,7 +15,7 @@ import java.util.Map;
 @Service
 public class CurrentConditionsService {
     private static final List<String> DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
-    private static final Map<Integer, String> LIVE_CONDITIONS_PL = Map.of(
+    private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
             14473, "https://www.wiatrkadyny.pl/krynica/wiatrkadyny.txt",
             509469, "https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt",
@@ -111,7 +111,7 @@ public class CurrentConditionsService {
     }
 
     public Mono<CurrentConditions> fetchKadynyForecast(int wgId) {
-        return fetchWiatrKadynyForecast(LIVE_CONDITIONS_PL.get(wgId));
+        return fetchWiatrKadynyForecast(LIVE_CONDITIONS_URLS.get(wgId));
     }
 
 }
