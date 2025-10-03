@@ -1165,9 +1165,6 @@
       "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds."
     }
   },
-
-
-
   {
     "name": "Leucate",
     "country": "France",
@@ -1193,11 +1190,11 @@
   {
     "name": "Noordwijk",
     "country": "Netherlands",
-    "windguruUrl": "https://www.windguru.cz/210",
-    "windfinderUrl": "https://www.windfinder.com/forecast/noordwijk",
+    "windguruUrl": "https://www.windguru.cz/575",
+    "windfinderUrl": "https://www.windfinder.com/forecast/noordwijk_aan_zee",
     "icmUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/jDpUBk9K2vA4oSGx5",
+    "locationUrl": "https://maps.app.goo.gl/SvwnJ6LXSfvGHeaAA",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
@@ -1215,11 +1212,11 @@
   {
     "name": "Scheveningen",
     "country": "Netherlands",
-    "windguruUrl": "https://www.windguru.cz/212",
+    "windguruUrl": "https://www.windguru.cz/572",
     "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
     "icmUrl": "",
-    "webcamUrl": "https://www.scheveningenlive.nl/webcams",
-    "locationUrl": "https://maps.app.goo.gl/BjZx3EujFZQShM9A7",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/JWNy7TaRTgiuVFVe6",
     "currentConditions": {},
     "forecast": [],
     "aiAnalysis": "",
