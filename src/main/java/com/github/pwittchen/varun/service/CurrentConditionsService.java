@@ -23,8 +23,8 @@ public class CurrentConditionsService {
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
         return strategies
                 .stream()
-                .filter(fetchCurrentConditions -> fetchCurrentConditions.canProcess(wgId))
-                .map(fetchCurrentConditions -> fetchCurrentConditions.fetchCurrentConditions(wgId))
+                .filter(s -> s.canProcess(wgId))
+                .map(s -> s.fetchCurrentConditions(wgId))
                 .findFirst()
                 .orElse(Mono.empty());
     }
