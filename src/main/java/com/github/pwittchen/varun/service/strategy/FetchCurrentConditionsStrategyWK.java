@@ -15,11 +15,9 @@ public class FetchCurrentConditionsStrategyWK extends FetchCurrentConditionsStra
 
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
-            14473, "https://www.wiatrkadyny.pl/krynica/wiatrkadyny.txt",
             509469, "https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt",
             500760, "https://www.wiatrkadyny.pl/draga/wiatrkadyny.txt",
-            4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt",
-            48009, "https://www.wiatrkadyny.pl/puck/wiatrkadyny.txt"
+            4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt"
     );
 
     @Override
