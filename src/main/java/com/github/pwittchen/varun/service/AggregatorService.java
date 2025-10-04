@@ -150,6 +150,12 @@ public class AggregatorService {
                 throw new FetchingCurrentConditionsException(e.getMessage());
             }
 
+            tasks
+                    .stream()
+                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
+                    .map(subtask -> subtask.exception().getMessage())
+                    .forEach(log::warn);
+
             var successfulTasks = tasks
                     .stream()
                     .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.SUCCESS)
