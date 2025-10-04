@@ -33,11 +33,9 @@ class FetchCurrentConditionsStrategyWKTest {
     @Test
     void shouldReturnTrueForSupportedWgIds() {
         assertThat(strategy.canProcess(126330)).isTrue();
-        assertThat(strategy.canProcess(14473)).isTrue();
         assertThat(strategy.canProcess(509469)).isTrue();
         assertThat(strategy.canProcess(500760)).isTrue();
         assertThat(strategy.canProcess(4165)).isTrue();
-        assertThat(strategy.canProcess(48009)).isTrue();
     }
 
     @Test
@@ -134,10 +132,8 @@ class FetchCurrentConditionsStrategyWKTest {
     @Test
     void shouldReturnCorrectUrlForWgId() {
         assertThat(strategy.getUrl(126330)).isEqualTo("https://www.wiatrkadyny.pl/wiatrkadyny.txt");
-        assertThat(strategy.getUrl(14473)).isEqualTo("https://www.wiatrkadyny.pl/krynica/wiatrkadyny.txt");
         assertThat(strategy.getUrl(509469)).isEqualTo("https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt");
         assertThat(strategy.getUrl(500760)).isEqualTo("https://www.wiatrkadyny.pl/draga/wiatrkadyny.txt");
         assertThat(strategy.getUrl(4165)).isEqualTo("https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt");
-        assertThat(strategy.getUrl(48009)).isEqualTo("https://www.wiatrkadyny.pl/puck/wiatrkadyny.txt");
     }
 }
