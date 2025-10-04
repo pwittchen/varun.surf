@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;

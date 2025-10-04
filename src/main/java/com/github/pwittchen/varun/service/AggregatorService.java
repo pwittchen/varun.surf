@@ -3,7 +3,7 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.model.CurrentConditionsEmptyFilter;
+import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
