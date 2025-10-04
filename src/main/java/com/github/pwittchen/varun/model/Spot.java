@@ -56,7 +56,9 @@ public record Spot(
                 this.forecast,
                 this.aiAnalysis,
                 this.spotInfo,
-                ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+                CurrentConditionsEmptyFilter.isEmpty(currentConditions)
+                        ? this.lastUpdated
+                        : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
         );
     }
 

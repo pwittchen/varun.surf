@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
+import com.github.pwittchen.varun.model.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
@@ -165,7 +166,7 @@ public class AggregatorService {
         currentConditions = tasks
                 .stream()
                 .map(StructuredTaskScope.Subtask::get)
-                .filter(pair -> pair.getValue1() != null)
+                .filter(pair -> !CurrentConditionsEmptyFilter.isEmpty(pair.getValue1()))
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
         spots = spots
