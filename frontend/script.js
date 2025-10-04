@@ -337,13 +337,13 @@
         if (spot.forecast && Array.isArray(spot.forecast)) {
             spot.forecast.forEach(day => {
                 let windClass, windTextClass;
-                if (day.wind < 12) {
+                if (day.gusts < 12) {
                     windClass = 'weak-wind';
                     windTextClass = 'wind-weak';
-                } else if (day.wind >= 12 && day.wind < 18) {
+                } else if (day.gusts >= 12 && day.gusts < 18) {
                     windClass = 'moderate-wind';
                     windTextClass = 'wind-moderate';
-                } else if (day.wind >= 18 && day.wind <= 22) {
+                } else if (day.gusts >= 18 && day.gusts <= 25) {
                     windClass = 'strong-wind';
                     windTextClass = 'wind-strong';
                 } else {
@@ -388,13 +388,13 @@
         let currentConditionsRow = '';
         if (spot.currentConditions) {
             let windClass, windTextClass;
-            if (spot.currentConditions.wind < 12) {
+            if (spot.currentConditions.gusts < 12) {
                 windClass = 'weak-wind';
                 windTextClass = 'wind-weak';
-            } else if (spot.currentConditions.wind >= 12 && spot.currentConditions.wind < 15) {
+            } else if (spot.currentConditions.gusts >= 12 && spot.currentConditions.gusts < 18) {
                 windClass = 'moderate-wind';
                 windTextClass = 'wind-moderate';
-            } else if (spot.currentConditions.wind >= 15 && spot.currentConditions.wind <= 22) {
+            } else if (spot.currentConditions.gusts >= 18 && spot.currentConditions.gusts <= 22) {
                 windClass = 'strong-wind';
                 windTextClass = 'wind-strong';
             } else {
@@ -423,7 +423,7 @@
                     <tr class="${windClass}" style="border-top: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
-                                <strong>NOW</strong>
+                                <strong class="live-text">NOW</strong>
                                 <div class="live-dot"></div>
                             </div>
                         </td>

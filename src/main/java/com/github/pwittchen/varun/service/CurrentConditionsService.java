@@ -61,9 +61,9 @@ public class CurrentConditionsService {
 
                 String date = parts[0] + " " + parts[1];
                 int temp = (int) Math.round(Double.parseDouble(parts[2]));
-                int wind = (int) Math.round(Double.parseDouble(parts[6]));
+                int wind = (int) Math.round(Double.parseDouble(parts[26]));
                 String direction = normalizeDirection(parts[11]);
-                int gusts = (int) Math.round(Double.parseDouble(parts[26]));
+                int gusts = (int) Math.round(Double.parseDouble(parts[6]));
 
                 return new CurrentConditions(date, wind, gusts, direction, temp);
             }

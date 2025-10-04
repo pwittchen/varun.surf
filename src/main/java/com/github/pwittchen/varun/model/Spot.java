@@ -43,4 +43,21 @@ public record Spot(
         );
     }
 
+    public Spot withCurrentConditions(CurrentConditions currentConditions) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                currentConditions,
+                this.forecast,
+                this.aiAnalysis,
+                this.spotInfo,
+                ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+        );
+    }
+
 }

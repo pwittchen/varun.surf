@@ -1051,6 +1051,10 @@ body {
     gap: 8px;
 }
 
+.live-text {
+    color: var(--success-color);
+}
+
 .live-dot {
     width: 8px;
     height: 8px;

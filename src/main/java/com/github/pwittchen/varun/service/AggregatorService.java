@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Forecast;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.Collectors;
 
@@ -44,7 +46,7 @@ public class AggregatorService {
             CurrentConditionsService currentConditionsService,
             AiService aiService) {
         this.spots = new ArrayList<>();
-        this.forecasts = new HashMap<>();
+        this.forecasts = new ConcurrentHashMap<>();
         this.currentConditions = new HashMap<>();
         this.aiAnalysis = new HashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -78,8 +80,6 @@ public class AggregatorService {
     void recoverFromFetchingForecasts(FetchingForecastException e) {
         log.error("Failed while fetching forecasts after 3 attempts", e);
     }
-
-    //TODO add fetching current conditions here
 
     private void fetchForecasts() throws FetchingForecastException {
         var spotWgIds = spots.stream().map(Spot::wgId).toList();
@@ -119,6 +119,58 @@ public class AggregatorService {
         spots = spots
                 .stream()
                 .map(Spot::withUpdatedTimestamp)
+                .toList();
+    }
+
+    @Scheduled(fixedRate = 60_000)
+    @Retryable(retryFor = FetchingCurrentConditionsException.class, maxAttempts = 5, backoff = @Backoff(delay = 5000))
+    void fetchCurrentConditionsEveryOneMinute() throws FetchingCurrentConditionsException {
+        log.info("Fetching current conditions");
+        fetchCurrentConditions();
+    }
+
+    @Recover
+    public void recoverFromFetchingCurrentConditions(FetchingCurrentConditionsException e) {
+        log.error("Failed while fetching current conditions after 3 attempts", e);
+    }
+
+    private void fetchCurrentConditions() throws FetchingCurrentConditionsException {
+        var spotWgIds = spots.stream().map(Spot::wgId).toList();
+        try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
+            var tasks = spotWgIds
+                    .stream()
+                    .map(id -> scope.fork(() -> Pair.with(id, currentConditionsService.fetchCurrentConditions(id).block())))
+                    .toList();
+
+            try {
+                scope.join();
+            } catch (Exception e) {
+                log.error("Error while fetching current conditions", e);
+                throw new FetchingCurrentConditionsException(e.getMessage());
+            }
+
+            var successfulTasks = tasks
+                    .stream()
+                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.SUCCESS)
+                    .toList();
+
+            log.info("Current conditions fetched");
+
+            updateSpotsAndCurrentConditions(successfulTasks);
+        }
+    }
+
+    private void updateSpotsAndCurrentConditions(List<StructuredTaskScope.Subtask<Pair<Integer, CurrentConditions>>> tasks) {
+        currentConditions.clear();
+        currentConditions = tasks
+                .stream()
+                .map(StructuredTaskScope.Subtask::get)
+                .filter(pair -> pair.getValue1() != null)
+                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        spots = spots
+                .stream()
+                .map(spot -> spot.withCurrentConditions(currentConditions.get(spot.wgId())))
                 .toList();
     }
 }
