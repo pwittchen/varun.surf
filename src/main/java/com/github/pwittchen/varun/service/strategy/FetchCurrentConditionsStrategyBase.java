@@ -12,10 +12,6 @@ public abstract class FetchCurrentConditionsStrategyBase {
 
     protected final OkHttpClient httpClient = new OkHttpClient();
 
-    public abstract boolean canProcess(int wgId);
-
-    public abstract Mono<CurrentConditions> fetchCurrentConditions(int wgId);
-
     protected abstract Mono<CurrentConditions> fetchCurrentConditions(String url);
 
     protected abstract String getUrl(int wgId);

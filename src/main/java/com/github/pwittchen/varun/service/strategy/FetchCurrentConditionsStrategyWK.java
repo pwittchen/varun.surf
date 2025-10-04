@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Strategy for fetching current conditions from the Polish coast near Puck Bay basing on wiatrkadyny.pl website
  */
-public class FetchCurrentConditionsStrategyWK extends FetchCurrentConditionsStrategyBase {
+public class FetchCurrentConditionsStrategyWK extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
@@ -37,7 +37,7 @@ public class FetchCurrentConditionsStrategyWK extends FetchCurrentConditionsStra
     }
 
     @Override
-    protected Mono<CurrentConditions> fetchCurrentConditions(String url) {
+    public Mono<CurrentConditions> fetchCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request
                     .Builder()
