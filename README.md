@@ -1,4 +1,4 @@
-## varun.surf
+## varun.surf 🏄
 
 [![Java CI with Gradle](https://github.com/pwittchen/varun.surf/actions/workflows/gradle.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/gradle.yml)
 
