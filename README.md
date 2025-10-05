@@ -8,22 +8,26 @@ see it online at: https://varun.surf
 
 ## building & running
 
-run LLM:
-
-```
-ollama serve
-```
-
-run app:
-
 ```
 ./run.sh
 ```
-
-NOTE: later it will be replaced with docker compose config
 
 ## testing
 
 ```
 ./gradlew test
 ```
+
+## AI
+
+If you want to use AI in the app, configure ollama or openai in the `application.properties`.
+
+In case of using ollama, start it as a separate service as follows:
+
+```
+ollama serve
+```
+
+NOTE: I added this feature as an experiment, but it does not really add any big value to this particular project,
+so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs 
+and during local tests sometimes it got stuck, so not all the spots received analysis.
