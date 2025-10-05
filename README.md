@@ -34,7 +34,7 @@ docker run -p 8080:8080 varun-surf
 
 ## docker container registry
 
-docker image is automatically deployed to the docker container registry at ghcr.io via gitHub action 
+docker image is automatically deployed to the docker container registry at ghcr.io via github action
 from the `master` branch
 
 - configure PAT (Personal Access Token) here: https://github.com/settings/tokens
@@ -67,12 +67,12 @@ ollama serve
 ```
 
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
-so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs 
-and during local tests sometimes it got stuck, so not all the spots received analysis. 
-Another interesting thing is the fact, that performing 74 calls to OpenAI with gpt-4o-mini model 
-used around 31k tokens and costs $0.01, so If I would like to trigger AI analysis 
-for my current configuration with this AI provider every six hours 
-(4 times in 24h = 120 times in 30 days = 8880 req. / month), I'd spent around \$1.2 (~4.35 PLN) 
+so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs
+and during local tests sometimes it got stuck, so not all the spots received analysis.
+Another interesting thing is the fact, that performing 74 calls to OpenAI with gpt-4o-mini model
+used around 31k tokens and costs $0.01, so If I would like to trigger AI analysis
+for my current configuration with this AI provider every six hours
+(4 times in 24h = 120 times in 30 days = 8880 req. / month), I'd spent around \$1.2 (~4.35 PLN)
 for monthly OpenAI usage, which is reasonable price because coffee in my local coffee shop costs more.
 Nevertheless, more advanced analysis, more tokens or stronger model, should increase the price.
 
