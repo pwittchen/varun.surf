@@ -63,4 +63,22 @@ public record Spot(
         );
     }
 
+    public Spot withAiAnalysis(String aiAnalysis) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.forecast,
+                aiAnalysis,
+                this.spotInfo,
+                aiAnalysis.isEmpty()
+                        ? this.lastUpdated
+                        : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+        );
+    }
 }

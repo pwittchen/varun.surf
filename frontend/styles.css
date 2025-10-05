@@ -1433,7 +1433,7 @@ body {
     color: var(--text-primary);
 }
 
-.calc-disclaimer {
+.modal-disclaimer {
     margin-top: 16px;
     padding: 12px;
     background: rgba(245, 158, 11, 0.1);

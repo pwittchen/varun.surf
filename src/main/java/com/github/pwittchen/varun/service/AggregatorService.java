@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
@@ -12,6 +13,7 @@ import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -21,20 +23,24 @@ import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings("preview")
+@SuppressWarnings({"preview", "Since15"})
 public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
 
-    private List<Spot> spots;
+    @Value("${app.feature.ai.forecast.analysis.enabled}")
+    private boolean aiForecastAnalysisEnabled;
+
+    private final AtomicReference<List<Spot>> spots;
     private Map<Integer, List<Forecast>> forecasts;
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
@@ -45,15 +51,17 @@ public class AggregatorService {
     private final CurrentConditionsService currentConditionsService;
     private final AiService aiService;
 
+    private final Semaphore limiter = new Semaphore(32);
+
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
             ForecastService forecastService,
             CurrentConditionsService currentConditionsService,
             AiService aiService) {
-        this.spots = new ArrayList<>();
+        this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecasts = new ConcurrentHashMap<>();
-        this.currentConditions = new HashMap<>();
-        this.aiAnalysis = new HashMap<>();
+        this.currentConditions = new ConcurrentHashMap<>();
+        this.aiAnalysis = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
@@ -68,7 +76,7 @@ public class AggregatorService {
                 .doOnSubscribe(_ -> log.info("Loading spots"))
                 .subscribeOn(Schedulers.boundedElastic())
                 .subscribe(spots -> {
-                    this.spots = spots;
+                    this.spots.set(spots);
                     log.info("Loaded {} spots", spots.size());
                 }, error -> log.error("Failed to load spots", error));
     }
@@ -79,7 +87,7 @@ public class AggregatorService {
     }
 
     public List<Spot> getSpots() {
-        return spots;
+        return spots.get();
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
@@ -95,12 +103,19 @@ public class AggregatorService {
     }
 
     private void fetchForecasts() throws FetchingForecastException {
-        var spotWgIds = spots.stream().map(Spot::wgId).toList();
+        var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
             var tasks = spotWgIds
                     .stream()
-                    .map(id -> scope.fork(() -> Pair.with(id, forecastService.getForecast(id).block())))
+                    .map(id -> scope.fork(() -> {
+                        limiter.acquire();
+                        try {
+                            return Pair.with(id, forecastService.getForecast(id).block());
+                        } finally {
+                            limiter.release();
+                        }
+                    }))
                     .toList();
 
             try {
@@ -111,7 +126,6 @@ public class AggregatorService {
             }
 
             log.info("Forecasts fetched");
-
             updateSpotsAndForecasts(tasks);
         }
     }
@@ -124,15 +138,16 @@ public class AggregatorService {
                 .filter(pair -> !pair.getValue1().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
-        spots.forEach(spot -> {
-            spot.forecast().clear();
-            spot.forecast().addAll(forecasts.get(spot.wgId()));
-        });
-
-        spots = spots
+        spots.set(spots
+                .get()
                 .stream()
+                .peek(spot -> {
+                    spot.forecast().clear();
+                    spot.forecast().addAll(forecasts.get(spot.wgId()));
+                })
                 .map(Spot::withUpdatedTimestamp)
-                .toList();
+                .toList()
+        );
     }
 
     @Scheduled(fixedRate = 60_000)
@@ -148,11 +163,18 @@ public class AggregatorService {
     }
 
     private void fetchCurrentConditions() throws FetchingCurrentConditionsException {
-        var spotWgIds = spots.stream().map(Spot::wgId).toList();
+        var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
         try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
             var tasks = spotWgIds
                     .stream()
-                    .map(id -> scope.fork(() -> Pair.with(id, currentConditionsService.fetchCurrentConditions(id).block())))
+                    .map(id -> scope.fork(() -> {
+                        limiter.acquire();
+                        try {
+                            return Pair.with(id, currentConditionsService.fetchCurrentConditions(id).block());
+                        } finally {
+                            limiter.release();
+                        }
+                    }))
                     .toList();
 
             try {
@@ -187,9 +209,73 @@ public class AggregatorService {
                 .filter(pair -> !CurrentConditionsEmptyFilter.isEmpty(pair.getValue1()))
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
-        spots = spots
+        spots.set(spots
+                .get()
                 .stream()
                 .map(spot -> spot.withCurrentConditions(currentConditions.get(spot.wgId())))
-                .toList();
+                .toList()
+        );
+    }
+
+    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 7000))
+    void fetchAiAnalysisEverySixHours() throws FetchingForecastException {
+        if (aiForecastAnalysisEnabled) {
+            log.info("Fetching AI forecast analysis");
+            fetchAiForecastAnalysis();
+        } else {
+            log.info("Fetching AI forecast analysis is DISABLED");
+        }
+    }
+
+    @Recover
+    void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
+        log.error("Failed while fetching AI forecast analysis after 3 attempts", e);
+    }
+
+    private void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
+
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure("aianalysis", Thread.ofVirtual().factory())) {
+            var tasks = spots
+                    .get()
+                    .stream()
+                    .map(spot -> scope.fork(() -> {
+                        limiter.acquire();
+                        try {
+                            return Pair.with(spot, aiService.fetchAiAnalysis(spot).block());
+                        } finally {
+                            limiter.release();
+                        }
+                    }))
+                    .toList();
+
+            try {
+                scope.join().throwIfFailed();
+            } catch (Exception e) {
+                log.error("Error while fetching AI forecast analysis", e);
+                throw new FetchingAiForecastAnalysisException(e.getMessage());
+            }
+
+            log.info("AI forecast analysis fetched");
+
+            updateSpotsAndAiForecastAnalysis(tasks);
+        }
+    }
+
+    private void updateSpotsAndAiForecastAnalysis(List<StructuredTaskScope.Subtask<Pair<Spot, String>>> tasks) {
+        aiAnalysis.clear();
+        aiAnalysis = tasks
+                .stream()
+                .map(StructuredTaskScope.Subtask::get)
+                .filter(pair -> pair.getValue1() != null && !pair.getValue1().isEmpty())
+                .map(pair -> Pair.with(pair.getValue0().wgId(), pair.getValue1()))
+                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        spots.set(spots
+                .get()
+                .stream()
+                .map(spot -> spot.withAiAnalysis(aiAnalysis.get(spot.wgId())))
+                .toList()
+        );
     }
 }
