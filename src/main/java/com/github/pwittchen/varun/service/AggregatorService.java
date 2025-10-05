@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
@@ -12,6 +13,7 @@ import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -33,6 +35,9 @@ import java.util.stream.Collectors;
 public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
+
+    @Value("${feature.ai.forecast.analysis.enabled}")
+    private boolean aiForecastAnalysisEnabled;
 
     private List<Spot> spots;
     private Map<Integer, List<Forecast>> forecasts;
@@ -124,13 +129,12 @@ public class AggregatorService {
                 .filter(pair -> !pair.getValue1().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
-        spots.forEach(spot -> {
-            spot.forecast().clear();
-            spot.forecast().addAll(forecasts.get(spot.wgId()));
-        });
-
         spots = spots
                 .stream()
+                .peek(spot -> {
+                    spot.forecast().clear();
+                    spot.forecast().addAll(forecasts.get(spot.wgId()));
+                })
                 .map(Spot::withUpdatedTimestamp)
                 .toList();
     }
@@ -190,6 +194,58 @@ public class AggregatorService {
         spots = spots
                 .stream()
                 .map(spot -> spot.withCurrentConditions(currentConditions.get(spot.wgId())))
+                .toList();
+    }
+
+    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 4000))
+    void fetchAiAnalysisEverySixHours() throws FetchingForecastException {
+        if (aiForecastAnalysisEnabled) {
+            log.info("Fetching AI forecast analysis");
+            fetchAiForecastAnalysis();
+        } else {
+            log.info("Fetching AI forecast analysis is DISABLED");
+        }
+    }
+
+    @Recover
+    void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
+        log.error("Failed while fetching AI forecast analysis after 3 attempts", e);
+    }
+
+    private void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
+
+        try (var scope = new StructuredTaskScope.ShutdownOnFailure("aianalysis", Thread.ofVirtual().factory())) {
+            var tasks = spots
+                    .stream()
+                    .map(spot -> scope.fork(() -> Pair.with(spot, aiService.fetchAiAnalysis(spot).block())))
+                    .toList();
+
+            try {
+                scope.join().throwIfFailed();
+            } catch (Exception e) {
+                log.error("Error while fetching AI forecast analysis", e);
+                throw new FetchingAiForecastAnalysisException(e.getMessage());
+            }
+
+            log.info("AI forecast analysis fetched");
+
+            updateSpotsAndAiForecastAnalysis(tasks);
+        }
+    }
+
+    private void updateSpotsAndAiForecastAnalysis(List<StructuredTaskScope.Subtask<Pair<Spot, String>>> tasks) {
+        aiAnalysis.clear();
+        aiAnalysis = tasks
+                .stream()
+                .map(StructuredTaskScope.Subtask::get)
+                .filter(pair -> !pair.getValue1().isEmpty())
+                .map(pair -> Pair.with(pair.getValue0().wgId(), pair.getValue1()))
+                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        spots = spots
+                .stream()
+                .map(spot -> spot.withAiAnalysis(aiAnalysis.get(spot.wgId())))
                 .toList();
     }
 }

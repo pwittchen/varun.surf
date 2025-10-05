@@ -8,11 +8,21 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AiService {
-    private final static String SYSTEM_PROMPT = "You are Meteorologist. " +
-            "Your task is to comment the weather forecast for kitesurfers and give advice " +
-            "for kitesurfing on the kite spot %s located in %s. " +
-            "The weather forecast is provided in the JSON format as follows:\n" +
-            "%s";
+    private final static String SYSTEM_PROMPT = """
+            You are a kitesurfing weather assistant. \s
+            Analyze the forecast and output a **3-line summary**, each starting with a keyword. \s
+            Keep your answer short (under 40 words total), objective, and formatted exactly like this:
+            
+            Wind: <speed + direction + gusts> \s
+            Conditions: <temperature, water/wave state, safety> \s
+            Recommendation: <good / moderate / bad for kitesurfing + short reason>
+            
+            Do NOT write explanations or extra text. \s
+            Do NOT include greetings or paragraphs. \s
+            Forecast data:
+            spot: %s, country: %s
+            %s
+            """;
 
     private final ChatClient chatClient;
     private final Gson gson;
@@ -22,7 +32,7 @@ public class AiService {
         this.gson = gson;
     }
 
-    public Mono<String> generateAiForecastComment(Spot spot) {
+    public Mono<String> fetchAiAnalysis(Spot spot) {
         if (spot.name().isEmpty() || spot.country().isEmpty() || spot.forecast().isEmpty()) {
             return Mono.empty();
         }
