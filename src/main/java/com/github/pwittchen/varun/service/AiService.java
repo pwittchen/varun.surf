@@ -10,7 +10,8 @@ import reactor.core.publisher.Mono;
 public class AiService {
 
     private final static String SYSTEM_PROMPT = "You are Meteorologist. " +
-            "Your task is to comment the weather forecast for kitesurfers on the kite spot %s located in %s. " +
+            "Your task is to comment the weather forecast for kitesurfers and give advice " +
+            "for the kite spot %s located in %s. " +
             "The weather forecast is provided in JSON format as follows:\n" +
             "%s";
 
