@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Strategy for fetching current conditions from the Polish coast near Puck Bay basing on wiatrkadyny.pl website
  */
-public class FetchCurrentConditionsStrategyWK extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
+public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
             126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",

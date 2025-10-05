@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 /**
  * Strategy for fetching current conditions from the Podersdorf spot in Austria basing on kiteriders.at website
  */
-public class FetchCurrentConditionsStrategyKR extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
+public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final int PODERSDORF_WG_ID = 859182;
     private static final String KITERIDERS_LIVE_READINGS = "https://www.kiteriders.at/wind/weatherstat_kn.html";

@@ -13,16 +13,16 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class FetchCurrentConditionsStrategyWKTest {
+class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
 
     private MockWebServer mockWebServer;
-    private FetchCurrentConditionsStrategyWK strategy;
+    private FetchCurrentConditionsStrategyWiatrKadynyStations strategy;
 
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        strategy = new FetchCurrentConditionsStrategyWK();
+        strategy = new FetchCurrentConditionsStrategyWiatrKadynyStations();
     }
 
     @AfterEach

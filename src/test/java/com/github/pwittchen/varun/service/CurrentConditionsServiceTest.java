@@ -1,8 +1,6 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.service.strategy.FetchCurrentConditionsStrategyKR;
-import com.github.pwittchen.varun.service.strategy.FetchCurrentConditionsStrategyWK;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
