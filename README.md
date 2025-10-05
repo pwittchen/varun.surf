@@ -20,13 +20,13 @@ see it online at: https://varun.surf
 
 ## docker
 
-Build the image:
+building:
 
 ```
 docker build -t varun-surf .
 ```
 
-run the container:
+running:
 
 ```
 docker run -p 8080:8080 varun-surf
