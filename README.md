@@ -18,6 +18,20 @@ see it online at: https://varun.surf
 ./gradlew test
 ```
 
+## docker
+
+Build the image:
+
+```
+docker build -t varun-surf .
+```
+
+run the container:
+
+```
+docker run -p 8080:8080 varun-surf
+```
+
 ## AI
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
