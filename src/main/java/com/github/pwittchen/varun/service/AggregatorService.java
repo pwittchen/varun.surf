@@ -8,6 +8,7 @@ import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class AggregatorService {
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
 
+    private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
     private final CurrentConditionsService currentConditionsService;
@@ -59,7 +62,7 @@ public class AggregatorService {
 
     @PostConstruct
     void init() {
-        spotsDataProvider
+        spotsDisposable = spotsDataProvider
                 .getSpots()
                 .collectList()
                 .doOnSubscribe(_ -> log.info("Loading spots"))
@@ -67,9 +70,12 @@ public class AggregatorService {
                 .subscribe(spots -> {
                     this.spots = spots;
                     log.info("Loaded {} spots", spots.size());
-                }, error -> {
-                    log.error("Failed to load spots", error);
-                });
+                }, error -> log.error("Failed to load spots", error));
+    }
+
+    @PreDestroy
+    void cleanup() {
+        spotsDisposable.dispose();
     }
 
     public List<Spot> getSpots() {
