@@ -22,7 +22,7 @@ public class AiService {
             Do NOT write explanations or extra text. \s
             Do NOT include greetings or paragraphs. \s
             Spot name: %s, country: %s
-            Forecast data:
+            Forecast data in JSON format:
             %s
             """;
 
