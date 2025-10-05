@@ -80,7 +80,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 ![screen](screen.png)
 
-## features for the users
+## features
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
 - browsing forecasts for multiple kite spots
