@@ -37,3 +37,7 @@ for my current configuration with this AI provider every six hours
 (4 times in 24h = 120 times in 30 days = 8880 req. / month), I'd spent around \$1.2 (~4.35 PLN) 
 for monthly OpenAI usage, which is reasonable price because coffee in my local coffee shop costs more.
 Nevertheless, more advanced analysis, more tokens or stronger model, should increase the price.
+
+## screenshot
+
+![screen](screen.png)
