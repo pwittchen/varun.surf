@@ -54,5 +54,6 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - possibility to add spots to favorites
 - organizing spots in the custom order with drag and drop mechanism
 - dark/light theme
+- possibility to switch between 2-columns view and 3-columns view
 - mobile-friendly UI
 - kite and board size calculator
