@@ -6,13 +6,7 @@ weather forecast and real-time wind conditions dashboard for kitesurfers
 
 see it online at: https://varun.surf
 
-## building backend
-
-```
-./gradlew bootJar
-```
-
-## building & running whole app
+## building & running
 
 ```
 ./run.sh
