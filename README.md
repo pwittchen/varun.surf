@@ -8,9 +8,19 @@ see it online at: https://varun.surf
 
 ## building & running
 
+run LLM:
+
+```
+ollama serve
+```
+
+run app:
+
 ```
 ./run.sh
 ```
+
+NOTE: later it will be replaced with docker compose config
 
 ## testing
 
