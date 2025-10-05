@@ -58,7 +58,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - filtering spots by country
 - searching spots
 - possibility to add spots to favorites
-- organizing spots order with drag and drop mechanism
+- organizing spots in the custom order with drag and drop mechanism
 - dark/light theme
 - mobile-friendly UI
-- kite and board calculator
+- kite and board size calculator
