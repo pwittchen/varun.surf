@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.model.Spot;
+import com.google.gson.Gson;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -7,19 +9,27 @@ import reactor.core.publisher.Mono;
 @Service
 public class AiService {
 
-    ChatClient chatClient;
+    private final static String SYSTEM_PROMPT = "You are Meteorologist. " +
+            "Your task is to comment the weather forecast for kitesurfers on the kite spot %s located in %s. " +
+            "The weather forecast is provided in JSON format as follows:\n" +
+            "%s";
+
+    private final ChatClient chatClient;
+    private final Gson gson;
 
     public AiService(ChatClient chatClient) {
         this.chatClient = chatClient;
+        this.gson = new Gson();
     }
 
-    public Mono<String> ai() {
+    public Mono<String> generateAiForecastComment(Spot spot) {
         return chatClient
                 .prompt()
-                .user("tell me a joke")
+                .user(String.format(SYSTEM_PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
                 .stream()
                 .content()
                 .collectList()
                 .map(list -> String.join("", list));
     }
+
 }
