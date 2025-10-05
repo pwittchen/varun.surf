@@ -17,9 +17,9 @@ public class AiService {
     private final ChatClient chatClient;
     private final Gson gson;
 
-    public AiService(ChatClient chatClient) {
+    public AiService(ChatClient chatClient, Gson gson) {
         this.chatClient = chatClient;
-        this.gson = new Gson();
+        this.gson = gson;
     }
 
     public Mono<String> generateAiForecastComment(Spot spot) {
