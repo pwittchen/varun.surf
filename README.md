@@ -57,3 +57,4 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - possibility to switch between 2-columns view and 3-columns view
 - mobile-friendly UI
 - kite and board size calculator
+- AI forecast analysis (disabled by default)
