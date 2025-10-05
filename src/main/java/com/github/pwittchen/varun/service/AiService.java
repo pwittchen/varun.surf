@@ -6,6 +6,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 public class AiService {
     private final static String SYSTEM_PROMPT = """
@@ -19,8 +21,8 @@ public class AiService {
             
             Do NOT write explanations or extra text. \s
             Do NOT include greetings or paragraphs. \s
+            Spot name: %s, country: %s
             Forecast data:
-            spot: %s, country: %s
             %s
             """;
 
@@ -41,6 +43,9 @@ public class AiService {
                 .user(String.format(SYSTEM_PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
                 .stream()
                 .content()
+                .delayElements(Duration.ofSeconds(1))
+                .timeout(Duration.ofSeconds(15))
+                .retry(3)
                 .collectList()
                 .map(list -> String.join("", list));
     }
