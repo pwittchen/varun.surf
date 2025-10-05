@@ -46,6 +46,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 ## features for the users
 
+- showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
 - browsing forecasts for multiple kite spots
 - watching live wind conditions in the selected spots
 - refreshing live wind every one minute on the backend (requires page refresh on the frontend)
