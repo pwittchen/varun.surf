@@ -3,9 +3,9 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.Spot;
+import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import jakarta.annotation.PostConstruct;
 import org.javatuples.Pair;
@@ -16,6 +16,7 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,12 +59,17 @@ public class AggregatorService {
 
     @PostConstruct
     void init() {
-        log.info("Loading spots");
-        spots = spotsDataProvider
+        spotsDataProvider
                 .getSpots()
-                .toStream()
-                .toList();
-        log.info("Loaded {} spots", spots.size());
+                .collectList()
+                .doOnSubscribe(_ -> log.info("Loading spots"))
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe(spots -> {
+                    this.spots = spots;
+                    log.info("Loaded {} spots", spots.size());
+                }, error -> {
+                    log.error("Failed to load spots", error);
+                });
     }
 
     public List<Spot> getSpots() {
