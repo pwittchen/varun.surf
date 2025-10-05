@@ -32,12 +32,34 @@ running:
 docker run -p 8080:8080 varun-surf
 ```
 
+## docker container registry
+
+docker image is automatically deployed to the docker container registry at ghcr.io via gitHub action 
+from the `master` branch
+
+- configure PAT (Personal Access Token) here: https://github.com/settings/tokens
+- set permissions: `write:packages`, `read:packages`
+- remember, you need to refresh the token in the future, once it will become outdated
+- copy your access token to the clipboard
+
+now authorize to docker registry:
+
+```
+PAT=YOUR_ACCESS_TOKEN
+echo $PAT | docker login ghcr.io -u pwittchen --password-stdin
+```
+
+pull image and run the container:
+
+```
+docker pull ghcr.io/pwittchen/varun.surf
+docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
+```
+
 ## AI
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
-
 If you want to use AI in the app, configure ollama or openai in the `application.properties`.
-
 In case of using ollama, start it as a separate service as follows:
 
 ```
