@@ -31,5 +31,4 @@ public class AiService {
                 .collectList()
                 .map(list -> String.join("", list));
     }
-
 }
