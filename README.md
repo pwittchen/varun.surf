@@ -48,7 +48,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 ![screen](screen.png)
 
-## app features
+## features for the users
 
 - browsing forecasts for multiple kite spots
 - watching live wind conditions in the selected spots
