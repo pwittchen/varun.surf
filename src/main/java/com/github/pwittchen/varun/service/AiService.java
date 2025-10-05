@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class AiService {
-
     private final static String SYSTEM_PROMPT = "You are Meteorologist. " +
             "Your task is to comment the weather forecast for kitesurfers and give advice " +
             "for the kite spot %s located in %s. " +
