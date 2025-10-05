@@ -47,3 +47,18 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 ## screenshot
 
 ![screen](screen.png)
+
+## app features
+
+- browsing forecasts for multiple kite spots
+- watching live wind conditions in the selected spots
+- refreshing live wind every one minute on the backend (requires page refresh on the frontend)
+- refreshing forecasts every 3 hours in the backend (requires page refresh on the frontend)
+- browsing details regarding different spots like description, windguru, windfinder and ICM forecast links, location and webcam
+- filtering spots by country
+- searching spots
+- possibility to add spots to favorites
+- organizing spots order with drag and drop mechanism
+- dark/light theme
+- mobile-friendly UI
+- kite and board calculator
