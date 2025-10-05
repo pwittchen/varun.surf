@@ -20,6 +20,8 @@ see it online at: https://varun.surf
 
 ## AI
 
+It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
+
 If you want to use AI in the app, configure ollama or openai in the `application.properties`.
 
 In case of using ollama, start it as a separate service as follows:
