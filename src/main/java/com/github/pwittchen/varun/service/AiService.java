@@ -23,6 +23,9 @@ public class AiService {
     }
 
     public Mono<String> generateAiForecastComment(Spot spot) {
+        if (spot.name().isEmpty() || spot.country().isEmpty() || spot.forecast().isEmpty()) {
+            return Mono.empty();
+        }
         return chatClient
                 .prompt()
                 .user(String.format(SYSTEM_PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
