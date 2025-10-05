@@ -164,6 +164,7 @@ public class AggregatorService {
 
     private void fetchCurrentConditions() throws FetchingCurrentConditionsException {
         var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
+
         try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
             var tasks = spotWgIds
                     .stream()
@@ -196,7 +197,6 @@ public class AggregatorService {
                     .toList();
 
             log.info("Current conditions fetched");
-
             updateSpotsAndCurrentConditions(successfulTasks);
         }
     }
@@ -234,7 +234,6 @@ public class AggregatorService {
     }
 
     private void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
-
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("aianalysis", Thread.ofVirtual().factory())) {
             var tasks = spots
                     .get()
@@ -257,7 +256,6 @@ public class AggregatorService {
             }
 
             log.info("AI forecast analysis fetched");
-
             updateSpotsAndAiForecastAnalysis(tasks);
         }
     }
