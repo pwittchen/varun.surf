@@ -41,7 +41,7 @@ docker image is automatically deployed to the registry at ghcr.io via github act
 - remember, you need to refresh the token in the future, once it will become outdated
 - copy your access token to the clipboard
 
-now login, into docker registry:
+now, login into docker registry:
 
 ```
 PAT=YOUR_ACCESS_TOKEN
