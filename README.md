@@ -65,6 +65,15 @@ In case of using ollama, start it as a separate service as follows:
 ollama serve
 ```
 
+An exemplary docker command to run the app with enabled AI analysis and OpenAI provider:
+
+```
+docker run -p 8080:8080 varun-surf \
+    --app.feature.ai.forecast.analysis.enabled=true \
+    --app.ai.provider=openai \
+    --spring.ai.openai.api-key=your-api-key-here
+```
+
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
 so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs
 and during local tests sometimes it got stuck, so not all the spots received analysis.
