@@ -54,6 +54,11 @@ docker pull ghcr.io/pwittchen/varun.surf
 docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 ```
 
+## deployment
+
+On the VPS, you can use `varun.sh` script, which is deployment helper script.
+Just copy it on the server, make it executable and set valid GitHub PAT (Personal Access Token) in the script.
+
 ## AI
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
