@@ -72,9 +72,9 @@
         function updateTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             if (theme === 'light') {
-                themeIcon.textContent = '☀︎';
+                themeIcon.textContent = '🌞';
             } else {
-                themeIcon.textContent = '⏾';
+                themeIcon.textContent = '🌙';
             }
             localStorage.setItem('theme', theme);
         }
