@@ -6,10 +6,16 @@ weather forecast and real-time wind conditions dashboard for kitesurfers
 
 see it online at: https://varun.surf
 
-## building & running
+## building
 
 ```
-./run.sh
+./build.sh
+```
+
+## running
+
+```
+./build.sh --run
 ```
 
 ## testing

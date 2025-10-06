@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# this script builds and runs the whole app
+# this script builds and optionally runs the whole app
+# Usage: ./build.sh [--run]
 
 echo "🚧  starting frontend build..."
 
@@ -59,7 +60,8 @@ echo "🚧  starting backend build..."
 ./gradlew clean bootJar
 echo "✅  backend was built successfully"
 
-echo "🚀  starting the app"
-java --enable-preview -jar build/libs/*.jar
-
-echo "🛑  app was stopped"
+if [ "$1" == "--run" ]; then
+    echo "🚀  starting the app"
+    java --enable-preview -jar build/libs/*.jar
+    echo "🛑  app was stopped"
+fi
