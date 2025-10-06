@@ -20,15 +20,8 @@ see it online at: https://varun.surf
 
 ## docker
 
-building:
-
 ```
 docker build -t varun-surf .
-```
-
-running:
-
-```
 docker run -p 8080:8080 varun-surf
 ```
 
