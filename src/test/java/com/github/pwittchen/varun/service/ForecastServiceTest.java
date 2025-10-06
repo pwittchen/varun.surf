@@ -150,4 +150,27 @@ class ForecastServiceTest {
                 })
                 .verifyComplete();
     }
+
+    @Test
+    void shouldHandleInvalidSpotId() {
+        Mono<List<Forecast>> result = service.getForecast(-1);
+
+        StepVerifier.create(result)
+                .assertNext(forecasts -> {
+                    // May return empty or error, depends on API response
+                    assertThat(forecasts).isNotNull();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleZeroSpotId() {
+        Mono<List<Forecast>> result = service.getForecast(0);
+
+        StepVerifier.create(result)
+                .assertNext(forecasts -> {
+                    assertThat(forecasts).isNotNull();
+                })
+                .verifyComplete();
+    }
 }

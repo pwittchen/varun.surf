@@ -76,7 +76,7 @@ public record Spot(
                 this.forecast,
                 aiAnalysis,
                 this.spotInfo,
-                aiAnalysis.isEmpty()
+                aiAnalysis!= null && aiAnalysis.isEmpty()
                         ? this.lastUpdated
                         : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
         );
