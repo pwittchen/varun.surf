@@ -10,9 +10,9 @@ if [ "$1" == "--help" ] || [ -z "$1" ]; then
   echo "  --logs      shows app logs"
   echo "  --run       runs the app"
   echo "  --stop      stops the app"
-  echo "  --pull      pull the most recent app docker container"
+  echo "  --pull      pulls the most recent docker image from registry"
   echo "  --restart   restarts currently running app"
-  echo "  --reload    stops the app, pull the most recent container and starts the app"
+  echo "  --reload    stops the app, pulls the most recent image and starts the app again"
   echo "  --ps        shows currently running containers"
   echo ""
 fi
