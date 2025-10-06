@@ -10,20 +10,23 @@ import java.time.Duration;
 
 @Service
 public class AiService {
-    private final static String SYSTEM_PROMPT = """
-            You are a kitesurfing weather assistant. \s
-            Analyze the forecast and output a **3-line summary**, each starting with a keyword. \s
-            Keep your answer short (under 40 words total), objective, and formatted exactly like this:
-            
-            Wind: <speed + direction + gusts> \s
-            Conditions: <temperature, water/wave state, safety> \s
-            Recommendation: <good / moderate / bad for kitesurfing + short reason>
-            
-            Do NOT write explanations or extra text. \s
-            Do NOT include greetings or paragraphs. \s
-            Spot name: %s, country: %s
-            Forecast data in JSON format:
+    private final static String PROMPT = """
+            SYSTEM:
+            You are a professional kitesurfing weather analyst.\s
+            You analyze wind, waves, temperature and forecast data for kitesurfers.
+            Your task is to write a short and accurate 2–3 sentence summary of the forecast conditions.
+            Always mention the wind strength (in knots), direction (using compass letters like N, NE, E, SE, S, SW, W, NW),
+            general rideability, and any risks or highlights.
+            Be objective and concise — avoid emojis and filler words.
+
+            USER:
+            Spot name: %s
+            Country: %s
+            Forecast data (JSON):
             %s
+
+            Using only the data above, describe the current and upcoming kitesurfing conditions at this spot in 2–3 sentences.
+            Do not invent numbers or details. Use kts, °C, and compass directions as appropriate.
             """;
 
     private final ChatClient chatClient;
@@ -40,7 +43,7 @@ public class AiService {
         }
         return chatClient
                 .prompt()
-                .user(String.format(SYSTEM_PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
+                .user(String.format(PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
                 .stream()
                 .content()
                 .delayElements(Duration.ofSeconds(1))
