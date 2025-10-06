@@ -32,17 +32,16 @@ running:
 docker run -p 8080:8080 varun-surf
 ```
 
-## docker container registry
+## docker registry
 
-docker image is automatically deployed to the docker container registry at ghcr.io via github action
-from the `master` branch
+docker image is automatically deployed to the registry at ghcr.io via github action from the `master` branch
 
 - configure PAT (Personal Access Token) here: https://github.com/settings/tokens
 - set permissions: `write:packages`, `read:packages`
 - remember, you need to refresh the token in the future, once it will become outdated
 - copy your access token to the clipboard
 
-now authorize to docker registry:
+now login, into docker registry:
 
 ```
 PAT=YOUR_ACCESS_TOKEN
