@@ -1113,10 +1113,11 @@ body {
     border-radius: 8px;
     cursor: pointer;
     font-size: 1.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, top 0.3s ease, right 0.3s ease;
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 10001;
 }
 
 .hamburger-menu:hover {
@@ -1128,6 +1129,10 @@ body {
     background: var(--gradient-active);
     border-color: var(--accent-primary);
     color: #fff;
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
 }
 
 @media (max-width: 1150px) {
