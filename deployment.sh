@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 if [ "$1" == "--help" ] || [ -z "$1" ]; then
   echo ""
-  echo "  varun.sh | script for managing varun.surf deployment"
+  echo "  deployment.sh | script for managing varun.surf deployment"
   echo ""
-  echo "  USAGE: varun.sh [options]"
+  echo "  USAGE: deployment.sh [options]"
   echo ""
   echo "  --help      shows help"
   echo "  --login     logs into ghcr.io"

@@ -56,13 +56,13 @@ docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 
 ## deployment
 
-On the VPS, you can use `varun.sh` script, which is deployment helper script.
+On the VPS, you can use `deployment.sh` script, which is deployment helper script.
 Just copy it on the server, make it executable and set valid GitHub PAT (Personal Access Token) in the script.
 
 To view all its functions just type:
 
 ```
-./varun.sh --help
+./deployment.sh --help
 ```
 
 ## AI
