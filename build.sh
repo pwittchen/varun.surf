@@ -55,8 +55,16 @@ sed -i.bak2 "s|DATAFASTPLACEHOLDER|$(cat datafast.tmp)|g" index.temp.html
 echo "Minifying HTML..."
 npx html-minifier-terser index.temp.html -o index.min.html \
   --collapse-whitespace \
-  --minify-css true
-sed -r 's/ {2,}/  /g' index.min.html > index.html
+  --remove-comments \
+  --minify-css true \
+  --minify-js true \
+  --collapse-boolean-attributes \
+  --remove-attribute-quotes \
+  --remove-redundant-attributes \
+  --remove-script-type-attributes \
+  --remove-style-link-type-attributes \
+  --use-short-doctype
+perl -pe 's/>\s+</></g' index.min.html | tr -d '\n' > index.html
 
 # Fix defer attribute format back to standalone (defer instead of defer="defer")
 sed -i.bak3 's/defer="defer"/defer/g' index.html
