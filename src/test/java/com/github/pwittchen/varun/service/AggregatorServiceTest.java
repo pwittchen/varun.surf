@@ -6,7 +6,6 @@ import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.Spot;
-import com.github.pwittchen.varun.model.SpotInfo;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -233,7 +232,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEverySixHours();
+        aggregatorService.fetchAiAnalysisEveryEightHours();
 
         // then
         verify(aiService, never()).fetchAiAnalysis(any());
@@ -252,7 +251,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEverySixHours();
+        aggregatorService.fetchAiAnalysisEveryEightHours();
 
         // then
         verify(aiService).fetchAiAnalysis(any());
@@ -317,7 +316,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEverySixHours();
+        aggregatorService.fetchAiAnalysisEveryEightHours();
 
         // then
         verify(aiService).fetchAiAnalysis(any());

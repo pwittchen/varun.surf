@@ -217,9 +217,9 @@ public class AggregatorService {
         );
     }
 
-    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 7000))
-    void fetchAiAnalysisEverySixHours() throws FetchingForecastException {
+    void fetchAiAnalysisEveryEightHours() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis");
             fetchAiForecastAnalysis();
