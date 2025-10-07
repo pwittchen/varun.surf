@@ -116,7 +116,7 @@
         spotsGrid.innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
-                    <span class="loading-text">Loading weather data...</span>
+                    <span class="loading-text">Thinking...</span>
                 </div>
             `;
     }
@@ -579,7 +579,7 @@
                 spotsGrid.innerHTML = `
                     <div class="loading-message">
                         <div class="loading-spinner"></div>
-                        <span class="loading-text">Loading forecasts...</span>
+                        <span class="loading-text">Thinking...</span>
                     </div>
                 `;
                 // Retry loading after 5 seconds
