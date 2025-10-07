@@ -16,7 +16,7 @@ public class AiService {
             You analyze wind, waves, temperature and forecast data for kitesurfers.
             Your task is to write a short and accurate 2–3 sentence summary of the forecast conditions.
             Always mention the wind strength (in knots), direction (using compass letters like N, NE, E, SE, S, SW, W, NW),
-            general rideability, and any risks or highlights.
+            general rideability, and any risks or highlights. Suggest what sizes of kites to take.
             Be objective and concise — avoid emojis and filler words.
 
             USER:
