@@ -25,10 +25,14 @@ if [ "$1" == "--logs" ]; then
 fi
 if [ "$1" == "--run" ]; then
   docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  echo "SUCCESS!"
+  exit 0
 fi
 if [ "$1" == "--stop" ]; then
   docker stop varun.surf
   docker rm varun.surf
+  echo "STOPPED"
+  exit 0
 fi
 if [ "$1" == "--pull" ]; then
   docker pull ghcr.io/pwittchen/varun.surf
@@ -37,12 +41,16 @@ if [ "$1" == "--restart" ]; then
   docker stop varun.surf
   docker rm varun.surf
   docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  echo "SUCCESS!"
+  exit 0
 fi
 if [ "$1" == "--reload" ]; then
   docker stop varun.surf
   docker rm varun.surf
   docker pull ghcr.io/pwittchen/varun.surf
   docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  echo "SUCCESS!"
+  exit 0
 fi
 if [ "$1" == "--ps" ]; then
   docker ps
