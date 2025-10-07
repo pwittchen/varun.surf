@@ -179,6 +179,33 @@ body {
     box-shadow: 0 4px 12px rgba(74, 158, 255, .4);
 }
 
+.theme-toggle .icon {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-primary);
+    transition: fill 0.3s ease;
+}
+
+.theme-toggle:hover .icon {
+    fill: var(--accent-primary);
+}
+
+.theme-toggle.active .icon {
+    fill: #fff;
+}
+
+[data-theme="light"] .theme-toggle .icon {
+    fill: #212529;
+}
+
+[data-theme="light"] .theme-toggle:hover .icon {
+    fill: #0d6efd;
+}
+
+[data-theme="light"] .theme-toggle.active .icon {
+    fill: #fff;
+}
+
 .theme-icon {
     font-size: 1rem;
     transition: transform 0.3s ease;
