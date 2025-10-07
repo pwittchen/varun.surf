@@ -337,13 +337,14 @@
         if (spot.forecast && Array.isArray(spot.forecast)) {
             spot.forecast.forEach(day => {
                 let windClass, windTextClass;
-                if (day.gusts < 12) {
+                const avgWind = (day.wind + day.gusts) / 2;
+                if (avgWind < 12) {
                     windClass = 'weak-wind';
                     windTextClass = 'wind-weak';
-                } else if (day.gusts >= 12 && day.gusts < 18) {
+                } else if (avgWind >= 12 && avgWind < 18) {
                     windClass = 'moderate-wind';
                     windTextClass = 'wind-moderate';
-                } else if (day.gusts >= 18 && day.gusts <= 25) {
+                } else if (avgWind >= 18 && avgWind <= 25) {
                     windClass = 'strong-wind';
                     windTextClass = 'wind-strong';
                 } else {
@@ -388,13 +389,14 @@
         let currentConditionsRow = '';
         if (spot.currentConditions) {
             let windClass, windTextClass;
-            if (spot.currentConditions.gusts < 12) {
+            const avgWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
+            if (avgWind < 12) {
                 windClass = 'weak-wind';
                 windTextClass = 'wind-weak';
-            } else if (spot.currentConditions.gusts >= 12 && spot.currentConditions.gusts < 18) {
+            } else if (avgWind >= 12 && avgWind < 18) {
                 windClass = 'moderate-wind';
                 windTextClass = 'wind-moderate';
-            } else if (spot.currentConditions.gusts >= 18 && spot.currentConditions.gusts <= 22) {
+            } else if (avgWind >= 18 && avgWind <= 22) {
                 windClass = 'strong-wind';
                 windTextClass = 'wind-strong';
             } else {
