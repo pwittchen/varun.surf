@@ -1217,9 +1217,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
-        // Load saved country filter or default to 'all'
-        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-        renderSpots(savedCountry);
         setupDropdown();
         setupModals();
         setupSearch();
@@ -1228,4 +1225,15 @@
         setupHamburgerMenu();
         setupKiteSizeCalculator();
         setupColumnToggle();
+
+        // Check if we should show favorites first, before loading spots
+        const savedFavoritesState = localStorage.getItem('showingFavorites');
+        if (savedFavoritesState === 'true') {
+            // Favorites will be rendered by setupFavorites()
+            showingFavorites = true;
+        } else {
+            // Load saved country filter or default to 'all'
+            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+            renderSpots(savedCountry);
+        }
     });
