@@ -95,6 +95,10 @@ for my current configuration with this AI provider every six hours
 for monthly OpenAI usage, which is reasonable price because coffee in my local coffee shop costs more.
 Nevertheless, more advanced analysis, more tokens or stronger model, should increase the price.
 
+## architecture
+
+see: [architecture.md](architecture.md) file
+
 ## screenshot
 
 ![screen](screen.png)

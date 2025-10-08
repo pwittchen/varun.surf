@@ -10,8 +10,8 @@
            |                                                                |
            |                                   +----------------------------v----------------------------+
            |                                   |             AggregatorService (core orchestrator)       |
-           |                                   |  - schedules fetching (every 3h)                       |
-           |                                   |  - caches spots, forecasts, current conditions, AI txt |
+           |                                   |  - schedules fetching (every 3h)                        |
+           |                                   |  - caches spots, forecasts, current conditions, AI txt  |
            |                                   +-----------+--------------------+------------------------+
            |                                               |                    |
            |                                               |                    |
@@ -22,7 +22,7 @@
            |                                     |                                    |
            |                                     |                                    |
            |                  +------------------v------------------+   +-------------v----------------------+
-           |                  | External: micro.windguru.cz (HTTP) |   | External: WiatrKadyny, Kiteriders  |
+           |                  | External: micro.windguru.cz (HTTP)  |   | External: WiatrKadyny, Kiteriders  |
            |                  +-------------------------------------+   +------------------------------------+
            |                                                                
            |                                   +----------------------------+
@@ -32,7 +32,7 @@
            |                                                 |
            |                       +-------------------------v-----------------------+
            |                       |  LLM provider via Spring AI (configured via env)|
-           |                       +-----------------------------------------------+
+           |                       +-------------------------------------------------+
 ```
 
 ### Request/Update Flow
@@ -43,8 +43,8 @@
 [SpotsDataProvider] loads spots.json (on startup)                                  |
   -> AggregatorService.spots[]                                                     |
                                                                                    |
-[AggregatorService]
-  -> for each Spot.wgId -> ForecastService.getForecast(id) -> Windguru micro API ---'
+[AggregatorService]                                                                |
+  -> for each Spot.wgId -> ForecastService.getForecast(id) -> Windguru micro API --'
   -> CurrentConditionsService via strategies -> station providers
   -> (optional) AiService.fetchAiAnalysis(spot) using Spring AI
   -> stores in in-memory maps: forecasts{}, currentConditions{}, aiAnalysis{}
