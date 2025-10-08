@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+function run_docker() {
+  docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+}
+
 if [ "$1" == "--help" ] || [ -z "$1" ]; then
   echo ""
   echo "  deployment.sh | script for managing varun.surf deployment"
@@ -24,7 +29,7 @@ if [ "$1" == "--logs" ]; then
   docker logs -f varun.surf
 fi
 if [ "$1" == "--run" ]; then
-  docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  run_docker
   echo "SUCCESS!"
   exit 0
 fi
@@ -40,7 +45,7 @@ fi
 if [ "$1" == "--restart" ]; then
   docker stop varun.surf
   docker rm varun.surf
-  docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  run_docker
   echo "SUCCESS!"
   exit 0
 fi
@@ -48,7 +53,7 @@ if [ "$1" == "--reload" ]; then
   docker stop varun.surf
   docker rm varun.surf
   docker pull ghcr.io/pwittchen/varun.surf
-  docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
+  run_docker
   echo "SUCCESS!"
   exit 0
 fi
