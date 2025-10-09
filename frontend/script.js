@@ -2,9 +2,11 @@
     let availableCountries = new Set();
     let currentSearchQuery = '';
     let showingFavorites = false;
+    let autoRefreshInterval = null;
 
     // Configuration
     const API_ENDPOINT = '/api/v1/spots';
+    const AUTO_REFRESH_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 
     // Favorites management
     function getFavorites() {
@@ -1250,6 +1252,88 @@
         });
     }
 
+    // Auto-refresh functionality
+    async function refreshDataInBackground() {
+        try {
+            // Fetch new data silently
+            const freshData = await fetchWeatherData();
+
+            // Update global data
+            globalWeatherData = freshData;
+
+            // Update country dropdown without changing selection
+            populateCountryDropdown(freshData);
+
+            // Silently update the current view
+            if (showingFavorites) {
+                // Update favorites without re-rendering (to avoid disruption)
+                const spotsGrid = document.getElementById('spotsGrid');
+                const favorites = getFavorites();
+                const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+
+                // Update existing cards instead of recreating them
+                favoriteSpots.forEach(updatedSpot => {
+                    const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
+                        const spotName = card.querySelector('.spot-name');
+                        return spotName && spotName.textContent === updatedSpot.name;
+                    });
+
+                    if (existingCard) {
+                        const newCard = createSpotCard(updatedSpot);
+                        existingCard.replaceWith(newCard);
+                    }
+                });
+            } else {
+                // Update regular filtered view
+                const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
+                const spotsGrid = document.getElementById('spotsGrid');
+
+                // Update existing cards instead of recreating them
+                filteredSpots.forEach(updatedSpot => {
+                    const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
+                        const spotName = card.querySelector('.spot-name');
+                        return spotName && spotName.textContent === updatedSpot.name;
+                    });
+
+                    if (existingCard) {
+                        const newCard = createSpotCard(updatedSpot);
+                        existingCard.replaceWith(newCard);
+                    }
+                });
+
+                // Update counter
+                updateSpotCounter(filteredSpots.length);
+            }
+
+            console.log('Data refreshed in background at', new Date().toLocaleTimeString());
+        } catch (error) {
+            console.error('Background refresh failed:', error);
+            // Silently fail - don't disturb the user
+        }
+    }
+
+    function startAutoRefresh() {
+        // Clear any existing interval
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+        }
+
+        // Start new interval
+        autoRefreshInterval = setInterval(() => {
+            refreshDataInBackground();
+        }, AUTO_REFRESH_INTERVAL);
+
+        console.log('Auto-refresh started: updating every', AUTO_REFRESH_INTERVAL / 1000, 'seconds');
+    }
+
+    function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+            console.log('Auto-refresh stopped');
+        }
+    }
+
     // Make functions global for onclick handlers
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
@@ -1280,4 +1364,7 @@
             const savedCountry = localStorage.getItem('selectedCountry') || 'all';
             renderSpots(savedCountry);
         }
+
+        // Start auto-refresh after initial load
+        startAutoRefresh();
     });
