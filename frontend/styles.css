@@ -919,6 +919,22 @@ body {
     color: var(--text-primary);
 }
 
+/* ICM Modal Styles */
+.icm-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 300px;
+}
+
+.icm-forecast-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

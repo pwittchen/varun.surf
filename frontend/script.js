@@ -324,6 +324,29 @@
         document.body.style.overflow = 'auto';
     }
 
+    function openIcmModal(spotName, icmUrl) {
+        const modal = document.getElementById('icmModal');
+        const modalSpotName = document.getElementById('icmModalSpotName');
+        const icmImage = document.getElementById('icmImage');
+
+        modalSpotName.textContent = `${spotName} - ICM Forecast`;
+        icmImage.src = icmUrl;
+        icmImage.alt = `ICM Forecast for ${spotName}`;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeIcmModal() {
+        const modal = document.getElementById('icmModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+
+        // Clear the image source to stop loading
+        const icmImage = document.getElementById('icmImage');
+        icmImage.src = '';
+    }
+
     function createSpotCard(spot) {
         const card = document.createElement('div');
         card.className = 'spot-card';
@@ -467,7 +490,7 @@
                     ${spot.spotInfo ? `<span class="external-link info-link" onclick="openInfoModal('${spot.name}')"></span>` : ''}
                     ${spot.windguruUrl ? `<a href="${spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
-                    ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
+                    ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">MAP</a>` : ''}
                     ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
@@ -680,6 +703,8 @@
         const aiCloseButton = document.getElementById('modalClose');
         const infoModal = document.getElementById('infoModal');
         const infoCloseButton = document.getElementById('infoModalClose');
+        const icmModal = document.getElementById('icmModal');
+        const icmCloseButton = document.getElementById('icmModalClose');
 
         // AI Modal events
         aiCloseButton.addEventListener('click', closeAIModal);
@@ -697,7 +722,15 @@
             }
         });
 
-        // Escape key for both modals
+        // ICM Modal events
+        icmCloseButton.addEventListener('click', closeIcmModal);
+        icmModal.addEventListener('click', (e) => {
+            if (e.target === icmModal) {
+                closeIcmModal();
+            }
+        });
+
+        // Escape key for all modals
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (aiModal.classList.contains('active')) {
@@ -705,6 +738,9 @@
                 }
                 if (infoModal.classList.contains('active')) {
                     closeInfoModal();
+                }
+                if (icmModal.classList.contains('active')) {
+                    closeIcmModal();
                 }
             }
         });
@@ -1219,6 +1255,8 @@
     window.closeAIModal = closeAIModal;
     window.openInfoModal = openInfoModal;
     window.closeInfoModal = closeInfoModal;
+    window.openIcmModal = openIcmModal;
+    window.closeIcmModal = closeIcmModal;
     window.toggleFavorite = toggleFavorite;
 
     document.addEventListener('DOMContentLoaded', () => {
