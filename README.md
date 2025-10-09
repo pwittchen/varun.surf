@@ -99,10 +99,6 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 see: [architecture.md](architecture.md) file
 
-## screenshot
-
-![screen](screen.png)
-
 ## features
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
@@ -119,4 +115,4 @@ see: [architecture.md](architecture.md) file
 - possibility to switch between 2-columns view and 3-columns view
 - mobile-friendly UI
 - kite and board size calculator
-- AI forecast analysis (disabled by default)
+- AI forecast analysis
