@@ -97,7 +97,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 ## architecture
 
-see: [architecture.md](architecture.md) file
+see: [ARCH.md](ARCH.md) file
 
 ## features
 
