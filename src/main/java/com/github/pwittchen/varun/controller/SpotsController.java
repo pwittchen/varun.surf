@@ -2,8 +2,6 @@ package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
-import com.github.pwittchen.varun.service.AiService;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
