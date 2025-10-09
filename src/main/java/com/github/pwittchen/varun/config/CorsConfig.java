@@ -29,7 +29,7 @@ public class CorsConfig {
         corsConfig.setAllowedOrigins(allowedOrigins);
         corsConfig.setAllowedMethods(List.of("GET"));
         corsConfig.setAllowedHeaders(List.of("*"));
-        corsConfig.setAllowCredentials(true);
+        corsConfig.setAllowCredentials(false);
         corsConfig.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
