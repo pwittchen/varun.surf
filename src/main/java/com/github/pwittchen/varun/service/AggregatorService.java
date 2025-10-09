@@ -25,6 +25,7 @@ import reactor.core.scheduler.Schedulers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
@@ -88,6 +89,14 @@ public class AggregatorService {
 
     public List<Spot> getSpots() {
         return spots.get();
+    }
+
+    public Optional<Spot> getSpotById(int id) {
+        return spots
+                .get()
+                .stream()
+                .filter(spot -> spot.wgId() == id)
+                .findFirst();
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
