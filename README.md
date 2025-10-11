@@ -99,9 +99,10 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 see: [ARCH.md](ARCH.md) file
 
-## ai agent configuration
+## ai coding agents configuration
 
-see: [CLAUDE.md](CLAUDE.md) file
+- Claude → see: [CLAUDE.md](CLAUDE.md) file
+- Codex → see: [AGENTS.md](AGENTS.md) file
 
 ## features
 
