@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -170,6 +171,18 @@ class ForecastServiceTest {
         StepVerifier.create(result)
                 .assertNext(forecasts -> {
                     assertThat(forecasts).isNotNull();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnHourlyForecasts() {
+        Mono<ForecastData> result = service.getForecastData(500760);
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.hourly()).isNotNull();
+                    assertThat(data.hourly()).isNotEmpty();
                 })
                 .verifyComplete();
     }

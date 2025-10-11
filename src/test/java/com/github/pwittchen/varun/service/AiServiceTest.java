@@ -243,6 +243,7 @@ class AiServiceTest {
                 null,
                 null,
                 new ArrayList<>(forecasts),
+                new ArrayList<>(),
                 null,
                 null,
                 null

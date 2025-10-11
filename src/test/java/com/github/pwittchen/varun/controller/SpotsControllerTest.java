@@ -210,6 +210,7 @@ class SpotsControllerTest {
                 "https://maps.google.com",
                 null,
                 new ArrayList<>(),
+                new ArrayList<>(),
                 null,
                 spotInfo1,
                 "2025-01-15 14:30:00 CET"
@@ -224,6 +225,7 @@ class SpotsControllerTest {
                 "https://www.webcam.at",
                 "https://maps.google.com",
                 null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 null,
                 spotInfo2,
@@ -250,6 +252,7 @@ class SpotsControllerTest {
                 "https://maps.google.com",
                 null,
                 forecasts,
+                new ArrayList<>(),
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"
@@ -278,6 +281,7 @@ class SpotsControllerTest {
                 "https://maps.google.com",
                 currentConditions,
                 new ArrayList<>(),
+                new ArrayList<>(),
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"
@@ -298,6 +302,7 @@ class SpotsControllerTest {
                 "https://www.webcam.pl",
                 "https://maps.google.com",
                 null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 null,
                 spotInfo,
@@ -331,6 +336,7 @@ class SpotsControllerTest {
                 "https://maps.google.com",
                 currentConditions,
                 forecasts,
+                new ArrayList<>(),
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"

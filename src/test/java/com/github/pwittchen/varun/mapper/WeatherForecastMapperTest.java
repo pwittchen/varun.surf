@@ -5,8 +5,11 @@ import com.github.pwittchen.varun.model.ForecastWg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -121,5 +124,21 @@ class WeatherForecastMapperTest {
         List<Forecast> result = mapper.toWeatherForecasts(forecasts);
 
         assertThat(result.get(0).direction()).isEqualTo("NE");
+    }
+
+    @Test
+    void shouldFormatHourlyForecastWithFullDate() {
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Mon 01. 02h", 10, 15, 180, 20, 0)
+        );
+
+        List<Forecast> result = mapper.toHourlyForecasts(forecasts);
+
+        assertThat(result).hasSize(1);
+        String formatted = result.getFirst().date();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm", Locale.ENGLISH);
+        LocalDateTime parsed = LocalDateTime.parse(formatted, formatter);
+        assertThat(parsed.getHour()).isEqualTo(2);
+        assertThat(parsed.getDayOfMonth()).isEqualTo(1);
     }
 }

@@ -83,6 +83,7 @@ class SpotTest {
                 "https://maps.google.com",
                 currentConditions,
                 forecast,
+                new ArrayList<>(),
                 "AI analysis",
                 null,
                 "2025-01-01 00:00:00 UTC"
@@ -126,6 +127,7 @@ class SpotTest {
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
+                new ArrayList<>(),
                 null,
                 null,
                 originalTimestamp
@@ -150,6 +152,7 @@ class SpotTest {
                 "https://windguru.cz/123",
                 null, null, null, null,
                 null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 null,
                 null,
@@ -190,6 +193,7 @@ class SpotTest {
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
+                new ArrayList<>(),
                 null,
                 null,
                 originalTimestamp
@@ -218,6 +222,7 @@ class SpotTest {
                 "https://maps.google.com",
                 currentConditions,
                 forecast,
+                new ArrayList<>(),
                 null,
                 null,
                 "2025-01-01 00:00:00 UTC"
@@ -238,6 +243,7 @@ class SpotTest {
     void shouldPreserveAllFieldsWhenUpdatingCurrentConditions() {
         // given
         var originalForecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0)));
+        var originalHourly = List.of(new Forecast("Mon 12:00", 10.0, 15.0,  "N", 12.5, 0.0));
         var spot = new Spot(
                 "Hel",
                 "Poland",
@@ -248,6 +254,7 @@ class SpotTest {
                 "https://maps.google.com",
                 null,
                 originalForecast,
+                originalHourly,
                 "AI analysis",
                 null,
                 "2025-01-01 00:00:00 UTC"
@@ -262,7 +269,50 @@ class SpotTest {
         assertThat(updatedSpot.country()).isEqualTo("Poland");
         assertThat(updatedSpot.windguruUrl()).isEqualTo("https://windguru.cz/123");
         assertThat(updatedSpot.forecast()).isEqualTo(originalForecast);
+        assertThat(updatedSpot.forecastHourly()).isEqualTo(originalHourly);
         assertThat(updatedSpot.aiAnalysis()).isEqualTo("AI analysis");
+    }
+
+    @Test
+    void shouldUpdateForecastsAndHourlyData() {
+        // given
+        var spot = createSpot("https://windguru.cz/123");
+        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5));
+        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0, "N", 14.0, 0.1));
+
+        // when
+        var updatedSpot = spot.withForecasts(dailyForecast, hourlyForecast);
+
+        // then
+        assertThat(updatedSpot.forecast()).containsExactlyElementsOf(dailyForecast);
+        assertThat(updatedSpot.forecastHourly()).containsExactlyElementsOf(hourlyForecast);
+        assertThat(updatedSpot.lastUpdated()).isNotNull();
+    }
+
+    @Test
+    void shouldReturnHourlyForecastWithoutChangingTimestamp() {
+        // given
+        var originalTimestamp = "2025-01-01 12:00:00 UTC";
+        var spot = new Spot(
+                "Hel",
+                "Poland",
+                "https://windguru.cz/123",
+                null, null, null, null,
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                null,
+                null,
+                originalTimestamp
+        );
+        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0,  "N", 14.0, 0.1));
+
+        // when
+        var updatedSpot = spot.withForecastHourly(hourlyForecast);
+
+        // then
+        assertThat(updatedSpot.forecastHourly()).containsExactlyElementsOf(hourlyForecast);
+        assertThat(updatedSpot.lastUpdated()).isEqualTo(originalTimestamp);
     }
 
     private Spot createSpot(String windguruUrl) {
@@ -272,6 +322,7 @@ class SpotTest {
                 windguruUrl,
                 null, null, null, null,
                 null,
+                new ArrayList<>(),
                 new ArrayList<>(),
                 null,
                 null,

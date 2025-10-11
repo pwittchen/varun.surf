@@ -5,6 +5,7 @@ import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 
 public record Spot(
@@ -18,10 +19,19 @@ public record Spot(
         @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = CurrentConditionsEmptyFilter.class)
         CurrentConditions currentConditions,
         List<Forecast> forecast,
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        List<Forecast> forecastHourly,
         String aiAnalysis,
         SpotInfo spotInfo,
         String lastUpdated
 ) {
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+
+    public Spot {
+        forecast = forecast == null ? new LinkedList<>() : new LinkedList<>(forecast);
+        forecastHourly = forecastHourly == null ? new LinkedList<>() : new LinkedList<>(forecastHourly);
+    }
+
     public int wgId() {
         String[] parts = this.windguruUrl.split("/");
         return Integer.parseInt(parts[parts.length - 1]);
@@ -38,9 +48,10 @@ public record Spot(
                 this.locationUrl,
                 this.currentConditions,
                 this.forecast,
+                this.forecastHourly,
                 this.aiAnalysis,
                 this.spotInfo,
-                ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+                currentTimestamp()
         );
     }
 
@@ -55,11 +66,12 @@ public record Spot(
                 this.locationUrl,
                 currentConditions,
                 this.forecast,
+                this.forecastHourly,
                 this.aiAnalysis,
                 this.spotInfo,
                 CurrentConditionsEmptyFilter.isEmpty(currentConditions)
                         ? this.lastUpdated
-                        : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+                        : currentTimestamp()
         );
     }
 
@@ -74,11 +86,52 @@ public record Spot(
                 this.locationUrl,
                 this.currentConditions,
                 this.forecast,
+                this.forecastHourly,
                 aiAnalysis,
                 this.spotInfo,
-                aiAnalysis!= null && aiAnalysis.isEmpty()
+                aiAnalysis != null && aiAnalysis.isEmpty()
                         ? this.lastUpdated
-                        : ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z"))
+                        : currentTimestamp()
         );
+    }
+
+    public Spot withForecasts(List<Forecast> forecast, List<Forecast> forecastHourly) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                forecast,
+                forecastHourly,
+                this.aiAnalysis,
+                this.spotInfo,
+                currentTimestamp()
+        );
+    }
+
+    public Spot withForecastHourly(List<Forecast> forecastHourly) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.forecast,
+                forecastHourly,
+                this.aiAnalysis,
+                this.spotInfo,
+                this.lastUpdated
+        );
+    }
+
+    private static String currentTimestamp() {
+        return ZonedDateTime.now().format(TIMESTAMP_FORMATTER);
     }
 }

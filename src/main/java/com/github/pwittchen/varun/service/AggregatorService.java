@@ -4,7 +4,7 @@ import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastData;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
@@ -23,6 +23,7 @@ import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class AggregatorService {
     private boolean aiForecastAnalysisEnabled;
 
     private final AtomicReference<List<Spot>> spots;
-    private Map<Integer, List<Forecast>> forecasts;
+    private Map<Integer, ForecastData> forecastCache;
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
 
@@ -60,7 +61,7 @@ public class AggregatorService {
             CurrentConditionsService currentConditionsService,
             AiService aiService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
-        this.forecasts = new ConcurrentHashMap<>();
+        this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.aiAnalysis = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -96,7 +97,14 @@ public class AggregatorService {
                 .get()
                 .stream()
                 .filter(spot -> spot.wgId() == id)
-                .findFirst();
+                .findFirst()
+                .map(spot -> {
+                    var data = forecastCache.get(id);
+                    if (data == null) {
+                        return spot;
+                    }
+                    return spot.withForecastHourly(data.hourly());
+                });
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
@@ -120,7 +128,7 @@ public class AggregatorService {
                     .map(id -> scope.fork(() -> {
                         limiter.acquire();
                         try {
-                            return Pair.with(id, forecastService.getForecast(id).block());
+                            return Pair.with(id, forecastService.getForecastData(id).block());
                         } finally {
                             limiter.release();
                         }
@@ -139,22 +147,23 @@ public class AggregatorService {
         }
     }
 
-    private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, List<Forecast>>>> tasks) {
-        forecasts.clear();
-        forecasts = tasks
+    private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, ForecastData>>> tasks) {
+        forecastCache = tasks
                 .stream()
                 .map(StructuredTaskScope.Subtask::get)
-                .filter(pair -> !pair.getValue1().isEmpty())
+                .filter(pair -> pair.getValue1() != null && !pair.getValue1().daily().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
         spots.set(spots
                 .get()
                 .stream()
-                .peek(spot -> {
-                    spot.forecast().clear();
-                    spot.forecast().addAll(forecasts.get(spot.wgId()));
+                .map(spot -> {
+                    var data = forecastCache.get(spot.wgId());
+                    if (data == null) {
+                        return spot;
+                    }
+                    return spot.withForecasts(data.daily(), Collections.emptyList());
                 })
-                .map(Spot::withUpdatedTimestamp)
                 .toList()
         );
     }

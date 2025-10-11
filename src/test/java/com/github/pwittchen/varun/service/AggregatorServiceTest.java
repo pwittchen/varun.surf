@@ -5,6 +5,7 @@ import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastData;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +19,15 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AggregatorServiceTest {
@@ -131,7 +136,7 @@ class AggregatorServiceTest {
         var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(forecastService.getForecast(123)).thenReturn(Mono.just(List.of(forecast)));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), List.of())));
 
         aggregatorService.init();
         Thread.sleep(100);
@@ -140,7 +145,34 @@ class AggregatorServiceTest {
         aggregatorService.fetchForecastsEveryThreeHours();
 
         // then
-        verify(forecastService).getForecast(123);
+        verify(forecastService).getForecastData(123);
+    }
+
+    @Test
+    void shouldReturnHourlyForecastForSingleSpot() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var hourlyForecast = List.of(new Forecast("Mon 01 Jan 2025 01:00", 9.0, 11.0, "N", 14.0, 0.1));
+        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5));
+
+        ReflectionTestUtils.setField(
+                aggregatorService,
+                "spots",
+                new java.util.concurrent.atomic.AtomicReference<>(List.of(spot))
+        );
+        ReflectionTestUtils.setField(
+                aggregatorService,
+                "forecastCache",
+                Map.of(123, new ForecastData(dailyForecast, hourlyForecast))
+        );
+
+        // when
+        var result = aggregatorService.getSpotById(123);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get().forecastHourly()).containsExactlyElementsOf(hourlyForecast);
+        assertThat(result.get().forecast()).isEqualTo(spot.forecast());
     }
 
     @Test
@@ -149,7 +181,7 @@ class AggregatorServiceTest {
         var spot = createTestSpot(123, "Test Spot");
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(forecastService.getForecast(123)).thenReturn(Mono.error(new RuntimeException("API Error")));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.error(new RuntimeException("API Error")));
 
         aggregatorService.init();
         Thread.sleep(100);
@@ -280,7 +312,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchForecastsEveryThreeHours();
 
         // then
-        verify(forecastService, never()).getForecast(anyInt());
+        verify(forecastService, never()).getForecastData(anyInt());
         assertThat(aggregatorService.getSpots()).isEmpty();
     }
 
@@ -324,6 +356,7 @@ class AggregatorServiceTest {
 
     private Spot createTestSpot(int wgId, String name) {
         var forecast = new ArrayList<Forecast>();
+        var hourlyForecast = new ArrayList<Forecast>();
         return new Spot(
                 name,
                 "Poland",
@@ -334,6 +367,7 @@ class AggregatorServiceTest {
                 null,
                 null,
                 forecast,
+                hourlyForecast,
                 null,
                 null,
                 null

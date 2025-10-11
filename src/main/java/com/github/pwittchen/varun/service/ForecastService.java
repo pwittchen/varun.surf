@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastData;
 import com.github.pwittchen.varun.model.ForecastWg;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,9 +40,9 @@ public class ForecastService {
         this.mapper = mapper;
     }
 
-    public Mono<List<Forecast>> getForecast(int wgSpotId) {
+    public Mono<ForecastData> getForecastData(int wgSpotId) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
-        if (httpUrl == null) return Mono.empty();
+        if (httpUrl == null) return Mono.just(new ForecastData(List.of(), List.of()));
         return executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
@@ -54,7 +55,14 @@ public class ForecastService {
                 .get()
                 .build())
                 .map(this::retrieveWgForecasts)
-                .map(mapper::toWeatherForecasts);
+                .map(forecasts -> new ForecastData(
+                        mapper.toWeatherForecasts(forecasts),
+                        mapper.toHourlyForecasts(forecasts)
+                ));
+    }
+
+    public Mono<List<Forecast>> getForecast(int wgSpotId) {
+        return getForecastData(wgSpotId).map(ForecastData::daily);
     }
 
     private Mono<String> executeHttpRequest(final Request request) {
@@ -90,14 +98,14 @@ public class ForecastService {
         // Example line:
         // " Mon 29. 02h      15      20     257      20       -"
         Pattern row = Pattern.compile(
-                        "^\\s*" +                             // leading spaces
-                        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +     // weekday
-                        "\\s+\\d{1,2}\\.\\s+\\d{2}h\\s+" +    // date label: "dd. hh"
-                        "(-?\\d+)\\s+" +                      // WSPD
-                        "(-?\\d+)\\s+" +                      // GUST
-                        "(-?\\d+)\\s+" +                      // WDEG  (degrees)
-                        "(-?\\d+)\\s+" +                      // TMP   (C)
-                        "(-|\\d+(?:\\.\\d+)?)\\s*$"           // APCP1 (mm/1h or '-')
+                "^\\s*" +                              // leading spaces
+                        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +      // weekday
+                        "\\s+(\\d{1,2})\\.\\s+(\\d{2})h\\s+" + // day of month + hour
+                        "(-?\\d+)\\s+" +                       // WSPD
+                        "(-?\\d+)\\s+" +                       // GUST
+                        "(-?\\d+)\\s+" +                       // WDEG  (degrees)
+                        "(-?\\d+)\\s+" +                       // TMP   (C)
+                        "(-|\\d+(?:\\.\\d+)?)\\s*$"            // APCP1 (mm/1h or '-')
         );
 
         return Arrays.stream(lines)
@@ -115,13 +123,14 @@ public class ForecastService {
     }
 
     private ForecastWg createForecast(String line, Matcher m) {
+        String label = String.format("%s %s. %sh", m.group(1), m.group(2), m.group(3));
         return new ForecastWg(
-                m.group(1),
-                parseNumber(m.group(2)).intValue(),
-                parseNumber(m.group(3)).intValue(),
+                label,
                 parseNumber(m.group(4)).intValue(),
                 parseNumber(m.group(5)).intValue(),
-                parseNumber(m.group(6)).intValue()
+                parseNumber(m.group(6)).intValue(),
+                parseNumber(m.group(7)).intValue(),
+                parseNumber(m.group(8)).intValue()
         );
     }
 
