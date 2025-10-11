@@ -806,15 +806,15 @@
         if (filteredSpots.length === 0) {
             updateSpotCounter(0);
             const message = searchQuery ?
-                `No spots found matching "${searchQuery}"` :
-                'No kitesurfing spots found for the selected filter.';
+                `${t('errorNoSpotsSearchDescription')} "${searchQuery}"` :
+                `${t('errorNoSpotsDescription')}`;
             spotsGrid.innerHTML = `
                     <div class="error-message">
                         <span class="error-icon">🔍</span>
-                        <div class="error-title">No Spots Found</div>
+                        <div class="error-title">${t('errorNoSpotsTitle')}</div>
                         <div class="error-description">
                             ${message}<br/>
-                            Try adjusting your search or selecting "All" countries.
+                            ${t('errorTryAdjusting')}
                         </div>
                     </div>
                 `;
@@ -1166,9 +1166,9 @@
             spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⭐</span>
-                    <div class="error-title">No Favorites Yet</div>
+                    <div class="error-title">${t('noFavoritesTitle')}</div>
                     <div class="error-description">
-                        Click the star icon on any spot card to add it to your favorites.
+                        ${t('noFavoritesDescription')}
                     </div>
                 </div>
             `;
@@ -1177,8 +1177,7 @@
 
         try {
             if (globalWeatherData.length === 0) {
-                const data = await fetchWeatherData();
-                globalWeatherData = data;
+                globalWeatherData = await fetchWeatherData();
             }
 
             const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
