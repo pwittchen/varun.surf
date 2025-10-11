@@ -366,7 +366,7 @@ This is a **fully reactive** application using Project Reactor.
 - Handle errors with `.onErrorResume()`, `.onErrorReturn()`, `.doOnError()`
 
 **DON'T**:
-- Never call `.block()` or `.blockFirst()` in service code
+- Never call `.block()` or `.blockFirst()` in service code (except for tests and Virtual Threads scopes)
 - Avoid blocking I/O operations (use reactive HTTP clients)
 - Don't mix blocking JDBC with reactive code
 - Don't return `null` from reactive chains
@@ -506,7 +506,7 @@ When writing or modifying tests:
 **Structure**:
 ```java
 @Test
-void testMethodName_givenScenario_shouldExpectation() {
+void shouldMeetExpectationWhenActionAndGivenScenario() {
     // Given (arrange)
     Spot spot = createTestSpot();
 
