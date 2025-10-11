@@ -125,6 +125,11 @@
                 favoritesToggle.title = t('favoritesToggleTooltip');
             }
 
+            const infoToggle = document.getElementById('infoToggle');
+            if (infoToggle) {
+                infoToggle.title = t('infoToggleTooltip');
+            }
+
             const kiteSizeToggle = document.getElementById('kiteSizeToggle');
             if (kiteSizeToggle) {
                 kiteSizeToggle.title = t('kiteSizeToggleTooltip');
@@ -196,6 +201,36 @@
             const icmModalTitle = document.querySelector('#icmModal .modal-title span:first-child');
             if (icmModalTitle && icmModalTitle.textContent === '📊') {
                 // ICM modal title is dynamic, leave as is
+            }
+
+            const appInfoModalTitle = document.getElementById('appInfoModalTitle');
+            if (appInfoModalTitle) {
+                appInfoModalTitle.textContent = t('appInfoModalTitle');
+            }
+
+            const appInfoDescription = document.getElementById('appInfoDescription');
+            if (appInfoDescription) {
+                appInfoDescription.textContent = t('appInfoDescription');
+            }
+
+            const appInfoContactTitle = document.getElementById('appInfoContactTitle');
+            if (appInfoContactTitle) {
+                appInfoContactTitle.textContent = t('appInfoContactTitle');
+            }
+
+            const appInfoContactText = document.getElementById('appInfoContactText');
+            if (appInfoContactText) {
+                appInfoContactText.innerHTML = t('appInfoContactText');
+            }
+
+            const appInfoCollaborationTitle = document.getElementById('appInfoCollaborationTitle');
+            if (appInfoCollaborationTitle) {
+                appInfoCollaborationTitle.textContent = t('appInfoCollaborationTitle');
+            }
+
+            const appInfoCollaborationText = document.getElementById('appInfoCollaborationText');
+            if (appInfoCollaborationText) {
+                appInfoCollaborationText.innerHTML = t('appInfoCollaborationText');
             }
 
             // Update kite size calculator modal content
@@ -478,6 +513,24 @@
             'USA': '🇺🇸'
         };
         return flags[country] || '🏴';
+    }
+
+    function openAppInfoModal() {
+        const modal = document.getElementById('appInfoModal');
+        if (!modal) {
+            return;
+        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAppInfoModal() {
+        const modal = document.getElementById('appInfoModal');
+        if (!modal) {
+            return;
+        }
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
 
     function openAIModal(spotName) {
@@ -935,6 +988,8 @@
     function setupModals() {
         const aiModal = document.getElementById('aiModal');
         const aiCloseButton = document.getElementById('modalClose');
+        const appInfoModal = document.getElementById('appInfoModal');
+        const appInfoCloseButton = document.getElementById('appInfoModalClose');
         const infoModal = document.getElementById('infoModal');
         const infoCloseButton = document.getElementById('infoModalClose');
         const icmModal = document.getElementById('icmModal');
@@ -947,6 +1002,18 @@
                 closeAIModal();
             }
         });
+
+        // App Info Modal events
+        if (appInfoCloseButton) {
+            appInfoCloseButton.addEventListener('click', closeAppInfoModal);
+        }
+        if (appInfoModal) {
+            appInfoModal.addEventListener('click', (e) => {
+                if (e.target === appInfoModal) {
+                    closeAppInfoModal();
+                }
+            });
+        }
 
         // Info Modal events
         infoCloseButton.addEventListener('click', closeInfoModal);
@@ -969,6 +1036,9 @@
             if (e.key === 'Escape') {
                 if (aiModal.classList.contains('active')) {
                     closeAIModal();
+                }
+                if (appInfoModal && appInfoModal.classList.contains('active')) {
+                    closeAppInfoModal();
                 }
                 if (infoModal.classList.contains('active')) {
                     closeInfoModal();
@@ -1566,6 +1636,8 @@
     }
 
     // Make functions global for onclick handlers
+    window.openAppInfoModal = openAppInfoModal;
+    window.closeAppInfoModal = closeAppInfoModal;
     window.openAIModal = openAIModal;
     window.closeAIModal = closeAIModal;
     window.openInfoModal = openInfoModal;
@@ -1585,6 +1657,13 @@
         setupHamburgerMenu();
         setupKiteSizeCalculator();
         setupColumnToggle();
+
+        const infoToggle = document.getElementById('infoToggle');
+        if (infoToggle) {
+            infoToggle.addEventListener('click', () => {
+                openAppInfoModal();
+            });
+        }
 
         // Check if we should show favorites first, before loading spots
         const savedFavoritesState = localStorage.getItem('showingFavorites');
