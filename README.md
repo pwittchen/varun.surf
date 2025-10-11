@@ -66,7 +66,7 @@ To view all its functions just type:
 ./deployment.sh --help
 ```
 
-## AI
+## AI Forecast Analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
 If you want to use AI in the app, configure ollama or openai in the `application.properties`.
@@ -98,6 +98,10 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 ## architecture
 
 see: [ARCH.md](ARCH.md) file
+
+## AI agent configuration
+
+see: [CLAUDE.md](CLAUDE.md) file
 
 ## features
 
