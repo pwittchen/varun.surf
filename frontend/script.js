@@ -828,7 +828,7 @@
                 spotsGrid.innerHTML = `
                     <div class="loading-message">
                         <div class="loading-spinner"></div>
-                        <span class="loading-text">Thinking...</span>
+                        <span class="loading-text">${t('loadingText')}</span>
                     </div>
                 `;
                 // Retry loading after 5 seconds
