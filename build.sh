@@ -5,6 +5,15 @@
 
 echo "🚧  starting frontend build..."
 
+# Get the latest git tag with v prefix
+VERSION=$(git tag --list 'v*' --sort=-version:refname | head -1)
+if [ -z "$VERSION" ]; then
+    VERSION="v0.0.0"
+    echo "⚠️  No git tag found, using default version: $VERSION"
+else
+    echo "📌  Using version: $VERSION"
+fi
+
 # First, inline CSS and JavaScript into index.full.html
 echo "Inlining CSS and JavaScript..."
 cp frontend/index.html index.temp.html
@@ -52,6 +61,10 @@ fi
 echo "Restoring external scripts..."
 sed -i.bak2 "s|DATAFASTPLACEHOLDER|$(cat datafast.tmp)|g" index.temp.html
 
+# Add version to footer
+echo "Adding version $VERSION to footer..."
+sed -i.bak4 "s|</a></p>|</a> \&bull; <a href=\"https://github.com/pwittchen/varun.surf/releases/tag/$VERSION\" target=\"_blank\" class=\"footer-external-link\">$VERSION</a></p>|g" index.temp.html
+
 echo "Minifying HTML..."
 npx html-minifier-terser index.temp.html -o index.min.html \
   --collapse-whitespace \
@@ -75,7 +88,7 @@ echo "✅  frontend was built successfully"
 
 # Clean up temporary frontend files
 echo "Cleaning up temporary files..."
-rm -f index.temp.html index.temp2.html index.min.html index.html index.temp.html.bak index.temp.html.bak2 index.html.bak3 datafast.tmp frontend/index.html.bak frontend/index.html.bak2
+rm -f index.temp.html index.temp2.html index.min.html index.html index.temp.html.bak index.temp.html.bak2 index.temp.html.bak4 index.html.bak3 datafast.tmp frontend/index.html.bak frontend/index.html.bak2
 echo "✅  temporary files cleaned up"
 
 echo "🚧  starting backend build..."
