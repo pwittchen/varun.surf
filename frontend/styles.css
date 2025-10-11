@@ -585,8 +585,12 @@ body {
     user-select: none;
     z-index: 10;
     margin-bottom: 20px;
-    padding-bottom: 41px;
+    padding-bottom: 51px;
     border-bottom: 1px solid var(--border-primary);
+}
+
+.three-columns .drag-handle {
+    padding-bottom: 41px;
 }
 
 .drag-handle:hover {
