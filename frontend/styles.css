@@ -167,6 +167,17 @@ body {
     width: 40px;
 }
 
+.info-toggle {
+    width: auto;
+}
+
+.info-toggle .info-label {
+    display: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding-top: 4px;
+}
+
 .theme-toggle:hover {
     background: var(--gradient-button-hover);
     border-color: var(--border-hover);
@@ -1369,7 +1380,12 @@ body {
         flex: 0 0 100%;
         order: 2;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
+        padding: 10px 14px;
+    }
+
+    .info-toggle .info-label {
+        display: inline;
     }
 
     .search-container {

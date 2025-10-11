@@ -130,6 +130,11 @@
                 infoToggle.title = t('infoToggleTooltip');
             }
 
+            const infoToggleLabel = document.getElementById('infoToggleLabel');
+            if (infoToggleLabel) {
+                infoToggleLabel.textContent = t('infoButtonLabel');
+            }
+
             const kiteSizeToggle = document.getElementById('kiteSizeToggle');
             if (kiteSizeToggle) {
                 kiteSizeToggle.title = t('kiteSizeToggleTooltip');
