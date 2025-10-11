@@ -161,7 +161,7 @@
 
             // Update "All" in dropdown if selected
             const selectedCountry = document.getElementById('selectedCountry');
-            if (selectedCountry && selectedCountry.textContent.includes('All')) {
+            if (selectedCountry && selectedCountry.textContent.includes('All') || selectedCountry.textContent.includes('Wszystkie')) {
                 selectedCountry.textContent = `🌎 ${t('allCountries')}`;
             }
 
@@ -421,7 +421,7 @@
             const countryFlag = getCountryFlag(savedCountry);
             selectedCountry.textContent = `${countryFlag} ${savedCountry.toUpperCase()}`;
         } else {
-            selectedCountry.textContent = '🌎 All';
+            selectedCountry.textContent = `🌎 ${t('allCountries')}`;
         }
 
         // Re-attach event listeners for the new dropdown options

@@ -28,9 +28,6 @@ const translations = {
 
         // Footer
         footerDisclaimer: "weather forecast and real-time wind conditions dashboard for kitesurfers",
-        footerOpenSource: "open-source",
-        footerMadeIn: "made in",
-        footerBy: "by",
 
         // Days of week (short forms as they appear in forecast)
         dayToday: "Today",
@@ -143,9 +140,6 @@ const translations = {
 
         // Footer
         footerDisclaimer: "prognoza pogody i warunki wiatrowe w czasie rzeczywistym dla kitesurferów",
-        footerOpenSource: "open-source",
-        footerMadeIn: "made in",
-        footerBy: "by",
 
         // Days of week (short forms as they appear in forecast)
         dayToday: "Dzisiaj",
