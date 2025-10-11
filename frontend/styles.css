@@ -1288,8 +1288,13 @@ body {
     }
 
     .spots-grid.three-columns .spot-card {
-        padding: 14px;
+        padding: 24px;
         width: 100%;
+    }
+
+    .spots-grid.three-columns .weather-table th,
+    .spots-grid.three-columns .weather-table td {
+        padding: 12px 8px;
     }
 
     .column-toggle {
