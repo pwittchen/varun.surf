@@ -134,7 +134,7 @@ const translations = {
         // Weather table headers
         dateHeader: "Data",
         windHeader: "Wiatr",
-        gustsHeader: "Porywy",
+        gustsHeader: "Szkwały",
         directionHeader: "Kierunek",
         tempHeader: "Temp",
         rainHeader: "Deszcz",
@@ -142,7 +142,7 @@ const translations = {
         nowLabel: "TERAZ",
 
         // Footer
-        footerDisclaimer: "prognoza pogody i warunki wiatru w czasie rzeczywistym dla kitesurferów",
+        footerDisclaimer: "prognoza pogody i warunki wiatrowe w czasie rzeczywistym dla kitesurferów",
         footerOpenSource: "open-source",
         footerMadeIn: "made in",
         footerBy: "by",
