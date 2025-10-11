@@ -43,14 +43,20 @@ else
     echo "⚠️  frontend/styles.css not found, skipping CSS inlining"
 fi
 
-# Inline JavaScript
+# Inline JavaScript (translations first, then script.js)
 if [ -f frontend/script.js ]; then
     echo "Inlining JavaScript..."
     # Create marker file
     sed 's|<script src="script.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
 
-    # Insert JS content at placeholder
-    awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/script.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+    # Insert translations.js and script.js content at placeholder
+    if [ -f frontend/translations.js ]; then
+        echo "Including translations..."
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+    else
+        echo "⚠️  frontend/translations.js not found, inlining script.js only"
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/script.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+    fi
     rm index.temp2.html
     echo "✅  JavaScript inlined successfully"
 else
