@@ -539,6 +539,7 @@ body {
 
 .spots-grid.three-columns .spot-card {
     padding: 14px;
+    width: 452px;
 }
 
 .spot-card:hover {
@@ -1215,6 +1216,11 @@ body {
 @media (max-width: 1150px) {
     .spots-grid {
         grid-template-columns: 1fr !important;
+    }
+
+    .spots-grid.three-columns .spot-card {
+        padding: 14px;
+        width: 100%;
     }
 
     .column-toggle {

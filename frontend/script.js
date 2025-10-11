@@ -160,9 +160,11 @@
             }
 
             // Update "All" in dropdown if selected
-            const selectedCountry = document.getElementById('selectedCountry');
-            if (selectedCountry && selectedCountry.textContent.includes('All') || selectedCountry.textContent.includes('Wszystkie')) {
-                selectedCountry.textContent = `🌎 ${t('allCountries')}`;
+            if (globalWeatherData.length > 0) {
+                populateCountryDropdown(globalWeatherData);
+            } else {
+                const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+                updateSelectedCountryLabel(savedCountry);
             }
 
             // Update dropdown "All" option
@@ -406,26 +408,39 @@
         const savedCountry = localStorage.getItem('selectedCountry') || 'all';
 
         // Build dropdown HTML
-        let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 All</div>`;
+        const allLabel = t('allCountries');
+        let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 ${allLabel}</div>`;
 
         sortedCountries.forEach(country => {
             const countryFlag = getCountryFlag(country);
             const isSelected = savedCountry === country ? 'selected' : '';
-            dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} ${country.toUpperCase()}</div>`;
+            const countryName = t(country.replace(/\s+/g, ''));
+            dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} ${countryName.toUpperCase()}</div>`;
         });
 
         dropdownMenu.innerHTML = dropdownHTML;
 
         // Update the selected country text in the button
-        if (savedCountry !== 'all') {
-            const countryFlag = getCountryFlag(savedCountry);
-            selectedCountry.textContent = `${countryFlag} ${savedCountry.toUpperCase()}`;
-        } else {
-            selectedCountry.textContent = `🌎 ${t('allCountries')}`;
-        }
+        updateSelectedCountryLabel(savedCountry);
 
         // Re-attach event listeners for the new dropdown options
         setupDropdownEvents();
+    }
+
+    function updateSelectedCountryLabel(countryKey) {
+        const selectedCountry = document.getElementById('selectedCountry');
+        if (!selectedCountry) {
+            return;
+        }
+
+        if (!countryKey || countryKey === 'all') {
+            selectedCountry.textContent = `🌎 ${t('allCountries')}`;
+            return;
+        }
+
+        const countryFlag = getCountryFlag(countryKey);
+        const countryName = t(countryKey.replace(/\s+/g, ''));
+        selectedCountry.textContent = `${countryFlag} ${countryName.toUpperCase()}`;
     }
 
     function getCountryFlag(country) {
@@ -570,7 +585,7 @@
     function createSpotCard(spot) {
         const card = document.createElement('div');
         card.className = 'spot-card';
-        card.dataset.country = spot.country;
+        card.dataset.country = t(spot.country.replace(/\s+/g, ''));
 
         // Check if spot has wave data
         const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
@@ -701,7 +716,7 @@
                                     <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
                                 </svg>
                             </div>
-                            <div class="country-tag">${spot.country || 'Unknown'}</div>
+                            <div class="country-tag">${t(spot.country.replace(/\s+/g, '')) || 'Unknown'}</div>
                         </div>
                         <div class="last-updated">${spot.lastUpdated || 'No data'}</div>
                     </div>
@@ -847,7 +862,6 @@
 
     function setupDropdownEvents() {
         const dropdownOptions = document.querySelectorAll('.dropdown-option');
-        const selectedCountry = document.getElementById('selectedCountry');
         const searchInput = document.getElementById('searchInput');
 
         dropdownOptions.forEach(option => {
@@ -857,8 +871,8 @@
                 dropdownOptions.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
 
-                selectedCountry.textContent = option.textContent;
                 const country = option.dataset.country;
+                updateSelectedCountryLabel(country);
 
                 // Save selected country to localStorage
                 localStorage.setItem('selectedCountry', country);
