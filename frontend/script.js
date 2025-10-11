@@ -1541,11 +1541,19 @@
         const columnToggle = document.getElementById('columnToggle');
         const spotsGrid = document.getElementById('spotsGrid');
 
-        // Load saved column preference (default is 2 columns)
-        const isThreeColumns = localStorage.getItem('threeColumns') === 'true';
+        const storedPreference = localStorage.getItem('threeColumns');
+        const isThreeColumns = storedPreference === null ? true : storedPreference === 'true';
+
         if (isThreeColumns) {
             spotsGrid.classList.add('three-columns');
             columnToggle.classList.add('active');
+        } else {
+            spotsGrid.classList.remove('three-columns');
+            columnToggle.classList.remove('active');
+        }
+
+        if (storedPreference === null) {
+            localStorage.setItem('threeColumns', 'true');
         }
 
         columnToggle.addEventListener('click', () => {
@@ -1554,7 +1562,7 @@
 
             // Save preference
             const isThreeColumns = spotsGrid.classList.contains('three-columns');
-            localStorage.setItem('threeColumns', isThreeColumns);
+            localStorage.setItem('threeColumns', String(isThreeColumns));
         });
     }
 
