@@ -92,6 +92,206 @@
         });
     }
 
+    // Language functionality
+    function initLanguage() {
+        const savedLanguage = localStorage.getItem('language') || 'en';
+        const languageToggle = document.getElementById('languageToggle');
+
+        function updateLanguage(lang) {
+            localStorage.setItem('language', lang);
+
+            // Update all UI elements with translations
+            updateUITranslations();
+        }
+
+        function updateUITranslations() {
+            // Update page title
+            document.title = t('pageTitle');
+
+            // Update search placeholder
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.placeholder = t('searchPlaceholder');
+            }
+
+            // Update tooltips
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.title = t('themeToggleTooltip');
+            }
+
+            const favoritesToggle = document.getElementById('favoritesToggle');
+            if (favoritesToggle) {
+                favoritesToggle.title = t('favoritesToggleTooltip');
+            }
+
+            const kiteSizeToggle = document.getElementById('kiteSizeToggle');
+            if (kiteSizeToggle) {
+                kiteSizeToggle.title = t('kiteSizeToggleTooltip');
+            }
+
+            const columnToggle = document.getElementById('columnToggle');
+            if (columnToggle) {
+                columnToggle.title = t('columnToggleTooltip');
+            }
+
+            if (languageToggle) {
+                languageToggle.title = t('languageToggleTooltip');
+            }
+
+            // Update language code text
+            const langCode = document.getElementById('langCode');
+            if (langCode) {
+                langCode.textContent = t('langCode');
+            }
+
+            // Update spot counter text
+            const spotCounter = document.getElementById('spotCounter');
+            if (spotCounter) {
+                const spotCounterNumber = document.getElementById('spotCounterNumber');
+                const currentCount = spotCounterNumber ? spotCounterNumber.textContent : '0';
+                spotCounter.innerHTML = `<span class="spot-counter-number" id="spotCounterNumber">${currentCount}</span><span>${t('spotsCount')}</span>`;
+            }
+
+            // Update footer
+            const footerDisclaimer = document.querySelector('.footer-disclaimer');
+            if (footerDisclaimer) {
+                footerDisclaimer.textContent = t('footerDisclaimer');
+            }
+
+            // Update "All" in dropdown if selected
+            const selectedCountry = document.getElementById('selectedCountry');
+            if (selectedCountry && selectedCountry.textContent.includes('All')) {
+                selectedCountry.textContent = `🌎 ${t('allCountries')}`;
+            }
+
+            // Update dropdown "All" option
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            if (dropdownMenu) {
+                const allOption = dropdownMenu.querySelector('[data-country="all"]');
+                if (allOption) {
+                    allOption.textContent = `🌎 ${t('allCountries')}`;
+                }
+            }
+
+            // Update loading message if visible
+            const loadingText = document.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = t('loadingText');
+            }
+
+            // Update modal titles
+            const aiModalTitle = document.querySelector('#aiModal .modal-title span:first-child');
+            if (aiModalTitle && aiModalTitle.textContent === '⟡') {
+                // AI modal title is dynamic, leave as is
+            }
+
+            const infoModalTitle = document.querySelector('#infoModal .modal-title span:first-child');
+            if (infoModalTitle && infoModalTitle.textContent === '🏄') {
+                // Info modal title is dynamic, leave as is
+            }
+
+            const icmModalTitle = document.querySelector('#icmModal .modal-title span:first-child');
+            if (icmModalTitle && icmModalTitle.textContent === '📊') {
+                // ICM modal title is dynamic, leave as is
+            }
+
+            // Update kite size calculator modal content
+            const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
+            if (kiteSizeModalTitle) {
+                kiteSizeModalTitle.textContent = t('kiteSizeCalculatorTitle');
+            }
+
+            const windSpeedLabel = document.querySelector('label[for="windSpeed"]');
+            if (windSpeedLabel) {
+                windSpeedLabel.textContent = t('windSpeedLabel');
+            }
+
+            const windSpeedInput = document.getElementById('windSpeed');
+            if (windSpeedInput) {
+                windSpeedInput.placeholder = t('windSpeedPlaceholder');
+            }
+
+            const riderWeightLabel = document.querySelector('label[for="riderWeight"]');
+            if (riderWeightLabel) {
+                riderWeightLabel.textContent = t('riderWeightLabel');
+            }
+
+            const riderWeightInput = document.getElementById('riderWeight');
+            if (riderWeightInput) {
+                riderWeightInput.placeholder = t('riderWeightPlaceholder');
+            }
+
+            const skillLevelLabel = document.querySelector('label[for="skillLevel"]');
+            if (skillLevelLabel) {
+                skillLevelLabel.textContent = t('skillLevelLabel');
+            }
+
+            const skillLevelSelect = document.getElementById('skillLevel');
+            if (skillLevelSelect) {
+                const options = skillLevelSelect.querySelectorAll('option');
+                options[0].textContent = t('skillLevelPlaceholder');
+                options[1].textContent = t('skillBeginnerFlat');
+                options[2].textContent = t('skillBeginnerSmall');
+                options[3].textContent = t('skillIntermediateFlat');
+                options[4].textContent = t('skillIntermediateMedium');
+                options[5].textContent = t('skillAdvancedFlat');
+                options[6].textContent = t('skillAdvancedMedium');
+                options[7].textContent = t('skillAdvancedLarge');
+            }
+
+            const calculateBtn = document.getElementById('calculateBtn');
+            if (calculateBtn) {
+                calculateBtn.textContent = t('calculateButton');
+            }
+
+            const calcResultTitle = document.querySelector('#calcResult .calc-result-title');
+            if (calcResultTitle) {
+                calcResultTitle.textContent = t('recommendedEquipment');
+            }
+
+            const kiteSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(2) .calc-result-label');
+            if (kiteSizeLabel) {
+                kiteSizeLabel.textContent = t('kiteSizeLabel');
+            }
+
+            const boardSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(3) .calc-result-label');
+            if (boardSizeLabel) {
+                boardSizeLabel.textContent = t('boardSizeLabel');
+            }
+
+            const calcDisclaimer = document.querySelector('#calcResult .modal-disclaimer');
+            if (calcDisclaimer) {
+                calcDisclaimer.textContent = t('calcDisclaimer');
+            }
+
+            // Update AI modal disclaimer
+            const aiDisclaimer = document.querySelector('#aiModal .modal-disclaimer');
+            if (aiDisclaimer) {
+                aiDisclaimer.textContent = t('aiDisclaimer');
+            }
+
+            // Re-render spots to update table headers and content
+            if (globalWeatherData.length > 0) {
+                if (showingFavorites) {
+                    renderFavorites();
+                } else {
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
+            }
+        }
+
+        // Set initial language and update UI
+        updateLanguage(savedLanguage);
+
+        // Language toggle event
+        languageToggle.addEventListener('click', () => {
+            const currentLang = localStorage.getItem('language') || 'en';
+            const newLang = currentLang === 'en' ? 'pl' : 'en';
+            updateLanguage(newLang);
+        });
+    }
+
     async function fetchWeatherData() {
         try {
             const response = await fetch(API_ENDPOINT, {cache: 'no-store'});
@@ -118,7 +318,7 @@
         spotsGrid.innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
-                    <span class="loading-text">Thinking...</span>
+                    <span class="loading-text">${t('loadingText')}</span>
                 </div>
             `;
     }
@@ -126,21 +326,21 @@
     function showErrorMessage(error) {
         const spotsGrid = document.getElementById('spotsGrid');
 
-        let errorTitle = 'Failed to Load Weather Data';
-        let errorMessage = 'Unable to fetch the latest weather information from the server.';
+        let errorTitle = t('errorLoadDataTitle');
+        let errorMessage = t('errorLoadDataDescription');
 
         if (error.message.includes('HTTP Error: 404')) {
-            errorTitle = 'Data Source Not Found';
-            errorMessage = 'The weather data endpoint is not available. Please check if the server is running.';
+            errorTitle = t('errorDataNotFoundTitle');
+            errorMessage = t('errorDataNotFoundDescription');
         } else if (error.message.includes('HTTP Error: 500')) {
-            errorTitle = 'Server Error';
-            errorMessage = 'The weather service is experiencing technical difficulties. Please try again later.';
+            errorTitle = t('errorServerTitle');
+            errorMessage = t('errorServerDescription');
         } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-            errorTitle = 'Connection Error';
-            errorMessage = 'Unable to connect to the weather service. Please check your internet connection and ensure the server is running.';
+            errorTitle = t('errorConnectionTitle');
+            errorMessage = t('errorConnectionDescription');
         } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
-            errorTitle = 'Data Format Error';
-            errorMessage = 'The weather data received is corrupted or in an unexpected format.';
+            errorTitle = t('errorDataFormatTitle');
+            errorMessage = t('errorDataFormatDescription');
         }
 
         spotsGrid.innerHTML = `
@@ -149,7 +349,7 @@
                     <div class="error-title">${errorTitle}</div>
                     <div class="error-description">
                         ${errorMessage}<br/>
-                        Please refresh the page to try again.
+                        ${t('errorRefresh')}
                     </div>
                 </div>
             `;
@@ -167,6 +367,24 @@
             'NW': '↘'
         };
         return arrows[direction] || '•';
+    }
+
+    function translateDayName(dayName) {
+        const dayMap = {
+            'Mon': t('dayMon'),
+            'Tue': t('dayTue'),
+            'Wed': t('dayWed'),
+            'Thu': t('dayThu'),
+            'Fri': t('dayFri'),
+            'Sat': t('daySat'),
+            'Sun': t('daySun'),
+            'Today': t('dayToday'),
+            'Tomorrow': t('dayTomorrow'),
+            'Day 3': t('dayDay3'),
+            'Day 4': t('dayDay4'),
+            'Day 5': t('dayDay5')
+        };
+        return dayMap[dayName] || dayName;
     }
 
     function populateCountryDropdown(data) {
@@ -397,7 +615,7 @@
 
                 forecastRows += `
                         <tr class="${windClass}">
-                            <td><strong>${day.date}</strong></td>
+                            <td><strong>${translateDayName(day.date)}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
                             <td class="${windTextClass}">${day.gusts} kts</td>
                             <td class="${windTextClass}">
@@ -450,7 +668,7 @@
                     <tr class="${windClass}" style="border-top: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
-                                <strong class="live-text">NOW</strong>
+                                <strong class="live-text">${t('nowLabel')}</strong>
                                 <div class="live-dot"></div>
                             </div>
                         </td>
@@ -500,13 +718,13 @@
                 <table class="weather-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Wind</th>
-                            <th>Gusts</th>
-                            <th>Direction</th>
-                            <th>Temp</th>
-                            <th>Rain</th>
-                            ${hasWaveData ? '<th>Wave</th>' : ''}
+                            <th>${t('dateHeader')}</th>
+                            <th>${t('windHeader')}</th>
+                            <th>${t('gustsHeader')}</th>
+                            <th>${t('directionHeader')}</th>
+                            <th>${t('tempHeader')}</th>
+                            <th>${t('rainHeader')}</th>
+                            ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
                         </tr>
                     </thead>
                     <tbody>
@@ -1345,6 +1563,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
+        initLanguage();
         setupDropdown();
         setupModals();
         setupSearch();
