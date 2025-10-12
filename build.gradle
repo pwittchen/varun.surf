@@ -5,8 +5,18 @@ plugins {
 }
 
 group = 'com.github.pwittchen'
-version = '0.0.1-SNAPSHOT'
+version = getVersionFromGitTag()
 description = 'varun.surf'
+
+static def getVersionFromGitTag() {
+    try {
+        def gitTag = 'git describe --tags --abbrev=0'.execute().text.trim()
+        return gitTag ?: '0.0.1-SNAPSHOT'
+    } catch (Exception e) {
+        print(e)
+        return 'local'
+    }
+}
 
 java {
     toolchain {
