@@ -1287,14 +1287,15 @@ body {
         grid-template-columns: 1fr !important;
     }
 
-    .spots-grid.three-columns .spot-card {
-        padding: 24px;
-        width: 100%;
+    .spot-card {
+        width: 100% !important;
     }
 
-    .spots-grid.three-columns .weather-table th,
-    .spots-grid.three-columns .weather-table td {
-        padding: 12px 8px;
+    .spots-grid.three-columns .spot-card {
+        padding: 24px;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
     }
 
     .column-toggle {
@@ -1303,10 +1304,31 @@ body {
 
     .weather-table {
         font-size: .85rem;
+        table-layout: fixed !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
-    .weather-table td, .weather-table th {
-        padding: 8px 4px;
+    .weather-table th {
+        padding: 8px 4px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    .weather-table td {
+        padding: 8px 4px !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        min-width: 0;
+    }
+
+    .weather-table td:first-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .error-message {
