@@ -67,9 +67,9 @@ fi
 echo "Restoring external scripts..."
 sed -i.bak2 "s|DATAFASTPLACEHOLDER|$(cat datafast.tmp)|g" index.temp.html
 
-# Add version to footer
-echo "Adding version $VERSION to footer..."
-sed -i.bak4 "s|</a></p>|</a> \&bull; <a href=\"https://github.com/pwittchen/varun.surf/releases/tag/$VERSION\" target=\"_blank\" class=\"footer-external-link\">$VERSION</a></p>|g" index.temp.html
+# Add version to footer - DISABLED
+# echo "Adding version $VERSION to footer..."
+# sed -i.bak4 "s|</a></p>|</a> \&bull; <a href=\"https://github.com/pwittchen/varun.surf/releases/tag/$VERSION\" target=\"_blank\" class=\"footer-external-link\">$VERSION</a></p>|g" index.temp.html
 
 echo "Minifying HTML..."
 npx html-minifier-terser index.temp.html -o index.min.html \
