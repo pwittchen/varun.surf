@@ -1552,7 +1552,7 @@
         const spotsGrid = document.getElementById('spotsGrid');
 
         const storedPreference = localStorage.getItem('threeColumns');
-        const isThreeColumns = storedPreference === null ? true : storedPreference === 'true';
+        const isThreeColumns = storedPreference === null ? false : storedPreference === 'true';
 
         if (isThreeColumns) {
             spotsGrid.classList.add('three-columns');
@@ -1563,7 +1563,7 @@
         }
 
         if (storedPreference === null) {
-            localStorage.setItem('threeColumns', 'true');
+            localStorage.setItem('threeColumns', 'false');
         }
 
         columnToggle.addEventListener('click', () => {
