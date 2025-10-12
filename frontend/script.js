@@ -1575,7 +1575,7 @@
         const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         const storedPreference = localStorage.getItem('threeColumns');
-        let isThreeColumns = storedPreference === null ? false : storedPreference === 'true';
+        let isThreeColumns = storedPreference === null ? true : storedPreference === 'true';
 
         // Force 2-column layout on mobile devices
         if (isMobile && isThreeColumns) {
@@ -1592,7 +1592,7 @@
         }
 
         if (storedPreference === null) {
-            localStorage.setItem('threeColumns', 'false');
+            localStorage.setItem('threeColumns', String(isThreeColumns));
         }
 
         columnToggle.addEventListener('click', () => {
