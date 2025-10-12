@@ -1551,8 +1551,17 @@
         const columnToggle = document.getElementById('columnToggle');
         const spotsGrid = document.getElementById('spotsGrid');
 
+        // Detect if user is on mobile device
+        const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         const storedPreference = localStorage.getItem('threeColumns');
-        const isThreeColumns = storedPreference === null ? false : storedPreference === 'true';
+        let isThreeColumns = storedPreference === null ? false : storedPreference === 'true';
+
+        // Force 2-column layout on mobile devices
+        if (isMobile && isThreeColumns) {
+            isThreeColumns = false;
+            localStorage.setItem('threeColumns', 'false');
+        }
 
         if (isThreeColumns) {
             spotsGrid.classList.add('three-columns');
