@@ -95,6 +95,20 @@ body {
     text-align: left;
 }
 
+.header-logo {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.header-logo:hover {
+    opacity: 0.8;
+}
+
 .header-controls {
     position: absolute;
     top: 5px;
@@ -140,6 +154,7 @@ body {
     font-weight: 100;
     color: #fff;
     margin-bottom: 8px;
+    margin-left: 50px;
     letter-spacing: -.02em;
     text-align: left;
 }
@@ -1302,6 +1317,10 @@ body {
         display: none !important;
     }
 
+    .header-logo {
+        display: none !important;
+    }
+
     .weather-table {
         font-size: .85rem;
         table-layout: fixed !important;
@@ -1354,6 +1373,7 @@ body {
     .header-title {
         text-align: center;
         margin-top: 0;
+        margin-left: 0;
         font-size: 2.2rem;
     }
 

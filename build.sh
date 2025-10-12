@@ -90,6 +90,13 @@ sed -i.bak3 's/defer="defer"/defer/g' index.html
 rm index.min.html index.temp.html
 cp index.html src/main/resources/static/index.html
 rm index.html
+
+# Copy logo files to static directory
+echo "Copying logo files..."
+cp frontend/logo_light_small.png src/main/resources/static/logo_light_small.png
+cp frontend/logo_dark_small.png src/main/resources/static/logo_dark_small.png
+echo "✅  logo files copied successfully"
+
 echo "✅  frontend was built successfully"
 
 # Clean up temporary frontend files
