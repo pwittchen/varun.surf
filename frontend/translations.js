@@ -76,6 +76,8 @@ const translations = {
         appInfoDescription: "VARUN.SURF aggregates weather forecasts and live wind conditions for kitesurfers worldwide.",
         appInfoContactTitle: "Contact",
         appInfoContactText: "Questions or ideas? Email <a href=\"mailto:piotr@wittchen.io\" class=\"modal-link\">piotr@wittchen.io</a>.",
+        appInfoNewSpotTitle: "Suggest a new kite spot",
+        appInfoNewSpotText: "If you want to suggest a new kite spot, <a href=\"https://pwittchen.notion.site/28a649d2871780368191c6ce5a64029e\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">fill in the form</a>.",
         appInfoCollaborationTitle: "Collaboration",
         appInfoCollaborationText: "I welcome collaboration! Open an issue or PR in <a href=\"https://github.com/pwittchen/varun.surf\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">GitHub repository</a> or reach out via email. If you would like to advertise your service related to the kitesurfing or other water sports (e.g. shop, kite school, travels, insurance, etc.) on this website, please contact me.",
 
@@ -229,6 +231,8 @@ const translations = {
         appInfoDescription: "VARUN.SURF prezentuje prognozy pogody i aktualne warunki wiatrowe dla kitesurferów na całym świecie.",
         appInfoContactTitle: "Kontakt",
         appInfoContactText: "Masz pytania lub pomysły? Napisz na <a href=\"mailto:piotr@wittchen.io\" class=\"modal-link\">piotr@wittchen.io</a>.",
+        appInfoNewSpotTitle: "Zaproponuj nowy kite spot",
+        appInfoNewSpotText: "Jeśli chcesz zaproponować nowy kite spot, <a href=\"https://pwittchen.notion.site/28a649d2871780368191c6ce5a64029e\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">wypełnij formularz</a>.",
         appInfoCollaborationTitle: "Współpraca",
         appInfoCollaborationText: "Chcesz współtworzyć projekt lub udostępnić nowe źródła danych? Otwórz zgłoszenie albo pull request w <a href=\"https://github.com/pwittchen/varun.surf\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">repozytorium GitHub</a> lub napisz maila. Jeżeli chciałbyś zareklamować swoje usługi związane z kitesurfingiem lub innymi sportami wodnymi (np. sklep, szkółkę, wyjazdy, ubezpieczenia, itd.) na tej stronie, proszę o kontakt.",
 

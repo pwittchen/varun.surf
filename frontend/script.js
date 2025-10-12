@@ -228,6 +228,16 @@
                 appInfoContactText.innerHTML = t('appInfoContactText');
             }
 
+            const appInfoNewSpotTitle = document.getElementById('appInfoNewSpotTitle');
+            if (appInfoNewSpotTitle) {
+                appInfoNewSpotTitle.textContent = t('appInfoNewSpotTitle');
+            }
+
+            const appInfoNewSpotText = document.getElementById('appInfoNewSpotText');
+            if (appInfoNewSpotText) {
+                appInfoNewSpotText.innerHTML = t('appInfoNewSpotText');
+            }
+
             const appInfoCollaborationTitle = document.getElementById('appInfoCollaborationTitle');
             if (appInfoCollaborationTitle) {
                 appInfoCollaborationTitle.textContent = t('appInfoCollaborationTitle');
