@@ -831,8 +831,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${forecastRows}
                         ${currentConditionsRow}
+                        ${forecastRows}
                     </tbody>
                 </table>
             `;
