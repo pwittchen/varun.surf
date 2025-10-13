@@ -5,7 +5,7 @@ COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 RUN gradle dependencies --no-daemon || true
 COPY src ./src
-RUN gradle bootJar --no-daemon
+RUN gradle clean bootJar --no-daemon
 
 # Runtime stage
 FROM eclipse-temurin:24-jre
