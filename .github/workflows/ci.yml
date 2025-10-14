@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: CI # builds the project and runs tests with Gradle
 
 on:
   push:
