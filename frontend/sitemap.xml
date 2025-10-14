@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+    <!-- Main Homepage -->
+    <url>
+        <loc>https://varun.surf/</loc>
+        <lastmod>2025-10-14</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://varun.surf/logo.png</image:loc>
+            <image:title>VARUN.SURF - Kitesurfing Weather Forecast</image:title>
+            <image:caption>Weather forecast and real-time wind conditions dashboard for kitesurfers</image:caption>
+        </image:image>
+    </url>
+
+</urlset>

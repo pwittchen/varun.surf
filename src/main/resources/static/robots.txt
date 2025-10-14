@@ -1,0 +1,66 @@
+# Robots.txt for VARUN.SURF - Kitesurfing Weather Forecast Dashboard
+# Allow all search engines and AI crawlers to crawl the site
+
+# General search engines and bots
+User-agent: *
+Allow: /
+
+# OpenAI GPT Crawler (ChatGPT, GPT-4, etc.)
+User-agent: GPTBot
+Allow: /
+
+# Google Extended (Bard/Gemini AI training)
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic Claude Crawler
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+Allow: /
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+
+# Perplexity AI Crawler
+User-agent: PerplexityBot
+Allow: /
+
+# Cohere AI Crawler
+User-agent: cohere-ai
+Allow: /
+
+# Meta AI Crawler (LLaMA, etc.)
+User-agent: FacebookBot
+Allow: /
+
+# Bing AI / Microsoft AI
+User-agent: Bingbot
+Allow: /
+
+# Diffbot (structured data extraction)
+User-agent: Diffbot
+Allow: /
+
+# AWS AI/ML Crawlers
+User-agent: Amazonbot
+Allow: /
+
+# Applebot (Apple Intelligence)
+User-agent: Applebot
+User-agent: Applebot-Extended
+Allow: /
+
+# YouBot (You.com AI search)
+User-agent: YouBot
+Allow: /
+
+# Sitemap location
+Sitemap: https://varun.surf/sitemap.xml
+
+# AI/LLM specific files
+ai.txt: https://varun.surf/ai.txt
+llms.txt: https://varun.surf/llms.txt
+
+# Crawl-delay for responsible crawling
+Crawl-delay: 1

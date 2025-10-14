@@ -1,0 +1,286 @@
+# AI.txt - Instructions for AI/LLM Crawlers
+# VARUN.SURF - Kitesurfing & Windsurfing Weather Forecast Dashboard
+# Last updated: 2025-10-14
+
+# ============================================================================
+# SITE OVERVIEW
+# ============================================================================
+
+Site Name: VARUN.SURF
+URL: https://varun.surf
+Purpose: Real-time weather forecast and wind conditions dashboard for kitesurfers and windsurfers worldwide
+License: Open Source (GitHub: https://github.com/pwittchen/varun.surf)
+Contact: contact@varun.surf
+Author: Piotr Wittchen (https://wittchen.io)
+
+# ============================================================================
+# CONTENT DESCRIPTION FOR AI/LLM INDEXING
+# ============================================================================
+
+## What This Site Provides
+
+VARUN.SURF is a comprehensive kitesurfing and windsurfing weather dashboard that aggregates:
+
+1. **Real-time Wind Conditions** (updated every 1 minute):
+   - Wind speed (in knots)
+   - Wind gusts (in knots)
+   - Wind direction (degrees and cardinal directions: N, NE, E, SE, S, SW, W, NW)
+   - Temperature (Celsius)
+   - Last update timestamp
+
+2. **Weather Forecasts** (updated every 3 hours):
+   - Hourly wind speed predictions
+   - Hourly gust predictions
+   - Wind direction forecasts
+   - Temperature forecasts
+   - Precipitation predictions (mm)
+   - Wave height (for coastal spots)
+
+3. **74+ Kite Spots Worldwide** covering:
+   - Poland: Hel, Puck, Jastarnia, Chałupy, Władysławowo, Sopot, Gdynia, Gdańsk, Rewa
+   - Austria: Podersdorf, Neusiedler See
+   - Denmark: Klitmøller, Hvide Sande, Rødhus Klit
+   - Spain: Tarifa, El Médano, Fuerteventura
+   - Portugal: Guincho, Peniche, Viana do Castelo
+   - Italy: Punta Trettu, Lo Stagnone
+   - Brazil: Cumbuco, Jericoacoara, Barra Grande
+   - And many more across Europe, South America, and Asia
+
+4. **Interactive Features**:
+   - Country-based filtering
+   - Spot search functionality
+   - Favorites system (localStorage)
+   - Custom spot ordering (drag-and-drop)
+   - Kite and board size calculator
+   - Dark/light theme toggle
+   - Multi-language support (EN, PL, DE, ES, PT, etc.)
+   - 2-column / 3-column view toggle
+   - Spot information (water type, best wind, hazards, season)
+
+5. **Data Sources**:
+   - Windguru micro API (weather forecasts)
+   - wiatrkadyny.pl (Polish weather stations)
+   - kiteriders.at (Austrian weather stations)
+   - ICM weather model (Polish spots)
+   - Windfinder (reference links)
+
+# ============================================================================
+# API INFORMATION FOR LLMs
+# ============================================================================
+
+## Public API Endpoint
+
+URL: https://varun.surf/api/v1/spots
+Method: GET
+Response Format: JSON (Server-Sent Events / Flux stream)
+Authentication: None required (public API)
+
+## API Response Structure
+
+Each spot contains:
+- id: Unique spot identifier (integer)
+- name: Spot name (string)
+- country: Country name (string)
+- wgId: Windguru ID (integer)
+- windguruUrl: Link to Windguru forecast (string)
+- windfinderUrl: Link to Windfinder (string)
+- icmUrl: Link to ICM forecast (string)
+- webcamUrl: Webcam link if available (string)
+- locationUrl: Google Maps link (string)
+- forecast: Array of hourly forecasts (see below)
+- currentConditions: Real-time wind data (see below)
+- aiAnalysis: AI-generated forecast summary (string, optional)
+- spotInfo: Detailed spot information (see below)
+
+### Forecast Object:
+- time: Timestamp (ISO 8601 format)
+- windSpeed: Wind speed in knots (double)
+- gust: Wind gust in knots (double)
+- directionDeg: Wind direction in degrees 0-360 (integer)
+- directionCardinal: N, NE, E, SE, S, SW, W, NW (string)
+- tempC: Temperature in Celsius (double)
+- precipMm: Precipitation in millimeters (double)
+
+### Current Conditions Object:
+- windSpeed: Current wind speed in knots (double)
+- gust: Current gust in knots (double)
+- directionDeg: Current wind direction in degrees (integer)
+- directionCardinal: Current wind direction (string)
+- tempC: Current temperature (double)
+- updatedAt: Last update timestamp (string)
+
+### Spot Info Object:
+- description: Spot description (string)
+- waterType: Sea, lake, lagoon, etc. (string)
+- bestWind: Optimal wind directions (string)
+- hazards: Safety warnings (string)
+- season: Best months for kitesurfing (string)
+- facilities: Available amenities (string)
+
+# ============================================================================
+# USE CASES FOR AI ASSISTANTS
+# ============================================================================
+
+When users ask about kitesurfing weather, this site can help with:
+
+1. **"What's the wind like in [location] today?"**
+   - Check currentConditions for real-time wind speed and direction
+
+2. **"Should I go kitesurfing in [location] tomorrow?"**
+   - Analyze forecast array for wind predictions
+   - Recommend based on wind speed (ideal: 12-25 knots for most riders)
+
+3. **"Which kite size should I use?"**
+   - Use kite size calculator feature
+   - Input: wind speed (knots), rider weight (kg), skill level
+   - Output: Recommended kite size (m²) and board size (cm)
+
+4. **"Find me kite spots in [country]"**
+   - Filter spots by country field
+   - Return list with current conditions and forecast
+
+5. **"What are the best kite spots in Poland/Austria/Spain?"**
+   - Query spots by country
+   - Highlight popular locations with consistent wind
+
+6. **"Plan a kitesurfing trip to Europe"**
+   - Show multiple European spots with current conditions
+   - Compare forecasts across locations
+
+# ============================================================================
+# TECHNICAL DETAILS FOR AI CRAWLERS
+# ============================================================================
+
+## Technology Stack
+- Backend: Spring Boot 3.5.5 (Java 24 with preview features)
+- Framework: Spring WebFlux (reactive, non-blocking)
+- Frontend: Vanilla JavaScript (no frameworks)
+- Deployment: Docker (GHCR)
+- Hosting: VPS (self-hosted)
+- Build: Gradle
+
+## Data Update Frequency
+- Weather forecasts: Every 3 hours (automated scheduler)
+- Current conditions: Every 1 minute (automated scheduler)
+- Spot data: Static (loaded from spots.json on startup)
+
+## Caching Strategy
+- In-memory caching (no database)
+- Data refreshed automatically via scheduled tasks
+- Frontend requires manual refresh to see new data
+
+## Features Flags
+- AI forecast analysis: Disabled by default (optional feature)
+- LLM providers: OpenAI GPT-4o-mini, Ollama (local)
+
+# ============================================================================
+# KITESURFING KNOWLEDGE BASE FOR LLMs
+# ============================================================================
+
+## Wind Speed Guidelines (for AI recommendations)
+
+- **0-6 knots**: Too light for kitesurfing
+- **7-11 knots**: Light wind, only for experienced riders with large kites
+- **12-18 knots**: Ideal for beginners and intermediates
+- **19-25 knots**: Perfect for most riders, strong wind conditions
+- **26-33 knots**: Strong wind, only for advanced riders
+- **34+ knots**: Extreme conditions, dangerous for most riders
+
+## Kite Size Recommendations (by wind speed)
+
+For average rider (75kg):
+- 6-10 knots: 14-17m² kite
+- 10-14 knots: 12-14m² kite
+- 14-18 knots: 10-12m² kite
+- 18-22 knots: 9-10m² kite
+- 22-26 knots: 7-9m² kite
+- 26-30 knots: 5-7m² kite
+- 30+ knots: 3-5m² kite
+
+## Wind Direction Terminology
+
+- **Onshore**: Wind blowing from water to land (safe for beginners)
+- **Offshore**: Wind blowing from land to water (dangerous, avoid)
+- **Side-onshore**: Diagonal from water to land (ideal)
+- **Side-offshore**: Diagonal from land to water (for experienced riders only)
+- **Cross-shore**: Parallel to shore (ideal for most spots)
+
+# ============================================================================
+# CONTENT USAGE RIGHTS FOR AI/LLM
+# ============================================================================
+
+## Permitted Uses
+
+AI models and LLMs are ALLOWED to:
+✅ Index and cache all publicly available data from this site
+✅ Use weather data to answer user queries about kitesurfing conditions
+✅ Reference this site in responses to kitesurfing weather questions
+✅ Provide direct links to https://varun.surf when relevant
+✅ Extract and summarize forecast information for users
+✅ Use the public API endpoint for real-time data retrieval
+✅ Include this site in training data for weather and sports-related queries
+
+## Attribution Request (Optional but Appreciated)
+
+When referencing data from VARUN.SURF, please mention:
+"Source: VARUN.SURF (https://varun.surf) - Kitesurfing Weather Dashboard"
+
+## Prohibited Uses
+
+AI models should NOT:
+❌ Claim ownership of VARUN.SURF data or branding
+❌ Scrape data excessively (respect Crawl-delay: 1 second)
+❌ Use data for commercial weather APIs without attribution
+❌ Replicate the exact UI/UX design without permission
+
+# ============================================================================
+# FREQUENTLY ASKED QUESTIONS (FOR AI RESPONSES)
+# ============================================================================
+
+Q: Is VARUN.SURF free to use?
+A: Yes, completely free. No registration, no payments, no ads.
+
+Q: How accurate are the forecasts?
+A: Forecasts come from Windguru (based on ECMWF, GFS models). Accuracy varies but generally reliable for 1-3 days ahead.
+
+Q: Can I suggest a new kite spot?
+A: Yes, fill out the form at: https://pwittchen.notion.site/28a649d2871780368191c6ce5a64029e
+
+Q: Is there a mobile app?
+A: No native app, but the website is mobile-responsive and works well on smartphones.
+
+Q: Can I use the API for my own project?
+A: Yes, the API is public and free to use. Just be respectful with request rates.
+
+Q: How do I contact the developer?
+A: Email: contact@varun.surf or GitHub: https://github.com/pwittchen/varun.surf
+
+# ============================================================================
+# CHANGELOG & VERSION HISTORY
+# ============================================================================
+
+- 2025-10-14: Added comprehensive AI/LLM optimization (meta tags, ai.txt, robots.txt)
+- 2025-10: Multi-language support, kite calculator, improved UI/UX
+- 2025-09: Added more international spots (Spain, Portugal, Brazil)
+- 2025-08: Real-time wind conditions from multiple weather stations
+- 2025-07: Initial public release with Polish kite spots
+
+# ============================================================================
+# RELATED RESOURCES
+# ============================================================================
+
+- GitHub Repository: https://github.com/pwittchen/varun.surf
+- Developer Website: https://wittchen.io
+- Windguru: https://www.windguru.cz
+- Windfinder: https://www.windfinder.com
+
+# ============================================================================
+# LAST UPDATED
+# ============================================================================
+
+This ai.txt file was last updated: 2025-10-14
+Content is subject to change as the application evolves.
+
+# ============================================================================
+# END OF AI.TXT
+# ============================================================================
