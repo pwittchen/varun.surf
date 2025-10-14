@@ -66,6 +66,10 @@ To view all its functions just type:
 ./deployment.sh --help
 ```
 
+## monitoring
+
+Add health.sh script to the cron, so it will monitor the app and send an email if it's down or recovered.
+
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
