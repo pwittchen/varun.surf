@@ -68,7 +68,7 @@ To view all its functions just type:
 
 ## monitoring
 
-Add health.sh script to the cron, so it will monitor the app and send an email if it's down or recovered.
+Add `health.sh` script to the cron, so it will monitor the app and send an email if it's down or recovered.
 
 ## ai forecast analysis
 
