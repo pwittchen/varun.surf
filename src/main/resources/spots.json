@@ -1408,6 +1408,72 @@
     }
   },
   {
+    "name": "Soma Bay",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/153754",
+    "windfinderUrl": "https://www.windfinder.com/forecast/soma_bay_surf_motion",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/1eJvFQ8rwT3tzHf57",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "N, NE",
+      "waterTemp": "20-28°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Resort beaches and kite stations",
+      "hazards": "Offshore wind in some areas, coral reefs, shallow sections at low tide",
+      "season": "Year-round (strongest wind March–October)",
+      "description": "World-class Red Sea spot with consistent wind, crystal-clear water, and large flat lagoons perfect for freestyle and freeride."
+    }
+  },
+  {
+    "name": "Dahab",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/12",
+    "windfinderUrl": "https://www.windfinder.com/forecast/dahab",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/81DK3nsdqTffMvNi9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, speed strip, open sea",
+      "bestWind": "N, NNW",
+      "waterTemp": "20-28°C",
+      "experience": "Beginner to Expert",
+      "launch": "Designated kite and windsurf zones along the bay",
+      "hazards": "Strong gusts outside lagoon, coral reefs, shallow entry in some areas",
+      "season": "Year-round (strongest wind April–October)",
+      "description": "Iconic Red Sea spot with strong, reliable wind and multiple zones — flat lagoon for beginners, speed strip for freestyle, and offshore waves for advanced riders."
+    }
+  },
+  {
+    "name": "Hamata",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/172696",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wadi_lahami_hamata",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/xctZhiFSgR41U65B9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, flat water, shallow",
+      "bestWind": "N, NNE",
+      "waterTemp": "20-28°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide sandy beach near kite centers",
+      "hazards": "Coral patches, shallow sections at low tide, remote location",
+      "season": "Year-round (best wind March–October)",
+      "description": "Remote and peaceful Red Sea spot known for steady wind, turquoise flat water, and wide sandy lagoons ideal for learning and freestyle sessions."
+    }
+  },
+  {
     "name": "Le Morne",
     "country": "Mauritius",
     "windguruUrl": "https://www.windguru.cz/1122030",
