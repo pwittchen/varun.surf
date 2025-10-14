@@ -1,5 +1,8 @@
 ## varun.surf 🏄
 
+[![CI](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml)
+[![DOCKER](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml)
+
 weather forecast and real-time wind conditions dashboard for kitesurfers
 
 see it online at: https://varun.surf
