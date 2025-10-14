@@ -1483,6 +1483,14 @@ body {
     .spot-header {
         margin-left: 0;
     }
+
+    .live-text {
+        display: none;
+    }
+
+    .live-indicator {
+        justify-content: center;
+    }
 }
 
 .footer {
