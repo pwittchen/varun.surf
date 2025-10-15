@@ -1,4 +1,4 @@
-name: PR Test Coverage
+name: PR-COVERAGE # generates a PR unit test coverage report
 
 on:
   workflow_run:
