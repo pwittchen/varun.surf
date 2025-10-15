@@ -1558,6 +1558,8 @@
     function setupColumnToggle() {
         const columnToggle = document.getElementById('columnToggle');
         const spotsGrid = document.getElementById('spotsGrid');
+        const icon3Columns = document.getElementById('icon3Columns');
+        const icon2Columns = document.getElementById('icon2Columns');
 
         // Detect if user is on mobile device
         const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -1571,13 +1573,25 @@
             localStorage.setItem('threeColumns', 'false');
         }
 
+        function updateIcons(isThreeColumns) {
+            if (isThreeColumns) {
+                // Show 3-column icon, hide 2-column icon
+                icon3Columns.style.display = 'block';
+                icon2Columns.style.display = 'none';
+            } else {
+                // Show 2-column icon, hide 3-column icon
+                icon3Columns.style.display = 'none';
+                icon2Columns.style.display = 'block';
+            }
+        }
+
         if (isThreeColumns) {
             spotsGrid.classList.add('three-columns');
-            columnToggle.classList.add('active');
         } else {
             spotsGrid.classList.remove('three-columns');
-            columnToggle.classList.remove('active');
         }
+
+        updateIcons(isThreeColumns);
 
         if (storedPreference === null) {
             localStorage.setItem('threeColumns', String(isThreeColumns));
@@ -1585,11 +1599,11 @@
 
         columnToggle.addEventListener('click', () => {
             spotsGrid.classList.toggle('three-columns');
-            columnToggle.classList.toggle('active');
 
             // Save preference
             const isThreeColumns = spotsGrid.classList.contains('three-columns');
             localStorage.setItem('threeColumns', String(isThreeColumns));
+            updateIcons(isThreeColumns);
         });
     }
 
