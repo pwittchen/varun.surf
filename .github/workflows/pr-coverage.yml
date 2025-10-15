@@ -1,0 +1,155 @@
+name: PR Test Coverage
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  pr-coverage:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: Build and generate coverage report
+        run: ./gradlew clean test jacocoTestReport --stacktrace
+
+      - name: Parse coverage report
+        id: coverage
+        run: |
+          # Parse JaCoCo CSV report for coverage metrics
+          if [ -f "build/reports/jacoco/test/jacocoTestReport.csv" ]; then
+            # Skip header line and sum up coverage data
+            tail -n +2 build/reports/jacoco/test/jacocoTestReport.csv | awk -F',' '
+            BEGIN {
+              total_missed_instructions = 0
+              total_covered_instructions = 0
+              total_missed_branches = 0
+              total_covered_branches = 0
+              total_missed_lines = 0
+              total_covered_lines = 0
+            }
+            {
+              total_missed_instructions += $4
+              total_covered_instructions += $5
+              total_missed_branches += $6
+              total_covered_branches += $7
+              total_missed_lines += $8
+              total_covered_lines += $9
+            }
+            END {
+              instruction_total = total_missed_instructions + total_covered_instructions
+              branch_total = total_missed_branches + total_covered_branches
+              line_total = total_missed_lines + total_covered_lines
+
+              instruction_coverage = (instruction_total > 0) ? (total_covered_instructions * 100.0 / instruction_total) : 0
+              branch_coverage = (branch_total > 0) ? (total_covered_branches * 100.0 / branch_total) : 0
+              line_coverage = (line_total > 0) ? (total_covered_lines * 100.0 / line_total) : 0
+
+              printf "instruction_coverage=%.2f\n", instruction_coverage
+              printf "branch_coverage=%.2f\n", branch_coverage
+              printf "line_coverage=%.2f\n", line_coverage
+              printf "total_instructions=%d\n", instruction_total
+              printf "covered_instructions=%d\n", total_covered_instructions
+              printf "total_branches=%d\n", branch_total
+              printf "covered_branches=%d\n", total_covered_branches
+              printf "total_lines=%d\n", line_total
+              printf "covered_lines=%d\n", total_covered_lines
+            }
+            ' >> $GITHUB_OUTPUT
+          else
+            echo "Coverage report not found!"
+            exit 1
+          fi
+
+      - name: Create coverage comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const instructionCoverage = '${{ steps.coverage.outputs.instruction_coverage }}';
+            const branchCoverage = '${{ steps.coverage.outputs.branch_coverage }}';
+            const lineCoverage = '${{ steps.coverage.outputs.line_coverage }}';
+            const totalInstructions = '${{ steps.coverage.outputs.total_instructions }}';
+            const coveredInstructions = '${{ steps.coverage.outputs.covered_instructions }}';
+            const totalBranches = '${{ steps.coverage.outputs.total_branches }}';
+            const coveredBranches = '${{ steps.coverage.outputs.covered_branches }}';
+            const totalLines = '${{ steps.coverage.outputs.total_lines }}';
+            const coveredLines = '${{ steps.coverage.outputs.covered_lines }}';
+
+            // Get PR number from the workflow_run event
+            const pulls = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${context.payload.workflow_run.head_branch}`,
+              state: 'open'
+            });
+
+            if (pulls.data.length === 0) {
+              console.log('No open PR found for this branch');
+              return;
+            }
+
+            const prNumber = pulls.data[0].number;
+
+            const comment = `## Test Coverage Report
+
+            | Metric | Coverage | Covered | Total |
+            |--------|----------|---------|-------|
+            | **Instructions** | ${instructionCoverage}% | ${coveredInstructions} | ${totalInstructions} |
+            | **Branches** | ${branchCoverage}% | ${coveredBranches} | ${totalBranches} |
+            | **Lines** | ${lineCoverage}% | ${coveredLines} | ${totalLines} |
+
+            _Coverage report generated by JaCoCo_`;
+
+            // Find existing coverage comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Test Coverage Report');
+            });
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: comment
+              });
+            }
+
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-coverage-report
+          path: build/reports/jacoco/test/html/
+          retention-days: 30
