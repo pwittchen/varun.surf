@@ -33,9 +33,9 @@ docker build -t varun-surf .
 docker run -p 8080:8080 varun-surf
 ```
 
-## docker registry
+## ghcr
 
-docker image is automatically deployed to the registry at ghcr.io via github action from the `master` branch
+docker image is automatically deployed to the registry at ghcr.io via `docker.yml` github action from the `master` branch
 
 - configure PAT (Personal Access Token) here: https://github.com/settings/tokens
 - set permissions: `write:packages`, `read:packages`
@@ -55,6 +55,11 @@ pull image and run the container:
 docker pull ghcr.io/pwittchen/varun.surf
 docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 ```
+
+## continuous integration
+
+After each push to the master or PR, new build is triggered with tests and test coverage report.
+It's done automatically via github actions `ci.yml` and `coverage.yml`
 
 ## deployment
 
