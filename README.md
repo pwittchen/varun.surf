@@ -1,6 +1,7 @@
 ## varun.surf 🏄
 
 [![CI](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml)
+[![CD](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml)
 [![DOCKER](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml)
 [![COVERAGE](https://github.com/pwittchen/varun.surf/actions/workflows/coverage.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/coverage.yml)
 
@@ -60,6 +61,11 @@ docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 
 After each push to the master or PR, new build is triggered with tests and test coverage report.
 It's done automatically via github actions `ci.yml` and `coverage.yml`
+
+## continuous delivery
+
+After each tag push with `v` prefix, `cd.yml` github action is triggered, 
+and this action deploys the latest version of the app to the VPS.
 
 ## deployment
 
