@@ -1,0 +1,21 @@
+name: CD # deploys the latest version of the application to the server
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Mikrus deployment command
+        env:
+          MIKRUS_API_KEY: ${{ secrets.MIKRUS_API_KEY }}
+          MIKRUS_SRV: ${{ secrets.MIKRUS_SRV }}
+          MIKRUS_SCRIPT_PATH: ${{ secrets.MIKRUS_SCRIPT_PATH }}
+        run: |
+          curl -X POST \
+            -d "srv=${MIKRUS_SRV}&key=${MIKRUS_API_KEY}" \
+            -d "cmd=${MIKRUS_SCRIPT_PATH}/deployment.sh --reload" \
+            https://api.mikr.us/exec
