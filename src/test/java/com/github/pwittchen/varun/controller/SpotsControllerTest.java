@@ -197,8 +197,8 @@ class SpotsControllerTest {
     }
 
     private List<Spot> createMockSpots() {
-        SpotInfo spotInfo1 = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot");
-        SpotInfo spotInfo2 = new SpotInfo("Lake", "N, NW", "20-24°C", "Beginner", "grass", "rocks", "Summer", "Flat water");
+        SpotInfo spotInfo1 = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
+        SpotInfo spotInfo2 = new SpotInfo("Lake", "N, NW", "20-24°C", "Beginner", "grass", "rocks", "Summer", "Flat water", "");
 
         Spot spot1 = new Spot(
                 "Jastarnia",
@@ -236,7 +236,7 @@ class SpotsControllerTest {
     }
 
     private List<Spot> createMockSpotsWithForecasts() {
-        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot");
+        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
         List<Forecast> forecasts = List.of(
                 new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5),
                 new Forecast("Tomorrow", 10.0, 15.0, "W", 14.0, 1.0)
@@ -262,7 +262,7 @@ class SpotsControllerTest {
     }
 
     private List<Spot> createMockSpotsWithCurrentConditions() {
-        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot");
+        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
         CurrentConditions currentConditions = new CurrentConditions(
                 "2025-01-15 14:30",
                 15,
@@ -291,7 +291,7 @@ class SpotsControllerTest {
     }
 
     private Spot createSingleMockSpot(String name, String country, int wgId) {
-        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot");
+        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
 
         return new Spot(
                 name,
@@ -311,7 +311,7 @@ class SpotsControllerTest {
     }
 
     private Spot createMockSpotWithCompleteData() {
-        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot");
+        SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
 
         List<Forecast> forecasts = List.of(
                 new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5),
