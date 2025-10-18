@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public record SpotInfo(
         String type,
         String bestWind,
@@ -8,6 +10,8 @@ public record SpotInfo(
         String launch,
         String hazards,
         String season,
-        String description
+        String description,
+        @JsonIgnore
+        String llmComment
 ) {
 }

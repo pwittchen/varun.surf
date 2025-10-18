@@ -10,7 +10,7 @@ import java.time.Duration;
 
 @Service
 public class AiService {
-    private final static String PROMPT = """
+    private static final String PROMPT_TEMPLATE = """
             SYSTEM:
             You are a professional kitesurfing weather analyst.
             You analyze wind, waves, temperature and forecast data for kitesurfers.
@@ -31,7 +31,7 @@ public class AiService {
             - 28+ kts: use a very small kite (5–6-7 m²) or consider safety limits.
 
             Be objective and concise — avoid emojis and filler words.
-
+            %s
             USER:
             Spot name: %s
             Country: %s
@@ -55,9 +55,12 @@ public class AiService {
         if (spot.name().isEmpty() || spot.country().isEmpty() || spot.forecast().isEmpty()) {
             return Mono.empty();
         }
+
+        String prompt = buildPrompt(spot);
+
         return chatClient
                 .prompt()
-                .user(String.format(PROMPT, spot.name(), spot.country(), gson.toJson(spot.forecast())))
+                .user(prompt)
                 .stream()
                 .content()
                 .delayElements(Duration.ofSeconds(1))
@@ -65,5 +68,24 @@ public class AiService {
                 .retry(3)
                 .collectList()
                 .map(list -> String.join("", list));
+    }
+
+    private String buildPrompt(Spot spot) {
+        return String.format(
+                PROMPT_TEMPLATE,
+                buildCustomContext(spot),
+                spot.name(),
+                spot.country(),
+                gson.toJson(spot.forecast())
+        );
+    }
+
+    private String buildCustomContext(Spot spot) {
+        if (spot.spotInfo() != null &&
+            spot.spotInfo().llmComment() != null &&
+            !spot.spotInfo().llmComment().isEmpty()) {
+            return String.format("\n\nADDITIONAL SPOT-SPECIFIC CONTEXT:\n%s\n", spot.spotInfo().llmComment());
+        }
+        return "";
     }
 }

@@ -18,7 +18,8 @@
       "launch": "Sandy Beach",
       "hazards": "Shallow areas, swimmers in summer, fishing nets",
       "season": "May-October",
-      "description": "Popular spot on the Hel Peninsula with shallow lagoon and open sea side."
+      "description": "Popular spot on the Hel Peninsula with shallow lagoon and open sea side.",
+      "llmComment": ""
     }
   },
   {
@@ -40,7 +41,8 @@
       "launch": "Grass or sandy beach",
       "hazards": "Crowded in summer",
       "season": "May-September",
-      "description": "Well-known village spot with strong kitesurfing community and schools."
+      "description": "Well-known village spot with strong kitesurfing community and schools.",
+      "llmComment": ""
     }
   },
   {
@@ -62,7 +64,8 @@
       "launch": "Sandy Beach",
       "hazards": "Currents outside lagoon",
       "season": "May-October",
-      "description": "Famous spit in Puck Bay dividing shallow lagoon from deeper waters."
+      "description": "Famous spit in Puck Bay dividing shallow lagoon from deeper waters.",
+      "llmComment": ""
     }
   },
   {
@@ -84,7 +87,8 @@
       "launch": "Grass and small sandy beach",
       "hazards": "Fishing nets, shallow water",
       "season": "May-September",
-      "description": "Small village spot on Hel with shallow, safe lagoon area. There's paid car parking area."
+      "description": "Small village spot on Hel with shallow, safe lagoon area. There's paid car parking area.",
+      "llmComment": ""
     }
   },
   {
@@ -106,7 +110,8 @@
       "launch": "Marina and sandy beach",
       "hazards": "Port nearby, may be busy in summer",
       "season": "May-September",
-      "description": "Town spot at the bottom of Puck Bay with easy access and small sandy beach."
+      "description": "Town spot at the bottom of Puck Bay with easy access and small sandy beach.",
+      "llmComment": ""
     }
   },
   {
@@ -128,7 +133,8 @@
       "launch": "Sandy Beach on the sea side, concrete and limited launch area on the lagoon",
       "hazards": "Crowds in summer, small launch area on the lagoon side, old torpedo tower in the middle of the lagoon",
       "season": "May-September",
-      "description": "Lagoon side for flat water, Baltic side for waves."
+      "description": "Lagoon side for flat water, Baltic side for waves.",
+      "llmComment": ""
     }
   },
   {
@@ -150,7 +156,8 @@
       "launch": "Wide sandy beach",
       "hazards": "",
       "season": "May-September",
-      "description": "Baltic Sea spot with wave riding potential and lagoon on the other side."
+      "description": "Baltic Sea spot with wave riding potential and lagoon on the other side.",
+      "llmComment": ""
     }
   },
   {
@@ -172,7 +179,8 @@
       "launch": "Sandy beach",
       "hazards": "Shallow and muddy bottom",
       "season": "May-September",
-      "description": "Flat water spot on the Vistula Lagoon, quiet and less crowded."
+      "description": "Flat water spot on the Vistula Lagoon, quiet and less crowded.",
+      "llmComment": ""
     }
   },
   {
@@ -194,7 +202,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Strong waves, currents",
       "season": "May-September",
-      "description": "Wave spot on the Baltic coast with the big, wide sandy beach and campsite nearby."
+      "description": "Wave spot on the Baltic coast with the big, wide sandy beach and campsite nearby.",
+      "llmComment": ""
     }
   },
   {
@@ -216,7 +225,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Currents, tourists in summer",
       "season": "May-September",
-      "description": "Baltic Sea wave spot, less crowded than Łeba or Jastrzębia Góra."
+      "description": "Baltic Sea wave spot, less crowded than Łeba or Jastrzębia Góra.",
+      "llmComment": ""
     }
   },
   {
@@ -238,7 +248,8 @@
       "launch": "Steep sandy beach",
       "hazards": "Cliffs, strong currents, shorebreak",
       "season": "May-September",
-      "description": "Challenging wave spot under cliffs, suitable only for experienced kiters."
+      "description": "Challenging wave spot under cliffs, suitable only for experienced kiters.",
+      "llmComment": ""
     }
   },
   {
@@ -260,7 +271,8 @@
       "launch": "Sandy beach",
       "hazards": "Breakwaters, swimmers",
       "season": "May-September",
-      "description": "Wave spot on the east Baltic coast, wide beach but often crowded."
+      "description": "Wave spot on the east Baltic coast, wide beach but often crowded.",
+      "llmComment": ""
     }
   },
   {
@@ -282,7 +294,8 @@
       "launch": "Very wide sandy beach",
       "hazards": "Crowds in summer",
       "season": "May-September",
-      "description": "One of the widest beaches in Poland, good for wave riding."
+      "description": "One of the widest beaches in Poland, good for wave riding.",
+      "llmComment": ""
     }
   },
   {
@@ -304,7 +317,8 @@
       "launch": "Beaches and lagoon areas",
       "hazards": "Shallow areas, seaweed, gusty winds near forest",
       "season": "May-September",
-      "description": "Polish island on the Baltic, flat water lagoons and open sea. Good summer spot with variable wind directions."
+      "description": "Polish island on the Baltic, flat water lagoons and open sea. Good summer spot with variable wind directions.",
+      "llmComment": ""
     }
   },
   {
@@ -326,7 +340,8 @@
       "launch": "Grass field / meadow",
       "hazards": "Variable gusty winds, trees on the shore, narrow entrance to the water, wind shadows in the entrance with eastern winds, rocky bottom on the left from the entrance",
       "season": "April-October",
-      "description": "Large reservoir in Silesia, one of the best kite spots in the southern Poland."
+      "description": "Large reservoir in Silesia, one of the best kite spots in the southern Poland.",
+      "llmComment": "The best wind is SW, S is also good, but we can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water"
     }
   },
   {
@@ -348,7 +363,8 @@
       "launch": "Small beaches",
       "hazards": "Trees on shore, gusty wind, wind shadow behind the pier",
       "season": "April-October",
-      "description": "Opole region lake popular with local windsurfers and kiters."
+      "description": "Opole region lake popular with local windsurfers and kiters.",
+      "llmComment": ""
     }
   },
   {
@@ -370,7 +386,8 @@
       "launch": "Shore access",
       "hazards": "Mountains cause gusts, small area for the launch, wind shadows during the launch and behind the port, current from the river",
       "season": "April-October",
-      "description": "Mountain river transforming into the lake with gusty but strong wind, used by local kiters. It's possible to kitesurf there with the pure southern winds only (S). Wind blows between the mountains causing Venturi Effect. Therefore wind can be 8-10 knots stronger than the predicted forecast."
+      "description": "Mountain river transforming into the lake with gusty but strong wind, used by local kiters. It's possible to kitesurf there with the pure southern winds only (S). Wind blows between the mountains causing Venturi Effect. Therefore wind can be 8-10 knots stronger than the predicted forecast.",
+      "llmComment": "kitesurfing is possible only with the S wind causing venturi effect. When S wind is blowing it is usually at least 5-10 knots stronger than the predicted forecast"
     }
   },
   {
@@ -392,7 +409,8 @@
       "launch": "Grass and small beaches",
       "hazards": "Gusty winds, small launch area, trees near the shore",
       "season": "April-October",
-      "description": "Large lake near Wrocław, popular for water sports."
+      "description": "Large lake near Wrocław, popular for water sports.",
+      "llmComment": ""
     }
   },
   {
@@ -414,7 +432,8 @@
       "launch": "Small beach",
       "hazards": "Trees on shore, swimmers, gusty winds",
       "season": "April-September",
-      "description": "Lakes in Dąbrowa Górnicza. The best lakes for kiting there are Pogoria III and Pogoria IV."
+      "description": "Lakes in Dąbrowa Górnicza. The best lakes for kiting there are Pogoria III and Pogoria IV.",
+      "llmComment": ""
     }
   },
   {
@@ -436,7 +455,8 @@
       "launch": "Small beach",
       "hazards": "Swimmers in summer, gusty wind, trees near the shore.",
       "season": "April-September",
-      "description": "Lake in Silesia with clean water, suitable for local kite sessions.  it's possible to kite there comfortably with the pure western (W) wind only."
+      "description": "Lake in Silesia with clean water, suitable for local kite sessions.  it's possible to kite there comfortably with the pure western (W) wind only.",
+      "llmComment": ""
     }
   },
   {
@@ -458,7 +478,8 @@
       "launch": "Small beach",
       "hazards": "Swimmers in summer, gusty wind, trees near the shore, fishermen, possible issues with the water cleanliness. The best wind is NW, but we can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water",
       "season": "April-September",
-      "description": "Lake near the Gliwice"
+      "description": "Lake near the Gliwice",
+      "llmComment": "Kitesurfing on the beach spot is possible only with the NW wind. You can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water."
     }
   },
   {
@@ -480,7 +501,8 @@
       "launch": "Grass field / meadow",
       "hazards": "Trees near the shore, wind shadows during the entrance, pier, concrete elements",
       "season": "April-September",
-      "description": "Lake near the Rybnik."
+      "description": "Lake near the Rybnik.",
+      "llmComment": ""
     }
   },
   {
@@ -502,7 +524,8 @@
       "launch": "Grassy beaches",
       "hazards": "Variable winds, fishermen",
       "season": "April-October",
-      "description": "Biggest reservoir in central Poland, good winds and large area. Depending on the wind direction, we can choose spots on two sides of the lake - Popów or Zaspy"
+      "description": "Biggest reservoir in central Poland, good winds and large area. Depending on the wind direction, we can choose spots on two sides of the lake - Popów or Zaspy",
+      "llmComment": ""
     }
   },
   {
@@ -524,7 +547,8 @@
       "launch": "Wide grassy beaches",
       "hazards": "Very shallow, muddy bottom, may be gusty",
       "season": "April-October",
-      "description": "One of the most famous inland kite spots in Europe with shallow water and strong, reliable wind. During the season, you need to pay for the entrance to the spot or use burgenland karte offered bye some hotels."
+      "description": "One of the most famous inland kite spots in Europe with shallow water and strong, reliable wind. During the season, you need to pay for the entrance to the spot or use burgenland karte offered bye some hotels.",
+      "llmComment": ""
     }
   },
   {
@@ -546,7 +570,8 @@
       "launch": "Grassy area",
       "hazards": "Mud flats, shallow water",
       "season": "April-October",
-      "description": "Quiet alternative to Podersdorf with same shallow water conditions."
+      "description": "Quiet alternative to Podersdorf with same shallow water conditions.",
+      "llmComment": ""
     }
   },
   {
@@ -568,7 +593,8 @@
       "launch": "Grass field / meadow",
       "hazards": "Shallow and muddy water, deep water near port",
       "season": "May-September",
-      "description": "Flat water paradise in the Curonian Lagoon with famous Fenas kite spot, very popular in Baltic region. We have campsite for tents and campers here. There is also marina with modern houses for the rent."
+      "description": "Flat water paradise in the Curonian Lagoon with famous Fenas kite spot, very popular in Baltic region. We have campsite for tents and campers here. There is also marina with modern houses for the rent.",
+      "llmComment": ""
     }
   },
   {
@@ -590,7 +616,8 @@
       "launch": "Grass shore",
       "hazards": "Variable wind",
       "season": "April-September",
-      "description": "Inland Czech lake spot, calm and good for practice. Two spots - Sejki Beach and Mala Laguna, which we can choose depending on the wind direction."
+      "description": "Inland Czech lake spot, calm and good for practice. Two spots - Sejki Beach and Mala Laguna, which we can choose depending on the wind direction.",
+      "llmComment": ""
     }
   },
   {
@@ -612,7 +639,8 @@
       "launch": "Grass shore",
       "hazards": "Variable wind",
       "season": "April-September",
-      "description": "Inland Czech lake spot. Depending on the wind direction, we can choose spot near Žluťák, Yacht Club (south) or Kitespot u drátů (north)"
+      "description": "Inland Czech lake spot. Depending on the wind direction, we can choose spot near Žluťák, Yacht Club (south) or Kitespot u drátů (north)",
+      "llmComment": ""
     }
   },
   {
@@ -634,7 +662,8 @@
       "launch": "Sandy and grass beaches",
       "hazards": "Shallow, muddy bottom",
       "season": "March-November",
-      "description": "World-famous flat water lagoon in Sicily, ideal for freestyle training."
+      "description": "World-famous flat water lagoon in Sicily, ideal for freestyle training.",
+      "llmComment": ""
     }
   },
   {
@@ -656,7 +685,8 @@
       "launch": "Sandy lagoon shore",
       "hazards": "Shallow, fishing boats",
       "season": "April-October",
-      "description": "Sardinia’s flat water paradise, reliable mistral wind."
+      "description": "Sardinia’s flat water paradise, reliable mistral wind.",
+      "llmComment": ""
     }
   },
   {
@@ -678,7 +708,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Can be very crowded",
       "season": "April-October",
-      "description": "One of the most iconic kite bays in Sardinia with reliable wind."
+      "description": "One of the most iconic kite bays in Sardinia with reliable wind.",
+      "llmComment": ""
     }
   },
   {
@@ -700,7 +731,8 @@
       "launch": "Lake shore beaches",
       "hazards": "Changing winds, mountains",
       "season": "April-September",
-      "description": "Beautiful alpine lake spot with reliable thermal winds. Wind will be stronger than in the global forecast due to the mountain region. It works mostly during the summer due to the termal winds."
+      "description": "Beautiful alpine lake spot with reliable thermal winds. Wind will be stronger than in the global forecast due to the mountain region. It works mostly during the summer due to the termal winds.",
+      "llmComment": ""
     }
   },
   {
@@ -722,7 +754,8 @@
       "launch": "Long sandy beach",
       "hazards": "Very strong wind, crowds",
       "season": "Year-round",
-      "description": "Kitesurf capital of Europe with powerful Levante and a bit lighter Poniente winds. There are a few kite spots: Balneario (small, for pros, no rescue), Rio Jara (wide beach, rescue boats), and Valdevaqueros. It's recommended to buy Sea Rescue package in case of riding in Levante wind. When the wind is too strong (over 40 kts) and your are not professional big air kitesurfer, it's recommended to visit Palmones spot, where wind will be around 20-25 kts at the same time."
+      "description": "Kitesurf capital of Europe with powerful Levante and a bit lighter Poniente winds. There are a few kite spots: Balneario (small, for pros, no rescue), Rio Jara (wide beach, rescue boats), and Valdevaqueros. It's recommended to buy Sea Rescue package in case of riding in Levante wind. When the wind is too strong (over 40 kts) and your are not professional big air kitesurfer, it's recommended to visit Palmones spot, where wind will be around 20-25 kts at the same time.",
+      "llmComment": ""
     }
   },
   {
@@ -744,7 +777,8 @@
       "launch": "Sandy river delta",
       "hazards": "Currents, tides",
       "season": "Year-round",
-      "description": "Flat water alternative to Tarifa during strong Levante wind."
+      "description": "Flat water alternative to Tarifa during strong Levante wind.",
+      "llmComment": ""
     }
   },
   {
@@ -766,7 +800,8 @@
       "launch": "Sandy beach",
       "hazards": "Strong waves, rocky areas",
       "season": "Year-round",
-      "description": "Wave spot near Tarifa, good alternative when Tarifa is too strong."
+      "description": "Wave spot near Tarifa, good alternative when Tarifa is too strong.",
+      "llmComment": ""
     }
   },
   {
@@ -788,7 +823,8 @@
       "launch": "Sandy lagoon beaches",
       "hazards": "Shallow areas, seaweed",
       "season": "March-November",
-      "description": "Huge flat water lagoon, great for freestyle and beginners."
+      "description": "Huge flat water lagoon, great for freestyle and beginners.",
+      "llmComment": ""
     }
   },
   {
@@ -810,7 +846,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Waves, shorebreak, rocks on downwind side",
       "season": "Year-round (best June-September)",
-      "description": "World-famous Canarian spot, reliable trade winds, mix of chop and waves. Popular for both windsurfing and kitesurfing."
+      "description": "World-famous Canarian spot, reliable trade winds, mix of chop and waves. Popular for both windsurfing and kitesurfing.",
+      "llmComment": ""
     }
   },
   {
@@ -832,7 +869,8 @@
       "launch": "Long sandy beach, lagoon areas",
       "hazards": "Strong gusts, tides affect lagoon size",
       "season": "March-October (peak in summer)",
-      "description": "Huge sandy lagoon with offshore winds and tidal pools. Famous kitesurfing venue, home to World Cup events."
+      "description": "Huge sandy lagoon with offshore winds and tidal pools. Famous kitesurfing venue, home to World Cup events.",
+      "llmComment": ""
     }
   },
   {
@@ -854,7 +892,8 @@
       "launch": "Sandy beach with reef nearby",
       "hazards": "Reefs, rocks, shorebreak",
       "season": "Year-round (best May-September)",
-      "description": "Popular Fuerteventura spot near Corralejo dunes. Good trade winds, clear water, mix of flat sections and waves."
+      "description": "Popular Fuerteventura spot near Corralejo dunes. Good trade winds, clear water, mix of flat sections and waves.",
+      "llmComment": ""
     }
   },
   {
@@ -876,7 +915,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Strong shorebreak, big waves, rocks, currents",
       "season": "April-October",
-      "description": "World-class wave spot near Lisbon, powered by strong Nortada winds."
+      "description": "World-class wave spot near Lisbon, powered by strong Nortada winds.",
+      "llmComment": ""
     }
   },
   {
@@ -898,7 +938,8 @@
       "launch": "Sandy beaches",
       "hazards": "Changing sandbanks",
       "season": "April-October",
-      "description": "Flat water lagoon north of Lisbon, very good for freestyle."
+      "description": "Flat water lagoon north of Lisbon, very good for freestyle.",
+      "llmComment": ""
     }
   },
   {
@@ -920,7 +961,8 @@
       "launch": "Wide sandy beach",
       "hazards": "Strong shorebreak",
       "season": "April-October",
-      "description": "Strong Nortada wind, excellent wave and freestyle conditions."
+      "description": "Strong Nortada wind, excellent wave and freestyle conditions.",
+      "llmComment": ""
     }
   },
   {
@@ -942,7 +984,8 @@
       "launch": "Sandy beach",
       "hazards": "Waves, swimmers",
       "season": "April-October",
-      "description": "Close to Lisbon, long sandy beach with strong Nortada winds."
+      "description": "Close to Lisbon, long sandy beach with strong Nortada winds.",
+      "llmComment": ""
     }
   },
   {
@@ -964,7 +1007,8 @@
       "launch": "Sandy beaches",
       "hazards": "Strong waves",
       "season": "April-October",
-      "description": "World-famous surf town with strong wind and wave conditions."
+      "description": "World-famous surf town with strong wind and wave conditions.",
+      "llmComment": ""
     }
   },
   {
@@ -986,7 +1030,8 @@
       "launch": "Sandy beach",
       "hazards": "Massive waves, dangerous currents",
       "season": "Year-round",
-      "description": "Home of the world’s biggest waves, extreme spot only for experts."
+      "description": "Home of the world’s biggest waves, extreme spot only for experts.",
+      "llmComment": ""
     }
   },
   {
@@ -1008,7 +1053,8 @@
       "launch": "Sandy beaches, lagoons",
       "hazards": "Variable waves",
       "season": "April-October",
-      "description": "Southern Portugal coast with variety of flat lagoons and wave beaches."
+      "description": "Southern Portugal coast with variety of flat lagoons and wave beaches.",
+      "llmComment": ""
     }
   },
   {
@@ -1030,7 +1076,8 @@
       "launch": "Mudflats and beach",
       "hazards": "Tides, currents",
       "season": "April-October",
-      "description": "North Sea spot with tides, good waves during storms."
+      "description": "North Sea spot with tides, good waves during storms.",
+      "llmComment": ""
     }
   },
   {
@@ -1052,7 +1099,8 @@
       "launch": "Massive sandy beach",
       "hazards": "Tides",
       "season": "April-October",
-      "description": "One of Europe’s largest beaches, kiting mecca in Germany."
+      "description": "One of Europe’s largest beaches, kiting mecca in Germany.",
+      "llmComment": ""
     }
   },
   {
@@ -1074,7 +1122,8 @@
       "launch": "Sandy beach",
       "hazards": "Strong waves, currents",
       "season": "April-October",
-      "description": "Germany’s wave capital, hosting world cup windsurf/kitesurf events."
+      "description": "Germany’s wave capital, hosting world cup windsurf/kitesurf events.",
+      "llmComment": ""
     }
   },
   {
@@ -1096,7 +1145,8 @@
       "launch": "Massive sandy beach",
       "hazards": "Tides, cars on beach",
       "season": "April-October",
-      "description": "Huge tidal beach, perfect for freeride and buggy/kite landboarding too. Water close to the shore is flat and shallow. Further we can expect small to medium waves. You can drive the car on the beach. The beach itself is MASSIVE!"
+      "description": "Huge tidal beach, perfect for freeride and buggy/kite landboarding too. Water close to the shore is flat and shallow. Further we can expect small to medium waves. You can drive the car on the beach. The beach itself is MASSIVE!",
+      "llmComment": ""
     }
   },
   {
@@ -1118,7 +1168,8 @@
       "launch": "Grass and sandy areas",
       "hazards": "Fishing nets, shallow areas, big waves and currents on the North Sea",
       "season": "April-October",
-      "description": "Flat water paradise on the fjord side, perfect for freestyle, big waves on the North Sea."
+      "description": "Flat water paradise on the fjord side, perfect for freestyle, big waves on the North Sea.",
+      "llmComment": ""
     }
   },
   {
@@ -1140,7 +1191,8 @@
       "launch": "Sandy beaches, grass field / meadow on the Fjord side",
       "hazards": "Tides, fishing nets, big waves and currents on the North Sea",
       "season": "April-October",
-      "description": "Versatile spot: flat water in fjord, North Sea with big waves on the sea side."
+      "description": "Versatile spot: flat water in fjord, North Sea with big waves on the sea side.",
+      "llmComment": ""
     }
   },
   {
@@ -1162,7 +1214,8 @@
       "launch": "Grass fields",
       "hazards": "Shallow areas",
       "season": "April-October",
-      "description": "Quiet flat water spot on Ringkøbing Fjord, less crowded than Hvide Sande. Nice for the freestyle riding and big air, but be careful about the shallow water areas. There are small cottages (Hyttas) on the spot"
+      "description": "Quiet flat water spot on Ringkøbing Fjord, less crowded than Hvide Sande. Nice for the freestyle riding and big air, but be careful about the shallow water areas. There are small cottages (Hyttas) on the spot",
+      "llmComment": ""
     }
   },
   {
@@ -1184,7 +1237,8 @@
       "launch": "Sandy beach",
       "hazards": "Strong waves, currents on the sea, shallow areas on the fjord side",
       "season": "April-October",
-      "description": "Powerful wave spot on the Danish west coast with flat water spot on the other side."
+      "description": "Powerful wave spot on the Danish west coast with flat water spot on the other side.",
+      "llmComment": ""
     }
   },
   {
@@ -1206,7 +1260,8 @@
       "launch": "Sandy beach",
       "hazards": "Strong waves",
       "season": "April-October",
-      "description": "Known as ‘Cold Hawaii’, one of Denmark’s most famous surf towns."
+      "description": "Known as ‘Cold Hawaii’, one of Denmark’s most famous surf towns.",
+      "llmComment": ""
     }
   },
   {
@@ -1228,7 +1283,8 @@
       "launch": "Sandy beach",
       "hazards": "Cold water, strong waves",
       "season": "April-October",
-      "description": "The heart of ‘Cold Hawaii’, world-famous wave riding spot."
+      "description": "The heart of ‘Cold Hawaii’, world-famous wave riding spot.",
+      "llmComment": ""
     }
   },
   {
@@ -1250,7 +1306,8 @@
       "launch": "Lake shore",
       "hazards": "Cold water, altitude",
       "season": "June-September",
-      "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds."
+      "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds.",
+      "llmComment": ""
     }
   },
   {
@@ -1272,7 +1329,8 @@
       "launch": "Sandy beaches",
       "hazards": "Strong offshore wind in lagoon",
       "season": "Year-round",
-      "description": "Southern France spot famous for strong Tramontane wind."
+      "description": "Southern France spot famous for strong Tramontane wind.",
+      "llmComment": ""
     }
   },
   {
@@ -1294,7 +1352,8 @@
       "launch": "Sandy beach",
       "hazards": "Breakwaters, currents",
       "season": "April-October",
-      "description": "Dutch North Sea spot with strong winds and good wave conditions."
+      "description": "Dutch North Sea spot with strong winds and good wave conditions.",
+      "llmComment": ""
     }
   },
   {
@@ -1316,7 +1375,8 @@
       "launch": "Sandy beach",
       "hazards": "Crowded, breakwaters",
       "season": "April-October",
-      "description": "The Hague’s beach spot, popular for wave kiting and events."
+      "description": "The Hague’s beach spot, popular for wave kiting and events.",
+      "llmComment": ""
     }
   },
   {
@@ -1338,7 +1398,8 @@
       "launch": "Sandy beach",
       "hazards": "Shallow areas",
       "season": "May-September",
-      "description": "Croatia’s flat water lagoon with reliable afternoon thermals."
+      "description": "Croatia’s flat water lagoon with reliable afternoon thermals.",
+      "llmComment": ""
     }
   },
   {
@@ -1360,7 +1421,8 @@
       "launch": "Sandy spit",
       "hazards": "Strong wind, waves on sea side",
       "season": "June-September",
-      "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side."
+      "description": "Unique double-side spot on Rhodes: flat lagoon vs waves on sea side.",
+      "llmComment": ""
     }
   },
   {
@@ -1382,7 +1444,8 @@
       "launch": "Wide sandy shores",
       "hazards": "Strong offshore wind in places",
       "season": "Year-round",
-      "description": "World-class kitesurfing destination with flat lagoon and Atlantic waves. From the main spot, you can do the downwind to White Dune or the Speed Spot."
+      "description": "World-class kitesurfing destination with flat lagoon and Atlantic waves. From the main spot, you can do the downwind to White Dune or the Speed Spot.",
+      "llmComment": ""
     }
   },
   {
@@ -1404,7 +1467,8 @@
       "launch": "Resort beaches",
       "hazards": "Coral reefs (water boots recommended), shallow areas",
       "season": "Year-round",
-      "description": "Red Sea spot with reliable winds and perfect lagoons."
+      "description": "Red Sea spot with reliable winds and perfect lagoons.",
+      "llmComment": ""
     }
   },
   {
@@ -1426,7 +1490,8 @@
       "launch": "Resort beaches and kite stations",
       "hazards": "Offshore wind in some areas, coral reefs, shallow sections at low tide",
       "season": "Year-round (strongest wind March–October)",
-      "description": "World-class Red Sea spot with consistent wind, crystal-clear water, and large flat lagoons perfect for freestyle and freeride."
+      "description": "World-class Red Sea spot with consistent wind, crystal-clear water, and large flat lagoons perfect for freestyle and freeride.",
+      "llmComment": ""
     }
   },
   {
@@ -1448,7 +1513,8 @@
       "launch": "Designated kite and windsurf zones along the bay",
       "hazards": "Strong gusts outside lagoon, coral reefs, shallow entry in some areas",
       "season": "Year-round (strongest wind April–October)",
-      "description": "Iconic Red Sea spot with strong, reliable wind and multiple zones — flat lagoon for beginners, speed strip for freestyle, and offshore waves for advanced riders."
+      "description": "Iconic Red Sea spot with strong, reliable wind and multiple zones — flat lagoon for beginners, speed strip for freestyle, and offshore waves for advanced riders.",
+      "llmComment": ""
     }
   },
   {
@@ -1470,7 +1536,8 @@
       "launch": "Wide sandy beach near kite centers",
       "hazards": "Coral patches, shallow sections at low tide, remote location",
       "season": "Year-round (best wind March–October)",
-      "description": "Remote and peaceful Red Sea spot known for steady wind, turquoise flat water, and wide sandy lagoons ideal for learning and freestyle sessions."
+      "description": "Remote and peaceful Red Sea spot known for steady wind, turquoise flat water, and wide sandy lagoons ideal for learning and freestyle sessions.",
+      "llmComment": ""
     }
   },
   {
@@ -1492,7 +1559,8 @@
       "launch": "Lagoon beach",
       "hazards": "Reef, currents",
       "season": "May-November",
-      "description": "One of the most iconic kite spots worldwide, mix of flat lagoon and huge reef waves."
+      "description": "One of the most iconic kite spots worldwide, mix of flat lagoon and huge reef waves.",
+      "llmComment": ""
     }
   },
   {
@@ -1514,7 +1582,8 @@
       "launch": "Sandy beaches",
       "hazards": "Strong waves, reefs",
       "season": "November-May",
-      "description": "Cape Verde’s Sal island is legendary for wave kiting and freestyle."
+      "description": "Cape Verde’s Sal island is legendary for wave kiting and freestyle.",
+      "llmComment": ""
     }
   },
   {
@@ -1536,7 +1605,8 @@
       "launch": "Beach & lagoons",
       "hazards": "Strong waves, fishing nets",
       "season": "July-December",
-      "description": "Brazilian hotspot with strong steady trades and both waves and flat lagoons."
+      "description": "Brazilian hotspot with strong steady trades and both waves and flat lagoons.",
+      "llmComment": ""
     }
   },
   {
@@ -1558,7 +1628,8 @@
       "launch": "Sandy beaches",
       "hazards": "Tides, shifting sandbanks",
       "season": "July-December",
-      "description": "Flat lagoon and wave conditions, quiet alternative to Jericoacoara."
+      "description": "Flat lagoon and wave conditions, quiet alternative to Jericoacoara.",
+      "llmComment": ""
     }
   },
   {
@@ -1580,7 +1651,8 @@
       "launch": "Sandbanks",
       "hazards": "Tides, shallow areas",
       "season": "July-December",
-      "description": "Brazil’s flat water paradise, reliable winds and wide lagoon."
+      "description": "Brazil’s flat water paradise, reliable winds and wide lagoon.",
+      "llmComment": ""
     }
   },
   {
@@ -1602,7 +1674,8 @@
       "launch": "Sandy beach",
       "hazards": "Reefs, strong waves",
       "season": "July-December",
-      "description": "Brazil’s best wave spot, consistent wind and reef breaks."
+      "description": "Brazil’s best wave spot, consistent wind and reef breaks.",
+      "llmComment": ""
     }
   },
   {
@@ -1624,7 +1697,8 @@
       "launch": "Sandy beach",
       "hazards": "Cold water, waves",
       "season": "October-March",
-      "description": "Chilean wave spot with powerful Pacific swell."
+      "description": "Chilean wave spot with powerful Pacific swell.",
+      "llmComment": ""
     }
   },
   {
@@ -1646,7 +1720,8 @@
       "launch": "Sandy beach",
       "hazards": "Cold water, currents",
       "season": "April-November",
-      "description": "One of the longest wave rides in the world, perfect for wave kiting."
+      "description": "One of the longest wave rides in the world, perfect for wave kiting.",
+      "llmComment": ""
     }
   },
   {
@@ -1668,7 +1743,8 @@
       "launch": "Sandy bay",
       "hazards": "Dust storms, gusty winds",
       "season": "Year-round",
-      "description": "Huge bay with steady desert winds, flat water and waves."
+      "description": "Huge bay with steady desert winds, flat water and waves.",
+      "llmComment": ""
     }
   },
   {
@@ -1690,7 +1766,8 @@
       "launch": "River beaches",
       "hazards": "Currents, obstacles",
       "season": "April-September",
-      "description": "Legendary US spot in Columbia River Gorge, strong thermal winds. Works mostly in the summer."
+      "description": "Legendary US spot in Columbia River Gorge, strong thermal winds. Works mostly in the summer.",
+      "llmComment": ""
     }
   }
 ]

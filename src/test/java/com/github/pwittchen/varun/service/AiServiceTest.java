@@ -232,6 +232,49 @@ class AiServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldIncludeLlmCommentInPromptWhenProvided() {
+        // given
+        var forecast = createForecast();
+        var spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "Wind is usually stronger than forecast due to thermal effect from nearby mountains.");
+        var spot = createSpotWithInfo("Hel", "Poland", List.of(forecast), spotInfo);
+
+        when(chatClient.prompt()).thenReturn(requestSpec);
+        when(requestSpec.user(anyString())).thenReturn(requestSpec);
+        when(requestSpec.stream()).thenReturn(streamSpec);
+        when(streamSpec.content()).thenReturn(Flux.just("Response"));
+
+        // when
+        aiService.fetchAiAnalysis(spot).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("ADDITIONAL SPOT-SPECIFIC CONTEXT:") &&
+                        prompt.contains("Wind is usually stronger than forecast due to thermal effect from nearby mountains.")
+        ));
+    }
+
+    @Test
+    void shouldNotIncludeLlmCommentSectionWhenEmpty() {
+        // given
+        var forecast = createForecast();
+        var spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
+        var spot = createSpotWithInfo("Hel", "Poland", List.of(forecast), spotInfo);
+
+        when(chatClient.prompt()).thenReturn(requestSpec);
+        when(requestSpec.user(anyString())).thenReturn(requestSpec);
+        when(requestSpec.stream()).thenReturn(streamSpec);
+        when(streamSpec.content()).thenReturn(Flux.just("Response"));
+
+        // when
+        aiService.fetchAiAnalysis(spot).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                !prompt.contains("ADDITIONAL SPOT-SPECIFIC CONTEXT:")
+        ));
+    }
+
     private Spot createSpot(String name, String country, List<Forecast> forecasts) {
         return new Spot(
                 name,
@@ -246,6 +289,24 @@ class AiServiceTest {
                 new ArrayList<>(),
                 null,
                 null,
+                null
+        );
+    }
+
+    private Spot createSpotWithInfo(String name, String country, List<Forecast> forecasts, SpotInfo spotInfo) {
+        return new Spot(
+                name,
+                country,
+                "https://windguru.cz/123",
+                null,
+                null,
+                null,
+                null,
+                null,
+                new ArrayList<>(forecasts),
+                new ArrayList<>(),
+                null,
+                spotInfo,
                 null
         );
     }
