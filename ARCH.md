@@ -4,35 +4,35 @@
 ```
 +---------------------+            HTTP (REST)                +---------------------------+
 |  Browser Frontend   |  <------------------------------>     |  Spring Boot Backend API  |
-|  (static/index.html)|  GET /api/v1/spots, /health           |  /api/v1/* (JSON)         |
-+----------+----------+                                       +-------------+-------------+
-           |                                                                |
-           |                                                                |
-           |                                   +----------------------------v----------------------------+
-           |                                   |             AggregatorService (core orchestrator)       |
-           |                                   |  - schedules fetching (every 3h)                        |
-           |                                   |  - caches spots, forecasts, current conditions, AI txt  |
-           |                                   +-----------+--------------------+------------------------+
-           |                                               |                    |
-           |                                               |                    |
-           |                         +---------------------v----+     +---------v----------------+
-           |                         |     ForecastService      |     |  CurrentConditionsService|
-           |                         |  (Windguru micro API)    |     |  (station providers)     |
-           |                         +-----------+--------------+     +---------------+----------+
-           |                                     |                                    |
-           |                                     |                                    |
-           |                  +------------------v------------------+   +-------------v----------------------+
-           |                  | External: micro.windguru.cz (HTTP)  |   | External: WiatrKadyny, Kiteriders  |
-           |                  +-------------------------------------+   +------------------------------------+
-           |                                                                
-           |                                   +----------------------------+
-           |                                   |        AiService           |
-           |                                   | (Spring AI ChatClient)     |
-           |                                   +-------------+--------------+
-           |                                                 |
-           |                       +-------------------------v-----------------------+
-           |                       |  LLM provider via Spring AI (configured via env)|
-           |                       +-------------------------------------------------+
+|  (static/index.html)|  GET /api/v1/spots                    |  /api/v1/* (JSON)         |
++---------------------+                                       +-------------+-------------+
+                                                                            |
+                                                                            |
+                                               +----------------------------v----------------------------+
+                                               |             AggregatorService (core orchestrator)       |
+                         +---------------------+  - schedules fetching (every 3h)                        |
+                         |                     |  - caches spots, forecasts, current conditions, AI txt  |
+                         |                     +-----------+--------------------+------------------------+
+                         |                                 |                    |
+                         |                                 |                    |
+                         |           +---------------------v----+     +---------v----------------+
+                         |           |     ForecastService      |     |  CurrentConditionsService|
+                         |           |  (Windguru micro API)    |     |  (station providers)     |
+                         |           +-----------+--------------+     +---------------+----------+
+                         |                       |                                    |
+                         |                       |                                    |
+                         |    +------------------v------------------+   +-------------v----------------------+
+                         |    | External: micro.windguru.cz (HTTP)  |   | External: WiatrKadyny, Kiteriders  |
+                         |    +-------------------------------------+   +------------------------------------+
+                         |                                                   
+                         |                     +----------------------------+
+                         +--------------------->        AiService           |
+                                               | (Spring AI ChatClient)     |
+                                               +-------------+--------------+
+                                                             |
+                                   +-------------------------v-----------------------+
+                                   |  LLM provider via Spring AI (configured via env)|
+                                   +-------------------------------------------------+
 ```
 
 ### Request/Update Flow
