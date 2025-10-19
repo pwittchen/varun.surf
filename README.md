@@ -36,7 +36,7 @@ docker run -p 8080:8080 varun-surf
 
 ## ghcr
 
-docker image is automatically deployed to the registry at ghcr.io via `docker.yml` github action from the `master` branch
+docker image is automatically deployed to the registry at ghcr.io via `docker.yml` GitHub action from the `master` branch
 
 - configure PAT (Personal Access Token) here: https://github.com/settings/tokens
 - set permissions: `write:packages`, `read:packages`
@@ -59,12 +59,12 @@ docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 
 ## continuous integration
 
-After each push to the master or PR, new build is triggered with tests and test coverage report.
-It's done automatically via github actions `ci.yml` and `coverage.yml`
+After each push to the master or PR, a new build is triggered with tests and test coverage report.
+It's done automatically via GitHub actions `ci.yml` and `coverage.yml`
 
 ## continuous delivery
 
-After each tag push with `v` prefix, `cd.yml` github action is triggered, 
+After each tag push with `v` prefix, `cd.yml` GitHub action is triggered, 
 and this action deploys the latest version of the app to the VPS.
 
 ## deployment
@@ -72,7 +72,7 @@ and this action deploys the latest version of the app to the VPS.
 On the VPS, you can use `deployment.sh` script, which is deployment helper script.
 Just copy it on the server, make it executable and set valid GitHub PAT (Personal Access Token) in the script.
 
-To view all its functions just type:
+To view all its functions, just type:
 
 ```
 ./deployment.sh --help
@@ -104,7 +104,7 @@ docker run -p 8080:8080 varun-surf \
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
 so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs
 and during local tests sometimes it got stuck, so not all the spots received analysis.
-Another interesting thing is the fact, that performing 74 calls to OpenAI with gpt-4o-mini model
+Another interesting thing is the fact that performing 74 calls to OpenAI with gpt-4o-mini model
 used around 31k tokens and costs $0.01, so If I would like to trigger AI analysis
 for my current configuration with this AI provider every six hours
 (4 times in 24h = 120 times in 30 days = 8880 req. / month), I'd spent around \$1.2 (~4.35 PLN)
@@ -131,9 +131,9 @@ see → [ARCH.md](ARCH.md) file
 - filtering spots by country
 - searching spots
 - possibility to add spots to favorites
-- organizing spots in the custom order with drag and drop mechanism
+- organizing spots in the custom order with a drag and drop mechanism
 - dark/light theme
-- possibility to switch between 2-columns view and 3-columns view
+- possibility to switch between a 2-column view and a 3-column view
 - mobile-friendly UI
 - kite and board size calculator
 - AI forecast analysis
