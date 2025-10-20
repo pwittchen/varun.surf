@@ -10,7 +10,7 @@ Site Name: VARUN.SURF
 URL: https://varun.surf
 Purpose: Real-time weather forecast and wind conditions dashboard for kitesurfers and windsurfers worldwide
 License: Open Source (GitHub: https://github.com/pwittchen/varun.surf)
-Contact: contact@varun.surf
+Contact: piotr@varun.surf
 Author: Piotr Wittchen (https://wittchen.io)
 
 # ============================================================================
@@ -253,7 +253,7 @@ Q: Can I use the API for my own project?
 A: Yes, the API is public and free to use. Just be respectful with request rates.
 
 Q: How do I contact the developer?
-A: Email: contact@varun.surf or GitHub: https://github.com/pwittchen/varun.surf
+A: Email: piotr@varun.surf or GitHub: https://github.com/pwittchen/varun.surf
 
 # ============================================================================
 # CHANGELOG & VERSION HISTORY
