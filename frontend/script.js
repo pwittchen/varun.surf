@@ -783,7 +783,7 @@
                 <div class="drag-handle" draggable="true">𓃌</div>
                 <div class="spot-header">
                     <div class="spot-title">
-                        <div class="spot-name">${spot.name || 'Unknown Spot'}</div>
+                        <div class="spot-name" onclick="window.location.href='/spot/${spot.wgId}'">${spot.name || 'Unknown Spot'}</div>
                     </div>
                     <div class="spot-meta">
                         <div class="country-tag-wrapper">

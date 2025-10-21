@@ -1,0 +1,29 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.5)
+
+2025-10-21T22:57:10.433+02:00  INFO 97092 --- [varun.surf] [           main] com.github.pwittchen.varun.Application   : Starting Application vv0.1.10 using Java 24 with PID 97092 (/Users/pw/Development/prv/java/varun.surf/build/libs/varun-v0.1.10.jar started by pw in /Users/pw/Development/prv/java/varun.surf)
+2025-10-21T22:57:10.435+02:00  INFO 97092 --- [varun.surf] [           main] com.github.pwittchen.varun.Application   : No active profile set, falling back to 1 default profile: "default"
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::allocateMemory has been called by io.netty.util.internal.PlatformDependent0$2 (jar:nested:/Users/pw/Development/prv/java/varun.surf/build/libs/varun-v0.1.10.jar/!BOOT-INF/lib/netty-common-4.1.124.Final.jar!/)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$2
+WARNING: sun.misc.Unsafe::allocateMemory will be removed in a future release
+2025-10-21T22:57:11.032+02:00  INFO 97092 --- [varun.surf] [oundedElastic-1] c.g.p.varun.service.AggregatorService    : Loading spots
+2025-10-21T22:57:11.035+02:00  INFO 97092 --- [varun.surf] [oundedElastic-1] c.g.p.varun.service.AggregatorService    : Loaded 77 spots
+2025-10-21T22:57:11.187+02:00  INFO 97092 --- [varun.surf] [           main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080 (http)
+2025-10-21T22:57:11.195+02:00  INFO 97092 --- [varun.surf] [   scheduling-1] c.g.p.varun.service.AggregatorService    : Fetching forecasts
+2025-10-21T22:57:11.196+02:00  INFO 97092 --- [varun.surf] [           main] com.github.pwittchen.varun.Application   : Started Application in 0.914 seconds (process running for 1.089)
+2025-10-21T22:57:15.557+02:00  INFO 97092 --- [varun.surf] [   scheduling-1] c.g.p.varun.service.AggregatorService    : Forecasts fetched
+2025-10-21T22:57:15.567+02:00  INFO 97092 --- [varun.surf] [   scheduling-1] c.g.p.varun.service.AggregatorService    : Fetching AI forecast analysis is DISABLED
+2025-10-21T22:57:15.568+02:00  INFO 97092 --- [varun.surf] [   scheduling-1] c.g.p.varun.service.AggregatorService    : Fetching current conditions
+2025-10-21T22:57:15.985+02:00  INFO 97092 --- [varun.surf] [   scheduling-1] c.g.p.varun.service.AggregatorService    : Current conditions fetched
+2025-10-21T22:57:16.138+02:00  INFO 97092 --- [varun.surf] [ctor-http-nio-2] c.g.p.varun.config.LoggingFilter         : method=GET, path=/api/v1/spots, ua=Chrome/141.0.0.0
+2025-10-21T22:57:26.941+02:00  INFO 97092 --- [varun.surf] [ctor-http-nio-3] c.g.p.varun.config.LoggingFilter         : method=GET, path=/spot/500760, ua=curl/8.7.1
+2025-10-21T22:57:32.888+02:00  INFO 97092 --- [varun.surf] [ionShutdownHook] o.s.b.w.embedded.netty.GracefulShutdown  : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-21T22:57:32.890+02:00  INFO 97092 --- [varun.surf] [ netty-shutdown] o.s.b.w.embedded.netty.GracefulShutdown  : Graceful shutdown complete

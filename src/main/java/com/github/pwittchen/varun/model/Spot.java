@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 
 import java.time.ZonedDateTime;
@@ -32,6 +33,7 @@ public record Spot(
         forecastHourly = forecastHourly == null ? new LinkedList<>() : new LinkedList<>(forecastHourly);
     }
 
+    @JsonProperty("wgId")
     public int wgId() {
         String[] parts = this.windguruUrl.split("/");
         return Integer.parseInt(parts[parts.length - 1]);
