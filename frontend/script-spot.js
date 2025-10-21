@@ -2,6 +2,12 @@
     let currentLanguage = 'en';
     let currentErrorKey = null;
     let currentErrorText = '';
+    let currentLoadingKey = 'loadingSpotData';
+    let forecastPollIntervalId = null;
+    let forecastTimeoutId = null;
+
+    const FORECAST_POLL_INTERVAL = 5000;
+    const FORECAST_TIMEOUT_MS = 30000;
 
     // Configuration
     const API_ENDPOINT = '/api/v1/spots';
@@ -31,6 +37,73 @@
             console.error('Error fetching spot data:', error);
             throw error;
         }
+    }
+
+    function hasForecastData(spot) {
+        return spot && Array.isArray(spot.forecast) && spot.forecast.length > 0;
+    }
+
+    function clearForecastPolling() {
+        if (forecastPollIntervalId) {
+            clearInterval(forecastPollIntervalId);
+            forecastPollIntervalId = null;
+        }
+        if (forecastTimeoutId) {
+            clearTimeout(forecastTimeoutId);
+            forecastTimeoutId = null;
+        }
+    }
+
+    function setLoadingMessage(key) {
+        const loadingMessage = document.getElementById('loadingMessage');
+        const loadingText = document.getElementById('loadingText');
+        const errorMessage = document.getElementById('errorMessage');
+
+        currentLoadingKey = key;
+
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+
+        if (loadingMessage) {
+            loadingMessage.style.display = 'block';
+        }
+
+        if (loadingText) {
+            loadingText.textContent = t(key);
+        }
+    }
+
+    function startForecastPolling(spotId) {
+        clearForecastPolling();
+
+        let pollingInProgress = false;
+
+        forecastPollIntervalId = setInterval(async () => {
+            if (pollingInProgress) {
+                return;
+            }
+            pollingInProgress = true;
+            try {
+                const latestSpot = await fetchSpotData(spotId);
+                if (hasForecastData(latestSpot)) {
+                    clearForecastPolling();
+                    displaySpot(latestSpot);
+                }
+            } catch (error) {
+                if (error && error.status === 404) {
+                    clearForecastPolling();
+                    displayError('spotNotFound');
+                }
+            } finally {
+                pollingInProgress = false;
+            }
+        }, FORECAST_POLL_INTERVAL);
+
+        forecastTimeoutId = setTimeout(() => {
+            clearForecastPolling();
+            displayError('forecastTimeout');
+        }, FORECAST_TIMEOUT_MS);
     }
 
     // Helper function to get wind arrow
@@ -69,45 +142,33 @@
             'Czechia': '🇨🇿',
             'Austria': '🇦🇹',
             'Belgium': '🇧🇪',
+            'Switzerland': '🇨🇭',
+            'Latvia': '🇱🇻',
+            'Lithuania': '🇱🇹',
+            'Estonia': '🇪🇪',
             'Denmark': '🇩🇰',
-            'Germany': '🇩🇪',
-            'Netherlands': '🇳🇱',
+            'Sweden': '🇸🇪',
+            'Norway': '🇳🇴',
+            'Iceland': '🇮🇸',
             'Spain': '🇪🇸',
             'Portugal': '🇵🇹',
             'Italy': '🇮🇹',
-            'France': '🇫🇷',
-            'Brazil': '🇧🇷',
-            'Argentina': '🇦🇷',
             'Greece': '🇬🇷',
+            'France': '🇫🇷',
+            'Germany': '🇩🇪',
+            'Netherlands': '🇳🇱',
             'Croatia': '🇭🇷',
-            'Romania': '🇷🇴',
-            'Bulgaria': '🇧🇬',
+            'Ireland': '🇮🇪',
+            'UK': '🇬🇧',
             'Turkey': '🇹🇷',
-            'Egypt': '🇪🇬',
             'Morocco': '🇲🇦',
-            'South Africa': '🇿🇦',
-            'USA': '🇺🇸',
-            'Canada': '🇨🇦',
-            'Mexico': '🇲🇽',
-            'Colombia': '🇨🇴',
-            'Venezuela': '🇻🇪',
-            'Chile': '🇨🇱',
+            'Egypt': '🇪🇬',
+            'Cape Verde': '🇨🇻',
+            'Mauritius': '🇲🇺',
+            'Brazil': '🇧🇷',
             'Peru': '🇵🇪',
-            'Uruguay': '🇺🇾',
-            'Dominican Republic': '🇩🇴',
-            'Cuba': '🇨🇺',
-            'Jamaica': '🇯🇲',
-            'Costa Rica': '🇨🇷',
-            'Panama': '🇵🇦',
-            'Australia': '🇦🇺',
-            'New Zealand': '🇳🇿',
-            'Thailand': '🇹🇭',
-            'Vietnam': '🇻🇳',
-            'Philippines': '🇵🇭',
-            'Indonesia': '🇮🇩',
-            'Sri Lanka': '🇱🇰',
-            'United Arab Emirates': '🇦🇪',
-            'Oman': '🇴🇲'
+            'Chile': '🇨🇱',
+            'USA': '🇺🇸'
         };
         return flags[country] || '🏴';
     }
@@ -385,15 +446,24 @@
 
     // Display spot
     function displaySpot(spot) {
-        currentSpot = spot;
         const spotContainer = document.getElementById('spotContainer');
         const loadingMessage = document.getElementById('loadingMessage');
         const errorMessage = document.getElementById('errorMessage');
 
-        loadingMessage.style.display = 'none';
-        errorMessage.style.display = 'none';
+        clearForecastPolling();
+
+        if (loadingMessage) {
+            loadingMessage.style.display = 'none';
+        }
+
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+
+        currentSpot = spot;
         currentErrorKey = null;
         currentErrorText = '';
+        currentLoadingKey = null;
 
         if (spot) {
             spotContainer.innerHTML = createSpotCard(spot);
@@ -408,7 +478,11 @@
         const errorTitle = document.getElementById('errorTitle');
         const errorDescription = document.getElementById('errorDescription');
 
-        loadingMessage.style.display = 'none';
+        clearForecastPolling();
+
+        if (loadingMessage) {
+            loadingMessage.style.display = 'none';
+        }
         errorMessage.style.display = 'flex';
 
         const hasTranslation = typeof messageKey === 'string' && (
@@ -426,6 +500,7 @@
 
         errorTitle.textContent = t('error');
         errorDescription.textContent = currentErrorText;
+        currentLoadingKey = null;
     }
 
     // Initialize theme
@@ -507,9 +582,13 @@
         }
 
         // Update loading text
-        const loadingText = document.getElementById('loadingText');
-        if (loadingText) {
-            loadingText.textContent = t('loadingText');
+        const loadingMessage = document.getElementById('loadingMessage');
+        if (loadingMessage && loadingMessage.style.display !== 'none') {
+            const loadingTextEl = document.getElementById('loadingText');
+            if (loadingTextEl) {
+                const key = currentLoadingKey || 'loadingSpotData';
+                loadingTextEl.textContent = t(key);
+            }
         }
 
         const errorMessage = document.getElementById('errorMessage');
@@ -672,9 +751,16 @@
             return;
         }
 
+        setLoadingMessage('loadingSpotData');
+
         try {
             const spot = await fetchSpotData(spotId);
-            displaySpot(spot);
+            if (hasForecastData(spot)) {
+                displaySpot(spot);
+            } else {
+                setLoadingMessage('loadingForecast');
+                startForecastPolling(spotId);
+            }
         } catch (error) {
             if (error && error.status === 404) {
                 displayError('spotNotFound');

@@ -66,6 +66,9 @@ const translations = {
 
         // Loading
         loadingText: "Searching for the wind...",
+        loadingSpotData: "Loading spot data...",
+        loadingForecast: "Waiting for forecast data...",
+        forecastTimeout: "Connection timed out while waiting for forecast data. Please try again later.",
 
         // Favorites
         noFavoritesTitle: "No Favorites Yet",
@@ -227,6 +230,9 @@ const translations = {
 
         // Loading
         loadingText: "Szukam wiatru...",
+        loadingSpotData: "Ładowanie danych spotu...",
+        loadingForecast: "Oczekiwanie na dane prognozy...",
+        forecastTimeout: "Przekroczono czas oczekiwania na dane prognozy. Spróbuj ponownie później.",
 
         // Favorites
         noFavoritesTitle: "Brak ulubionych",
