@@ -159,19 +159,43 @@
 
     // Helper function to translate day names
     function translateDayName(dayName) {
-        const dayMap = {
-            'Mon': t('dayMon'),
-            'Tue': t('dayTue'),
-            'Wed': t('dayWed'),
-            'Thu': t('dayThu'),
-            'Fri': t('dayFri'),
-            'Sat': t('daySat'),
-            'Sun': t('daySun')
+        if (!dayName || typeof dayName !== 'string') {
+            return '';
+        }
+
+        const token = dayName.substring(0, 3);
+        const keyMap = {
+            Mon: 'dayMon',
+            Tue: 'dayTue',
+            Wed: 'dayWed',
+            Thu: 'dayThu',
+            Fri: 'dayFri',
+            Sat: 'daySat',
+            Sun: 'daySun'
         };
-        return dayMap[dayName] || dayName;
+
+        const translationKey = keyMap[token];
+        return translationKey ? t(translationKey) : dayName;
     }
 
-    // Helper function to get country flag
+    function formatForecastDateLabel(rawDate) {
+        if (!rawDate || typeof rawDate !== 'string') {
+            return rawDate || '';
+        }
+
+        const tokens = rawDate.split(' ').filter(Boolean);
+        if (tokens.length < 5) {
+            return rawDate;
+        }
+
+        const [dayToken, dayOfMonthToken, monthToken, , timeToken] = tokens;
+        const translatedDay = translateDayName(dayToken);
+        const formattedDayOfMonth = dayOfMonthToken.padStart(2, '0');
+
+        return `${formattedDayOfMonth}. ${translatedDay} ${timeToken}`.trim();
+    }
+
+    // Helper function to get a country flag
     function getCountryFlag(country) {
         const flags = {
             'Poland': '🇵🇱',
@@ -425,7 +449,7 @@
 
                 forecastRows += `
                         <tr class="${windClass}">
-                            <td><strong>${translateDayName(day.date)}</strong></td>
+                            <td><strong>${formatForecastDateLabel(day.date)}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
                             <td class="${windTextClass}">${day.gusts} kts</td>
                             <td class="${windTextClass}">

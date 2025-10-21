@@ -41,6 +41,15 @@ const translations = {
         // Language code
         langCode: "EN",
 
+        // Day abbreviations
+        dayMon: "Mon",
+        dayTue: "Tue",
+        dayWed: "Wed",
+        dayThu: "Thu",
+        dayFri: "Fri",
+        daySat: "Sat",
+        daySun: "Sun",
+
         // Error handling
         error: "Error",
         invalidSpotId: "Invalid or missing spot identifier.",
@@ -204,6 +213,15 @@ const translations = {
 
         // Language code
         langCode: "PL",
+
+        // Day abbreviations
+        dayMon: "Pon",
+        dayTue: "Wt",
+        dayWed: "Śr",
+        dayThu: "Czw",
+        dayFri: "Pt",
+        daySat: "Sob",
+        daySun: "Niedz",
 
         // Error handling
         error: "Błąd",
