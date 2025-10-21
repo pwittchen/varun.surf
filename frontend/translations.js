@@ -59,7 +59,7 @@ const translations = {
         errorRefresh: "Please refresh the page to try again.",
 
         // Loading
-        loadingText: "Thinking...",
+        loadingText: "Searching for the wind...",
 
         // Favorites
         noFavoritesTitle: "No Favorites Yet",
@@ -214,7 +214,7 @@ const translations = {
         errorRefresh: "Odśwież stronę, aby spróbować ponownie.",
 
         // Loading
-        loadingText: "Myślę...",
+        loadingText: "Szukam wiatru...",
 
         // Favorites
         noFavoritesTitle: "Brak ulubionych",
