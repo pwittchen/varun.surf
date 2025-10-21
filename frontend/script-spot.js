@@ -5,9 +5,12 @@
     let currentLoadingKey = 'loadingSpotData';
     let forecastPollIntervalId = null;
     let forecastTimeoutId = null;
+    let backgroundRefreshIntervalId = null;
+    let currentSpotId = null;
 
     const FORECAST_POLL_INTERVAL = 5000;
     const FORECAST_TIMEOUT_MS = 30000;
+    const BACKGROUND_REFRESH_INTERVAL = 60000;
 
     // Configuration
     const API_ENDPOINT = '/api/v1/spots';
@@ -51,6 +54,13 @@
         if (forecastTimeoutId) {
             clearTimeout(forecastTimeoutId);
             forecastTimeoutId = null;
+        }
+    }
+
+    function clearBackgroundRefresh() {
+        if (backgroundRefreshIntervalId) {
+            clearInterval(backgroundRefreshIntervalId);
+            backgroundRefreshIntervalId = null;
         }
     }
 
@@ -104,6 +114,32 @@
             clearForecastPolling();
             displayError('forecastTimeout');
         }, FORECAST_TIMEOUT_MS);
+    }
+
+    function startBackgroundRefresh(spotId) {
+        if (backgroundRefreshIntervalId || !spotId) {
+            return;
+        }
+
+        backgroundRefreshIntervalId = setInterval(async () => {
+            try {
+                const latestSpot = await fetchSpotData(spotId);
+                if (!hasForecastData(latestSpot)) {
+                    return;
+                }
+
+                if (!currentSpot || JSON.stringify(latestSpot) !== JSON.stringify(currentSpot)) {
+                    displaySpot(latestSpot);
+                }
+            } catch (error) {
+                if (error && error.status === 404) {
+                    clearBackgroundRefresh();
+                    displayError('spotNotFound');
+                } else {
+                    console.warn('Background refresh failed:', error);
+                }
+            }
+        }, BACKGROUND_REFRESH_INTERVAL);
     }
 
     // Helper function to get wind arrow
@@ -469,6 +505,10 @@
             spotContainer.innerHTML = createSpotCard(spot);
             document.title = `${spot.name} - VARUN.SURF`;
         }
+
+        if (currentSpotId) {
+            startBackgroundRefresh(currentSpotId);
+        }
     }
 
     // Display error
@@ -479,6 +519,7 @@
         const errorDescription = document.getElementById('errorDescription');
 
         clearForecastPolling();
+        clearBackgroundRefresh();
 
         if (loadingMessage) {
             loadingMessage.style.display = 'none';
@@ -745,6 +786,7 @@
         setupHeaderNavigation();
 
         const spotId = getSpotIdFromUrl();
+        currentSpotId = spotId;
 
         if (!spotId) {
             displayError('invalidSpotId');
