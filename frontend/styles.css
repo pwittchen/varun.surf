@@ -1697,3 +1697,38 @@ body {
     font-size: 0.95rem;
     line-height: 1.6;
 }
+
+/* Single spot view tweaks */
+body.spot-page .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 28px;
+    text-align: center;
+}
+
+body.spot-page .error-message::before {
+    content: "⚠️";
+    font-size: 2.2rem;
+}
+
+body.spot-page .error-title {
+    font-size: 1.35rem;
+}
+
+body.spot-page .error-description {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    body.spot-page #themeToggle,
+    body.spot-page #languageToggle {
+        width: 144px !important;
+        min-width: 144px !important;
+        flex: 0 0 auto;
+    }
+}

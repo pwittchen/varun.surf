@@ -41,6 +41,12 @@ const translations = {
         // Language code
         langCode: "EN",
 
+        // Error handling
+        error: "Error",
+        invalidSpotId: "Invalid or missing spot identifier.",
+        spotNotFound: "We couldn't find this spot. Double-check the link or pick another location.",
+        errorLoadingSpot: "Unable to load spot information. Please try again shortly.",
+
         // Error messages
         errorNoSpotsTitle: "No Spots Found",
         errorNoSpotsDescription: "No kitesurfing spots found for the selected filter.",
@@ -195,6 +201,12 @@ const translations = {
 
         // Language code
         langCode: "PL",
+
+        // Error handling
+        error: "Błąd",
+        invalidSpotId: "Nieprawidłowy lub brakujący identyfikator spotu.",
+        spotNotFound: "Nie znaleziono tego spotu. Sprawdź link lub wybierz inny spot.",
+        errorLoadingSpot: "Nie można załadować informacji o spocie. Spróbuj ponownie za chwilę.",
 
         // Error messages
         errorNoSpotsTitle: "Nie znaleziono spotów",

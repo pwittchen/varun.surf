@@ -1,5 +1,7 @@
     let currentSpot = null;
     let currentLanguage = 'en';
+    let currentErrorKey = null;
+    let currentErrorText = '';
 
     // Configuration
     const API_ENDPOINT = '/api/v1/spots';
@@ -19,7 +21,9 @@
         try {
             const response = await fetch(`${API_ENDPOINT}/${spotId}`);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const error = new Error(`HTTP error! status: ${response.status}`);
+                error.status = response.status;
+                throw error;
             }
             const data = await response.json();
             return data;
@@ -388,6 +392,8 @@
 
         loadingMessage.style.display = 'none';
         errorMessage.style.display = 'none';
+        currentErrorKey = null;
+        currentErrorText = '';
 
         if (spot) {
             spotContainer.innerHTML = createSpotCard(spot);
@@ -396,7 +402,7 @@
     }
 
     // Display error
-    function displayError(message) {
+    function displayError(messageKey) {
         const loadingMessage = document.getElementById('loadingMessage');
         const errorMessage = document.getElementById('errorMessage');
         const errorTitle = document.getElementById('errorTitle');
@@ -404,8 +410,22 @@
 
         loadingMessage.style.display = 'none';
         errorMessage.style.display = 'flex';
+
+        const hasTranslation = typeof messageKey === 'string' && (
+            (translations.en && Object.prototype.hasOwnProperty.call(translations.en, messageKey)) ||
+            (translations.pl && Object.prototype.hasOwnProperty.call(translations.pl, messageKey))
+        );
+
+        if (hasTranslation) {
+            currentErrorKey = messageKey;
+            currentErrorText = t(messageKey);
+        } else {
+            currentErrorKey = null;
+            currentErrorText = typeof messageKey === 'string' ? messageKey : '';
+        }
+
         errorTitle.textContent = t('error');
-        errorDescription.textContent = message;
+        errorDescription.textContent = currentErrorText;
     }
 
     // Initialize theme
@@ -491,6 +511,23 @@
         if (loadingText) {
             loadingText.textContent = t('loadingText');
         }
+
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage && errorMessage.style.display !== 'none') {
+            const errorTitle = document.getElementById('errorTitle');
+            const errorDescription = document.getElementById('errorDescription');
+
+            if (errorTitle) {
+                errorTitle.textContent = t('error');
+            }
+
+            if (errorDescription) {
+                if (currentErrorKey) {
+                    currentErrorText = t(currentErrorKey);
+                }
+                errorDescription.textContent = currentErrorText;
+            }
+        }
     }
 
     function initLanguage() {
@@ -521,6 +558,7 @@
                 if (currentSpot) {
                     displaySpot(currentSpot);
                 }
+
             });
         }
     }
@@ -630,7 +668,7 @@
         const spotId = getSpotIdFromUrl();
 
         if (!spotId) {
-            displayError(t('invalidSpotId'));
+            displayError('invalidSpotId');
             return;
         }
 
@@ -638,7 +676,11 @@
             const spot = await fetchSpotData(spotId);
             displaySpot(spot);
         } catch (error) {
-            displayError(t('errorLoadingSpot'));
+            if (error && error.status === 404) {
+                displayError('spotNotFound');
+            } else {
+                displayError('errorLoadingSpot');
+            }
         }
     }
 
