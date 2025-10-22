@@ -321,7 +321,6 @@ public class AggregatorService {
                 .flatMap(List::stream)
                 .toList();
 
-
         final ForecastData data = new ForecastData(
                 forecastCache.get(spotId).daily(),
                 forecastCache.get(spotId).hourlyGfs(),

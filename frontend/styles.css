@@ -256,6 +256,15 @@ body {
     width: 220px;
 }
 
+#modelDropdownContainer {
+    width: 100px;
+}
+
+#modelDropdownContainer .dropdown-button {
+    width: 100px;
+    padding: 11px 24px 11px 12px;
+}
+
 .search-container {
     position: relative;
     width: 220px;
@@ -1462,6 +1471,15 @@ body {
         max-width: 300px;
         flex: 0 0 100%;
         order: 4;
+    }
+
+    #modelDropdownContainer {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    #modelDropdownContainer .dropdown-button {
+        width: 100%;
     }
 
     .dropdown-button {
