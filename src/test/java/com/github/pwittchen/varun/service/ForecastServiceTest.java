@@ -186,4 +186,121 @@ class ForecastServiceTest {
                 })
                 .verifyComplete();
     }
+
+    @Test
+    void shouldReturnGfsModelForecastData() {
+        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data).isNotNull();
+                    assertThat(data.hourlyGfs()).isNotEmpty();
+                    assertThat(data.hourlyIfs()).isEmpty();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnIfsModelForecastData() {
+        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data).isNotNull();
+                    assertThat(data.hourlyIfs()).isNotEmpty();
+                    assertThat(data.hourlyGfs()).isEmpty();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleLowerCaseModelParameter() {
+        Mono<ForecastData> resultGfs = service.getForecastData(500760, "gfs");
+        Mono<ForecastData> resultIfs = service.getForecastData(500760, "ifs");
+
+        StepVerifier.create(resultGfs)
+                .assertNext(data -> {
+                    assertThat(data.hourlyGfs()).isNotEmpty();
+                })
+                .verifyComplete();
+
+        StepVerifier.create(resultIfs)
+                .assertNext(data -> {
+                    assertThat(data.hourlyIfs()).isNotEmpty();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnDailyForecastsWithGfsModel() {
+        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.daily()).isNotNull();
+                    assertThat(data.daily()).hasSize(5);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnDailyForecastsWithIfsModel() {
+        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.daily()).isNotNull();
+                    assertThat(data.daily()).hasSize(5);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnValidHourlyForecastsForGfs() {
+        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.hourlyGfs()).isNotEmpty();
+                    Forecast firstHourly = data.hourlyGfs().get(0);
+                    assertThat(firstHourly.date()).isNotEmpty();
+                    assertThat(firstHourly.wind()).isAtLeast(0.0);
+                    assertThat(firstHourly.gusts()).isAtLeast(0.0);
+                    assertThat(firstHourly.direction()).matches("^(N|NE|E|SE|S|SW|W|NW)$");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnValidHourlyForecastsForIfs() {
+        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.hourlyIfs()).isNotEmpty();
+                    Forecast firstHourly = data.hourlyIfs().get(0);
+                    assertThat(firstHourly.date()).isNotEmpty();
+                    assertThat(firstHourly.wind()).isAtLeast(0.0);
+                    assertThat(firstHourly.gusts()).isAtLeast(0.0);
+                    assertThat(firstHourly.direction()).matches("^(N|NE|E|SE|S|SW|W|NW)$");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDefaultToGfsWhenNoModelSpecified() {
+        Mono<ForecastData> resultDefault = service.getForecastData(500760);
+        Mono<ForecastData> resultGfs = service.getForecastData(500760, "gfs");
+
+        StepVerifier.create(resultDefault)
+                .assertNext(dataDefault -> {
+                    StepVerifier.create(resultGfs)
+                            .assertNext(dataGfs -> {
+                                assertThat(dataDefault.daily()).hasSize(dataGfs.daily().size());
+                                assertThat(dataDefault.hourlyGfs()).isNotEmpty();
+                            })
+                            .verifyComplete();
+                })
+                .verifyComplete();
+    }
 }
