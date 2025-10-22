@@ -52,7 +52,7 @@ public class AggregatorService {
     private Map<Integer, ForecastData> forecastCache;
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
-    private Map<Integer, Long> hourlyForecastCacheTimestamps;
+    private final Map<Integer, Long> hourlyForecastCacheTimestamps;
 
     private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
