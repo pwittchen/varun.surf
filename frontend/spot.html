@@ -128,7 +128,7 @@
     <div class="modal">
         <div class="modal-header">
             <div class="modal-title" id="aiModalTitle"></div>
-            <button class="modal-close" id="aiModalClose">✕</button>
+            <button class="modal-close" id="aiModalClose">&times;</button>
         </div>
         <div class="modal-content">
             <div class="ai-analysis" id="aiAnalysisContent"></div>
@@ -142,10 +142,12 @@
     <div class="modal">
         <div class="modal-header">
             <div class="modal-title" id="icmModalTitle"></div>
-            <button class="modal-close" id="icmModalClose">✕</button>
+            <button class="modal-close" id="icmModalClose">&times;</button>
         </div>
         <div class="modal-content">
-            <img id="icmImage" src="" alt="ICM Forecast" style="width: 100%; height: auto;">
+            <div class="icm-image-container">
+                <img id="icmImage" class="icm-forecast-image" src="" alt="ICM Forecast">
+            </div>
         </div>
     </div>
 </div>
