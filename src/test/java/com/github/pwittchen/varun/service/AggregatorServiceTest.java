@@ -136,7 +136,7 @@ class AggregatorServiceTest {
         var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), List.of())));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), List.of(), List.of())));
 
         aggregatorService.init();
         Thread.sleep(100);
@@ -163,7 +163,7 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(
                 aggregatorService,
                 "forecastCache",
-                Map.of(123, new ForecastData(dailyForecast, hourlyForecast))
+                Map.of(123, new ForecastData(dailyForecast, hourlyForecast, List.of()))
         );
 
         // when

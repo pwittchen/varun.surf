@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,6 +52,7 @@ public class AggregatorService {
     private Map<Integer, ForecastData> forecastCache;
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
+    private Map<Integer, Long> hourlyForecastCacheTimestamps;
 
     private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
@@ -68,6 +71,7 @@ public class AggregatorService {
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.aiAnalysis = new ConcurrentHashMap<>();
+        this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
@@ -247,9 +251,12 @@ public class AggregatorService {
     }
 
     public void fetchForecastsForAllModelsInTheBackground(int spotId) {
-        //todo: add cache invalidation for the spot forecast models based on timestamp
+        if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
+            log.info("Hourly forecast cache timestamp for spot {} is not expired yet, no need to fetch it again", spotId);
+            return;
+        }
 
-        if (!isAnyForecastModelEmpty(spotId)) {
+        if (areForecastsAlreadyFetched(spotId)) {
             log.info("Forecast models for spot {} are already fetched, no need to fetch it again", spotId);
             return;
         }
@@ -282,10 +289,20 @@ public class AggregatorService {
         }
     }
 
-    private boolean isAnyForecastModelEmpty(int spotId) {
+    private boolean isHourlyForecastCacheTimestampNotExpired(int spotId) {
+        long timestamp = hourlyForecastCacheTimestamps.getOrDefault(spotId, 0L);
+        if (timestamp == 0L) {
+            return false;
+        }
+        Instant created = Instant.ofEpochMilli(timestamp);
+        Instant now = Instant.now();
+        return Duration.between(created, now).toHours() < 3;
+    }
+
+    private boolean areForecastsAlreadyFetched(int spotId) {
         boolean gfsEmpty = forecastCache.get(spotId).hourlyGfs().isEmpty();
         boolean ifsEmpty = forecastCache.get(spotId).hourlyIfs().isEmpty();
-        return gfsEmpty || ifsEmpty;
+        return !gfsEmpty && !ifsEmpty;
     }
 
     private void updateSpotAndForecastModels(
@@ -312,6 +329,7 @@ public class AggregatorService {
         );
 
         forecastCache.put(spotId, data);
+        hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
     }
 
     @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
