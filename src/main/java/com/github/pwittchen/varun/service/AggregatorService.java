@@ -98,7 +98,11 @@ public class AggregatorService {
     }
 
     public List<Spot> getSpots() {
-        return spots.get();
+        return spots
+                .get()
+                .stream()
+                .map(this::enrichSpotWithCachedData)
+                .toList();
     }
 
     public Optional<Spot> getSpotById(int id) {
@@ -111,16 +115,36 @@ public class AggregatorService {
                 .stream()
                 .filter(spot -> spot.wgId() == id)
                 .findFirst()
-                .map(spot -> {
-                    var data = forecastCache.get(id);
-                    if (data == null) {
-                        return spot;
-                    }
-                    if (forecastModel == ForecastModel.IFS) {
-                        return spot.withForecastHourly(data.hourlyIfs());
-                    }
-                    return spot.withForecastHourly(data.hourlyGfs());
-                });
+                .map(spot -> enrichSpotWithCachedData(spot, forecastModel));
+    }
+
+    private Spot enrichSpotWithCachedData(Spot spot) {
+        return enrichSpotWithCachedData(spot, ForecastModel.GFS);
+    }
+
+    private Spot enrichSpotWithCachedData(Spot spot, ForecastModel forecastModel) {
+        var enrichedSpot = spot;
+
+        var data = forecastCache.get(spot.wgId());
+        if (data != null) {
+            if (forecastModel == ForecastModel.IFS && !data.hourlyIfs().isEmpty()) {
+                enrichedSpot = enrichedSpot.withForecastHourly(data.hourlyIfs());
+            } else if (!data.hourlyGfs().isEmpty()) {
+                enrichedSpot = enrichedSpot.withForecastHourly(data.hourlyGfs());
+            }
+        }
+
+        var conditions = currentConditions.get(spot.wgId());
+        if (conditions != null) {
+            enrichedSpot = enrichedSpot.withCurrentConditions(conditions);
+        }
+
+        var analysis = aiAnalysis.get(spot.wgId());
+        if (analysis != null) {
+            enrichedSpot = enrichedSpot.withAiAnalysis(analysis);
+        }
+
+        return enrichedSpot;
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
@@ -207,7 +231,9 @@ public class AggregatorService {
                     .map(id -> scope.fork(() -> {
                         limiter.acquire();
                         try {
-                            return Pair.with(id, currentConditionsService.fetchCurrentConditions(id).block());
+                            var conditions = currentConditionsService.fetchCurrentConditions(id).block();
+                            updateSpotCurrentConditions(id, conditions);
+                            return Pair.with(id, conditions);
                         } finally {
                             limiter.release();
                         }
@@ -227,32 +253,14 @@ public class AggregatorService {
                     .map(subtask -> subtask.exception().getMessage())
                     .forEach(log::warn);
 
-            var successfulTasks = tasks
-                    .stream()
-                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.SUCCESS)
-                    .toList();
-
             log.info("Current conditions fetched");
-            updateSpotsAndCurrentConditions(successfulTasks);
         }
     }
 
-    private void updateSpotsAndCurrentConditions(List<StructuredTaskScope.Subtask<Pair<Integer, CurrentConditions>>> tasks) {
-        Map<Integer, CurrentConditions> newConditions = tasks
-                .stream()
-                .map(StructuredTaskScope.Subtask::get)
-                .filter(pair -> !CurrentConditionsEmptyFilter.isEmpty(pair.getValue1()))
-                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
-
-        currentConditions.clear();
-        currentConditions.putAll(newConditions);
-
-        spots.set(spots
-                .get()
-                .stream()
-                .map(spot -> spot.withCurrentConditions(currentConditions.get(spot.wgId())))
-                .toList()
-        );
+    private void updateSpotCurrentConditions(int spotId, CurrentConditions conditions) {
+        if (!CurrentConditionsEmptyFilter.isEmpty(conditions)) {
+            currentConditions.put(spotId, conditions);
+        }
     }
 
     @Async
@@ -358,14 +366,16 @@ public class AggregatorService {
     }
 
     private void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
-        try (var scope = new StructuredTaskScope.ShutdownOnFailure("aianalysis", Thread.ofVirtual().factory())) {
+        try (var scope = new StructuredTaskScope<>("aianalysis", Thread.ofVirtual().factory())) {
             var tasks = spots
                     .get()
                     .stream()
                     .map(spot -> scope.fork(() -> {
                         limiter.acquire();
                         try {
-                            return Pair.with(spot, aiService.fetchAiAnalysis(spot).block());
+                            var analysis = aiService.fetchAiAnalysis(spot).block();
+                            updateSpotAiAnalysis(spot.wgId(), analysis);
+                            return Pair.with(spot.wgId(), analysis);
                         } finally {
                             limiter.release();
                         }
@@ -373,33 +383,24 @@ public class AggregatorService {
                     .toList();
 
             try {
-                scope.join().throwIfFailed();
+                scope.join();
             } catch (Exception e) {
                 log.error("Error while fetching AI forecast analysis", e);
-                throw new FetchingAiForecastAnalysisException(e.getMessage());
             }
 
+            tasks
+                    .stream()
+                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
+                    .map(subtask -> subtask.exception().getMessage())
+                    .forEach(log::warn);
+
             log.info("AI forecast analysis fetched");
-            updateSpotsAndAiForecastAnalysis(tasks);
         }
     }
 
-    private void updateSpotsAndAiForecastAnalysis(List<StructuredTaskScope.Subtask<Pair<Spot, String>>> tasks) {
-        Map<Integer, String> newAnalysis = tasks
-                .stream()
-                .map(StructuredTaskScope.Subtask::get)
-                .filter(pair -> pair.getValue1() != null && !pair.getValue1().isEmpty())
-                .map(pair -> Pair.with(pair.getValue0().wgId(), pair.getValue1()))
-                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
-
-        aiAnalysis.clear();
-        aiAnalysis.putAll(newAnalysis);
-
-        spots.set(spots
-                .get()
-                .stream()
-                .map(spot -> spot.withAiAnalysis(aiAnalysis.get(spot.wgId())))
-                .toList()
-        );
+    private void updateSpotAiAnalysis(int spotId, String analysis) {
+        if (analysis != null && !analysis.isEmpty()) {
+            aiAnalysis.put(spotId, analysis);
+        }
     }
 }
