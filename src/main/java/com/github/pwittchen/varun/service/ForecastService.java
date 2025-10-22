@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_MODEL_GFS_DEFAULT = "gfs";
+    private static final String FORECAST_MODEL_GFS = "gfs";
+    private static final String FORECAST_MODEL_IFS = "ifs";
     private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1";
 
     private final OkHttpClient httpClient;
@@ -41,12 +42,12 @@ public class ForecastService {
     }
 
     public Mono<ForecastData> getForecastData(int wgSpotId) {
-        return getForecastData(wgSpotId, FORECAST_MODEL_GFS_DEFAULT);
+        return getForecastData(wgSpotId, FORECAST_MODEL_GFS);
     }
 
     public Mono<ForecastData> getForecastData(int wgSpotId, String forecastModel) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
-        if (httpUrl == null) return Mono.just(new ForecastData(List.of(), List.of()));
+        if (httpUrl == null) return Mono.just(new ForecastData(List.of(), List.of(), List.of()));
         return executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
@@ -61,7 +62,8 @@ public class ForecastService {
                 .map(this::retrieveWgForecasts)
                 .map(forecasts -> new ForecastData(
                         mapper.toWeatherForecasts(forecasts),
-                        mapper.toHourlyForecasts(forecasts)
+                        forecastModel.equals(FORECAST_MODEL_GFS) ? mapper.toHourlyForecasts(forecasts) : List.of(),
+                        forecastModel.equals(FORECAST_MODEL_IFS) ? mapper.toHourlyForecasts(forecasts) : List.of()
                 ));
     }
 

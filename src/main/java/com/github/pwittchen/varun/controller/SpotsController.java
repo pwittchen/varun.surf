@@ -28,6 +28,7 @@ public class SpotsController {
 
     @GetMapping("spots/{id}")
     public Mono<ResponseEntity<Spot>> spot(@PathVariable int id) {
+        aggregatorService.fetchForecastsForAllModelsInTheBackground(id);
         return Mono
                 .justOrEmpty(aggregatorService.getSpotById(id))
                 .map(ResponseEntity::ok)
