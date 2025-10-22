@@ -552,6 +552,75 @@
     }
   },
   {
+    "name": "Sarbsko",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/62514",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sarbsko_see_leba",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/GQsqm1RxDvWh2E8R7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lake, flat to choppy water",
+      "bestWind": "W, NW, N",
+      "waterTemp": "10-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grassy shore near Lubiatowo and Nowęcin, easy access and parking",
+      "hazards": "Shallow areas, reeds, occasional gusty wind due to surrounding trees",
+      "season": "April-October",
+      "description": "Lake Sarbsko near Łeba offers flat water conditions ideal for beginners and freestyle riders. Works best with western and northern winds. The nearby Baltic coast provides wave riding options for advanced kiters.",
+      "llmComment": ""
+    }
+  },
+  {
+    "name": "Zalew Sulejowski",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/32462",
+    "windfinderUrl": "https://www.windfinder.com/forecast/zalew_sulejowski",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/sCHsPHb27ij9eLJVA",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lake, choppy to flat water depending on wind",
+      "bestWind": "W, NW, N",
+      "waterTemp": "10-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grassy or sandy beaches near Smardzewice and Bronisławów",
+      "hazards": "Trees near shore, variable gusts, fishermen and boats",
+      "season": "April-October",
+      "description": "Large artificial lake in central Poland, offering good kitesurfing conditions with steady western and northern winds. Multiple launch points available along the shore, especially near Bronisławów and Smardzewice.",
+      "llmComment": ""
+    }
+  },
+  {
+    "name": "Bukówka",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/102604",
+    "windfinderUrl": "",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/v6mzLyXyEkTH3Zkw9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Mountain lake, choppy water",
+      "bestWind": "W, NW, N",
+      "waterTemp": "8-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grassy or rocky shore near Bukówka village, limited space",
+      "hazards": "Cold water, sudden gusts, narrow launch area, submerged rocks",
+      "season": "May-September",
+      "description": "Small reservoir located in the Sudetes mountains near Lubawka, offering scenic views and strong, gusty winds. Suitable mainly for experienced riders due to variable wind and limited launch area.",
+      "llmComment": ""
+    }
+  },
+  {
     "name": "Podersdorf",
     "country": "Austria",
     "windguruUrl": "https://www.windguru.cz/859182",
