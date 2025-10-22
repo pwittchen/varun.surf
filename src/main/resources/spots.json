@@ -690,6 +690,29 @@
     }
   },
   {
+    "name": "Jūra Spot (Monciškės)",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/64975",
+    "windfinderUrl": "https://www.windfinder.com/forecast/monciskes",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/DFkwysQGXMYYnzMg9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Sea, wave spot",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach between Palanga and Šventoji",
+      "hazards": "Shorebreak, strong current in NW winds, beachgoers during summer season",
+      "season": "May-September",
+      "description": "Monciškės (often called Jūratė or Jura spot) is a Baltic Sea kitesurfing location north of Palanga. Offers steady winds, clean waves and wide sandy beach, making it great for freeride and wave sessions. Works best with westerly or north-westerly winds and is less crowded than central Palanga beaches.",
+      "llmComment": ""
+    }
+  },
+  {
     "name": "Rozkoš",
     "country": "Czechia",
     "windguruUrl": "https://www.windguru.cz/4",
