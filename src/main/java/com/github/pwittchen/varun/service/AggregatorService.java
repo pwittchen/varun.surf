@@ -3,8 +3,11 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
+import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
 import com.github.pwittchen.varun.model.CurrentConditions;
+import com.github.pwittchen.varun.model.Forecast;
 import com.github.pwittchen.varun.model.ForecastData;
+import com.github.pwittchen.varun.model.ForecastModel;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.model.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.provider.SpotsDataProvider;
@@ -22,7 +25,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +52,7 @@ public class AggregatorService {
     private Map<Integer, ForecastData> forecastCache;
     private Map<Integer, CurrentConditions> currentConditions;
     private Map<Integer, String> aiAnalysis;
+    private final Map<Integer, Long> hourlyForecastCacheTimestamps;
 
     private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
@@ -64,6 +71,7 @@ public class AggregatorService {
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.aiAnalysis = new ConcurrentHashMap<>();
+        this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
@@ -93,6 +101,10 @@ public class AggregatorService {
     }
 
     public Optional<Spot> getSpotById(int id) {
+        return getSpotById(id, ForecastModel.GFS);
+    }
+
+    public Optional<Spot> getSpotById(int id, ForecastModel forecastModel) {
         return spots
                 .get()
                 .stream()
@@ -103,7 +115,10 @@ public class AggregatorService {
                     if (data == null) {
                         return spot;
                     }
-                    return spot.withForecastHourly(data.hourly());
+                    if (forecastModel == ForecastModel.IFS) {
+                        return spot.withForecastHourly(data.hourlyIfs());
+                    }
+                    return spot.withForecastHourly(data.hourlyGfs());
                 });
     }
 
@@ -233,6 +248,87 @@ public class AggregatorService {
                 .map(spot -> spot.withCurrentConditions(currentConditions.get(spot.wgId())))
                 .toList()
         );
+    }
+
+    public void fetchForecastsForAllModelsInTheBackground(int spotId) {
+        if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
+            log.info("Hourly forecast cache timestamp for spot {} is not expired yet, no need to fetch it again", spotId);
+            return;
+        }
+
+        if (areForecastsAlreadyFetched(spotId)) {
+            log.info("Forecast models for spot {} are already fetched, no need to fetch it again", spotId);
+            return;
+        }
+
+        log.info("Fetching forecast models for the spot {}", spotId);
+        final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
+
+        try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
+            var tasks = models
+                    .stream()
+                    .map(forecastModel -> scope.fork(() -> {
+                        limiter.acquire();
+                        try {
+                            return Pair.with(forecastModel, forecastService.getForecastData(spotId, forecastModel.name().toLowerCase()).block());
+                        } finally {
+                            limiter.release();
+                        }
+                    }))
+                    .toList();
+
+            try {
+                scope.join();
+            } catch (Exception e) {
+                log.error("Error while fetching forecast models for the spot", e);
+                throw new FetchingForecastModelsException(e.getMessage());
+            }
+
+            log.info("Forecast models for the spot {} fetched", spotId);
+            updateSpotAndForecastModels(spotId, tasks);
+        }
+    }
+
+    private boolean isHourlyForecastCacheTimestampNotExpired(int spotId) {
+        long timestamp = hourlyForecastCacheTimestamps.getOrDefault(spotId, 0L);
+        if (timestamp == 0L) {
+            return false;
+        }
+        Instant created = Instant.ofEpochMilli(timestamp);
+        Instant now = Instant.now();
+        return Duration.between(created, now).toHours() < 3;
+    }
+
+    private boolean areForecastsAlreadyFetched(int spotId) {
+        boolean gfsEmpty = forecastCache.get(spotId).hourlyGfs().isEmpty();
+        boolean ifsEmpty = forecastCache.get(spotId).hourlyIfs().isEmpty();
+        return !gfsEmpty && !ifsEmpty;
+    }
+
+    private void updateSpotAndForecastModels(
+            int spotId,
+            List<StructuredTaskScope.Subtask<Pair<ForecastModel, ForecastData>>> tasks
+    ) {
+        List<Pair<ForecastModel, ForecastData>> forecasts = tasks
+                .stream()
+                .map(StructuredTaskScope.Subtask::get)
+                .toList();
+
+        List<Forecast> hourlyIfs = forecasts
+                .stream()
+                .map(Pair::getValue1)
+                .map(ForecastData::hourlyIfs)
+                .flatMap(List::stream)
+                .toList();
+
+        final ForecastData data = new ForecastData(
+                forecastCache.get(spotId).daily(),
+                forecastCache.get(spotId).hourlyGfs(),
+                hourlyIfs
+        );
+
+        forecastCache.put(spotId, data);
+        hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
     }
 
     @Scheduled(fixedRate = 8 * 60 * 60 * 1000)

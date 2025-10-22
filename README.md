@@ -64,7 +64,7 @@ It's done automatically via GitHub actions `ci.yml` and `coverage.yml`
 
 ## continuous delivery
 
-After each tag push with `v` prefix, `cd.yml` GitHub action is triggered, 
+After each tag push with `v` prefix, `cd.yml` GitHub action is triggered,
 and this action deploys the latest version of the app to the VPS.
 
 ## deployment
@@ -137,3 +137,5 @@ see → [ARCH.md](ARCH.md) file
 - mobile-friendly UI
 - kite and board size calculator
 - AI forecast analysis
+- single spot view with hourly forecast
+- possibility to switch weather forecast model for the spot (currently available models: GFS, IFS)

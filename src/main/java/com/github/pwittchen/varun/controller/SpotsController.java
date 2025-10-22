@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.model.ForecastModel;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/")
 public class SpotsController {
+
     private final AggregatorService aggregatorService;
 
     public SpotsController(AggregatorService aggregatorService) {
@@ -28,8 +30,18 @@ public class SpotsController {
 
     @GetMapping("spots/{id}")
     public Mono<ResponseEntity<Spot>> spot(@PathVariable int id) {
+        aggregatorService.fetchForecastsForAllModelsInTheBackground(id);
         return Mono
                 .justOrEmpty(aggregatorService.getSpotById(id))
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("spots/{id}/{model}")
+    public Mono<ResponseEntity<Spot>> spot(@PathVariable int id, @PathVariable String model) {
+        aggregatorService.fetchForecastsForAllModelsInTheBackground(id);
+        return Mono
+                .justOrEmpty(aggregatorService.getSpotById(id, ForecastModel.valueOfGracefully(model)))
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

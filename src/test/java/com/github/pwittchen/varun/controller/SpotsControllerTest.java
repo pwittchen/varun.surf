@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.CurrentConditions;
 import com.github.pwittchen.varun.model.Forecast;
+import com.github.pwittchen.varun.model.ForecastModel;
 import com.github.pwittchen.varun.model.Spot;
 import com.github.pwittchen.varun.model.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -22,7 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 class SpotsControllerTest {
@@ -194,6 +196,99 @@ class SpotsControllerTest {
                     assertThat(response.getBody().name()).isEqualTo("Podersdorf");
                 })
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnSpotByIdAndModelWhenSpotExists() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(500760, "gfs");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody()).isNotNull();
+                    assertThat(response.getBody().name()).isEqualTo("Jastarnia");
+                    assertThat(response.getBody().country()).isEqualTo("Poland");
+                    assertThat(response.getBody().wgId()).isEqualTo(500760);
+                })
+                .verifyComplete();
+
+        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(500760);
+    }
+
+    @Test
+    void shouldReturnSpotWithIfsModel() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.IFS))).thenReturn(Optional.of(mockSpot));
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(500760, "ifs");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody()).isNotNull();
+                })
+                .verifyComplete();
+
+        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(500760);
+    }
+
+    @Test
+    void shouldReturn404WhenSpotNotFoundWithModel() {
+        when(aggregatorService.getSpotById(eq(999999), eq(ForecastModel.GFS))).thenReturn(Optional.empty());
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(999999, "gfs");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                    assertThat(response.getBody()).isNull();
+                })
+                .verifyComplete();
+
+        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(999999);
+    }
+
+    @Test
+    void shouldHandleUpperCaseModelParameter() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(500760, "GFS");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldFallbackToGfsForInvalidModelParameter() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(500760, "invalid");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                })
+                .verifyComplete();
+
+        verify(aggregatorService).getSpotById(eq(500760), eq(ForecastModel.GFS));
+    }
+
+    @Test
+    void shouldTriggerBackgroundFetchForAllModels() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+
+        controller.spot(500760, "gfs").block();
+
+        verify(aggregatorService, times(1)).fetchForecastsForAllModelsInTheBackground(500760);
     }
 
     private List<Spot> createMockSpots() {

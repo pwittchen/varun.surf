@@ -7,6 +7,7 @@
     let forecastTimeoutId = null;
     let backgroundRefreshIntervalId = null;
     let currentSpotId = null;
+    let selectedModel = 'gfs';
 
     const FORECAST_POLL_INTERVAL = 5000;
     const FORECAST_TIMEOUT_MS = 30000;
@@ -25,10 +26,27 @@
         return null;
     }
 
+    // Get selected forecast model from sessionStorage
+    function getSelectedModel() {
+        const model = sessionStorage.getItem('forecastModel');
+        if (model && (model === 'gfs' || model === 'ifs')) {
+            return model;
+        }
+        return 'gfs';
+    }
+
+    // Set selected forecast model in sessionStorage
+    function setSelectedModel(model) {
+        selectedModel = model;
+        sessionStorage.setItem('forecastModel', model);
+    }
+
     // Fetch single spot data
     async function fetchSpotData(spotId) {
         try {
-            const response = await fetch(`${API_ENDPOINT}/${spotId}`);
+            const model = getSelectedModel();
+            const url = `${API_ENDPOINT}/${spotId}${model ? '/' + model : ''}`;
+            const response = await fetch(url);
             if (!response.ok) {
                 const error = new Error(`HTTP error! status: ${response.status}`);
                 error.status = response.status;
@@ -851,6 +869,80 @@
         });
     }
 
+    // Setup model dropdown
+    function setupModelDropdown() {
+        const modelDropdown = document.getElementById('modelDropdown');
+        const modelDropdownMenu = document.getElementById('modelDropdownMenu');
+        const modelDropdownText = document.getElementById('modelDropdownText');
+
+        if (!modelDropdown || !modelDropdownMenu || !modelDropdownText) {
+            return;
+        }
+
+        // Initialize with current model
+        const currentModel = getSelectedModel();
+        modelDropdownText.textContent = currentModel.toUpperCase();
+
+        // Set up dropdown options
+        const options = document.querySelectorAll('#modelDropdownMenu .dropdown-option');
+        options.forEach(option => {
+            // Mark current option as selected
+            if (option.dataset.value === currentModel) {
+                option.classList.add('selected');
+            }
+
+            // Add click handler
+            option.addEventListener('click', () => {
+                const newModel = option.dataset.value;
+                setSelectedModel(newModel);
+                modelDropdownText.textContent = newModel.toUpperCase();
+
+                // Update selected state
+                options.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                // Close dropdown
+                modelDropdownMenu.classList.remove('open');
+                modelDropdown.classList.remove('open');
+
+                // Reload data with new model
+                if (currentSpotId) {
+                    setLoadingMessage('loadingSpotData');
+                    fetchSpotData(currentSpotId)
+                        .then(spot => {
+                            if (hasForecastData(spot)) {
+                                displaySpot(spot);
+                            } else {
+                                setLoadingMessage('loadingForecast');
+                                startForecastPolling(currentSpotId);
+                            }
+                        })
+                        .catch(error => {
+                            if (error && error.status === 404) {
+                                displayError('spotNotFound');
+                            } else {
+                                displayError('errorLoadingSpot');
+                            }
+                        });
+                }
+            });
+        });
+
+        // Toggle dropdown on button click
+        modelDropdown.addEventListener('click', () => {
+            modelDropdownMenu.classList.toggle('open');
+            modelDropdown.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!modelDropdown.contains(e.target) && !modelDropdownMenu.contains(e.target)) {
+                modelDropdownMenu.classList.remove('open');
+                modelDropdown.classList.remove('open');
+            }
+        });
+    }
+
     // Main initialization
     async function init() {
         initTheme();
@@ -860,6 +952,7 @@
         setupHamburgerMenu();
         setupHeaderNavigation();
         setupResizeHandler();
+        setupModelDropdown();
 
         const spotId = getSpotIdFromUrl();
         currentSpotId = spotId;
