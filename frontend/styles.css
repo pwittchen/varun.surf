@@ -157,6 +157,7 @@ body {
     margin-left: 50px;
     letter-spacing: -.02em;
     text-align: left;
+    cursor: pointer;
 }
 
 [data-theme="light"] .header-title {
@@ -695,6 +696,16 @@ body {
     font-size: 1.25rem;
     font-weight: 600;
     color: #fff;
+}
+
+.spot-name:hover {
+    opacity: .6;
+    cursor: pointer;
+}
+
+.spot-name-single:hover {
+    opacity: 1 !important;
+    cursor: default !important;
 }
 
 [data-theme="light"] .spot-name {
@@ -1375,6 +1386,7 @@ body {
         margin-top: 0;
         margin-left: 0;
         font-size: 2.2rem;
+        cursor: pointer;
     }
 
     .hamburger-menu {
@@ -1490,6 +1502,10 @@ body {
 
     .live-indicator {
         justify-content: center;
+    }
+
+    .theme-toggle-single-spot {
+        width: 36% !important;
     }
 }
 
@@ -1680,4 +1696,39 @@ body {
     margin-top: 15px;
     font-size: 0.95rem;
     line-height: 1.6;
+}
+
+/* Single spot view tweaks */
+body.spot-page .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 28px;
+    text-align: center;
+}
+
+body.spot-page .error-message::before {
+    content: "⚠️";
+    font-size: 2.2rem;
+}
+
+body.spot-page .error-title {
+    font-size: 1.35rem;
+}
+
+body.spot-page .error-description {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    body.spot-page #themeToggle,
+    body.spot-page #languageToggle {
+        width: 144px !important;
+        min-width: 144px !important;
+        flex: 0 0 auto;
+    }
 }

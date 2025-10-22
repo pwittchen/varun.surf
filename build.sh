@@ -96,11 +96,90 @@ echo "Copying logo file..."
 cp frontend/logo.png src/main/resources/static/logo.png
 echo "✅  logo file copied successfully"
 
+# Build spot.html (single spot page)
+echo "🚧  building spot.html..."
+cp frontend/spot.html spot.temp.html
+
+# Flatten the datafast script tag for spot.html
+echo "Flattening multiline script tags in spot.html..."
+perl -0777 -pe 's/<script\s+defer\s+data-website-id="[^"]*"\s+data-domain="[^"]*"\s+src="[^"]*">\s*<\/script>/<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU" data-domain="varun.surf" src="https:\/\/datafa.st\/js\/script.js"><\/script>/gs' spot.temp.html > spot.temp3.html
+mv spot.temp3.html spot.temp.html
+
+# Extract and temporarily remove the datafast script for spot.html
+echo "Protecting external scripts in spot.html..."
+perl -i.bak -pe 's|<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"[^>]*></script>|\nDATAFASTPLACEHOLDER_SPOT|g' spot.temp.html
+
+# Inline CSS for spot.html
+if [ -f frontend/styles.css ]; then
+    echo "Inlining CSS into spot.html..."
+    sed '/<link rel="stylesheet" href="styles.css">/c\
+CSSPLACEHOLDER_SPOT' spot.temp.html > spot.temp2.html
+    python3 - <<'PY'
+from pathlib import Path
+
+template = Path('spot.temp2.html').read_text()
+base_css = Path('frontend/styles.css').read_text().rstrip()
+
+extra_path = Path('frontend/spot-inline.css')
+extra_css = ''
+if extra_path.exists():
+    extra_css = '\n' + extra_path.read_text().strip()
+
+replacement = '    <style>\n' + base_css + extra_css + '\n    </style>'
+
+Path('spot.temp.html').write_text(template.replace('CSSPLACEHOLDER_SPOT', replacement, 1))
+PY
+    rm spot.temp2.html
+    echo "✅  CSS inlined successfully into spot.html"
+fi
+
+# Inline JavaScript for spot.html (translations first, then script-spot.js)
+if [ -f frontend/script-spot.js ]; then
+    echo "Inlining JavaScript into spot.html..."
+    sed 's|<script src="script-spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
+    if [ -f frontend/translations.js ]; then
+        echo "Including translations in spot.html..."
+        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+    else
+        echo "⚠️  frontend/translations.js not found, inlining script-spot.js only"
+        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/script-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+    fi
+    rm spot.temp2.html
+    echo "✅  JavaScript inlined successfully into spot.html"
+fi
+
+# Restore the datafast script for spot.html
+echo "Restoring external scripts in spot.html..."
+sed -i.bak2 "s|DATAFASTPLACEHOLDER_SPOT|$(cat datafast.tmp)|g" spot.temp.html
+
+# Minify spot.html
+echo "Minifying spot.html..."
+npx html-minifier-terser spot.temp.html -o spot.min.html \
+  --collapse-whitespace \
+  --remove-comments \
+  --minify-css true \
+  --minify-js true \
+  --collapse-boolean-attributes \
+  --remove-attribute-quotes \
+  --remove-redundant-attributes \
+  --remove-script-type-attributes \
+  --remove-style-link-type-attributes \
+  --use-short-doctype
+perl -pe 's/>\s+</></g' spot.min.html | tr -d '\n' > spot.html
+
+# Fix defer attribute format for spot.html
+sed -i.bak3 's/defer="defer"/defer/g' spot.html
+rm spot.min.html spot.temp.html
+cp spot.html src/main/resources/static/spot.html
+rm spot.html
+echo "✅  spot.html was built successfully"
+
 echo "✅  frontend was built successfully"
 
 # Clean up temporary frontend files
 echo "Cleaning up temporary files..."
 rm -f index.temp.html index.temp2.html index.min.html index.html index.temp.html.bak index.temp.html.bak2 index.temp.html.bak4 index.html.bak3 datafast.tmp frontend/index.html.bak frontend/index.html.bak2
+rm -f spot.temp.html spot.temp2.html spot.min.html spot.html spot.temp.html.bak spot.temp.html.bak2 spot.html.bak3 frontend/spot.html.bak frontend/spot.html.bak2
 echo "✅  temporary files cleaned up"
 
 echo "🚧  starting backend build..."

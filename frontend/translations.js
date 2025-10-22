@@ -41,6 +41,21 @@ const translations = {
         // Language code
         langCode: "EN",
 
+        // Day abbreviations
+        dayMon: "Mon",
+        dayTue: "Tue",
+        dayWed: "Wed",
+        dayThu: "Thu",
+        dayFri: "Fri",
+        daySat: "Sat",
+        daySun: "Sun",
+
+        // Error handling
+        error: "Error",
+        invalidSpotId: "Invalid or missing spot identifier.",
+        spotNotFound: "We couldn't find this spot. Double-check the link or pick another location.",
+        errorLoadingSpot: "Unable to load spot information. Please try again shortly.",
+
         // Error messages
         errorNoSpotsTitle: "No Spots Found",
         errorNoSpotsDescription: "No kitesurfing spots found for the selected filter.",
@@ -60,6 +75,9 @@ const translations = {
 
         // Loading
         loadingText: "Searching for the wind...",
+        loadingSpotData: "Loading spot data...",
+        loadingForecast: "Chasing the wind on the spot...",
+        forecastTimeout: "Connection timed out while waiting for forecast data. Please try again later.",
 
         // Favorites
         noFavoritesTitle: "No Favorites Yet",
@@ -196,6 +214,21 @@ const translations = {
         // Language code
         langCode: "PL",
 
+        // Day abbreviations
+        dayMon: "Pon",
+        dayTue: "Wt",
+        dayWed: "Śr",
+        dayThu: "Czw",
+        dayFri: "Pt",
+        daySat: "Sob",
+        daySun: "Niedz",
+
+        // Error handling
+        error: "Błąd",
+        invalidSpotId: "Nieprawidłowy lub brakujący identyfikator spotu.",
+        spotNotFound: "Nie znaleziono tego spotu. Sprawdź link lub wybierz inny spot.",
+        errorLoadingSpot: "Nie można załadować informacji o spocie. Spróbuj ponownie za chwilę.",
+
         // Error messages
         errorNoSpotsTitle: "Nie znaleziono spotów",
         errorNoSpotsDescription: "Nie znaleziono spotów kitesurfingowych dla wybranego filtra.",
@@ -215,6 +248,9 @@ const translations = {
 
         // Loading
         loadingText: "Szukam wiatru...",
+        loadingSpotData: "Ładowanie danych spotu...",
+        loadingForecast: "Trwa pogoń za wiatrem na spocie...",
+        forecastTimeout: "Przekroczono czas oczekiwania na dane prognozy. Spróbuj ponownie później.",
 
         // Favorites
         noFavoritesTitle: "Brak ulubionych",
