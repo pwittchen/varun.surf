@@ -181,8 +181,8 @@ class ForecastServiceTest {
 
         StepVerifier.create(result)
                 .assertNext(data -> {
-                    assertThat(data.hourly()).isNotNull();
-                    assertThat(data.hourly()).isNotEmpty();
+                    assertThat(data.hourlyGfs()).isNotNull();
+                    assertThat(data.hourlyGfs()).isNotEmpty();
                 })
                 .verifyComplete();
     }

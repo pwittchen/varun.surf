@@ -103,7 +103,7 @@ public class AggregatorService {
                     if (data == null) {
                         return spot;
                     }
-                    return spot.withForecastHourly(data.hourly());
+                    return spot.withForecastHourly(data.hourlyGfs());
                 });
     }
 

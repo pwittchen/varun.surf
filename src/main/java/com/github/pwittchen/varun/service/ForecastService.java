@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_MODEL = "gfs";
+    private static final String FORECAST_MODEL_GFS_DEFAULT = "gfs";
     private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1";
 
     private final OkHttpClient httpClient;
@@ -41,6 +41,10 @@ public class ForecastService {
     }
 
     public Mono<ForecastData> getForecastData(int wgSpotId) {
+        return getForecastData(wgSpotId, FORECAST_MODEL_GFS_DEFAULT);
+    }
+
+    public Mono<ForecastData> getForecastData(int wgSpotId, String forecastModel) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
         if (httpUrl == null) return Mono.just(new ForecastData(List.of(), List.of()));
         return executeHttpRequest(new Request
@@ -48,7 +52,7 @@ public class ForecastService {
                 .url(httpUrl
                         .newBuilder()
                         .addQueryParameter("s", String.valueOf(wgSpotId))
-                        .addQueryParameter("m", FORECAST_MODEL)
+                        .addQueryParameter("m", forecastModel)
                         .addQueryParameter("v", FORECAST_PARAMS)
                         .build()
                         .toString())
