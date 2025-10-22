@@ -215,7 +215,7 @@ class SpotsControllerTest {
                 })
                 .verifyComplete();
 
-        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(500760);
+        verify(aggregatorService).fetchForecastsForAllModels(500760);
     }
 
     @Test
@@ -232,7 +232,7 @@ class SpotsControllerTest {
                 })
                 .verifyComplete();
 
-        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(500760);
+        verify(aggregatorService).fetchForecastsForAllModels(500760);
     }
 
     @Test
@@ -248,7 +248,7 @@ class SpotsControllerTest {
                 })
                 .verifyComplete();
 
-        verify(aggregatorService).fetchForecastsForAllModelsInTheBackground(999999);
+        verify(aggregatorService).fetchForecastsForAllModels(999999);
     }
 
     @Test
@@ -288,7 +288,7 @@ class SpotsControllerTest {
 
         controller.spot(500760, "gfs").block();
 
-        verify(aggregatorService, times(1)).fetchForecastsForAllModelsInTheBackground(500760);
+        verify(aggregatorService, times(1)).fetchForecastsForAllModels(500760);
     }
 
     private List<Spot> createMockSpots() {

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.Disposable;
@@ -254,7 +255,8 @@ public class AggregatorService {
         );
     }
 
-    public void fetchForecastsForAllModelsInTheBackground(int spotId) {
+    @Async
+    public void fetchForecastsForAllModels(int spotId) {
         if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
             log.info("Hourly forecast cache timestamp for spot {} is not expired yet, no need to fetch it again", spotId);
             return;
