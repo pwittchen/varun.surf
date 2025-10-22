@@ -529,6 +529,29 @@
     }
   },
   {
+    "name": "Wrzosowo",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/3635",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wrzosowo_plaza",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/nZuSntG7QesR8Bqx9",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "W, NW, N",
+      "waterTemp": "10-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grassy and sandy areas, easy access",
+      "hazards": "Shallow areas, underwater vegetation, local fishing nets",
+      "season": "April-October",
+      "description": "One of the most popular flat-water kite spots near Dziwnów. Ideal for learning and freestyle sessions thanks to large shallow lagoon protected from waves. Works best with western and northern winds.",
+      "llmComment": ""
+    }
+  },
+  {
     "name": "Podersdorf",
     "country": "Austria",
     "windguruUrl": "https://www.windguru.cz/859182",
