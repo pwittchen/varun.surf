@@ -49,9 +49,9 @@ public class AggregatorService {
     private boolean aiForecastAnalysisEnabled;
 
     private final AtomicReference<List<Spot>> spots;
-    private Map<Integer, ForecastData> forecastCache;
-    private Map<Integer, CurrentConditions> currentConditions;
-    private Map<Integer, String> aiAnalysis;
+    private final Map<Integer, ForecastData> forecastCache;
+    private final Map<Integer, CurrentConditions> currentConditions;
+    private final Map<Integer, String> aiAnalysis;
     private final Map<Integer, Long> hourlyForecastCacheTimestamps;
 
     private Disposable spotsDisposable;
@@ -163,11 +163,13 @@ public class AggregatorService {
     }
 
     private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, ForecastData>>> tasks) {
-        forecastCache = tasks
+        Map<Integer, ForecastData> newForecasts = tasks
                 .stream()
                 .map(StructuredTaskScope.Subtask::get)
                 .filter(pair -> pair.getValue1() != null && !pair.getValue1().daily().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        forecastCache.putAll(newForecasts);
 
         spots.set(spots
                 .get()
@@ -235,12 +237,14 @@ public class AggregatorService {
     }
 
     private void updateSpotsAndCurrentConditions(List<StructuredTaskScope.Subtask<Pair<Integer, CurrentConditions>>> tasks) {
-        currentConditions.clear();
-        currentConditions = tasks
+        Map<Integer, CurrentConditions> newConditions = tasks
                 .stream()
                 .map(StructuredTaskScope.Subtask::get)
                 .filter(pair -> !CurrentConditionsEmptyFilter.isEmpty(pair.getValue1()))
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        currentConditions.clear();
+        currentConditions.putAll(newConditions);
 
         spots.set(spots
                 .get()
@@ -300,8 +304,12 @@ public class AggregatorService {
     }
 
     private boolean areForecastsAlreadyFetched(int spotId) {
-        boolean gfsEmpty = forecastCache.get(spotId).hourlyGfs().isEmpty();
-        boolean ifsEmpty = forecastCache.get(spotId).hourlyIfs().isEmpty();
+        ForecastData data = forecastCache.get(spotId);
+        if (data == null) {
+            return false;
+        }
+        boolean gfsEmpty = data.hourlyGfs().isEmpty();
+        boolean ifsEmpty = data.hourlyIfs().isEmpty();
         return !gfsEmpty && !ifsEmpty;
     }
 
@@ -375,13 +383,15 @@ public class AggregatorService {
     }
 
     private void updateSpotsAndAiForecastAnalysis(List<StructuredTaskScope.Subtask<Pair<Spot, String>>> tasks) {
-        aiAnalysis.clear();
-        aiAnalysis = tasks
+        Map<Integer, String> newAnalysis = tasks
                 .stream()
                 .map(StructuredTaskScope.Subtask::get)
                 .filter(pair -> pair.getValue1() != null && !pair.getValue1().isEmpty())
                 .map(pair -> Pair.with(pair.getValue0().wgId(), pair.getValue1()))
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+
+        aiAnalysis.clear();
+        aiAnalysis.putAll(newAnalysis);
 
         spots.set(spots
                 .get()
