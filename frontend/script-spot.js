@@ -196,9 +196,10 @@
         const isMobile = window.innerWidth <= 768;
 
         if (isMobile) {
-            // Mobile: Show only day of week and hour (without minutes)
+            // Mobile: Show only first two letters of day and hour (without minutes)
             const hour = timeToken.split(':')[0];
-            return `${translatedDay} ${hour}`.trim();
+            const shortDay = translatedDay.substring(0, 2);
+            return `${shortDay} ${hour}`.trim();
         } else {
             // Desktop: Show full date with day of month, day of week, and time
             return `${formattedDayOfMonth}. ${translatedDay} ${timeToken}`.trim();
