@@ -192,7 +192,17 @@
         const translatedDay = translateDayName(dayToken);
         const formattedDayOfMonth = dayOfMonthToken.padStart(2, '0');
 
-        return `${formattedDayOfMonth}. ${translatedDay} ${timeToken}`.trim();
+        // Check if mobile view (screen width <= 768px)
+        const isMobile = window.innerWidth <= 768;
+
+        if (isMobile) {
+            // Mobile: Show only day of week and hour (without minutes)
+            const hour = timeToken.split(':')[0];
+            return `${translatedDay} ${hour}`.trim();
+        } else {
+            // Desktop: Show full date with day of month, day of week, and time
+            return `${formattedDayOfMonth}. ${translatedDay} ${timeToken}`.trim();
+        }
     }
 
     // Helper function to get a country flag
@@ -800,6 +810,27 @@
         }
     }
 
+    // Setup window resize handler to re-render dates when crossing mobile/desktop threshold
+    function setupResizeHandler() {
+        let resizeTimeout;
+        let wasMobile = window.innerWidth <= 768;
+
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const isMobile = window.innerWidth <= 768;
+
+                // Only re-render if we crossed the mobile/desktop threshold
+                if (isMobile !== wasMobile) {
+                    wasMobile = isMobile;
+                    if (currentSpot) {
+                        displaySpot(currentSpot);
+                    }
+                }
+            }, 150); // Debounce resize events
+        });
+    }
+
     // Main initialization
     async function init() {
         initTheme();
@@ -808,6 +839,7 @@
         setupInfoToggle();
         setupHamburgerMenu();
         setupHeaderNavigation();
+        setupResizeHandler();
 
         const spotId = getSpotIdFromUrl();
         currentSpotId = spotId;
