@@ -39,11 +39,11 @@ public class SpotsController {
 
     @GetMapping("spots/{id}/{model}")
     public Mono<ResponseEntity<Spot>> spot(@PathVariable int id, @PathVariable String model) {
-        aggregatorService.fetchForecastsForAllModelsInTheBackground(id);
         return Mono
                 .justOrEmpty(aggregatorService.getSpotById(id, ForecastModel.valueOfGracefully(model)))
                 .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .doOnSuccess(_ -> aggregatorService.fetchForecastsForAllModelsInTheBackground(id));
     }
 
     @GetMapping("health")
