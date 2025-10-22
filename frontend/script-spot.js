@@ -423,6 +423,9 @@
 
         let forecastRows = '';
         if (forecastData && forecastData.length > 0) {
+            let previousDay = null;
+            let dayColorIndex = 0;
+
             forecastData.forEach(day => {
                 let windClass = '';
                 let windTextClass = '';
@@ -458,8 +461,24 @@
                     }
                 }
 
+                // Extract day from date string to detect day changes
+                const currentDay = day.date ? day.date.split(' ')[0] : null;
+                const isDayChange = previousDay && currentDay && previousDay !== currentDay;
+
+                if (isDayChange) {
+                    dayColorIndex = (dayColorIndex + 1) % 2;
+                }
+
+                // Alternating border colors for each day
+                const borderColor = dayColorIndex === 0 ? 'rgba(74, 158, 255, 0.4)' : 'rgba(255, 158, 74, 0.4)';
+                const dayBorderStyle = `border-left: 3px solid ${borderColor};`;
+                const dayBackgroundColor = dayColorIndex === 0 ? 'rgba(74, 158, 255, 0.03)' : 'rgba(74, 158, 255, 0.06)';
+                const combinedStyle = `${dayBorderStyle} background-color: ${dayBackgroundColor};`;
+
+                previousDay = currentDay;
+
                 forecastRows += `
-                        <tr class="${windClass}">
+                        <tr class="${windClass}" style="${combinedStyle}">
                             <td><strong>${formatForecastDateLabel(day.date)}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
                             <td class="${windTextClass}">${day.gusts} kts</td>
