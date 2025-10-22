@@ -97,6 +97,10 @@ public class AggregatorService {
     }
 
     public Optional<Spot> getSpotById(int id) {
+        return getSpotById(id, ForecastModel.GFS);
+    }
+
+    public Optional<Spot> getSpotById(int id, ForecastModel forecastModel) {
         return spots
                 .get()
                 .stream()
@@ -106,6 +110,9 @@ public class AggregatorService {
                     var data = forecastCache.get(id);
                     if (data == null) {
                         return spot;
+                    }
+                    if (forecastModel == ForecastModel.IFS) {
+                        return spot.withForecastHourly(data.hourlyIfs());
                     }
                     return spot.withForecastHourly(data.hourlyGfs());
                 });

@@ -1,5 +1,8 @@
 package com.github.pwittchen.varun.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The ForecastModel enum represents different weather forecast models,
  * which are used to generate meteorological data and predictions.
@@ -11,5 +14,17 @@ package com.github.pwittchen.varun.model;
  */
 public enum ForecastModel {
     GFS,
-    IFS
+    IFS;
+
+    private static final Logger log = LoggerFactory.getLogger(ForecastModel.class);
+
+     public static ForecastModel valueOfGracefully(String model) {
+        try {
+            return ForecastModel.valueOf(model.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            log.error("Unknown forecast model: {}", model);
+            log.error("Fallback to default model: {}", ForecastModel.GFS);
+            return ForecastModel.GFS;
+        }
+    }
 }
