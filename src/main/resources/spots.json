@@ -713,6 +713,52 @@
     }
   },
   {
+    "name": "Häädemeeste",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/872453",
+    "windfinderUrl": "https://www.windfinder.com/forecast/haeaedemeeste",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/EVyCfAWHqUg2zhCg6",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Lagoon, flat to shallow water",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide grassy beach with easy access and parking",
+      "hazards": "Shallow areas, soft mud bottom, occasional algae",
+      "season": "May-September",
+      "description": "Häädemeeste is one of Estonia’s best flat-water kitesurfing spots located on the Gulf of Riga coast. The shallow lagoon and consistent westerly winds make it ideal for freestyle and beginners. Calm and uncrowded area with stunning sunsets over the bay.",
+      "llmComment": ""
+    }
+  },
+  {
+    "name": "Hiiumaa",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/956419",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hiiumaa_island_surfers_paradise",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/GmXV9jd7BaNEbRcp7",
+    "currentConditions": {},
+    "forecast": [],
+    "aiAnalysis": "",
+    "spotInfo": {
+      "type": "Island – mix of wave and flat-water spots",
+      "bestWind": "W, SW, NW, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Multiple sandy and grassy beaches around the island – Ristna, Luidja, and Kärdla are popular access points",
+      "hazards": "Cold water early/late in the season, seaweed, rocks near some launches",
+      "season": "May-September",
+      "description": "Hiiumaa is Estonia’s kitesurfing paradise offering both wave and flat-water conditions depending on the coast. Ristna on the west side is famous for clean Baltic waves, while Luidja Bay provides sheltered flat water for freestyle and beginners. Consistent winds, beautiful nature and low crowds make it one of the top Baltic kite destinations.",
+      "llmComment": ""
+    }
+  },
+  {
     "name": "Rozkoš",
     "country": "Czechia",
     "windguruUrl": "https://www.windguru.cz/4",
