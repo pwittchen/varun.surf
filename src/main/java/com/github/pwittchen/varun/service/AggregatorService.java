@@ -61,7 +61,9 @@ public class AggregatorService {
     private final CurrentConditionsService currentConditionsService;
     private final AiService aiService;
 
-    private final Semaphore limiter = new Semaphore(32);
+    private final Semaphore forecastLimiter = new Semaphore(32);
+    private final Semaphore currentConditionsLimiter = new Semaphore(32);
+    private final Semaphore aiLimiter = new Semaphore(16);
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
@@ -166,11 +168,11 @@ public class AggregatorService {
             var tasks = spotWgIds
                     .stream()
                     .map(id -> scope.fork(() -> {
-                        limiter.acquire();
+                        forecastLimiter.acquire();
                         try {
                             return Pair.with(id, forecastService.getForecastData(id).block());
                         } finally {
-                            limiter.release();
+                            forecastLimiter.release();
                         }
                     }))
                     .toList();
@@ -229,13 +231,13 @@ public class AggregatorService {
             var tasks = spotWgIds
                     .stream()
                     .map(id -> scope.fork(() -> {
-                        limiter.acquire();
+                        currentConditionsLimiter.acquire();
                         try {
                             var conditions = currentConditionsService.fetchCurrentConditions(id).block();
                             updateSpotCurrentConditions(id, conditions);
                             return Pair.with(id, conditions);
                         } finally {
-                            limiter.release();
+                            currentConditionsLimiter.release();
                         }
                     }))
                     .toList();
@@ -282,11 +284,11 @@ public class AggregatorService {
             var tasks = models
                     .stream()
                     .map(forecastModel -> scope.fork(() -> {
-                        limiter.acquire();
+                        forecastLimiter.acquire();
                         try {
                             return Pair.with(forecastModel, forecastService.getForecastData(spotId, forecastModel.name().toLowerCase()).block());
                         } finally {
-                            limiter.release();
+                            forecastLimiter.release();
                         }
                     }))
                     .toList();
@@ -371,13 +373,13 @@ public class AggregatorService {
                     .get()
                     .stream()
                     .map(spot -> scope.fork(() -> {
-                        limiter.acquire();
+                        aiLimiter.acquire();
                         try {
                             var analysis = aiService.fetchAiAnalysis(spot).block();
                             updateSpotAiAnalysis(spot.wgId(), analysis);
                             return Pair.with(spot.wgId(), analysis);
                         } finally {
-                            limiter.release();
+                            aiLimiter.release();
                         }
                     }))
                     .toList();
