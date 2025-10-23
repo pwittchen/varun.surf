@@ -80,7 +80,7 @@ class SponsorsControllerTest {
 
     @Test
     void shouldReturnSponsorByIdWhenSponsorExists() {
-        Sponsor mockSponsor = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png");
+        Sponsor mockSponsor = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
         when(sponsorsService.getSponsorById(0)).thenReturn(Optional.of(mockSponsor));
 
         Mono<ResponseEntity<Sponsor>> result = controller.sponsor(0);
@@ -112,7 +112,7 @@ class SponsorsControllerTest {
 
     @Test
     void shouldReturnSponsorWithAllFields() {
-        Sponsor mockSponsor = new Sponsor(1, false, "TestSponsor", "https://test.com", "test.png");
+        Sponsor mockSponsor = new Sponsor(1, false, "TestSponsor", "https://test.com", "test.png", null, null);
         when(sponsorsService.getSponsorById(1)).thenReturn(Optional.of(mockSponsor));
 
         Mono<ResponseEntity<Sponsor>> result = controller.sponsor(1);
@@ -175,7 +175,7 @@ class SponsorsControllerTest {
     @Test
     void shouldReturnMainSponsorsWithCorrectData() {
         List<Sponsor> mockMainSponsors = List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png")
+                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null)
         );
         when(sponsorsService.getMainSponsors()).thenReturn(mockMainSponsors);
 
@@ -194,15 +194,15 @@ class SponsorsControllerTest {
 
     private List<Sponsor> createMockSponsors() {
         return List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png"),
-                new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png")
+                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null),
+                new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null)
         );
     }
 
     private List<Sponsor> createMockMainSponsors() {
         return List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png"),
-                new Sponsor(2, true, "MainSponsor", "https://main.com", "main.png")
+                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null),
+                new Sponsor(2, true, "MainSponsor", "https://main.com", "main.png", null, null)
         );
     }
 }

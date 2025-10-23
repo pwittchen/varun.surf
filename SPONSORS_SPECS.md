@@ -28,10 +28,13 @@ File Size:
 
 Color Considerations:
 
-Since your site has dark/light theme support, sponsors should provide:
-- Dark background version (logo with light/white elements) - for dark mode
-- Light background version (logo with dark elements) - for light mode
-- OR a single logo with good contrast that works on both backgrounds
+Since your site has dark/light theme support, sponsors can provide:
+- **Option 1 (Recommended)**: Theme-specific logos
+  - Dark background version (logo with light/white elements) - for dark mode (`logoDark`)
+  - Light background version (logo with dark elements) - for light mode (`logoLight`)
+- **Option 2**: Single universal logo with good contrast that works on both backgrounds (`logo`)
+
+If only one logo is provided, it will automatically be used for both themes.
 
 Example Specifications Template:
 
@@ -53,8 +56,9 @@ Design Tips for Sponsors:
 
 The CSS uses object-fit: contain, so logos maintain their aspect ratio and won't be distorted, but they'll be constrained within the 200px × 60px box (150px × 50px on mobile).
 
-Exemplary entry in the `sponsors.json` file:
+Exemplary entries in the `sponsors.json` file:
 
+**Option 1: Single universal logo (works for both themes)**
 ```json
   {
     "id": 0,
@@ -64,6 +68,25 @@ Exemplary entry in the `sponsors.json` file:
     "logo": "sponsor1.png"
   }
 ```
+
+**Option 2: Theme-specific logos (recommended for best appearance)**
+```json
+  {
+    "id": 1,
+    "main": true,
+    "name": "Sponsor2",
+    "link": "https://sponsor2.pl",
+    "logo": "sponsor2.png",
+    "logoDark": "sponsor2-dark.png",
+    "logoLight": "sponsor2-light.png"
+  }
+```
+
+**Note**: When using theme-specific logos:
+- The `logo` field serves as a fallback
+- `logoDark` is displayed when the site is in dark mode
+- `logoLight` is displayed when the site is in light mode
+- If `logoDark` or `logoLight` is not provided, the system will use the `logo` field for both themes
 
 ## PL
 
@@ -94,10 +117,13 @@ Rozmiar Pliku:
 
 Kwestie Kolorystyczne:
 
-Ponieważ strona obsługuje motyw jasny/ciemny, sponsorzy powinni dostarczyć:
-- Wersję dla ciemnego tła (logo z jasnymi/białymi elementami) - dla trybu ciemnego
-- Wersję dla jasnego tła (logo z ciemnymi elementami) - dla trybu jasnego
-- LUB jedno logo z dobrym kontrastem, które działa na obu tłach
+Ponieważ strona obsługuje motyw jasny/ciemny, sponsorzy mogą dostarczyć:
+- **Opcja 1 (Zalecana)**: Logo dedykowane dla każdego motywu
+  - Wersja dla ciemnego tła (logo z jasnymi/białymi elementami) - dla trybu ciemnego (`logoDark`)
+  - Wersja dla jasnego tła (logo z ciemnymi elementami) - dla trybu jasnego (`logoLight`)
+- **Opcja 2**: Jedno uniwersalne logo z dobrym kontrastem, które działa na obu tłach (`logo`)
+
+Jeśli dostarczono tylko jedno logo, zostanie ono automatycznie użyte dla obu motywów.
 
 Przykładowy Szablon Specyfikacji:
 
@@ -119,8 +145,9 @@ Wskazówki Projektowe dla Sponsorów:
 
 CSS używa object-fit: contain, więc logo zachowują swoje proporcje i nie będą zniekształcone, ale będą ograniczone do ramki 200px × 60px (150px × 50px na urządzeniach mobilnych).
 
-Przykładowy wpis w pliku `sponsors.json`:
+Przykładowe wpisy w pliku `sponsors.json`:
 
+**Opcja 1: Jedno uniwersalne logo (działa dla obu motywów)**
 ```json
   {
     "id": 0,
@@ -130,4 +157,23 @@ Przykładowy wpis w pliku `sponsors.json`:
     "logo": "sponsor1.png"
   }
 ```
+
+**Opcja 2: Logo dedykowane dla każdego motywu (zalecane dla najlepszego wyglądu)**
+```json
+  {
+    "id": 1,
+    "main": true,
+    "name": "Sponsor2",
+    "link": "https://sponsor2.pl",
+    "logo": "sponsor2.png",
+    "logoDark": "sponsor2-dark.png",
+    "logoLight": "sponsor2-light.png"
+  }
+```
+
+**Uwaga**: Przy użyciu logo dedykowanych dla motywów:
+- Pole `logo` służy jako rezerwowe
+- `logoDark` jest wyświetlane, gdy strona jest w trybie ciemnym
+- `logoLight` jest wyświetlane, gdy strona jest w trybie jasnym
+- Jeśli `logoDark` lub `logoLight` nie jest podane, system użyje pola `logo` dla obu motywów
 
