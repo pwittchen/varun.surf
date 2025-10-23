@@ -98,8 +98,8 @@ body {
 .header-logo {
     position: absolute;
     left: 0;
-    top: 10px;
-    height: 40px;
+    top: 14px;
+    height: auto;
     width: auto;
     cursor: pointer;
     transition: opacity 0.3s ease;
