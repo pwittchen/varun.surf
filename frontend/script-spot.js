@@ -977,6 +977,9 @@
                 await new Promise(resolve => setTimeout(resolve, remainingDelay));
             }
 
+            // Load sponsors for this spot
+            renderSpotSponsor(spotId);
+
             if (hasForecastData(spot)) {
                 displaySpot(spot);
             } else {
@@ -990,6 +993,70 @@
                 displayError('errorLoadingSpot');
             }
         }
+    }
+
+    // Sponsors functionality
+    async function fetchSponsorBySpotId(spotId) {
+        try {
+            const response = await fetch(`/api/v1/sponsors/${spotId}`);
+            if (!response.ok) {
+                return null;
+            }
+            const sponsor = await response.json();
+            return sponsor || null;
+        } catch (error) {
+            console.error('Error fetching sponsor:', error);
+            return null;
+        }
+    }
+
+    function checkImageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    }
+
+    async function renderSpotSponsor(spotId) {
+        const sponsorsContainer = document.getElementById('sponsorsContainer');
+        if (!sponsorsContainer) {
+            return;
+        }
+
+        const sponsor = await fetchSponsorBySpotId(spotId);
+
+        if (!sponsor) {
+            sponsorsContainer.innerHTML = '';
+            return;
+        }
+
+        const logoPath = `/img/sponsors/${sponsor.logo}`;
+        const imageExists = await checkImageExists(logoPath);
+
+        let sponsorsHTML = '<div class="sponsors-container"><div class="sponsors-list">';
+
+        if (imageExists) {
+            sponsorsHTML += `
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        <img src="${logoPath}" alt="${sponsor.name}" class="sponsor-logo">
+                    </a>
+                </div>
+            `;
+        } else {
+            sponsorsHTML += `
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        <span class="sponsor-name">${sponsor.name}</span>
+                    </a>
+                </div>
+            `;
+        }
+
+        sponsorsHTML += '</div></div>';
+        sponsorsContainer.innerHTML = sponsorsHTML;
     }
 
     // Make functions global for onclick handlers

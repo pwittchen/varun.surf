@@ -1700,6 +1700,72 @@
     window.closeIcmModal = closeIcmModal;
     window.toggleFavorite = toggleFavorite;
 
+    // Sponsors functionality
+    async function fetchMainSponsors() {
+        try {
+            const response = await fetch('/api/v1/sponsors/main');
+            if (!response.ok) {
+                return [];
+            }
+            const sponsors = await response.json();
+            return sponsors || [];
+        } catch (error) {
+            console.error('Error fetching main sponsors:', error);
+            return [];
+        }
+    }
+
+    function checkImageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    }
+
+    async function renderMainSponsors() {
+        const sponsorsContainer = document.getElementById('sponsorsContainer');
+        if (!sponsorsContainer) {
+            return;
+        }
+
+        const sponsors = await fetchMainSponsors();
+
+        if (!sponsors || sponsors.length === 0) {
+            sponsorsContainer.innerHTML = '';
+            return;
+        }
+
+        let sponsorsHTML = '<div class="sponsors-container"><div class="sponsors-list">';
+
+        for (const sponsor of sponsors) {
+            const logoPath = `/img/sponsors/${sponsor.logo}`;
+            const imageExists = await checkImageExists(logoPath);
+
+            if (imageExists) {
+                sponsorsHTML += `
+                    <div class="sponsor-item">
+                        <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                            <img src="${logoPath}" alt="${sponsor.name}" class="sponsor-logo">
+                        </a>
+                    </div>
+                `;
+            } else {
+                sponsorsHTML += `
+                    <div class="sponsor-item">
+                        <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                            <span class="sponsor-name">${sponsor.name}</span>
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        sponsorsHTML += '</div></div>';
+        sponsorsContainer.innerHTML = sponsorsHTML;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
         initLanguage();
@@ -1718,6 +1784,9 @@
                 openAppInfoModal();
             });
         }
+
+        // Load main sponsors
+        renderMainSponsors();
 
         // Check if we should show favorites first, before loading spots
         const savedFavoritesState = localStorage.getItem('showingFavorites');
