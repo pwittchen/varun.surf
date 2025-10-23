@@ -1,0 +1,23 @@
+[
+  {
+    "id": 0,
+    "main": true,
+    "name": "Test1",
+    "link": "https://test2.pl",
+    "logo": "test1.png"
+  },
+  {
+    "id": 0,
+    "main": true,
+    "name": "Test2",
+    "link": "https://test2.pl",
+    "logo": "test2.png"
+  },
+  {
+    "id": 500760,
+    "main": false,
+    "name": "Test3",
+    "link": "https://test3.pl",
+    "logo": "test3.png"
+  }
+]
