@@ -82,7 +82,7 @@ public class AggregatorService {
     }
 
     @PostConstruct
-    void init() {
+    public void init() {
         spotsDisposable = spotsDataProvider
                 .getSpots()
                 .collectList()
@@ -95,7 +95,7 @@ public class AggregatorService {
     }
 
     @PreDestroy
-    void cleanup() {
+    public void cleanup() {
         spotsDisposable.dispose();
     }
 
@@ -151,17 +151,18 @@ public class AggregatorService {
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 5, backoff = @Backoff(delay = 3000))
-    void fetchForecastsEveryThreeHours() throws FetchingForecastException {
+    public void fetchForecastsEveryThreeHours() throws FetchingForecastException {
         log.info("Fetching forecasts");
         fetchForecasts();
     }
 
     @Recover
-    void recoverFromFetchingForecasts(FetchingForecastException e) {
+    public void recoverFromFetchingForecasts(FetchingForecastException e) {
         log.error("Failed while fetching forecasts after 3 attempts", e);
     }
 
-    private void fetchForecasts() throws FetchingForecastException {
+    @Async
+    public void fetchForecasts() throws FetchingForecastException {
         var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
@@ -214,7 +215,7 @@ public class AggregatorService {
 
     @Scheduled(fixedRate = 60_000)
     @Retryable(retryFor = FetchingCurrentConditionsException.class, maxAttempts = 5, backoff = @Backoff(delay = 5000))
-    void fetchCurrentConditionsEveryOneMinute() throws FetchingCurrentConditionsException {
+    public void fetchCurrentConditionsEveryOneMinute() throws FetchingCurrentConditionsException {
         log.info("Fetching current conditions");
         fetchCurrentConditions();
     }
@@ -224,7 +225,8 @@ public class AggregatorService {
         log.error("Failed while fetching current conditions after 3 attempts", e);
     }
 
-    private void fetchCurrentConditions() throws FetchingCurrentConditionsException {
+    @Async
+    public void fetchCurrentConditions() throws FetchingCurrentConditionsException {
         var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
@@ -353,7 +355,7 @@ public class AggregatorService {
 
     @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 7000))
-    void fetchAiAnalysisEveryEightHours() throws FetchingForecastException {
+    public void fetchAiAnalysisEveryEightHours() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis");
             fetchAiForecastAnalysis();
@@ -363,11 +365,12 @@ public class AggregatorService {
     }
 
     @Recover
-    void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
+    public void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
         log.error("Failed while fetching AI forecast analysis after 3 attempts", e);
     }
 
-    private void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
+    @Async
+    public void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
         try (var scope = new StructuredTaskScope<>("aianalysis", Thread.ofVirtual().factory())) {
             var tasks = spots
                     .get()
