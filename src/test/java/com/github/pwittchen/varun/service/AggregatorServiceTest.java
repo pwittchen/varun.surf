@@ -354,6 +354,82 @@ class AggregatorServiceTest {
         verify(aiService).fetchAiAnalysis(any());
     }
 
+    @Test
+    void shouldUpdateAiAnalysisIncrementallyInCache() throws Exception {
+        // given
+        var spot1 = createTestSpot(123, "Test Spot 1");
+        var spot2 = createTestSpot(456, "Test Spot 2");
+
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
+
+        // First spot completes quickly, second spot is slow
+        when(aiService.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analysis for spot 1"));
+        when(aiService.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
+            Thread.sleep(300);
+            return Mono.just("Analysis for spot 2");
+        });
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        var aiThread = new Thread(() -> {
+            try {
+                aggregatorService.fetchAiAnalysisEveryEightHours();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        aiThread.start();
+
+        Thread.sleep(150); // Wait for first spot to complete, second still processing
+
+        // then - first spot should already have AI analysis in cache even though second is still processing
+        @SuppressWarnings("unchecked")
+        var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysis");
+        assertThat(aiAnalysisCache).containsKey(123);
+        assertThat(aiAnalysisCache.get(123)).isEqualTo("Analysis for spot 1");
+
+        // Verify enrichment works - the spot should have AI analysis when retrieved
+        var spots = aggregatorService.getSpots();
+        var enrichedSpot1 = spots.stream()
+                .filter(s -> s.wgId() == 123)
+                .findFirst();
+
+        assertThat(enrichedSpot1).isPresent();
+        assertThat(enrichedSpot1.get().aiAnalysis()).isEqualTo("Analysis for spot 1");
+
+        aiThread.join(5000);
+    }
+
+    @Test
+    void shouldEnrichSpotsWithCurrentConditionsFromCache() throws Exception {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var currentConditions = new CurrentConditions("2025-01-01 12:00", 15, 25, "NW", 10);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(currentConditions));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when - fetch current conditions (simulates scheduled task)
+        aggregatorService.fetchCurrentConditionsEveryOneMinute();
+
+        // then - verify data is in cache
+        @SuppressWarnings("unchecked")
+        var currentConditionsCache = (Map<Integer, CurrentConditions>) ReflectionTestUtils.getField(aggregatorService, "currentConditions");
+        assertThat(currentConditionsCache).containsKey(123);
+        assertThat(currentConditionsCache.get(123)).isEqualTo(currentConditions);
+
+        // and verify enrichment works - spot should have current conditions when retrieved
+        var spots = aggregatorService.getSpots();
+        assertThat(spots).hasSize(1);
+        assertThat(spots.get(0).currentConditions()).isEqualTo(currentConditions);
+    }
+
     private Spot createTestSpot(int wgId, String name) {
         var forecast = new ArrayList<Forecast>();
         var hourlyForecast = new ArrayList<Forecast>();
