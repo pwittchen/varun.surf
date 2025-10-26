@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.service;
 
-import com.github.pwittchen.varun.model.Sponsor;
-import com.github.pwittchen.varun.provider.SponsorsDataProvider;
+import com.github.pwittchen.varun.model.sponsor.Sponsor;
+import com.github.pwittchen.varun.provider.sponsors.SponsorsDataProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

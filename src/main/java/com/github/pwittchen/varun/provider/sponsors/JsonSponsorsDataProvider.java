@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.provider;
+package com.github.pwittchen.varun.provider.sponsors;
 
-import com.github.pwittchen.varun.model.Sponsor;
+import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.core.io.ClassPathResource;

@@ -1,8 +1,8 @@
 package com.github.pwittchen.varun.service;
 
-import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.Spot;
-import com.github.pwittchen.varun.model.SpotInfo;
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 

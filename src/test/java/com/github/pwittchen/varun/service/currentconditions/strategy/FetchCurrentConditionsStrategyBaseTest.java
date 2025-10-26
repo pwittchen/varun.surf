@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.service.strategy;
+package com.github.pwittchen.varun.service.currentconditions.strategy;
 
-import com.github.pwittchen.varun.model.CurrentConditions;
+import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;

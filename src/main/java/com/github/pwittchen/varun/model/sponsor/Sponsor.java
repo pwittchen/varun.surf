@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.model;
+package com.github.pwittchen.varun.model.sponsor;
 
 public record Sponsor(
         int id,

@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.service.strategy;
+package com.github.pwittchen.varun.service.currentconditions.strategy;
 
-import com.github.pwittchen.varun.model.CurrentConditions;
+import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
 import okhttp3.OkHttpClient;
 import reactor.core.publisher.Mono;
 

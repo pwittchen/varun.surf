@@ -1,8 +1,8 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
-import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.ForecastData;
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.ForecastData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;

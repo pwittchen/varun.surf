@@ -1,10 +1,10 @@
 package com.github.pwittchen.varun.controller;
 
-import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.ForecastModel;
-import com.github.pwittchen.varun.model.Spot;
-import com.github.pwittchen.varun.model.SpotInfo;
+import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
+import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
-import com.github.pwittchen.varun.model.ForecastModel;
-import com.github.pwittchen.varun.model.Spot;
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
+import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

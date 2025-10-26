@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.model;
+package com.github.pwittchen.varun.model.forecast;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

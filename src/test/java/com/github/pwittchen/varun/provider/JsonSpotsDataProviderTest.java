@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.provider;
 
-import com.github.pwittchen.varun.model.Spot;
+import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.provider.spots.JsonSpotsDataProvider;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.mapper;
 
-import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.ForecastWg;
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.ForecastWg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

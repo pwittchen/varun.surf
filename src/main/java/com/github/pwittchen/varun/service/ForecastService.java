@@ -1,9 +1,9 @@
 package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
-import com.github.pwittchen.varun.model.Forecast;
-import com.github.pwittchen.varun.model.ForecastData;
-import com.github.pwittchen.varun.model.ForecastWg;
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.ForecastData;
+import com.github.pwittchen.varun.model.forecast.ForecastWg;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;

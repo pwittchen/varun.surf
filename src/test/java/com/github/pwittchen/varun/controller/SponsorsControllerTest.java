@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
-import com.github.pwittchen.varun.model.Sponsor;
+import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.github.pwittchen.varun.service.SponsorsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

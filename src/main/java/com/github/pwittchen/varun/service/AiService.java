@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service;
 
-import com.github.pwittchen.varun.model.Spot;
+import com.github.pwittchen.varun.model.spot.Spot;
 import com.google.gson.Gson;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;

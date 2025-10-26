@@ -1,9 +1,9 @@
 package com.github.pwittchen.varun.service;
 
-import com.github.pwittchen.varun.model.CurrentConditions;
-import com.github.pwittchen.varun.service.strategy.FetchCurrentConditions;
-import com.github.pwittchen.varun.service.strategy.FetchCurrentConditionsStrategyPodersdorf;
-import com.github.pwittchen.varun.service.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
+import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.service.currentconditions.strategy.FetchCurrentConditions;
+import com.github.pwittchen.varun.service.currentconditions.strategy.FetchCurrentConditionsStrategyPodersdorf;
+import com.github.pwittchen.varun.service.currentconditions.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

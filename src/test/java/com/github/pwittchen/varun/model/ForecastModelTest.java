@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.model;
 
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
