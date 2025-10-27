@@ -758,7 +758,7 @@
             }
 
             currentConditionsRow = `
-                    <tr class="${windClass}" style="border-top: 2px solid #404040;">
+                    <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${t('nowLabel')}</strong>
