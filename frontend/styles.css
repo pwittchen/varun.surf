@@ -1858,23 +1858,21 @@ body.spot-page .error-description {
     flex-direction: column;
 }
 
+.spot-embedded-map {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+}
+
+.spot-embedded-map-frame iframe {
+    width: 100% !important;
+    height: clamp(260px, 40vw, 360px);
+    border: 0;
+    border-radius: 12px;
+}
+
 /* Spot info card styling */
 .spot-info-card {
     background: var(--bg-secondary);
-    padding-top: 20px;
-}
-
-.spot-info-title {
-    color: #ffffff;
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-primary);
-}
-
-[data-theme="light"] .spot-info-title {
-    color: #0d6efd;
 }
 
 .spot-info-card .info-grid {
@@ -1905,19 +1903,6 @@ body.spot-page .error-description {
 
 /* AI analysis card styling */
 .ai-analysis-card {
-}
-
-.ai-analysis-title {
-    color: #ffffff;
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-primary);
-}
-
-[data-theme="light"] .ai-analysis-title {
-    color: #0d6efd;
 }
 
 .ai-analysis-card .ai-analysis p {
@@ -1965,6 +1950,10 @@ body.spot-page .weather-table tbody tr:hover {
 
     .spot-detail-right {
         width: 100%;
+    }
+
+    .spot-embedded-map {
+        display: none;
     }
 
     /* Mobile-specific spot card adjustments */
@@ -2022,12 +2011,4 @@ body.spot-page .weather-table tbody tr:hover {
         grid-column: 1 / -1 !important;
     }
 
-    /* White title for spot info in mobile */
-    .spot-info-title {
-        color: #fff !important;
-    }
-
-    [data-theme="light"] .spot-info-title {
-        color: #000 !important;
-    }
 }

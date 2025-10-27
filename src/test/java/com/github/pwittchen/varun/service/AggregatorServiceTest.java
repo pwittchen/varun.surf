@@ -44,6 +44,9 @@ class AggregatorServiceTest {
     @Mock
     private AiService aiService;
 
+    @Mock
+    private GoogleMapsService googleMapsService;
+
     private AggregatorService aggregatorService;
 
     @BeforeEach
@@ -52,7 +55,8 @@ class AggregatorServiceTest {
                 spotsDataProvider,
                 forecastService,
                 currentConditionsService,
-                aiService
+                aiService,
+                googleMapsService
         );
     }
 
@@ -444,6 +448,7 @@ class AggregatorServiceTest {
                 null,
                 forecast,
                 hourlyForecast,
+                null,
                 null,
                 null,
                 null

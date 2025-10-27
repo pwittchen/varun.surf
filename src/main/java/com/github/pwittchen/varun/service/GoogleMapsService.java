@@ -14,20 +14,20 @@ import reactor.core.scheduler.Schedulers;
 import java.io.IOException;
 
 @Service
-public class MapService {
+public class GoogleMapsService {
 
-    private static final Logger log = LoggerFactory.getLogger(MapService.class);
+    private static final Logger log = LoggerFactory.getLogger(GoogleMapsService.class);
     private static final int MAX_REDIRECTS = 5;
     private final OkHttpClient httpClient;
 
-    public MapService() {
+    public GoogleMapsService() {
         this(new OkHttpClient.Builder()
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .build());
     }
 
-    MapService(OkHttpClient httpClient) {
+    GoogleMapsService(OkHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 

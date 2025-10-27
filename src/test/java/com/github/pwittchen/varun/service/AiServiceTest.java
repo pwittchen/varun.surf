@@ -288,6 +288,7 @@ class AiServiceTest {
                 new ArrayList<>(),
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -304,6 +305,7 @@ class AiServiceTest {
                 null,
                 new ArrayList<>(forecasts),
                 new ArrayList<>(),
+                null,
                 null,
                 spotInfo,
                 null

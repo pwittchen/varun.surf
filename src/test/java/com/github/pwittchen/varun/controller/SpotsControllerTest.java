@@ -307,6 +307,7 @@ class SpotsControllerTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 null,
+                null,
                 spotInfo1,
                 "2025-01-15 14:30:00 CET"
         );
@@ -322,6 +323,7 @@ class SpotsControllerTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                null,
                 null,
                 spotInfo2,
                 "2025-01-15 14:30:00 CET"
@@ -348,6 +350,7 @@ class SpotsControllerTest {
                 null,
                 forecasts,
                 new ArrayList<>(),
+                null,
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"
@@ -378,6 +381,7 @@ class SpotsControllerTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 null,
+                null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"
         );
@@ -399,6 +403,7 @@ class SpotsControllerTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                null,
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"
@@ -432,6 +437,7 @@ class SpotsControllerTest {
                 currentConditions,
                 forecasts,
                 new ArrayList<>(),
+                null,
                 null,
                 spotInfo,
                 "2025-01-15 14:30:00 CET"

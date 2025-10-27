@@ -5,11 +5,11 @@ import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
 import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.currentconditions.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.github.pwittchen.varun.model.currentconditions.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -24,6 +24,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
@@ -54,31 +55,37 @@ public class AggregatorService {
     private final Map<Integer, CurrentConditions> currentConditions;
     private final Map<Integer, String> aiAnalysis;
     private final Map<Integer, Long> hourlyForecastCacheTimestamps;
+    private final Map<Integer, String> embeddedMaps;
 
     private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
     private final CurrentConditionsService currentConditionsService;
     private final AiService aiService;
+    private final GoogleMapsService googleMapsService;
 
     private final Semaphore forecastLimiter = new Semaphore(32);
     private final Semaphore currentConditionsLimiter = new Semaphore(32);
     private final Semaphore aiLimiter = new Semaphore(16);
+    private Disposable embeddedMapFetchSubscription;
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
             ForecastService forecastService,
             CurrentConditionsService currentConditionsService,
-            AiService aiService) {
+            AiService aiService,
+            GoogleMapsService googleMapsService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.aiAnalysis = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
+        this.embeddedMaps = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
         this.aiService = aiService;
+        this.googleMapsService = googleMapsService;
     }
 
     @PostConstruct
@@ -96,7 +103,12 @@ public class AggregatorService {
 
     @PreDestroy
     public void cleanup() {
-        spotsDisposable.dispose();
+        if (spotsDisposable != null) {
+            spotsDisposable.dispose();
+        }
+        if (embeddedMapFetchSubscription != null) {
+            embeddedMapFetchSubscription.dispose();
+        }
     }
 
     public List<Spot> getSpots() {
@@ -146,7 +158,37 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withAiAnalysis(analysis);
         }
 
+        var embeddedMap = embeddedMaps.get(spot.wgId());
+        if (embeddedMap != null && !embeddedMap.isEmpty()) {
+            enrichedSpot = enrichedSpot.withEmbeddedMap(embeddedMap);
+        } else {
+            scheduleEmbeddedMapFetch(spot);
+        }
+
         return enrichedSpot;
+    }
+
+    private void scheduleEmbeddedMapFetch(final Spot spot) {
+        embeddedMapFetchSubscription = loadEmbeddedMap(spot)
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnNext(map -> embeddedMaps.put(spot.wgId(), map))
+                .doOnError(error -> log.warn("Embedded map fetch failed for spot {}", spot.wgId(), error))
+                .subscribe();
+    }
+
+    private Mono<String> loadEmbeddedMap(Spot spot) {
+        if (spot.locationUrl() == null || spot.locationUrl().isEmpty()) {
+            return Mono.empty();
+        }
+
+        return googleMapsService
+                .getEmbeddedMapCode(spot)
+                .timeout(Duration.ofSeconds(5))
+                .filter(map -> map != null && !map.isBlank())
+                .onErrorResume(error -> {
+                    log.warn("Failed to load embedded map for spot {} within timeout", spot.wgId(), error);
+                    return Mono.empty();
+                });
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
@@ -270,12 +312,12 @@ public class AggregatorService {
     @Async
     public void fetchForecastsForAllModels(int spotId) {
         if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
-            log.info("Hourly forecast cache timestamp for spot {} is not expired yet, no need to fetch it again", spotId);
+            log.info("Hourly forecast cache timestamp for spot {} is not expired yet", spotId);
             return;
         }
 
         if (areForecastsAlreadyFetched(spotId)) {
-            log.info("Forecast models for spot {} are already fetched, no need to fetch it again", spotId);
+            log.info("Forecast models for spot {} are already in cache", spotId);
             return;
         }
 

@@ -384,6 +384,9 @@
         // Check if any forecast has wave data
         const hasWaveData = forecastData && forecastData.some(day => day.wave !== undefined);
 
+        // Determine layout
+        const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
+
         // Current conditions row (to be added at the top of the table)
         let currentConditionsRow = '';
         if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
@@ -489,9 +492,7 @@
 
                 // Alternating border colors for each day
                 const borderColor = dayColorIndex === 0 ? 'rgba(74, 158, 255, 0.4)' : 'rgba(255, 158, 74, 0.4)';
-                const dayBorderStyle = `border-left: 3px solid ${borderColor};`;
-                const dayBackgroundColor = dayColorIndex === 0 ? 'rgba(74, 158, 255, 0.03)' : 'rgba(74, 158, 255, 0.06)';
-                const combinedStyle = `${dayBorderStyle} background-color: ${dayBackgroundColor};`;
+                const combinedStyle = `border-left: 3px solid ${borderColor};`;
 
                 previousDay = currentDay;
 
@@ -517,7 +518,6 @@
             const info = spot.spotInfo;
             spotInfoCardHtml = `
                 <div class="spot-info-card">
-                    <h3 class="spot-info-title">Spot Information</h3>
                     <div class="info-grid">
                         <div class="info-item" style="grid-column: 1 / -1;">
                             <div class="info-label">Overview</div>
@@ -556,12 +556,20 @@
             `;
         }
 
+        // Build embedded map HTML (desktop only)
+        const embeddedMapHtml = isDesktopView && spot.embeddedMap && spot.embeddedMap.trim().length > 0
+            ? `
+                <div class="spot-embedded-map">
+                    <div class="spot-embedded-map-frame">${spot.embeddedMap}</div>
+                </div>
+            `
+            : '';
+
         // Build AI analysis card HTML
         let aiAnalysisCardHtml = '';
         if (spot.aiAnalysis) {
             aiAnalysisCardHtml = `
                 <div class="ai-analysis-card">
-                    <h3 class="ai-analysis-title">AI Forecast Analysis</h3>
                     <div class="ai-analysis">
                         <p>${spot.aiAnalysis}</p>
                     </div>
@@ -597,6 +605,7 @@
                         ${aiAnalysisCardHtml}
                     </div>
                     <div class="spot-detail-right">
+                        ${embeddedMapHtml}
                         <table class="weather-table">
                             <thead>
                                 <tr>
@@ -636,15 +645,39 @@
             errorMessage.style.display = 'none';
         }
 
-        currentSpot = spot;
+        const previousSpot = currentSpot;
         currentErrorKey = null;
         currentErrorText = '';
         currentLoadingKey = null;
 
+        let preservedMapNode = null;
+        const shouldPreserveMap = previousSpot
+            && previousSpot.embeddedMap
+            && spot.embeddedMap
+            && previousSpot.embeddedMap === spot.embeddedMap;
+
+        if (shouldPreserveMap) {
+            const currentMapFrame = document.querySelector('.spot-embedded-map-frame');
+            if (currentMapFrame && currentMapFrame.firstElementChild) {
+                preservedMapNode = currentMapFrame.firstElementChild;
+            }
+        }
+
         if (spot) {
             spotContainer.innerHTML = createSpotCard(spot);
+
+            if (shouldPreserveMap && preservedMapNode) {
+                const newMapFrame = document.querySelector('.spot-embedded-map-frame');
+                if (newMapFrame) {
+                    newMapFrame.innerHTML = '';
+                    newMapFrame.appendChild(preservedMapNode);
+                }
+            }
+
             document.title = `${spot.name} - VARUN.SURF`;
         }
+
+        currentSpot = spot;
 
         if (currentSpotId) {
             startBackgroundRefresh(currentSpotId);
