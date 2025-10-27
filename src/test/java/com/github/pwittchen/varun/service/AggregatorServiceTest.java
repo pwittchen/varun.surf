@@ -44,6 +44,9 @@ class AggregatorServiceTest {
     @Mock
     private AiService aiService;
 
+    @Mock
+    private GoogleMapsService googleMapsService;
+
     private AggregatorService aggregatorService;
 
     @BeforeEach
@@ -52,7 +55,8 @@ class AggregatorServiceTest {
                 spotsDataProvider,
                 forecastService,
                 currentConditionsService,
-                aiService
+                aiService,
+                googleMapsService
         );
     }
 
@@ -160,11 +164,11 @@ class AggregatorServiceTest {
                 "spots",
                 new java.util.concurrent.atomic.AtomicReference<>(List.of(spot))
         );
-        ReflectionTestUtils.setField(
-                aggregatorService,
-                "forecastCache",
-                Map.of(123, new ForecastData(dailyForecast, hourlyForecast, List.of()))
-        );
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(dailyForecast, hourlyForecast, List.of()));
 
         // when
         var result = aggregatorService.getSpotById(123);
@@ -444,6 +448,7 @@ class AggregatorServiceTest {
                 null,
                 forecast,
                 hourlyForecast,
+                null,
                 null,
                 null,
                 null

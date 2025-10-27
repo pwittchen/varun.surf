@@ -25,6 +25,7 @@ public record Spot(
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<Forecast> forecastHourly,
         String aiAnalysis,
+        String embeddedMap,
         SpotInfo spotInfo,
         String lastUpdated
 ) {
@@ -54,6 +55,7 @@ public record Spot(
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysis,
+                this.embeddedMap,
                 this.spotInfo,
                 currentTimestamp()
         );
@@ -72,6 +74,7 @@ public record Spot(
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysis,
+                this.embeddedMap,
                 this.spotInfo,
                 CurrentConditionsEmptyFilter.isEmpty(currentConditions)
                         ? this.lastUpdated
@@ -92,6 +95,7 @@ public record Spot(
                 this.forecast,
                 this.forecastHourly,
                 aiAnalysis,
+                this.embeddedMap,
                 this.spotInfo,
                 aiAnalysis != null && aiAnalysis.isEmpty()
                         ? this.lastUpdated
@@ -112,6 +116,7 @@ public record Spot(
                 forecast,
                 forecastHourly,
                 this.aiAnalysis,
+                this.embeddedMap,
                 this.spotInfo,
                 currentTimestamp()
         );
@@ -130,6 +135,26 @@ public record Spot(
                 this.forecast,
                 forecastHourly,
                 this.aiAnalysis,
+                this.embeddedMap,
+                this.spotInfo,
+                this.lastUpdated
+        );
+    }
+
+    public Spot withEmbeddedMap(String embeddedMap) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysis,
+                embeddedMap,
                 this.spotInfo,
                 this.lastUpdated
         );
