@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,11 +52,11 @@ public class AggregatorService {
     private boolean aiForecastAnalysisEnabled;
 
     private final AtomicReference<List<Spot>> spots;
-    private final Map<Integer, ForecastData> forecastCache;
-    private final Map<Integer, CurrentConditions> currentConditions;
-    private final Map<Integer, String> aiAnalysis;
-    private final Map<Integer, Long> hourlyForecastCacheTimestamps;
-    private final Map<Integer, String> embeddedMaps;
+    private final ConcurrentMap<Integer, ForecastData> forecastCache;
+    private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
+    private final ConcurrentMap<Integer, String> aiAnalysis;
+    private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
+    private final ConcurrentMap<Integer, String> embeddedMaps;
 
     private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
@@ -67,7 +68,8 @@ public class AggregatorService {
     private final Semaphore forecastLimiter = new Semaphore(32);
     private final Semaphore currentConditionsLimiter = new Semaphore(32);
     private final Semaphore aiLimiter = new Semaphore(16);
-    private Disposable embeddedMapFetchSubscription;
+    private final ConcurrentMap<Integer, Disposable> embeddedMapFetchSubscriptions;
+    private final ConcurrentMap<Integer, Object> forecastModelsLocks;
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
@@ -81,6 +83,8 @@ public class AggregatorService {
         this.aiAnalysis = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.embeddedMaps = new ConcurrentHashMap<>();
+        this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
+        this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
@@ -106,9 +110,8 @@ public class AggregatorService {
         if (spotsDisposable != null) {
             spotsDisposable.dispose();
         }
-        if (embeddedMapFetchSubscription != null) {
-            embeddedMapFetchSubscription.dispose();
-        }
+        embeddedMapFetchSubscriptions.values().forEach(Disposable::dispose);
+        embeddedMapFetchSubscriptions.clear();
     }
 
     public List<Spot> getSpots() {
@@ -169,11 +172,15 @@ public class AggregatorService {
     }
 
     private void scheduleEmbeddedMapFetch(final Spot spot) {
-        embeddedMapFetchSubscription = loadEmbeddedMap(spot)
-                .subscribeOn(Schedulers.boundedElastic())
-                .doOnNext(map -> embeddedMaps.put(spot.wgId(), map))
-                .doOnError(error -> log.warn("Embedded map fetch failed for spot {}", spot.wgId(), error))
-                .subscribe();
+
+        embeddedMapFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
+                loadEmbeddedMap(spot)
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .doOnNext(map -> embeddedMaps.put(id, map))
+                        .doOnError(error -> log.warn("Embedded map fetch failed for spot {}", id, error))
+                        .doFinally(_ -> embeddedMapFetchSubscriptions.remove(id))
+                        .subscribe()
+        );
     }
 
     private Mono<String> loadEmbeddedMap(Spot spot) {
@@ -321,31 +328,45 @@ public class AggregatorService {
             return;
         }
 
-        log.info("Fetching forecast models for the spot {}", spotId);
-        final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
+        Object lock = forecastModelsLocks.computeIfAbsent(spotId, _ -> new Object());
 
-        try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
-            var tasks = models
-                    .stream()
-                    .map(forecastModel -> scope.fork(() -> {
-                        forecastLimiter.acquire();
-                        try {
-                            return Pair.with(forecastModel, forecastService.getForecastData(spotId, forecastModel.name().toLowerCase()).block());
-                        } finally {
-                            forecastLimiter.release();
-                        }
-                    }))
-                    .toList();
-
-            try {
-                scope.join();
-            } catch (Exception e) {
-                log.error("Error while fetching forecast models for the spot", e);
-                throw new FetchingForecastModelsException(e.getMessage());
+        synchronized (lock) {
+            if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
+                log.info("Hourly forecast cache timestamp for spot {} is not expired yet", spotId);
+                return;
             }
 
-            log.info("Forecast models for the spot {} fetched", spotId);
-            updateSpotAndForecastModels(spotId, tasks);
+            if (areForecastsAlreadyFetched(spotId)) {
+                log.info("Forecast models for spot {} are already in cache", spotId);
+                return;
+            }
+
+            log.info("Fetching forecast models for the spot {}", spotId);
+            final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
+
+            try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
+                var tasks = models
+                        .stream()
+                        .map(forecastModel -> scope.fork(() -> {
+                            forecastLimiter.acquire();
+                            try {
+                                return Pair.with(forecastModel, forecastService.getForecastData(spotId, forecastModel.name().toLowerCase()).block());
+                            } finally {
+                                forecastLimiter.release();
+                            }
+                        }))
+                        .toList();
+
+                try {
+                    scope.join();
+                } catch (Exception e) {
+                    log.error("Error while fetching forecast models for the spot", e);
+                    throw new FetchingForecastModelsException(e.getMessage());
+                }
+
+                log.info("Forecast models for the spot {} fetched", spotId);
+                updateSpotAndForecastModels(spotId, tasks);
+            }
         }
     }
 
@@ -393,6 +414,7 @@ public class AggregatorService {
 
         forecastCache.put(spotId, data);
         hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
+        forecastModelsLocks.remove(spotId);
     }
 
     @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
