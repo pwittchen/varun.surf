@@ -1021,8 +1021,7 @@ body {
 .info-item {
     background: var(--bg-tertiary);
     padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border-primary);
+    border-radius: 0;
 }
 
 .info-label {
@@ -1035,6 +1034,12 @@ body {
 .info-value {
     font-weight: 600;
     color: var(--text-primary);
+}
+
+/* Rounded corners for spot info items in modal only */
+.modal-content .info-item {
+    border-radius: 8px;
+    border: 1px solid var(--border-primary);
 }
 
 /* ICM Modal Styles */
@@ -1831,5 +1836,198 @@ body.spot-page .error-description {
     .sponsor-name {
         font-size: 0.9rem;
         padding: 6px 12px;
+    }
+}
+
+/* Spot detail page two-column layout */
+.spot-detail-container {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.spot-detail-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.spot-detail-right {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Spot info card styling */
+.spot-info-card {
+    background: var(--bg-secondary);
+    padding-top: 20px;
+}
+
+.spot-info-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="light"] .spot-info-title {
+    color: #0d6efd;
+}
+
+.spot-info-card .info-grid {
+    gap: 12px;
+}
+
+.spot-info-card .info-item {
+    background: var(--bg-tertiary);
+    padding: 10px 14px;
+    border-radius: 0;
+}
+
+.spot-info-card .info-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.spot-info-card .info-value {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* AI analysis card styling */
+.ai-analysis-card {
+}
+
+.ai-analysis-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="light"] .ai-analysis-title {
+    color: #0d6efd;
+}
+
+.ai-analysis-card .ai-analysis p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+    background: var(--bg-tertiary);
+    padding: 10px 14px;
+}
+
+.ai-analysis-card .modal-disclaimer {
+    margin-top: 12px;
+    font-size: 0.8rem;
+}
+
+/* Desktop single spot view - hide info and AI buttons */
+body.spot-page .external-link.info-link,
+body.spot-page .external-link.ai-link {
+    display: none;
+}
+
+/* Desktop single spot view - subtle hover on table rows */
+body.spot-page .weather-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+body.spot-page .weather-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+[data-theme="light"] body.spot-page .weather-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Mobile view - stack vertically */
+@media (max-width: 768px) {
+    .spot-detail-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .spot-detail-left {
+        display: none;
+    }
+
+    .spot-detail-right {
+        width: 100%;
+    }
+
+    /* Mobile-specific spot card adjustments */
+    body.spot-page .spot-card {
+        border: none !important;
+        padding: 16px !important;
+    }
+
+    /* Show info and AI buttons in mobile view only */
+    body.spot-page .external-link.info-link,
+    body.spot-page .external-link.ai-link {
+        display: inline-flex;
+    }
+
+    /* Add padding to spot header in mobile */
+    body.spot-page .spot-header {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+
+    /* Add padding to external links in mobile */
+    body.spot-page .external-links {
+        margin-top: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Add padding to weather table in mobile */
+    body.spot-page .weather-table {
+        margin-top: 0;
+    }
+
+    /* Single column layout for spot info in mobile */
+    .spot-info-card .info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    .spot-info-card .info-item {
+        border-radius: 0 !important;
+        border: none !important;
+        border-bottom: 1px solid var(--border-primary) !important;
+        background: transparent !important;
+        padding: 12px 0 !important;
+    }
+
+    .spot-info-card .info-item:last-child {
+        border-bottom: none !important;
+    }
+
+    /* Override grid-column span for single column */
+    .spot-info-card .info-item[style*="grid-column"] {
+        grid-column: 1 / -1 !important;
+    }
+
+    /* White title for spot info in mobile */
+    .spot-info-title {
+        color: #fff !important;
+    }
+
+    [data-theme="light"] .spot-info-title {
+        color: #000 !important;
     }
 }
