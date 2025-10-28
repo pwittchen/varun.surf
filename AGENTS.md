@@ -30,57 +30,182 @@
 ```
 User Browser (static/index.html)
     ↓ HTTP GET
-REST API Controller (/api/v1/spots)
+REST API Controllers (/api/v1/*)
+    ├─→ /api/v1/spots (all spots with forecasts)
+    ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
+    ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
+    ├─→ /api/v1/sponsors (sponsors list)
+    └─→ /api/v1/health (health check)
     ↓
-AggregatorService (orchestrates data fetching)
-    ├─→ ForecastService ─→ Windguru API
-    ├─→ CurrentConditionsService ─→ Weather Stations
-    └─→ AiService ─→ LLM Provider (OpenAI/Ollama)
+AggregatorService (orchestrates with Java 24 StructuredTaskScope)
+    ├─→ ForecastService ─→ Windguru API (GFS & IFS models)
+    ├─→ CurrentConditionsService ─→ Weather Stations (strategy pattern)
+    ├─→ GoogleMapsService ─→ Google Maps (embeds)
+    └─→ AiService ─→ LLM Provider (OpenAI/Ollama via Spring AI)
 ```
 
 ### Core Services
 
 #### 1. AggregatorService (`service/AggregatorService.java`)
-**Purpose**: Central data orchestration and caching layer.
-- Scheduled to fetch forecast data every 3 hours
-- Scheduled to fetch current conditions every 1 minute
-- Maintains three in-memory caches:
-  - Forecast cache (Map<Integer, List<Forecast>>)
-  - Current conditions cache (Map<Integer, CurrentConditions>)
-  - AI analysis cache (Map<Integer, String>)
-- Coordinates parallel data fetching operations
+**Purpose**: Central data orchestration and caching layer using Java 24 structured concurrency.
+
+**Scheduled Tasks** (run in parallel with `@Async`):
+- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all 74+ spots
+- **Current Conditions**: Every 1 minute - real-time wind data
+- **AI Analysis**: Every 8 hours - LLM-powered summaries (if feature enabled)
+
+**Java 24 StructuredTaskScope**:
+- Uses virtual threads via `Thread.ofVirtual().factory()`
+- Scoped concurrent execution with automatic cleanup
+- Subtasks tracked within scopes (ShutdownOnFailure or default)
+- `.block()` is allowed within StructuredTaskScope contexts
+
+**Semaphore-based Rate Limiting**:
+- `forecastLimiter`: 32 concurrent Windguru API calls
+- `currentConditionsLimiter`: 32 concurrent weather station calls
+- `aiLimiter`: 16 concurrent LLM API calls
+- Prevents overwhelming external APIs
+
+**Six In-Memory Caches** (ConcurrentHashMap):
+1. `forecastCache: Map<Integer, ForecastData>` - daily, hourlyGfs, hourlyIfs
+2. `currentConditions: Map<Integer, CurrentConditions>` - latest wind data
+3. `aiAnalysis: Map<Integer, String>` - AI-generated summaries
+4. `embeddedMaps: Map<Integer, String>` - lazy-loaded iframe HTML
+5. `hourlyForecastCacheTimestamps: Map<Integer, Long>` - 3h TTL for IFS
+6. `spots: AtomicReference<List<Spot>>` - loaded once at startup
+
+**On-Demand IFS Fetching**:
+- When `/api/v1/spots/{id}` is accessed, triggers async `fetchForecastsForAllModels()`
+- Fetches both GFS and IFS hourly forecasts
+- Caches for 3 hours to avoid redundant API calls
+- Uses synchronized locks per spot to prevent duplicate fetches
 
 #### 2. ForecastService (`service/ForecastService.java`)
-**Purpose**: Fetch and parse weather forecast data.
-- Fetches from Windguru micro API (text-based format)
-- Uses regex patterns to extract weather data
-- Returns structured hourly forecast data
-- Data includes: wind speed/direction, temperature, precipitation, gusts
+**Purpose**: Fetch and parse weather forecast data from Windguru.
+
+**Multiple Forecast Models**:
+- **GFS** (Global Forecast System - NOAA) - default model
+- **IFS** (Integrated Forecast System - ECMWF) - higher resolution
+
+**Data Format**:
+- Fetches text-based exports from Windguru micro API
+- Parses using regex patterns (model-specific URLs)
+- Returns `ForecastData(daily, hourlyGfs, hourlyIfs)`
+
+**Data Included**:
+- Wind speed/gust (knots)
+- Direction (degrees + cardinal via WeatherForecastMapper)
+- Temperature (Celsius)
+- Precipitation (mm)
+- Timestamps (hourly or daily)
 
 #### 3. CurrentConditionsService (`service/CurrentConditionsService.java`)
-**Purpose**: Fetch real-time wind conditions.
-- Implements strategy pattern for multiple weather station providers
-- Current providers:
-  - WiatrKadyny (Polish stations)
-  - Kiteriders (Austrian stations)
-- Scrapes and parses real-time data from station websites
-- Returns current wind speed, gusts, direction, temperature
+**Purpose**: Fetch real-time wind conditions from weather stations.
+
+**Strategy Pattern**:
+- `FetchCurrentConditions` interface
+- `FetchCurrentConditionsStrategyBase` abstract class
+- Strategy implementations:
+  - `FetchCurrentConditionsStrategyWiatrKadynyStations` (Polish stations)
+  - `FetchCurrentConditionsStrategyPodersdorf` (Austrian stations)
+
+**Process**:
+- Scrapes HTML from station websites
+- Parses real-time wind data
+- Filters empty conditions (not cached)
+- Returns CurrentConditions with timestamp
+
+**Data Included**:
+- Wind speed/gust (knots)
+- Direction (degrees + cardinal)
+- Temperature (Celsius)
+- Updated timestamp
 
 #### 4. AiService (`service/AiService.java`)
-**Purpose**: Generate AI-powered forecast summaries (optional feature).
-- Uses Spring AI ChatClient interface
-- Supports two providers:
-  - OpenAI (gpt-4o-mini model)
-  - Ollama (local LLM, smollm2:135m model)
-- Disabled by default (can be enabled via configuration)
-- Generates natural language forecast analysis
+**Purpose**: Generate AI-powered forecast summaries (optional, experimental feature).
 
-#### 5. SpotsController (`controller/SpotsController.java`)
-**Purpose**: REST API endpoints.
-- `GET /api/v1/spots` - Returns all spots with enriched data
-- `GET /api/v1/spots/{id}` - Returns single spot details
-- Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
-- Handles CORS, error responses, logging
+**Configuration**:
+- Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
+- Provider selection: `app.ai.provider: ollama` or `openai`
+
+**Supported Providers**:
+- **OpenAI** (gpt-4o-mini) - production-ready, costs ~$0.01 per 74 spots
+- **Ollama** (smollm2:135m) - free, local, may need fine-tuning
+
+**Professional Prompt Engineering**:
+- System role: Professional kitesurfing weather analyst
+- Kite size recommendations:
+  - Below 8 kts: not rideable
+  - 8-11 kts: foil only
+  - 12-14 kts: large kite (12-17 m²)
+  - 15-18 kts: medium kite (11-12 m²)
+  - 19-25 kts: small kite (9-10 m²)
+  - 28+ kts: very small kite (5-7 m²)
+- Custom context: `SpotInfo.llmComment` for spot-specific instructions
+- Output: 2-3 sentence objective summary (no emojis)
+
+**Streaming Implementation**:
+```java
+chatClient.prompt().user(prompt)
+    .stream().content()
+    .delayElements(Duration.ofSeconds(1))
+    .timeout(Duration.ofSeconds(15))
+    .retry(3)
+    .collectList()
+    .map(list -> String.join("", list))
+```
+
+#### 5. GoogleMapsService (`service/GoogleMapsService.java`)
+**Purpose**: Convert location URLs to embeddable Google Maps iframes.
+
+**URL Processing**:
+- Unshortens goo.gl and maps.app.goo.gl links (max 5 redirects)
+- Extracts coordinates from @lat,lng format
+- Parses /place/ locations
+- Adds output=embed parameter
+
+**Features**:
+- Satellite view: `z=13&t=k`
+- Iframe generation: 600x450px
+- Lazy-loaded on first spot access
+- Cached indefinitely (until restart)
+- 5-second timeout with reactive error handling
+
+**OkHttp Client**:
+- Custom client with redirect disabled (manual handling)
+- HEAD requests for efficiency
+- Follows 3xx redirects manually
+
+#### 6. SpotsController (`controller/SpotsController.java`)
+**Purpose**: REST API endpoints for kite spots.
+
+**Endpoints**:
+- `GET /api/v1/spots` - All spots with cached data (Flux<Spot>)
+- `GET /api/v1/spots/{id}` - Single spot with GFS forecast (Mono<Spot>)
+  - Triggers async fetchForecastsForAllModels() for IFS
+- `GET /api/v1/spots/{id}/{model}` - Single spot with model selection
+  - model: "gfs" or "ifs"
+  - Triggers async IFS fetch if not cached
+- `GET /api/v1/health` - Health check endpoint
+
+**Response Processing**:
+- Enriches spots with cached forecasts, conditions, AI analysis, maps
+- Returns 404 if spot not found
+- Uses `doOnSuccess()` for async operations
+
+#### 7. SponsorsController (`controller/SponsorsController.java`)
+**Purpose**: REST API endpoints for sponsors.
+
+**Endpoints**:
+- `GET /api/v1/sponsors` - All sponsors (Flux<Sponsor>)
+- `GET /api/v1/sponsors/{id}` - Single sponsor by ID (Mono<Sponsor>)
+- `GET /api/v1/sponsors/main` - Main sponsors only (Flux<Sponsor>)
+  - Filters by `isMain: true` flag
+
+**Data Source**:
+- Loaded from `sponsors.json` at startup
+- Managed by SponsorsService
+- JsonSponsorsDataProvider handles JSON parsing
 
 ### Data Models
 

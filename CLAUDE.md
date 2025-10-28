@@ -29,39 +29,88 @@
 Browser Frontend (static/index.html)
     ↓ (HTTP REST)
 Spring Boot Backend API (/api/v1/*)
+    ├─→ /api/v1/spots (all spots with forecasts)
+    ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
+    ├─→ /api/v1/spots/{id}/{model} (single spot with GFS or IFS forecast)
+    └─→ /api/v1/sponsors (sponsors and main sponsors)
     ↓
-AggregatorService (core orchestrator)
-    ├─→ ForecastService → Windguru micro API
-    ├─→ CurrentConditionsService → Multiple station providers
-    └─→ AiService → LLM (OpenAI/Ollama)
+AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
+    ├─→ ForecastService → Windguru micro API (GFS & IFS models)
+    ├─→ CurrentConditionsService → Multiple station providers (strategy pattern)
+    ├─→ GoogleMapsService → Google Maps (URL resolver, embeds)
+    └─→ AiService → LLM (OpenAI/Ollama via Spring AI ChatClient)
 ```
 
 ### Key Components
 
 1. **AggregatorService** (`service/AggregatorService.java`)
-   - Central orchestrator scheduled to fetch data every 3 hours
-   - Maintains in-memory caches for: forecasts, current conditions, AI analysis
-   - Coordinates all data fetching operations
+   - Central orchestrator with multiple scheduled tasks:
+     - Forecasts: every 3 hours (GFS model, daily + hourly)
+     - Current conditions: every 1 minute
+     - AI analysis: every 8 hours (if enabled)
+   - Uses Java 24 StructuredTaskScope with virtual threads for concurrent execution
+   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI)
+   - Maintains 6 in-memory caches (ConcurrentHashMap):
+     - forecastCache: Map<Integer, ForecastData(daily, hourlyGfs, hourlyIfs)>
+     - currentConditions: Map<Integer, CurrentConditions>
+     - aiAnalysis: Map<Integer, String>
+     - embeddedMaps: Map<Integer, String> (lazy-loaded)
+     - hourlyForecastCacheTimestamps: Map<Integer, Long> (3h TTL)
+     - spots: AtomicReference<List<Spot>> (loaded at startup)
+   - On-demand IFS model fetching when single spot is accessed
 
 2. **ForecastService** (`service/ForecastService.java`)
-   - Fetches hourly weather forecasts from Windguru micro API
+   - Fetches weather forecasts from Windguru micro API
+   - Supports multiple forecast models:
+     - GFS (Global Forecast System - NOAA)
+     - IFS (Integrated Forecast System - ECMWF)
    - Parses text-based exports using regex patterns
-   - Returns structured forecast data (wind speed, direction, temperature, precipitation)
+   - Returns ForecastData with daily and hourly forecasts
+   - Data includes: wind speed/gust, direction (deg + cardinal), temperature, precipitation
 
 3. **CurrentConditionsService** (`service/CurrentConditionsService.java`)
    - Uses strategy pattern for different weather station providers
-   - Providers include: WiatrKadyny, Kiteriders (Austria)
-   - Scrapes/parses real-time wind data
+   - Providers: WiatrKadyny (Poland), Kiteriders (Austria)
+   - Scrapes/parses real-time wind data from station websites
+   - Filters empty conditions (not cached)
+   - Returns current wind speed, gusts, direction, temperature, timestamp
 
 4. **AiService** (`service/AiService.java`)
-   - Optional feature (disabled by default)
+   - Optional feature (disabled by default via feature flag)
    - Generates AI-powered forecast summaries using Spring AI ChatClient
-   - Supports both OpenAI and Ollama providers
+   - Supports two providers: OpenAI (gpt-4o-mini) or Ollama (smollm2:135m)
+   - Professional kitesurfing analyst prompt with kite size recommendations:
+     - Below 8 kts: not rideable
+     - 8-11 kts: foil only
+     - 12-14 kts: large kite (12-17 m²)
+     - 15-18 kts: medium kite (11-12 m²)
+     - 19-25 kts: small kite (9-10 m²)
+     - 28+ kts: very small kite (5-7 m²)
+   - Streams responses with 15s timeout and 3 retries
+   - Supports spot-specific LLM context via SpotInfo.llmComment
 
-5. **SpotsController** (`controller/SpotsController.java`)
-   - REST API endpoint: `GET /api/v1/spots`
-   - Returns reactive `Flux<Spot>` with enriched data
-   - Additional endpoint: `GET /api/v1/spots/{id}` for individual spot details
+5. **GoogleMapsService** (`service/GoogleMapsService.java`)
+   - Converts location URLs to embeddable Google Maps iframes
+   - Unshortens goo.gl and maps.app.goo.gl URLs (max 5 redirects)
+   - Extracts coordinates from @lat,lng format
+   - Generates iframe HTML with satellite view (z=13&t=k)
+   - Lazy-loaded on first spot access, then cached
+
+6. **SpotsController** (`controller/SpotsController.java`)
+   - REST API endpoints:
+     - `GET /api/v1/spots` - all spots with cached data
+     - `GET /api/v1/spots/{id}` - single spot (GFS, triggers async IFS fetch)
+     - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
+     - `GET /api/v1/health` - health check
+   - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
+   - Enriches spots with cached forecasts, conditions, AI analysis, maps
+
+7. **SponsorsController** (`controller/SponsorsController.java`)
+   - REST API endpoints:
+     - `GET /api/v1/sponsors` - all sponsors
+     - `GET /api/v1/sponsors/{id}` - single sponsor
+     - `GET /api/v1/sponsors/main` - main sponsors only (isMain=true)
+   - Loads from sponsors.json at startup
 
 ### Data Model
 
@@ -230,13 +279,44 @@ The AI forecast analysis is disabled by default because:
 
 ## Important Notes for AI Assistants
 
-1. **Reactive Code**: This project uses Spring WebFlux. Avoid blocking operations. Use `Mono`, `Flux`, and reactive operators.
-2. **No Database**: All data is cached in-memory. State is not persisted between restarts.
-3. **Preview Features**: Java 24 preview features are enabled. Ensure compiler args include `--enable-preview`.
-4. **Immutable Data**: Spot data from `spots.json` is read-only. Current conditions and forecasts are fetched and cached dynamically.
-5. **External Dependencies**: Code relies on external APIs (Windguru, weather stations). Network failures are expected and handled gracefully.
-6. **Scheduling**: Data fetching is automated via `@Scheduled` annotations. Frontend requires manual refresh to see updates.
-7. **Cardinal Direction Mapping**: `WeatherForecastMapper` converts degrees to cardinal directions (N, NE, E, etc.).
+1. **Reactive Code**: This project uses Spring WebFlux. Avoid blocking operations. Use `Mono`, `Flux`, and reactive operators. Exception: `.block()` is allowed within Java 24 StructuredTaskScope contexts.
+
+2. **Java 24 StructuredTaskScope**: This project uses preview features for structured concurrency:
+   - Virtual threads via `Thread.ofVirtual().factory()`
+   - Scoped concurrent execution with automatic cleanup
+   - Subtasks tracked within scopes (ShutdownOnFailure or default)
+   - Semaphore-based rate limiting to control concurrent API calls
+
+3. **No Database**: All data is cached in-memory using ConcurrentHashMap. State is not persisted between restarts. This is intentional for simplicity and performance.
+
+4. **Multiple Forecast Models**:
+   - GFS (default): Fetched every 3h for all spots
+   - IFS: Lazy-loaded when single spot is accessed (cached for 3h)
+   - ForecastData structure holds both models + daily forecasts
+
+5. **Caching Strategy**:
+   - Forecasts: 3-hour refresh cycle (scheduled)
+   - Current conditions: 1-minute refresh cycle (scheduled)
+   - AI analysis: 8-hour refresh cycle (if enabled)
+   - Embedded maps: Lazy-loaded once, cached forever
+   - IFS model: On-demand, 3-hour TTL per spot
+
+6. **Immutable Data**: All models use Java records (immutable). To update, create new instances using `.withX()` methods or record constructors.
+
+7. **External Dependencies**: Code relies on third-party APIs (Windguru, weather stations, Google Maps, LLMs). Network failures are expected and handled gracefully with timeouts, retries, and empty fallbacks.
+
+8. **Scheduling**: Data fetching is automated via `@Scheduled` annotations with `@Async` execution. Multiple scheduled tasks run in parallel. Frontend shows cached data.
+
+9. **Cardinal Direction Mapping**: `WeatherForecastMapper` converts degrees (0-360) to cardinal directions (N, NE, E, SE, S, SW, W, NW) with ±22.5° tolerance.
+
+10. **AI Analysis**:
+    - Disabled by default via feature flag
+    - Streams content with Spring AI ChatClient
+    - Supports spot-specific context via SpotInfo.llmComment
+    - Professional kitesurfing analyst with kite size recommendations
+    - 15s timeout, 3 retries, 1s delay between stream chunks
+
+11. **Error Handling**: Uses `@Retryable` with exponential backoff, `@Recover` fallback methods, and reactive error operators (`onErrorResume`, `onErrorReturn`).
 
 ## Related Documentation
 

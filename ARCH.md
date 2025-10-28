@@ -20,8 +20,8 @@
                          |                          |                    |                 |
                          |      +-------------------v----+   +-----------v--------+  +-----v-----------+
                          |      |   ForecastService      |   |CurrentConditions   |  |GoogleMapsService|
-                         |      | (Windguru micro API)   |   |Service (strategies)|  |(embed maps)     |
-                         |      | GFS & IFS models       |   +----------+---------+  +--------+--------+
+                         |      | (Windguru micro API)   |   |Service (strategies)|  |   (embed maps)  |
+                         |      |   GFS & IFS models     |   +----------+---------+  +--------+--------+
                          |      +------------+-----------+              |                     |
                          |                   |                          |                     |
                          |       +-----------v-----------+   +----------v-----------+   +-----v------------+
@@ -296,8 +296,8 @@ Error Handling:
   - Structured exception hierarchy (FetchingForecastException, etc.)
 
 Performance Characteristics:
-  - Startup: ~2-5 seconds (loads 74+ spots from JSON)
-  - Forecast fetch (all spots): ~10-20 seconds (74 spots, 32 concurrent)
+  - Startup: ~2-5 seconds (loads 90+ spots from JSON)
+  - Forecast fetch (all spots): ~10-20 seconds (90 spots, 32 concurrent)
   - Current conditions fetch: ~3-5 seconds (fewer stations, 32 concurrent)
   - Single spot response: <50ms (cached data)
   - Embedded map lazy load: ~1-3 seconds (URL unshortening + conversion)
@@ -312,12 +312,12 @@ Spots:
 
   GET /api/v1/spots/{id}
     - Returns single spot by wgId with GFS forecast (default)
-    - Triggers async fetch for IFS model (cached for 3h)
+    - Triggers async fetch for GFS model (cached for 3h)
     - Response: Mono<Spot>
 
   GET /api/v1/spots/{id}/{model}
     - Returns single spot with specified forecast model (gfs or ifs)
-    - Triggers async fetch for IFS model if not cached
+    - Triggers async fetch for GFS or IFS model if not cached
     - Response: Mono<Spot>
 
 Sponsors:
