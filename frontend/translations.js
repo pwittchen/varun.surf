@@ -116,6 +116,9 @@ const translations = {
         hazardsLabel: "Hazards",
         seasonLabel: "Season",
 
+        // Sponsors
+        sponsorsOfSpotTitle: "Sponsors of the spot",
+
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kite & Board Size Calculator",
         windSpeedLabel: "Wind Speed (knots)",
@@ -295,6 +298,9 @@ const translations = {
         launchTypeLabel: "Typ startu",
         hazardsLabel: "Zagrożenia",
         seasonLabel: "Sezon",
+
+        // Sponsors
+        sponsorsOfSpotTitle: "Sponsorzy spotu",
 
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kalkulator rozmiaru latawca i deski",

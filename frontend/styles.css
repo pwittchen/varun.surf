@@ -1870,6 +1870,50 @@ body.spot-page .error-description {
     border-radius: 12px;
 }
 
+/* Sponsors card styling */
+.sponsors-card {
+    background: var(--bg-secondary);
+    margin-bottom: 12px;
+}
+
+.sponsors-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.sponsors-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sponsor-link-item {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sponsor-link-item:last-child {
+    border-bottom: none;
+}
+
+.sponsor-link-item:hover {
+    background: rgba(255, 255, 255, 0.015);
+    color: var(--accent-primary);
+}
+
 /* Spot info card styling */
 .spot-info-card {
     background: var(--bg-secondary);
