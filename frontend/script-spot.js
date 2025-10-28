@@ -190,6 +190,19 @@
         return rotations[direction] || 0;
     }
 
+    // Helper function to get wind quality class based on wind value
+    function getWindClass(windValue) {
+        if (windValue < 12) {
+            return 'wind-weak';
+        } else if (windValue >= 12 && windValue < 18) {
+            return 'wind-moderate';
+        } else if (windValue >= 18 && windValue <= 25) {
+            return 'wind-strong';
+        } else {
+            return 'wind-extreme';
+        }
+    }
+
     // Helper function to translate day names
     function translateDayName(dayName) {
         if (!dayName || typeof dayName !== 'string') {
@@ -464,21 +477,9 @@
         // Current conditions row (to be added at the top of the table)
         let currentConditionsRow = '';
         if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
-            let windClass, windTextClass;
-            const avgWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
-            if (avgWind < 12) {
-                windClass = 'weak-wind';
-                windTextClass = 'wind-weak';
-            } else if (avgWind >= 12 && avgWind < 18) {
-                windClass = 'moderate-wind';
-                windTextClass = 'wind-moderate';
-            } else if (avgWind >= 18 && avgWind <= 22) {
-                windClass = 'strong-wind';
-                windTextClass = 'wind-strong';
-            } else {
-                windClass = 'extreme-wind';
-                windTextClass = 'wind-extreme';
-            }
+            const windClass = getWindClass(spot.currentConditions.wind);
+            const windTextClass = windClass;
+            const gustTextClass = getWindClass(spot.currentConditions.gusts);
 
             const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
             const windArrow = getWindArrow(spot.currentConditions.direction);
@@ -496,8 +497,13 @@
                 }
             }
 
+            // Use wind class for row background
+            const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
+                                windClass === 'wind-moderate' ? 'moderate-wind' :
+                                windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
+
             currentConditionsRow = `
-                    <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
+                    <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${t('nowLabel')}</strong>
@@ -505,7 +511,7 @@
                             </div>
                         </td>
                         <td class="${windTextClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${windTextClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${gustTextClass}">${spot.currentConditions.gusts} kts</td>
                         <td class="${windTextClass}">
                             <span class="wind-arrow">${windArrow}</span> ${spot.currentConditions.direction}
                         </td>
@@ -620,24 +626,10 @@
 
         if (conditionsData) {
             const windArrow = getWindArrow(conditionsData.direction);
-            const avgWind = (conditionsData.wind + conditionsData.gusts) / 2;
 
-            // Determine wind quality class
-            let windQualityClass = '';
-            let windQualityText = '';
-            if (avgWind < 12) {
-                windQualityClass = 'wind-weak';
-                windQualityText = 'Weak';
-            } else if (avgWind >= 12 && avgWind < 18) {
-                windQualityClass = 'wind-moderate';
-                windQualityText = 'Good';
-            } else if (avgWind >= 18 && avgWind <= 25) {
-                windQualityClass = 'wind-strong';
-                windQualityText = 'Strong';
-            } else {
-                windQualityClass = 'wind-extreme';
-                windQualityText = 'Extreme';
-            }
+            // Use individual values for coloring (not average)
+            const windClass = getWindClass(conditionsData.wind);
+            const gustClass = getWindClass(conditionsData.gusts);
 
             currentConditionsCardHtml = `
                 <div class="current-conditions-card">
@@ -646,18 +638,18 @@
                         ${conditionsData.isCurrent ? '<div class="live-dot"></div>' : ''}
                     </div>
                     <div class="conditions-main">
-                        <div class="wind-arrow-large ${windQualityClass}" style="transform: rotate(${getWindRotation(conditionsData.direction)}deg);">
+                        <div class="wind-arrow-large ${windClass}" style="transform: rotate(${getWindRotation(conditionsData.direction)}deg);">
                             ↓
                         </div>
                         <div class="wind-details">
-                            <div class="wind-speed ${windQualityClass}">${conditionsData.wind} kts</div>
+                            <div class="wind-speed ${windClass}">${conditionsData.wind} kts</div>
                             <div class="wind-label">${t('windLabel')}</div>
                         </div>
                     </div>
                     <div class="conditions-grid">
                         <div class="condition-item">
                             <div class="condition-label">${t('gustsLabel')}</div>
-                            <div class="condition-value ${windQualityClass}">${conditionsData.gusts} kts</div>
+                            <div class="condition-value ${gustClass}">${conditionsData.gusts} kts</div>
                         </div>
                         <div class="condition-item">
                             <div class="condition-label">${t('directionLabel')}</div>

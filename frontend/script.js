@@ -431,6 +431,19 @@
         return arrows[direction] || '•';
     }
 
+    // Helper function to get wind quality class based on wind value
+    function getWindClass(windValue) {
+        if (windValue < 12) {
+            return 'wind-weak';
+        } else if (windValue >= 12 && windValue < 18) {
+            return 'wind-moderate';
+        } else if (windValue >= 18 && windValue <= 25) {
+            return 'wind-strong';
+        } else {
+            return 'wind-extreme';
+        }
+    }
+
     function translateDayName(dayName) {
         const dayMap = {
             'Mon': t('dayMon'),
@@ -672,21 +685,14 @@
         let forecastRows = '';
         if (spot.forecast && Array.isArray(spot.forecast)) {
             spot.forecast.forEach(day => {
-                let windClass, windTextClass;
-                const avgWind = (day.wind + day.gusts) / 2;
-                if (avgWind < 12) {
-                    windClass = 'weak-wind';
-                    windTextClass = 'wind-weak';
-                } else if (avgWind >= 12 && avgWind < 18) {
-                    windClass = 'moderate-wind';
-                    windTextClass = 'wind-moderate';
-                } else if (avgWind >= 18 && avgWind <= 25) {
-                    windClass = 'strong-wind';
-                    windTextClass = 'wind-strong';
-                } else {
-                    windClass = 'extreme-wind';
-                    windTextClass = 'wind-extreme';
-                }
+                const windClass = getWindClass(day.wind);
+                const windTextClass = windClass;
+                const gustTextClass = getWindClass(day.gusts);
+
+                // Use wind class for row background
+                const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
+                                    windClass === 'wind-moderate' ? 'moderate-wind' :
+                                    windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
                 const tempClass = day.temp >= 18 ? 'temp-positive' : 'temp-negative';
                 const windArrow = getWindArrow(day.direction);
@@ -707,10 +713,10 @@
                 }
 
                 forecastRows += `
-                        <tr class="${windClass}">
+                        <tr class="${rowWindClass}">
                             <td><strong>${translateDayName(day.date)}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
-                            <td class="${windTextClass}">${day.gusts} kts</td>
+                            <td class="${gustTextClass}">${day.gusts} kts</td>
                             <td class="${windTextClass}">
                                 <span class="wind-arrow">${windArrow}</span> ${day.direction}
                             </td>
@@ -724,21 +730,14 @@
 
         let currentConditionsRow = '';
         if (spot.currentConditions) {
-            let windClass, windTextClass;
-            const avgWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
-            if (avgWind < 12) {
-                windClass = 'weak-wind';
-                windTextClass = 'wind-weak';
-            } else if (avgWind >= 12 && avgWind < 18) {
-                windClass = 'moderate-wind';
-                windTextClass = 'wind-moderate';
-            } else if (avgWind >= 18 && avgWind <= 22) {
-                windClass = 'strong-wind';
-                windTextClass = 'wind-strong';
-            } else {
-                windClass = 'extreme-wind';
-                windTextClass = 'wind-extreme';
-            }
+            const windClass = getWindClass(spot.currentConditions.wind);
+            const windTextClass = windClass;
+            const gustTextClass = getWindClass(spot.currentConditions.gusts);
+
+            // Use wind class for row background
+            const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
+                                windClass === 'wind-moderate' ? 'moderate-wind' :
+                                windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
             const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
             const windArrow = getWindArrow(spot.currentConditions.direction);
@@ -758,7 +757,7 @@
             }
 
             currentConditionsRow = `
-                    <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
+                    <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${t('nowLabel')}</strong>
@@ -766,7 +765,7 @@
                             </div>
                         </td>
                         <td class="${windTextClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${windTextClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${gustTextClass}">${spot.currentConditions.gusts} kts</td>
                         <td class="${windTextClass}">
                             <span class="wind-arrow">${windArrow}</span> ${spot.currentConditions.direction}
                         </td>
