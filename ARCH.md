@@ -5,87 +5,395 @@
 +---------------------+            HTTP (REST)                +---------------------------+
 |  Browser Frontend   |  <------------------------------>     |  Spring Boot Backend API  |
 |  (static/index.html)|  GET /api/v1/spots                    |  /api/v1/* (JSON)         |
+|                     |  GET /api/v1/sponsors                 |                           |
 +---------------------+                                       +-------------+-------------+
                                                                             |
                                                                             |
-                                               +----------------------------v----------------------------+
-                                               |             AggregatorService (core orchestrator)       |
-                         +---------------------+  - schedules fetching (every 3h)                        |
-                         |                     |  - caches spots, forecasts, current conditions, AI txt  |
-                         |                     +-----------+--------------------+------------------------+
-                         |                                 |                    |
-                         |                                 |                    |
-                         |           +---------------------v----+     +---------v----------------+
-                         |           |     ForecastService      |     |  CurrentConditionsService|
-                         |           |  (Windguru micro API)    |     |  (station providers)     |
-                         |           +-----------+--------------+     +---------------+----------+
-                         |                       |                                    |
-                         |                       |                                    |
-                         |    +------------------v------------------+   +-------------v----------------------+
-                         |    | External: micro.windguru.cz (HTTP)  |   | External: WiatrKadyny, Kiteriders  |
-                         |    +-------------------------------------+   +------------------------------------+
-                         |                                                   
-                         |                     +----------------------------+
-                         +--------------------->        AiService           |
-                                               | (Spring AI ChatClient)     |
-                                               +-------------+--------------+
-                                                             |
-                                   +-------------------------v-----------------------+
-                                   |  LLM provider via Spring AI (configured via env)|
-                                   +-------------------------------------------------+
+                                       +-----------------------------------v-----------------------------------+
+                                       |             AggregatorService (core orchestrator)                     |
+                         +-------------+  - schedules: forecasts (3h), conditions (1m), AI (8h)                |
+                         |             |  - caches: spots, forecasts (GFS/IFS), conditions, AI, maps           |
+                         |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI) |
+                         |             |  - uses Java 24 StructuredTaskScope for concurrent execution          |
+                         |             +------------+--------------------+-----------------+-------------------+
+                         |                          |                    |                 |
+                         |                          |                    |                 |
+                         |      +-------------------v----+   +-----------v--------+  +-----v-----------+
+                         |      |   ForecastService      |   |CurrentConditions   |  |GoogleMapsService|
+                         |      | (Windguru micro API)   |   |Service (strategies)|  |(embed maps)     |
+                         |      | GFS & IFS models       |   +----------+---------+  +--------+--------+
+                         |      +------------+-----------+              |                     |
+                         |                   |                          |                     |
+                         |       +-----------v-----------+   +----------v-----------+   +-----v------------+
+                         |       | External: Windguru    |   | External: WiatrKadyny|   |   Google Maps    |
+                         |       | micro.windguru.cz     |   | & Kiteriders stations|   |  (URL resolver)  |
+                         |       +-----------------------+   +----------------------+   +------------------+
+                         |
+                         |                          +----------------------------+
+                         +------------------------->|        AiService           |
+                                                    | (Spring AI ChatClient)     |
+                                                    +-------------+--------------+
+                                                                  |
+                                        +-------------------------v-----------------------+
+                                        |  LLM provider via Spring AI (OpenAI or Ollama) |
+                                        +-------------------------------------------------+
+
+                    +-------------------+
+                    | SponsorsService   |  (loads sponsors.json at startup)
+                    +-------------------+
+                             |
+                    +--------v---------+
+                    |SponsorsController|  GET /api/v1/sponsors, /api/v1/sponsors/{id}, /api/v1/sponsors/main
+                    +------------------+
 ```
 
 ### Request/Update Flow
 ```
-[Scheduler @ AggregatorService]
-  every 3h -> fetchForecasts() ----------------------------------------------------.
-                                                                                   |
-[SpotsDataProvider] loads spots.json (on startup)                                  |
-  -> AggregatorService.spots[]                                                     |
-                                                                                   |
-[AggregatorService]                                                                |
-  -> for each Spot.wgId -> ForecastService.getForecast(id) -> Windguru micro API --'
-  -> CurrentConditionsService via strategies -> station providers
-  -> (optional) AiService.fetchAiAnalysis(spot) using Spring AI
-  -> stores in in-memory maps: forecasts{}, currentConditions{}, aiAnalysis{}
+[Application Startup]
+  -> JsonSpotsDataProvider loads spots.json (74+ spots)
+  -> JsonSponsorsDataProvider loads sponsors.json
+  -> AggregatorService.init() subscribes to spots
 
-[Client Browser]
-  -> GET /api/v1/spots
-  -> SpotsController returns Flux<Spot> (spots enriched with current data)
-  -> Frontend renders tiles/cards
+[Scheduler @ AggregatorService - Multiple scheduled tasks running in parallel]
+
+  every 3h  -> fetchForecasts() (GFS model for all spots, daily + hourly)
+                 -> uses StructuredTaskScope with virtual threads
+                 -> semaphore limits to 32 concurrent requests
+                 -> for each Spot.wgId -> ForecastService.getForecastData(id)
+                 -> Windguru micro API (text format, regex-parsed)
+                 -> updates forecastCache{spotId -> ForecastData(daily, hourlyGfs, hourlyIfs)}
+
+  every 1m  -> fetchCurrentConditions()
+                 -> uses StructuredTaskScope with virtual threads
+                 -> semaphore limits to 32 concurrent requests
+                 -> for each Spot.wgId -> CurrentConditionsService.fetchCurrentConditions(id)
+                 -> strategy pattern: WiatrKadyny, Podersdorf, etc.
+                 -> updates currentConditions{spotId -> CurrentConditions}
+
+  every 8h  -> fetchAiAnalysis() (if enabled via feature flag)
+                 -> uses StructuredTaskScope with virtual threads
+                 -> semaphore limits to 16 concurrent requests
+                 -> for each Spot -> AiService.fetchAiAnalysis(spot)
+                 -> Spring AI ChatClient -> OpenAI or Ollama
+                 -> updates aiAnalysis{spotId -> String}
+
+[Client Request Flow]
+
+  GET /api/v1/spots
+    -> SpotsController.spots()
+    -> AggregatorService.getSpots()
+    -> enriches each spot with cached data (forecasts, conditions, AI, maps)
+    -> lazy-loads embedded maps on-demand (GoogleMapsService)
+    -> returns Flux<Spot>
+
+  GET /api/v1/spots/{id}
+    -> SpotsController.spot(id)
+    -> AggregatorService.getSpotById(id) [default: GFS model]
+    -> enriches spot with cached data
+    -> triggers async fetchForecastsForAllModels(id) [GFS + IFS hourly forecasts]
+    -> returns Mono<Spot>
+
+  GET /api/v1/spots/{id}/{model}
+    -> SpotsController.spot(id, model) [model: "gfs" or "ifs"]
+    -> AggregatorService.getSpotById(id, ForecastModel)
+    -> enriches spot with model-specific hourly forecast
+    -> triggers async fetchForecastsForAllModels(id)
+    -> returns Mono<Spot>
+
+  GET /api/v1/sponsors
+    -> SponsorsController.sponsors()
+    -> SponsorsService.getSponsors()
+    -> returns Flux<Sponsor>
+
+  GET /api/v1/sponsors/main
+    -> SponsorsController.mainSponsors()
+    -> SponsorsService.getMainSponsors() [filtered by isMain flag]
+    -> returns Flux<Sponsor>
+
+[Embedded Maps (Lazy Loading)]
+  -> On spot enrichment, if embeddedMap not in cache
+  -> scheduleEmbeddedMapFetch(spot) triggered
+  -> GoogleMapsService.getEmbeddedMapCode(spot)
+  -> unshortens goo.gl URLs, converts to embeddable iframe
+  -> stores in embeddedMaps{spotId -> String}
+  -> cached for subsequent requests
 ```
 
 ### Data Model (simplified)
 ```
 Spot
-├─ id (int) / wgId (int) / name / country / windguruUrl
-├─ forecast : List<Forecast>
+├─ id (int) / wgId (int) / name / country / windguruUrl / locationUrl
+├─ forecastDaily : List<Forecast> (3-day daily forecast)
+├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS)
 ├─ currentConditions : CurrentConditions
-└─ aiAnalysis : String (optional)
+├─ aiAnalysis : String (optional, AI-generated forecast summary)
+├─ embeddedMap : String (lazy-loaded iframe HTML)
+└─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType)
+
+ForecastData (internal cache structure)
+├─ daily : List<Forecast> (GFS daily forecasts)
+├─ hourlyGfs : List<Forecast> (GFS hourly forecasts)
+└─ hourlyIfs : List<Forecast> (IFS hourly forecasts)
+
+ForecastModel (enum)
+├─ GFS (Global Forecast System - NOAA)
+└─ IFS (Integrated Forecast System - ECMWF)
 
 Forecast
-├─ time (hourly)  ├─ windSpeed (kts)  ├─ gust (kts)
-├─ directionDeg   ├─ directionCardinal (via WeatherForecastMapper)
-├─ tempC          └─ precipMm
+├─ time : String (hourly timestamp or daily date)
+├─ windSpeed : double (knots)
+├─ gust : double (knots)
+├─ directionDeg : int (0-360)
+├─ directionCardinal : String (N, NE, E, SE, S, SW, W, NW - via WeatherForecastMapper)
+├─ tempC : double
+└─ precipMm : double
 
 CurrentConditions
-├─ windSpeed (kts) ├─ gust (kts)
-├─ directionDeg    ├─ directionCardinal
-└─ tempC / updatedAt
+├─ windSpeed : double (knots)
+├─ gust : double (knots)
+├─ directionDeg : int (0-360)
+├─ directionCardinal : String (N, NE, E, etc.)
+├─ tempC : double
+└─ updatedAt : String (timestamp of last update)
+
+SpotInfo
+├─ description : String
+├─ bestWind : String (optimal wind directions)
+├─ hazards : String (safety warnings)
+├─ season : String (best season for kitesurfing)
+└─ waterType : String (e.g., "flatwater", "waves", "choppy")
+
+Sponsor
+├─ id : int
+├─ name : String
+├─ websiteUrl : String
+├─ logoUrl : String
+├─ isMain : boolean (indicates main sponsor status)
+└─ description : String
 ```
 
 ### External Integrations
 ```
-- micro.windguru.cz (text export)  -> parsed with regex lines in ForecastService
-- wiatrkadyny.pl (multiple stations) & kiteriders.at -> scraped/parsed in strategies
-- Spring AI ChatClient -> LLM provider for short forecast summary
+1. Windguru micro API (micro.windguru.cz)
+   - Text-based forecast exports (GFS & IFS models)
+   - Parsed using regex patterns in ForecastService
+   - Provides daily and hourly forecasts (wind, temp, precipitation)
+
+2. Weather Station Providers (via strategy pattern)
+   - WiatrKadyny (wiatrkadyny.pl) - Polish stations
+   - Kiteriders (kiteriders.at) - Austrian Podersdorf station
+   - HTML scraping/parsing for real-time wind data
+   - Strategy implementations in service/currentconditions/strategy/
+
+3. Google Maps
+   - URL unshortening (goo.gl, maps.app.goo.gl)
+   - Conversion to embeddable iframe format
+   - Lazy-loaded and cached per spot
+
+4. Spring AI (optional, feature-flagged)
+   - OpenAI API (gpt-4o-mini) OR Ollama (smollm2:135m)
+   - ChatClient for AI-powered forecast analysis
+   - Configured via application.yml (app.ai.provider)
 ```
 
 ### Deployment/Build
 ```
-Gradle (build.gradle) -> Spring Boot jar
-Dockerfile -> containerized service
-application.properties -> feature flags (e.g., app.feature.ai.forecast.analysis.enabled)
+Build:
+  - Gradle 8.x with Java 24 + preview features enabled
+  - ./build.sh (build) or ./build.sh --run (build + run)
+  - ./gradlew test (JUnit 5 + Truth assertions)
+
+Configuration:
+  - application.yml (NOT .properties)
+  - Feature flags:
+      app.feature.ai.forecast.analysis.enabled: false (default)
+      app.ai.provider: ollama (or openai)
+
+Containerization:
+  - Dockerfile -> multi-stage build
+  - GitHub Actions CI/CD:
+      gradle.yml (Java CI with Gradle)
+      docker.yml (push to ghcr.io/pwittchen/varun.surf)
+  - VPS deployment via deployment.sh script
+
+Runtime:
+  - Spring Boot 3.5.5 (Reactive WebFlux)
+  - Port 8080 (default)
+  - In-memory caching (no database)
+  - Java 24 virtual threads via StructuredTaskScope
+```
+
+### Caching Strategy
+```
+In-Memory Caches (ConcurrentHashMap):
+  1. forecastCache: Map<Integer, ForecastData>
+     - Key: spotId (wgId)
+     - Value: ForecastData(daily, hourlyGfs, hourlyIfs)
+     - Updated: every 3 hours (scheduled)
+     - Lifetime: until next scheduled update
+
+  2. currentConditions: Map<Integer, CurrentConditions>
+     - Key: spotId (wgId)
+     - Value: CurrentConditions (wind, temp, direction)
+     - Updated: every 1 minute (scheduled)
+     - Filter: Empty conditions are not cached
+
+  3. aiAnalysis: Map<Integer, String>
+     - Key: spotId (wgId)
+     - Value: AI-generated forecast summary
+     - Updated: every 8 hours (if enabled)
+     - Conditional: only enabled if feature flag is true
+
+  4. embeddedMaps: Map<Integer, String>
+     - Key: spotId (wgId)
+     - Value: iframe HTML string
+     - Updated: lazy-loaded on first request
+     - Lifetime: persists until application restart
+
+  5. hourlyForecastCacheTimestamps: Map<Integer, Long>
+     - Key: spotId (wgId)
+     - Value: timestamp (milliseconds)
+     - Purpose: prevent redundant IFS model fetches
+     - TTL: 3 hours
+
+  6. spots: AtomicReference<List<Spot>>
+     - Loaded once at startup from spots.json
+     - Immutable data (name, country, URLs, spotInfo)
+     - Enriched on-demand with cached data
+
+Cache Invalidation:
+  - No explicit invalidation (in-memory only)
+  - Data refreshes automatically via scheduled tasks
+  - Application restart clears all caches
+```
+
+### Concurrency & Performance
+```
+Java 24 StructuredTaskScope (Preview Feature):
+  - Scoped concurrency for structured parallel execution
+  - Virtual threads (lightweight, millions possible)
+  - Subtasks tracked within scopes
+  - Automatic cleanup on scope exit
+
+Semaphore-based Rate Limiting:
+  - forecastLimiter: 32 permits (max 32 concurrent Windguru API calls)
+  - currentConditionsLimiter: 32 permits (max 32 concurrent station calls)
+  - aiLimiter: 16 permits (max 16 concurrent LLM API calls)
+  - Prevents overwhelming external APIs
+  - Ensures fair resource distribution
+
+Reactive Patterns (Spring WebFlux):
+  - Non-blocking I/O throughout the stack
+  - Mono<T> for single-value async operations
+  - Flux<T> for multi-value streams
+  - Schedulers.boundedElastic() for blocking operations
+  - backpressure handling via Reactor
+
+Error Handling:
+  - @Retryable with exponential backoff
+  - @Recover methods for fallback behavior
+  - Graceful degradation (missing data = empty fields)
+  - Structured exception hierarchy (FetchingForecastException, etc.)
+
+Performance Characteristics:
+  - Startup: ~2-5 seconds (loads 74+ spots from JSON)
+  - Forecast fetch (all spots): ~10-20 seconds (74 spots, 32 concurrent)
+  - Current conditions fetch: ~3-5 seconds (fewer stations, 32 concurrent)
+  - Single spot response: <50ms (cached data)
+  - Embedded map lazy load: ~1-3 seconds (URL unshortening + conversion)
+```
+
+### API Endpoints Summary
+```
+Spots:
+  GET /api/v1/spots
+    - Returns all spots with cached forecasts, conditions, AI analysis
+    - Response: Flux<Spot> (streaming JSON)
+
+  GET /api/v1/spots/{id}
+    - Returns single spot by wgId with GFS forecast (default)
+    - Triggers async fetch for IFS model (cached for 3h)
+    - Response: Mono<Spot>
+
+  GET /api/v1/spots/{id}/{model}
+    - Returns single spot with specified forecast model (gfs or ifs)
+    - Triggers async fetch for IFS model if not cached
+    - Response: Mono<Spot>
+
+Sponsors:
+  GET /api/v1/sponsors
+    - Returns all sponsors
+    - Response: Flux<Sponsor>
+
+  GET /api/v1/sponsors/{id}
+    - Returns single sponsor by id
+    - Response: Mono<Sponsor>
+
+  GET /api/v1/sponsors/main
+    - Returns only main sponsors (isMain = true)
+    - Response: Flux<Sponsor>
+
+Health:
+  GET /api/v1/health
+    - Simple health check endpoint
+    - Response: {"status": "UP"}
+```
+
+### Code Organization
+```
+src/main/java/com/github/pwittchen/varun/
+├── Application.java                      # Main entry point
+├── config/                               # Spring configuration
+│   ├── AsyncConfig.java                  # @Async executor config
+│   ├── CorsConfig.java                   # CORS policy
+│   ├── GsonConfig.java                   # JSON serialization
+│   ├── LLMConfig.java                    # Spring AI ChatClient
+│   ├── LoggingFilter.java                # HTTP request logging
+│   ├── NettyConfig.java                  # Netty HTTP client tuning
+│   └── WebConfig.java                    # Web MVC configuration
+├── controller/                           # REST controllers
+│   ├── SponsorsController.java           # /api/v1/sponsors/*
+│   └── SpotsController.java              # /api/v1/spots/*
+├── exception/                            # Custom exceptions
+│   ├── FetchingAiForecastAnalysisException.java
+│   ├── FetchingCurrentConditionsException.java
+│   ├── FetchingForecastException.java
+│   └── FetchingForecastModelsException.java
+├── mapper/                               # Data transformation
+│   └── WeatherForecastMapper.java        # Degrees -> cardinal directions
+├── model/                                # Domain models
+│   ├── currentconditions/
+│   │   ├── CurrentConditions.java
+│   │   └── filter/CurrentConditionsEmptyFilter.java
+│   ├── forecast/
+│   │   ├── Forecast.java
+│   │   ├── ForecastData.java
+│   │   ├── ForecastModel.java (enum: GFS, IFS)
+│   │   └── ForecastWg.java
+│   ├── sponsor/
+│   │   └── Sponsor.java
+│   └── spot/
+│       ├── Spot.java
+│       └── SpotInfo.java
+├── provider/                             # Data providers
+│   ├── sponsors/
+│   │   ├── JsonSponsorsDataProvider.java
+│   │   └── SponsorsDataProvider.java (interface)
+│   └── spots/
+│       ├── JsonSpotsDataProvider.java
+│       └── SpotsDataProvider.java (interface)
+└── service/                              # Business logic
+    ├── AggregatorService.java            # Core orchestrator
+    ├── AiService.java                    # Spring AI integration
+    ├── CurrentConditionsService.java     # Station data aggregator
+    ├── ForecastService.java              # Windguru API client
+    ├── GoogleMapsService.java            # Maps URL converter
+    ├── SponsorsService.java              # Sponsors management
+    └── currentconditions/strategy/       # Strategy pattern
+        ├── FetchCurrentConditions.java (interface)
+        ├── FetchCurrentConditionsStrategyBase.java
+        ├── FetchCurrentConditionsStrategyPodersdorf.java
+        └── FetchCurrentConditionsStrategyWiatrKadynyStations.java
 ```
 
 ### Legend
