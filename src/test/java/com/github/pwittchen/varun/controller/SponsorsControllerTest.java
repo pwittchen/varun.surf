@@ -66,13 +66,11 @@ class SponsorsControllerTest {
                 .assertNext(sponsor -> {
                     assertThat(sponsor.name()).isEqualTo("Onet");
                     assertThat(sponsor.link()).isEqualTo("https://onet.pl");
-                    assertThat(sponsor.logo()).isEqualTo("onet.png");
                     assertThat(sponsor.main()).isTrue();
                 })
                 .assertNext(sponsor -> {
                     assertThat(sponsor.name()).isEqualTo("Sponsor2");
                     assertThat(sponsor.link()).isEqualTo("https://sponsor2.com");
-                    assertThat(sponsor.logo()).isEqualTo("sponsor2.png");
                     assertThat(sponsor.main()).isFalse();
                 })
                 .verifyComplete();
@@ -80,7 +78,7 @@ class SponsorsControllerTest {
 
     @Test
     void shouldReturnSponsorByIdWhenSponsorExists() {
-        Sponsor mockSponsor = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
+        Sponsor mockSponsor = new Sponsor(0, true, "Onet", "https://onet.pl");
         when(sponsorsService.getSponsorById(0)).thenReturn(Optional.of(mockSponsor));
 
         Mono<ResponseEntity<Sponsor>> result = controller.sponsor(0);
@@ -112,7 +110,7 @@ class SponsorsControllerTest {
 
     @Test
     void shouldReturnSponsorWithAllFields() {
-        Sponsor mockSponsor = new Sponsor(1, false, "TestSponsor", "https://test.com", "test.png", null, null);
+        Sponsor mockSponsor = new Sponsor(1, false, "TestSponsor", "https://test.com");
         when(sponsorsService.getSponsorById(1)).thenReturn(Optional.of(mockSponsor));
 
         Mono<ResponseEntity<Sponsor>> result = controller.sponsor(1);
@@ -126,7 +124,6 @@ class SponsorsControllerTest {
                     assertThat(sponsor.main()).isFalse();
                     assertThat(sponsor.name()).isEqualTo("TestSponsor");
                     assertThat(sponsor.link()).isEqualTo("https://test.com");
-                    assertThat(sponsor.logo()).isEqualTo("test.png");
                 })
                 .verifyComplete();
     }
@@ -175,7 +172,7 @@ class SponsorsControllerTest {
     @Test
     void shouldReturnMainSponsorsWithCorrectData() {
         List<Sponsor> mockMainSponsors = List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null)
+                new Sponsor(0, true, "Onet", "https://onet.pl")
         );
         when(sponsorsService.getMainSponsors()).thenReturn(mockMainSponsors);
 
@@ -187,22 +184,21 @@ class SponsorsControllerTest {
                     assertThat(sponsor.main()).isTrue();
                     assertThat(sponsor.name()).isEqualTo("Onet");
                     assertThat(sponsor.link()).isEqualTo("https://onet.pl");
-                    assertThat(sponsor.logo()).isEqualTo("onet.png");
                 })
                 .verifyComplete();
     }
 
     private List<Sponsor> createMockSponsors() {
         return List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null),
-                new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null)
+                new Sponsor(0, true, "Onet", "https://onet.pl"),
+                new Sponsor(1, false, "Sponsor2", "https://sponsor2.com")
         );
     }
 
     private List<Sponsor> createMockMainSponsors() {
         return List.of(
-                new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null),
-                new Sponsor(2, true, "MainSponsor", "https://main.com", "main.png", null, null)
+                new Sponsor(0, true, "Onet", "https://onet.pl"),
+                new Sponsor(2, true, "MainSponsor", "https://main.com")
         );
     }
 }

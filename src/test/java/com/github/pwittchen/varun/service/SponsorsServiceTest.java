@@ -44,8 +44,8 @@ class SponsorsServiceTest {
     @Test
     void shouldInitializeWithSponsors() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
-        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null);
+        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl");
+        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1, sponsor2));
 
         // when
@@ -88,8 +88,8 @@ class SponsorsServiceTest {
     @Test
     void shouldReturnAllSponsors() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
-        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null);
+        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl");
+        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1, sponsor2));
         sponsorsService.init();
         Thread.sleep(100);
@@ -106,8 +106,8 @@ class SponsorsServiceTest {
     @Test
     void shouldReturnSponsorById() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
-        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null);
+        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl");
+        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1, sponsor2));
         sponsorsService.init();
         Thread.sleep(100);
@@ -124,7 +124,7 @@ class SponsorsServiceTest {
     @Test
     void shouldReturnEmptyOptionalWhenSponsorNotFound() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
+        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1));
         sponsorsService.init();
         Thread.sleep(100);
@@ -139,9 +139,9 @@ class SponsorsServiceTest {
     @Test
     void shouldReturnOnlyMainSponsors() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl", "onet.png", null, null);
-        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null);
-        var sponsor3 = new Sponsor(2, true, "MainSponsor", "https://main.com", "main.png", null, null);
+        var sponsor1 = new Sponsor(0, true, "Onet", "https://onet.pl");
+        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com");
+        var sponsor3 = new Sponsor(2, true, "MainSponsor", "https://main.com");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1, sponsor2, sponsor3));
         sponsorsService.init();
         Thread.sleep(100);
@@ -160,8 +160,8 @@ class SponsorsServiceTest {
     @Test
     void shouldReturnEmptyListWhenNoMainSponsors() throws InterruptedException {
         // given
-        var sponsor1 = new Sponsor(0, false, "Sponsor1", "https://sponsor1.com", "sponsor1.png", null, null);
-        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com", "sponsor2.png", null, null);
+        var sponsor1 = new Sponsor(0, false, "Sponsor1", "https://sponsor1.com");
+        var sponsor2 = new Sponsor(1, false, "Sponsor2", "https://sponsor2.com");
         when(sponsorsDataProvider.getSponsors()).thenReturn(Flux.just(sponsor1, sponsor2));
         sponsorsService.init();
         Thread.sleep(100);
