@@ -2018,7 +2018,7 @@ body.spot-page .weather-table tbody tr:hover {
     background: var(--bg-secondary);
     border-radius: 12px;
     border: 1px solid var(--border-primary);
-    padding: 14px;
+    padding: 24px;
     margin-bottom: 0;
     min-height: clamp(260px, 40vw, 360px);
     display: flex;
@@ -2158,7 +2158,7 @@ body.spot-page .weather-table tbody tr:hover {
 }
 
 .condition-value.wind-strong {
-    color: #f9b116;
+    color: #f97316;
 }
 
 .condition-value.wind-extreme {
