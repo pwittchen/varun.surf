@@ -26,6 +26,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 app.log
+application.log
 
 ### NetBeans ###
 /nbproject/private/

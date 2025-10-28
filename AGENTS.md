@@ -368,6 +368,7 @@ docker run -p 8080:8080 -e OPENAI_API_KEY=your_key varun-surf
 5. **Error Handling**: Use reactive error operators (`onErrorResume`, `onErrorReturn`)
 6. **Logging**: Use SLF4J with appropriate log levels
 7. **Naming**: Follow Java conventions (camelCase, descriptive names)
+8. **Generated Assets**: Do not edit `.html`, `.css`, or `.js` files inside `src/main/java/resources`; they are minified outputs generated during the build.
 
 ### Reactive Programming Rules
 - **Never block**: Avoid blocking operations in reactive chains

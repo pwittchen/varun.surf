@@ -387,6 +387,65 @@
         document.body.style.overflow = 'auto';
     }
 
+    // Helper function to parse forecast date string (e.g., "Mon 28 Oct 2025 14:00")
+    function parseForecastDate(dateStr) {
+        if (!dateStr) return new Date();
+
+        try {
+            // Parse format: "Mon 28 Oct 2025 14:00"
+            const parts = dateStr.trim().split(/\s+/);
+            if (parts.length >= 5) {
+                const dayOfMonth = parseInt(parts[1]);
+                const monthName = parts[2];
+                const year = parseInt(parts[3]);
+                const timeParts = parts[4].split(':');
+                const hours = parseInt(timeParts[0]);
+                const minutes = parseInt(timeParts[1]);
+
+                // Map month names to month numbers (0-11)
+                const monthMap = {
+                    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
+                    'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
+                    'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                };
+
+                const monthNumber = monthMap[monthName];
+                if (monthNumber !== undefined) {
+                    const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
+                    if (!isNaN(parsed.getTime())) {
+                        return parsed;
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Error parsing forecast date:', dateStr, e);
+        }
+
+        return new Date();
+    }
+
+    // Helper function to find forecast closest to current time
+    function findClosestForecast(forecastData) {
+        if (!forecastData || forecastData.length === 0) {
+            return null;
+        }
+
+        const now = new Date();
+        let closestForecast = forecastData[0];
+        let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
+
+        for (let i = 1; i < forecastData.length; i++) {
+            const forecastTime = parseForecastDate(forecastData[i].date);
+            const diff = Math.abs(forecastTime - now);
+            if (diff < minDiff) {
+                minDiff = diff;
+                closestForecast = forecastData[i];
+            }
+        }
+
+        return closestForecast;
+    }
+
     // Create spot card HTML
     function createSpotCard(spot) {
         const countryFlag = getCountryFlag(spot.country);
@@ -544,17 +603,19 @@
             };
             conditionsLabel = t('nowLabel');
         } else if (forecastData && forecastData.length > 0) {
-            // Use the nearest forecast (first entry)
-            const nearestForecast = forecastData[0];
-            conditionsData = {
-                wind: nearestForecast.wind,
-                gusts: nearestForecast.gusts,
-                direction: nearestForecast.direction,
-                temp: nearestForecast.temp,
-                precipitation: nearestForecast.precipitation || 0,
-                isCurrent: false
-            };
-            conditionsLabel = formatForecastDateLabel(nearestForecast.date);
+            // Use the forecast closest to current time
+            const nearestForecast = findClosestForecast(forecastData);
+            if (nearestForecast) {
+                conditionsData = {
+                    wind: nearestForecast.wind,
+                    gusts: nearestForecast.gusts,
+                    direction: nearestForecast.direction,
+                    temp: nearestForecast.temp,
+                    precipitation: nearestForecast.precipitation || 0,
+                    isCurrent: false
+                };
+                conditionsLabel = formatForecastDateLabel(nearestForecast.date);
+            }
         }
 
         if (conditionsData) {

@@ -318,6 +318,8 @@ The AI forecast analysis is disabled by default because:
 
 11. **Error Handling**: Uses `@Retryable` with exponential backoff, `@Recover` fallback methods, and reactive error operators (`onErrorResume`, `onErrorReturn`).
 
+12. **Generated Frontend Assets**: Do not edit `.html`, `.css`, or `.js` files inside `src/main/java/resources`; they are minified outputs generated during the build process.
+
 ## Related Documentation
 
 - **README.md**: User-facing documentation, build instructions, deployment
