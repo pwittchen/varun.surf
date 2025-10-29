@@ -46,7 +46,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
 
     @Test
     void shouldParseValidWiatrkadynyResponse() {
-        String mockResponse = "2025-01-15 14:30 15.5 0 0 0 12.3 0 0 0 0 SW 0 0 0 0 0 0 0 0 0 0 0 0 0 0 18.2 0";
+        String mockResponse = "2025-01-15 14:30 15.5 0 0 12.3 18.2 0 0 0 0 SW 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
@@ -112,7 +112,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
 
     @Test
     void shouldRoundDecimalValues() {
-        String mockResponse = "2025-01-15 14:30 20.8 0 0 0 15.4 0 0 0 0 N 0 0 0 0 0 0 0 0 0 0 0 0 0 0 25.6 0";
+        String mockResponse = "2025-01-15 14:30 20.8 0 0 15.4 25.6 0 0 0 0 N 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
