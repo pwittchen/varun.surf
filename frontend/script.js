@@ -689,10 +689,14 @@
                 const windTextClass = windClass;
                 const gustTextClass = getWindClass(day.gusts);
 
-                // Use wind class for row background
-                const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
-                                    windClass === 'wind-moderate' ? 'moderate-wind' :
-                                    windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
+                // Calculate average of base wind and gusts for row background
+                const averageWind = (day.wind + day.gusts) / 2;
+                const averageWindClass = getWindClass(averageWind);
+
+                // Use average wind class for row background
+                const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
+                                    averageWindClass === 'wind-moderate' ? 'moderate-wind' :
+                                    averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
                 const tempClass = day.temp >= 18 ? 'temp-positive' : 'temp-negative';
                 const windArrow = getWindArrow(day.direction);
@@ -734,10 +738,14 @@
             const windTextClass = windClass;
             const gustTextClass = getWindClass(spot.currentConditions.gusts);
 
-            // Use wind class for row background
-            const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
-                                windClass === 'wind-moderate' ? 'moderate-wind' :
-                                windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
+            // Calculate average of base wind and gusts for row background
+            const averageWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
+            const averageWindClass = getWindClass(averageWind);
+
+            // Use average wind class for row background
+            const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
+                                averageWindClass === 'wind-moderate' ? 'moderate-wind' :
+                                averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
             const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
             const windArrow = getWindArrow(spot.currentConditions.direction);
