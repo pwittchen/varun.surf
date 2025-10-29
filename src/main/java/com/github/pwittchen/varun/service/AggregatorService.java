@@ -172,7 +172,6 @@ public class AggregatorService {
     }
 
     private void scheduleEmbeddedMapFetch(final Spot spot) {
-
         embeddedMapFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
                 loadEmbeddedMap(spot)
                         .subscribeOn(Schedulers.boundedElastic())
