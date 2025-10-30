@@ -29,7 +29,7 @@
       "launch": "Plaża piaszczysta",
       "hazards": "Płytkie obszary, pływacy latem, sieci rybackie",
       "season": "Maj-Październik",
-      "description": "Popularny spot na Półwyspie Helskim z płytką laguną i stroną otwartego morza.",
+      "description": "Popularny spot na Półwyspie Helskim z płytką laguną i otwartym morzem z drugiej strony półwyspu.",
       "llmComment": ""
     }
   },
@@ -1897,7 +1897,7 @@
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong fale, currents",
+      "hazards": "silne, duże fale, currents",
       "season": "Kwiecień-Październik",
       "description": "Niemiecka stolica fal, gospodarz zawodów Pucharu Świata w wind- i kitesurfingu.",
       "llmComment": ""
@@ -2067,7 +2067,7 @@
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong fale, currents on the sea, płytkie obszary on the fjord side",
+      "hazards": "silne, duże fale, currents on the sea, płytkie obszary on the fjord side",
       "season": "Kwiecień-Październik",
       "description": "Potężny spot wave na zachodnim wybrzeżu Danii z spotem płaskiej wody po drugiej stronie.",
       "llmComment": ""
@@ -2101,7 +2101,7 @@
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong fale",
+      "hazards": "silne, duże fale",
       "season": "Kwiecień-Październik",
       "description": "Znane jako „Cold Hawaii”, jedno z najsłynniejszych duńskich miasteczek surfingowych.",
       "llmComment": ""
