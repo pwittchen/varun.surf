@@ -27,6 +27,7 @@ public record Spot(
         String aiAnalysis,
         String embeddedMap,
         SpotInfo spotInfo,
+        SpotInfo spotInfoPL,
         String lastUpdated
 ) {
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
@@ -57,6 +58,7 @@ public record Spot(
                 this.aiAnalysis,
                 this.embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 currentTimestamp()
         );
     }
@@ -76,6 +78,7 @@ public record Spot(
                 this.aiAnalysis,
                 this.embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 CurrentConditionsEmptyFilter.isEmpty(currentConditions)
                         ? this.lastUpdated
                         : currentTimestamp()
@@ -97,6 +100,7 @@ public record Spot(
                 aiAnalysis,
                 this.embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 aiAnalysis != null && aiAnalysis.isEmpty()
                         ? this.lastUpdated
                         : currentTimestamp()
@@ -118,6 +122,7 @@ public record Spot(
                 this.aiAnalysis,
                 this.embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 currentTimestamp()
         );
     }
@@ -137,6 +142,7 @@ public record Spot(
                 this.aiAnalysis,
                 this.embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 this.lastUpdated
         );
     }
@@ -156,6 +162,7 @@ public record Spot(
                 this.aiAnalysis,
                 embeddedMap,
                 this.spotInfo,
+                this.spotInfoPL,
                 this.lastUpdated
         );
     }

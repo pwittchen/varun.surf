@@ -204,6 +204,14 @@
         }
     }
 
+    // Helper function to get spot info based on current language
+    function getSpotInfo(spot) {
+        if (!spot) return null;
+        const lang = localStorage.getItem('language') || 'en';
+        // Direct access - no fallback, all translations are complete
+        return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    }
+
     // Helper function to translate day names
     function translateDayName(dayName) {
         if (!dayName || typeof dayName !== 'string') {
@@ -301,39 +309,39 @@
 
         modalSpotName.textContent = `${spotName}`;
 
-        const info = currentSpot.spotInfo;
+        const info = getSpotInfo(currentSpot);
         spotInfoContent.innerHTML = `
                 <div class="info-grid">
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">Overview</div>
+                        <div class="info-label">${t('overviewLabel')}</div>
                         <div class="info-value">${info.description}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Spot Type</div>
+                        <div class="info-label">${t('spotTypeLabel')}</div>
                         <div class="info-value">${info.type}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Best Wind</div>
+                        <div class="info-label">${t('bestWindLabel')}</div>
                         <div class="info-value">${info.bestWind}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Water Temperature</div>
+                        <div class="info-label">${t('waterTempLabel')}</div>
                         <div class="info-value">${info.waterTemp}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Experience Level</div>
+                        <div class="info-label">${t('experienceLabel')}</div>
                         <div class="info-value">${info.experience}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Launch Type</div>
+                        <div class="info-label">${t('launchTypeLabel')}</div>
                         <div class="info-value">${info.launch}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Hazards</div>
+                        <div class="info-label">${t('hazardsLabel')}</div>
                         <div class="info-value">${info.hazards}</div>
                     </div>
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">Season</div>
+                        <div class="info-label">${t('seasonLabel')}</div>
                         <div class="info-value">${info.season}</div>
                     </div>
                 </div>
@@ -689,40 +697,40 @@
         // Build spot info card HTML
         let spotInfoCardHtml = '';
         if (spot.spotInfo) {
-            const info = spot.spotInfo;
+            const info = getSpotInfo(spot);
             spotInfoCardHtml = `
                 <div class="spot-info-card">
                     <div class="info-grid">
                         <div class="info-item" style="grid-column: 1 / -1;">
-                            <div class="info-label">Overview</div>
+                            <div class="info-label">${t('overviewLabel')}</div>
                             <div class="info-value">${info.description}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Spot Type</div>
+                            <div class="info-label">${t('spotTypeLabel')}</div>
                             <div class="info-value">${info.type}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Best Wind</div>
+                            <div class="info-label">${t('bestWindLabel')}</div>
                             <div class="info-value">${info.bestWind}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Water Temperature</div>
+                            <div class="info-label">${t('waterTempLabel')}</div>
                             <div class="info-value">${info.waterTemp}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Experience Level</div>
+                            <div class="info-label">${t('experienceLabel')}</div>
                             <div class="info-value">${info.experience}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Launch Type</div>
+                            <div class="info-label">${t('launchTypeLabel')}</div>
                             <div class="info-value">${info.launch}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Hazards</div>
+                            <div class="info-label">${t('hazardsLabel')}</div>
                             <div class="info-value">${info.hazards}</div>
                         </div>
                         <div class="info-item" style="grid-column: 1 / -1;">
-                            <div class="info-label">Season</div>
+                            <div class="info-label">${t('seasonLabel')}</div>
                             <div class="info-value">${info.season}</div>
                         </div>
                     </div>
