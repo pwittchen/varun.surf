@@ -913,7 +913,7 @@
       "launch": "Trawiasty lub kamienisty brzeg w pobliżu wsi Bukówka, ograniczona przestrzeń",
       "hazards": "Zimna woda, nagłe szkwały, wąska strefa startu, zanurzone skały",
       "season": "Maj-Wrzesień",
-      "description": "Mały zbiornik położony w Sudetach w pobliżu Lubawki, oferujący malownicze widoki i silne, porywiste wiatry. Odpowiedni głównie dla doświadczonych jeźdźców ze względu na zmienny wiatr i ograniczony obszar startu.",
+      "description": "Mały zbiornik położony w Sudetach w pobliżu Lubawki, oferujący malownicze widoki i silne, porywiste wiatry. Odpowiedni głównie dla doświadczonych kitesurferów ze względu na zmienny wiatr i ograniczony obszar startu.",
       "llmComment": ""
     }
   },
@@ -2407,7 +2407,7 @@
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do zaawansowanego",
       "launch": "Plaże resortowe",
-      "hazards": "Coral rafas (water boots recommended), płytkie obszary",
+      "hazards": "Rafy koralowe, ostre muszelki, płytkie obszary",
       "season": "Cały rok",
       "description": "Spot na Morzu Czerwonym z niezawodnymi wiatrami i idealnymi lagunami.",
       "llmComment": ""
@@ -2441,7 +2441,7 @@
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do zaawansowanego",
       "launch": "Plaże resortowe i bazy kite",
-      "hazards": "Wiatr od lądu in some areas, coral rafas, shallow sections at low tide",
+      "hazards": "Wiatr od lądu w niektórych obszarach, rafy koralowe, płytkie obszary przy niskich pływach",
       "season": "Year-round (strongest wind Marzec–Październik)",
       "description": "Światowej klasy spot na Morzu Czerwonym ze stałym wiatrem, krystalicznie czystą wodą i dużymi płaskimi lagunami idealnymi dla freestyle'u i freeride'u.",
       "llmComment": ""
@@ -2476,8 +2476,8 @@
       "experience": "Od początkującego do eksperta",
       "launch": "Wyznaczone strefy kite i windsurf wzdłuż zatoki",
       "hazards": "Silne szkwały poza laguną, rafy koralowe, miejscami płytkie wejście",
-      "season": "Year-round (strongest wind Kwiecień–Październik)",
-      "description": "Kultowy spot na Morzu Czerwonym z silnym, niezawodnym wiatrem i wieloma strefami — płaska laguna dla początkujących, pas szybkości dla freestyle'u i fale offshore dla zaawansowanych jeźdźców.",
+      "season": "Cały rok (najsilniejsze wiatry: Kwiecień–Październik)",
+      "description": "Kultowy spot na Morzu Czerwonym z silnym, niezawodnym wiatrem i wieloma strefami — płaska laguna dla początkujących, pas szybkości dla freestyle'u i fale offshore dla zaawansowanych kitesurferów.",
       "llmComment": ""
     }
   },
@@ -3055,7 +3055,7 @@
       "launch": "Plaże rzeczne",
       "hazards": "Prądy, przeszkody",
       "season": "Kwiecień-Wrzesień",
-      "description": "Legendarny spot amerykański w Columbia River Gorge, silne wiatry termiczne. Działa głównie latem.",
+      "description": "Legendarny spot amerykański w ujściu rzeki Columbia, silne wiatry termiczne. Działa głównie latem.",
       "llmComment": ""
     }
   }
