@@ -295,7 +295,7 @@ const translations = {
         bestWindLabel: "Najlepszy wiatr",
         waterTempLabel: "Temperatura wody",
         experienceLabel: "Poziom doświadczenia",
-        launchTypeLabel: "Typ startu",
+        launchTypeLabel: "Miejsce do startu",
         hazardsLabel: "Zagrożenia",
         seasonLabel: "Sezon",
 
