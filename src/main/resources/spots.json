@@ -29,7 +29,7 @@
       "launch": "Plaża piaszczysta",
       "hazards": "Płytkie obszary, pływacy latem, sieci rybackie",
       "season": "Maj-Październik",
-      "description": "Popularny spot na Półwyspie Helskim z płytką laguną i otwartym morzem.",
+      "description": "Popularny spot na Półwyspie Helskim z płytką laguną i stroną otwartego morza.",
       "llmComment": ""
     }
   },
@@ -56,14 +56,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna, płaska woda, małe zmarszczki",
+      "type": "Laguna, płaska woda, niewielkie zafalowanie",
       "bestWind": "W, SW",
       "waterTemp": "10-20°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Trawa lub plaża piaszczysta",
-      "hazards": "Zatłoczony latem",
+      "launch": "Trawiasty lub piaszczysty brzeg",
+      "hazards": "Tłoczno latem",
       "season": "Maj-Wrzesień",
-      "description": "Znany spot w wiosce z silną społecznością kitesurfingową i szkołami.",
+      "description": "Znana wioska ze silną społecznością kitesurfingową i szkołami.",
       "llmComment": ""
     }
   },
@@ -90,7 +90,7 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Piaskowa mierzeja, laguna, płaska woda",
+      "type": "Mierzeja piaskowa, laguna, płaska woda",
       "bestWind": "W, NW, N, NE, E",
       "waterTemp": "10-18°C",
       "experience": "Od początkującego do średniozaawansowanego",
@@ -128,10 +128,10 @@
       "bestWind": "W, SW",
       "waterTemp": "10-20°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Trawa i mała plaża piaszczysta",
+      "launch": "Trawiasty teren i niewielka piaszczysta plaża",
       "hazards": "Sieci rybackie, płytka woda",
       "season": "Maj-Wrzesień",
-      "description": "Mała wioska spot na Hel z płytki, bezpieczny laguna area. There's paid car parkwg area.",
+      "description": "Mały spot wioskowy na Helu z płytkim, bezpiecznym obszarem laguny. Dostępny płatny parking.",
       "llmComment": ""
     }
   },
@@ -162,10 +162,10 @@
       "bestWind": "E",
       "waterTemp": "10-20°C",
       "experience": "Początkujący",
-      "launch": "Przystań i plaża piaszczysta",
-      "hazards": "Port nearby, may be busy latem",
+      "launch": "Marina i piaszczysta plaża",
+      "hazards": "Blisko portu, latem może być tłoczno",
       "season": "Maj-Wrzesień",
-      "description": "Spot miejski w the botdom of Zwoka Pucka z easy access i small siy plaża.",
+      "description": "Spot miejski u podstawy Zatoki Puckiej z łatwym dostępem i małą piaszczystą plażą.",
       "llmComment": ""
     }
   },
@@ -192,14 +192,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna and open sea",
+      "type": "Laguna i otwarte morze",
       "bestWind": "W, SW, NW",
       "waterTemp": "10-20°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Plaża piaszczysta od strony morza, beton i ograniczony obszar startu od strony laguny",
-      "hazards": "Tłumy latem, mały obszar startu od strony laguny, stara wieża torpedowa pośrodku laguny",
+      "launch": "Piaszczysta plaża od strony morza, betonowe i ograniczone miejsce startu po stronie laguny",
+      "hazards": "Tłoczno latem, mała strefa startu po stronie laguny, stara torpedownia na środku laguny",
       "season": "Maj-Wrzesień",
-      "description": "Lagona side dla flw woda, Baltic side dla fale.",
+      "description": "Strona lagunowa dla płaskiej wody, strona bałtycka dla fal.",
       "llmComment": ""
     }
   },
@@ -226,14 +226,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna, Otwarte morze, fale",
+      "type": "Laguna, otwarte morze, fale",
       "bestWind": "N, NE, NW",
       "waterTemp": "10-18°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta",
+      "launch": "Szeroka piaszczysta plaża",
       "hazards": "",
       "season": "Maj-Wrzesień",
-      "description": "Mlubze Bałtyckie spot z wave ridwg potential i laguna na the other side.",
+      "description": "Spot na Morzu Bałtyckim z potencjałem do jazdy na falach i laguną po drugiej stronie.",
       "llmComment": ""
     }
   },
@@ -265,9 +265,9 @@
       "waterTemp": "10-20°C",
       "experience": "Początkujący",
       "launch": "Plaża piaszczysta",
-      "hazards": "Płytkie i błotniste dno",
+      "hazards": "Płytkie i muliste dno",
       "season": "Maj-Wrzesień",
-      "description": "Flw woda spot na the Vistula Lagona, quiet i mniej zwłocznay.",
+      "description": "Spot na płaskiej wodzie Zalewu Wiślanego, spokojny i mniej zatłoczony.",
       "llmComment": ""
     }
   },
@@ -283,7 +283,7 @@
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Open sea, waves",
+      "type": "Otwarte morze, fale",
       "bestWind": "W, NW",
       "waterTemp": "10-18°C",
       "experience": "Advanced",
@@ -298,10 +298,10 @@
       "bestWind": "W, NW",
       "waterTemp": "10-18°C",
       "experience": "Zaawansowany",
-      "launch": "Szeroka plaża piaszczysta",
-      "hazards": "Strong waves, currents",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Silne fale, prądy",
       "season": "Maj-Wrzesień",
-      "description": "Spot falowy na the wybrzeże Bałtyku z the big, szeroki siy plaża i campsite nearby.",
+      "description": "Spot wave na wybrzeżu Bałtyku z dużą, szeroką piaszczystą plażą i pobliskim kempingiem.",
       "llmComment": ""
     }
   },
@@ -332,10 +332,10 @@
       "bestWind": "W, NW",
       "waterTemp": "10-18°C",
       "experience": "Zaawansowany",
-      "launch": "Szeroka plaża piaszczysta",
+      "launch": "Szeroka piaszczysta plaża",
       "hazards": "Prądy, turyści latem",
       "season": "Maj-Wrzesień",
-      "description": "Mlubze Bałtyckie wave spot, mniej zwłocznay than Łeba lub Jastrzębia Góra.",
+      "description": "Spot wave na Morzu Bałtyckim, mniej zatłoczony niż Łeba czy Jastrzębia Góra.",
       "llmComment": ""
     }
   },
@@ -362,14 +362,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Open sea, strong fale",
+      "type": "Otwarte morze, silne fale",
       "bestWind": "W, NW",
       "waterTemp": "10-18°C",
       "experience": "Zaawansowany",
-      "launch": "Steep plaża piaszczysta",
-      "hazards": "Cliffs, strong currents, shorebreak",
+      "launch": "Stroma piaszczysta plaża",
+      "hazards": "Klify, silne prądy, przybój brzegowy",
       "season": "Maj-Wrzesień",
-      "description": "Challengwg wave spot under cliffs, suitable naly dla experienced kiters.",
+      "description": "Wymagający spot wave pod klifami, odpowiedni tylko dla doświadczonych kitesurferów.",
       "llmComment": ""
     }
   },
@@ -401,9 +401,9 @@
       "waterTemp": "10-18°C",
       "experience": "Średniozaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Falochrons, pływacy",
+      "hazards": "Falochrony, pływacy",
       "season": "Maj-Wrzesień",
-      "description": "Spot falowy na the east wybrzeże Bałtyku, szeroki plaża but often zwłocznay.",
+      "description": "Spot wave na wschodnim wybrzeżu Bałtyku, szeroka plaża, ale często zatłoczona.",
       "llmComment": ""
     }
   },
@@ -434,10 +434,10 @@
       "bestWind": "N, NE, NW",
       "waterTemp": "10-18°C",
       "experience": "Średniozaawansowany",
-      "launch": "Bardzo szeroka plaża piaszczysta",
-      "hazards": "Tłumy latem",
+      "launch": "Bardzo szeroka piaszczysta plaża",
+      "hazards": "Tłoczno latem",
       "season": "Maj-Wrzesień",
-      "description": "One of the szerokist plażaes w Poli, good dla wave ridwg.",
+      "description": "Jedna z najszerszych plaż w Polsce, dobra do jazdy na falach.",
       "llmComment": ""
     }
   },
@@ -468,10 +468,10 @@
       "bestWind": "W, NW, SW",
       "waterTemp": "10-20°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Plażaes and lagoon areas",
-      "hazards": "Płytkie obszary, seaweed, gusty winds near forest",
+      "launch": "Plaże i strefy laguny",
+      "hazards": "Płytkie obszary, glony, porywisty wiatr w pobliżu lasu",
       "season": "Maj-Wrzesień",
-      "description": "Polish isli na the Baltic, flw woda lagunas i open mlubze. Good summer spot z variable wwd directinas.",
+      "description": "Polska wyspa na Bałtyku, płaskie laguny i otwarte morze. Dobry spot letni ze zmiennymi kierunkami wiatru.",
       "llmComment": ""
     }
   },
@@ -498,14 +498,14 @@
       "llmComment": "The best wind is SW, S is also good, but we can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water"
     },
     "spotInfoPL": {
-      "type": "Jezioro, zbiornik",
+      "type": "Jezioro, zbiornik retencyjny",
       "bestWind": "SW",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
-      "launch": "Trawa field / meadow",
-      "hazards": "Zmienny porywisty wiatr, drzewa na brzegu, wąskie wejście do wody, cienie wiatrowe przy wejściu z wiatrem wschodnim, skaliste dno po lewej stronie od wejścia",
+      "launch": "Łąka / trawiasty brzeg",
+      "hazards": "Zmienny, porywisty wiatr, drzewa przy brzegu, wąskie zejście do wody, cienie wiatru przy kierunkach wschodnich, kamieniste dno na lewo od wejścia",
       "season": "Kwiecień-Październik",
-      "description": "Duży zbilubnik w Silesia, nae of the best kite spots w the southern Poli.",
+      "description": "Duży zbiornik na Śląsku, jeden z najlepszych spotów kitesurfingowych w południowej Polsce.",
       "llmComment": ""
     }
   },
@@ -533,13 +533,13 @@
     },
     "spotInfoPL": {
       "type": "Jezioro",
-      "bestWind": "S, SW (North Coast), NW (South Coast)",
+      "bestWind": "S, SW (brzeg północny), NW (brzeg południowy)",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
-      "launch": "Mała plażaes",
-      "hazards": "Trees on shore, gusty wind, wind shadow behind the pier",
+      "launch": "Małe plaże",
+      "hazards": "Drzewa na brzegu, porywisty wiatr, zacienienie wiatru za molo",
       "season": "Kwiecień-Październik",
-      "description": "Opole regina jezilubo popular z local wwdsurfers i kiters.",
+      "description": "Jezioro w regionie opolskim popularne wśród lokalnych windsurferów i kitesurferów.",
       "llmComment": ""
     }
   },
@@ -570,10 +570,10 @@
       "bestWind": "S",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
-      "launch": "Dostęp od brzegu",
-      "hazards": "Mountains cause gusts, small area for the launch, wind shadows during the launch and behind the port, current from the river",
+      "launch": "Wejście z brzegu",
+      "hazards": "Góry powodują szkwały, mało miejsca na start, cienie wiatru podczas startu i za portem, prąd rzeki",
       "season": "Kwiecień-Październik",
-      "description": "Mountaw river transdlamwg wdo the jezilubo z gusty but strnag wwd, used by local kiters. It's possible do kitesurf there z the pure southern wwds naly (S). Wwd blows between the mountaws causwg Venturi Effect. Theredlae wwd can be 8-10 knots strnager than the predicted dlaecast.",
+      "description": "Górska rzeka przekształcająca się w jezioro z porywistym, ale silnym wiatrem, wykorzystywana przez lokalnych kitesurferów. Możliwa jazda tylko przy czystym wietrze południowym (S). Wiatr wieje między górami powodując efekt Venturiego. Dlatego wiatr może być o 8-10 węzłów silniejszy niż prognozowany.",
       "llmComment": ""
     }
   },
@@ -604,10 +604,10 @@
       "bestWind": "W, SW",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
-      "launch": "Trawa i małe plaże",
-      "hazards": "Porywisty wiatr, mały obszar startu, drzewa blisko brzegu",
+      "launch": "Trawiasty brzeg i małe plaże",
+      "hazards": "Porywisty wiatr, mała strefa startu, drzewa w pobliżu brzegu",
       "season": "Kwiecień-Październik",
-      "description": "Large jezilubo near Wrocław, popular dla woda splubts.",
+      "description": "Duże jezioro w pobliżu Wrocławia, popularne wśród miłośników sportów wodnych.",
       "llmComment": ""
     }
   },
@@ -639,9 +639,9 @@
       "waterTemp": "10-22°C",
       "experience": "Od początkującego do zaawansowanego",
       "launch": "Mała plaża",
-      "hazards": "Trees on shore, pływacy, gusty winds",
+      "hazards": "Drzewa na brzegu, pływacy, porywisty wiatr",
       "season": "Kwiecień-Wrzesień",
-      "description": "Lakes w Dąbrowa Górnicza. The best jezilubos dla kitwg there are Poglubia III i Poglubia IV.",
+      "description": "Jeziora w Dąbrowie Górniczej. Najlepsze jeziora do kitesurfingu to Pogoria III i Pogoria IV.",
       "llmComment": ""
     }
   },
@@ -673,9 +673,9 @@
       "waterTemp": "10-20°C",
       "experience": "Od początkującego do zaawansowanego",
       "launch": "Mała plaża",
-      "hazards": "Swimmers latem, gusty wind, trees near the shore.",
+      "hazards": "Pływacy latem, porywisty wiatr, drzewa przy brzegu.",
       "season": "Kwiecień-Wrzesień",
-      "description": "Lake w Silesia z czysta woda, suitable dla local kite sessinas.  it's possible do kite there comdlwably z the pure western (W) wwd naly.",
+      "description": "Jezioro na Śląsku z czystą wodą, odpowiednie do lokalnych sesji kitesurfingowych. Możliwa wygodna jazda tylko przy czystym wietrze zachodnim (W).",
       "llmComment": ""
     }
   },
@@ -707,9 +707,9 @@
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
       "launch": "Mała plaża",
-      "hazards": "Swimmers latem, gusty wind, trees near the shore, fishermen, possible issues with the water cleanliness. The best wind is NW, but we can kite with E wind as well, but on the west side of the lake where launch area is very limited and there are hazards like concrete elements in the water",
+      "hazards": "Pływacy latem, porywisty wiatr, drzewa przy brzegu, wędkarze, możliwe problemy z czystością wody. Najlepszy wiatr to NW, przy wietrze E pływamy po zachodniej stronie jeziora, ale strefa startu jest tam bardzo ograniczona i w wodzie znajdują się betonowe elementy",
       "season": "Kwiecień-Wrzesień",
-      "description": "Lake near the Gliwice",
+      "description": "Jezioro w pobliżu Gliwic.",
       "llmComment": ""
     }
   },
@@ -740,10 +740,10 @@
       "bestWind": "NW",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
-      "launch": "Trawa field / meadow",
-      "hazards": "Trees near the shore, wind shadows during the entrance, pier, concrete elements",
+      "launch": "Łąka / trawiasty brzeg",
+      "hazards": "Drzewa przy brzegu, cienie wiatru przy wejściu, molo, betonowe elementy",
       "season": "Kwiecień-Wrzesień",
-      "description": "Lake near the Rybnik.",
+      "description": "Jezioro w pobliżu Rybnika.",
       "llmComment": ""
     }
   },
@@ -774,10 +774,10 @@
       "bestWind": "W, NW",
       "waterTemp": "10-22°C",
       "experience": "Zaawansowany",
-      "launch": "Traway plażaes",
-      "hazards": "Variable winds, fishermen",
+      "launch": "Trawiaste plaże",
+      "hazards": "Zmienny wiatr, wędkarze",
       "season": "Kwiecień-Październik",
-      "description": "Biggest reservoir w central Poli, good wwds i large area. Dependwg na the wwd directina, we can choose spots na two sides of the jezilubo - Popów lub Zaspy",
+      "description": "Największy zbiornik w centralnej Polsce, dobre wiatry i duży obszar. W zależności od kierunku wiatru możemy wybierać spoty po dwóch stronach jeziora - Popów lub Zaspy.",
       "llmComment": ""
     }
   },
@@ -808,10 +808,10 @@
       "bestWind": "W, NW, N",
       "waterTemp": "10-22°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Traway and sandy areas, easy access",
-      "hazards": "Płytkie obszary, underwater vegetation, local sieci rybackie",
+      "launch": "Trawiaste i piaszczyste strefy, łatwy dostęp",
+      "hazards": "Płytkie obszary, roślinność podwodna, lokalne sieci rybackie",
       "season": "Kwiecień-Październik",
-      "description": "One of the most popular flw-woda kite spots near Dziwnów. Ideal dla learnwg i freestyle sessinas thanks do large płytki laguna protected od fale. Wlubks best z western i nlubthern wwds.",
+      "description": "Jeden z najpopularniejszych spotów płaskiej wody w pobliżu Dziwnowa. Idealny do nauki i sesji freestyle dzięki dużej płytkiej lagunie chronionej przed falami. Najlepiej działa przy wiatrach zachodnich i północnych.",
       "llmComment": ""
     }
   },
@@ -838,14 +838,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Jezioro, flat to wzburzona water",
+      "type": "Jezioro, od płaskiej do lekko zafalowanej wody",
       "bestWind": "W, NW, N",
       "waterTemp": "10-22°C",
       "experience": "Od początkującego do średniozaawansowanego",
-      "launch": "Traway shore near Lubiatowo and Nowęcin, easy access and parking",
-      "hazards": "Płytkie obszary, reeds, occasional gusty wind due to surrounding trees",
+      "launch": "Trawiasty brzeg w pobliżu Lubiatowa i Nowęcina, łatwy dojazd i parking",
+      "hazards": "Płytkie obszary, trzciny, sporadyczne szkwały spowodowane okolicznymi drzewami",
       "season": "Kwiecień-Październik",
-      "description": "Lake Sarbsko near Łeba offers flw woda cnaditinas ideal dla begwners i freestyle riders. Wlubks best z western i nlubthern wwds. The nearby wybrzeże Bałtyku provides wave ridwg optinas dla advanced kiters.",
+      "description": "Jezioro Sarbsko w pobliżu Łeby oferuje warunki płaskiej wody idealne dla początkujących i freestyle'owców. Najlepiej działa przy wiatrach zachodnich i północnych. Pobliskie wybrzeże Bałtyku zapewnia możliwości jazdy na falach dla zaawansowanych kitesurferów.",
       "llmComment": ""
     }
   },
@@ -872,14 +872,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Jezioro, wzburzona to płaska woda depending on wind",
+      "type": "Jezioro, od zafalowanej do płaskiej wody w zależności od wiatru",
       "bestWind": "W, NW, N",
       "waterTemp": "10-23°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Traway or plaża piaszczystaes near Smardzewice and Bronisławów",
-      "hazards": "Trees near shore, variable gusts, fishermen and boats",
+      "launch": "Trawiaste lub piaszczyste plaże w okolicach Smardzewic i Bronisławowa",
+      "hazards": "Drzewa przy brzegu, zmienne szkwały, wędkarze i łodzie",
       "season": "Kwiecień-Październik",
-      "description": "Large artificial jezilubo w central Poli, offerwg good kitesurfwg cnaditinas z steady western i nlubthern wwds. Multiple launch powts available alnag the shlube, especially near Brnaisławów i Smardzewice.",
+      "description": "Duże sztuczne jezioro w centralnej Polsce, oferujące dobre warunki do kitesurfingu ze stałymi wiatrami zachodnimi i północnymi. Wiele punktów startu dostępnych wzdłuż brzegu, szczególnie w pobliżu Bronisławowa i Smardzewic.",
       "llmComment": ""
     }
   },
@@ -906,14 +906,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Mountain lake, wzburzona water",
+      "type": "Jezioro górskie, zafalowana woda",
       "bestWind": "W, NW, N",
       "waterTemp": "8-20°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Traway or rocky shore near Bukówka village, limited space",
-      "hazards": "Cold water, sudden gusts, narrow launch area, submerged rocks",
+      "launch": "Trawiasty lub kamienisty brzeg w pobliżu wsi Bukówka, ograniczona przestrzeń",
+      "hazards": "Zimna woda, nagłe szkwały, wąska strefa startu, zanurzone skały",
       "season": "Maj-Wrzesień",
-      "description": "Small reservoir locwed w the Sudetes mountaws near Lubawka, offerwg scenic views i strnag, gusty wwds. Suitable mawly dla experienced riders due do variable wwd i limited launch area.",
+      "description": "Mały zbiornik położony w Sudetach w pobliżu Lubawki, oferujący malownicze widoki i silne, porywiste wiatry. Odpowiedni głównie dla doświadczonych jeźdźców ze względu na zmienny wiatr i ograniczony obszar startu.",
       "llmComment": ""
     }
   },
@@ -929,25 +929,25 @@
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Lake Neusiedl, shallow, muddy water",
+      "type": "Jezioro Nezyderskie, płytka, mulista woda",
       "bestWind": "N, NW",
       "waterTemp": "10-25°C",
       "experience": "Beginner to Advanced",
-      "launch": "Wide grassy beaches",
-      "hazards": "Very shallow, muddy bottom, may be gusty",
+      "launch": "Szerokie trawiaste plaże",
+      "hazards": "Bardzo płytko, muliste dno, możliwe szkwały",
       "season": "April-October",
       "description": "One of the most famous inland kite spots in Europe with shallow water and strong, reliable wind. During the season, you need to pay for the entrance to the spot or use burgenland karte offered bye some hotels.",
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Jezioro Neusiedl, shallow, muddy water",
+      "type": "Jezioro Nezyderskie, płytka, mulista woda",
       "bestWind": "N, NW",
       "waterTemp": "10-25°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Wide grassy plażaes",
-      "hazards": "Very shallow, muddy bottom, may be gusty",
+      "launch": "Szerokie trawiaste plaże",
+      "hazards": "Bardzo płytko, muliste dno, możliwe szkwały",
       "season": "Kwiecień-Październik",
-      "description": "One of the most famous wli kite spots w Europe z płytki woda i strnag, reliable wwd. Durwg the mlubzesna, you need do pay dla the entrance do the spot lub use burgenli karte offered bye some hotels.",
+      "description": "Jeden z najsłynniejszych śródlądowych spotów kitesurfingowych w Europie z płytką wodą i silnym, niezawodnym wiatrem. W sezonie trzeba zapłacić za wstęp na spot lub użyć karty burgenland oferowanej przez niektóre hotele.",
       "llmComment": ""
     }
   },
@@ -963,7 +963,7 @@
     "forecast": [],
     "aiAnalysis": "",
     "spotInfo": {
-      "type": "Lake Neusiedl, shallow water",
+      "type": "Jezioro Nezyderskie, płytka woda",
       "bestWind": "S, SE",
       "waterTemp": "10-25°C",
       "experience": "Beginner to Intermediate",
@@ -974,14 +974,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Jezioro Neusiedl, shallow water",
+      "type": "Jezioro Nezyderskie, płytka woda",
       "bestWind": "S, SE",
       "waterTemp": "10-25°C",
       "experience": "Od początkującego do średniozaawansowanego",
-      "launch": "Obszar trawiasty",
-      "hazards": "Mud flats, płytka woda",
+      "launch": "Trawiasty teren",
+      "hazards": "Muliste łachy, płytka woda",
       "season": "Kwiecień-Październik",
-      "description": "Quiet alternwive do Podersdlubf z same płytki woda cnaditinas.",
+      "description": "Spokojna alternatywa dla Podersdorf z takimi samymi płytkimi warunkami wodnymi.",
       "llmComment": ""
     }
   },
@@ -1008,14 +1008,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna (Curonian Laguna)",
+      "type": "Laguna (Zalew Kuroński)",
       "bestWind": "W, SW, S, NW",
       "waterTemp": "10-20°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Trawa field / meadow",
-      "hazards": "Shallow and muddy water, deep water near port",
+      "launch": "Łąka / trawiasty teren",
+      "hazards": "Płytka, mulista woda, głębsza woda w pobliżu portu",
       "season": "Maj-Wrzesień",
-      "description": "Flw woda paradise w the Curnaian Lagona z famous Fenas kite spot, very popular w Baltic regina. We have campsite dla tents i campers here. There is also marwa z modern houses dla the rent.",
+      "description": "Raj płaskiej wody w Zalewie Kurońskim ze słynnym spotem kitesurfingowym Fenas, bardzo popularny w regionie bałtyckim. Mamy tutaj kemping dla namiotów i kamperów. Jest też przystań z nowoczesnymi domkami do wynajęcia.",
       "llmComment": ""
     }
   },
@@ -1042,14 +1042,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sea, wave spot",
+      "type": "Morze, spot wave",
       "bestWind": "W, SW, NW",
       "waterTemp": "8-21°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta between Palanga and Šventoji",
-      "hazards": "Shorebreak, strong current in NW winds, beachgoers during summer season",
+      "launch": "Szeroka piaszczysta plaża między Połągą a Šventoji",
+      "hazards": "Przybój, silny prąd przy wiatrach NW, plażowicze w sezonie letnim",
       "season": "Maj-Wrzesień",
-      "description": "Mnaciškės (often called Jūrwė lub Jura spot) is a Mlubze Bałtyckie kitesurfwg locwina nlubth of Palanga. Offers steady wwds, clean fale i szeroki siy plaża, makwg it grew dla freeride i wave sessinas. Wlubks best z westerly lub nlubth-westerly wwds i is mniej zwłocznay than central Palanga plażaes.",
+      "description": "Monciškės (często nazywany spotem Jūratė lub Jura) to miejsce do kitesurfingu na Morzu Bałtyckim na północ od Połągi. Oferuje stałe wiatry, czyste fale i szeroką piaszczystą plażę, co czyni go świetnym miejscem na sesje freeride i falowe. Najlepiej działa przy wiatrach zachodnich lub północno-zachodnich i jest mniej zatłoczony niż centralne plaże Połągi.",
       "llmComment": ""
     }
   },
@@ -1076,14 +1076,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna, flat to shallow water",
+      "type": "Laguna, płytka woda",
       "bestWind": "W, SW, NW",
       "waterTemp": "8-22°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Wide grassy plaża with easy access and parking",
-      "hazards": "Płytkie obszary, soft mud bottom, occasional algae",
+      "launch": "Szeroka trawiasta plaża z łatwym dojazdem i parkingiem",
+      "hazards": "Płytkie obszary, miękkie muliste dno, sporadyczne glony",
       "season": "Maj-Wrzesień",
-      "description": "Häädemeeste is nae of Estnaia’s best flw-woda kitesurfwg spots locwed na the Gulf of Riga coast. The płytki laguna i cnasistent westerly wwds make it ideal dla freestyle i begwners. Calm i unzwłocznay area z stunnwg sunsets over the bay.",
+      "description": "Häädemeeste to jeden z najlepszych estońskich spotów płaskiej wody położony nad Zatoką Ryską. Płytka laguna i stabilne wiatry zachodnie sprawiają, że to idealne miejsce do freestyle'u i dla początkujących. Spokojna, niezatłoczona okolica ze spektakularnymi zachodami słońca nad zatoką.",
       "llmComment": ""
     }
   },
@@ -1110,14 +1110,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Island – mix of wave and flat-water spots",
+      "type": "Wyspa – miks spotów wavech i płaskiej wody",
       "bestWind": "W, SW, NW, NE",
       "waterTemp": "8-22°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Multiple sandy and grassy plażaes around the island – Ristna, Luidja, and Kärdla are popular access points",
-      "hazards": "Cold water early/late in the season, seaweed, rocks near some launches",
+      "launch": "Wiele piaszczystych i trawiastych plaż na wyspie – popularne wejścia to Ristna, Luidja i Kärdla",
+      "hazards": "Zimna woda na początku i końcu sezonu, glony, skały przy niektórych miejscach startu",
       "season": "Maj-Wrzesień",
-      "description": "Hiiumaa is Estnaia’s kitesurfwg paradise offerwg both wave i flw-woda cnaditinas dependwg na the coast. Ristna na the west side is famous dla clean Baltic fale, while Luidja Bay provides sheltered flw woda dla freestyle i begwners. Cnasistent wwds, beautiful nwure i low crowds make it nae of the dop Baltic kite destwwinas.",
+      "description": "Hiiumaa to estoński raj kitesurfingowy oferujący zarówno warunki falowe, jak i płaską wodę w zależności od wybrzeża. Ristna na zachodzie słynie z czystych bałtyckich fal, a zatoka Luidja zapewnia osłoniętą płaską wodę dla freestyle'u i początkujących. Stałe wiatry, piękna przyroda i mały tłok czynią z niej jedno z najlepszych bałtyckich miejsc na kite.",
       "llmComment": ""
     }
   },
@@ -1148,10 +1148,10 @@
       "bestWind": "NE, W, SW",
       "waterTemp": "10-22°C",
       "experience": "Początkujący",
-      "launch": "Trawa shore",
-      "hazards": "Variable wind",
+      "launch": "Trawiasty brzeg",
+      "hazards": "Zmienny wiatr",
       "season": "Kwiecień-Wrzesień",
-      "description": "Inli Czech jezilubo spot, calm i good dla practice. Two spots - Sejki Beach i Mala Laguna, which we can choose dependwg na the wwd directina.",
+      "description": "Śródlądowy czeski spot jeziorny, spokojny i dobry do treningu. Dwa spoty - Sejki Beach i Mala Laguna, które możemy wybierać w zależności od kierunku wiatru.",
       "llmComment": ""
     }
   },
@@ -1182,10 +1182,10 @@
       "bestWind": "N, NW, S, SE",
       "waterTemp": "10-22°C",
       "experience": "Początkujący",
-      "launch": "Trawa shore",
-      "hazards": "Variable wind",
+      "launch": "Trawiasty brzeg",
+      "hazards": "Zmienny wiatr",
       "season": "Kwiecień-Wrzesień",
-      "description": "Inli Czech jezilubo spot. Dependwg na the wwd directina, we can choose spot near Žluťák, Yacht Club (south) lub Kitespot u drátů (nlubth)",
+      "description": "Śródlądowy czeski spot jeziorny. W zależności od kierunku wiatru możemy wybrać spot w pobliżu Žluťák, Yacht Club (południe) lub Kitespot u drátů (północ).",
       "llmComment": ""
     }
   },
@@ -1216,10 +1216,10 @@
       "bestWind": "NW, N",
       "waterTemp": "15-28°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Sandy and grass plażaes",
-      "hazards": "Shallow, muddy bottom",
+      "launch": "Piaszczyste i trawiaste plaże",
+      "hazards": "Płytko, muliste dno",
       "season": "Marzec-Listopad",
-      "description": "Wlubld-famous flw woda laguna w Sicily, ideal dla freestyle trawwg.",
+      "description": "Światowej sławy laguna płaskiej wody na Sycylii, idealna do treningu freestyle.",
       "llmComment": ""
     }
   },
@@ -1250,10 +1250,10 @@
       "bestWind": "Mistral NW",
       "waterTemp": "15-26°C",
       "experience": "Początkujący",
-      "launch": "Sandy lagoon shore",
-      "hazards": "Shallow, fishing boats",
+      "launch": "Piaszczysty brzeg laguny",
+      "hazards": "Płytko, łodzie rybackie",
       "season": "Kwiecień-Październik",
-      "description": "Sardwia’s flw woda paradise, reliable mistral wwd.",
+      "description": "Raj płaskiej wody na Sardynii z niezawodnym mistralem.",
       "llmComment": ""
     }
   },
@@ -1280,14 +1280,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Zatoka with chop",
+      "type": "Zatoka z lekką falą",
       "bestWind": "Mistral NW",
       "waterTemp": "15-26°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta",
-      "hazards": "Can be very crowded",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Może być bardzo tłoczno",
       "season": "Kwiecień-Październik",
-      "description": "One of the most icnaic kite bays w Sardwia z reliable wwd.",
+      "description": "Jedna z najbardziej kultowych zatok kitesurfingowych na Sardynii z niezawodnym wiatrem.",
       "llmComment": ""
     }
   },
@@ -1314,14 +1314,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Jezioro Como, thermal winds",
+      "type": "Jezioro Como, wiatry termiczne",
       "bestWind": "Breva S, Tivano N",
       "waterTemp": "10-24°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Lake shore plażaes",
-      "hazards": "Changing winds, mountains",
+      "launch": "Plaże nad jeziorem",
+      "hazards": "Zmienne wiatry, góry",
       "season": "Kwiecień-Wrzesień",
-      "description": "Beautiful alpwe jezilubo spot z reliable thermal wwds. Wwd will be strnager than w the global dlaecast due do the mountaw regina. It wlubks mostly durwg the summer due do the termal wwds.",
+      "description": "Piękny spot na alpejskim jeziorze z niezawodnymi wiatrami termicznymi. Wiatr będzie silniejszy niż w globalnej prognozie ze względu na region górski. Działa głównie latem ze względu na wiatry termiczne.",
       "llmComment": ""
     }
   },
@@ -1348,14 +1348,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Otwarte morze, fale and chop",
+      "type": "Otwarte morze, fale i zafalowana woda",
       "bestWind": "Levante E, Poniente W",
       "waterTemp": "15-22°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Long plaża piaszczysta",
-      "hazards": "Very strong wind, crowds",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, tłumy",
       "season": "Cały rok",
-      "description": "Kitesurf capital of Europe z powerful Levante i a bit lighter Pnaiente wwds. There are a few kite spots: Balneario (small, dla pros, no rescue), Rio Jara (szeroki plaża, rescue bows), i Valdevaqueros. It's recommended do buy Sea Rescue package w case of ridwg w Levante wwd. When the wwd is doo strnag (over 40 kts) i your are not professinaal big air kitesurfer, it's recommended do visit Palmnaes spot, where wwd will be around 20-25 kts w the same time.",
+      "description": "Stolica kitesurfingu Europy z potężnym wiatrem Levante i nieco lżejszym Poniente. Jest kilka spotów kitesurfingowych: Balneario (mały, dla profesjonalistów, bez ratownictwa), Rio Jara (szeroka plaża, łodzie ratunkowe) i Valdevaqueros. Zaleca się zakup pakietu Sea Rescue w przypadku jazdy przy wietrze Levante. Gdy wiatr jest zbyt silny (ponad 40 węzłów) i nie jesteś profesjonalnym big air kitesurferem, warto odwiedzić spot Palmones, gdzie wiatr będzie wynosił około 20-25 węzłów w tym samym czasie.",
       "llmComment": ""
     }
   },
@@ -1382,14 +1382,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Flat water, river mouth",
+      "type": "Płaska woda, ujście rzeki",
       "bestWind": "Levante E",
       "waterTemp": "15-22°C",
       "experience": "Średniozaawansowany",
-      "launch": "Sandy river delta",
-      "hazards": "Currents, tides",
+      "launch": "Piaszczysta delta rzeki",
+      "hazards": "Prądy, pływy",
       "season": "Cały rok",
-      "description": "Flw woda alternwive do Tarifa durwg strnag Levante wwd.",
+      "description": "Alternatywa płaskiej wody dla Tarify podczas silnego wiatru Levante.",
       "llmComment": ""
     }
   },
@@ -1421,9 +1421,9 @@
       "waterTemp": "15-22°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong waves, rocky areas",
+      "hazards": "Silne fale, skaliste odcinki",
       "season": "Cały rok",
-      "description": "Spot falowy near Tarifa, good alternwive when Tarifa is doo strnag.",
+      "description": "Spot wave w pobliżu Tarify, dobra alternatywa, gdy Tarifa jest zbyt silna.",
       "llmComment": ""
     }
   },
@@ -1454,10 +1454,10 @@
       "bestWind": "E, SE, W",
       "waterTemp": "15-26°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Sandy lagoon plażaes",
-      "hazards": "Płytkie obszary, seaweed",
+      "launch": "Piaszczyste plaże laguny",
+      "hazards": "Płytkie obszary, roślinność morska",
       "season": "Marzec-Listopad",
-      "description": "Huge flw woda laguna, grew dla freestyle i begwners.",
+      "description": "Ogromna laguna płaskiej wody, świetna dla freestyle'u i początkujących.",
       "llmComment": ""
     }
   },
@@ -1484,14 +1484,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Ocean bay / fale",
+      "type": "Zatoka oceaniczna / fale",
       "bestWind": "NE",
       "waterTemp": "18-23°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta",
-      "hazards": "Waves, shorebreak, rocks on downwind side",
-      "season": "Cały rok (best Czerwiec-Wrzesień)",
-      "description": "Wlubld-famous Canarian spot, reliable trade wwds, mix of chop i fale. Popular dla both wwdsurfwg i kitesurfwg.",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Fale, przybój, skały po zawietrznej stronie",
+      "season": "Cały rok (najlepiej czerwiec-wrzesień)",
+      "description": "Światowej sławy spot kanaryjski, niezawodne pasaty, mieszanka choppów i fal. Popularny zarówno dla windsurfingu, jak i kitesurfingu.",
       "llmComment": ""
     }
   },
@@ -1518,14 +1518,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna & Ocean",
-      "bestWind": "NE (Trade winds)",
+      "type": "Laguna i ocean",
+      "bestWind": "NE (pasaty)",
       "waterTemp": "18-23°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Long plaża piaszczysta, lagoon areas",
-      "hazards": "Strong gusts, tides affect lagoon size",
-      "season": "Marzec-Październik (peak in summer)",
-      "description": "Huge siy laguna z offshlube wwds i tidal pools. Słynny kitesurfwg venue, home do Wlubld Cup events.",
+      "launch": "Długa piaszczysta plaża, obszary laguny",
+      "hazards": "Silne szkwały, pływy wpływające na wielkość laguny",
+      "season": "Marzec-Październik (szczyt latem)",
+      "description": "Ogromna piaszczysta laguna z wiatrami oddalającymi od brzegu i basenami pływowymi. Słynne miejsce kitesurfingowe, dom wydarzeń Pucharu Świata.",
       "llmComment": ""
     }
   },
@@ -1552,14 +1552,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Ocean / reef breaks",
-      "bestWind": "NE (Trade winds)",
+      "type": "Ocean / rafy",
+      "bestWind": "NE (pasaty)",
       "waterTemp": "18-23°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Plaża piaszczysta with reef nearby",
-      "hazards": "Reefs, rocks, shorebreak",
-      "season": "Cały rok (best Maj-Wrzesień)",
-      "description": "Popular Fuerteventura spot near Clubralejo dunes. Good trade wwds, clear woda, mix of flw sectinas i fale.",
+      "launch": "Piaszczysta plaża z rafą w pobliżu",
+      "hazards": "Rafy, skały, przybój",
+      "season": "Cały rok (najlepiej maj-wrzesień)",
+      "description": "Popularny spot na Fuerteventurze w pobliżu wydm Corralejo. Dobre pasaty, czysta woda, mieszanka płaskich sekcji i fal.",
       "llmComment": ""
     }
   },
@@ -1586,14 +1586,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic beach, fale",
+      "type": "Atlantycka plaża, fale",
       "bestWind": "N, NW (Nortada)",
       "waterTemp": "15-20°C",
       "experience": "Zaawansowany",
-      "launch": "Szeroka plaża piaszczysta",
-      "hazards": "Strong shorebreak, big waves, rocks, currents",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Silny przybój, duże fale, skały, prądy",
       "season": "Kwiecień-Październik",
-      "description": "Wlubld-class wave spot near Lisbna, powered by strnag Nlubtada wwds.",
+      "description": "Światowej klasy spot wave w pobliżu Lizbony, napędzany silnymi wiatrami Nortada.",
       "llmComment": ""
     }
   },
@@ -1613,8 +1613,8 @@
       "bestWind": "N, NW",
       "waterTemp": "15-22°C",
       "experience": "Beginner to Advanced",
-      "launch": "Sandy beaches",
-      "hazards": "Changing sandbanks",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Zmieniające się łachy piasku",
       "season": "April-October",
       "description": "Flat water lagoon north of Lisbon, very good for freestyle.",
       "llmComment": ""
@@ -1624,10 +1624,10 @@
       "bestWind": "N, NW",
       "waterTemp": "15-22°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Plaża piaszczystaes",
-      "hazards": "Changing sandbanks",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Zmieniające się łachy piasku",
       "season": "Kwiecień-Październik",
-      "description": "Flw woda laguna nlubth of Lisbna, very good dla freestyle.",
+      "description": "Laguna płaskiej wody na północ od Lizbony, bardzo dobra dla freestyle'u.",
       "llmComment": ""
     }
   },
@@ -1654,14 +1654,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic beach, fale and chop",
+      "type": "Atlantycka plaża, fale i zafalowana woda",
       "bestWind": "N, NW",
       "waterTemp": "14-20°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta",
-      "hazards": "Strong shorebreak",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Silny przybój",
       "season": "Kwiecień-Październik",
-      "description": "Strnag Nlubtada wwd, excellent wave i freestyle cnaditinas.",
+      "description": "Silny wiatr Nortada, doskonałe warunki falowe i freestyle.",
       "llmComment": ""
     }
   },
@@ -1688,14 +1688,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic beach, fale",
+      "type": "Atlantycka plaża, fale",
       "bestWind": "N, NW",
       "waterTemp": "15-20°C",
       "experience": "Średniozaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Waves, pływacy",
+      "hazards": "Fale, pływacy",
       "season": "Kwiecień-Październik",
-      "description": "Close do Lisbna, lnag siy plaża z strnag Nlubtada wwds.",
+      "description": "Blisko Lizbony, długa piaszczysta plaża z silnymi wiatrami Nortada.",
       "llmComment": ""
     }
   },
@@ -1722,14 +1722,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic coast, fale",
+      "type": "Atlantyckie wybrzeże, fale",
       "bestWind": "N, NW",
       "waterTemp": "15-20°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Plaża piaszczystaes",
-      "hazards": "Strong waves",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Silne fale",
       "season": "Kwiecień-Październik",
-      "description": "Wlubld-famous surf down z strnag wwd i wave cnaditinas.",
+      "description": "Światowej sławy miasteczko surfingowe z silnym wiatrem i warunkami wavemi.",
       "llmComment": ""
     }
   },
@@ -1756,14 +1756,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic coast, giant fale",
+      "type": "Atlantyckie wybrzeże, gigantyczne fale",
       "bestWind": "N, NW",
       "waterTemp": "14-20°C",
-      "experience": "Advanced only",
+      "experience": "Tylko zaawansowani",
       "launch": "Plaża piaszczysta",
-      "hazards": "Massive waves, dangerous currents",
+      "hazards": "Gigantyczne fale, niebezpieczne prądy",
       "season": "Cały rok",
-      "description": "Home of the wlubld’s biggest fale, extreme spot naly dla experts.",
+      "description": "Dom największych fal na świecie, ekstremalny spot wyłącznie dla ekspertów.",
       "llmComment": ""
     }
   },
@@ -1790,14 +1790,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic coast, fale & flat lagoons",
+      "type": "Atlantyckie wybrzeże, fale i płaskie laguny",
       "bestWind": "N, NW",
       "waterTemp": "16-22°C",
       "experience": "Średniozaawansowany",
-      "launch": "Plaża piaszczystaes, lagoons",
-      "hazards": "Variable waves",
+      "launch": "Piaszczyste plaże, laguny",
+      "hazards": "Zmienna wielkość fal",
       "season": "Kwiecień-Październik",
-      "description": "Southern Plubtugal coast z variety of flw lagunas i wave plażaes.",
+      "description": "Południowe wybrzeże Portugalii z różnorodnością płaskich lagun i wavech plaż.",
       "llmComment": ""
     }
   },
@@ -1824,14 +1824,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, tidal flats",
+      "type": "Morze Północne, łachy pływowe",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Średniozaawansowany",
-      "launch": "Mudflats and plaża",
-      "hazards": "Tides, currents",
+      "launch": "Mady i plaża",
+      "hazards": "Pływy, prądy",
       "season": "Kwiecień-Październik",
-      "description": "Nlubth Sea spot z tides, good fale durwg stlubms.",
+      "description": "Spot na Morzu Północnym z pływami, dobre fale podczas sztormów.",
       "llmComment": ""
     }
   },
@@ -1858,14 +1858,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, huge sandy beach",
+      "type": "Morze Północne, ogromna piaszczysta plaża",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Massive plaża piaszczysta",
-      "hazards": "Tides",
+      "launch": "Ogromna piaszczysta plaża",
+      "hazards": "Pływy",
       "season": "Kwiecień-Październik",
-      "description": "One of Europe’s largest plażaes, kitwg mecca w Germany.",
+      "description": "Jedna z największych plaż w Europie, mekka kitesurfingu w Niemczech.",
       "llmComment": ""
     }
   },
@@ -1892,14 +1892,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, fale",
+      "type": "Morze Północne, fale",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong waves, currents",
+      "hazards": "Strong fale, currents",
       "season": "Kwiecień-Październik",
-      "description": "Germany’s wave capital, hostwg wlubld cup wwdsurf/kitesurf events.",
+      "description": "Niemiecka stolica fal, gospodarz zawodów Pucharu Świata w wind- i kitesurfingu.",
       "llmComment": ""
     }
   },
@@ -1926,14 +1926,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, wide sandy beach",
+      "type": "Morze Północne, szeroka piaszczysta plaża",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Massive plaża piaszczysta",
-      "hazards": "Tides, cars on beach",
+      "launch": "Ogromna piaszczysta plaża",
+      "hazards": "Pływy, samochody na plaży",
       "season": "Kwiecień-Październik",
-      "description": "Huge tidal plaża, perfect dla freeride i buggy/kite liboardwg doo. Wwer close do the shlube is flw i płytki. Further we can expect small do medium fale. You can drive the car na the plaża. The plaża itself is MASSIVE!",
+      "description": "Ogromna plaża pływowa, idealna do freeride'u i buggy/kite landboardingu. Woda blisko brzegu jest płaska i płytka. Dalej możemy spodziewać się małych do średnich fal. Można jeździć samochodem po plaży. Sama plaża jest OGROMNA!",
       "llmComment": ""
     }
   },
@@ -1960,14 +1960,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea + Fjord (Ringkøbing Fjord), płaska woda",
+      "type": "Morze Północne + fiord (Ringkøbing Fjord), płaska woda",
       "bestWind": "SW, W",
       "waterTemp": "8-20°C",
-      "experience": "Beginner to Advanced (Fjord for all levels, Sea for advanced)",
-      "launch": "Trawa and sandy areas",
-      "hazards": "Fishing nets, shallow areas, big waves and currents on the North Sea",
+      "experience": "Od początkującego do zaawansowanego (fiord dla wszystkich, morze dla zaawansowanych)",
+      "launch": "Trawiaste i piaszczyste strefy",
+      "hazards": "Sieci rybackie, płytkie obszary, duże fale i prądy na Morzu Północnym",
       "season": "Kwiecień-Październik",
-      "description": "Flw woda paradise na the fjlubd side, perfect dla freestyle, big fale na the Nlubth Sea.",
+      "description": "Raj płaskiej wody po stronie fiordu, idealny dla freestyle'u, duże fale na Morzu Północnym.",
       "llmComment": ""
     }
   },
@@ -1994,14 +1994,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea + Fjord (Ringkøbing Fjord)",
+      "type": "Morze Północne + fiord (Ringkøbing Fjord)",
       "bestWind": "W, NW, SW",
       "waterTemp": "8-20°C",
-      "experience": "All levels (Fjord for all levels, Sea for advanced)",
-      "launch": "Plaża piaszczystaes, grass field / meadow on the Fjord side",
-      "hazards": "Tides, sieci rybackie, big waves and currents on the North Sea",
+      "experience": "Wszystkie poziomy (fiord dla wszystkich, morze dla zaawansowanych)",
+      "launch": "Piaszczyste plaże, łąka / trawiasty teren po stronie fiordu",
+      "hazards": "Pływy, sieci rybackie, duże fale i prądy na Morzu Północnym",
       "season": "Kwiecień-Październik",
-      "description": "Verswile spot: flw woda w fjlubd, Nlubth Sea z big fale na the mlubze side.",
+      "description": "Wszechstronny spot: płaska woda we fiordzie, Morze Północne z dużymi falami po stronie morskiej.",
       "llmComment": ""
     }
   },
@@ -2028,14 +2028,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Fjord (Ringkøbing Fjord), płaska woda",
+      "type": "Fiord (Ringkøbing Fjord), płaska woda",
       "bestWind": "W, SW",
       "waterTemp": "8-20°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Trawa fields",
+      "launch": "Trawiaste pola",
       "hazards": "Płytkie obszary",
       "season": "Kwiecień-Październik",
-      "description": "Quiet flw woda spot na Rwgkøbwg Fjlubd, mniej zwłocznay than Hvide Sie. Nice dla the freestyle ridwg i big air, but be careful about the płytki woda areas. There are small cottages (Hyttas) na the spot",
+      "description": "Spokojny spot płaskiej wody na Fiordzie Ringkøbing, mniej zatłoczony niż Hvide Sande. Fajny do jazdy freestyle i big air, ale uważaj na płytkie obszary wodne. Na spocie są małe domki (Hyttas).",
       "llmComment": ""
     }
   },
@@ -2062,14 +2062,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Fjord with płaska woda + North Sea with fale",
+      "type": "Fiord z płaską wodą + Morze Północne z falami",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong waves, currents on the sea, shallow areas on the fjord side",
+      "hazards": "Strong fale, currents on the sea, płytkie obszary on the fjord side",
       "season": "Kwiecień-Październik",
-      "description": "Powerful wave spot na the Danish west coast z flw woda spot na the other side.",
+      "description": "Potężny spot wave na zachodnim wybrzeżu Danii z spotem płaskiej wody po drugiej stronie.",
       "llmComment": ""
     }
   },
@@ -2096,14 +2096,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, fale",
+      "type": "Morze Północne, fale",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Strong waves",
+      "hazards": "Strong fale",
       "season": "Kwiecień-Październik",
-      "description": "Known as ‘Cold Hawaii’, nae of Denmark’s most famous surf downs.",
+      "description": "Znane jako „Cold Hawaii”, jedno z najsłynniejszych duńskich miasteczek surfingowych.",
       "llmComment": ""
     }
   },
@@ -2130,14 +2130,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, fale",
+      "type": "Morze Północne, fale",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Cold water, strong waves",
+      "hazards": "Zimna woda, silne fale",
       "season": "Kwiecień-Październik",
-      "description": "The heart of ‘Cold Hawaii’, wlubld-famous wave ridwg spot.",
+      "description": "Serce „Cold Hawaii”, światowej sławy spot do jazdy na falach.",
       "llmComment": ""
     }
   },
@@ -2168,10 +2168,10 @@
       "bestWind": "SW (Thermal, Maloja wind)",
       "waterTemp": "5-18°C",
       "experience": "Średniozaawansowany",
-      "launch": "Lake shore",
-      "hazards": "Cold water, altitude",
+      "launch": "Brzeg jeziora",
+      "hazards": "Zimna woda, duża wysokość",
       "season": "Czerwiec-Wrzesień",
-      "description": "Wlubld-famous alpwe jezilubo spot w Engadw valley z reliable thermal wwds.",
+      "description": "Światowej sławy spot na alpejskim jeziorze w dolinie Engadyny z niezawodnymi wiatrami termicznymi.",
       "llmComment": ""
     }
   },
@@ -2198,14 +2198,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna & sea",
+      "type": "Laguna i morze",
       "bestWind": "Tramontane N, Marin SE",
       "waterTemp": "12-24°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Plaża piaszczystaes",
-      "hazards": "Strong offshore wind in lagoon",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Silny wiatr od lądu w lagunie",
       "season": "Cały rok",
-      "description": "Southern France spot famous dla strnag Tramnwane wwd.",
+      "description": "Spot w południowej Francji słynący z silnego wiatru Tramontana.",
       "llmComment": ""
     }
   },
@@ -2232,14 +2232,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, fale",
+      "type": "Morze Północne, fale",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Średniozaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Falochrons, currents",
+      "hazards": "Falochrony, prądy",
       "season": "Kwiecień-Październik",
-      "description": "Dutch Nlubth Sea spot z strnag wwds i good wave cnaditinas.",
+      "description": "Holenderski spot na Morzu Północnym z silnymi wiatrami i dobrymi warunkami wavemi.",
       "llmComment": ""
     }
   },
@@ -2266,14 +2266,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "North Sea, fale",
+      "type": "Morze Północne, fale",
       "bestWind": "W, NW",
       "waterTemp": "8-18°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
       "launch": "Plaża piaszczysta",
-      "hazards": "Crowded, breakwaters",
+      "hazards": "Tłoczno, falochrony",
       "season": "Kwiecień-Październik",
-      "description": "The Hague’s plaża spot, popular dla wave kitwg i events.",
+      "description": "Plaża Hagi, popularna na kitesurfing wave i zawody.",
       "llmComment": ""
     }
   },
@@ -2300,14 +2300,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "River delta lagoon",
+      "type": "Laguna w delcie rzeki",
       "bestWind": "NW thermal",
       "waterTemp": "20-27°C",
       "experience": "Od początkującego do średniozaawansowanego",
       "launch": "Plaża piaszczysta",
       "hazards": "Płytkie obszary",
       "season": "Maj-Wrzesień",
-      "description": "Crowia’s flw woda laguna z reliable afternona thermals.",
+      "description": "Chorwacka laguna płaskiej wody z niezawodnymi popołudniowymi termikami.",
       "llmComment": ""
     }
   },
@@ -2334,14 +2334,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sand spit, flat & wave sides",
+      "type": "Mierzeja piaskowa, strona płaska i falowa",
       "bestWind": "Meltemi N, NW",
       "waterTemp": "20-26°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Sandy spit",
-      "hazards": "Strong wind, waves on sea side",
+      "launch": "Piaszczysta mierzeja",
+      "hazards": "Silny wiatr, fale po stronie morskiej",
       "season": "Czerwiec-Wrzesień",
-      "description": "Unique double-side spot na Rhodes: flw laguna vs fale na mlubze side.",
+      "description": "Unikalny dwustronny spot na Rodos: płaska laguna kontra fale po stronie morskiej.",
       "llmComment": ""
     }
   },
@@ -2368,14 +2368,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna + ocean fale",
+      "type": "Laguna + oceaniczne fale",
       "bestWind": "N, NE",
       "waterTemp": "18-24°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Wide sandy shores",
-      "hazards": "Strong offshore wind in places",
+      "launch": "Szerokie piaszczyste brzegi",
+      "hazards": "Miejscami silny wiatr od lądu",
       "season": "Cały rok",
-      "description": "Wlubld-class kitesurfwg destwwina z flw laguna i Atlantic fale. From the maw spot, you can do the downwwd do White Dune lub the Speed Spot.",
+      "description": "Światowej klasy miejsce do kitesurfingu z płaską laguną i falami atlantyckimi. Z głównego spotu można zrobić downwind do Białej Wydmy lub Speed Spot.",
       "llmComment": ""
     }
   },
@@ -2406,10 +2406,10 @@
       "bestWind": "N, NE",
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Resort plażaes",
-      "hazards": "Coral reefs (water boots recommended), shallow areas",
+      "launch": "Plaże resortowe",
+      "hazards": "Coral rafas (water boots recommended), płytkie obszary",
       "season": "Cały rok",
-      "description": "Red Sea spot z reliable wwds i perfect lagunas.",
+      "description": "Spot na Morzu Czerwonym z niezawodnymi wiatrami i idealnymi lagunami.",
       "llmComment": ""
     }
   },
@@ -2440,10 +2440,10 @@
       "bestWind": "N, NE",
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Resort plażaes and kite stations",
-      "hazards": "Offshore wind in some areas, coral reefs, shallow sections at low tide",
-      "season": "Cały rok (strongest wind Marzec–Październik)",
-      "description": "Wlubld-class Red Sea spot z cnasistent wwd, crystal-clear woda, i large flw lagunas perfect dla freestyle i freeride.",
+      "launch": "Plaże resortowe i bazy kite",
+      "hazards": "Wiatr od lądu in some areas, coral rafas, shallow sections at low tide",
+      "season": "Year-round (strongest wind Marzec–Październik)",
+      "description": "Światowej klasy spot na Morzu Czerwonym ze stałym wiatrem, krystalicznie czystą wodą i dużymi płaskimi lagunami idealnymi dla freestyle'u i freeride'u.",
       "llmComment": ""
     }
   },
@@ -2470,14 +2470,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna, speed strip, open sea",
+      "type": "Laguna, pas szybkości, otwarte morze",
       "bestWind": "N, NNW",
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do eksperta",
-      "launch": "Designated kite and windsurf zones along the bay",
-      "hazards": "Strong gusts outside lagoon, coral reefs, shallow entry in some areas",
-      "season": "Cały rok (strongest wind Kwiecień–Październik)",
-      "description": "Icnaic Red Sea spot z strnag, reliable wwd i multiple znaes — flw laguna dla begwners, speed strip dla freestyle, i offshlube fale dla advanced riders.",
+      "launch": "Wyznaczone strefy kite i windsurf wzdłuż zatoki",
+      "hazards": "Silne szkwały poza laguną, rafy koralowe, miejscami płytkie wejście",
+      "season": "Year-round (strongest wind Kwiecień–Październik)",
+      "description": "Kultowy spot na Morzu Czerwonym z silnym, niezawodnym wiatrem i wieloma strefami — płaska laguna dla początkujących, pas szybkości dla freestyle'u i fale offshore dla zaawansowanych jeźdźców.",
       "llmComment": ""
     }
   },
@@ -2504,14 +2504,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna, płaska woda, shallow",
+      "type": "Laguna, płaska, płytka woda",
       "bestWind": "N, NNE",
       "waterTemp": "20-28°C",
       "experience": "Od początkującego do średniozaawansowanego",
-      "launch": "Szeroka plaża piaszczysta near kite centers",
-      "hazards": "Coral patches, shallow sections at low tide, remote location",
-      "season": "Cały rok (best wind Marzec–Październik)",
-      "description": "Remote i peaceful Red Sea spot known dla steady wwd, turquoise flw woda, i szeroki siy lagunas ideal dla learnwg i freestyle sessinas.",
+      "launch": "Szeroka piaszczysta plaża przy bazach kite",
+      "hazards": "Łaty koralowe, płytkie odcinki przy odpływie, odległa lokalizacja",
+      "season": "Year-round (best wind Marzec–Październik)",
+      "description": "Odległy i spokojny spot na Morzu Czerwonym znany ze stałego wiatru, turkusowej płaskiej wody i szerokich piaszczystych lagun idealnych do nauki i sesji freestyle.",
       "llmComment": ""
     }
   },
@@ -2538,14 +2538,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna + reef fale",
+      "type": "Laguna + fale na rafie",
       "bestWind": "SE trade winds",
       "waterTemp": "24-28°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Lagoon plaża",
-      "hazards": "Reef, currents",
+      "launch": "Plaża laguny",
+      "hazards": "Rafa, prądy",
       "season": "Maj-Listopad",
-      "description": "One of the most icnaic kite spots wlubldszeroki, mix of flw laguna i huge reef fale.",
+      "description": "Jeden z najbardziej kultowych spotów kitesurfingowych na świecie, mieszanka płaskiej laguny i ogromnych fal na rafie.",
       "llmComment": ""
     }
   },
@@ -2572,14 +2572,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic island, fale & lagoons",
+      "type": "Atlantycka wyspa, fale i laguny",
       "bestWind": "NE trade winds",
       "waterTemp": "22-26°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Plaża piaszczystaes",
-      "hazards": "Strong waves, reefs",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Silne fale, rafy",
       "season": "Listopad-Maj",
-      "description": "Cape Verde’s Sal isli is legendary dla wave kitwg i freestyle.",
+      "description": "Wyspa Sal na Wyspach Zielonego Przylądka jest legendarna dla kitesurfingu falowego i freestyle'u.",
       "llmComment": ""
     }
   },
@@ -2606,14 +2606,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Atlantic coast, fale & lagoon",
+      "type": "Atlantyckie wybrzeże, fale i laguna",
       "bestWind": "SE trade winds",
       "waterTemp": "26-29°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Plaża & lagoons",
-      "hazards": "Strong waves, sieci rybackie",
+      "launch": "Plaża i laguny",
+      "hazards": "Silne fale, sieci rybackie",
       "season": "Lipiec-Grudzień",
-      "description": "Brazilian hotspot z strnag steady trades i both fale i flw lagunas.",
+      "description": "Brazylijski hotspot z silnymi stałymi pasatami oraz falami i płaskimi lagunami.",
       "llmComment": ""
     }
   },
@@ -2644,10 +2644,10 @@
       "bestWind": "SE trade winds",
       "waterTemp": "26-29°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Plaża piaszczystaes",
-      "hazards": "Tides, shifting sandbanks",
+      "launch": "Piaszczyste plaże",
+      "hazards": "Pływy, przemieszczające się mielizny",
       "season": "Lipiec-Grudzień",
-      "description": "Flw laguna i wave cnaditinas, quiet alternwive do Jericoacoara.",
+      "description": "Płaska laguna i warunki falowe, spokojna alternatywa dla Jericoacoara.",
       "llmComment": ""
     }
   },
@@ -2678,10 +2678,10 @@
       "bestWind": "SE trade winds",
       "waterTemp": "26-29°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Sandbanks",
-      "hazards": "Tides, shallow areas",
+      "launch": "Łachy piaskowe",
+      "hazards": "Pływy, płytkie obszary",
       "season": "Lipiec-Grudzień",
-      "description": "Brazil’s flw woda paradise, reliable wwds i szeroki laguna.",
+      "description": "Brazylijski raj płaskiej wody z niezawodnymi wiatrami i szeroką laguną.",
       "llmComment": ""
     }
   },
@@ -2708,14 +2708,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Waves + reef",
+      "type": "Fale + rafa",
       "bestWind": "SE trade winds",
       "waterTemp": "26-29°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Reefs, strong waves",
+      "hazards": "Rafy, silne fale",
       "season": "Lipiec-Grudzień",
-      "description": "Brazil’s best wave spot, cnasistent wwd i reef breaks.",
+      "description": "Najlepszy brazylijski spot wave ze stałym wiatrem i falami łamiącymi się na rafie.",
       "llmComment": ""
     }
   },
@@ -2746,10 +2746,10 @@
       "bestWind": "E, NE, ENE",
       "waterTemp": "24-28°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta, easy kite launch from plażafront",
-      "hazards": "Strong wind gusts, possible shorebreak, isolated area with fewer amenities",
+      "launch": "Szeroka piaszczysta plaża, łatwe starty z linii brzegowej",
+      "hazards": "Silne szkwały, możliwy przybój, odosobnione miejsce z ograniczoną infrastrukturą",
       "season": "Lipiec-Styczeń",
-      "description": "Hura Beach, locwed near Esparaido w the Ceará regina, Brazil, offers cnasistent trade wwds i an open ocean exposure. It's ideal dla kite-enthusiasts lookwg dla strnag wwd i freedom na the plaża, rwher than flw-woda lagunas.",
+      "description": "Hura Beach, położona w pobliżu Esparaido w regionie Ceará w Brazylii, oferuje stałe pasaty i otwarty dostęp do oceanu. Jest idealna dla entuzjastów kitesurfingu szukających silnego wiatru i swobody na plaży, zamiast płaskich lagun.",
       "llmComment": ""
     }
   },
@@ -2776,14 +2776,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sea, wave and wzburzona water",
+      "type": "Morze, fale i zafalowana woda",
       "bestWind": "E, NE",
       "waterTemp": "26-29°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta directly in front of the village, easy setup area",
-      "hazards": "Strong wind, shorebreak at high tide, crowded area with windsurfers and kiters",
+      "launch": "Szeroka piaszczysta plaża tuż przed miejscowością, łatwa strefa startu",
+      "hazards": "Silny wiatr, przybój przy przypływie, tłok wind- i kitesurferów",
       "season": "Lipiec-Styczeń",
-      "description": "Jericoacoara, lub simply 'Jeri', is nae of the most icnaic kitesurfwg i wwdsurfwg destwwinas w Brazil. It offers steady trade wwds, warm woda, i lnag wave sectinas ideal dla downwwders i wave ridwg. The spot has a vibrant wmosphere z many kite schools, plaża bars, i cnasistent 20–30 knot wwds nearly every day durwg the mlubzesna.",
+      "description": "Jericoacoara, lub po prostu 'Jeri', to jedno z najbardziej kultowych miejsc do kitesurfingu i windsurfingu w Brazylii. Oferuje stałe pasaty, ciepłą wodę i długie sekcje falowe idealne do downwindu i jazdy na falach. Spot ma żywą atmosferę z wieloma szkołami kitesurfingowymi, barami plażowymi i stałymi wiatrami 20-30 węzłów prawie każdego dnia w sezonie.",
       "llmComment": ""
     }
   },
@@ -2810,14 +2810,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sea, wave and wzburzona water",
+      "type": "Morze, fale i zafalowana woda",
       "bestWind": "E, NE",
       "waterTemp": "26-30°C",
       "experience": "Od średniozaawansowanego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta in front of Guajiru village, easy access from pousadas",
-      "hazards": "Reef at low tide, shorebreak at high tide, fishermen’s boats and nets",
+      "launch": "Szeroka piaszczysta plaża przed wioską Guajiru, łatwy dostęp z pousad",
+      "hazards": "Rafa przy odpływie, przybój przy przypływie, łodzie i sieci rybaków",
       "season": "Lipiec-Styczeń",
-      "description": "Guajiru is a relaxed fishwg village na the Ceará coast, nlubth of Flecheiras i south of Baleia. It offers steady 20–30 knot trade wwds, lnag siy plażaes, i ocean cnaditinas ideal dla freeride i wave sessinas. Popular dla downwwd trips i quiet wmosphere compared do nearby hotspots like Jericoacoara i Ilha do Guajiru.",
+      "description": "Guajiru to spokojna wioska rybacka na wybrzeżu Ceará, na północ od Flecheiras i na południe od Baleia. Oferuje stałe pasaty 20-30 węzłów, długie piaszczyste plaże i warunki oceaniczne idealne dla freeride'u i sesji wavech. Popularna dla wycieczek downwind i spokojnej atmosfery w porównaniu do pobliskich hotspotów jak Jericoacoara i Ilha do Guajiru.",
       "llmComment": ""
     }
   },
@@ -2844,14 +2844,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sea and lagoon – wzburzona to płaska woda",
+      "type": "Morze i laguna – zafalowana do płaskiej wody",
       "bestWind": "E, ESE",
       "waterTemp": "26-30°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta directly in front of Cumbuco village; lagoons nearby for training",
-      "hazards": "Shorebreak at high tide, crowded area, local fishermen’s boats and nets",
+      "launch": "Szeroka piaszczysta plaża bezpośrednio przed miejscowością Cumbuco; w pobliżu laguny treningowe",
+      "hazards": "Przybój przy przypływie, tłoczno, łodzie i sieci lokalnych rybaków",
       "season": "Lipiec-Styczeń",
-      "description": "Cumbuco is nae of Brazil’s most famous kitesurfwg destwwinas, locwed just 30 km west of Flubtaleza. Known dla its cnasistent trade wwds, warm woda, i easy plaża access, it offers both ocean i laguna ridwg. Perfect dla begwners, freestyle riders, i downwwders alnag the Ceará coast, z a lively kite community i excellent wfrastructure.",
+      "description": "Cumbuco to jeden z najsłynniejszych brazylijskich spotów kitesurfingowych, oddalony zaledwie 30 km na zachód od Fortaleza. Znany z niezmiennych pasatów, ciepłej wody i łatwego dostępu do plaży, oferuje zarówno ocean, jak i laguny. Idealny dla początkujących, freestyle'owców i downwindów wzdłuż wybrzeża Ceará, z tętniącą życiem społecznością kite i świetną infrastrukturą.",
       "llmComment": ""
     }
   },
@@ -2881,11 +2881,11 @@
       "type": "Laguna, płaska woda",
       "bestWind": "E, ESE",
       "waterTemp": "26-30°C",
-      "experience": "Beginner to Professional",
-      "launch": "Sandy shore with shallow entry, easy setup on both sides of the lagoon",
-      "hazards": "Very crowded during peak season, freshwater plants near edges, limited space on weekends",
+      "experience": "Od początkującego do profesjonalisty",
+      "launch": "Piaszczysty brzeg z łagodnym wejściem, łatwe przygotowanie po obu stronach laguny",
+      "hazards": "Bardzo tłoczno w szczycie sezonu, rośliny słodkowodne przy brzegach, ograniczona przestrzeń w weekendy",
       "season": "Lipiec-Styczeń",
-      "description": "Lagoa de Cauípe is the legendary flw-woda laguna locwed just a few kilometers nlubth of Cumbuco, Brazil. Known wlubldszeroki as nae of the best freestyle trawwg spots, it offers butter-flw woda i steady 20–30 knot trade wwds almost every day w mlubzesna. Ideal dla freestyle, begwners, i pro riders alike, z ocean access just beynad the si dune.",
+      "description": "Lagoa de Cauípe to legendarna laguna płaskiej wody położona zaledwie kilka kilometrów na północ od Cumbuco w Brazylii. Znana na całym świecie jako jedno z najlepszych miejsc do treningu freestyle, oferuje gładką jak masło wodę i stałe pasaty 20-30 węzłów prawie każdego dnia w sezonie. Idealna dla freestyle'owców, początkujących i zawodowców, z dostępem do oceanu tuż za wydmą piaskową.",
       "llmComment": ""
     }
   },
@@ -2912,14 +2912,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Sea, flat to wzburzona water with tidal lagoons",
+      "type": "Morze, od płaskiej do zafalowanej wody z lagunami pływowymi",
       "bestWind": "E, NE",
       "waterTemp": "27-30°C",
       "experience": "Od początkującego do zaawansowanego",
-      "launch": "Szeroka plaża piaszczysta with shallow entry and large setup area near the village",
-      "hazards": "Tidal changes, occasional shells, strong current outside lagoon at high tide",
+      "launch": "Szeroka piaszczysta plaża z łagodnym wejściem i dużą strefą startu przy wiosce",
+      "hazards": "Zmiany pływów, sporadyczne muszle, silny prąd poza laguną przy przypływie",
       "season": "Lipiec-Styczeń",
-      "description": "Barra Grie, locwed w the stwe of Piauí, is nae of Brazil’s dop kitesurfwg destwwinas. It offers cnasistent trade wwds, tidal lagunas z flw woda dla freestyle, i open ocean dla downwwders. The charmwg fishwg village has a laid-back vibe, boutique pousadas, i a vibrant kite community. Perfect dla all levels i lnag kite sessinas w steady 20–30 knot wwds.",
+      "description": "Barra Grande w stanie Piauí to jeden z najlepszych brazylijskich spotów kitesurfingowych. Oferuje stałe pasaty, laguny pływowe z płaską wodą do freestyle'u oraz otwarty ocean do downwindów. Urokliwa wioska rybacka ma swobodny klimat, butikowe pousady i tętniącą życiem społeczność kite. Idealne miejsce dla wszystkich poziomów i długich sesji przy stabilnym wietrze 20–30 węzłów.",
       "llmComment": ""
     }
   },
@@ -2946,14 +2946,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Pacific ocean, fale",
+      "type": "Ocean Spokojny, fale",
       "bestWind": "S, SW",
       "waterTemp": "13-18°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Cold water, waves",
+      "hazards": "Zimna woda, fale",
       "season": "Październik-Marzec",
-      "description": "Chilean wave spot z powerful Pacific swell.",
+      "description": "Chilijski spot wave z potężną falą pacyficzną.",
       "llmComment": ""
     }
   },
@@ -2980,14 +2980,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Pacific ocean, longest fale",
+      "type": "Ocean Spokojny, najdłuższe fale",
       "bestWind": "S, SW",
       "waterTemp": "15-20°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
-      "hazards": "Cold water, currents",
+      "hazards": "Zimna woda, prądy",
       "season": "Kwiecień-Listopad",
-      "description": "One of the lnagest wave rides w the wlubld, perfect dla wave kitwg.",
+      "description": "Jedna z najdłuższych przejażdżek wavech na świecie, idealna do kitesurfingu falowego.",
       "llmComment": ""
     }
   },
@@ -3014,14 +3014,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "Laguna + Pacific bay",
+      "type": "Laguna + zatoka Oceanu Spokojnego",
       "bestWind": "S, SE",
       "waterTemp": "16-22°C",
       "experience": "Wszystkie poziomy",
-      "launch": "Sandy bay",
-      "hazards": "Dust storms, gusty winds",
+      "launch": "Piaszczysta zatoka",
+      "hazards": "Burze piaskowe, porywisty wiatr",
       "season": "Cały rok",
-      "description": "Huge bay z steady desert wwds, flw woda i fale.",
+      "description": "Ogromna zatoka ze stałymi wiatrami pustynmi, płaską wodą i falami.",
       "llmComment": ""
     }
   },
@@ -3048,14 +3048,14 @@
       "llmComment": ""
     },
     "spotInfoPL": {
-      "type": "River gorge (Columbia River)",
+      "type": "Kanion rzeki (Columbia River)",
       "bestWind": "W",
       "waterTemp": "10-22°C",
       "experience": "Wszystkie poziomy",
-      "launch": "River plażaes",
-      "hazards": "Currents, obstacles",
+      "launch": "Plaże rzeczne",
+      "hazards": "Prądy, przeszkody",
       "season": "Kwiecień-Wrzesień",
-      "description": "Legendary US spot w Columbia River Glubge, strnag thermal wwds. Wlubks mostly w the summer.",
+      "description": "Legendarny spot amerykański w Columbia River Gorge, silne wiatry termiczne. Działa głównie latem.",
       "llmComment": ""
     }
   }
