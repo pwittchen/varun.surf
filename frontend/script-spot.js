@@ -1085,18 +1085,14 @@
                         ${isDesktopView ? `
                         <div class="forecast-tabs">
                             <button class="forecast-tab active" data-tab="table">
-                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="2" y="2" width="12" height="2" rx="1" fill="currentColor"/>
-                                    <rect x="2" y="7" width="12" height="2" rx="1" fill="currentColor"/>
-                                    <rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor"/>
+                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11,22H5c-2.757,0-5-2.243-5-5V9H11v13ZM24,7c0-2.757-2.243-5-5-5H5C2.243,2,0,4.243,0,7H24Zm-11,2v13h6c2.757,0,5-2.243,5-5V9H13Z" fill="currentColor"/>
                                 </svg>
                                 ${t('tableViewLabel')}
                             </button>
                             <button class="forecast-tab" data-tab="windguru">
-                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="2" y="2" width="2" height="12" rx="1" fill="currentColor"/>
-                                    <rect x="7" y="2" width="2" height="12" rx="1" fill="currentColor"/>
-                                    <rect x="12" y="2" width="2" height="12" rx="1" fill="currentColor"/>
+                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5,22c-2.757,0-5-2.243-5-5V7C0,4.243,2.243,2,5,2V22Zm2-11H24V7c0-2.757-2.243-5-5-5H7V11Zm0,2v9h12c2.757,0,5-2.243,5-5v-4H7Z" fill="currentColor"/>
                                 </svg>
                                 ${t('windguruViewLabel')}
                             </button>

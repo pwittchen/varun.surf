@@ -2226,7 +2226,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .forecast-tab.active {
     color: var(--accent-primary);
     border-bottom-color: var(--accent-primary);
-    font-weight: 600;
 }
 
 .forecast-tab.active .tab-icon {
