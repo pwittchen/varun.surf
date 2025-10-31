@@ -8,7 +8,6 @@
     let backgroundRefreshIntervalId = null;
     let currentSpotId = null;
     let selectedModel = 'gfs';
-    let currentSponsors = [];
 
     const FORECAST_POLL_INTERVAL = 5000;
     const FORECAST_TIMEOUT_MS = 30000;
@@ -191,27 +190,6 @@
         return rotations[direction] || 0;
     }
 
-    // Helper function to get wind quality class based on wind value
-    function getWindClass(windValue) {
-        if (windValue < 12) {
-            return 'wind-weak';
-        } else if (windValue >= 12 && windValue < 18) {
-            return 'wind-moderate';
-        } else if (windValue >= 18 && windValue <= 25) {
-            return 'wind-strong';
-        } else {
-            return 'wind-extreme';
-        }
-    }
-
-    // Helper function to get spot info based on current language
-    function getSpotInfo(spot) {
-        if (!spot) return null;
-        const lang = localStorage.getItem('language') || 'en';
-        // Direct access - no fallback, all translations are complete
-        return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
-    }
-
     // Helper function to translate day names
     function translateDayName(dayName) {
         if (!dayName || typeof dayName !== 'string') {
@@ -259,6 +237,14 @@
             // Desktop: Show full date with day of month, day of week, and time
             return `${formattedDayOfMonth}. ${translatedDay} ${timeToken}`.trim();
         }
+    }
+
+    // Helper function to get spot info based on current language
+    function getSpotInfo(spot) {
+        if (!spot) return null;
+        const lang = localStorage.getItem('language') || 'en';
+        // Direct access - no fallback, all translations are complete
+        return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
     }
 
     // Helper function to get a country flag
@@ -358,19 +344,14 @@
     }
 
     function openAIModal(spotName) {
-        const currentLang = localStorage.getItem('language') || 'en';
-        const aiAnalysis = currentLang === 'pl' ? currentSpot.aiAnalysisPl : currentSpot.aiAnalysisEn;
-
-        if (!currentSpot || !aiAnalysis) return;
+        if (!currentSpot || !currentSpot.aiAnalysis) return;
 
         const modal = document.getElementById('aiModal');
         const modalTitle = document.getElementById('aiModalTitle');
         const aiAnalysisContent = document.getElementById('aiAnalysisContent');
-        const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
 
-        modalTitle.textContent = `${spotName} - ${t('aiAnalysisTitle')}`;
-        aiAnalysisContent.innerHTML = `<p>${aiAnalysis}</p>`;
-        aiModalDisclaimer.textContent = t('aiDisclaimer');
+        modalTitle.textContent = `${spotName} - AI Analysis`;
+        aiAnalysisContent.innerHTML = `<p>${currentSpot.aiAnalysis}</p>`;
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -387,7 +368,7 @@
         const modalTitle = document.getElementById('icmModalTitle');
         const icmImage = document.getElementById('icmImage');
 
-        modalTitle.textContent = `${spotName} - ${t('icmForecastTitle')}`;
+        modalTitle.textContent = `${spotName} - ICM Forecast`;
         icmImage.src = icmUrl;
 
         modal.classList.add('active');
@@ -412,6 +393,38 @@
         const modal = document.getElementById('appInfoModal');
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
+    }
+
+    // Helper function to find forecast closest to current time
+    function findClosestForecast(forecastData) {
+        if (!forecastData || forecastData.length === 0) {
+            console.log('findClosestForecast: No forecast data available');
+            return null;
+        }
+
+        const now = new Date();
+        console.log('findClosestForecast: Current time:', now.toString());
+        console.log('findClosestForecast: Total forecasts:', forecastData.length);
+
+        let closestForecast = forecastData[0];
+        let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
+
+        console.log('findClosestForecast: First forecast date string:', forecastData[0].date);
+        console.log('findClosestForecast: First forecast parsed:', parseForecastDate(forecastData[0].date).toString());
+        console.log('findClosestForecast: First forecast diff (ms):', minDiff);
+
+        for (let i = 1; i < forecastData.length; i++) {
+            const forecastTime = parseForecastDate(forecastData[i].date);
+            const diff = Math.abs(forecastTime - now);
+            if (diff < minDiff) {
+                console.log(`findClosestForecast: Found closer forecast at index ${i}:`, forecastData[i].date, 'diff:', diff);
+                minDiff = diff;
+                closestForecast = forecastData[i];
+            }
+        }
+
+        console.log('findClosestForecast: Selected forecast:', closestForecast.date, 'wind:', closestForecast.wind, 'kts');
+        return closestForecast;
     }
 
     // Helper function to parse forecast date string (e.g., "Mon 28 Oct 2025 14:00")
@@ -451,26 +464,266 @@
         return new Date();
     }
 
-    // Helper function to find forecast closest to current time
-    function findClosestForecast(forecastData) {
+    // Create Windguru-style vertical forecast view
+    function createWindguruView(forecastData, hasWaveData) {
         if (!forecastData || forecastData.length === 0) {
-            return null;
+            return '';
         }
 
-        const now = new Date();
-        let closestForecast = forecastData[0];
-        let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-        for (let i = 1; i < forecastData.length; i++) {
-            const forecastTime = parseForecastDate(forecastData[i].date);
-            const diff = Math.abs(forecastTime - now);
-            if (diff < minDiff) {
-                minDiff = diff;
-                closestForecast = forecastData[i];
+        // Group forecasts by day
+        const groupedByDay = {};
+        forecastData.forEach(forecast => {
+            const dayKey = forecast.date ? forecast.date.split(' ').slice(0, 4).join(' ') : 'Unknown';
+            if (!groupedByDay[dayKey]) {
+                groupedByDay[dayKey] = [];
             }
+            groupedByDay[dayKey].push(forecast);
+        });
+
+        let windguruHtml = '<div class="forecast-view windguru-view">';
+        windguruHtml += '<div class="windguru-wrapper">';
+
+        // Sticky labels column
+        windguruHtml += '<div class="windguru-labels">';
+        windguruHtml += '<div class="windguru-label-header"></div>'; // Empty header for alignment
+        windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('rainHeader')}</div>`;
+        if (hasWaveData) {
+            windguruHtml += `<div class="windguru-label">${t('waveHeader')}</div>`;
+        }
+        windguruHtml += '</div>';
+
+        // Scrollable data container
+        windguruHtml += '<div class="windguru-data-container">';
+        windguruHtml += '<div class="windguru-data">';
+
+        Object.keys(groupedByDay).forEach(dayKey => {
+            const dayForecasts = groupedByDay[dayKey];
+            const firstForecast = dayForecasts[0];
+
+            // Format day label
+            const dayLabel = formatDayLabel(firstForecast.date);
+
+            windguruHtml += `<div class="windguru-day-column">`;
+            windguruHtml += `<div class="windguru-day-header">${dayLabel}</div>`;
+
+            // Time row - with hour cells
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                const time = forecast.date ? forecast.date.split(' ')[4] : '';
+                windguruHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Wind speed row
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                let windClass = '';
+                if (forecast.wind < 12) windClass = 'wind-weak';
+                else if (forecast.wind >= 12 && forecast.wind <= 18) windClass = 'wind-moderate';
+                else if (forecast.wind >= 19 && forecast.wind <= 25) windClass = 'wind-strong';
+                else windClass = 'wind-extreme';
+
+                windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.wind}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Gust speed row
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                let windClass = '';
+                if (forecast.gusts < 12) windClass = 'wind-weak';
+                else if (forecast.gusts >= 12 && forecast.gusts <= 18) windClass = 'wind-moderate';
+                else if (forecast.gusts >= 19 && forecast.gusts <= 25) windClass = 'wind-strong';
+                else windClass = 'wind-extreme';
+
+                windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.gusts}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Direction row
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                const windArrow = getWindArrow(forecast.direction);
+                windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Temperature row
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                const tempClass = forecast.temp >= 18 ? 'temp-positive' : 'temp-negative';
+                windguruHtml += `<div class="windguru-cell ${tempClass}">${forecast.temp}°</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Precipitation row
+            windguruHtml += `<div class="windguru-data-row">`;
+            dayForecasts.forEach(forecast => {
+                const precipClass = forecast.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+                windguruHtml += `<div class="windguru-cell ${precipClass}">${forecast.precipitation}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Wave row (if applicable)
+            if (hasWaveData) {
+                windguruHtml += `<div class="windguru-data-row">`;
+                dayForecasts.forEach(forecast => {
+                    let waveClass = '';
+                    let waveText = '-';
+                    if (forecast.wave !== undefined) {
+                        if (forecast.wave === 0) {
+                            waveClass = 'wave-none';
+                            waveText = '0m';
+                        } else {
+                            waveClass = forecast.wave > 1.5 ? 'wave-high' : 'wave-low';
+                            waveText = `${forecast.wave}m`;
+                        }
+                    }
+                    windguruHtml += `<div class="windguru-cell ${waveClass}">${waveText}</div>`;
+                });
+                windguruHtml += `</div>`;
+            }
+
+            windguruHtml += `</div>`; // Close day column
+        });
+
+        windguruHtml += '</div>'; // Close windguru-data
+        windguruHtml += '</div>'; // Close windguru-data-container
+        windguruHtml += '</div>'; // Close windguru-wrapper
+        windguruHtml += '</div>'; // Close windguru-view
+        return windguruHtml;
+    }
+
+    // Helper function to translate month names
+    function translateMonthName(monthName) {
+        if (!monthName || typeof monthName !== 'string') {
+            return '';
         }
 
-        return closestForecast;
+        const keyMap = {
+            Jan: 'monthJan',
+            Feb: 'monthFeb',
+            Mar: 'monthMar',
+            Apr: 'monthApr',
+            May: 'monthMay',
+            Jun: 'monthJun',
+            Jul: 'monthJul',
+            Aug: 'monthAug',
+            Sep: 'monthSep',
+            Oct: 'monthOct',
+            Nov: 'monthNov',
+            Dec: 'monthDec'
+        };
+
+        const translationKey = keyMap[monthName];
+        return translationKey ? t(translationKey) : monthName;
+    }
+
+    // Format day label for windguru view
+    function formatDayLabel(dateStr) {
+        if (!dateStr) return '';
+        const tokens = dateStr.split(' ').filter(Boolean);
+        if (tokens.length < 4) return '';
+
+        const dayToken = tokens[0];
+        const dayOfMonthToken = tokens[1];
+        const monthToken = tokens[2];
+
+        const translatedDay = translateDayName(dayToken);
+        const shortDay = translatedDay.substring(0, 3);
+        const translatedMonth = translateMonthName(monthToken);
+
+        return `${shortDay} ${dayOfMonthToken}/${translatedMonth}`;
+    }
+
+    // Setup forecast tabs
+    function setupForecastTabs() {
+        const tabs = document.querySelectorAll('.forecast-tab');
+        if (tabs.length === 0) return;
+
+        // Restore saved preference from localStorage
+        const savedView = localStorage.getItem('forecastViewPreference') || 'table';
+
+        // Set initial view based on saved preference
+        const tableView = document.querySelector('.table-view');
+        const windguruView = document.querySelector('.windguru-view');
+
+        tabs.forEach(t => {
+            if (t.dataset.tab === savedView) {
+                t.classList.add('active');
+            } else {
+                t.classList.remove('active');
+            }
+        });
+
+        if (savedView === 'table') {
+            if (tableView) tableView.classList.add('active');
+            if (windguruView) windguruView.classList.remove('active');
+        } else if (savedView === 'windguru') {
+            if (tableView) tableView.classList.remove('active');
+            if (windguruView) windguruView.classList.add('active');
+        }
+
+        // Add click listeners
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetView = tab.dataset.tab;
+
+                // Save preference to localStorage
+                localStorage.setItem('forecastViewPreference', targetView);
+
+                // Update tab active state
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update view visibility
+                if (targetView === 'table') {
+                    if (tableView) tableView.classList.add('active');
+                    if (windguruView) windguruView.classList.remove('active');
+                } else if (targetView === 'windguru') {
+                    if (tableView) tableView.classList.remove('active');
+                    if (windguruView) windguruView.classList.add('active');
+                }
+            });
+        });
+
+        // Setup drag-to-scroll for windguru view
+        const windguruContainer = document.querySelector('.windguru-data-container');
+        if (windguruContainer) {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            windguruContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                windguruContainer.classList.add('dragging');
+                startX = e.pageX - windguruContainer.offsetLeft;
+                scrollLeft = windguruContainer.scrollLeft;
+            });
+
+            windguruContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                windguruContainer.classList.remove('dragging');
+            });
+
+            windguruContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                windguruContainer.classList.remove('dragging');
+            });
+
+            windguruContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - windguruContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Scroll speed multiplier
+                windguruContainer.scrollLeft = scrollLeft - walk;
+            });
+        }
     }
 
     // Create spot card HTML
@@ -491,9 +744,21 @@
         // Current conditions row (to be added at the top of the table)
         let currentConditionsRow = '';
         if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
-            const windClass = getWindClass(spot.currentConditions.wind);
-            const windTextClass = windClass;
-            const gustTextClass = getWindClass(spot.currentConditions.gusts);
+            let windClass, windTextClass;
+            const avgWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
+            if (avgWind < 12) {
+                windClass = 'weak-wind';
+                windTextClass = 'wind-weak';
+            } else if (avgWind >= 12 && avgWind < 18) {
+                windClass = 'moderate-wind';
+                windTextClass = 'wind-moderate';
+            } else if (avgWind >= 18 && avgWind <= 22) {
+                windClass = 'strong-wind';
+                windTextClass = 'wind-strong';
+            } else {
+                windClass = 'extreme-wind';
+                windTextClass = 'wind-extreme';
+            }
 
             const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
             const windArrow = getWindArrow(spot.currentConditions.direction);
@@ -511,13 +776,8 @@
                 }
             }
 
-            // Use wind class for row background
-            const rowWindClass = windClass === 'wind-weak' ? 'weak-wind' :
-                                windClass === 'wind-moderate' ? 'moderate-wind' :
-                                windClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
-
             currentConditionsRow = `
-                    <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
+                    <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${t('nowLabel')}</strong>
@@ -525,7 +785,7 @@
                             </div>
                         </td>
                         <td class="${windTextClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${gustTextClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${windTextClass}">${spot.currentConditions.gusts} kts</td>
                         <td class="${windTextClass}">
                             <span class="wind-arrow">${windArrow}</span> ${spot.currentConditions.direction}
                         </td>
@@ -640,10 +900,24 @@
 
         if (conditionsData) {
             const windArrow = getWindArrow(conditionsData.direction);
+            const avgWind = (conditionsData.wind + conditionsData.gusts) / 2;
 
-            // Use individual values for coloring (not average)
-            const windClass = getWindClass(conditionsData.wind);
-            const gustClass = getWindClass(conditionsData.gusts);
+            // Determine wind quality class
+            let windQualityClass = '';
+            let windQualityText = '';
+            if (avgWind < 12) {
+                windQualityClass = 'wind-weak';
+                windQualityText = 'Weak';
+            } else if (avgWind >= 12 && avgWind < 18) {
+                windQualityClass = 'wind-moderate';
+                windQualityText = 'Good';
+            } else if (avgWind >= 18 && avgWind <= 25) {
+                windQualityClass = 'wind-strong';
+                windQualityText = 'Strong';
+            } else {
+                windQualityClass = 'wind-extreme';
+                windQualityText = 'Extreme';
+            }
 
             currentConditionsCardHtml = `
                 <div class="current-conditions-card">
@@ -652,18 +926,18 @@
                         ${conditionsData.isCurrent ? '<div class="live-dot"></div>' : ''}
                     </div>
                     <div class="conditions-main">
-                        <div class="wind-arrow-large ${windClass}" style="transform: rotate(${getWindRotation(conditionsData.direction)}deg);">
+                        <div class="wind-arrow-large ${windQualityClass}" style="transform: rotate(${getWindRotation(conditionsData.direction)}deg);">
                             ↓
                         </div>
                         <div class="wind-details">
-                            <div class="wind-speed ${windClass}">${conditionsData.wind} kts</div>
+                            <div class="wind-speed ${windQualityClass}">${conditionsData.wind} kts</div>
                             <div class="wind-label">${t('windLabel')}</div>
                         </div>
                     </div>
                     <div class="conditions-grid">
                         <div class="condition-item">
                             <div class="condition-label">${t('gustsLabel')}</div>
-                            <div class="condition-value ${gustClass}">${conditionsData.gusts} kts</div>
+                            <div class="condition-value ${windQualityClass}">${conditionsData.gusts} kts</div>
                         </div>
                         <div class="condition-item">
                             <div class="condition-label">${t('directionLabel')}</div>
@@ -677,23 +951,6 @@
                             <div class="condition-label">${t('precipitationLabel')}</div>
                             <div class="condition-value ${conditionsData.precipitation === 0 ? 'precipitation-none' : 'precipitation'}">${conditionsData.precipitation} mm</div>
                         </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Build sponsors card HTML (desktop only)
-        let sponsorsCardHtml = '';
-        if (isDesktopView && currentSponsors && currentSponsors.length > 0) {
-            const sponsorLinks = currentSponsors
-                .map(sponsor => `<a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link-item">${sponsor.name}</a>`)
-                .join('');
-
-            sponsorsCardHtml = `
-                <div class="sponsors-card">
-                    <div class="sponsors-card-title">${t('sponsorsOfSpotTitle')}</div>
-                    <div class="sponsors-links">
-                        ${sponsorLinks}
                     </div>
                 </div>
             `;
@@ -754,16 +1011,13 @@
 
         // Build AI analysis card HTML
         let aiAnalysisCardHtml = '';
-        const currentLang = localStorage.getItem('language') || 'en';
-        const aiAnalysis = currentLang === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
-
-        if (aiAnalysis) {
+        if (spot.aiAnalysis) {
             aiAnalysisCardHtml = `
                 <div class="ai-analysis-card">
                     <div class="ai-analysis">
-                        <p>${aiAnalysis}</p>
+                        <p>${spot.aiAnalysis}</p>
                     </div>
-                    <div class="modal-disclaimer">${t('aiDisclaimer')}</div>
+                    <div class="modal-disclaimer">⚠️ This data is generated by AI and may contain errors or invalid information!</div>
                 </div>
             `;
         }
@@ -786,35 +1040,59 @@
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">MAP</a>` : ''}
-                    ${(spot.aiAnalysisEn || spot.aiAnalysisPl) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
+                    ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 
                 <div class="spot-detail-container">
                     <div class="spot-detail-left">
                         ${currentConditionsCardHtml}
-                        ${sponsorsCardHtml}
                         ${spotInfoCardHtml}
                         ${aiAnalysisCardHtml}
                     </div>
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
-                        <table class="weather-table">
-                            <thead>
-                                <tr>
-                                    <th>${t('dateHeader')}</th>
-                                    <th>${t('windHeader')}</th>
-                                    <th>${t('gustsHeader')}</th>
-                                    <th>${t('directionHeader')}</th>
-                                    <th>${t('tempHeader')}</th>
-                                    <th>${t('rainHeader')}</th>
-                                    ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${currentConditionsRow}
-                                ${forecastRows}
-                            </tbody>
-                        </table>
+                        ${isDesktopView ? `
+                        <div class="forecast-tabs">
+                            <button class="forecast-tab active" data-tab="table">
+                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="2" width="12" height="2" rx="1" fill="currentColor"/>
+                                    <rect x="2" y="7" width="12" height="2" rx="1" fill="currentColor"/>
+                                    <rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor"/>
+                                </svg>
+                                ${t('tableViewLabel')}
+                            </button>
+                            <button class="forecast-tab" data-tab="windguru">
+                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="2" width="2" height="12" rx="1" fill="currentColor"/>
+                                    <rect x="7" y="2" width="2" height="12" rx="1" fill="currentColor"/>
+                                    <rect x="12" y="2" width="2" height="12" rx="1" fill="currentColor"/>
+                                </svg>
+                                ${t('windguruViewLabel')}
+                            </button>
+                        </div>
+                        ` : ''}
+                        <div class="forecast-view-container">
+                            <div class="forecast-view table-view active">
+                                <table class="weather-table">
+                                    <thead>
+                                        <tr>
+                                            <th>${t('dateHeader')}</th>
+                                            <th>${t('windHeader')}</th>
+                                            <th>${t('gustsHeader')}</th>
+                                            <th>${t('directionHeader')}</th>
+                                            <th>${t('tempHeader')}</th>
+                                            <th>${t('rainHeader')}</th>
+                                            ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${currentConditionsRow}
+                                        ${forecastRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ${isDesktopView ? createWindguruView(forecastData, hasWaveData) : ''}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -867,6 +1145,9 @@
             }
 
             document.title = `${spot.name} - VARUN.SURF`;
+
+            // Setup forecast tabs after spot card is rendered
+            setupForecastTabs();
         }
 
         currentSpot = spot;
@@ -923,6 +1204,8 @@
                 themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
             }
             localStorage.setItem('theme', theme);
+            // Update sponsor logos when theme changes
+            updateSponsorLogosForTheme(theme);
         }
 
         // Set initial theme
@@ -1145,15 +1428,23 @@
     function setupResizeHandler() {
         let resizeTimeout;
         let wasMobile = window.innerWidth <= 768;
+        let wasNarrow = window.innerWidth <= 1430;
 
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 const isMobile = window.innerWidth <= 768;
+                const isNarrow = window.innerWidth <= 1430;
 
-                // Only re-render if we crossed the mobile/desktop threshold
-                if (isMobile !== wasMobile) {
+                // Check if we crossed the mobile/desktop threshold
+                const crossedMobileThreshold = isMobile !== wasMobile;
+
+                // Check if we crossed the 1430px threshold (for forecast tabs visibility)
+                const crossedNarrowThreshold = isNarrow !== wasNarrow;
+
+                if (crossedMobileThreshold || crossedNarrowThreshold) {
                     wasMobile = isMobile;
+                    wasNarrow = isNarrow;
                     if (currentSpot) {
                         displaySpot(currentSpot);
                     }
@@ -1271,7 +1562,7 @@
             }
 
             // Load sponsors for this spot
-            await renderSpotSponsor(spotId);
+            renderSpotSponsor(spotId);
 
             if (hasForecastData(spot)) {
                 displaySpot(spot);
@@ -1289,23 +1580,81 @@
     }
 
     // Sponsors functionality
-    async function fetchAllSponsors() {
+    async function fetchSponsorBySpotId(spotId) {
         try {
-            const response = await fetch('/api/v1/sponsors');
+            const response = await fetch(`/api/v1/sponsors/${spotId}`);
             if (!response.ok) {
-                return [];
+                return null;
             }
-            const sponsors = await response.json();
-            return sponsors || [];
+            const sponsor = await response.json();
+            return sponsor || null;
         } catch (error) {
-            console.error('Error fetching sponsors:', error);
-            return [];
+            console.error('Error fetching sponsor:', error);
+            return null;
         }
     }
 
+    function checkImageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
+        });
+    }
+
     async function renderSpotSponsor(spotId) {
-        const allSponsors = await fetchAllSponsors();
-        currentSponsors = allSponsors.filter(sponsor => sponsor.id === parseInt(spotId));
+        const sponsorsContainer = document.getElementById('sponsorsContainer');
+        if (!sponsorsContainer) {
+            return;
+        }
+
+        const sponsor = await fetchSponsorBySpotId(spotId);
+
+        if (!sponsor) {
+            sponsorsContainer.innerHTML = '';
+            return;
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+
+        // Determine which logo to use based on theme
+        const logoToUse = currentTheme === 'light' ? sponsor.logoLight : sponsor.logoDark;
+        const logoPath = `/img/sponsors/${logoToUse}`;
+        const imageExists = await checkImageExists(logoPath);
+
+        let sponsorsHTML = '<div class="sponsors-container"><div class="sponsors-list">';
+
+        if (imageExists) {
+            sponsorsHTML += `
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        <img src="${logoPath}" alt="${sponsor.name}" class="sponsor-logo" data-logo-dark="${sponsor.logoDark}" data-logo-light="${sponsor.logoLight}">
+                    </a>
+                </div>
+            `;
+        } else {
+            sponsorsHTML += `
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        <span class="sponsor-name">${sponsor.name}</span>
+                    </a>
+                </div>
+            `;
+        }
+
+        sponsorsHTML += '</div></div>';
+        sponsorsContainer.innerHTML = sponsorsHTML;
+    }
+
+    function updateSponsorLogosForTheme(theme) {
+        const sponsorLogos = document.querySelectorAll('.sponsor-logo');
+        sponsorLogos.forEach(logo => {
+            const logoDark = logo.getAttribute('data-logo-dark');
+            const logoLight = logo.getAttribute('data-logo-light');
+            const logoToUse = theme === 'light' ? logoLight : logoDark;
+            logo.src = `/img/sponsors/${logoToUse}`;
+        });
     }
 
     // Make functions global for onclick handlers

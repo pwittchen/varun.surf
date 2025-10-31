@@ -1870,50 +1870,6 @@ body.spot-page .error-description {
     border-radius: 12px;
 }
 
-/* Sponsors card styling */
-.sponsors-card {
-    background: var(--bg-secondary);
-    margin-bottom: 12px;
-}
-
-.sponsors-card-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--border-primary);
-}
-
-.sponsors-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.sponsor-link-item {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    color: var(--text-primary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    background: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border-primary);
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.sponsor-link-item:last-child {
-    border-bottom: none;
-}
-
-.sponsor-link-item:hover {
-    background: rgba(255, 255, 255, 0.015);
-    color: var(--accent-primary);
-}
-
 /* Spot info card styling */
 .spot-info-card {
     background: var(--bg-secondary);
@@ -2062,7 +2018,7 @@ body.spot-page .weather-table tbody tr:hover {
     background: var(--bg-secondary);
     border-radius: 12px;
     border: 1px solid var(--border-primary);
-    padding: 14px;
+    padding: 24px;
     margin-bottom: 0;
     min-height: clamp(260px, 40vw, 360px);
     display: flex;
@@ -2202,7 +2158,7 @@ body.spot-page .weather-table tbody tr:hover {
 }
 
 .condition-value.wind-strong {
-    color: #f9b116;
+    color: #f97316;
 }
 
 .condition-value.wind-extreme {
@@ -2223,5 +2179,288 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     /* Show current conditions row in forecast table on mobile */
     body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: table-row;
+    }
+}
+
+/* Forecast view tabs (desktop only) */
+.forecast-tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--border-primary);
+}
+
+.forecast-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.forecast-tab .tab-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.forecast-tab:hover {
+    color: var(--text-primary);
+    background: rgba(74, 158, 255, 0.1);
+}
+
+.forecast-tab:hover .tab-icon {
+    color: var(--text-primary);
+}
+
+.forecast-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.forecast-tab.active .tab-icon {
+    color: var(--accent-primary);
+}
+
+/* Forecast view container */
+.forecast-view-container {
+    position: relative;
+    min-height: 300px;
+    width: 930px;
+}
+
+.forecast-view {
+    display: none;
+}
+
+.forecast-view.active {
+    display: block;
+}
+
+/* Windguru-like vertical view */
+.windguru-view {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.windguru-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.windguru-labels {
+    flex: 0 0 90px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+
+.windguru-label-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-primary);
+    padding: 0 8px;
+    background: var(--bg-tertiary);
+}
+
+.windguru-label {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-primary);
+    background: var(--bg-tertiary);
+}
+
+.windguru-label:last-child {
+    border-bottom: none;
+}
+
+.windguru-data-container {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid var(--border-primary);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-secondary);
+    cursor: grab;
+    user-select: none;
+}
+
+.windguru-data-container.dragging {
+    cursor: grabbing;
+}
+
+.windguru-data {
+    display: flex;
+    min-width: min-content;
+}
+
+.windguru-day-column {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-primary);
+}
+
+.windguru-day-column:last-child {
+    border-right: none;
+}
+
+.windguru-day-header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-primary);
+    border-left: 3px solid var(--border-primary);
+    padding: 0 8px;
+    background: var(--bg-tertiary);
+}
+
+.windguru-data-row {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-primary);
+    border-left: 3px solid var(--border-primary);
+}
+
+.windguru-data-row:last-child {
+    border-bottom: none;
+}
+
+.windguru-cell {
+    flex: 0 0 50px;
+    text-align: center;
+    padding: 14px 4px;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.windguru-time-cell {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Wind classes in Windguru view */
+.windguru-cell.wind-weak {
+    color: #9ca3af;
+    background: rgba(107, 114, 128, 0.15);
+}
+
+.windguru-cell.wind-moderate {
+    color: #22c55e;
+    font-weight: 600;
+    background: rgba(34, 197, 94, 0.15);
+}
+
+.windguru-cell.wind-strong {
+    color: #f59e0b;
+    font-weight: 600;
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.windguru-cell.wind-extreme {
+    color: #ef4444;
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.windguru-cell.temp-positive {
+    color: #f97316;
+}
+
+.windguru-cell.temp-negative {
+    color: #06b6d4;
+}
+
+.windguru-cell.precipitation {
+    color: #3b82f6;
+}
+
+.windguru-cell.precipitation-none {
+    color: #6b7280;
+}
+
+.windguru-cell.wave-low {
+    color: #22c55e;
+}
+
+.windguru-cell.wave-high {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.windguru-cell.wave-none {
+    color: #6b7280;
+}
+
+/* Tablet/small desktop view - hide tabs and windguru view */
+@media (max-width: 1430px) {
+    body.spot-page .forecast-tabs {
+        display: none;
+    }
+
+    .forecast-view-container {
+        width: 100% !important;
+    }
+
+    body.spot-page .windguru-view {
+        display: none !important;
+    }
+
+    body.spot-page .table-view {
+        display: block !important;
+    }
+}
+
+/* Mobile view - hide tabs */
+@media (max-width: 768px) {
+    .forecast-tabs {
+        display: none;
+    }
+
+    .windguru-view {
+        display: none !important;
+    }
+
+    .table-view {
+        display: block !important;
     }
 }

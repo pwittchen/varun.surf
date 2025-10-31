@@ -116,6 +116,10 @@ const translations = {
         hazardsLabel: "Hazards",
         seasonLabel: "Season",
 
+        // Forecast view tabs
+        tableViewLabel: "Table",
+        windguruViewLabel: "Windguru",
+
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kite & Board Size Calculator",
         windSpeedLabel: "Wind Speed (knots)",
@@ -295,6 +299,10 @@ const translations = {
         launchTypeLabel: "Typ startu",
         hazardsLabel: "Zagrożenia",
         seasonLabel: "Sezon",
+
+        // Forecast view tabs
+        tableViewLabel: "Tabela",
+        windguruViewLabel: "Windguru",
 
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kalkulator rozmiaru latawca i deski",
