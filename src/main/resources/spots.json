@@ -7,6 +7,8 @@
     "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/draga",
     "locationUrl": "https://maps.app.goo.gl/ki7gDmXiDmQyfmp2A",
+    "aiAnalysisEn": "AI Analysis EN",
+    "aiAnalysisPl": "AI Analysis PL",
     "spotInfo": {
       "type": "Lagoon, flat water",
       "bestWind": "W, SW",
