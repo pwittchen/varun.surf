@@ -128,7 +128,7 @@ public record Spot(
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
-                aiAnalysisEn != null && aiAnalysisEn.isEmpty()
+                aiAnalysisPl != null && aiAnalysisPl.isEmpty()
                         ? this.lastUpdated
                         : currentTimestamp()
         );

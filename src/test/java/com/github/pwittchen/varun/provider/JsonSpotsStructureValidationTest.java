@@ -191,4 +191,100 @@ class JsonSpotsStructureValidationTest {
             assertThat(urls.size()).isEqualTo(uniqueUrls.size());
         }
     }
+
+    @Test
+    void shouldValidateAllSpotsHaveSpotInfoPL() throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource("spots.json").getInputStream())) {
+            Type listType = new TypeToken<List<Spot>>() {}.getType();
+            List<Spot> spots = gson.fromJson(reader, listType);
+
+            for (Spot spot : spots) {
+                // Validate spotInfoPL exists
+                assertThat(spot.spotInfoPL()).isNotNull();
+            }
+        }
+    }
+
+    @Test
+    void shouldValidateAllSpotInfoPLHaveRequiredFields() throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource("spots.json").getInputStream())) {
+            Type listType = new TypeToken<List<Spot>>() {}.getType();
+            List<Spot> spots = gson.fromJson(reader, listType);
+
+            for (Spot spot : spots) {
+                SpotInfo spotInfoPL = spot.spotInfoPL();
+
+                assertThat(spotInfoPL).isNotNull();
+
+                // Validate all SpotInfoPL fields are not null
+                assertThat(spotInfoPL.type()).isNotNull();
+                assertThat(spotInfoPL.bestWind()).isNotNull();
+                assertThat(spotInfoPL.waterTemp()).isNotNull();
+                assertThat(spotInfoPL.experience()).isNotNull();
+                assertThat(spotInfoPL.launch()).isNotNull();
+                assertThat(spotInfoPL.hazards()).isNotNull();
+                assertThat(spotInfoPL.season()).isNotNull();
+                assertThat(spotInfoPL.description()).isNotNull();
+            }
+        }
+    }
+
+    @Test
+    void shouldValidateAllSpotInfoPLHaveNonEmptyRequiredFields() throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource("spots.json").getInputStream())) {
+            Type listType = new TypeToken<List<Spot>>() {}.getType();
+            List<Spot> spots = gson.fromJson(reader, listType);
+
+            for (Spot spot : spots) {
+                SpotInfo spotInfoPL = spot.spotInfoPL();
+
+                // Validate critical SpotInfoPL fields are not empty (allow empty for hazards)
+                assertThat(spotInfoPL.type()).isNotEmpty();
+                assertThat(spotInfoPL.bestWind()).isNotEmpty();
+                assertThat(spotInfoPL.waterTemp()).isNotEmpty();
+                assertThat(spotInfoPL.experience()).isNotEmpty();
+                assertThat(spotInfoPL.launch()).isNotEmpty();
+                assertThat(spotInfoPL.season()).isNotEmpty();
+                assertThat(spotInfoPL.description()).isNotEmpty();
+            }
+        }
+    }
+
+    @Test
+    void shouldValidateSpotInfoAndSpotInfoPLHaveSameStructure() throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource("spots.json").getInputStream())) {
+            Type listType = new TypeToken<List<Spot>>() {}.getType();
+            List<Spot> spots = gson.fromJson(reader, listType);
+
+            for (Spot spot : spots) {
+                SpotInfo spotInfo = spot.spotInfo();
+                SpotInfo spotInfoPL = spot.spotInfoPL();
+
+                // Verify both have the same fields populated (not comparing content, just structure)
+                assertThat(spotInfo.type()).isNotNull();
+                assertThat(spotInfoPL.type()).isNotNull();
+
+                assertThat(spotInfo.bestWind()).isNotNull();
+                assertThat(spotInfoPL.bestWind()).isNotNull();
+
+                assertThat(spotInfo.waterTemp()).isNotNull();
+                assertThat(spotInfoPL.waterTemp()).isNotNull();
+
+                assertThat(spotInfo.experience()).isNotNull();
+                assertThat(spotInfoPL.experience()).isNotNull();
+
+                assertThat(spotInfo.launch()).isNotNull();
+                assertThat(spotInfoPL.launch()).isNotNull();
+
+                assertThat(spotInfo.hazards()).isNotNull();
+                assertThat(spotInfoPL.hazards()).isNotNull();
+
+                assertThat(spotInfo.season()).isNotNull();
+                assertThat(spotInfoPL.season()).isNotNull();
+
+                assertThat(spotInfo.description()).isNotNull();
+                assertThat(spotInfoPL.description()).isNotNull();
+            }
+        }
+    }
 }
