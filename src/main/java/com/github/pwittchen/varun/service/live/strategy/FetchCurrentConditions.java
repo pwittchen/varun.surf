@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.service.currentconditions.strategy;
+package com.github.pwittchen.varun.service.live.strategy;
 
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
 import reactor.core.publisher.Mono;
 
 public interface FetchCurrentConditions {

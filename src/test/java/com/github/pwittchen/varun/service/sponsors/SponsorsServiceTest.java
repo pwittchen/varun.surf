@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.sponsors;
 
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.github.pwittchen.varun.provider.sponsors.SponsorsDataProvider;

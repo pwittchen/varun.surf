@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.model;
 
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.spot.Spot;
 import org.junit.jupiter.api.Test;

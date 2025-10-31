@@ -4,13 +4,17 @@ import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
-import com.github.pwittchen.varun.model.currentconditions.filter.CurrentConditionsEmptyFilter;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
+import com.github.pwittchen.varun.service.ai.AiServiceEn;
+import com.github.pwittchen.varun.service.live.CurrentConditionsService;
+import com.github.pwittchen.varun.service.forecast.ForecastService;
+import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
@@ -54,7 +58,7 @@ public class AggregatorService {
     private final AtomicReference<List<Spot>> spots;
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
-    private final ConcurrentMap<Integer, String> aiAnalysis;
+    private final ConcurrentMap<Integer, String> aiAnalysisEn;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, String> embeddedMaps;
 
@@ -62,7 +66,7 @@ public class AggregatorService {
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
     private final CurrentConditionsService currentConditionsService;
-    private final AiService aiService;
+    private final AiServiceEn aiServiceEn;
     private final GoogleMapsService googleMapsService;
 
     private final Semaphore forecastLimiter = new Semaphore(32);
@@ -75,12 +79,12 @@ public class AggregatorService {
             SpotsDataProvider spotsDataProvider,
             ForecastService forecastService,
             CurrentConditionsService currentConditionsService,
-            AiService aiService,
+            AiServiceEn aiServiceEn,
             GoogleMapsService googleMapsService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
-        this.aiAnalysis = new ConcurrentHashMap<>();
+        this.aiAnalysisEn = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.embeddedMaps = new ConcurrentHashMap<>();
         this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
@@ -88,7 +92,7 @@ public class AggregatorService {
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
-        this.aiService = aiService;
+        this.aiServiceEn = aiServiceEn;
         this.googleMapsService = googleMapsService;
     }
 
@@ -156,7 +160,7 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withCurrentConditions(conditions);
         }
 
-        var analysis = aiAnalysis.get(spot.wgId());
+        var analysis = aiAnalysisEn.get(spot.wgId());
         if (analysis != null) {
             enrichedSpot = enrichedSpot.withAiAnalysis(analysis);
         }
@@ -441,7 +445,7 @@ public class AggregatorService {
                     .map(spot -> scope.fork(() -> {
                         aiLimiter.acquire();
                         try {
-                            var analysis = aiService.fetchAiAnalysis(spot).block();
+                            var analysis = aiServiceEn.fetchAiAnalysis(spot).block();
                             updateSpotAiAnalysis(spot.wgId(), analysis);
                             return Pair.with(spot.wgId(), analysis);
                         } finally {
@@ -468,7 +472,7 @@ public class AggregatorService {
 
     private void updateSpotAiAnalysis(int spotId, String analysis) {
         if (analysis != null && !analysis.isEmpty()) {
-            aiAnalysis.put(spotId, analysis);
+            aiAnalysisEn.put(spotId, analysis);
         }
     }
 }

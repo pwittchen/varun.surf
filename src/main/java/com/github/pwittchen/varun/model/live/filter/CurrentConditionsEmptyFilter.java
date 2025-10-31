@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.model.currentconditions.filter;
+package com.github.pwittchen.varun.model.live.filter;
 
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
 
 public final class CurrentConditionsEmptyFilter {
     @Override

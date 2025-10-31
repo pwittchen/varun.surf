@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.model.filter;
 
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
-import com.github.pwittchen.varun.model.currentconditions.filter.CurrentConditionsEmptyFilter;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

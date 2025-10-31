@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.forecast;
 
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;

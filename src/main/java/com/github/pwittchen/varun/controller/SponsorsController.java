@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
-import com.github.pwittchen.varun.service.SponsorsService;
+import com.github.pwittchen.varun.service.sponsors.SponsorsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

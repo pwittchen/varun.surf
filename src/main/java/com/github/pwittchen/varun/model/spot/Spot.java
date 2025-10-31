@@ -2,8 +2,8 @@ package com.github.pwittchen.varun.model.spot;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
-import com.github.pwittchen.varun.model.currentconditions.filter.CurrentConditionsEmptyFilter;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 
 import java.time.ZonedDateTime;
