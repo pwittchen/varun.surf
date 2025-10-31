@@ -58,6 +58,20 @@ const translations = {
         daySat: "Sat",
         daySun: "Sun",
 
+        // Month abbreviations
+        monthJan: "Jan",
+        monthFeb: "Feb",
+        monthMar: "Mar",
+        monthApr: "Apr",
+        monthMay: "May",
+        monthJun: "Jun",
+        monthJul: "Jul",
+        monthAug: "Aug",
+        monthSep: "Sep",
+        monthOct: "Oct",
+        monthNov: "Nov",
+        monthDec: "Dec",
+
         // Error handling
         error: "Error",
         invalidSpotId: "Invalid or missing spot identifier.",
@@ -242,6 +256,20 @@ const translations = {
         dayFri: "Pt",
         daySat: "Sob",
         daySun: "Niedz",
+
+        // Month abbreviations
+        monthJan: "Sty",
+        monthFeb: "Lut",
+        monthMar: "Mar",
+        monthApr: "Kwi",
+        monthMay: "Maj",
+        monthJun: "Cze",
+        monthJul: "Lip",
+        monthAug: "Sie",
+        monthSep: "Wrz",
+        monthOct: "Paź",
+        monthNov: "Lis",
+        monthDec: "Gru",
 
         // Error handling
         error: "Błąd",

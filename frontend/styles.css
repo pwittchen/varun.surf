@@ -2343,6 +2343,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-weight: 600;
     color: var(--text-primary);
     border-bottom: 1px solid var(--border-primary);
+    border-left: 3px solid var(--border-primary);
     padding: 0 8px;
     background: var(--bg-tertiary);
 }
@@ -2352,6 +2353,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: flex;
     align-items: center;
     border-bottom: 1px solid var(--border-primary);
+    border-left: 3px solid var(--border-primary);
 }
 
 .windguru-data-row:last-child {

@@ -599,6 +599,31 @@
         return windguruHtml;
     }
 
+    // Helper function to translate month names
+    function translateMonthName(monthName) {
+        if (!monthName || typeof monthName !== 'string') {
+            return '';
+        }
+
+        const keyMap = {
+            Jan: 'monthJan',
+            Feb: 'monthFeb',
+            Mar: 'monthMar',
+            Apr: 'monthApr',
+            May: 'monthMay',
+            Jun: 'monthJun',
+            Jul: 'monthJul',
+            Aug: 'monthAug',
+            Sep: 'monthSep',
+            Oct: 'monthOct',
+            Nov: 'monthNov',
+            Dec: 'monthDec'
+        };
+
+        const translationKey = keyMap[monthName];
+        return translationKey ? t(translationKey) : monthName;
+    }
+
     // Format day label for windguru view
     function formatDayLabel(dateStr) {
         if (!dateStr) return '';
@@ -611,8 +636,9 @@
 
         const translatedDay = translateDayName(dayToken);
         const shortDay = translatedDay.substring(0, 3);
+        const translatedMonth = translateMonthName(monthToken);
 
-        return `${shortDay} ${dayOfMonthToken}/${monthToken}`;
+        return `${shortDay} ${dayOfMonthToken}/${translatedMonth}`;
     }
 
     // Setup forecast tabs
