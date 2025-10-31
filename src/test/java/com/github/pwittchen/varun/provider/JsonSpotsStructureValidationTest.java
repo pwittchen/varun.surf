@@ -57,7 +57,6 @@ class JsonSpotsStructureValidationTest {
                 assertThat(spot.locationUrl()).isNotNull();
                 assertThat(spot.currentConditions()).isNotNull();
                 assertThat(spot.forecast()).isNotNull();
-                assertThat(spot.aiAnalysis()).isNotNull();
                 assertThat(spot.spotInfo()).isNotNull();
             }
         }

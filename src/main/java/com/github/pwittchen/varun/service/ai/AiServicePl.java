@@ -2,7 +2,9 @@ package com.github.pwittchen.varun.service.ai;
 
 import com.google.gson.Gson;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AiServicePl extends AiService {
     private static final String PROMPT_TEMPLATE = """
             SYSTEM:

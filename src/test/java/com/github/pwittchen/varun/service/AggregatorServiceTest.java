@@ -9,6 +9,7 @@ import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
+import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
@@ -49,6 +50,9 @@ class AggregatorServiceTest {
     private AiServiceEn aiServiceEn;
 
     @Mock
+    private AiServicePl aiServicePl;
+
+    @Mock
     private GoogleMapsService googleMapsService;
 
     private AggregatorService aggregatorService;
@@ -60,6 +64,7 @@ class AggregatorServiceTest {
                 forecastService,
                 currentConditionsService,
                 aiServiceEn,
+                aiServicePl,
                 googleMapsService
         );
     }
@@ -272,7 +277,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
         verify(aiServiceEn, never()).fetchAiAnalysis(any());
@@ -291,7 +296,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
         verify(aiServiceEn).fetchAiAnalysis(any());
@@ -356,7 +361,7 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
         verify(aiServiceEn).fetchAiAnalysis(any());
@@ -384,7 +389,7 @@ class AggregatorServiceTest {
         // when
         var aiThread = new Thread(() -> {
             try {
-                aggregatorService.fetchAiAnalysisEveryEightHours();
+                aggregatorService.fetchAiAnalysisEveryEightHoursEn();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -406,7 +411,7 @@ class AggregatorServiceTest {
                 .findFirst();
 
         assertThat(enrichedSpot1).isPresent();
-        assertThat(enrichedSpot1.get().aiAnalysis()).isEqualTo("Analysis for spot 1");
+        assertThat(enrichedSpot1.get().aiAnalysisEn()).isEqualTo("Analysis for spot 1");
 
         aiThread.join(5000);
     }
@@ -452,6 +457,7 @@ class AggregatorServiceTest {
                 null,
                 forecast,
                 hourlyForecast,
+                null,
                 null,
                 null,
                 null,

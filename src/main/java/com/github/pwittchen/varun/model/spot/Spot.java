@@ -24,7 +24,8 @@ public record Spot(
         List<Forecast> forecast,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<Forecast> forecastHourly,
-        String aiAnalysis,
+        String aiAnalysisEn,
+        String aiAnalysisPl,
         String embeddedMap,
         SpotInfo spotInfo,
         SpotInfo spotInfoPL,
@@ -55,7 +56,8 @@ public record Spot(
                 this.currentConditions,
                 this.forecast,
                 this.forecastHourly,
-                this.aiAnalysis,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
@@ -75,7 +77,8 @@ public record Spot(
                 currentConditions,
                 this.forecast,
                 this.forecastHourly,
-                this.aiAnalysis,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
@@ -85,7 +88,7 @@ public record Spot(
         );
     }
 
-    public Spot withAiAnalysis(String aiAnalysis) {
+    public Spot withAiAnalysisEn(String aiAnalysisEn) {
         return new Spot(
                 this.name,
                 this.country,
@@ -97,11 +100,35 @@ public record Spot(
                 this.currentConditions,
                 this.forecast,
                 this.forecastHourly,
-                aiAnalysis,
+                aiAnalysisEn,
+                aiAnalysisPl,
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
-                aiAnalysis != null && aiAnalysis.isEmpty()
+                aiAnalysisEn != null && aiAnalysisEn.isEmpty()
+                        ? this.lastUpdated
+                        : currentTimestamp()
+        );
+    }
+
+    public Spot withAiAnalysisPl(String aiAnalysisPl) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysisEn,
+                aiAnalysisPl,
+                this.embeddedMap,
+                this.spotInfo,
+                this.spotInfoPL,
+                aiAnalysisEn != null && aiAnalysisEn.isEmpty()
                         ? this.lastUpdated
                         : currentTimestamp()
         );
@@ -119,7 +146,8 @@ public record Spot(
                 this.currentConditions,
                 forecast,
                 forecastHourly,
-                this.aiAnalysis,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
@@ -139,7 +167,8 @@ public record Spot(
                 this.currentConditions,
                 this.forecast,
                 forecastHourly,
-                this.aiAnalysis,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
                 this.embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,
@@ -159,7 +188,8 @@ public record Spot(
                 this.currentConditions,
                 this.forecast,
                 this.forecastHourly,
-                this.aiAnalysis,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
                 embeddedMap,
                 this.spotInfo,
                 this.spotInfoPL,

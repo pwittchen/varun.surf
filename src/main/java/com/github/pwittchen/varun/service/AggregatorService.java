@@ -12,6 +12,7 @@ import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
+import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
@@ -59,16 +60,18 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
     private final ConcurrentMap<Integer, String> aiAnalysisEn;
+    private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, String> embeddedMaps;
 
-    private Disposable spotsDisposable;
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
     private final CurrentConditionsService currentConditionsService;
     private final AiServiceEn aiServiceEn;
+    private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
 
+    private Disposable spotsDisposable;
     private final Semaphore forecastLimiter = new Semaphore(32);
     private final Semaphore currentConditionsLimiter = new Semaphore(32);
     private final Semaphore aiLimiter = new Semaphore(16);
@@ -80,11 +83,13 @@ public class AggregatorService {
             ForecastService forecastService,
             CurrentConditionsService currentConditionsService,
             AiServiceEn aiServiceEn,
+            AiServicePl aiServicePl,
             GoogleMapsService googleMapsService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.aiAnalysisEn = new ConcurrentHashMap<>();
+        this.aiAnalysisPl = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.embeddedMaps = new ConcurrentHashMap<>();
         this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
@@ -93,6 +98,7 @@ public class AggregatorService {
         this.forecastService = forecastService;
         this.currentConditionsService = currentConditionsService;
         this.aiServiceEn = aiServiceEn;
+        this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
     }
 
@@ -160,9 +166,14 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withCurrentConditions(conditions);
         }
 
-        var analysis = aiAnalysisEn.get(spot.wgId());
-        if (analysis != null) {
-            enrichedSpot = enrichedSpot.withAiAnalysis(analysis);
+        var analysisEn = aiAnalysisEn.get(spot.wgId());
+        if (analysisEn != null) {
+            enrichedSpot = enrichedSpot.withAiAnalysisEn(analysisEn);
+        }
+
+        var analysisPl = aiAnalysisPl.get(spot.wgId());
+        if (analysisPl != null) {
+            enrichedSpot = enrichedSpot.withAiAnalysisPl(analysisPl);
         }
 
         var embeddedMap = embeddedMaps.get(spot.wgId());
@@ -421,15 +432,27 @@ public class AggregatorService {
     }
 
     @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
-    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 3, backoff = @Backoff(delay = 7000))
-    public void fetchAiAnalysisEveryEightHours() throws FetchingForecastException {
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
+    public void fetchAiAnalysisEveryEightHoursEn() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
-            log.info("Fetching AI forecast analysis");
-            fetchAiForecastAnalysis();
+            log.info("Fetching AI forecast analysis in EN");
+            fetchAiForecastAnalysisEn();
         } else {
-            log.info("Fetching AI forecast analysis is DISABLED");
+            log.info("Fetching AI forecast analysis (EN) is DISABLED");
         }
     }
+
+    @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
+    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
+    public void fetchAiAnalysisEveryEightHoursPl() throws FetchingForecastException {
+        if (aiForecastAnalysisEnabled) {
+            log.info("Fetching AI forecast analysis in PL");
+            fetchAiForecastAnalysisPl();
+        } else {
+            log.info("Fetching AI forecast analysis (PL) is DISABLED");
+        }
+    }
+
 
     @Recover
     public void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
@@ -437,8 +460,8 @@ public class AggregatorService {
     }
 
     @Async
-    public void fetchAiForecastAnalysis() throws FetchingAiForecastAnalysisException {
-        try (var scope = new StructuredTaskScope<>("aianalysis", Thread.ofVirtual().factory())) {
+    public void fetchAiForecastAnalysisEn() throws FetchingAiForecastAnalysisException {
+        try (var scope = new StructuredTaskScope<>("aiAnalysisEn", Thread.ofVirtual().factory())) {
             var tasks = spots
                     .get()
                     .stream()
@@ -446,7 +469,7 @@ public class AggregatorService {
                         aiLimiter.acquire();
                         try {
                             var analysis = aiServiceEn.fetchAiAnalysis(spot).block();
-                            updateSpotAiAnalysis(spot.wgId(), analysis);
+                            updateSpotAiAnalysisEn(spot.wgId(), analysis);
                             return Pair.with(spot.wgId(), analysis);
                         } finally {
                             aiLimiter.release();
@@ -457,7 +480,7 @@ public class AggregatorService {
             try {
                 scope.join();
             } catch (Exception e) {
-                log.error("Error while fetching AI forecast analysis", e);
+                log.error("Error while fetching AI forecast analysis (EN)", e);
             }
 
             tasks
@@ -466,13 +489,53 @@ public class AggregatorService {
                     .map(subtask -> subtask.exception().getMessage())
                     .forEach(log::warn);
 
-            log.info("AI forecast analysis fetched");
+            log.info("AI forecast analysis fetched (EN)");
         }
     }
 
-    private void updateSpotAiAnalysis(int spotId, String analysis) {
+    @Async
+    public void fetchAiForecastAnalysisPl() throws FetchingAiForecastAnalysisException {
+        try (var scope = new StructuredTaskScope<>("aiAnalysisPl", Thread.ofVirtual().factory())) {
+            var tasks = spots
+                    .get()
+                    .stream()
+                    .map(spot -> scope.fork(() -> {
+                        aiLimiter.acquire();
+                        try {
+                            var analysis = aiServicePl.fetchAiAnalysis(spot).block();
+                            updateSpotAiAnalysisPl(spot.wgId(), analysis);
+                            return Pair.with(spot.wgId(), analysis);
+                        } finally {
+                            aiLimiter.release();
+                        }
+                    }))
+                    .toList();
+
+            try {
+                scope.join();
+            } catch (Exception e) {
+                log.error("Error while fetching AI forecast analysis (PL)", e);
+            }
+
+            tasks
+                    .stream()
+                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
+                    .map(subtask -> subtask.exception().getMessage())
+                    .forEach(log::warn);
+
+            log.info("AI forecast analysis fetched (PL)");
+        }
+    }
+
+    private void updateSpotAiAnalysisEn(int spotId, String analysis) {
         if (analysis != null && !analysis.isEmpty()) {
             aiAnalysisEn.put(spotId, analysis);
+        }
+    }
+
+    private void updateSpotAiAnalysisPl(int spotId, String analysis) {
+        if (analysis != null && !analysis.isEmpty()) {
+            aiAnalysisPl.put(spotId, analysis);
         }
     }
 }

@@ -91,6 +91,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 "2025-01-01 00:00:00 UTC"
         );
 
@@ -103,7 +104,7 @@ class SpotTest {
         assertThat(updatedSpot.windguruUrl()).isEqualTo("https://windguru.cz/123");
         assertThat(updatedSpot.currentConditions()).isEqualTo(currentConditions);
         assertThat(updatedSpot.forecast()).isEqualTo(forecast);
-        assertThat(updatedSpot.aiAnalysis()).isEqualTo("AI analysis");
+        assertThat(updatedSpot.aiAnalysisEn()).isEqualTo("AI analysis");
     }
 
     @Test
@@ -137,6 +138,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
         var emptyConditions = new CurrentConditions(null, 0, 0, null, 0);
@@ -165,6 +167,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
 
@@ -183,10 +186,10 @@ class SpotTest {
         var aiAnalysis = "Good conditions for kitesurfing";
 
         // when
-        var updatedSpot = spot.withAiAnalysis(aiAnalysis);
+        var updatedSpot = spot.withAiAnalysisEn(aiAnalysis);
 
         // then
-        assertThat(updatedSpot.aiAnalysis()).isEqualTo(aiAnalysis);
+        assertThat(updatedSpot.aiAnalysisEn()).isEqualTo(aiAnalysis);
         assertThat(updatedSpot.lastUpdated()).isNotNull();
         assertThat(updatedSpot.lastUpdated()).matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} .*");
     }
@@ -207,14 +210,15 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysis("");
+        var updatedSpot = spot.withAiAnalysisEn("");
 
         // then
-        assertThat(updatedSpot.aiAnalysis()).isEmpty();
+        assertThat(updatedSpot.aiAnalysisEn()).isEmpty();
         assertThat(updatedSpot.lastUpdated()).isEqualTo(originalTimestamp);
     }
 
@@ -238,11 +242,12 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 "2025-01-01 00:00:00 UTC"
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysis("New AI analysis");
+        var updatedSpot = spot.withAiAnalysisEn("New AI analysis");
 
         // then
         assertThat(updatedSpot.name()).isEqualTo("Hel");
@@ -272,6 +277,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 "2025-01-01 00:00:00 UTC"
         );
         var newConditions = new CurrentConditions("2025-01-02", 18, 25, "NW", 22);
@@ -285,7 +291,7 @@ class SpotTest {
         assertThat(updatedSpot.windguruUrl()).isEqualTo("https://windguru.cz/123");
         assertThat(updatedSpot.forecast()).isEqualTo(originalForecast);
         assertThat(updatedSpot.forecastHourly()).isEqualTo(originalHourly);
-        assertThat(updatedSpot.aiAnalysis()).isEqualTo("AI analysis");
+        assertThat(updatedSpot.aiAnalysisEn()).isEqualTo("AI analysis");
     }
 
     @Test
@@ -320,6 +326,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
         var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0,  "N", 14.0, 0.1));
@@ -341,6 +348,7 @@ class SpotTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                null,
                 null,
                 null,
                 null,
