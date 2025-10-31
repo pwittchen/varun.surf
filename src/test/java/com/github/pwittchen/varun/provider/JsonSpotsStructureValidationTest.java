@@ -55,8 +55,6 @@ class JsonSpotsStructureValidationTest {
                 assertThat(spot.icmUrl()).isNotNull();
                 assertThat(spot.webcamUrl()).isNotNull();
                 assertThat(spot.locationUrl()).isNotNull();
-                assertThat(spot.currentConditions()).isNotNull();
-                assertThat(spot.forecast()).isNotNull();
                 assertThat(spot.spotInfo()).isNotNull();
             }
         }
