@@ -464,6 +464,168 @@
         return new Date();
     }
 
+    // Create Windguru-style vertical forecast view
+    function createWindguruView(forecastData, hasWaveData) {
+        if (!forecastData || forecastData.length === 0) {
+            return '';
+        }
+
+        // Group forecasts by day
+        const groupedByDay = {};
+        forecastData.forEach(forecast => {
+            const dayKey = forecast.date ? forecast.date.split(' ').slice(0, 4).join(' ') : 'Unknown';
+            if (!groupedByDay[dayKey]) {
+                groupedByDay[dayKey] = [];
+            }
+            groupedByDay[dayKey].push(forecast);
+        });
+
+        let windguruHtml = '<div class="forecast-view windguru-view">';
+        windguruHtml += '<div class="windguru-container">';
+
+        Object.keys(groupedByDay).forEach(dayKey => {
+            const dayForecasts = groupedByDay[dayKey];
+            const firstForecast = dayForecasts[0];
+
+            // Format day label
+            const dayLabel = formatDayLabel(firstForecast.date);
+
+            windguruHtml += `<div class="windguru-day-column">`;
+            windguruHtml += `<div class="windguru-day-header">${dayLabel}</div>`;
+
+            // Time row
+            windguruHtml += `<div class="windguru-row windguru-time-row">`;
+            dayForecasts.forEach(forecast => {
+                const time = forecast.date ? forecast.date.split(' ')[4] : '';
+                windguruHtml += `<div class="windguru-cell">${time}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Wind speed row
+            windguruHtml += `<div class="windguru-row windguru-wind-row">`;
+            windguruHtml += `<div class="windguru-row-label">${t('windHeader')}</div>`;
+            dayForecasts.forEach(forecast => {
+                let windClass = '';
+                if (forecast.wind < 12) windClass = 'wind-weak';
+                else if (forecast.wind >= 12 && forecast.wind <= 18) windClass = 'wind-moderate';
+                else if (forecast.wind >= 19 && forecast.wind <= 25) windClass = 'wind-strong';
+                else windClass = 'wind-extreme';
+
+                windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.wind}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Gust speed row
+            windguruHtml += `<div class="windguru-row windguru-gust-row">`;
+            windguruHtml += `<div class="windguru-row-label">${t('gustsHeader')}</div>`;
+            dayForecasts.forEach(forecast => {
+                let windClass = '';
+                if (forecast.gusts < 12) windClass = 'wind-weak';
+                else if (forecast.gusts >= 12 && forecast.gusts <= 18) windClass = 'wind-moderate';
+                else if (forecast.gusts >= 19 && forecast.gusts <= 25) windClass = 'wind-strong';
+                else windClass = 'wind-extreme';
+
+                windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.gusts}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Direction row
+            windguruHtml += `<div class="windguru-row windguru-direction-row">`;
+            windguruHtml += `<div class="windguru-row-label">${t('directionHeader')}</div>`;
+            dayForecasts.forEach(forecast => {
+                const windArrow = getWindArrow(forecast.direction);
+                windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Temperature row
+            windguruHtml += `<div class="windguru-row windguru-temp-row">`;
+            windguruHtml += `<div class="windguru-row-label">${t('tempHeader')}</div>`;
+            dayForecasts.forEach(forecast => {
+                const tempClass = forecast.temp >= 18 ? 'temp-positive' : 'temp-negative';
+                windguruHtml += `<div class="windguru-cell ${tempClass}">${forecast.temp}°</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Precipitation row
+            windguruHtml += `<div class="windguru-row windguru-precip-row">`;
+            windguruHtml += `<div class="windguru-row-label">${t('rainHeader')}</div>`;
+            dayForecasts.forEach(forecast => {
+                const precipClass = forecast.precipitation === 0 ? 'precipitation-none' : 'precipitation';
+                windguruHtml += `<div class="windguru-cell ${precipClass}">${forecast.precipitation}</div>`;
+            });
+            windguruHtml += `</div>`;
+
+            // Wave row (if applicable)
+            if (hasWaveData) {
+                windguruHtml += `<div class="windguru-row windguru-wave-row">`;
+                windguruHtml += `<div class="windguru-row-label">${t('waveHeader')}</div>`;
+                dayForecasts.forEach(forecast => {
+                    let waveClass = '';
+                    let waveText = '-';
+                    if (forecast.wave !== undefined) {
+                        if (forecast.wave === 0) {
+                            waveClass = 'wave-none';
+                            waveText = '0m';
+                        } else {
+                            waveClass = forecast.wave > 1.5 ? 'wave-high' : 'wave-low';
+                            waveText = `${forecast.wave}m`;
+                        }
+                    }
+                    windguruHtml += `<div class="windguru-cell ${waveClass}">${waveText}</div>`;
+                });
+                windguruHtml += `</div>`;
+            }
+
+            windguruHtml += `</div>`; // Close day column
+        });
+
+        windguruHtml += '</div></div>'; // Close container and view
+        return windguruHtml;
+    }
+
+    // Format day label for windguru view
+    function formatDayLabel(dateStr) {
+        if (!dateStr) return '';
+        const tokens = dateStr.split(' ').filter(Boolean);
+        if (tokens.length < 4) return '';
+
+        const dayToken = tokens[0];
+        const dayOfMonthToken = tokens[1];
+        const monthToken = tokens[2];
+
+        const translatedDay = translateDayName(dayToken);
+        const shortDay = translatedDay.substring(0, 3);
+
+        return `${shortDay} ${dayOfMonthToken}/${monthToken}`;
+    }
+
+    // Setup forecast tabs
+    function setupForecastTabs() {
+        const tabs = document.querySelectorAll('.forecast-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetView = tab.dataset.tab;
+
+                // Update tab active state
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update view visibility
+                const tableView = document.querySelector('.table-view');
+                const windguruView = document.querySelector('.windguru-view');
+
+                if (targetView === 'table') {
+                    if (tableView) tableView.classList.add('active');
+                    if (windguruView) windguruView.classList.remove('active');
+                } else if (targetView === 'windguru') {
+                    if (tableView) tableView.classList.remove('active');
+                    if (windguruView) windguruView.classList.add('active');
+                }
+            });
+        });
+    }
+
     // Create spot card HTML
     function createSpotCard(spot) {
         const countryFlag = getCountryFlag(spot.country);
@@ -789,23 +951,34 @@
                     </div>
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
-                        <table class="weather-table">
-                            <thead>
-                                <tr>
-                                    <th>${t('dateHeader')}</th>
-                                    <th>${t('windHeader')}</th>
-                                    <th>${t('gustsHeader')}</th>
-                                    <th>${t('directionHeader')}</th>
-                                    <th>${t('tempHeader')}</th>
-                                    <th>${t('rainHeader')}</th>
-                                    ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${currentConditionsRow}
-                                ${forecastRows}
-                            </tbody>
-                        </table>
+                        ${isDesktopView ? `
+                        <div class="forecast-tabs">
+                            <button class="forecast-tab active" data-tab="table">${t('tableViewLabel')}</button>
+                            <button class="forecast-tab" data-tab="windguru">${t('windguruViewLabel')}</button>
+                        </div>
+                        ` : ''}
+                        <div class="forecast-view-container">
+                            <div class="forecast-view table-view active">
+                                <table class="weather-table">
+                                    <thead>
+                                        <tr>
+                                            <th>${t('dateHeader')}</th>
+                                            <th>${t('windHeader')}</th>
+                                            <th>${t('gustsHeader')}</th>
+                                            <th>${t('directionHeader')}</th>
+                                            <th>${t('tempHeader')}</th>
+                                            <th>${t('rainHeader')}</th>
+                                            ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${currentConditionsRow}
+                                        ${forecastRows}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ${isDesktopView ? createWindguruView(forecastData, hasWaveData) : ''}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -858,6 +1031,9 @@
             }
 
             document.title = `${spot.name} - VARUN.SURF`;
+
+            // Setup forecast tabs after spot card is rendered
+            setupForecastTabs();
         }
 
         currentSpot = spot;

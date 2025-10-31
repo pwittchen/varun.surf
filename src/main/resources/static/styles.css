@@ -2181,3 +2181,184 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: table-row;
     }
 }
+
+/* Forecast view tabs (desktop only) */
+.forecast-tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--border-primary);
+}
+
+.forecast-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.forecast-tab:hover {
+    color: var(--text-primary);
+    background: rgba(74, 158, 255, 0.1);
+}
+
+.forecast-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Forecast view container */
+.forecast-view-container {
+    position: relative;
+    min-height: 300px;
+}
+
+.forecast-view {
+    display: none;
+}
+
+.forecast-view.active {
+    display: block;
+}
+
+/* Windguru-like vertical view */
+.windguru-view {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.windguru-container {
+    display: flex;
+    gap: 12px;
+    min-width: min-content;
+}
+
+.windguru-day-column {
+    flex: 0 0 auto;
+    min-width: 200px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-primary);
+}
+
+.windguru-day-header {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-color);
+    text-align: center;
+}
+
+.windguru-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 4px;
+}
+
+.windguru-row-label {
+    flex: 0 0 80px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-right: 8px;
+}
+
+.windguru-cell {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+}
+
+.windguru-time-row .windguru-cell {
+    font-weight: 600;
+    font-size: 0.75rem;
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.windguru-direction-row .windguru-cell {
+    font-size: 0.75rem;
+}
+
+/* Wind classes in Windguru view */
+.windguru-cell.wind-weak {
+    color: #6b7280;
+}
+
+.windguru-cell.wind-moderate {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.windguru-cell.wind-strong {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.windguru-cell.wind-extreme {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.windguru-cell.temp-positive {
+    color: #f97316;
+}
+
+.windguru-cell.temp-negative {
+    color: #06b6d4;
+}
+
+.windguru-cell.precipitation {
+    color: #3b82f6;
+}
+
+.windguru-cell.precipitation-none {
+    color: #6b7280;
+}
+
+.windguru-cell.wave-low {
+    color: #22c55e;
+}
+
+.windguru-cell.wave-high {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.windguru-cell.wave-none {
+    color: #6b7280;
+}
+
+/* Mobile view - hide tabs */
+@media (max-width: 768px) {
+    .forecast-tabs {
+        display: none;
+    }
+
+    .windguru-view {
+        display: none !important;
+    }
+
+    .table-view {
+        display: block !important;
+    }
+}
