@@ -581,14 +581,19 @@
 
     function openAIModal(spotName) {
         const spot = globalWeatherData.find(spot => spot.name === spotName);
-        if (!spot || !spot.aiAnalysis) return;
+        const currentLang = localStorage.getItem('language') || 'en';
+        const aiAnalysis = currentLang === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
+
+        if (!spot || !aiAnalysis) return;
 
         const modal = document.getElementById('aiModal');
         const modalSpotName = document.getElementById('modalSpotName');
         const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+        const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
 
-        modalSpotName.textContent = `AI Analysis - ${spotName}`;
-        aiAnalysisContent.innerHTML = spot.aiAnalysis.trim();
+        modalSpotName.textContent = `${t('aiAnalysisTitle')} - ${spotName}`;
+        aiAnalysisContent.innerHTML = aiAnalysis.trim();
+        aiModalDisclaimer.textContent = t('aiDisclaimer');
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -663,9 +668,9 @@
         const modalSpotName = document.getElementById('icmModalSpotName');
         const icmImage = document.getElementById('icmImage');
 
-        modalSpotName.textContent = `${spotName} - ICM Forecast`;
+        modalSpotName.textContent = `${spotName} - ${t('icmForecastTitle')}`;
         icmImage.src = icmUrl;
-        icmImage.alt = `ICM Forecast for ${spotName}`;
+        icmImage.alt = `${t('icmForecastTitle')} for ${spotName}`;
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -821,7 +826,7 @@
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">MAP</a>` : ''}
-                    ${spot.aiAnalysis ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
+                    ${(spot.aiAnalysisEn || spot.aiAnalysisPl) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
                 <table class="weather-table">
                     <thead>

@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.ai;
 
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.spot.Spot;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AiServiceTest {
+class AiServiceEnTest {
 
     @Mock
     private ChatClient chatClient;
@@ -33,12 +33,12 @@ class AiServiceTest {
     private ChatClient.StreamResponseSpec streamSpec;
 
     private Gson gson;
-    private AiService aiService;
+    private AiServiceEn aiServiceEn;
 
     @BeforeEach
     void setUp() {
         gson = new Gson();
-        aiService = new AiService(chatClient, gson);
+        aiServiceEn = new AiServiceEn(chatClient, gson);
     }
 
     @Test
@@ -47,7 +47,7 @@ class AiServiceTest {
         var spot = createSpot("", "Poland", List.of(createForecast()));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -63,7 +63,7 @@ class AiServiceTest {
         var spot = createSpot("Hel", "", List.of(createForecast()));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -79,7 +79,7 @@ class AiServiceTest {
         var spot = createSpot("Hel", "Poland", List.of());
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -95,7 +95,7 @@ class AiServiceTest {
         var spot = createSpot("", "", List.of());
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -117,7 +117,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Good ", "conditions ", "for ", "kitesurfing ", "with ", "15 ", "kts ", "NW ", "wind."));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -141,7 +141,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Test ", "response"));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -160,7 +160,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.empty());
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -179,7 +179,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Part1", "Part2", "Part3"));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -199,7 +199,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Response"));
 
         // when
-        aiService.fetchAiAnalysis(spot).block();
+        aiServiceEn.fetchAiAnalysis(spot).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
@@ -223,7 +223,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Analysis"));
 
         // when
-        var result = aiService.fetchAiAnalysis(spot);
+        var result = aiServiceEn.fetchAiAnalysis(spot);
 
         // then
         StepVerifier.create(result)
@@ -244,7 +244,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Response"));
 
         // when
-        aiService.fetchAiAnalysis(spot).block();
+        aiServiceEn.fetchAiAnalysis(spot).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
@@ -266,7 +266,7 @@ class AiServiceTest {
         when(streamSpec.content()).thenReturn(Flux.just("Response"));
 
         // when
-        aiService.fetchAiAnalysis(spot).block();
+        aiServiceEn.fetchAiAnalysis(spot).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
@@ -290,6 +290,7 @@ class AiServiceTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -306,6 +307,7 @@ class AiServiceTest {
                 null,
                 new ArrayList<>(forecasts),
                 new ArrayList<>(),
+                null,
                 null,
                 null,
                 spotInfo,

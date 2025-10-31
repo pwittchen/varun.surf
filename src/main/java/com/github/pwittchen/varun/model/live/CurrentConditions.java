@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.model.currentconditions;
+package com.github.pwittchen.varun.model.live;
 
 public record CurrentConditions(
         String date,

@@ -70,12 +70,12 @@
                  -> strategy pattern: WiatrKadyny, Podersdorf, etc.
                  -> updates currentConditions{spotId -> CurrentConditions}
 
-  every 8h  -> fetchAiAnalysis() (if enabled via feature flag)
-                 -> uses StructuredTaskScope with virtual threads
+  every 8h  -> fetchAiForecastAnalysisEn() + fetchAiForecastAnalysisPl() (if enabled via feature flag)
+                 -> uses StructuredTaskScope with virtual threads (separate scopes for EN and PL)
                  -> semaphore limits to 16 concurrent requests
-                 -> for each Spot -> AiService.fetchAiAnalysis(spot)
+                 -> for each Spot -> AiServiceEn.fetchAiAnalysis(spot) + AiServicePl.fetchAiAnalysis(spot)
                  -> Spring AI ChatClient -> OpenAI or Ollama
-                 -> updates aiAnalysis{spotId -> String}
+                 -> updates aiAnalysisEn{spotId -> String} and aiAnalysisPl{spotId -> String}
 
 [Client Request Flow]
 
@@ -126,9 +126,11 @@ Spot
 ├─ forecastDaily : List<Forecast> (3-day daily forecast)
 ├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS)
 ├─ currentConditions : CurrentConditions
-├─ aiAnalysis : String (optional, AI-generated forecast summary)
+├─ aiAnalysisEn : String (optional, AI-generated forecast summary in English)
+├─ aiAnalysisPl : String (optional, AI-generated forecast summary in Polish)
 ├─ embeddedMap : String (lazy-loaded iframe HTML)
-└─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType)
+├─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType in English)
+└─ spotInfoPL : SpotInfo (description, bestWind, hazards, season, waterType in Polish)
 
 ForecastData (internal cache structure)
 ├─ daily : List<Forecast> (GFS daily forecasts)
@@ -194,6 +196,45 @@ Sponsor
    - OpenAI API (gpt-4o-mini) OR Ollama (smollm2:135m)
    - ChatClient for AI-powered forecast analysis
    - Configured via application.yml (app.ai.provider)
+   - Multi-language support:
+     - AiServiceEn: English prompts and analysis
+     - AiServicePl: Polish prompts and analysis
+     - Both services run in parallel every 8 hours
+     - Separate caches for each language
+```
+
+### Multi-Language Support
+
+```
+Backend (Java):
+  - Spot model includes aiAnalysisEn and aiAnalysisPl fields
+  - SpotInfo and SpotInfoPL for translated spot descriptions
+  - AiServiceEn and AiServicePl with language-specific prompts
+  - Separate scheduled tasks: fetchAiForecastAnalysisEn() and fetchAiForecastAnalysisPl()
+  - Separate in-memory caches: aiAnalysisEn and aiAnalysisPl
+
+Frontend (JavaScript):
+  - translations.js contains EN and PL strings for all UI elements
+  - Language stored in localStorage with key 'language'
+  - Dynamic content switching:
+    - AI analysis: displays aiAnalysisEn or aiAnalysisPl based on current language
+    - Spot info: displays spotInfo or spotInfoPL
+    - Modal titles: aiAnalysisTitle, icmForecastTitle
+    - Disclaimers: aiDisclaimer
+  - Language toggle button updates all content reactively
+  - Applies to both views:
+    - index.html (all spots view) via script.js
+    - spot.html (single spot view) via script-spot.js
+
+Supported Languages:
+  - English (EN) - default
+  - Polish (PL)
+
+Translation Pattern:
+  - Backend: language-specific service classes with template method pattern
+  - Frontend: centralized translations.js with t() function lookup
+  - Content selection: ternary operators based on localStorage.getItem('language')
+  - Example: currentLang === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn
 ```
 
 ### Deployment/Build
@@ -238,25 +279,31 @@ In-Memory Caches (ConcurrentHashMap):
      - Updated: every 1 minute (scheduled)
      - Filter: Empty conditions are not cached
 
-  3. aiAnalysis: Map<Integer, String>
+  3. aiAnalysisEn: Map<Integer, String>
      - Key: spotId (wgId)
-     - Value: AI-generated forecast summary
+     - Value: AI-generated forecast summary in English
      - Updated: every 8 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
-  4. embeddedMaps: Map<Integer, String>
+  4. aiAnalysisPl: Map<Integer, String>
+     - Key: spotId (wgId)
+     - Value: AI-generated forecast summary in Polish
+     - Updated: every 8 hours (if enabled)
+     - Conditional: only enabled if feature flag is true
+
+  5. embeddedMaps: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: iframe HTML string
      - Updated: lazy-loaded on first request
      - Lifetime: persists until application restart
 
-  5. hourlyForecastCacheTimestamps: Map<Integer, Long>
+  6. hourlyForecastCacheTimestamps: Map<Integer, Long>
      - Key: spotId (wgId)
      - Value: timestamp (milliseconds)
      - Purpose: prevent redundant IFS model fetches
      - TTL: 3 hours
 
-  6. spots: AtomicReference<List<Spot>>
+  7. spots: AtomicReference<List<Spot>>
      - Loaded once at startup from spots.json
      - Immutable data (name, country, URLs, spotInfo)
      - Enriched on-demand with cached data
@@ -384,16 +431,23 @@ src/main/java/com/github/pwittchen/varun/
 │       └── SpotsDataProvider.java (interface)
 └── service/                              # Business logic
     ├── AggregatorService.java            # Core orchestrator
-    ├── AiService.java                    # Spring AI integration
-    ├── CurrentConditionsService.java     # Station data aggregator
-    ├── ForecastService.java              # Windguru API client
-    ├── GoogleMapsService.java            # Maps URL converter
-    ├── SponsorsService.java              # Sponsors management
-    └── currentconditions/strategy/       # Strategy pattern
-        ├── FetchCurrentConditions.java (interface)
-        ├── FetchCurrentConditionsStrategyBase.java
-        ├── FetchCurrentConditionsStrategyPodersdorf.java
-        └── FetchCurrentConditionsStrategyWiatrKadynyStations.java
+    ├── ai/                               # AI forecast analysis
+    │   ├── AiService.java                # Base service (abstract)
+    │   ├── AiServiceEn.java              # English AI analysis
+    │   └── AiServicePl.java              # Polish AI analysis
+    ├── currentconditions/                # Live conditions
+    │   ├── CurrentConditionsService.java # Station data aggregator
+    │   └── strategy/                     # Strategy pattern for stations
+    │       ├── FetchCurrentConditions.java (interface)
+    │       ├── FetchCurrentConditionsStrategyBase.java
+    │       ├── FetchCurrentConditionsStrategyPodersdorf.java
+    │       └── FetchCurrentConditionsStrategyWiatrKadynyStations.java
+    ├── forecast/
+    │   └── ForecastService.java          # Windguru API client
+    ├── map/
+    │   └── GoogleMapsService.java        # Maps URL converter
+    └── sponsors/
+        └── SponsorsService.java          # Sponsors management
 ```
 
 ### Legend

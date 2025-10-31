@@ -3,11 +3,16 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
+import com.github.pwittchen.varun.service.ai.AiServiceEn;
+import com.github.pwittchen.varun.service.ai.AiServicePl;
+import com.github.pwittchen.varun.service.live.CurrentConditionsService;
+import com.github.pwittchen.varun.service.forecast.ForecastService;
+import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +47,10 @@ class AggregatorServiceTest {
     private CurrentConditionsService currentConditionsService;
 
     @Mock
-    private AiService aiService;
+    private AiServiceEn aiServiceEn;
+
+    @Mock
+    private AiServicePl aiServicePl;
 
     @Mock
     private GoogleMapsService googleMapsService;
@@ -55,7 +63,8 @@ class AggregatorServiceTest {
                 spotsDataProvider,
                 forecastService,
                 currentConditionsService,
-                aiService,
+                aiServiceEn,
+                aiServicePl,
                 googleMapsService
         );
     }
@@ -268,10 +277,10 @@ class AggregatorServiceTest {
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiService, never()).fetchAiAnalysis(any());
+        verify(aiServiceEn, never()).fetchAiAnalysis(any());
     }
 
     @Test
@@ -281,16 +290,16 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiService.fetchAiAnalysis(any())).thenReturn(Mono.just("AI analysis result"));
+        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just("AI analysis result"));
 
         aggregatorService.init();
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiService).fetchAiAnalysis(any());
+        verify(aiServiceEn).fetchAiAnalysis(any());
     }
 
     @Test
@@ -346,16 +355,154 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiService.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
+        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
 
         aggregatorService.init();
         Thread.sleep(100);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHours();
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiService).fetchAiAnalysis(any());
+        verify(aiServiceEn).fetchAiAnalysis(any());
+    }
+
+    @Test
+    void shouldSkipAiForecastAnalysisPlWhenDisabled() throws FetchingForecastException, InterruptedException {
+        // given
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", false);
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.empty());
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+
+        // then
+        verify(aiServicePl, never()).fetchAiAnalysis(any());
+    }
+
+    @Test
+    void shouldFetchAiAnalysisPlWhenEnabled() throws FetchingForecastException, InterruptedException {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Analiza AI"));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+
+        // then
+        verify(aiServicePl).fetchAiAnalysis(any());
+    }
+
+    @Test
+    void shouldFilterEmptyAiAnalysisPl() throws FetchingForecastException, InterruptedException {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+
+        // then
+        verify(aiServicePl).fetchAiAnalysis(any());
+    }
+
+    @Test
+    void shouldUpdateAiAnalysisPlIncrementallyInCache() throws Exception {
+        // given
+        var spot1 = createTestSpot(123, "Test Spot 1");
+        var spot2 = createTestSpot(456, "Test Spot 2");
+
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
+
+        // First spot completes quickly, second spot is slow
+        when(aiServicePl.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analiza dla spotu 1"));
+        when(aiServicePl.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
+            Thread.sleep(300);
+            return Mono.just("Analiza dla spotu 2");
+        });
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        var aiThread = new Thread(() -> {
+            try {
+                aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        aiThread.start();
+
+        Thread.sleep(150); // Wait for first spot to complete, second still processing
+
+        // then - first spot should already have AI analysis in cache even though second is still processing
+        @SuppressWarnings("unchecked")
+        var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisPl");
+        assertThat(aiAnalysisCache).containsKey(123);
+        assertThat(aiAnalysisCache.get(123)).isEqualTo("Analiza dla spotu 1");
+
+        // Verify enrichment works - the spot should have AI analysis when retrieved
+        var spots = aggregatorService.getSpots();
+        var enrichedSpot1 = spots.stream()
+                .filter(s -> s.wgId() == 123)
+                .findFirst();
+
+        assertThat(enrichedSpot1).isPresent();
+        assertThat(enrichedSpot1.get().aiAnalysisPl()).isEqualTo("Analiza dla spotu 1");
+
+        aiThread.join(5000);
+    }
+
+    @Test
+    void shouldEnrichSpotsWithBothEnAndPlAiAnalysis() throws Exception {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Polska analiza AI"));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when - fetch both languages
+        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
+        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+
+        // then - verify both are in caches
+        @SuppressWarnings("unchecked")
+        var aiAnalysisCacheEn = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisEn");
+        @SuppressWarnings("unchecked")
+        var aiAnalysisCachePl = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisPl");
+
+        assertThat(aiAnalysisCacheEn).containsKey(123);
+        assertThat(aiAnalysisCacheEn.get(123)).isEqualTo("English AI analysis");
+        assertThat(aiAnalysisCachePl).containsKey(123);
+        assertThat(aiAnalysisCachePl.get(123)).isEqualTo("Polska analiza AI");
+
+        // and verify spot has both analyses when retrieved
+        var spots = aggregatorService.getSpots();
+        assertThat(spots).hasSize(1);
+        assertThat(spots.get(0).aiAnalysisEn()).isEqualTo("English AI analysis");
+        assertThat(spots.get(0).aiAnalysisPl()).isEqualTo("Polska analiza AI");
     }
 
     @Test
@@ -368,8 +515,8 @@ class AggregatorServiceTest {
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
 
         // First spot completes quickly, second spot is slow
-        when(aiService.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analysis for spot 1"));
-        when(aiService.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
+        when(aiServiceEn.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analysis for spot 1"));
+        when(aiServiceEn.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
             Thread.sleep(300);
             return Mono.just("Analysis for spot 2");
         });
@@ -380,7 +527,7 @@ class AggregatorServiceTest {
         // when
         var aiThread = new Thread(() -> {
             try {
-                aggregatorService.fetchAiAnalysisEveryEightHours();
+                aggregatorService.fetchAiAnalysisEveryEightHoursEn();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -391,7 +538,7 @@ class AggregatorServiceTest {
 
         // then - first spot should already have AI analysis in cache even though second is still processing
         @SuppressWarnings("unchecked")
-        var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysis");
+        var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisEn");
         assertThat(aiAnalysisCache).containsKey(123);
         assertThat(aiAnalysisCache.get(123)).isEqualTo("Analysis for spot 1");
 
@@ -402,7 +549,7 @@ class AggregatorServiceTest {
                 .findFirst();
 
         assertThat(enrichedSpot1).isPresent();
-        assertThat(enrichedSpot1.get().aiAnalysis()).isEqualTo("Analysis for spot 1");
+        assertThat(enrichedSpot1.get().aiAnalysisEn()).isEqualTo("Analysis for spot 1");
 
         aiThread.join(5000);
     }
@@ -448,6 +595,7 @@ class AggregatorServiceTest {
                 null,
                 forecast,
                 hourlyForecast,
+                null,
                 null,
                 null,
                 null,

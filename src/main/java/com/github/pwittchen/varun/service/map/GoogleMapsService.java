@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.map;
 
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;

@@ -1,6 +1,6 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.live;
 
-import com.github.pwittchen.varun.model.currentconditions.CurrentConditions;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
