@@ -527,7 +527,7 @@
     "windguruUrl": "https://www.windguru.cz/30007",
     "windfinderUrl": "https://www.windfinder.com/forecast/pogoria_lakes",
     "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=459&col=220&lang=pl",
-    "webcamUrl": "",
+    "webcamUrl": "https://www.dabrowa-gornicza.pl/atrakcje/kamery-online/",
     "locationUrl": "https://maps.app.goo.gl/AZeeBXia9iE9bWo87",
     "spotInfo": {
       "type": "Lake",
@@ -537,7 +537,7 @@
       "launch": "Small beach",
       "hazards": "Trees on shore, swimmers, gusty winds",
       "season": "April-September",
-      "description": "Lakes in Dąbrowa Górnicza. The best lakes for kiting there are Pogoria III and Pogoria IV."
+      "description": "Lakes in Dąbrowa Górnicza. The best lakes for kiting there are Pogoria III and Pogoria IV. When the N wind is blowing, it's recommended to kite on Pogoria III and Pogoria IV with NW winds."
     },
     "spotInfoPL": {
       "type": "Jezioro",
@@ -547,7 +547,7 @@
       "launch": "Mała plaża",
       "hazards": "Drzewa na brzegu, pływacy, porywisty wiatr",
       "season": "Kwiecień-Wrzesień",
-      "description": "Jeziora w Dąbrowie Górniczej. Najlepsze jeziora do kitesurfingu to Pogoria III i Pogoria IV."
+      "description": "Jeziora w Dąbrowie Górniczej. Najlepsze jeziora do kitesurfingu to Pogoria III i Pogoria IV. Jeżeli wieje czysty wiatr północny (N), najlepiej pływać na jeziorze Pogoria III. Natomiast jeżeli wieje NW, to wtedy Pogoria IV będzie lepszą opcją."
     }
   },
   {
