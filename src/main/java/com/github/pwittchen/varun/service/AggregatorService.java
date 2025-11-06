@@ -431,7 +431,7 @@ public class AggregatorService {
         forecastModelsLocks.remove(spotId);
     }
 
-    @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = 8 * 60 * 60 * 1000, initialDelay = 5 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryEightHoursEn() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
@@ -442,7 +442,7 @@ public class AggregatorService {
         }
     }
 
-    @Scheduled(fixedRate = 8 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = 8 * 60 * 60 * 1000, initialDelay = 5 * 60 * 1000)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryEightHoursPl() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
