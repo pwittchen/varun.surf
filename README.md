@@ -82,6 +82,25 @@ To view all its functions, just type:
 
 Add `health.sh` script to the cron, so it will monitor the app and send an email if it's down or recovered.
 
+## generating new spots
+
+You can generate new kitesurfing spots using Claude Code CLI and the provided prompt template:
+
+```bash
+# Generate spots for a specific region
+claude "Generate 1 kitesurfing spot for Goczałkowice Lake following the schema in SPOT_GENERATOR_PROMPT.md"
+```
+
+Claude Code will:
+1. Read the schema from `SPOT_GENERATOR_PROMPT.md`
+2. Generate valid JSON spots with real Windguru URLs, coordinates, and spot details
+3. Include both English and Polish translations
+4. Optionally help merge the new spots into `spots.json`
+
+For more details, see → [SPOT_GENERATOR_PROMPT.md](SPOT_GENERATOR_PROMPT.md)
+
+**PLEASE NOTE**: after spot generation, you need to manually review and adjust the data and merge the new spots into `spots.json` file.
+
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
