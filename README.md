@@ -87,7 +87,6 @@ Add `health.sh` script to the cron, so it will monitor the app and send an email
 You can generate new kitesurfing spots using Claude Code CLI and the provided prompt template:
 
 ```bash
-# Generate spots for a specific region
 claude "Generate 1 kitesurfing spot for Goczałkowice Lake following the schema in SPOT_GENERATOR_PROMPT.md"
 ```
 
