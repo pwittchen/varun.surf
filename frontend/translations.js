@@ -197,7 +197,10 @@ const translations = {
         Brazil: "Brazil",
         Peru: "Peru",
         Chile: "Chile",
-        USA: "USA"
+        USA: "USA",
+        Namibia: "Namibia",
+        Mexico: "Mexico",
+        CostaRica: "Costa Rica"
     },
     pl: {
         // Page title
@@ -396,7 +399,10 @@ const translations = {
         Brazil: "Brazylia",
         Peru: "Peru",
         Chile: "Chile",
-        USA: "USA"
+        USA: "USA",
+        Namibia: "Namibia",
+        Mexico: "Meksyk",
+        CostaRica: "Kostaryka"
     }
 };
 

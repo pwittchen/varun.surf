@@ -2608,5 +2608,129 @@
       "season": "Kwiecień-Wrzesień",
       "description": "Legendarny spot amerykański w ujściu rzeki Columbia, silne wiatry termiczne. Działa głównie latem."
     }
+  },
+  {
+    "name": "La Ventana",
+    "country": "Mexico",
+    "windguruUrl": "https://www.windguru.cz/206922",
+    "windfinderUrl": "https://www.windfinder.com/forecast/baja_california_la_ventana",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/i71JFNSzrwXS7SE86",
+    "spotInfo": {
+      "type": "Bay, flat water, small chop",
+      "bestWind": "N, NE",
+      "waterTemp": "22-28°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Shallow areas near shore, boat traffic",
+      "season": "November-April",
+      "description": "World-famous winter destination in Baja California Sur with consistent thermal winds. The Sea of Cortez provides warm, flat water perfect for progression and freestyle. Nicknamed 'La Bomba' when wind hits 25+ knots.",
+      "llmComment": "Strong thermal winds develop daily from late morning through afternoon, typically 15-25 knots with stronger gusts. Peak season is December-March."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płaska woda, niewielkie zafalowanie",
+      "bestWind": "N, NE",
+      "waterTemp": "22-28°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Płytkie obszary przy brzegu, ruch łodzi",
+      "season": "Listopad-Kwiecień",
+      "description": "Światowej sławy zimowa destynacja w Baja California Sur ze stabilnymi wiatrami termicznymi. Morze Corteza zapewnia ciepłą, płaską wodę idealną do nauki i freestyle. Nazywana 'La Bomba' gdy wiatr osiąga 25+ węzłów.",
+      "llmComment": "Silne wiatry termiczne rozwijają się codziennie od późnego poranka do popołudnia, zazwyczaj 15-25 węzłów z silniejszymi podmuchami. Szczyt sezonu to grudzień-marzec."
+    }
+  },
+  {
+    "name": "Tulum",
+    "country": "Mexico",
+    "windguruUrl": "https://www.windguru.cz/85080",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tulum",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/gvLeqQG3YBYvg5fq8",
+    "spotInfo": {
+      "type": "Beach, small waves, turquoise water",
+      "bestWind": "E, SE",
+      "waterTemp": "26-30°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach",
+      "hazards": "Tourists, seaweed (sargassum seasonal), shallow reef areas",
+      "season": "December-July",
+      "description": "Caribbean paradise with stunning Mayan ruins backdrop and crystal-clear turquoise waters. Trade winds provide consistent conditions along white sandy beaches. Popular tourist destination with excellent infrastructure and beach clubs.",
+      "llmComment": "Trade winds are strongest January-June. Sargassum seaweed can be present May-August. Beach access through hotels or kite schools."
+    },
+    "spotInfoPL": {
+      "type": "Plaża, małe fale, turkusowa woda",
+      "bestWind": "E, SE",
+      "waterTemp": "26-30°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Turyści, wodorosty (sargassum sezonowo), płytkie obszary rafowe",
+      "season": "Grudzień-Lipiec",
+      "description": "Karaibski raj z widokiem na ruiny Majów i krystalicznie czystą turkusową wodą. Pasaty zapewniają stabilne warunki wzdłuż białych piaszczystych plaż. Popularna destynacja turystyczna z doskonałą infrastrukturą i klubami plażowymi.",
+      "llmComment": "Pasaty są najsilniejsze od stycznia do czerwca. Wodorosty sargassum mogą występować maj-sierpień. Dostęp do plaży przez hotele lub szkoły kitesurfingu."
+    }
+  },
+  {
+    "name": "Walvis Bay",
+    "country": "Namibia",
+    "windguruUrl": "https://www.windguru.cz/4262",
+    "windfinderUrl": "https://www.windfinder.com/forecast/walvis_bay",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/sJmNZxJb6DbYxmNi6",
+    "spotInfo": {
+      "type": "Lagoon, flat water, speed spot",
+      "bestWind": "S, SW",
+      "waterTemp": "14-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach and lagoon",
+      "hazards": "Strong wind, cold water, flamingos in lagoon, sharks in open ocean",
+      "season": "September-April",
+      "description": "Epic African speed spot with incredibly flat water in the lagoon and powerful ocean conditions. Famous for speed records and consistent strong winds from the Benguela Current. Wildlife-rich area with flamingos, seals, and pelicans.",
+      "llmComment": "One of the windiest spots on Earth, regularly exceeding 30 knots. Cold Benguela Current keeps water temperature low. Wetsuit essential year-round."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda, spot prędkościowy",
+      "bestWind": "S, SW",
+      "waterTemp": "14-20°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plaża piaszczysta i laguna",
+      "hazards": "Silny wiatr, zimna woda, flamingi w lagunie, rekiny na otwartym oceanie",
+      "season": "Wrzesień-Kwiecień",
+      "description": "Epicki afrykański spot prędkościowy z niesamowicie płaską wodą w lagunie i potężnymi warunkami oceanicznymi. Słynny z rekordów prędkości i stabilnych silnych wiatrów od Prądu Benguelskiego. Obszar bogaty w dziką przyrodę z flamingami, fokami i pelikanami.",
+      "llmComment": "Jeden z najbardziej wietrznych spotów na Ziemi, regularnie przekraczający 30 węzłów. Zimny Prąd Benguelski utrzymuje niską temperaturę wody. Pianka niezbędna przez cały rok."
+    }
+  },
+  {
+    "name": "Bahia Salinas",
+    "country": "Costa Rica",
+    "windguruUrl": "https://www.windguru.cz/29853",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bahia_salinas_playa_copal",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/NhLySQi5bA3XPmEVA",
+    "spotInfo": {
+      "type": "Bay, flat to choppy water",
+      "bestWind": "NE, E",
+      "waterTemp": "26-29°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Strong wind, gusty conditions, offshore wind at some spots",
+      "season": "November-April",
+      "description": "Remote bay in northern Costa Rica offering consistent trade winds and uncrowded conditions. Warm Pacific waters and stunning volcanic landscape backdrop. Known for strong, steady winds perfect for freestyle and big air.",
+      "llmComment": "Wind accelerates through mountain gaps creating powerful, gusty conditions. Best winds typically December-March with 20-35 knots common."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płaska do pofałdowanej wody",
+      "bestWind": "NE, E",
+      "waterTemp": "26-29°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Silny wiatr, porywiste warunki, wiatr offshore w niektórych miejscach",
+      "season": "Listopad-Kwiecień",
+      "description": "Odległa zatoka w północnej Kostaryce oferująca stabilne pasaty i nietłumne warunki. Ciepłe wody Pacyfiku i oszałamiające tło wulkanicznego krajobrazu. Znana z silnych, stabilnych wiatrów idealnych do freestyle i dużych skoków.",
+      "llmComment": "Wiatr przyspiesza przez górskie przełęcze tworząc potężne, porywiste warunki. Najlepsze wiatry zazwyczaj grudzień-marzec z często występującymi 20-35 węzłami."
+    }
   }
 ]
