@@ -40,7 +40,7 @@ class JsonSpotsDataProviderTest {
         Flux<Spot> spots = provider.getSpots();
 
         StepVerifier.create(spots)
-                .expectNextCount(90)
+                .expectNextCount(94)
                 .verifyComplete();
     }
 
