@@ -38,4 +38,11 @@ public abstract class FetchCurrentConditionsStrategyBase {
         }
         return "N";
     }
+
+    protected String windDirectionDegreesToCardinal(int degrees) {
+        String[] directions = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
+        double normalized = (degrees % 360 + 360) % 360;
+        int index = (int) Math.round(normalized / 45) % directions.length;
+        return directions[index];
+    }
 }
