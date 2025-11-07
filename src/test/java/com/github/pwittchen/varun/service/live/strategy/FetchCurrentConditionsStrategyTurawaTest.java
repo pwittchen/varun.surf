@@ -442,6 +442,64 @@ class FetchCurrentConditionsStrategyTurawaTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldParseNegativeTemperature() {
+        String mockResponse = """
+                <html>
+                <body>
+                <div id='widget'>
+                    <div align='right' style='padding-top:10px; padding-right:10px; font-size: 9px;'>2025-11-07 15:44 [x]</div>
+                    <div style='display: inline; vertical-align: middle; line-height: 50px; height: 50px; float: right; padding-right: 10px; font-size: 16px;'>-5&deg;C</div>
+                    <div><img src='https://airmax.pl/wind_speed.png' style='width: 30px; padding-left: 15px; padding-bottom: 10px;' align='absmiddle'><div style='display: inline; float: right; padding-right: 10px;'>3.73 m/s</div></div>
+                    <div><img src='https://airmax.pl/wind_rose.png' style='width: 30px; padding-left: 15px; padding-bottom: 10px;' align='absmiddle'><div style='display: inline; float: right; padding-right: 10px;'>180 &deg;</div></div>
+                </div>
+                </body>
+                </html>
+                """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/kamery/turawa").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    assertThat(conditions.temp()).isEqualTo(-5);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldParseZeroTemperature() {
+        String mockResponse = """
+                <html>
+                <body>
+                <div id='widget'>
+                    <div align='right' style='padding-top:10px; padding-right:10px; font-size: 9px;'>2025-11-07 15:44 [x]</div>
+                    <div style='display: inline; vertical-align: middle; line-height: 50px; height: 50px; float: right; padding-right: 10px; font-size: 16px;'>0&deg;C</div>
+                    <div><img src='https://airmax.pl/wind_speed.png' style='width: 30px; padding-left: 15px; padding-bottom: 10px;' align='absmiddle'><div style='display: inline; float: right; padding-right: 10px;'>3.73 m/s</div></div>
+                    <div><img src='https://airmax.pl/wind_rose.png' style='width: 30px; padding-left: 15px; padding-bottom: 10px;' align='absmiddle'><div style='display: inline; float: right; padding-right: 10px;'>180 &deg;</div></div>
+                </div>
+                </body>
+                </html>
+                """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/kamery/turawa").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    assertThat(conditions.temp()).isEqualTo(0);
+                })
+                .verifyComplete();
+    }
+
     private String createMockResponseWithDirection(int degrees) {
         return """
                 <html>

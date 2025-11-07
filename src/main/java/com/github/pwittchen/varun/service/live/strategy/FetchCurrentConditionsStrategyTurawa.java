@@ -20,7 +20,7 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
     private static final String TURAWA_LIVE_URL = "https://airmax.pl/kamery/turawa";
 
     private static final Pattern TIMESTAMP_PATTERN = Pattern.compile("padding-top:10px.*?>(\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2})");
-    private static final Pattern TEMPERATURE_PATTERN = Pattern.compile("font-size: 16px;'>(\\d+)&deg;C");
+    private static final Pattern TEMPERATURE_PATTERN = Pattern.compile("font-size: 16px;'>(-?\\d+)&deg;C");
     private static final Pattern WIND_SPEED_PATTERN = Pattern.compile("wind_speed\\.png.*?padding-right: 10px;'>(\\d+\\.\\d+)\\s+m/s");
     private static final Pattern WIND_DIRECTION_PATTERN = Pattern.compile("wind_rose\\.png.*?padding-right: 10px;'>(\\d+)\\s+&deg;");
 
