@@ -34,7 +34,7 @@ docker build -t varun-surf .
 docker run -p 8080:8080 varun-surf
 ```
 
-## ghcr
+## docker container registry
 
 docker image is automatically deployed to the registry at ghcr.io via `docker.yml` GitHub action from the `master` branch
 
