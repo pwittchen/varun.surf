@@ -482,8 +482,12 @@
             }
         });
 
-        // Sort countries alphabetically
-        const sortedCountries = Array.from(availableCountries).sort();
+        // Sort countries alphabetically based on translated names
+        const sortedCountries = Array.from(availableCountries).sort((a, b) => {
+            const nameA = t(a.replace(/\s+/g, ''));
+            const nameB = t(b.replace(/\s+/g, ''));
+            return nameA.localeCompare(nameB);
+        });
 
         // Get saved country from localStorage
         const savedCountry = localStorage.getItem('selectedCountry') || 'all';
