@@ -27,27 +27,27 @@
 [data-theme="light"] {
     /* Light theme variables */
     --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-tertiary: #e9ecef;
-    --text-primary: #212529;
-    --text-secondary: #6c757d;
-    --text-tertiary: #adb5bd;
-    --border-primary: #dee2e6;
-    --border-secondary: #ced4da;
-    --border-hover: #adb5bd;
+    --bg-secondary: #f5f7fa;
+    --bg-tertiary: #e8ecf1;
+    --text-primary: #0a0a0a;
+    --text-secondary: #4a5568;
+    --text-tertiary: #9ca3af;
+    --border-primary: #d1d5db;
+    --border-secondary: #b8bfc7;
+    --border-hover: #6b7280;
     --accent-primary: #0d6efd;
     --accent-secondary: #0a58ca;
-    --gradient-button: linear-gradient(145deg, #f8f9fa, #e9ecef);
-    --gradient-button-hover: linear-gradient(145deg, #e9ecef, #dee2e6);
+    --gradient-button: linear-gradient(145deg, #ffffff, #f0f3f7);
+    --gradient-button-hover: linear-gradient(145deg, #f0f3f7, #e4e8ed);
     --gradient-active: linear-gradient(145deg, #0d6efd, #0a58ca);
     --gradient-header: linear-gradient(145deg, #0d6efd, #0a58ca);
-    --shadow-card: 0 8px 32px rgba(0, 0, 0, .1);
-    --error-bg: linear-gradient(145deg, #f8d7da, #f5c6cb);
-    --error-border: #f1aeb5;
-    --error-text: #721c24;
-    --success-color: #198754;
-    --warning-color: #fd7e14;
-    --danger-color: #dc3545;
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .08);
+    --error-bg: linear-gradient(145deg, #fee, #fdd);
+    --error-border: #ef4444;
+    --error-text: #991b1b;
+    --success-color: #059669;
+    --warning-color: #ea580c;
+    --danger-color: #dc2626;
 }
 
 * {
@@ -81,9 +81,9 @@ body {
 }
 
 [data-theme="light"] .fixed-header {
-    background: rgba(255, 255, 255, 0.7) !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 4px 24px rgba(0, 0, 0, 0.04) !important;
 }
 
 .header-content {
@@ -1215,6 +1215,98 @@ body {
     color: var(--danger-color);
 }
 
+/* Light theme wind forecast colors - more vibrant and clear */
+[data-theme="light"] .weather-table tbody tr.weak-wind td:nth-child(2),
+[data-theme="light"] .weather-table tbody tr.weak-wind td:nth-child(3),
+[data-theme="light"] .weather-table tbody tr.weak-wind td:nth-child(4) {
+    color: #6b7280 !important;
+}
+
+[data-theme="light"] .weather-table tbody tr.moderate-wind td:nth-child(2),
+[data-theme="light"] .weather-table tbody tr.moderate-wind td:nth-child(3),
+[data-theme="light"] .weather-table tbody tr.moderate-wind td:nth-child(4) {
+    color: #059669 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody tr.strong-wind td:nth-child(2),
+[data-theme="light"] .weather-table tbody tr.strong-wind td:nth-child(3),
+[data-theme="light"] .weather-table tbody tr.strong-wind td:nth-child(4) {
+    color: #ea580c !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody tr.extreme-wind td:nth-child(2),
+[data-theme="light"] .weather-table tbody tr.extreme-wind td:nth-child(3),
+[data-theme="light"] .weather-table tbody tr.extreme-wind td:nth-child(4) {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.wind-weak {
+    color: #6b7280 !important;
+}
+
+[data-theme="light"] .weather-table tbody td.wind-moderate {
+    color: #059669 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.wind-strong {
+    color: #ea580c !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.wind-extreme {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.temp-positive {
+    color: #ea580c !important;
+    font-weight: 600;
+}
+
+[data-theme="light"] .weather-table tbody td.temp-negative {
+    color: #0891b2 !important;
+    font-weight: 600;
+}
+
+[data-theme="light"] .weather-table tbody td.precipitation {
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+[data-theme="light"] .weather-table tbody td.precipitation-none {
+    color: #9ca3af !important;
+}
+
+[data-theme="light"] .weather-table tbody td.wave-small {
+    color: #059669 !important;
+}
+
+[data-theme="light"] .weather-table tbody td.wave-moderate {
+    color: #ea580c !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.wave-large {
+    color: #dc2626 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tr.moderate-wind {
+    background: rgba(5, 150, 105, .12);
+}
+
+[data-theme="light"] .weather-table tr.strong-wind {
+    background: rgba(234, 88, 12, .12);
+}
+
+[data-theme="light"] .weather-table tr.extreme-wind {
+    background: rgba(220, 38, 38, .12);
+}
+
 .wind-arrow {
     display: inline-block;
     font-size: 1.2rem;
@@ -2165,6 +2257,59 @@ body.spot-page .weather-table tbody tr:hover {
     color: #ef4444;
 }
 
+/* Light theme current conditions colors */
+[data-theme="light"] .wind-arrow-large.wind-weak {
+    color: #6b7280;
+}
+
+[data-theme="light"] .wind-arrow-large.wind-moderate {
+    color: #059669;
+}
+
+[data-theme="light"] .wind-arrow-large.wind-strong {
+    color: #ea580c;
+}
+
+[data-theme="light"] .wind-arrow-large.wind-extreme {
+    color: #dc2626;
+}
+
+[data-theme="light"] .wind-speed.wind-weak {
+    background-color: rgba(107, 114, 128, 0.15);
+    color: #6b7280;
+}
+
+[data-theme="light"] .wind-speed.wind-moderate {
+    background-color: rgba(5, 150, 105, 0.15);
+    color: #059669;
+}
+
+[data-theme="light"] .wind-speed.wind-strong {
+    background-color: rgba(234, 88, 12, 0.15);
+    color: #ea580c;
+}
+
+[data-theme="light"] .wind-speed.wind-extreme {
+    background-color: rgba(220, 38, 38, 0.15);
+    color: #dc2626;
+}
+
+[data-theme="light"] .condition-value.wind-weak {
+    color: #6b7280;
+}
+
+[data-theme="light"] .condition-value.wind-moderate {
+    color: #059669;
+}
+
+[data-theme="light"] .condition-value.wind-strong {
+    color: #ea580c;
+}
+
+[data-theme="light"] .condition-value.wind-extreme {
+    color: #dc2626;
+}
+
 /* Hide current conditions row in forecast table on desktop (single spot view only) */
 body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: none;
@@ -2428,6 +2573,58 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .windguru-cell.wave-none {
     color: #6b7280;
+}
+
+/* Light theme Windguru view colors */
+[data-theme="light"] .windguru-cell.wind-weak {
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.1);
+}
+
+[data-theme="light"] .windguru-cell.wind-moderate {
+    color: #059669;
+    font-weight: 700;
+    background: rgba(5, 150, 105, 0.15);
+}
+
+[data-theme="light"] .windguru-cell.wind-strong {
+    color: #ea580c;
+    font-weight: 700;
+    background: rgba(234, 88, 12, 0.15);
+}
+
+[data-theme="light"] .windguru-cell.wind-extreme {
+    color: #dc2626;
+    font-weight: 700;
+    background: rgba(220, 38, 38, 0.15);
+}
+
+[data-theme="light"] .windguru-cell.temp-positive {
+    color: #ea580c;
+    font-weight: 600;
+}
+
+[data-theme="light"] .windguru-cell.temp-negative {
+    color: #0891b2;
+    font-weight: 600;
+}
+
+[data-theme="light"] .windguru-cell.precipitation {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+[data-theme="light"] .windguru-cell.precipitation-none {
+    color: #9ca3af;
+}
+
+[data-theme="light"] .windguru-cell.wave-low {
+    color: #059669;
+}
+
+[data-theme="light"] .windguru-cell.wave-high {
+    color: #dc2626;
+    font-weight: 700;
 }
 
 /* Tablet/small desktop view - hide tabs and windguru view */
