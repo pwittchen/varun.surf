@@ -17,5 +17,5 @@ jobs:
         run: |
           curl -X POST \
             -d "srv=${MIKRUS_SRV}&key=${MIKRUS_API_KEY}" \
-            -d "cmd=${MIKRUS_SCRIPT_PATH}/deployment.sh prod" \
+            -d "cmd=cd ${MIKRUS_SCRIPT_PATH} && ./deployment.sh prod && cd --" \
             https://api.mikr.us/exec
