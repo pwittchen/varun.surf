@@ -5,8 +5,8 @@ set -euo pipefail
 ENV="${1:-prod}"
 
 if [[ "$ENV" != "dev" && "$ENV" != "prod" ]]; then
-  echo "Usage: $0 [local|prod]"
-  echo "  dev - use docker-compose.local.yml (builds from source)"
+  echo "Usage: $0 [dev|prod]"
+  echo "  dev - use docker-compose.dev.yml (builds from source)"
   echo "  prod  - use docker-compose.prod.yml (pulls from GHCR)"
   exit 1
 fi
@@ -51,8 +51,8 @@ fi
 echo "==> Current: $CURRENT | Deploying: $NEXT"
 echo "==> Starting $NEXT environment..."
 
-# Use --build flag only for local environment
-if [[ "$ENV" == "local" ]]; then
+# Use --build flag only for dev environment
+if [[ "$ENV" == "dev" ]]; then
   $COMPOSE_CMD --profile "$NEXT_PROFILE" up -d --build --wait "$NEXT_CONTAINER"
 else
   $COMPOSE_CMD --profile "$NEXT_PROFILE" up -d --wait "$NEXT_CONTAINER"
