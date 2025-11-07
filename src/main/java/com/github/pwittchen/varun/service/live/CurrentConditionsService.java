@@ -1,8 +1,8 @@
 package com.github.pwittchen.varun.service.live;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
-import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditions;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyTurawa;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -18,6 +18,7 @@ public class CurrentConditionsService {
     public CurrentConditionsService() {
         strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations());
         strategies.add(new FetchCurrentConditionsStrategyPodersdorf());
+        strategies.add(new FetchCurrentConditionsStrategyTurawa());
     }
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
