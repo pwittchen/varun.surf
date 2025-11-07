@@ -1,0 +1,61 @@
+networks:
+  bluegreen:
+    driver: bridge
+
+services:
+  varun-nginx:
+    image: nginx:1.27-alpine
+    container_name: varun-nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "20245:80"
+    networks:
+      - bluegreen
+
+  varun-app-blue-live:
+    image: ghcr.io/pwittchen/varun.surf:latest
+    platform: linux/amd64
+    container_name: varun-app-blue-live
+    command: >
+      --app.feature.ai.forecast.analysis.enabled=true
+      --app.ai.provider=openai
+      --spring.ai.openai.api-key=${OPEN_AI_API_KEY}
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    networks:
+      bluegreen:
+        aliases:
+          - varun-app-current
+    profiles: ["blue-live"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - OPEN_AI_API_KEY=${OPEN_AI_API_KEY}
+
+  varun-app-green-live:
+    image: ghcr.io/pwittchen/varun.surf:latest
+    platform: linux/amd64
+    container_name: varun-app-green-live
+    command: >
+      --app.feature.ai.forecast.analysis.enabled=true
+      --app.ai.provider=openai
+      --spring.ai.openai.api-key=${OPEN_AI_API_KEY}
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+    networks:
+      bluegreen:
+        aliases:
+          - varun-app-current
+    profiles: ["green-live"]
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
