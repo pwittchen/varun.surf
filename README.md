@@ -67,7 +67,7 @@ It's done automatically via GitHub actions `ci.yml` and `coverage.yml`
 After each tag push with `v` prefix, `cd.yml` GitHub action is triggered,
 and this action deploys the latest version of the app to the VPS.
 
-## deployment
+## zero-downtime deployment
 
 Deployment of the app is configured with the bash, docker, and docker compose scripts.
 With these scripts, we can perform zero-downtime (blue/green) deployment with nginx server as a proxy.
