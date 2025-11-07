@@ -1,62 +1,68 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-function run_docker() {
-  docker run --name varun.surf -d -p 20245:8080 ghcr.io/pwittchen/varun.surf
-}
+# Parse command line argument
+ENV="${1:-prod}"
 
-if [ "$1" == "--help" ] || [ -z "$1" ]; then
-  echo ""
-  echo "  deployment.sh | script for managing varun.surf deployment"
-  echo ""
-  echo "  USAGE: deployment.sh [options]"
-  echo ""
-  echo "  --help      shows help"
-  echo "  --login     logs into ghcr.io"
-  echo "  --logs      shows app logs"
-  echo "  --run       runs the app"
-  echo "  --stop      stops the app"
-  echo "  --pull      pulls the most recent docker image from registry"
-  echo "  --restart   restarts currently running app"
-  echo "  --reload    stops the app, pulls the most recent image and starts the app again"
-  echo "  --ps        shows currently running containers"
-  echo ""
+if [[ "$ENV" != "dev" && "$ENV" != "prod" ]]; then
+  echo "Usage: $0 [dev|prod]"
+  echo "  dev - use docker-compose.dev.yml (builds from source)"
+  echo "  prod  - use docker-compose.prod.yml (pulls from GHCR)"
+  exit 1
 fi
-if [ "$1" == "--login" ]; then
-  PAT=YOUR_GITHUB_GHCR_PERSONAL_ACCESS_TOKEN
-  echo $PAT | docker login ghcr.io -u pwittchen --password-stdin
+
+echo "==> Starting deployment"
+
+COMPOSE_FILE="docker-compose.${ENV}.yml"
+COMPOSE_CMD="docker compose -f $COMPOSE_FILE"
+
+echo "==> Using configuration: $COMPOSE_FILE"
+
+# Pull the latest docker image (prod only)
+if [[ "$ENV" == "prod" ]]; then
+  echo "==> Pulling latest image from GHCR..."
+  docker pull ghcr.io/pwittchen/varun.surf:latest
 fi
-if [ "$1" == "--logs" ]; then
-  docker logs -f varun.surf
+
+# Determine which environment is currently live
+if docker ps --format '{{.Names}}' | grep -q '^varun-app-blue-live$'; then
+  CURRENT="blue"
+  NEXT="green"
+  CURRENT_CONTAINER="varun-app-blue-live"
+  NEXT_CONTAINER="varun-app-green-live"
+  NEXT_PROFILE="green-live"
+else
+  CURRENT="green"
+  NEXT="blue"
+  CURRENT_CONTAINER="varun-app-green-live"
+  NEXT_CONTAINER="varun-app-blue-live"
+  NEXT_PROFILE="blue-live"
 fi
-if [ "$1" == "--run" ]; then
-  run_docker
-  echo "SUCCESS!"
+
+# Check if this is the first run (no containers running)
+if ! docker ps --format '{{.Names}}' | grep -qE '^varun-app-(blue|green)-live$'; then
+  echo "==> First deployment: starting nginx and blue environment"
+  $COMPOSE_CMD --profile blue-live up -d --wait varun-nginx varun-app-blue-live
+  echo "==> Blue environment is live"
   exit 0
 fi
-if [ "$1" == "--stop" ]; then
-  docker stop varun.surf
-  docker rm varun.surf
-  echo "STOPPED"
-  exit 0
+
+# Blue-green swap
+echo "==> Current: $CURRENT | Deploying: $NEXT"
+echo "==> Starting $NEXT environment..."
+
+# Use --build flag only for dev environment
+if [[ "$ENV" == "dev" ]]; then
+  $COMPOSE_CMD --profile "$NEXT_PROFILE" up -d --build --wait "$NEXT_CONTAINER"
+else
+  $COMPOSE_CMD --profile "$NEXT_PROFILE" up -d --wait "$NEXT_CONTAINER"
 fi
-if [ "$1" == "--pull" ]; then
-  docker pull ghcr.io/pwittchen/varun.surf
-fi
-if [ "$1" == "--restart" ]; then
-  docker stop varun.surf
-  docker rm varun.surf
-  run_docker
-  echo "SUCCESS!"
-  exit 0
-fi
-if [ "$1" == "--reload" ]; then
-  docker stop varun.surf
-  docker rm varun.surf
-  docker pull ghcr.io/pwittchen/varun.surf
-  run_docker
-  echo "SUCCESS!"
-  exit 0
-fi
-if [ "$1" == "--ps" ]; then
-  docker ps
-fi
+
+echo "==> Waiting for nginx to discover new backend (DNS TTL: 5s)..."
+sleep 6
+
+echo "==> Stopping $CURRENT environment..."
+$COMPOSE_CMD stop "$CURRENT_CONTAINER"
+$COMPOSE_CMD rm -f "$CURRENT_CONTAINER"
+
+echo "==> Deployment complete: $NEXT is now live"

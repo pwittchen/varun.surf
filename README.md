@@ -69,14 +69,16 @@ and this action deploys the latest version of the app to the VPS.
 
 ## deployment
 
-On the VPS, you can use `deployment.sh` script, which is deployment helper script.
-Just copy it on the server, make it executable and set valid GitHub PAT (Personal Access Token) in the script.
+Deployment of the app is configured with the bash, docker, and docker compose scripts.
+With these scripts, we can perform zero-downtime (blue/green) deployment with nginx server as a proxy.
+To do that, follow the instructions below.
 
-To view all its functions, just type:
-
-```
-./deployment.sh --help
-```
+- Copy `deployment.sh` script and `docker-compose.yml`, `.env`, and `./nginx/nginx.conf` files to the single directory on the VPS.
+- In the `.env` file, configure the environment variables basing on the `.env.example` file.
+- Run `./deployment.sh prod` script to deploy the app with the nginx proxy.
+- Run the same command again to perform the update.
+- If you want to test the deployment locally, run `./deployment.sh dev` script.
+- To stop everything, run: `docker stop varun-app-blue-live varun-app-green-live varun-nginx`
 
 ## monitoring
 
