@@ -8,6 +8,70 @@
     const API_ENDPOINT = '/api/v1/spots';
     const AUTO_REFRESH_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 
+    // URL routing helpers
+    function normalizeCountryForUrl(country) {
+        // Convert country name to URL-safe format: lowercase, no spaces or special chars
+        return country.toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[^a-z]/g, '');
+    }
+
+    function getCountryFromUrl() {
+        // Extract country from URL pattern: /country/{countryName}
+        const pathParts = window.location.pathname.split('/');
+        const countryIndex = pathParts.indexOf('country');
+        if (countryIndex !== -1 && pathParts.length > countryIndex + 1) {
+            return pathParts[countryIndex + 1];
+        }
+        return null;
+    }
+
+    function findCountryByNormalizedName(normalizedName) {
+        // Find the actual country name from normalized URL name
+        for (const country of availableCountries) {
+            if (normalizeCountryForUrl(country) === normalizedName) {
+                return country;
+            }
+        }
+        return null;
+    }
+
+    function updateUrlForCountry(country) {
+        // Update browser URL without reloading the page
+        if (country === 'all') {
+            window.history.pushState({country: 'all'}, '', '/');
+        } else {
+            const normalizedCountry = normalizeCountryForUrl(country);
+            window.history.pushState({country: country}, '', `/country/${normalizedCountry}`);
+        }
+    }
+
+    function updatePageTitle(country) {
+        // Update page title with country name
+        if (country === 'all' || !country) {
+            document.title = 'VARUN.SURF - Kitesurfing Weather Forecast';
+        } else {
+            const translatedCountry = t(country.replace(/\s+/g, ''));
+            document.title = `${translatedCountry} - VARUN.SURF`;
+        }
+    }
+
+    function showInvalidCountryError(countryName) {
+        const spotsGrid = document.getElementById('spotsGrid');
+        updateSpotCounter(0);
+        spotsGrid.innerHTML = `
+            <div class="error-message">
+                <span class="error-icon">⚠️</span>
+                <div class="error-title">${t('invalidCountry')}</div>
+                <div class="error-description">
+                    ${t('invalidCountryDescription')}<br/>
+                    <br/>
+                    <strong>Invalid country: "${countryName}"</strong>
+                </div>
+            </div>
+        `;
+    }
+
     // Favorites management
     function getFavorites() {
         const favorites = localStorage.getItem('favoriteSpots');
@@ -93,11 +157,17 @@
             updateTheme(newTheme);
         });
 
-        // Make logo clickable to reload page
+        // Make logo clickable to go back to home with current country filter
         const headerLogo = document.getElementById('headerLogo');
         if (headerLogo) {
             headerLogo.addEventListener('click', () => {
-                window.location.reload();
+                const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+                if (savedCountry === 'all') {
+                    window.location.href = '/';
+                } else {
+                    const normalizedCountry = normalizeCountryForUrl(savedCountry);
+                    window.location.href = `/country/${normalizedCountry}`;
+                }
             });
         }
     }
@@ -115,8 +185,9 @@
         }
 
         function updateUITranslations() {
-            // Update page title
-            document.title = t('pageTitle');
+            // Update page title with current country
+            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+            updatePageTitle(savedCountry);
 
             // Update search placeholder
             const searchInput = document.getElementById('searchInput');
@@ -982,6 +1053,12 @@
                 // Save selected country to localStorage
                 localStorage.setItem('selectedCountry', country);
 
+                // Update URL
+                updateUrlForCountry(country);
+
+                // Update page title
+                updatePageTitle(country);
+
                 // Deselect favorites if changing country
                 if (showingFavorites) {
                     showingFavorites = false;
@@ -1831,17 +1908,52 @@
         // Load main sponsors
         renderMainSponsors();
 
-        // Check if we should show favorites first, before loading spots
-        const savedFavoritesState = localStorage.getItem('showingFavorites');
-        if (savedFavoritesState === 'true') {
-            // Favorites will be rendered by setupFavorites()
-            showingFavorites = true;
-        } else {
-            // Load saved country filter or default to 'all'
-            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-            renderSpots(savedCountry);
-        }
+        // Check for country in URL first
+        const urlCountry = getCountryFromUrl();
+        let countryToLoad = 'all';
 
-        // Start auto-refresh after initial load
-        startAutoRefresh();
+        if (urlCountry) {
+            // Wait for data to be loaded to validate country
+            fetchWeatherData().then(data => {
+                globalWeatherData = data;
+                populateCountryDropdown(data);
+
+                // Find the actual country name from URL
+                const actualCountry = findCountryByNormalizedName(urlCountry);
+
+                if (actualCountry) {
+                    // Valid country in URL
+                    countryToLoad = actualCountry;
+                    localStorage.setItem('selectedCountry', actualCountry);
+                    updatePageTitle(actualCountry);
+                    renderSpots(actualCountry, '', true);
+                } else {
+                    // Invalid country in URL
+                    showInvalidCountryError(urlCountry);
+                }
+
+                // Start auto-refresh after initial load
+                startAutoRefresh();
+            }).catch(error => {
+                console.error('Failed to load weather:', error.message);
+                showErrorMessage(error);
+            });
+        } else {
+            // No country in URL - check if we should show favorites or use saved/default country
+            const savedFavoritesState = localStorage.getItem('showingFavorites');
+            if (savedFavoritesState === 'true') {
+                // Favorites will be rendered by setupFavorites()
+                showingFavorites = true;
+            } else {
+                // Load saved country filter or default to 'all'
+                const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+                countryToLoad = savedCountry;
+                updateUrlForCountry(savedCountry);
+                updatePageTitle(savedCountry);
+                renderSpots(countryToLoad);
+            }
+
+            // Start auto-refresh after initial load
+            startAutoRefresh();
+        }
     });

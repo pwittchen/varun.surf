@@ -1447,20 +1447,33 @@
     }
 
     // Setup header navigation
+    function normalizeCountryForUrl(country) {
+        // Convert country name to URL-safe format: lowercase, no spaces or special chars
+        return country.toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[^a-z]/g, '');
+    }
+
     function setupHeaderNavigation() {
         const headerLogo = document.getElementById('headerLogo');
         const headerTitle = document.getElementById('headerTitle');
 
-        if (headerLogo) {
-            headerLogo.addEventListener('click', () => {
+        function navigateToHome() {
+            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+            if (savedCountry === 'all') {
                 window.location.href = '/';
-            });
+            } else {
+                const normalizedCountry = normalizeCountryForUrl(savedCountry);
+                window.location.href = `/country/${normalizedCountry}`;
+            }
+        }
+
+        if (headerLogo) {
+            headerLogo.addEventListener('click', navigateToHome);
         }
 
         if (headerTitle) {
-            headerTitle.addEventListener('click', () => {
-                window.location.href = '/';
-            });
+            headerTitle.addEventListener('click', navigateToHome);
         }
     }
 
