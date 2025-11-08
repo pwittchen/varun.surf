@@ -14,7 +14,11 @@ fi
 echo "==> Starting deployment"
 
 COMPOSE_FILE="docker-compose.${ENV}.yml"
-COMPOSE_CMD="docker compose -f $COMPOSE_FILE"
+if [[ "$ENV" == "prod" ]]; then
+  COMPOSE_FILE="/root/apps/varun.surf/docker-compose.${ENV}.yml"
+else
+  COMPOSE_FILE="docker-compose.${ENV}.yml"
+fi
 
 echo "==> Using configuration: $COMPOSE_FILE"
 
