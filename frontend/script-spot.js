@@ -535,7 +535,20 @@
 
         Object.keys(groupedByDay).forEach(dayKey => {
             const dayForecasts = groupedByDay[dayKey];
-            const firstForecast = dayForecasts[0];
+
+            // Filter to only show daytime hours (06:00 to 21:00)
+            const daytimeForecasts = dayForecasts.filter(forecast => {
+                if (!forecast.date) return false;
+                const time = forecast.date.split(' ')[4];
+                if (!time) return false;
+                const hour = parseInt(time.split(':')[0]);
+                return hour >= 6 && hour <= 21;
+            });
+
+            // Skip this day if no daytime forecasts
+            if (daytimeForecasts.length === 0) return;
+
+            const firstForecast = daytimeForecasts[0];
 
             // Format day label
             const dayLabel = formatDayLabel(firstForecast.date);
@@ -545,7 +558,7 @@
 
             // Time row - with hour cells
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 const time = forecast.date ? forecast.date.split(' ')[4] : '';
                 windguruHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
             });
@@ -553,7 +566,7 @@
 
             // Wind speed row
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 let windClass = '';
                 if (forecast.wind < 12) windClass = 'wind-weak';
                 else if (forecast.wind >= 12 && forecast.wind <= 18) windClass = 'wind-moderate';
@@ -566,7 +579,7 @@
 
             // Gust speed row
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 let windClass = '';
                 if (forecast.gusts < 12) windClass = 'wind-weak';
                 else if (forecast.gusts >= 12 && forecast.gusts <= 18) windClass = 'wind-moderate';
@@ -579,7 +592,7 @@
 
             // Direction row
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 const windArrow = getWindArrow(forecast.direction);
                 windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
             });
@@ -587,7 +600,7 @@
 
             // Temperature row
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 const tempClass = forecast.temp >= 18 ? 'temp-positive' : 'temp-negative';
                 windguruHtml += `<div class="windguru-cell ${tempClass}">${forecast.temp}°</div>`;
             });
@@ -595,7 +608,7 @@
 
             // Precipitation row
             windguruHtml += `<div class="windguru-data-row">`;
-            dayForecasts.forEach(forecast => {
+            daytimeForecasts.forEach(forecast => {
                 const precipClass = forecast.precipitation === 0 ? 'precipitation-none' : 'precipitation';
                 windguruHtml += `<div class="windguru-cell ${precipClass}">${forecast.precipitation}</div>`;
             });
@@ -604,7 +617,7 @@
             // Wave row (if applicable)
             if (hasWaveData) {
                 windguruHtml += `<div class="windguru-data-row">`;
-                dayForecasts.forEach(forecast => {
+                daytimeForecasts.forEach(forecast => {
                     let waveClass = '';
                     let waveText = '-';
                     if (forecast.wave !== undefined) {
@@ -833,7 +846,16 @@
             let previousDay = null;
             let dayColorIndex = 0;
 
-            forecastData.forEach(day => {
+            // Filter to only show daytime hours (06:00 to 21:00)
+            const daytimeForecasts = forecastData.filter(day => {
+                if (!day.date) return false;
+                const time = day.date.split(' ')[4];
+                if (!time) return false;
+                const hour = parseInt(time.split(':')[0]);
+                return hour >= 6 && hour <= 21;
+            });
+
+            daytimeForecasts.forEach(day => {
                 let windClass = '';
                 let windTextClass = '';
 
