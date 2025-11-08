@@ -62,6 +62,8 @@ const translations = {
         invalidSpotId: "Invalid or missing spot identifier.",
         spotNotFound: "We couldn't find this spot. Double-check the link or pick another location.",
         errorLoadingSpot: "Unable to load spot information. Please try again shortly.",
+        invalidCountry: "Invalid country in URL.",
+        invalidCountryDescription: "The country you're trying to access doesn't exist. Please check the URL or select a country from the dropdown.",
 
         // Error messages
         errorNoSpotsTitle: "No Spots Found",
@@ -246,6 +248,8 @@ const translations = {
         invalidSpotId: "Nieprawidłowy lub brakujący identyfikator spotu.",
         spotNotFound: "Nie znaleziono tego spotu. Sprawdź link lub wybierz inny spot.",
         errorLoadingSpot: "Nie można załadować informacji o spocie. Spróbuj ponownie za chwilę.",
+        invalidCountry: "Nieprawidłowy kraj w adresie URL.",
+        invalidCountryDescription: "Kraj, do którego próbujesz uzyskać dostęp, nie istnieje. Sprawdź URL lub wybierz kraj z menu rozwijanego.",
 
         // Error messages
         errorNoSpotsTitle: "Nie znaleziono spotów",
