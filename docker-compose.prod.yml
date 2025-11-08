@@ -35,7 +35,6 @@ services:
     profiles: ["blue-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=blue
-      - OPEN_AI_API_KEY=${OPEN_AI_API_KEY}
 
   varun-app-green-live:
     image: ghcr.io/pwittchen/varun.surf:latest
