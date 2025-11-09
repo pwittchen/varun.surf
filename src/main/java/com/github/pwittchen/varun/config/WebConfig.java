@@ -42,4 +42,18 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> starredRouter() {
+        return RouterFunctions.route(
+                GET("/starred"),
+                _ -> {
+                    Resource indexHtml = new ClassPathResource("static/index.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(indexHtml);
+                }
+        );
+    }
 }
