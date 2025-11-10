@@ -320,10 +320,41 @@ The AI forecast analysis is disabled by default because:
 
 12. **Generated Frontend Assets**: Do not edit `.html`, `.css`, or `.js` files inside `src/main/java/resources`; they are minified outputs generated during the build process.
 
+## Adding New Kite Spots
+
+When the user requests to add a new kite spot, use the `@new-kite-spot` reference which points to `prompts/new-kite-spot.md`. This file contains:
+- Complete JSON schema for spots
+- Field-by-field guidelines
+- Research tips for finding Windguru IDs and accurate data
+- Polish translation requirements
+- Validation checklist
+
+**Usage Example**:
+```
+User: @new-kite-spot Lago Di Garda
+```
+
+**Process**:
+1. Read `prompts/new-kite-spot.md` for the complete schema and requirements
+2. Research the spot (Windguru URL, coordinates, conditions)
+3. Generate valid JSON following the exact schema
+4. Validate all URLs are real and accessible
+5. Include both English (`spotInfo`) and Polish (`spotInfoPL`) translations
+6. Add the new spot to `src/main/resources/spots.json`
+7. Test the application to ensure it loads correctly
+
+**Important**:
+- All fields must be filled (use "" for optional URLs if unavailable)
+- Windguru URLs must be real (search windguru.cz for actual station IDs)
+- Location URLs should point to the exact launch area
+- Water temperature and best wind directions must be accurate
+- Always provide Polish translations in `spotInfoPL`
+
 ## Related Documentation
 
 - **README.md**: User-facing documentation, build instructions, deployment
 - **ARCH.md**: Detailed ASCII architecture diagrams and system flow
+- **prompts/new-kite-spot.md**: Template and guidelines for adding new kite spots
 
 ## Contact & Contributing
 

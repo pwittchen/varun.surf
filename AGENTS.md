@@ -655,11 +655,105 @@ Use `StepVerifier` from `reactor-test` for testing reactive types.
 **HTTP Mocking**:
 Use `MockWebServer` from OkHttp for mocking external API calls.
 
+## Adding New Kite Spots
+
+When the user requests to add a new kite spot, use the `@new-kite-spot` reference which points to `prompts/new-kite-spot.md`. This provides a complete workflow for generating accurate spot data.
+
+**Reference File**: `prompts/new-kite-spot.md`
+
+This file contains:
+- Complete JSON schema with all required fields
+- Field-by-field guidelines (type, bestWind, hazards, etc.)
+- Research tips for finding real Windguru IDs and coordinates
+- Polish translation requirements (`spotInfoPL`)
+- URL validation checklist
+- Common mistakes to avoid
+
+**Usage Example**:
+```
+User: @new-kite-spot Lago Di Garda
+```
+
+**Workflow**:
+1. **Read the template**: Load `prompts/new-kite-spot.md` to understand the schema
+2. **Research the spot**:
+   - Search windguru.cz for the actual station ID (e.g., windguru.cz/12345)
+   - Find coordinates on Google Maps (exact launch area)
+   - Research local conditions (wind directions, water type, hazards)
+   - Look up typical water temperature range for the region
+3. **Generate JSON**:
+   - Follow the exact schema structure
+   - Fill all required fields (no empty strings except for optional URLs)
+   - Include accurate `spotInfo` (English) and `spotInfoPL` (Polish translation)
+4. **Validate**:
+   - Ensure all URLs are real and accessible
+   - Verify Windguru URL points to a real station
+   - Check coordinates are correct
+   - Validate JSON syntax
+5. **Add to spots.json**:
+   - Open `src/main/resources/spots.json`
+   - Append the new spot to the JSON array
+   - Ensure proper JSON formatting (commas, brackets)
+6. **Test**:
+   - Run `./build.sh --run` or `./gradlew bootRun`
+   - Open http://localhost:8080
+   - Verify the new spot appears with forecast data
+
+**Critical Requirements**:
+- **Real Windguru URLs**: Don't invent IDs - search windguru.cz to find actual stations
+- **Accurate coordinates**: locationUrl must point to the launch area (not city center)
+- **Complete translations**: Always include Polish translations in `spotInfoPL`
+- **Valid JSON**: Test with `cat spots.json | jq .` before running
+- **Realistic data**: Water temp, best wind directions, and hazards must be accurate
+
+**JSON Schema Reference**:
+```json
+{
+  "name": "Spot Name",
+  "country": "Country Name",
+  "windguruUrl": "https://www.windguru.cz/[ID]",
+  "windfinderUrl": "https://www.windfinder.com/forecast/[spot-name]",
+  "icmUrl": "",
+  "webcamUrl": "",
+  "locationUrl": "https://maps.app.goo.gl/[shortcode]",
+  "spotInfo": {
+    "type": "Lagoon/Beach/Bay/etc.",
+    "bestWind": "N, NE, E, SE, S, SW, W, NW",
+    "waterTemp": "XX-XX°C",
+    "experience": "Beginner/Intermediate/Advanced",
+    "launch": "Sandy Beach/etc.",
+    "hazards": "Rocks/Currents/etc.",
+    "season": "Month-Month",
+    "description": "2-3 sentence description."
+  },
+  "spotInfoPL": {
+    "type": "[Polish translation]",
+    "bestWind": "[same directions]",
+    "waterTemp": "[same range]",
+    "experience": "[Polish translation]",
+    "launch": "[Polish translation]",
+    "hazards": "[Polish translation]",
+    "season": "[Polish months]",
+    "description": "[Polish translation]"
+  }
+}
+```
+
+**Common Translation Examples**:
+- "Lagoon" → "Laguna"
+- "Beginner" → "Początkujący"
+- "Intermediate" → "Średniozaawansowany"
+- "Advanced" → "Zaawansowany"
+- "Sandy Beach" → "Plaża piaszczysta"
+- "Rocky Shore" → "Skaliste wybrzeże"
+- "May-September" → "Maj-Wrzesień"
+
 ## Related Documentation
 
 - **README.md**: User-facing documentation, project description, build instructions
 - **ARCH.md**: Detailed ASCII architecture diagrams, system flow visualization
 - **CLAUDE.md**: Context documentation for Claude AI assistant
+- **prompts/new-kite-spot.md**: Template and guidelines for adding new kite spots
 
 ## Project Maintenance
 
@@ -679,9 +773,10 @@ Use `MockWebServer` from OkHttp for mocking external API calls.
 4. Add unit tests for new strategy
 
 **Add a new kite spot**:
-1. Edit `src/main/resources/spots.json`
-2. Add spot object with required fields (id, wgId, name, country, urls, spotInfo)
-3. Restart application
+1. Use `@new-kite-spot [spot name]` reference (see "Adding New Kite Spots" section below)
+2. Follow the schema in `prompts/new-kite-spot.md`
+3. Add generated JSON to `src/main/resources/spots.json`
+4. Restart application and test
 
 **Enable AI analysis**:
 1. Set `app.feature.ai.forecast.analysis.enabled: true` in `application.yml`
