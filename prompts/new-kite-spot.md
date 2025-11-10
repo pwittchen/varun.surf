@@ -6,7 +6,7 @@
 
 ```bash
 # Generate spots for a specific region
-claude "Generate 10 kitesurfing spots for Greek Islands following the schema in SPOT_GENERATOR_PROMPT.md"
+claude "Generate 10 kitesurfing spots for Greek Islands following the schema in new-kite-spot.md"
 
 # Or for different regions
 claude "Generate 5 spots for Vietnam following SPOT_GENERATOR_PROMPT.md"
@@ -41,11 +41,12 @@ You are a kitesurfing spot data researcher. Generate **[NUMBER]** kitesurfing sp
 ### Requirements
 
 1. **All fields must be filled** - no null or empty strings (use "" for optional URLs if unavailable)
-2. **Real, accurate data** - use actual Windguru URLs, real coordinates, and factual spot information
-3. **Valid URLs only** - ensure Windguru, Windfinder, and location URLs are real and accessible
-4. **Accurate coordinates** - locationUrl should point to the actual spot launch area
-5. **Both English and Polish** - provide spotInfo (English) and spotInfoPL (Polish translations)
-6. **No LLM context comments** - avoid adding llmComment unless the spot has unique AI-relevant context
+2. **Real, accurate data** - use actual Windguru URLs and factual spot information
+3. **Valid Windguru URLs only** - ensure Windguru URLs are real and accessible (verify on windguru.cz)
+4. **Leave location URLs blank** - set locationUrl to "" (will be added manually later with correct coordinates)
+5. **Leave webcam URLs blank** - set webcamUrl to "" (will be added manually later if available)
+6. **Both English and Polish** - provide spotInfo (English) and spotInfoPL (Polish translations)
+7. **No LLM context comments** - avoid adding llmComment unless the spot has unique AI-relevant context
 
 ### JSON Schema
 
@@ -55,9 +56,9 @@ You are a kitesurfing spot data researcher. Generate **[NUMBER]** kitesurfing sp
   "country": "Country Name",
   "windguruUrl": "https://www.windguru.cz/[ID]",
   "windfinderUrl": "https://www.windfinder.com/forecast/[spot-name]",
-  "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=XXX&col=XXX&lang=pl",
-  "webcamUrl": "https://example.com/webcam",
-  "locationUrl": "https://maps.app.goo.gl/[shortcode]",
+  "icmUrl": "",
+  "webcamUrl": "",
+  "locationUrl": "",
   "spotInfo": {
     "type": "Lagoon/Beach/Bay/Open Sea/Wave spot/etc.",
     "bestWind": "N, NE, E, SE, S, SW, W, NW (pick best directions)",
@@ -86,11 +87,11 @@ You are a kitesurfing spot data researcher. Generate **[NUMBER]** kitesurfing sp
 #### Core Fields
 - **name**: Official spot name (city/beach name)
 - **country**: Full country name
-- **windguruUrl**: Search Windguru for the spot and use the actual station URL
+- **windguruUrl**: Search Windguru for the spot and use the actual station URL (REQUIRED - verify on windguru.cz)
 - **windfinderUrl**: Use Windfinder's URL format (all lowercase, hyphens for spaces)
-- **icmUrl**: Only for Polish spots (ICM model), use "" for others
-- **webcamUrl**: Real webcam URL if available, otherwise ""
-- **locationUrl**: Google Maps shortened URL (maps.app.goo.gl format preferred)
+- **icmUrl**: Only for Polish spots (ICM model), use "" for all other countries
+- **webcamUrl**: ALWAYS set to "" (do not generate - will be added manually later)
+- **locationUrl**: ALWAYS set to "" (do not generate - will be added manually later with correct coordinates)
 
 #### spotInfo Fields
 - **type**: Water conditions (Lagoon, flat water, choppy, waves, reef, etc.)
@@ -135,17 +136,19 @@ Return only a valid JSON array of spots (no markdown code blocks, no extra text)
 
 ### Research Tips
 
-1. **Find Windguru IDs**: Search windguru.cz for "[spot name] kite" or "[city name] wind"
-2. **Verify coordinates**: Use Google Maps to get exact launch coordinates
-3. **Check local sources**: Look for kitesurfing schools, forums, or local guides for accurate spot info
-4. **Validate wind directions**: Consider geography (coastline orientation, thermal winds)
-5. **Seasonal accuracy**: Research typical kitesurfing season for the region
+1. **Find Windguru IDs**: Search windguru.cz for "[spot name] kite" or "[city name] wind" - VERIFY the URL exists!
+2. **Check local sources**: Look for kitesurfing schools, forums, or local guides for accurate spot info
+3. **Validate wind directions**: Consider geography (coastline orientation, thermal winds)
+4. **Seasonal accuracy**: Research typical kitesurfing season for the region
+5. **Leave URLs blank**: Set locationUrl and webcamUrl to "" - they will be added manually later
 
 ### Quality Checklist
 
-- [ ] All URLs are real and accessible
-- [ ] Windguru URLs point to actual stations near the spot
-- [ ] Location URLs point to the correct coordinates
+- [ ] Windguru URLs are real and verified (search on windguru.cz before adding)
+- [ ] Windfinder URLs follow correct format (lowercase, hyphens)
+- [ ] webcamUrl is set to "" (do not generate)
+- [ ] locationUrl is set to "" (do not generate)
+- [ ] icmUrl is "" for all non-Polish spots
 - [ ] Water temperature ranges are realistic for the region
 - [ ] Best wind directions match the coastline geography
 - [ ] Hazards are accurate and relevant
@@ -157,11 +160,13 @@ Return only a valid JSON array of spots (no markdown code blocks, no extra text)
 
 ## Post-Generation Steps
 
-1. **Validate JSON**: Use a JSON validator (https://jsonlint.com)
-2. **Verify URLs**: Click through Windguru and Google Maps links
+1. **Validate JSON**: Use a JSON validator or `cat spots.json | jq .`
+2. **Verify Windguru URLs**: Click through to ensure they're real stations
 3. **Cross-check facts**: Verify spot details with kitesurfing forums/guides
-4. **Test in app**: Add spots to spots.json and run `./build.sh --run`
-5. **Check frontend**: Ensure new spots display correctly with forecasts
+4. **Add location URLs manually**: Find exact coordinates on Google Maps and add shortened URLs
+5. **Add webcam URLs manually**: Search for webcams and add if available
+6. **Test in app**: Add spots to spots.json and run `./build.sh --run`
+7. **Check frontend**: Ensure new spots display correctly with forecasts
 
 ## Example Workflow
 
@@ -194,13 +199,13 @@ open http://localhost:8080
 
 ## Common Mistakes to Avoid
 
-1. **Fake Windguru IDs**: Don't invent URLs - search windguru.cz for real stations
-2. **Wrong coordinates**: Ensure locationUrl points to the actual launch area
+1. **Fake Windguru IDs**: Don't invent URLs - search windguru.cz for real stations (MOST IMPORTANT)
+2. **Generating location/webcam URLs**: ALWAYS set locationUrl and webcamUrl to "" - these were frequently wrong in the past
 3. **Generic descriptions**: Make descriptions specific to the spot
-4. **Missing Polish translations**: Don't forget spotInfoPL
-5. **Invalid JSON**: Always validate before merging
+4. **Missing Polish translations**: Don't forget spotInfoPL (all fields must be translated)
+5. **Invalid JSON**: Always validate before merging (use jq or jsonlint)
 6. **Inconsistent formatting**: Follow the exact schema structure
-7. **Empty required fields**: Fill all fields (use "" for optional URLs)
+7. **Wrong icmUrl for non-Polish spots**: Set to "" for all countries except Poland
 
 ## Tips for Different Regions
 
@@ -230,5 +235,13 @@ open http://localhost:8080
 
 ---
 
-**Last updated**: 2025-01-06
+**Last updated**: 2025-11-10
 **Compatible with**: varun.surf backend (Spring Boot, spots.json schema)
+
+## Changelog
+
+**2025-11-10**:
+- Removed requirement to generate `locationUrl` (Google Maps) - frequently generated incorrect URLs
+- Removed requirement to generate `webcamUrl` - frequently generated incorrect URLs
+- Both fields should now always be set to "" and added manually later
+- Updated all sections to reflect this change (Requirements, Schema, Field Guidelines, Research Tips, Quality Checklist, Common Mistakes)
