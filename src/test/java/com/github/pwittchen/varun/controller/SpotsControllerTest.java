@@ -83,18 +83,6 @@ class SpotsControllerTest {
     }
 
     @Test
-    void shouldReturnHealthStatusUp() {
-        Mono<Map<String, String>> result = controller.health();
-
-        StepVerifier.create(result)
-                .assertNext(health -> {
-                    assertThat(health).isNotNull();
-                    assertThat(health).containsEntry("status", "UP");
-                })
-                .verifyComplete();
-    }
-
-    @Test
     void shouldReturnSpotsWithForecasts() {
         List<Spot> mockSpots = createMockSpotsWithForecasts();
         when(aggregatorService.getSpots()).thenReturn(mockSpots);

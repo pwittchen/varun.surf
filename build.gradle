@@ -37,6 +37,12 @@ tasks.withType(JavaExec).configureEach {
     jvmArgs '--enable-preview'
 }
 
+processResources {
+    filesMatching('application.yml') {
+        expand(project.properties)
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }

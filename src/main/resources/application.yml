@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: varun.surf
+    version: ${version}
   ai:
     openai:
       api-key: YOUR_API_KEY

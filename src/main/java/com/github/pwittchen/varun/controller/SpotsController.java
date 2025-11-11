@@ -45,9 +45,4 @@ public class SpotsController {
                 .defaultIfEmpty(ResponseEntity.notFound().build())
                 .doOnSuccess(_ -> aggregatorService.fetchForecastsForAllModels(id));
     }
-
-    @GetMapping("health")
-    public Mono<Map<String, String>> health() {
-        return Mono.just(Map.of("status", "UP"));
-    }
 }
