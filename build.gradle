@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.pwittchen'
-version = getVersionFromGitTag()
+version = project.hasProperty('version') && project.version != 'unspecified' ? project.version : getVersionFromGitTag()
 description = 'varun.surf'
 
 static def getVersionFromGitTag() {

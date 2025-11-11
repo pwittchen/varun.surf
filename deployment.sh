@@ -13,6 +13,10 @@ fi
 
 echo "==> Starting deployment"
 
+# Get version from git tag
+export VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1-SNAPSHOT')
+echo "==> Version: $VERSION"
+
 COMPOSE_FILE="docker-compose.${ENV}.yml"
 if [[ "$ENV" == "prod" ]]; then
   COMPOSE_FILE="/root/apps/varun.surf/docker-compose.${ENV}.yml"
@@ -21,6 +25,9 @@ else
 fi
 
 echo "==> Using configuration: $COMPOSE_FILE"
+
+# Set docker compose command
+COMPOSE_CMD="docker compose -f $COMPOSE_FILE"
 
 # Pull the latest docker image (prod only)
 if [[ "$ENV" == "prod" ]]; then

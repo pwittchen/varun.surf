@@ -14,6 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Get version from git tag
+        id: version
+        run: echo "VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1-SNAPSHOT')" >> $GITHUB_OUTPUT
 
       - uses: docker/login-action@v3
         with:
@@ -21,6 +27,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker build -t ghcr.io/${{ github.repository }}:latest .
+      - run: docker build --build-arg VERSION=${{ steps.version.outputs.VERSION }} -t ghcr.io/${{ github.repository }}:latest .
 
       - run: docker push ghcr.io/${{ github.repository }}:latest
