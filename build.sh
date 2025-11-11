@@ -174,12 +174,59 @@ cp spot.html src/main/resources/static/spot.html
 rm spot.html
 echo "✅  spot.html was built successfully"
 
+# Build status.html (status page)
+echo "🚧  building status.html..."
+cp frontend/status.html status.temp.html
+
+# Flatten the datafast script tag for status.html
+echo "Flattening multiline script tags in status.html..."
+perl -0777 -pe 's/<script\s+defer\s+data-website-id="[^"]*"\s+data-domain="[^"]*"\s+src="[^"]*">\s*<\/script>/<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU" data-domain="varun.surf" src="https:\/\/datafa.st\/js\/script.js"><\/script>/gs' status.temp.html > status.temp3.html
+mv status.temp3.html status.temp.html
+
+# Extract and temporarily remove the datafast script for status.html
+echo "Protecting external scripts in status.html..."
+perl -i.bak -pe 's|<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"[^>]*></script>|\nDATAFASTPLACEHOLDER_STATUS|g' status.temp.html
+
+# Inline CSS for status.html
+if [ -f frontend/styles.css ]; then
+    echo "Inlining CSS into status.html..."
+    sed '/<link rel="stylesheet" href="styles.css">/c\
+CSSPLACEHOLDER_STATUS' status.temp.html > status.temp2.html
+    awk '/CSSPLACEHOLDER_STATUS/{system("echo \"    <style>\"; cat frontend/styles.css; echo \"    </style>\"");next}1' status.temp2.html > status.temp.html
+    rm status.temp2.html
+    echo "✅  CSS inlined successfully into status.html"
+fi
+
+# Restore the datafast script for status.html
+echo "Restoring external scripts in status.html..."
+sed -i.bak2 "s|DATAFASTPLACEHOLDER_STATUS|$(cat datafast.tmp)|g" status.temp.html
+
+# Minify status.html
+echo "Minifying status.html..."
+npx html-minifier-terser status.temp.html -o status.min.html \
+  --collapse-whitespace \
+  --remove-comments \
+  --minify-css true \
+  --minify-js true \
+  --collapse-boolean-attributes \
+  --remove-attribute-quotes \
+  --remove-redundant-attributes \
+  --remove-script-type-attributes \
+  --remove-style-link-type-attributes \
+  --use-short-doctype
+perl -pe 's/>\s+</></g' status.min.html | tr -d '\n' > status.html
+
+cp status.html src/main/resources/static/status.html
+rm status.html status.min.html status.temp.html
+echo "✅  status.html was built successfully"
+
 echo "✅  frontend was built successfully"
 
 # Clean up temporary frontend files
 echo "Cleaning up temporary files..."
 rm -f index.temp.html index.temp2.html index.min.html index.html index.temp.html.bak index.temp.html.bak2 index.temp.html.bak4 index.html.bak3 datafast.tmp frontend/index.html.bak frontend/index.html.bak2
 rm -f spot.temp.html spot.temp2.html spot.min.html spot.html spot.temp.html.bak spot.temp.html.bak2 spot.html.bak3 frontend/spot.html.bak frontend/spot.html.bak2
+rm -f status.temp.html status.temp2.html status.temp3.html status.min.html status.html status.temp.html.bak status.temp.html.bak2 frontend/status.html.bak
 echo "✅  temporary files cleaned up"
 
 echo "🚧  starting backend build..."
