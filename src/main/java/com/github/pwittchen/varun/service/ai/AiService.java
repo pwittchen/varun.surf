@@ -2,7 +2,6 @@ package com.github.pwittchen.varun.service.ai;
 
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.google.gson.Gson;
 import org.springframework.ai.chat.client.ChatClient;
 import reactor.core.publisher.Mono;
 
@@ -13,11 +12,9 @@ import java.util.stream.Collectors;
 
 public abstract class AiService {
     private final ChatClient chatClient;
-    private final Gson gson;
 
-    public AiService(ChatClient chatClient, Gson gson) {
+    public AiService(ChatClient chatClient) {
         this.chatClient = chatClient;
-        this.gson = gson;
     }
 
     public Mono<String> fetchAiAnalysis(Spot spot) {

@@ -3,7 +3,6 @@ package com.github.pwittchen.varun.service.ai;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +15,11 @@ import reactor.test.StepVerifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AiServicePlTest {
@@ -32,13 +33,11 @@ class AiServicePlTest {
     @Mock
     private ChatClient.StreamResponseSpec streamSpec;
 
-    private Gson gson;
     private AiServicePl aiServicePl;
 
     @BeforeEach
     void setUp() {
-        gson = new Gson();
-        aiServicePl = new AiServicePl(chatClient, gson);
+        aiServicePl = new AiServicePl(chatClient);
     }
 
     @Test

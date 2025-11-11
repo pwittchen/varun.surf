@@ -41,8 +41,8 @@ public class AiServicePl extends AiService {
 
     private static final String PROMPT_PART_ADDITIONAL_CONTEXT = "\n\nDODATKOWY KONTEKST SPECYFICZNY DLA DANEGO SPOTU:\n%s\n";
 
-    public AiServicePl(ChatClient chatClient, Gson gson) {
-        super(chatClient, gson);
+    public AiServicePl(ChatClient chatClient) {
+        super(chatClient);
     }
 
     @Override

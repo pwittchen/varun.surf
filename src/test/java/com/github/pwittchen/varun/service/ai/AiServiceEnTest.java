@@ -16,9 +16,11 @@ import reactor.test.StepVerifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AiServiceEnTest {
@@ -32,13 +34,11 @@ class AiServiceEnTest {
     @Mock
     private ChatClient.StreamResponseSpec streamSpec;
 
-    private Gson gson;
     private AiServiceEn aiServiceEn;
 
     @BeforeEach
     void setUp() {
-        gson = new Gson();
-        aiServiceEn = new AiServiceEn(chatClient, gson);
+        aiServiceEn = new AiServiceEn(chatClient);
     }
 
     @Test

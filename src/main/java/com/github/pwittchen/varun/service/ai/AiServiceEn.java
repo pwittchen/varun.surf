@@ -41,8 +41,8 @@ public class AiServiceEn extends AiService {
 
     private static final String PROMPT_PART_ADDITIONAL_CONTEXT = "\n\nADDITIONAL SPOT-SPECIFIC CONTEXT:\n%s\n";
 
-    public AiServiceEn(ChatClient chatClient, Gson gson) {
-        super(chatClient, gson);
+    public AiServiceEn(ChatClient chatClient) {
+        super(chatClient);
     }
 
     @Override
