@@ -2666,15 +2666,70 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     padding: 20px 0;
 }
 
+.status-page .main-content {
+    margin-top: 0;
+}
+
+.main-content-status {
+    margin-top: 0 !important;
+}
+
 .status-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
+/* Status Page Header */
+.status-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.status-page-header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.status-page-header-content:hover .status-page-logo,
+.status-page-header-content:hover .status-page-title span {
+    opacity: 0.8;
+}
+
+.status-page-logo {
+    height: 32px;
+    width: auto;
+    transition: opacity 0.3s ease;
+}
+
+.status-page-title {
+    font-size: 2.8rem;
+    font-weight: 100;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.status-page-title span {
+    transition: opacity 0.3s ease;
+}
+
+.status-theme-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .status-container h2 {
     color: var(--text-primary);
-    font-size: 2rem;
+    font-size: 1.5rem;
+    font-weight: 100;
     margin-bottom: 30px;
     text-align: center;
 }
