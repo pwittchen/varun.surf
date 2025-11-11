@@ -56,4 +56,18 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> statusRouter() {
+        return RouterFunctions.route(
+                GET("/status"),
+                _ -> {
+                    Resource statusHtml = new ClassPathResource("static/status.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(statusHtml);
+                }
+        );
+    }
 }

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Status - VARUN.SURF</title>
+    <meta name="description" content="System status and uptime information for VARUN.SURF - kitesurfing weather forecast dashboard">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cstyle%3Epath%7Bfill:%231a1a1a%7D@media(prefers-color-scheme:dark)%7Bpath%7Bfill:%23f5f5f5%7D%7D%3C/style%3E%3Cpath d='M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- FIXED HEADER -->
+    <div class="fixed-header">
+        <div class="header-content">
+            <img src="/logo.png" alt="VARUN.SURF Logo" class="header-logo" id="headerLogo">
+            <div class="header-controls" id="headerControls">
+                <button class="theme-toggle" id="themeToggle">
+                    <svg class="icon theme-icon" id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>
+                    </svg>
+                </button>
+            </div>
+            <h1 class="header-title"><span onclick="window.location.href='/'">VARUN.SURF</span></h1>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container">
+
+        <main class="status-page">
+            <div class="status-container">
+                <h2>System Status</h2>
+
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-indicator" id="status-indicator">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Loading...</span>
+                        </div>
+                        <div class="status-time" id="last-updated">
+                            Last updated: -
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <h3>Service Information</h3>
+                    <div class="status-info-grid">
+                        <div class="status-info-item">
+                            <div class="status-info-label">Version</div>
+                            <div class="status-info-value" id="version">-</div>
+                        </div>
+                        <div class="status-info-item">
+                            <div class="status-info-label">Uptime</div>
+                            <div class="status-info-value" id="uptime">-</div>
+                        </div>
+                        <div class="status-info-item">
+                            <div class="status-info-label">Started</div>
+                            <div class="status-info-value" id="start-time">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <h3>API Endpoints</h3>
+                    <div class="status-endpoints">
+                        <div class="status-endpoint" data-endpoint="/api/v1/health">
+                            <div class="status-endpoint-info">
+                                <span class="status-endpoint-dot"></span>
+                                <span class="status-endpoint-name">/api/v1/health</span>
+                            </div>
+                            <span class="status-endpoint-status">checking...</span>
+                        </div>
+                        <div class="status-endpoint" data-endpoint="/api/v1/spots">
+                            <div class="status-endpoint-info">
+                                <span class="status-endpoint-dot"></span>
+                                <span class="status-endpoint-name">/api/v1/spots</span>
+                            </div>
+                            <span class="status-endpoint-status">checking...</span>
+                        </div>
+                        <div class="status-endpoint" data-endpoint="/api/v1/version">
+                            <div class="status-endpoint-info">
+                                <span class="status-endpoint-dot"></span>
+                                <span class="status-endpoint-name">/api/v1/version</span>
+                            </div>
+                            <span class="status-endpoint-status">checking...</span>
+                        </div>
+                        <div class="status-endpoint" data-endpoint="/api/v1/uptime">
+                            <div class="status-endpoint-info">
+                                <span class="status-endpoint-dot"></span>
+                                <span class="status-endpoint-name">/api/v1/uptime</span>
+                            </div>
+                            <span class="status-endpoint-status">checking...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-actions">
+                    <button id="refresh-status" class="btn btn-primary">
+                        Refresh Status
+                    </button>
+                    <a href="/" class="btn btn-secondary">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-disclaimer">weather forecast and real-time wind conditions dashboard for kitesurfers</p>
+                <p class="footer-link">&copy; 2025 <a href="https://varun.surf">varun.surf</a> • <a
+                        href="https://github.com/pwittchen/varun.surf">open-source</a> • made in 🇵🇱 by <a
+                        href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • <a href="https://github.com/pwittchen/varun.surf/releases">changelog</a> • <a href="/status">status</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+
+        function updateTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            if (theme === 'light') {
+                themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5Z"/>';
+            } else {
+                themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Set initial theme
+        updateTheme(savedTheme);
+
+        // Theme toggle event
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            updateTheme(newTheme);
+        });
+
+        // Status page functionality
+        async function fetchStatus() {
+            try {
+                const response = await fetch('/api/v1/status');
+                if (!response.ok) throw new Error('Failed to fetch status');
+
+                const data = await response.json();
+
+                // Update status indicator
+                const indicator = document.getElementById('status-indicator');
+                const statusDot = indicator.querySelector('.status-dot');
+                const statusText = indicator.querySelector('.status-text');
+
+                if (data.status === 'UP') {
+                    statusDot.className = 'status-dot status-dot-up';
+                    statusText.textContent = 'All Systems Operational';
+                } else {
+                    statusDot.className = 'status-dot status-dot-down';
+                    statusText.textContent = 'System Issues Detected';
+                }
+
+                // Update service information
+                document.getElementById('version').textContent = data.version || 'unknown';
+                document.getElementById('uptime').textContent = data.uptime || '-';
+
+                if (data.startTime) {
+                    const startDate = new Date(data.startTime);
+                    document.getElementById('start-time').textContent = startDate.toLocaleString();
+                }
+
+                // Update last updated time
+                document.getElementById('last-updated').textContent =
+                    'Last updated: ' + new Date().toLocaleTimeString();
+
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                const indicator = document.getElementById('status-indicator');
+                const statusDot = indicator.querySelector('.status-dot');
+                const statusText = indicator.querySelector('.status-text');
+                statusDot.className = 'status-dot status-dot-down';
+                statusText.textContent = 'Unable to Connect';
+            }
+        }
+
+        async function checkEndpoint(endpoint) {
+            const endpointEl = document.querySelector(`[data-endpoint="${endpoint}"]`);
+            const statusSpan = endpointEl.querySelector('.status-endpoint-status');
+            const dotEl = endpointEl.querySelector('.status-endpoint-dot');
+
+            try {
+                const response = await fetch(endpoint);
+                if (response.ok) {
+                    statusSpan.textContent = 'operational';
+                    dotEl.className = 'status-endpoint-dot status-endpoint-dot-up';
+                } else {
+                    statusSpan.textContent = `error (${response.status})`;
+                    dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
+                }
+            } catch (error) {
+                statusSpan.textContent = 'unreachable';
+                dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
+            }
+        }
+
+        async function checkAllEndpoints() {
+            const endpoints = ['/api/v1/health', '/api/v1/spots', '/api/v1/version', '/api/v1/uptime'];
+            await Promise.all(endpoints.map(checkEndpoint));
+        }
+
+        async function refreshStatus() {
+            await fetchStatus();
+            await checkAllEndpoints();
+        }
+
+        // Initial load
+        refreshStatus();
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshStatus, 30000);
+
+        // Manual refresh button
+        document.getElementById('refresh-status').addEventListener('click', refreshStatus);
+    </script>
+</body>
+</html>

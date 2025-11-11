@@ -2660,3 +2660,247 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: block !important;
     }
 }
+
+/* Status Page Styles */
+.status-page {
+    padding: 20px 0;
+}
+
+.status-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.status-container h2 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.status-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.status-card h3 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    margin-top: 0;
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #6c757d;
+    position: relative;
+}
+
+.status-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.status-dot-up {
+    background: #28a745;
+}
+
+.status-dot-up::before {
+    background: rgba(40, 167, 69, 0.3);
+}
+
+.status-dot-down {
+    background: #dc3545;
+}
+
+.status-dot-down::before {
+    background: rgba(220, 53, 69, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+.status-text {
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.status-time {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.status-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.status-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-info-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-info-value {
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.status-endpoints {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-endpoint {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.status-endpoint:hover {
+    background: var(--bg-secondary);
+}
+
+.status-endpoint-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-endpoint-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #6c757d;
+}
+
+.status-endpoint-dot-up {
+    background: #28a745;
+}
+
+.status-endpoint-dot-down {
+    background: #dc3545;
+}
+
+.status-endpoint-name {
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.status-endpoint-status {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.status-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #4a9eff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #3a8eef;
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-tertiary);
+}
+
+@media (max-width: 768px) {
+    .status-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .status-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

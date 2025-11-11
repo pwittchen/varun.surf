@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.model.app.Uptime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,23 +27,38 @@ public class AppController {
 
     @GetMapping("uptime")
     public Mono<Map<String, Object>> uptime() {
-        Duration uptime = Duration.between(startTime, Instant.now());
-        long days = uptime.toDays();
-        long hours = uptime.toHoursPart();
-        long minutes = uptime.toMinutesPart();
-        long seconds = uptime.toSecondsPart();
-
-        String formattedUptime = String.format("%dd %dh %dm %ds", days, hours, minutes, seconds);
-
+        Uptime uptime = getUptime();
         return Mono.just(Map.of(
-            "uptime", formattedUptime,
-            "uptimeSeconds", uptime.toSeconds(),
-            "startTime", startTime.toString()
+                "uptime", uptime.formatted(),
+                "uptimeSeconds", uptime.seconds(),
+                "startTime", startTime.toString()
         ));
     }
 
     @GetMapping("version")
     public Mono<Map<String, String>> version() {
         return Mono.just(Map.of("version", version));
+    }
+
+    @GetMapping("status")
+    public Mono<Map<String, Object>> status() {
+        Uptime uptime = getUptime();
+        return Mono.just(Map.of(
+                "status", "UP",
+                "version", version,
+                "uptime", uptime.formatted(),
+                "uptimeSeconds", uptime.seconds(),
+                "startTime", startTime.toString()
+        ));
+    }
+
+    private Uptime getUptime() {
+        Duration uptime = Duration.between(startTime, Instant.now());
+        long days = uptime.toDays();
+        long hours = uptime.toHoursPart();
+        long minutes = uptime.toMinutesPart();
+        long seconds = uptime.toSecondsPart();
+        String formattedUptime = String.format("%dd %dh %dm %ds", days, hours, minutes, seconds);
+        return new Uptime(seconds, formattedUptime);
     }
 }
