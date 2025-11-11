@@ -2,7 +2,8 @@ name: DOCKER # build docker image and pushes it to ghcr.io
 
 on:
   push:
-    branches: [ "master" ]
+    tags:
+      - 'v*'
 
 permissions:
   contents: read

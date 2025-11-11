@@ -1,13 +1,15 @@
 name: CD # deploys the latest version of the application to the server
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_run:
+    workflows: ["DOCKER"]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Run Mikrus deployment command
         env:
