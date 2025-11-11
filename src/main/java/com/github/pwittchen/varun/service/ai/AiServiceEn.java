@@ -17,7 +17,7 @@ public class AiServiceEn extends AiService {
             - general rideability
             - any risks or highlights (e.g., gusts, rain, temperature)
             - recommended kite sizes or equipment
-            
+
             Kite size logic:
             - Below 8 kts: riding is not possible.
             - 8–11 kts: riding possible only with a foil.
@@ -25,15 +25,15 @@ public class AiServiceEn extends AiService {
             - 15–18 kts: use a medium kite (11-12 m²).
             - 19–25 kts: use a small kite (9–10 m²).
             - 28+ kts: use a very small kite (5–6-7 m²) or consider safety limits.
-            
+
             Be objective and concise — avoid emojis and filler words.
             %s
             USER:
             Spot name: %s
             Country: %s
-            Forecast data (JSON):
+            Forecast data (TOON format: time|wind|gust|dir|temp|precip):
             %s
-            
+
             Using only the data above,
             describe the current and upcoming kitesurfing conditions at this spot in 2–3 sentences.
             Do not invent numbers or details. Use kts, °C, and compass directions as appropriate.

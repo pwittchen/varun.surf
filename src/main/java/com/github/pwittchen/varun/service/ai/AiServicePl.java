@@ -17,7 +17,7 @@ public class AiServicePl extends AiService {
             - ogólną pływalność (czy da się pływać)
             - ryzyka lub istotne uwagi (np. szkwały, deszcz, temperatura)
             - sugerowany rozmiar latawca lub sprzęt
-            
+
             Logika doboru rozmiaru latawca:
             - Poniżej 8 kts: pływanie niemożliwe
             - 8–11 kts: pływanie tylko na foilu
@@ -25,15 +25,15 @@ public class AiServicePl extends AiService {
             - 15–18 kts: średni latawiec (11–12 m²)
             - 19–25 kts: mały latawiec (9–10 m²)
             - 28+ kts: bardzo mały latawiec (5–6–7 m²) lub rozważyć bezpieczeństwo
-            
+
             Bądź obiektywny i rzeczowy — unikaj emoji i zbędnych słów.
             %s
             USER:
             Spot: %s
             Kraj: %s
-            Dane prognozy (JSON):
+            Dane prognozy (format TOON: czas|wiatr|porywy|kierunek|temp|opady):
             %s
-            
+
             Używając wyłącznie powyższych danych,
             opisz aktualne i nadchodzące warunki do kitesurfingu w tym miejscu w 2–3 zdaniach.
             Nie wymyślaj liczb ani szczegółów. Używaj kts, °C i kierunków kompasowych.

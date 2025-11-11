@@ -205,7 +205,7 @@ class AiServiceEnTest {
         verify(requestSpec).user(argThat((String prompt) ->
                 prompt.contains("Hel") &&
                         prompt.contains("Poland") &&
-                        prompt.contains(gson.toJson(List.of(forecast)))
+                        prompt.contains("Mon 12:00|10.0|15.0|N|12.5|0.0") // TOON format
         ));
     }
 
@@ -271,6 +271,31 @@ class AiServiceEnTest {
         // then
         verify(requestSpec).user(argThat((String prompt) ->
                 !prompt.contains("ADDITIONAL SPOT-SPECIFIC CONTEXT:")
+        ));
+    }
+
+    @Test
+    void shouldFormatMultipleForecastsInToonFormat() {
+        // given
+        var forecast1 = new Forecast("Mon 12:00", 10.5, 15.2, "N", 12.5, 0.0);
+        var forecast2 = new Forecast("Mon 15:00", 12.3, 18.7, "NE", 15.0, 0.5);
+        var forecast3 = new Forecast("Mon 18:00", 8.1, 12.9, "E", 10.2, 1.2);
+        var spot = createSpot("Hel", "Poland", List.of(forecast1, forecast2, forecast3));
+
+        when(chatClient.prompt()).thenReturn(requestSpec);
+        when(requestSpec.user(anyString())).thenReturn(requestSpec);
+        when(requestSpec.stream()).thenReturn(streamSpec);
+        when(streamSpec.content()).thenReturn(Flux.just("Analysis"));
+
+        // when
+        aiServiceEn.fetchAiAnalysis(spot).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("Mon 12:00|10.5|15.2|N|12.5|0.0") &&
+                        prompt.contains("Mon 15:00|12.3|18.7|NE|15.0|0.5") &&
+                        prompt.contains("Mon 18:00|8.1|12.9|E|10.2|1.2") &&
+                        prompt.contains("TOON format")
         ));
     }
 

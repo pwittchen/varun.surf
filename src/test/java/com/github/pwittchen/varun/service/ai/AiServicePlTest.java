@@ -205,7 +205,7 @@ class AiServicePlTest {
         verify(requestSpec).user(argThat((String prompt) ->
                 prompt.contains("Hel") &&
                         prompt.contains("Polska") &&
-                        prompt.contains(gson.toJson(List.of(forecast)))
+                        prompt.contains("Mon 12:00|10.0|15.0|N|12.5|0.0") // TOON format
         ));
     }
 
@@ -340,6 +340,6 @@ class AiServicePlTest {
     }
 
     private Forecast createForecast() {
-        return new Forecast("Pon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
+        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
     }
 }
