@@ -43,7 +43,7 @@ public class AppControllerTest {
 
     @Test
     void shouldReturnStatusWithSpotsCount() {
-        when(aggregatorService.getSpotsCount()).thenReturn(74);
+        when(aggregatorService.countSpots()).thenReturn(74);
 
         Mono<Map<String, Object>> result = controller.status();
 

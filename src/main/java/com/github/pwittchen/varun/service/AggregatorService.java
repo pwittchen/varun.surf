@@ -132,7 +132,7 @@ public class AggregatorService {
                 .toList();
     }
 
-    public int getSpotsCount() {
+    public int countSpots() {
         return spots.get().size();
     }
 

@@ -49,7 +49,7 @@ public class AppController {
     @GetMapping("status")
     public Mono<Map<String, Object>> status() {
         Uptime uptime = getUptime();
-        int spotsCount = aggregatorService.getSpotsCount();
+        int spotsCount = aggregatorService.countSpots();
         return Mono.just(Map.of(
                 "status", "UP",
                 "version", version,
