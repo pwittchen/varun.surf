@@ -73,7 +73,8 @@ Deployment of the app is configured with the bash, docker, and docker compose sc
 With these scripts, we can perform zero-downtime (blue/green) deployment with nginx server as a proxy.
 To do that, follow the instructions below.
 
-- Copy `deployment.sh`, `docker-compose.yml`, `.env`, and `./nginx/nginx.conf` files to the single directory on the VPS.
+- Copy `deployment.sh`, `docker-compose.prod.yml`, `.env`, and `./nginx/nginx.conf` files to the single directory on the VPS.
+- In the `deployment.sh` and `docker-compose.prod.yml` files adjust server paths if needed
 - In the `.env` file, configure the environment variables basing on the `.env.example` file.
 - Run `./deployment.sh prod` script to deploy the app with the nginx proxy.
 - Run the same command again to perform the update with a zero-downtime and the latest docker image.
@@ -83,6 +84,7 @@ To do that, follow the instructions below.
 ## monitoring
 
 Add `health.sh` script to the cron, so it will monitor the app and send an email if it's down or recovered.
+In addition, we can view system status, by viewing [/status](https://varun.surf/status) page.
 
 ## ai forecast analysis
 
