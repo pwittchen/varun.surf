@@ -1,24 +1,32 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.service.AggregatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AppControllerTest {
 
     private AppController controller;
 
+    @Mock
+    private AggregatorService aggregatorService;
+
     @BeforeEach
     void setUp() {
-        controller = new AppController();
+        controller = new AppController(aggregatorService);
+        ReflectionTestUtils.setField(controller, "version", "test-version");
     }
 
     @Test
@@ -29,6 +37,25 @@ public class AppControllerTest {
                 .assertNext(health -> {
                     assertThat(health).isNotNull();
                     assertThat(health).containsEntry("status", "UP");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnStatusWithSpotsCount() {
+        when(aggregatorService.getSpotsCount()).thenReturn(74);
+
+        Mono<Map<String, Object>> result = controller.status();
+
+        StepVerifier.create(result)
+                .assertNext(status -> {
+                    assertThat(status).isNotNull();
+                    assertThat(status).containsEntry("status", "UP");
+                    assertThat(status).containsEntry("spotsCount", 74);
+                    assertThat(status).containsKey("version");
+                    assertThat(status).containsKey("uptime");
+                    assertThat(status).containsKey("uptimeSeconds");
+                    assertThat(status).containsKey("startTime");
                 })
                 .verifyComplete();
     }

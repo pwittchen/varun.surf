@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.app.Uptime;
+import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,14 @@ import java.util.Map;
 public class AppController {
 
     private final Instant startTime = Instant.now();
+    private final AggregatorService aggregatorService;
 
     @Value("${spring.application.version:unknown}")
     private String version;
+
+    public AppController(AggregatorService aggregatorService) {
+        this.aggregatorService = aggregatorService;
+    }
 
     @GetMapping("health")
     public Mono<Map<String, String>> health() {
@@ -43,12 +49,14 @@ public class AppController {
     @GetMapping("status")
     public Mono<Map<String, Object>> status() {
         Uptime uptime = getUptime();
+        int spotsCount = aggregatorService.getSpotsCount();
         return Mono.just(Map.of(
                 "status", "UP",
                 "version", version,
                 "uptime", uptime.formatted(),
                 "uptimeSeconds", uptime.seconds(),
-                "startTime", startTime.toString()
+                "startTime", startTime.toString(),
+                "spotsCount", spotsCount
         ));
     }
 

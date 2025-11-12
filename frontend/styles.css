@@ -2823,7 +2823,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .status-info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
 }
 
@@ -2842,9 +2842,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .status-info-value {
     color: var(--text-primary);
-    font-size: 1.125rem;
-    font-weight: 600;
-    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    font-weight: 300;
 }
 
 .status-endpoints {

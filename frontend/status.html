@@ -65,6 +65,10 @@
                             <div class="status-info-label">Started</div>
                             <div class="status-info-value" id="start-time">-</div>
                         </div>
+                        <div class="status-info-item">
+                            <div class="status-info-label">Spots</div>
+                            <div class="status-info-value" id="spots-count">-</div>
+                        </div>
                     </div>
                 </div>
 
@@ -173,6 +177,7 @@
                 // Update service information
                 document.getElementById('version').textContent = data.version || 'unknown';
                 document.getElementById('uptime').textContent = data.uptime || '-';
+                document.getElementById('spots-count').textContent = data.spotsCount || '0';
 
                 if (data.startTime) {
                     const startDate = new Date(data.startTime);

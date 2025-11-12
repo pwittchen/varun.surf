@@ -132,6 +132,10 @@ public class AggregatorService {
                 .toList();
     }
 
+    public int getSpotsCount() {
+        return spots.get().size();
+    }
+
     public Optional<Spot> getSpotById(int id) {
         return getSpotById(id, ForecastModel.GFS);
     }
