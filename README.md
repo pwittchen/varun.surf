@@ -84,7 +84,8 @@ To do that, follow the instructions below.
 ## monitoring
 
 Add `health.sh` script to the cron, so it will monitor the app and send an email if it's down or recovered.
-In addition, we can view system status, by viewing [/status](https://varun.surf/status) page.
+
+In addition, we can view system status, by visiting [/status](https://varun.surf/status) page.
 
 ## ai forecast analysis
 
