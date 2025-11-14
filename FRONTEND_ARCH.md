@@ -1,4 +1,4 @@
-# FRONTEND_ARCH.md - Frontend Architecture Documentation
+# Frontend Architecture
 
 ## Overview
 
