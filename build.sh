@@ -43,24 +43,24 @@ else
     echo "⚠️  frontend/styles.css not found, skipping CSS inlining"
 fi
 
-# Inline JavaScript (translations first, then script.js)
-if [ -f frontend/script.js ]; then
+# Inline JavaScript (translations first, then script-dashboard.js)
+if [ -f frontend/script-dashboard.js ]; then
     echo "Inlining JavaScript..."
     # Create marker file
-    sed 's|<script src="script.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
+    sed 's|<script src="script-dashboard.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
 
-    # Insert translations.js and script.js content at placeholder
+    # Insert translations.js and script-dashboard.js content at placeholder
     if [ -f frontend/translations.js ]; then
         echo "Including translations..."
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script-dashboard.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
     else
-        echo "⚠️  frontend/translations.js not found, inlining script.js only"
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/script.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        echo "⚠️  frontend/translations.js not found, inlining script-dashboard.js only"
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/script-dashboard.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
     fi
     rm index.temp2.html
     echo "✅  JavaScript inlined successfully"
 else
-    echo "⚠️  frontend/script.js not found, skipping JS inlining"
+    echo "⚠️  frontend/script-dashboard.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script
@@ -195,6 +195,17 @@ CSSPLACEHOLDER_STATUS' status.temp.html > status.temp2.html
     awk '/CSSPLACEHOLDER_STATUS/{system("echo \"    <style>\"; cat frontend/styles.css; echo \"    </style>\"");next}1' status.temp2.html > status.temp.html
     rm status.temp2.html
     echo "✅  CSS inlined successfully into status.html"
+fi
+
+# Inline JavaScript for status.html
+if [ -f frontend/script-status.js ]; then
+    echo "Inlining JavaScript into status.html..."
+    sed 's|<script src="script-status.js"></script>|JSPLACEHOLDER_STATUS|' status.temp.html > status.temp2.html
+    awk '/JSPLACEHOLDER_STATUS/{system("echo \"<script>\"; cat frontend/script-status.js; echo \"</script>\"");next}1' status.temp2.html > status.temp.html
+    rm status.temp2.html
+    echo "✅  JavaScript inlined successfully into status.html"
+else
+    echo "⚠️  frontend/script-status.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script for status.html
