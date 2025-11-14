@@ -31,21 +31,6 @@ public class AppController {
         return Mono.just(Map.of("status", "UP"));
     }
 
-    @GetMapping("uptime")
-    public Mono<Map<String, Object>> uptime() {
-        Uptime uptime = getUptime();
-        return Mono.just(Map.of(
-                "uptime", uptime.formatted(),
-                "uptimeSeconds", uptime.seconds(),
-                "startTime", startTime.toString()
-        ));
-    }
-
-    @GetMapping("version")
-    public Mono<Map<String, String>> version() {
-        return Mono.just(Map.of("version", version));
-    }
-
     @GetMapping("status")
     public Mono<Map<String, Object>> status() {
         Uptime uptime = getUptime();

@@ -77,24 +77,17 @@
                             </div>
                             <span class="status-endpoint-status">checking...</span>
                         </div>
+                        <div class="status-endpoint" data-endpoint="/api/v1/status">
+                            <div class="status-endpoint-info">
+                                <span class="status-endpoint-dot"></span>
+                                <span class="status-endpoint-name">/api/v1/status</span>
+                            </div>
+                            <span class="status-endpoint-status">checking...</span>
+                        </div>
                         <div class="status-endpoint" data-endpoint="/api/v1/spots">
                             <div class="status-endpoint-info">
                                 <span class="status-endpoint-dot"></span>
                                 <span class="status-endpoint-name">/api/v1/spots</span>
-                            </div>
-                            <span class="status-endpoint-status">checking...</span>
-                        </div>
-                        <div class="status-endpoint" data-endpoint="/api/v1/version">
-                            <div class="status-endpoint-info">
-                                <span class="status-endpoint-dot"></span>
-                                <span class="status-endpoint-name">/api/v1/version</span>
-                            </div>
-                            <span class="status-endpoint-status">checking...</span>
-                        </div>
-                        <div class="status-endpoint" data-endpoint="/api/v1/uptime">
-                            <div class="status-endpoint-info">
-                                <span class="status-endpoint-dot"></span>
-                                <span class="status-endpoint-name">/api/v1/uptime</span>
                             </div>
                             <span class="status-endpoint-status">checking...</span>
                         </div>
@@ -193,7 +186,7 @@
         }
 
         async function checkAllEndpoints() {
-            const endpoints = ['/api/v1/health', '/api/v1/spots', '/api/v1/version', '/api/v1/uptime'];
+            const endpoints = ['/api/v1/health', '/api/v1/status', '/api/v1/spots'];
             await Promise.all(endpoints.map(checkEndpoint));
         }
 
