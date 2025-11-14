@@ -118,7 +118,8 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 ## architecture
 
-see → [ARCH.md](ARCH.md) file
+- **Backend Architecture** → see [ARCH.md](ARCH.md) file
+- **Frontend Architecture** → see [FRONTEND_ARCH.md](FRONTEND_ARCH.md) file
 
 ## ai coding agents configuration
 
