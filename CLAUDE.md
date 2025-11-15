@@ -199,10 +199,10 @@ spring:
 
 ```bash
 # Build
-./build.sh
+./gradlew build
 
-# Build and run
-./build.sh --run
+# Run
+./gradlew bootRun
 
 # Test
 ./gradlew test

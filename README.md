@@ -12,13 +12,13 @@ see it online at: https://varun.surf
 ## building
 
 ```
-./build.sh
+./gradlew build
 ```
 
 ## running
 
 ```
-./build.sh --run
+./gradlew bootRun
 ```
 
 ## testing

@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# this script builds and optionally runs the whole app
-# Usage: ./build.sh [--run]
+# this script builds frontend of the app
 
 echo "🚧  starting frontend build..."
 
@@ -95,6 +93,13 @@ rm index.html
 echo "Copying logo file..."
 cp frontend/logo.png src/main/resources/static/logo.png
 echo "✅  logo file copied successfully"
+
+#Copy other files to static directory
+echo "Copying other files to static directory"
+cp frontend/ai.txt src/main/resources/static/ai.txt
+cp frontend/llms.txt src/main/resources/static/llms.txt
+cp frontend/robots.txt src/main/resources/static/robots.txt
+cp frontend/sitemap.xml src/main/resources/static/sitemap.xml
 
 # Build spot.html (single spot page)
 echo "🚧  building spot.html..."
@@ -239,13 +244,3 @@ rm -f index.temp.html index.temp2.html index.min.html index.html index.temp.html
 rm -f spot.temp.html spot.temp2.html spot.min.html spot.html spot.temp.html.bak spot.temp.html.bak2 spot.html.bak3 frontend/spot.html.bak frontend/spot.html.bak2
 rm -f status.temp.html status.temp2.html status.temp3.html status.min.html status.html status.temp.html.bak status.temp.html.bak2 frontend/status.html.bak
 echo "✅  temporary files cleaned up"
-
-echo "🚧  starting backend build..."
-./gradlew clean bootJar
-echo "✅  backend was built successfully"
-
-if [ "$1" == "--run" ]; then
-    echo "🚀  starting the app"
-    java --enable-preview -jar build/libs/*.jar
-    echo "🛑  app was stopped"
-fi

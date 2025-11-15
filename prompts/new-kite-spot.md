@@ -165,7 +165,7 @@ Return only a valid JSON array of spots (no markdown code blocks, no extra text)
 3. **Cross-check facts**: Verify spot details with kitesurfing forums/guides
 4. **Add location URLs manually**: Find exact coordinates on Google Maps and add shortened URLs
 5. **Add webcam URLs manually**: Search for webcams and add if available
-6. **Test in app**: Add spots to spots.json and run `./build.sh --run`
+6. **Test in app**: Add spots to spots.json and run `./gradlew bootRun`
 7. **Check frontend**: Ensure new spots display correctly with forecasts
 
 ## Example Workflow
@@ -191,7 +191,7 @@ jq -s '.[0] + .[1]' src/main/resources/spots.json new_spots.json > merged.json
 mv merged.json src/main/resources/spots.json
 
 # 6. Test
-./build.sh --run
+./gradlew bootRun
 
 # 7. Verify in browser
 open http://localhost:8080

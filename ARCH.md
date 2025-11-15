@@ -241,7 +241,7 @@ Translation Pattern:
 ```
 Build:
   - Gradle 8.x with Java 24 + preview features enabled
-  - ./build.sh (build) or ./build.sh --run (build + run)
+  - ./gradlew build (build) or ./gradlew bootRun (build + run)
   - ./gradlew test (JUnit 5 + Truth assertions)
 
 Configuration:

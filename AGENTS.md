@@ -324,10 +324,10 @@ spring:
 ### Local Development
 ```bash
 # Build only
-./build.sh
+./gradlew build
 
 # Build and run locally
-./build.sh --run
+./gradlew bootRun
 
 # Run tests
 ./gradlew test
@@ -695,7 +695,7 @@ User: @new-kite-spot Lago Di Garda
    - Append the new spot to the JSON array
    - Ensure proper JSON formatting (commas, brackets)
 6. **Test**:
-   - Run `./build.sh --run` or `./gradlew bootRun`
+   - Run `./gradlew bootRun`
    - Open http://localhost:8080
    - Verify the new spot appears with forecast data
 

@@ -92,3 +92,27 @@ tasks.named('jacocoTestReport') {
         csv.required = true
     }
 }
+
+tasks.register('buildFrontend', Exec) {
+    commandLine 'bash', 'build-frontend.sh'
+}
+
+tasks.register('cleanFrontend', Exec) {
+    commandLine 'bash', 'clean-frontend.sh'
+}
+
+tasks.named('build') {
+    dependsOn 'buildFrontend'
+}
+
+tasks.named('bootJar') {
+    dependsOn 'buildFrontend'
+}
+
+tasks.named('bootRun') {
+    dependsOn 'buildFrontend'
+}
+
+tasks.named('clean') {
+    dependsOn 'cleanFrontend'
+}
