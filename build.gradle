@@ -105,14 +105,6 @@ tasks.named('build') {
     dependsOn 'buildFrontend'
 }
 
-tasks.named('bootJar') {
-    dependsOn 'buildFrontend'
-}
-
 tasks.named('bootRun') {
     dependsOn 'buildFrontend'
-}
-
-tasks.named('clean') {
-    dependsOn 'cleanFrontend'
 }
