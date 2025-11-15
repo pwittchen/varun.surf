@@ -38,9 +38,8 @@ class JsonSpotsDataProviderTest {
     @Test
     void shouldLoadAllSpotsFromJsonFile() {
         Flux<Spot> spots = provider.getSpots();
-
         StepVerifier.create(spots)
-                .expectNextCount(94)
+                .expectNextCount(95)
                 .verifyComplete();
     }
 

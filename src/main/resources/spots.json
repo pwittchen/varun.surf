@@ -958,7 +958,7 @@
   },
   {
     "name": "Rozkoš",
-    "country": "Czechia",
+    "country": "Czech Republic",
     "windguruUrl": "https://www.windguru.cz/4",
     "windfinderUrl": "https://www.windfinder.com/forecast/rozkos_mala_laguna",
     "icmUrl": "",
@@ -986,8 +986,8 @@
     }
   },
   {
-    "name": "Nové Mlýny\n",
-    "country": "Czechia",
+    "name": "Nové Mlýny",
+    "country": "Czech Republic",
     "windguruUrl": "https://www.windguru.cz/3",
     "windfinderUrl": "https://www.windfinder.com/forecast/nove_mlynyat_mushow_beach",
     "icmUrl": "",
@@ -2731,6 +2731,35 @@
       "season": "Listopad-Kwiecień",
       "description": "Odległa zatoka w północnej Kostaryce oferująca stabilne pasaty i nietłumne warunki. Ciepłe wody Pacyfiku i oszałamiające tło wulkanicznego krajobrazu. Znana z silnych, stabilnych wiatrów idealnych do freestyle i dużych skoków.",
       "llmComment": "Wiatr przyspiesza przez górskie przełęcze tworząc potężne, porywiste warunki. Najlepsze wiatry zazwyczaj grudzień-marzec z często występującymi 20-35 węzłami."
+    }
+  },
+  {
+    "name": "Hlučín",
+    "country": "Czech Republic",
+    "windguruUrl": "https://www.windguru.cz/184",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hlucin_moravskoslezsky_czech_republic",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/rmJ6pe6JtJH7n15D9",
+    "spotInfo": {
+      "type": "Lake, flat water, former gravel pit",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "15-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grass and sandy beach",
+      "hazards": "Shallow areas, swimmers in summer, limited space",
+      "season": "May-September",
+      "description": "Natural lake with 130 hectares of surface area in the Moravian-Silesian region, offering clean water and excellent recreational facilities. Popular summer destination with windsurfing, kitesurfing, wakeboarding and water skiing. Sports complex with beaches and equipment rentals."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płaska woda, była żwirownia",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "15-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawa i plaża piaszczysta",
+      "hazards": "Płytkie obszary, pływacy latem, ograniczona przestrzeń",
+      "season": "Maj-Wrzesień",
+      "description": "Naturalne jezioro o powierzchni 130 hektarów w regionie morawsko-śląskim, oferujące czystą wodę i doskonałe zaplecze rekreacyjne. Popularne letnie miejsce z windsurfingiem, kitesurfingiem, wakeboardem i nartami wodnymi. Kompleks sportowy z plażami i wypożyczalnią sprzętu."
     }
   }
 ]

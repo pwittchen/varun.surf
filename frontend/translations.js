@@ -170,7 +170,7 @@ const translations = {
 
         // Countries
         Poland: "Poland",
-        Czechia: "Czechia",
+        CzechRepublic: "Czech Republic",
         Austria: "Austria",
         Belgium: "Belgium",
         Switzerland: "Switzerland",
@@ -374,7 +374,7 @@ const translations = {
 
         // Countries
         Poland: "Polska",
-        Czechia: "Czechy",
+        CzechRepublic: "Czechy",
         Austria: "Austria",
         Belgium: "Belgia",
         Switzerland: "Szwajcaria",

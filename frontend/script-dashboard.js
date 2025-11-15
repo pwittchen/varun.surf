@@ -643,7 +643,7 @@ function updateSelectedCountryLabel(countryKey) {
 function getCountryFlag(country) {
     const flags = {
         'Poland': '🇵🇱',
-        'Czechia': '🇨🇿',
+        'Czech Republic': '🇨🇿',
         'Austria': '🇦🇹',
         'Belgium': '🇧🇪',
         'Switzerland': '🇨🇭',
