@@ -25,16 +25,30 @@ The **varun.surf** frontend is a modern, single-page application (SPA) built wit
 ```
 varun.surf/
 ├── frontend/                      # Source files (NOT deployed)
-│   ├── translations.js            # i18n configuration
-│   ├── script-dashboard.js        # Dashboard page logic
-│   ├── script-spot.js             # Single spot page logic
-│   └── script-status.js           # Status page logic
+│   ├── js/                        # JavaScript files
+│   │   ├── translations.js        # i18n configuration
+│   │   ├── page-index.js          # Dashboard page logic
+│   │   ├── page-spot.js           # Single spot page logic
+│   │   └── page-status.js         # Status page logic
+│   ├── html/                      # HTML templates
+│   │   ├── index.html             # Dashboard page template
+│   │   ├── spot.html              # Single spot page template
+│   │   └── status.html            # Status page template
+│   ├── css/                       # Stylesheets
+│   │   └── styles.css             # Global styles
+│   └── assets/                    # Static assets
+│       ├── logo.png               # Brand logo
+│       ├── ai.txt                 # AI crawler instructions
+│       ├── llms.txt               # LLM-friendly site info
+│       ├── robots.txt             # SEO configuration
+│       └── sitemap.xml            # SEO sitemap
 ├── src/main/resources/static/     # Compiled/minified files (deployed)
 │   ├── index.html                 # Dashboard page (130KB minified)
 │   ├── spot.html                  # Single spot page (104KB minified)
 │   ├── status.html                # Status page (48KB minified)
-│   ├── styles.css                 # Global styles (57KB)
 │   ├── logo.png                   # Brand logo
+│   ├── ai.txt                     # AI crawler instructions
+│   ├── llms.txt                   # LLM-friendly site info
 │   ├── robots.txt                 # SEO configuration
 │   └── sitemap.xml                # SEO sitemap
 ```
@@ -52,9 +66,9 @@ HTML Pages (index.html, spot.html, status.html)
     ↓
 JavaScript Entry Points (inline <script> tags)
     ├─→ translations.js (i18n)
-    ├─→ script-dashboard.js (dashboard logic)
-    ├─→ script-spot.js (spot detail logic)
-    └─→ script-status.js (status page logic)
+    ├─→ page-index.js (dashboard logic)
+    ├─→ page-spot.js (spot detail logic)
+    └─→ page-status.js (status page logic)
     ↓
 API Calls (Fetch)
     ├─→ GET /api/v1/spots (all spots)
@@ -85,7 +99,7 @@ DOM Manipulation (vanilla JS)
 - Auto-refresh every 60 seconds
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator)
 
-**JavaScript Logic** (`script-dashboard.js`):
+**JavaScript Logic** (`page-index.js`):
 - `fetchWeatherData()` - Fetch all spots from API
 - `renderSpots()` - Render spot cards into grid
 - `toggleFavorite()` - Add/remove favorites
@@ -107,7 +121,7 @@ DOM Manipulation (vanilla JS)
 - Auto-refresh every 60 seconds
 - Polling mechanism for IFS forecast availability
 
-**JavaScript Logic** (`script-spot.js`):
+**JavaScript Logic** (`page-spot.js`):
 - `fetchSpotData(spotId)` - Fetch single spot data
 - `displaySpot(spot)` - Render spot details
 - `startForecastPolling()` - Poll for IFS forecast (5s interval, 30s timeout)
@@ -125,7 +139,7 @@ DOM Manipulation (vanilla JS)
 - System status indicators (green/red dots)
 - Auto-refresh every 30 seconds
 
-**JavaScript Logic** (`script-status.js`):
+**JavaScript Logic** (`page-status.js`):
 - `fetchStatus()` - Get system status from `/api/v1/status`
 - `checkEndpoint(url)` - Health check for individual endpoints
 - Auto-refresh with 30s interval
@@ -151,7 +165,7 @@ function t(key) {
 - Dynamic UI updates on language change
 - Covers all UI text, errors, labels, tooltips
 
-#### `script-dashboard.js` - Dashboard Logic
+#### `page-index.js` - Dashboard Logic
 **State Management**:
 ```javascript
 let globalWeatherData = [];           // Cached spot data
@@ -169,7 +183,7 @@ let autoRefreshInterval = null;       // Auto-refresh timer
 - **Drag & Drop**: `initDragAndDrop()` (custom ordering, persisted in `localStorage`)
 - **Modals**: `openInfoModal()`, `openAIModal()`, `openIcmModal()`, `openKiteSizeModal()`
 
-#### `script-spot.js` - Spot Detail Logic
+#### `page-spot.js` - Spot Detail Logic
 **State Management**:
 ```javascript
 let currentSpot = null;               // Loaded spot data
@@ -380,13 +394,13 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 
 ### In-Memory State
 
-**Dashboard** (`script-dashboard.js`):
+**Dashboard** (`page-index.js`):
 - `globalWeatherData`: Cached spot data (array of 74+ spots)
 - `availableCountries`: Set of unique countries
 - `currentSearchQuery`: Active search term
 - `showingFavorites`: Boolean flag
 
-**Single Spot** (`script-spot.js`):
+**Single Spot** (`page-spot.js`):
 - `currentSpot`: Loaded spot object
 - `currentSpotId`: Spot ID from URL
 - `selectedModel`: Forecast model (`'gfs'` or `'ifs'`)
@@ -855,22 +869,27 @@ None required (vanilla JS, modern browsers only).
 
 ### Compilation Pipeline
 1. **Source Files** (`frontend/`):
-   - `translations.js`
-   - `script-dashboard.js`
-   - `script-spot.js`
-   - `script-status.js`
+   - `js/translations.js` - i18n translations
+   - `js/page-index.js` - Dashboard logic
+   - `js/page-spot.js` - Single spot logic
+   - `js/page-status.js` - Status page logic
+   - `html/index.html` - Dashboard template
+   - `html/spot.html` - Spot page template
+   - `html/status.html` - Status page template
+   - `css/styles.css` - Global styles
+   - `assets/*` - Static assets (logo, robots.txt, etc.)
 
-2. **Build Script** (Gradle task):
-   - Minify JavaScript (remove whitespace, comments)
-   - Inline JS into HTML files
-   - Minify HTML (inline CSS and JS)
-   - Optimize CSS (remove unused rules)
+2. **Build Script** (`build-frontend.sh`):
+   - Inline CSS from `css/styles.css` into HTML
+   - Inline JS (translations + page-specific) into HTML
+   - Minify HTML (remove whitespace, comments)
+   - Copy assets from `assets/` to `static/`
 
 3. **Output** (`src/main/resources/static/`):
-   - `index.html` (130KB minified)
-   - `spot.html` (104KB minified)
-   - `status.html` (48KB minified)
-   - `styles.css` (57KB minified)
+   - `index.html` (130KB minified, includes inlined CSS + JS)
+   - `spot.html` (104KB minified, includes inlined CSS + JS)
+   - `status.html` (48KB minified, includes inlined CSS + JS)
+   - `logo.png`, `ai.txt`, `llms.txt`, `robots.txt`, `sitemap.xml`
 
 ### Deployment
 - Static files served directly by Spring Boot (`/static/`)

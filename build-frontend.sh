@@ -14,7 +14,7 @@ fi
 
 # First, inline CSS and JavaScript into index.full.html
 echo "Inlining CSS and JavaScript..."
-cp frontend/index.html index.temp.html
+cp frontend/html/index.html index.temp.html
 
 # Flatten the datafast script tag to a single line BEFORE any processing
 echo "Flattening multiline script tags..."
@@ -27,38 +27,38 @@ echo '<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU" data-domain="va
 perl -i.bak -pe 's|<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"[^>]*></script>|\nDATAFASTPLACEHOLDER|g' index.temp.html
 
 # Inline CSS
-if [ -f frontend/styles.css ]; then
+if [ -f frontend/css/styles.css ]; then
     echo "Inlining CSS..."
     # Create marker file
     sed '/<link rel="stylesheet" href="styles.css">/c\
 CSSPLACEHOLDER' index.temp.html > index.temp2.html
 
     # Insert CSS content at placeholder
-    awk '/CSSPLACEHOLDER/{system("echo \"    <style>\"; cat frontend/styles.css; echo \"    </style>\"");next}1' index.temp2.html > index.temp.html
+    awk '/CSSPLACEHOLDER/{system("echo \"    <style>\"; cat frontend/css/styles.css; echo \"    </style>\"");next}1' index.temp2.html > index.temp.html
     rm index.temp2.html
     echo "✅  CSS inlined successfully"
 else
-    echo "⚠️  frontend/styles.css not found, skipping CSS inlining"
+    echo "⚠️  frontend/css/styles.css not found, skipping CSS inlining"
 fi
 
-# Inline JavaScript (translations first, then script-dashboard.js)
-if [ -f frontend/script-dashboard.js ]; then
+# Inline JavaScript (translations first, then page-index.js)
+if [ -f frontend/js/page-index.js ]; then
     echo "Inlining JavaScript..."
     # Create marker file
-    sed 's|<script src="script-dashboard.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
+    sed 's|<script src="page-index.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
 
-    # Insert translations.js and script-dashboard.js content at placeholder
-    if [ -f frontend/translations.js ]; then
+    # Insert translations.js and page-index.js content at placeholder
+    if [ -f frontend/js/translations.js ]; then
         echo "Including translations..."
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script-dashboard.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
     else
-        echo "⚠️  frontend/translations.js not found, inlining script-dashboard.js only"
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/script-dashboard.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        echo "⚠️  frontend/js/translations.js not found, inlining page-index.js only"
+        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
     fi
     rm index.temp2.html
     echo "✅  JavaScript inlined successfully"
 else
-    echo "⚠️  frontend/script-dashboard.js not found, skipping JS inlining"
+    echo "⚠️  frontend/js/page-index.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script
@@ -91,19 +91,19 @@ rm index.html
 
 # Copy logo file to static directory
 echo "Copying logo file..."
-cp frontend/logo.png src/main/resources/static/logo.png
+cp frontend/assets/logo.png src/main/resources/static/logo.png
 echo "✅  logo file copied successfully"
 
 #Copy other files to static directory
 echo "Copying other files to static directory"
-cp frontend/ai.txt src/main/resources/static/ai.txt
-cp frontend/llms.txt src/main/resources/static/llms.txt
-cp frontend/robots.txt src/main/resources/static/robots.txt
-cp frontend/sitemap.xml src/main/resources/static/sitemap.xml
+cp frontend/assets/ai.txt src/main/resources/static/ai.txt
+cp frontend/assets/llms.txt src/main/resources/static/llms.txt
+cp frontend/assets/robots.txt src/main/resources/static/robots.txt
+cp frontend/assets/sitemap.xml src/main/resources/static/sitemap.xml
 
 # Build spot.html (single spot page)
 echo "🚧  building spot.html..."
-cp frontend/spot.html spot.temp.html
+cp frontend/html/spot.html spot.temp.html
 
 # Flatten the datafast script tag for spot.html
 echo "Flattening multiline script tags in spot.html..."
@@ -115,7 +115,7 @@ echo "Protecting external scripts in spot.html..."
 perl -i.bak -pe 's|<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"[^>]*></script>|\nDATAFASTPLACEHOLDER_SPOT|g' spot.temp.html
 
 # Inline CSS for spot.html
-if [ -f frontend/styles.css ]; then
+if [ -f frontend/css/styles.css ]; then
     echo "Inlining CSS into spot.html..."
     sed '/<link rel="stylesheet" href="styles.css">/c\
 CSSPLACEHOLDER_SPOT' spot.temp.html > spot.temp2.html
@@ -123,9 +123,9 @@ CSSPLACEHOLDER_SPOT' spot.temp.html > spot.temp2.html
 from pathlib import Path
 
 template = Path('spot.temp2.html').read_text()
-base_css = Path('frontend/styles.css').read_text().rstrip()
+base_css = Path('frontend/css/styles.css').read_text().rstrip()
 
-extra_path = Path('frontend/spot-inline.css')
+extra_path = Path('frontend/css/spot-inline.css')
 extra_css = ''
 if extra_path.exists():
     extra_css = '\n' + extra_path.read_text().strip()
@@ -138,16 +138,16 @@ PY
     echo "✅  CSS inlined successfully into spot.html"
 fi
 
-# Inline JavaScript for spot.html (translations first, then script-spot.js)
-if [ -f frontend/script-spot.js ]; then
+# Inline JavaScript for spot.html (translations first, then page-spot.js)
+if [ -f frontend/js/page-spot.js ]; then
     echo "Inlining JavaScript into spot.html..."
-    sed 's|<script src="script-spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
-    if [ -f frontend/translations.js ]; then
+    sed 's|<script src="page-spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
+    if [ -f frontend/js/translations.js ]; then
         echo "Including translations in spot.html..."
-        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/translations.js; echo \"\"; cat frontend/script-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
     else
-        echo "⚠️  frontend/translations.js not found, inlining script-spot.js only"
-        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/script-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        echo "⚠️  frontend/js/translations.js not found, inlining page-spot.js only"
+        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
     fi
     rm spot.temp2.html
     echo "✅  JavaScript inlined successfully into spot.html"
@@ -181,7 +181,7 @@ echo "✅  spot.html was built successfully"
 
 # Build status.html (status page)
 echo "🚧  building status.html..."
-cp frontend/status.html status.temp.html
+cp frontend/html/status.html status.temp.html
 
 # Flatten the datafast script tag for status.html
 echo "Flattening multiline script tags in status.html..."
@@ -193,24 +193,24 @@ echo "Protecting external scripts in status.html..."
 perl -i.bak -pe 's|<script defer data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"[^>]*></script>|\nDATAFASTPLACEHOLDER_STATUS|g' status.temp.html
 
 # Inline CSS for status.html
-if [ -f frontend/styles.css ]; then
+if [ -f frontend/css/styles.css ]; then
     echo "Inlining CSS into status.html..."
     sed '/<link rel="stylesheet" href="styles.css">/c\
 CSSPLACEHOLDER_STATUS' status.temp.html > status.temp2.html
-    awk '/CSSPLACEHOLDER_STATUS/{system("echo \"    <style>\"; cat frontend/styles.css; echo \"    </style>\"");next}1' status.temp2.html > status.temp.html
+    awk '/CSSPLACEHOLDER_STATUS/{system("echo \"    <style>\"; cat frontend/css/styles.css; echo \"    </style>\"");next}1' status.temp2.html > status.temp.html
     rm status.temp2.html
     echo "✅  CSS inlined successfully into status.html"
 fi
 
 # Inline JavaScript for status.html
-if [ -f frontend/script-status.js ]; then
+if [ -f frontend/js/page-status.js ]; then
     echo "Inlining JavaScript into status.html..."
-    sed 's|<script src="script-status.js"></script>|JSPLACEHOLDER_STATUS|' status.temp.html > status.temp2.html
-    awk '/JSPLACEHOLDER_STATUS/{system("echo \"<script>\"; cat frontend/script-status.js; echo \"</script>\"");next}1' status.temp2.html > status.temp.html
+    sed 's|<script src="page-status.js"></script>|JSPLACEHOLDER_STATUS|' status.temp.html > status.temp2.html
+    awk '/JSPLACEHOLDER_STATUS/{system("echo \"<script>\"; cat frontend/js/page-status.js; echo \"</script>\"");next}1' status.temp2.html > status.temp.html
     rm status.temp2.html
     echo "✅  JavaScript inlined successfully into status.html"
 else
-    echo "⚠️  frontend/script-status.js not found, skipping JS inlining"
+    echo "⚠️  frontend/js/page-status.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script for status.html
