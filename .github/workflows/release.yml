@@ -1,4 +1,4 @@
-name: Release
+name: RELEASE # creates a new github release with changelog
 
 on:
   push:
@@ -49,7 +49,6 @@ jobs:
 
           # Create release notes
           cat > release_notes.md << EOF
-          ## Changes in $CURRENT_TAG
 
           $COMMITS
           EOF
