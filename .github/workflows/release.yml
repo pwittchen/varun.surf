@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get previous tag
+        id: previoustag
+        run: |
+          # Get the current tag
+          CURRENT_TAG=${GITHUB_REF#refs/tags/}
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+
+          # Get the previous tag with 'v' prefix
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep '^v' | grep -A1 "^$CURRENT_TAG$" | tail -1)
+
+          if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" == "$CURRENT_TAG" ]; then
+            echo "No previous tag found, using initial commit"
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          CURRENT_TAG="${{ steps.previoustag.outputs.current_tag }}"
+          PREVIOUS_TAG="${{ steps.previoustag.outputs.previous_tag }}"
+
+          echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
+
+          # Get commit messages between tags
+          COMMITS=$(git log $PREVIOUS_TAG..$CURRENT_TAG --pretty=format:"- %s (%h)" --no-merges)
+
+          # Create release notes
+          cat > release_notes.md << EOF
+          ## Changes in $CURRENT_TAG
+
+          $COMMITS
+          EOF
+
+          cat release_notes.md
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.previoustag.outputs.current_tag }}
+          release_name: Release ${{ steps.previoustag.outputs.current_tag }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
