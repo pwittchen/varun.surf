@@ -1,4 +1,4 @@
-name: RELEASE # creates a new github release with changelog
+name: RELEASE # creates a new GitHub release with a changelog
 
 on:
   push:
