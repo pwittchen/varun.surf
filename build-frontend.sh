@@ -41,36 +41,36 @@ else
     echo "⚠️  frontend/css/styles.css not found, skipping CSS inlining"
 fi
 
-# Inline JavaScript (translations, country flags, then page-index.js)
-if [ -f frontend/js/page-index.js ]; then
+# Inline JavaScript (translations, country flags, then page index script)
+if [ -f frontend/js/page/index.js ]; then
     echo "Inlining JavaScript..."
     # Create marker file
-    sed 's|<script src="page-index.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
+    sed 's|<script src="../js/page/index.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
 
     # Remove standalone country flag script tag before inlining
-    perl -0pi -e 's|\s*<script src="country-flags\.js"></script>||' index.temp2.html
+    perl -0pi -e 's|\s*<script src="[^"]*country-flags\.js"></script>||' index.temp2.html
 
-    # Insert translations.js, country-flags.js, and page-index.js content at placeholder
-    if [ -f frontend/js/translations.js ]; then
+    # Insert translations.js, country-flags.js, and page JS content at placeholder
+    if [ -f frontend/js/common/translations.js ]; then
         echo "Including translations and shared helpers..."
-        if [ -f frontend/js/country-flags.js ]; then
-            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        if [ -f frontend/js/common/country-flags.js ]; then
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/common/translations.js; echo \"\"; cat frontend/js/common/country-flags.js; echo \"\"; cat frontend/js/page/index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
         else
-            echo "⚠️  frontend/js/country-flags.js not found, skipping shared helper"
-            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+            echo "⚠️  frontend/js/common/country-flags.js not found, skipping shared helper"
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/common/translations.js; echo \"\"; cat frontend/js/page/index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
         fi
     else
-        echo "⚠️  frontend/js/translations.js not found, inlining remaining scripts only"
-        if [ -f frontend/js/country-flags.js ]; then
-            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        echo "⚠️  frontend/js/common/translations.js not found, inlining remaining scripts only"
+        if [ -f frontend/js/common/country-flags.js ]; then
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/common/country-flags.js; echo \"\"; cat frontend/js/page/index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
         else
-            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/page/index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
         fi
     fi
     rm index.temp2.html
     echo "✅  JavaScript inlined successfully"
 else
-    echo "⚠️  frontend/js/page-index.js not found, skipping JS inlining"
+    echo "⚠️  frontend/js/page/index.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script
@@ -150,27 +150,27 @@ PY
     echo "✅  CSS inlined successfully into spot.html"
 fi
 
-# Inline JavaScript for spot.html (translations, country flags, then page-spot.js)
-if [ -f frontend/js/page-spot.js ]; then
+# Inline JavaScript for spot.html (translations, country flags, then spot script)
+if [ -f frontend/js/page/spot.js ]; then
     echo "Inlining JavaScript into spot.html..."
-    sed 's|<script src="page-spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
+    sed 's|<script src="../js/page/spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
     # Remove standalone translations and country flag script tags before inlining
-    perl -0pi -e 's|\s*<script src="translations\.js"></script>||' spot.temp2.html
-    perl -0pi -e 's|\s*<script src="country-flags\.js"></script>||' spot.temp2.html
-    if [ -f frontend/js/translations.js ]; then
+    perl -0pi -e 's|\s*<script src="[^"]*translations\.js"></script>||' spot.temp2.html
+    perl -0pi -e 's|\s*<script src="[^"]*country-flags\.js"></script>||' spot.temp2.html
+    if [ -f frontend/js/common/translations.js ]; then
         echo "Including translations and shared helpers in spot.html..."
-        if [ -f frontend/js/country-flags.js ]; then
-            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        if [ -f frontend/js/common/country-flags.js ]; then
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/common/translations.js; echo \"\"; cat frontend/js/common/country-flags.js; echo \"\"; cat frontend/js/page/spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
         else
-            echo "⚠️  frontend/js/country-flags.js not found, skipping shared helper"
-            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+            echo "⚠️  frontend/js/common/country-flags.js not found, skipping shared helper"
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/common/translations.js; echo \"\"; cat frontend/js/page/spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
         fi
     else
-        echo "⚠️  frontend/js/translations.js not found, inlining remaining scripts only"
-        if [ -f frontend/js/country-flags.js ]; then
-            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        echo "⚠️  frontend/js/common/translations.js not found, inlining remaining scripts only"
+        if [ -f frontend/js/common/country-flags.js ]; then
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/common/country-flags.js; echo \"\"; cat frontend/js/page/spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
         else
-            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/page/spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
         fi
     fi
     rm spot.temp2.html
@@ -227,14 +227,14 @@ CSSPLACEHOLDER_STATUS' status.temp.html > status.temp2.html
 fi
 
 # Inline JavaScript for status.html
-if [ -f frontend/js/page-status.js ]; then
+if [ -f frontend/js/page/status.js ]; then
     echo "Inlining JavaScript into status.html..."
-    sed 's|<script src="page-status.js"></script>|JSPLACEHOLDER_STATUS|' status.temp.html > status.temp2.html
-    awk '/JSPLACEHOLDER_STATUS/{system("echo \"<script>\"; cat frontend/js/page-status.js; echo \"</script>\"");next}1' status.temp2.html > status.temp.html
+    sed 's|<script src="../js/page/status.js"></script>|JSPLACEHOLDER_STATUS|' status.temp.html > status.temp2.html
+    awk '/JSPLACEHOLDER_STATUS/{system("echo \"<script>\"; cat frontend/js/page/status.js; echo \"</script>\"");next}1' status.temp2.html > status.temp.html
     rm status.temp2.html
     echo "✅  JavaScript inlined successfully into status.html"
 else
-    echo "⚠️  frontend/js/page-status.js not found, skipping JS inlining"
+    echo "⚠️  frontend/js/page/status.js not found, skipping JS inlining"
 fi
 
 # Restore the datafast script for status.html

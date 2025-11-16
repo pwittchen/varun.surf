@@ -26,10 +26,13 @@ The **varun.surf** frontend is a modern, single-page application (SPA) built wit
 varun.surf/
 ├── frontend/                      # Source files (NOT deployed)
 │   ├── js/                        # JavaScript files
-│   │   ├── translations.js        # i18n configuration
-│   │   ├── page-index.js          # Dashboard page logic
-│   │   ├── page-spot.js           # Single spot page logic
-│   │   └── page-status.js         # Status page logic
+│   │   ├── common/
+│   │   │   ├── translations.js    # i18n configuration
+│   │   │   └── country-flags.js   # Shared emoji flags helper
+│   │   └── page/
+│   │       ├── index.js           # Dashboard page logic
+│   │       ├── spot.js            # Single spot page logic
+│   │       └── status.js          # Status page logic
 │   ├── html/                      # HTML templates
 │   │   ├── index.html             # Dashboard page template
 │   │   ├── spot.html              # Single spot page template
@@ -65,10 +68,10 @@ Browser
 HTML Pages (index.html, spot.html, status.html)
     ↓
 JavaScript Entry Points (inline <script> tags)
-    ├─→ translations.js (i18n)
-    ├─→ page-index.js (dashboard logic)
-    ├─→ page-spot.js (spot detail logic)
-    └─→ page-status.js (status page logic)
+    ├─→ common/translations.js (i18n)
+    ├─→ page/index.js (dashboard logic)
+    ├─→ page/spot.js (spot detail logic)
+    └─→ page/status.js (status page logic)
     ↓
 API Calls (Fetch)
     ├─→ GET /api/v1/spots (all spots)
@@ -99,7 +102,7 @@ DOM Manipulation (vanilla JS)
 - Auto-refresh every 60 seconds
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator)
 
-**JavaScript Logic** (`page-index.js`):
+**JavaScript Logic** (`page/index.js`):
 - `fetchWeatherData()` - Fetch all spots from API
 - `renderSpots()` - Render spot cards into grid
 - `toggleFavorite()` - Add/remove favorites
@@ -121,7 +124,7 @@ DOM Manipulation (vanilla JS)
 - Auto-refresh every 60 seconds
 - Polling mechanism for IFS forecast availability
 
-**JavaScript Logic** (`page-spot.js`):
+**JavaScript Logic** (`page/spot.js`):
 - `fetchSpotData(spotId)` - Fetch single spot data
 - `displaySpot(spot)` - Render spot details
 - `startForecastPolling()` - Poll for IFS forecast (5s interval, 30s timeout)
@@ -139,7 +142,7 @@ DOM Manipulation (vanilla JS)
 - System status indicators (green/red dots)
 - Auto-refresh every 30 seconds
 
-**JavaScript Logic** (`page-status.js`):
+**JavaScript Logic** (`page/status.js`):
 - `fetchStatus()` - Get system status from `/api/v1/status`
 - `checkEndpoint(url)` - Health check for individual endpoints
 - Auto-refresh with 30s interval
@@ -165,7 +168,7 @@ function t(key) {
 - Dynamic UI updates on language change
 - Covers all UI text, errors, labels, tooltips
 
-#### `page-index.js` - Dashboard Logic
+#### `page/index.js` - Dashboard Logic
 **State Management**:
 ```javascript
 let globalWeatherData = [];           // Cached spot data
@@ -183,7 +186,7 @@ let autoRefreshInterval = null;       // Auto-refresh timer
 - **Drag & Drop**: `initDragAndDrop()` (custom ordering, persisted in `localStorage`)
 - **Modals**: `openInfoModal()`, `openAIModal()`, `openIcmModal()`, `openKiteSizeModal()`
 
-#### `page-spot.js` - Spot Detail Logic
+#### `page/spot.js` - Spot Detail Logic
 **State Management**:
 ```javascript
 let currentSpot = null;               // Loaded spot data
@@ -394,13 +397,13 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 
 ### In-Memory State
 
-**Dashboard** (`page-index.js`):
+**Dashboard** (`page/index.js`):
 - `globalWeatherData`: Cached spot data (array of 74+ spots)
 - `availableCountries`: Set of unique countries
 - `currentSearchQuery`: Active search term
 - `showingFavorites`: Boolean flag
 
-**Single Spot** (`page-spot.js`):
+**Single Spot** (`page/spot.js`):
 - `currentSpot`: Loaded spot object
 - `currentSpotId`: Spot ID from URL
 - `selectedModel`: Forecast model (`'gfs'` or `'ifs'`)
@@ -869,10 +872,10 @@ None required (vanilla JS, modern browsers only).
 
 ### Compilation Pipeline
 1. **Source Files** (`frontend/`):
-   - `js/translations.js` - i18n translations
-   - `js/page-index.js` - Dashboard logic
-   - `js/page-spot.js` - Single spot logic
-   - `js/page-status.js` - Status page logic
+   - `js/common/translations.js` - i18n translations
+   - `js/page/index.js` - Dashboard logic
+   - `js/page/spot.js` - Single spot logic
+   - `js/page/status.js` - Status page logic
    - `html/index.html` - Dashboard template
    - `html/spot.html` - Spot page template
    - `html/status.html` - Status page template
