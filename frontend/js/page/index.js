@@ -1,16 +1,29 @@
-// State variables
+// ============================================================================
+// GLOBAL STATE MANAGEMENT
+// ============================================================================
+
+// Application state variables
 let globalWeatherData = [];
 let availableCountries = new Set();
 let currentSearchQuery = '';
 let showingFavorites = false;
 let autoRefreshInterval = null;
-let previousUrl = localStorage.getItem('previousUrl') || '/'; // Track previous URL for favorites toggle
+let currentFilter = 'all';
 
-// Configuration
+// Track previous URL for favorite toggle
+let previousUrl = localStorage.getItem('previousUrl') || '/';
+
+// ============================================================================
+// CONFIGURATION CONSTANTS
+// ============================================================================
+
 const API_ENDPOINT = '/api/v1/spots';
 const AUTO_REFRESH_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 
-// URL routing helpers
+// ============================================================================
+// URL ROUTING HELPERS
+// ============================================================================
+
 function normalizeCountryForUrl(country) {
     // Convert country name to URL-safe format: lowercase, no spaces or special chars
     return country.toLowerCase()
@@ -19,7 +32,7 @@ function normalizeCountryForUrl(country) {
 }
 
 function getCountryFromUrl() {
-    // Extract country from URL pattern: /country/{countryName}
+    // Extract country from the URL pattern: /country/{countryName}
     const pathParts = window.location.pathname.split('/');
     const countryIndex = pathParts.indexOf('country');
     if (countryIndex !== -1 && pathParts.length > countryIndex + 1) {
@@ -29,7 +42,7 @@ function getCountryFromUrl() {
 }
 
 function isStarredUrl() {
-    // Check if URL is /starred
+    // Check if the URL is /starred
     return window.location.pathname === '/starred';
 }
 
@@ -115,7 +128,10 @@ function showInvalidCountryError(countryName) {
         `;
 }
 
-// Favorites management
+// ============================================================================
+// FAVORITES MANAGEMENT
+// ============================================================================
+
 function getFavorites() {
     const favorites = localStorage.getItem('favoriteSpots');
     return favorites ? JSON.parse(favorites) : [];
@@ -172,7 +188,90 @@ function toggleFavorite(spotName) {
     }
 }
 
-// Theme functionality
+async function renderFavorites() {
+    showingFavorites = true;
+    const favoritesButton = document.getElementById('favoritesToggle');
+    favoritesButton.classList.add('active');
+
+    const spotsGrid = document.getElementById('spotsGrid');
+    const favorites = getFavorites();
+
+    if (favorites.length === 0) {
+        updateSpotCounter(0);
+        spotsGrid.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">⭐</span>
+                    <div class="error-title">${t('noFavoritesTitle')}</div>
+                    <div class="error-description">
+                        ${t('noFavoritesDescription')}
+                    </div>
+                </div>
+            `;
+        return;
+    }
+
+    try {
+        if (globalWeatherData.length === 0) {
+            globalWeatherData = await fetchWeatherData();
+        }
+
+        const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+
+        updateSpotCounter(favoriteSpots.length);
+        spotsGrid.innerHTML = '';
+        favoriteSpots.forEach(spot => {
+            spotsGrid.appendChild(createSpotCard(spot));
+        });
+        loadCardOrder();
+    } catch (error) {
+        console.error('Failed to load favorites:', error.message);
+        showErrorMessage(error);
+    }
+}
+
+function setupFavorites() {
+    const favoritesButton = document.getElementById('favoritesToggle');
+
+    favoritesButton.addEventListener('click', () => {
+        if (showingFavorites) {
+            // Exit favorites mode
+            showingFavorites = false;
+            localStorage.setItem('showingFavorites', 'false');
+            favoritesButton.classList.remove('active');
+
+            // Restore previous URL
+            restorePreviousUrl();
+
+            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+            renderSpots(savedCountry, '');
+        } else {
+            // Enter favorites mode
+            localStorage.setItem('showingFavorites', 'true');
+
+            // Update URL to /starred
+            updateUrlForStarred();
+
+            renderFavorites();
+        }
+
+        // Scroll to top after toggling favorites
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Restore favorites state on page load
+    const savedFavoritesState = localStorage.getItem('showingFavorites');
+    if (savedFavoritesState === 'true') {
+        renderFavorites();
+    }
+}
+
+// ============================================================================
+// THEME MANAGEMENT
+// ============================================================================
+
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     const themeToggle = document.getElementById('themeToggle');
@@ -188,7 +287,7 @@ function initTheme() {
         localStorage.setItem('theme', theme);
     }
 
-    // Set initial theme
+    // Set the initial theme
     updateTheme(savedTheme);
 
     // Theme toggle event
@@ -198,7 +297,7 @@ function initTheme() {
         updateTheme(newTheme);
     });
 
-    // Make logo clickable to go back to home with current country filter
+    // Make the logo clickable to go back home with the current country filter
     const headerLogo = document.getElementById('headerLogo');
     if (headerLogo) {
         headerLogo.addEventListener('click', () => {
@@ -213,14 +312,16 @@ function initTheme() {
     }
 }
 
-// Language functionality
+// ============================================================================
+// LANGUAGE/INTERNATIONALIZATION MANAGEMENT
+// ============================================================================
+
 function initLanguage() {
     const savedLanguage = localStorage.getItem('language') || 'en';
     const languageToggle = document.getElementById('languageToggle');
 
     function updateLanguage(lang) {
         localStorage.setItem('language', lang);
-
         // Update all UI elements with translations
         updateUITranslations();
     }
@@ -291,7 +392,7 @@ function initLanguage() {
             footerDisclaimer.textContent = t('footerDisclaimer');
         }
 
-        // Update "All" in dropdown if selected
+        // Update "All" in the dropdown if selected
         if (globalWeatherData.length > 0) {
             populateCountryDropdown(globalWeatherData);
         } else {
@@ -314,22 +415,7 @@ function initLanguage() {
             loadingText.textContent = t('loadingText');
         }
 
-        // Update modal titles
-        const aiModalTitle = document.querySelector('#aiModal .modal-title span:first-child');
-        if (aiModalTitle && aiModalTitle.textContent === '⟡') {
-            // AI modal title is dynamic, leave as is
-        }
-
-        const infoModalTitle = document.querySelector('#infoModal .modal-title span:first-child');
-        if (infoModalTitle && infoModalTitle.textContent === '🏄') {
-            // Info modal title is dynamic, leave as is
-        }
-
-        const icmModalTitle = document.querySelector('#icmModal .modal-title span:first-child');
-        if (icmModalTitle && icmModalTitle.textContent === '📊') {
-            // ICM modal title is dynamic, leave as is
-        }
-
+        // Update app info modal content
         const appInfoModalTitle = document.getElementById('appInfoModalTitle');
         if (appInfoModalTitle) {
             appInfoModalTitle.textContent = t('appInfoModalTitle');
@@ -466,6 +552,10 @@ function initLanguage() {
     });
 }
 
+// ============================================================================
+// API FUNCTIONS
+// ============================================================================
+
 async function fetchWeatherData() {
     try {
         const response = await fetch(API_ENDPOINT, {cache: 'no-store'});
@@ -486,6 +576,10 @@ async function fetchWeatherData() {
         throw error;
     }
 }
+
+// ============================================================================
+// UI MESSAGE FUNCTIONS
+// ============================================================================
 
 function showLoadingMessage() {
     const spotsGrid = document.getElementById('spotsGrid');
@@ -529,6 +623,10 @@ function showErrorMessage(error) {
             `;
 }
 
+// ============================================================================
+// WEATHER DISPLAY HELPER FUNCTIONS
+// ============================================================================
+
 function getWindArrow(direction) {
     const arrows = {
         'N': '↓',
@@ -543,7 +641,6 @@ function getWindArrow(direction) {
     return arrows[direction] || '•';
 }
 
-// Helper function to get wind quality class based on wind value
 function getWindClass(windValue) {
     if (windValue < 12) {
         return 'wind-weak';
@@ -556,7 +653,6 @@ function getWindClass(windValue) {
     }
 }
 
-// Helper function to get spot info based on current language
 function getSpotInfo(spot) {
     if (!spot) return null;
     const lang = localStorage.getItem('language') || 'en';
@@ -581,6 +677,10 @@ function translateDayName(dayName) {
     };
     return dayMap[dayName] || dayName;
 }
+
+// ============================================================================
+// COUNTRY DROPDOWN FUNCTIONS
+// ============================================================================
 
 function populateCountryDropdown(data) {
     const dropdownMenu = document.getElementById('dropdownMenu');
@@ -639,6 +739,88 @@ function updateSelectedCountryLabel(countryKey) {
     const countryName = t(countryKey.replace(/\s+/g, ''));
     selectedCountry.textContent = `${countryFlag} ${countryName.toUpperCase()}`;
 }
+
+function setupDropdownEvents() {
+    const dropdownOptions = document.querySelectorAll('.dropdown-option');
+    const searchInput = document.getElementById('searchInput');
+
+    dropdownOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            dropdownOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+
+            const country = option.dataset.country;
+            updateSelectedCountryLabel(country);
+
+            // Save selected country to localStorage
+            localStorage.setItem('selectedCountry', country);
+
+            // Update URL
+            updateUrlForCountry(country);
+
+            // Update page title
+            updatePageTitle(country);
+
+            // Deselect favorites if changing country
+            if (showingFavorites) {
+                showingFavorites = false;
+                localStorage.setItem('showingFavorites', 'false');
+                document.getElementById('favoritesToggle').classList.remove('active');
+            }
+
+            renderSpots(country, searchInput.value, true);
+            closeDropdown();
+
+            // Scroll to top smoothly after country selection
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+}
+
+function setupDropdown() {
+    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    function closeDropdown() {
+        dropdownButton.classList.remove('open', 'active');
+        dropdownMenu.classList.remove('open');
+    }
+
+    dropdownButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (dropdownMenu.classList.contains('open')) {
+            closeDropdown();
+        } else {
+            dropdownButton.classList.add('open', 'active');
+            dropdownMenu.classList.add('open');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
+            closeDropdown();
+            dropdownButton.focus();
+        }
+    });
+
+    // Make closeDropdown available globally
+    window.closeDropdown = closeDropdown;
+}
+
+// ============================================================================
+// MODAL FUNCTIONS
+// ============================================================================
 
 function openAppInfoModal() {
     const modal = document.getElementById('appInfoModal');
@@ -765,12 +947,81 @@ function closeIcmModal() {
     icmImage.src = '';
 }
 
+function setupModals() {
+    const aiModal = document.getElementById('aiModal');
+    const aiCloseButton = document.getElementById('modalClose');
+    const appInfoModal = document.getElementById('appInfoModal');
+    const appInfoCloseButton = document.getElementById('appInfoModalClose');
+    const infoModal = document.getElementById('infoModal');
+    const infoCloseButton = document.getElementById('infoModalClose');
+    const icmModal = document.getElementById('icmModal');
+    const icmCloseButton = document.getElementById('icmModalClose');
+
+    // AI Modal events
+    aiCloseButton.addEventListener('click', closeAIModal);
+    aiModal.addEventListener('click', (e) => {
+        if (e.target === aiModal) {
+            closeAIModal();
+        }
+    });
+
+    // App Info Modal events
+    if (appInfoCloseButton) {
+        appInfoCloseButton.addEventListener('click', closeAppInfoModal);
+    }
+    if (appInfoModal) {
+        appInfoModal.addEventListener('click', (e) => {
+            if (e.target === appInfoModal) {
+                closeAppInfoModal();
+            }
+        });
+    }
+
+    // Info Modal events
+    infoCloseButton.addEventListener('click', closeInfoModal);
+    infoModal.addEventListener('click', (e) => {
+        if (e.target === infoModal) {
+            closeInfoModal();
+        }
+    });
+
+    // ICM Modal events
+    icmCloseButton.addEventListener('click', closeIcmModal);
+    icmModal.addEventListener('click', (e) => {
+        if (e.target === icmModal) {
+            closeIcmModal();
+        }
+    });
+
+    // Escape key for all modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (aiModal.classList.contains('active')) {
+                closeAIModal();
+            }
+            if (appInfoModal && appInfoModal.classList.contains('active')) {
+                closeAppInfoModal();
+            }
+            if (infoModal.classList.contains('active')) {
+                closeInfoModal();
+            }
+            if (icmModal.classList.contains('active')) {
+                closeIcmModal();
+            }
+        }
+    });
+}
+
+// ============================================================================
+// SPOT CARD CREATION AND RENDERING
+// ============================================================================
+
 function createSpotCard(spot) {
     const card = document.createElement('div');
     card.className = 'spot-card';
     card.dataset.country = t(spot.country.replace(/\s+/g, ''));
 
-    // Check if spot has wave data
+    // Check if a spot has wave data
     const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
         (spot.currentConditions && spot.currentConditions.wave !== undefined);
 
@@ -828,11 +1079,11 @@ function createSpotCard(spot) {
         const windTextClass = getWindClass(spot.currentConditions.wind);
         const gustTextClass = getWindClass(spot.currentConditions.gusts);
 
-        // Calculate average of base wind and gusts for row background
+        // Calculate average of base wind and gusts for a row background
         const averageWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
         const averageWindClass = getWindClass(averageWind);
 
-        // Use average wind class for row background
+        // Use average wind class for a row background
         const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
             averageWindClass === 'wind-moderate' ? 'moderate-wind' :
                 averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
@@ -874,7 +1125,7 @@ function createSpotCard(spot) {
                 `;
     }
 
-    // Check if spot is favorited
+    // Check if a spot is favorited
     const isFavorited = isFavorite(spot.name);
     const favoriteClass = isFavorited ? 'favorited' : '';
 
@@ -926,8 +1177,6 @@ function createSpotCard(spot) {
 
     return card;
 }
-
-let currentFilter = 'all';
 
 function updateSpotCounter(count) {
     const spotCounterNumber = document.getElementById('spotCounterNumber');
@@ -1035,148 +1284,9 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
     }
 }
 
-function setupDropdownEvents() {
-    const dropdownOptions = document.querySelectorAll('.dropdown-option');
-    const searchInput = document.getElementById('searchInput');
-
-    dropdownOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.stopPropagation();
-
-            dropdownOptions.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-
-            const country = option.dataset.country;
-            updateSelectedCountryLabel(country);
-
-            // Save selected country to localStorage
-            localStorage.setItem('selectedCountry', country);
-
-            // Update URL
-            updateUrlForCountry(country);
-
-            // Update page title
-            updatePageTitle(country);
-
-            // Deselect favorites if changing country
-            if (showingFavorites) {
-                showingFavorites = false;
-                localStorage.setItem('showingFavorites', 'false');
-                document.getElementById('favoritesToggle').classList.remove('active');
-            }
-
-            renderSpots(country, searchInput.value, true);
-            closeDropdown();
-
-            // Scroll to top smoothly after country selection
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    });
-}
-
-function setupDropdown() {
-    const dropdownButton = document.getElementById('dropdownButton');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-
-    function closeDropdown() {
-        dropdownButton.classList.remove('open', 'active');
-        dropdownMenu.classList.remove('open');
-    }
-
-    dropdownButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (dropdownMenu.classList.contains('open')) {
-            closeDropdown();
-        } else {
-            dropdownButton.classList.add('open', 'active');
-            dropdownMenu.classList.add('open');
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-            closeDropdown();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && dropdownMenu.classList.contains('open')) {
-            closeDropdown();
-            dropdownButton.focus();
-        }
-    });
-
-    // Make closeDropdown available globally
-    window.closeDropdown = closeDropdown;
-}
-
-function setupModals() {
-    const aiModal = document.getElementById('aiModal');
-    const aiCloseButton = document.getElementById('modalClose');
-    const appInfoModal = document.getElementById('appInfoModal');
-    const appInfoCloseButton = document.getElementById('appInfoModalClose');
-    const infoModal = document.getElementById('infoModal');
-    const infoCloseButton = document.getElementById('infoModalClose');
-    const icmModal = document.getElementById('icmModal');
-    const icmCloseButton = document.getElementById('icmModalClose');
-
-    // AI Modal events
-    aiCloseButton.addEventListener('click', closeAIModal);
-    aiModal.addEventListener('click', (e) => {
-        if (e.target === aiModal) {
-            closeAIModal();
-        }
-    });
-
-    // App Info Modal events
-    if (appInfoCloseButton) {
-        appInfoCloseButton.addEventListener('click', closeAppInfoModal);
-    }
-    if (appInfoModal) {
-        appInfoModal.addEventListener('click', (e) => {
-            if (e.target === appInfoModal) {
-                closeAppInfoModal();
-            }
-        });
-    }
-
-    // Info Modal events
-    infoCloseButton.addEventListener('click', closeInfoModal);
-    infoModal.addEventListener('click', (e) => {
-        if (e.target === infoModal) {
-            closeInfoModal();
-        }
-    });
-
-    // ICM Modal events
-    icmCloseButton.addEventListener('click', closeIcmModal);
-    icmModal.addEventListener('click', (e) => {
-        if (e.target === icmModal) {
-            closeIcmModal();
-        }
-    });
-
-    // Escape key for all modals
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            if (aiModal.classList.contains('active')) {
-                closeAIModal();
-            }
-            if (appInfoModal && appInfoModal.classList.contains('active')) {
-                closeAppInfoModal();
-            }
-            if (infoModal.classList.contains('active')) {
-                closeInfoModal();
-            }
-            if (icmModal.classList.contains('active')) {
-                closeIcmModal();
-            }
-        }
-    });
-}
+// ============================================================================
+// SEARCH FUNCTIONALITY
+// ============================================================================
 
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
@@ -1219,7 +1329,7 @@ function setupSearch() {
         searchInput.focus();
     });
 
-    // Clear search on Escape key
+    // Clear search on an Escape key
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && searchInput.value !== '') {
             searchInput.value = '';
@@ -1229,7 +1339,10 @@ function setupSearch() {
     });
 }
 
-// Drag and drop functionality with persistence
+// ============================================================================
+// DRAG AND DROP FUNCTIONALITY
+// ============================================================================
+
 function setupDragAndDrop() {
     const spotsGrid = document.getElementById('spotsGrid');
     let draggedCard = null;
@@ -1262,7 +1375,7 @@ function setupDragAndDrop() {
         }
     });
 
-    spotsGrid.addEventListener('dragend', (e) => {
+    spotsGrid.addEventListener('dragend', () => {
         if (draggedCard) {
             draggedCard.classList.remove('dragging');
             draggedCard = null;
@@ -1303,7 +1416,7 @@ function setupDragAndDrop() {
             // We want elements that are AFTER the cursor position
             // This means elements that are either:
             // 1. Below the cursor (offsetY < 0)
-            // 2. To the right of cursor in same row (offsetX < 0 and on same row)
+            // 2. To the right of the cursor in the same row (offsetX < 0 and on the same row)
 
             if (offsetY < 0) {
                 // Element is below cursor - prioritize by vertical distance
@@ -1313,7 +1426,7 @@ function setupDragAndDrop() {
                     closestElement = child;
                 }
             } else if (offsetX < 0 && offsetY < box.height / 2) {
-                // Element is to the right and roughly in same row
+                // Element is to the right and roughly in the same row
                 // Use a combined offset that prioritizes horizontal over vertical
                 const offset = offsetX / 2 + offsetY;
                 if (offset > closestOffset) {
@@ -1364,91 +1477,97 @@ function loadCardOrder() {
     }
 }
 
-// Favorites rendering
-async function renderFavorites() {
-    showingFavorites = true;
-    const favoritesButton = document.getElementById('favoritesToggle');
-    favoritesButton.classList.add('active');
+// ============================================================================
+// BACKGROUND AUTO-REFRESH FUNCTIONALITY
+// ============================================================================
 
-    const spotsGrid = document.getElementById('spotsGrid');
-    const favorites = getFavorites();
-
-    if (favorites.length === 0) {
-        updateSpotCounter(0);
-        spotsGrid.innerHTML = `
-                <div class="error-message">
-                    <span class="error-icon">⭐</span>
-                    <div class="error-title">${t('noFavoritesTitle')}</div>
-                    <div class="error-description">
-                        ${t('noFavoritesDescription')}
-                    </div>
-                </div>
-            `;
-        return;
-    }
-
+async function refreshDataInBackground() {
     try {
-        if (globalWeatherData.length === 0) {
-            globalWeatherData = await fetchWeatherData();
-        }
+        // Fetch new data silently
+        const freshData = await fetchWeatherData();
 
-        const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+        // Update global data
+        globalWeatherData = freshData;
 
-        updateSpotCounter(favoriteSpots.length);
-        spotsGrid.innerHTML = '';
-        favoriteSpots.forEach(spot => {
-            spotsGrid.appendChild(createSpotCard(spot));
-        });
-        loadCardOrder();
-    } catch (error) {
-        console.error('Failed to load favorites:', error.message);
-        showErrorMessage(error);
-    }
-}
+        // Update country dropdown without changing selection
+        populateCountryDropdown(freshData);
 
-function setupFavorites() {
-    const favoritesButton = document.getElementById('favoritesToggle');
-
-    favoritesButton.addEventListener('click', () => {
+        // Silently update the current view
         if (showingFavorites) {
-            // Exit favorites mode
-            showingFavorites = false;
-            localStorage.setItem('showingFavorites', 'false');
-            favoritesButton.classList.remove('active');
+            // Update favorites without re-rendering (to avoid disruption)
+            const spotsGrid = document.getElementById('spotsGrid');
+            const favorites = getFavorites();
+            const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
-            // Restore previous URL
-            restorePreviousUrl();
+            // Update existing cards instead of recreating them
+            favoriteSpots.forEach(updatedSpot => {
+                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
+                    const spotName = card.querySelector('.spot-name');
+                    return spotName && spotName.textContent === updatedSpot.name;
+                });
 
-            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-            renderSpots(savedCountry, '');
+                if (existingCard) {
+                    const newCard = createSpotCard(updatedSpot);
+                    existingCard.replaceWith(newCard);
+                }
+            });
         } else {
-            // Enter favorites mode
-            localStorage.setItem('showingFavorites', 'true');
+            // Update regular filtered view
+            const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
+            const spotsGrid = document.getElementById('spotsGrid');
 
-            // Update URL to /starred
-            updateUrlForStarred();
+            // Update existing cards instead of recreating them
+            filteredSpots.forEach(updatedSpot => {
+                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
+                    const spotName = card.querySelector('.spot-name');
+                    return spotName && spotName.textContent === updatedSpot.name;
+                });
 
-            renderFavorites();
+                if (existingCard) {
+                    const newCard = createSpotCard(updatedSpot);
+                    existingCard.replaceWith(newCard);
+                }
+            });
+
+            // Update counter
+            updateSpotCounter(filteredSpots.length);
         }
 
-        // Scroll to top after toggling favorites
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-
-    // Restore favorites state on page load
-    const savedFavoritesState = localStorage.getItem('showingFavorites');
-    if (savedFavoritesState === 'true') {
-        renderFavorites();
+        console.log('Data refreshed in background at', new Date().toLocaleTimeString());
+    } catch (error) {
+        console.error('Background refresh failed:', error);
+        // Silently fail - don't disturb the user
     }
 }
 
-// Setup popstate event handler for browser back/forward
-// Handle browser back/forward navigation
+function startAutoRefresh() {
+    // Clear any existing interval
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+
+    // Start a new interval
+    autoRefreshInterval = setInterval(() => {
+        refreshDataInBackground();
+    }, AUTO_REFRESH_INTERVAL);
+
+    console.log('Auto-refresh started: updating every', AUTO_REFRESH_INTERVAL / 1000, 'seconds');
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        console.log('Auto-refresh stopped');
+    }
+}
+
+// ============================================================================
+// BROWSER NAVIGATION (BACK/FORWARD) HANDLING
+// ============================================================================
+
 function handlePopState() {
-    window.addEventListener('popstate', (event) => {
+    window.addEventListener('popstate', () => {
         // Check if we're navigating to /starred
         if (isStarredUrl()) {
             if (!showingFavorites) {
@@ -1484,7 +1603,10 @@ function handlePopState() {
     });
 }
 
-// Hamburger menu functionality
+// ============================================================================
+// MOBILE HAMBURGER MENU
+// ============================================================================
+
 function setupHamburgerMenu() {
     const hamburgerMenu = document.getElementById('hamburgerMenu');
     const headerControls = document.getElementById('headerControls');
@@ -1513,7 +1635,10 @@ function setupHamburgerMenu() {
     });
 }
 
-// Kite Size Calculator Functionality
+// ============================================================================
+// KITE SIZE CALCULATOR
+// ============================================================================
+
 function calculateKiteSize(windSpeed, riderWeight, skillLevel) {
     // Base calculation: kite size (m²) = rider weight (kg) * factor / wind speed (kts)
     let factor = 2.5; // Default factor for intermediate flat water
@@ -1536,7 +1661,7 @@ function calculateKiteSize(windSpeed, riderWeight, skillLevel) {
     // Calculate base kite size
     let kiteSize = (riderWeight * factor) / windSpeed;
 
-    // Round to nearest common kite size (7, 9, 10, 12, 14, 15, 17 m²)
+    // Round to the nearest common kite size (7, 9, 10, 12, 14, 15, 17 m²)
     const commonSizes = [7, 9, 10, 12, 14, 15, 17];
     kiteSize = commonSizes.reduce((prev, curr) =>
         Math.abs(curr - kiteSize) < Math.abs(prev - kiteSize) ? curr : prev
@@ -1545,8 +1670,8 @@ function calculateKiteSize(windSpeed, riderWeight, skillLevel) {
     return kiteSize;
 }
 
-function calculateBoardSize(riderWeight, skillLevel, kiteSize) {
-    // Determine board type first
+function calculateBoardSize(riderWeight, skillLevel) {
+    // Determine a board type first
     let boardType = 'Twin Tip';
     if (skillLevel.includes('large') || (skillLevel.includes('medium') && skillLevel.includes('advanced'))) {
         boardType = 'Surfboard/Directional 🏄';
@@ -1691,7 +1816,7 @@ function setupKiteSizeCalculator() {
 
         // Calculate
         const kiteSize = calculateKiteSize(windSpeed, riderWeight, skillLevel);
-        const boardSize = calculateBoardSize(riderWeight, skillLevel, kiteSize);
+        const boardSize = calculateBoardSize(riderWeight, skillLevel);
 
         // Display results
         document.getElementById('kiteSize').textContent = `${kiteSize} m²`;
@@ -1706,6 +1831,10 @@ function setupKiteSizeCalculator() {
         }
     });
 }
+
+// ============================================================================
+// COLUMN LAYOUT TOGGLE (2 vs 3 columns)
+// ============================================================================
 
 function setupColumnToggle() {
     const columnToggle = document.getElementById('columnToggle');
@@ -1759,100 +1888,10 @@ function setupColumnToggle() {
     });
 }
 
-// Auto-refresh functionality
-async function refreshDataInBackground() {
-    try {
-        // Fetch new data silently
-        const freshData = await fetchWeatherData();
+// ============================================================================
+// SPONSORS FUNCTIONALITY
+// ============================================================================
 
-        // Update global data
-        globalWeatherData = freshData;
-
-        // Update country dropdown without changing selection
-        populateCountryDropdown(freshData);
-
-        // Silently update the current view
-        if (showingFavorites) {
-            // Update favorites without re-rendering (to avoid disruption)
-            const spotsGrid = document.getElementById('spotsGrid');
-            const favorites = getFavorites();
-            const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
-
-            // Update existing cards instead of recreating them
-            favoriteSpots.forEach(updatedSpot => {
-                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
-                    const spotName = card.querySelector('.spot-name');
-                    return spotName && spotName.textContent === updatedSpot.name;
-                });
-
-                if (existingCard) {
-                    const newCard = createSpotCard(updatedSpot);
-                    existingCard.replaceWith(newCard);
-                }
-            });
-        } else {
-            // Update regular filtered view
-            const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
-            const spotsGrid = document.getElementById('spotsGrid');
-
-            // Update existing cards instead of recreating them
-            filteredSpots.forEach(updatedSpot => {
-                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
-                    const spotName = card.querySelector('.spot-name');
-                    return spotName && spotName.textContent === updatedSpot.name;
-                });
-
-                if (existingCard) {
-                    const newCard = createSpotCard(updatedSpot);
-                    existingCard.replaceWith(newCard);
-                }
-            });
-
-            // Update counter
-            updateSpotCounter(filteredSpots.length);
-        }
-
-        console.log('Data refreshed in background at', new Date().toLocaleTimeString());
-    } catch (error) {
-        console.error('Background refresh failed:', error);
-        // Silently fail - don't disturb the user
-    }
-}
-
-function startAutoRefresh() {
-    // Clear any existing interval
-    if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-    }
-
-    // Start new interval
-    autoRefreshInterval = setInterval(() => {
-        refreshDataInBackground();
-    }, AUTO_REFRESH_INTERVAL);
-
-    console.log('Auto-refresh started: updating every', AUTO_REFRESH_INTERVAL / 1000, 'seconds');
-}
-
-function stopAutoRefresh() {
-    if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-        console.log('Auto-refresh stopped');
-    }
-}
-
-// Make functions global for onclick handlers
-window.openAppInfoModal = openAppInfoModal;
-window.closeAppInfoModal = closeAppInfoModal;
-window.openAIModal = openAIModal;
-window.closeAIModal = closeAIModal;
-window.openInfoModal = openInfoModal;
-window.closeInfoModal = closeInfoModal;
-window.openIcmModal = openIcmModal;
-window.closeIcmModal = closeIcmModal;
-window.toggleFavorite = toggleFavorite;
-
-// Sponsors functionality
 async function fetchMainSponsors() {
     try {
         const response = await fetch('/api/v1/sponsors/main');
@@ -1896,10 +1935,13 @@ async function renderMainSponsors() {
     sponsorsContainer.innerHTML = sponsorsHTML;
 }
 
+// ============================================================================
+// URL HANDLING AND ROUTING
+// ============================================================================
+
 function handleCountryURL() {
     // Check for country in URL
     const urlCountry = getCountryFromUrl();
-    let countryToLoad = 'all';
 
     if (urlCountry) {
         // Wait for data to be loaded to validate country
@@ -1912,7 +1954,6 @@ function handleCountryURL() {
 
             if (actualCountry) {
                 // Valid country in URL
-                countryToLoad = actualCountry;
                 localStorage.setItem('selectedCountry', actualCountry);
                 updatePageTitle(actualCountry);
                 renderSpots(actualCountry, '', true);
@@ -1921,7 +1962,7 @@ function handleCountryURL() {
                 showInvalidCountryError(urlCountry);
             }
 
-            // Start auto-refresh after initial load
+            // Start auto-refresh after an initial load
             startAutoRefresh();
         }).catch(error => {
             console.error('Failed to load weather:', error.message);
@@ -1930,12 +1971,11 @@ function handleCountryURL() {
     } else {
         // No country or starred in URL - use saved/default country
         const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-        countryToLoad = savedCountry;
         updateUrlForCountry(savedCountry);
         updatePageTitle(savedCountry);
-        renderSpots(countryToLoad);
+        renderSpots(savedCountry);
 
-        // Start auto-refresh after initial load
+        // Start auto-refresh after an initial load
         startAutoRefresh();
     }
 }
@@ -1952,7 +1992,7 @@ function handleStarredURL() {
         }
         updatePageTitle('all'); // Will be overridden by renderFavorites if needed
         renderFavorites();
-        // Start auto-refresh after initial load
+        // Start auto-refresh after an initial load
         startAutoRefresh();
     } else {
         handleCountryURL();
@@ -1967,6 +2007,25 @@ function setupInfoToggle() {
         });
     }
 }
+
+// ============================================================================
+// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
+// ============================================================================
+
+// Make functions global for onclick handlers
+window.openAppInfoModal = openAppInfoModal;
+window.closeAppInfoModal = closeAppInfoModal;
+window.openAIModal = openAIModal;
+window.closeAIModal = closeAIModal;
+window.openInfoModal = openInfoModal;
+window.closeInfoModal = closeInfoModal;
+window.openIcmModal = openIcmModal;
+window.closeIcmModal = closeIcmModal;
+window.toggleFavorite = toggleFavorite;
+
+// ============================================================================
+// MAIN INITIALIZATION
+// ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -1984,3 +2043,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMainSponsors();
     handleStarredURL();
 });
+
+// ============================================================================
+// PAGE RELOAD BEHAVIOR
+// ============================================================================
+
+// Scroll to top on page reload
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+};
+
+// Reload the page after clicking on the logo
+function reloadPage() {
+    window.scrollTo(0, 0);
+    window.location.reload();
+}

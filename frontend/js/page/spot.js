@@ -1,23 +1,45 @@
+// ============================================================================
+// GLOBAL STATE MANAGEMENT
+// ============================================================================
+
+// Current spot being displayed
 let currentSpot = null;
+
+// Current language setting
 let currentLanguage = 'en';
+
+// Error state tracking
 let currentErrorKey = null;
 let currentErrorText = '';
+
+// Loading state tracking
 let currentLoadingKey = 'loadingSpotData';
+
+// Polling and refresh interval IDs
 let forecastPollIntervalId = null;
 let forecastTimeoutId = null;
 let backgroundRefreshIntervalId = null;
+
+// Current spot ID from URL
 let currentSpotId = null;
+
+// Selected forecast model (gfs or ifs)
 let selectedModel = 'gfs';
 
-// Constants
-const FORECAST_POLL_INTERVAL = 5000;
-const FORECAST_TIMEOUT_MS = 30000;
-const BACKGROUND_REFRESH_INTERVAL = 60000;
+// ============================================================================
+// CONFIGURATION CONSTANTS
+// ============================================================================
 
-// Configuration
 const API_ENDPOINT = '/api/v1/spots';
+const FORECAST_POLL_INTERVAL = 5000;       // 5 seconds
+const FORECAST_TIMEOUT_MS = 30000;         // 30 seconds
+const BACKGROUND_REFRESH_INTERVAL = 60000; // 1 minute
 
-// Extract spot ID from URL
+// ============================================================================
+// URL AND MODEL SELECTION HELPERS
+// ============================================================================
+
+// Extract spot ID from the URL pattern: /spot/{spotId}
 function getSpotIdFromUrl() {
     const pathParts = window.location.pathname.split('/');
     const spotIndex = pathParts.indexOf('spot');
@@ -27,7 +49,7 @@ function getSpotIdFromUrl() {
     return null;
 }
 
-// Get selected forecast model from sessionStorage
+// Get a selected forecast model from sessionStorage
 function getSelectedModel() {
     const model = sessionStorage.getItem('forecastModel');
     if (model && (model === 'gfs' || model === 'ifs')) {
@@ -36,13 +58,17 @@ function getSelectedModel() {
     return 'gfs';
 }
 
-// Set selected forecast model in sessionStorage
+// Set the selected forecast model in sessionStorage
 function setSelectedModel(model) {
     selectedModel = model;
     sessionStorage.setItem('forecastModel', model);
 }
 
-// Fetch single spot data
+// ============================================================================
+// API FUNCTIONS
+// ============================================================================
+
+// Fetch single spot data from the API
 async function fetchSpotData(spotId) {
     try {
         const model = getSelectedModel();
@@ -53,18 +79,27 @@ async function fetchSpotData(spotId) {
             error.status = response.status;
             throw error;
         }
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching spot data:', error);
         throw error;
     }
 }
 
+// ============================================================================
+// DATA VALIDATION HELPERS
+// ============================================================================
+
+// Check if a spot has valid forecast data
 function hasForecastData(spot) {
     return spot && Array.isArray(spot.forecast) && spot.forecast.length > 0;
 }
 
+// ============================================================================
+// POLLING AND REFRESH MANAGEMENT
+// ============================================================================
+
+// Clear forecast polling timers
 function clearForecastPolling() {
     if (forecastPollIntervalId) {
         clearInterval(forecastPollIntervalId);
@@ -76,6 +111,7 @@ function clearForecastPolling() {
     }
 }
 
+// Clear background refresh timer
 function clearBackgroundRefresh() {
     if (backgroundRefreshIntervalId) {
         clearInterval(backgroundRefreshIntervalId);
@@ -83,6 +119,7 @@ function clearBackgroundRefresh() {
     }
 }
 
+// Set loading message and hide the error
 function setLoadingMessage(key) {
     const loadingMessage = document.getElementById('loadingMessage');
     const loadingText = document.getElementById('loadingText');
@@ -103,6 +140,7 @@ function setLoadingMessage(key) {
     }
 }
 
+// Start polling for forecast data (when initially empty)
 function startForecastPolling(spotId) {
     clearForecastPolling();
 
@@ -135,6 +173,7 @@ function startForecastPolling(spotId) {
     }, FORECAST_TIMEOUT_MS);
 }
 
+// Start background refresh for live data updates
 function startBackgroundRefresh(spotId) {
     if (backgroundRefreshIntervalId || !spotId) {
         return;
@@ -147,6 +186,7 @@ function startBackgroundRefresh(spotId) {
                 return;
             }
 
+            // Only update if data has changed
             if (!currentSpot || JSON.stringify(latestSpot) !== JSON.stringify(currentSpot)) {
                 displaySpot(latestSpot);
             }
@@ -161,7 +201,11 @@ function startBackgroundRefresh(spotId) {
     }, BACKGROUND_REFRESH_INTERVAL);
 }
 
-// Helper function to get wind arrow
+// ============================================================================
+// WEATHER DISPLAY HELPER FUNCTIONS
+// ============================================================================
+
+// Get wind arrow symbol based on a direction
 function getWindArrow(direction) {
     const arrows = {
         'N': '↓',
@@ -176,7 +220,7 @@ function getWindArrow(direction) {
     return arrows[direction] || '•';
 }
 
-// Helper function to get wind rotation angle for arrow
+// Get wind rotation angle for arrow (in degrees)
 function getWindRotation(direction) {
     const rotations = {
         'N': 0,
@@ -191,7 +235,11 @@ function getWindRotation(direction) {
     return rotations[direction] || 0;
 }
 
-// Helper function to translate day names
+// ============================================================================
+// DATE AND TIME FORMATTING FUNCTIONS
+// ============================================================================
+
+// Translate day names (Mon, Tue, Wed, etc.)
 function translateDayName(dayName) {
     if (!dayName || typeof dayName !== 'string') {
         return '';
@@ -212,6 +260,32 @@ function translateDayName(dayName) {
     return translationKey ? t(translationKey) : dayName;
 }
 
+// Translate month names (Jan, Feb, Mar, etc.)
+function translateMonthName(monthName) {
+    if (!monthName || typeof monthName !== 'string') {
+        return '';
+    }
+
+    const keyMap = {
+        Jan: 'monthJan',
+        Feb: 'monthFeb',
+        Mar: 'monthMar',
+        Apr: 'monthApr',
+        May: 'monthMay',
+        Jun: 'monthJun',
+        Jul: 'monthJul',
+        Aug: 'monthAug',
+        Sep: 'monthSep',
+        Oct: 'monthOct',
+        Nov: 'monthNov',
+        Dec: 'monthDec'
+    };
+
+    const translationKey = keyMap[monthName];
+    return translationKey ? t(translationKey) : monthName;
+}
+
+// Format forecast date label for table view (responsive)
 function formatForecastDateLabel(rawDate) {
     if (!rawDate || typeof rawDate !== 'string') {
         return rawDate || '';
@@ -240,7 +314,86 @@ function formatForecastDateLabel(rawDate) {
     }
 }
 
-// Helper function to get spot info based on current language
+// Format day label for windguru horizontal view
+function formatDayLabel(dateStr) {
+    if (!dateStr) return '';
+    const tokens = dateStr.split(' ').filter(Boolean);
+    if (tokens.length < 4) return '';
+
+    const dayToken = tokens[0];
+    const dayOfMonthToken = tokens[1];
+    const monthToken = tokens[2];
+
+    const translatedDay = translateDayName(dayToken);
+    const shortDay = translatedDay.substring(0, 3);
+    const translatedMonth = translateMonthName(monthToken);
+
+    return `${shortDay} ${dayOfMonthToken}/${translatedMonth}`;
+}
+
+// Parse forecast date string (e.g., "Tue 28 Oct 2025 14:00")
+function parseForecastDate(dateStr) {
+    if (!dateStr) return new Date();
+
+    try {
+        const parts = dateStr.trim().split(/\s+/);
+        if (parts.length >= 5) {
+            const dayOfMonth = parseInt(parts[1]);
+            const monthName = parts[2];
+            const year = parseInt(parts[3]);
+            const timeParts = parts[4].split(':');
+            const hours = parseInt(timeParts[0]);
+            const minutes = parseInt(timeParts[1]);
+
+            // Map month names to month numbers (0-11)
+            const monthMap = {
+                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
+                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
+                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+            };
+
+            const monthNumber = monthMap[monthName];
+            if (monthNumber !== undefined) {
+                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('Error parsing forecast date:', dateStr, e);
+    }
+
+    return new Date();
+}
+
+// Find forecast closest to current time
+function findClosestForecast(forecastData) {
+    if (!forecastData || forecastData.length === 0) {
+        return null;
+    }
+
+    const now = new Date();
+    let closestForecast = forecastData[0];
+    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
+
+    for (let i = 1; i < forecastData.length; i++) {
+        const forecastTime = parseForecastDate(forecastData[i].date);
+        const diff = Math.abs(forecastTime - now);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestForecast = forecastData[i];
+        }
+    }
+
+    return closestForecast;
+}
+
+// ============================================================================
+// LANGUAGE AND SPOT INFO HELPERS
+// ============================================================================
+
+// Get spot info based on the current language
 function getSpotInfo(spot) {
     if (!spot) return null;
     const lang = localStorage.getItem('language') || 'en';
@@ -248,10 +401,12 @@ function getSpotInfo(spot) {
     return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
 }
 
+// Get current language code
 function getCurrentLanguageCode() {
     return currentLanguage || localStorage.getItem('language') || 'en';
 }
 
+// Get AI analysis for the current language with fallbacks
 function getAiAnalysisForCurrentLanguage(spot) {
     if (!spot) return '';
 
@@ -269,7 +424,11 @@ function getAiAnalysisForCurrentLanguage(spot) {
     return aiEn || aiPl || aiLegacy;
 }
 
-// Modal functions
+// ============================================================================
+// MODAL FUNCTIONS
+// ============================================================================
+
+// Open spot information modal
 function openInfoModal(spotName) {
     if (!currentSpot || !currentSpot.spotInfo) return;
 
@@ -321,12 +480,14 @@ function openInfoModal(spotName) {
     document.body.style.overflow = 'hidden';
 }
 
+// Closing spot information modal
 function closeInfoModal() {
     const modal = document.getElementById('infoModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
+// Open AI analysis modal
 function openAIModal(spotName) {
     if (!currentSpot) return;
 
@@ -349,12 +510,14 @@ function openAIModal(spotName) {
     document.body.style.overflow = 'hidden';
 }
 
+// Close AI analysis modal
 function closeAIModal() {
     const modal = document.getElementById('aiModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
+// Open ICM forecast modal
 function openIcmModal(spotName, icmUrl) {
     const modal = document.getElementById('icmModal');
     const modalTitle = document.getElementById('icmModalTitle');
@@ -367,12 +530,14 @@ function openIcmModal(spotName, icmUrl) {
     document.body.style.overflow = 'hidden';
 }
 
+// Close ICM forecast modal
 function closeIcmModal() {
     const modal = document.getElementById('icmModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
+// Open app information modal
 function openAppInfoModal() {
     const modal = document.getElementById('appInfoModal');
     if (!modal) return;
@@ -381,71 +546,18 @@ function openAppInfoModal() {
     document.body.style.overflow = 'hidden';
 }
 
+// Close app information modal
 function closeAppInfoModal() {
     const modal = document.getElementById('appInfoModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
-function findClosestForecast(forecastData) {
-    if (!forecastData || forecastData.length === 0) {
-        return null;
-    }
+// ============================================================================
+// FORECAST VIEW CREATION FUNCTIONS
+// ============================================================================
 
-    const now = new Date();
-    let closestForecast = forecastData[0];
-    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-    for (let i = 1; i < forecastData.length; i++) {
-        const forecastTime = parseForecastDate(forecastData[i].date);
-        const diff = Math.abs(forecastTime - now);
-        if (diff < minDiff) {
-            minDiff = diff;
-            closestForecast = forecastData[i];
-        }
-    }
-
-    return closestForecast;
-}
-
-// Helper function to parse forecast date string (e.g., "Mon 28 Oct 2025 14:00")
-function parseForecastDate(dateStr) {
-    if (!dateStr) return new Date();
-
-    try {
-        // Parse format: "Mon 28 Oct 2025 14:00"
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length >= 5) {
-            const dayOfMonth = parseInt(parts[1]);
-            const monthName = parts[2];
-            const year = parseInt(parts[3]);
-            const timeParts = parts[4].split(':');
-            const hours = parseInt(timeParts[0]);
-            const minutes = parseInt(timeParts[1]);
-
-            // Map month names to month numbers (0-11)
-            const monthMap = {
-                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
-                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
-                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-            };
-
-            const monthNumber = monthMap[monthName];
-            if (monthNumber !== undefined) {
-                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
-                if (!isNaN(parsed.getTime())) {
-                    return parsed;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn('Error parsing forecast date:', dateStr, e);
-    }
-
-    return new Date();
-}
-
-// Create Windguru-style vertical forecast view
+// Create a Windguru-style horizontal forecast view
 function createWindguruView(forecastData, hasWaveData) {
     if (!forecastData || forecastData.length === 0) {
         return '';
@@ -498,14 +610,12 @@ function createWindguruView(forecastData, hasWaveData) {
         if (daytimeForecasts.length === 0) return;
 
         const firstForecast = daytimeForecasts[0];
-
-        // Format day label
         const dayLabel = formatDayLabel(firstForecast.date);
 
         windguruHtml += `<div class="windguru-day-column">`;
         windguruHtml += `<div class="windguru-day-header">${dayLabel}</div>`;
 
-        // Time row - with hour cells
+        // Time row
         windguruHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const time = forecast.date ? forecast.date.split(' ')[4] : '';
@@ -593,49 +703,11 @@ function createWindguruView(forecastData, hasWaveData) {
     return windguruHtml;
 }
 
-// Helper function to translate month names
-function translateMonthName(monthName) {
-    if (!monthName || typeof monthName !== 'string') {
-        return '';
-    }
+// ============================================================================
+// FORECAST TABS SETUP
+// ============================================================================
 
-    const keyMap = {
-        Jan: 'monthJan',
-        Feb: 'monthFeb',
-        Mar: 'monthMar',
-        Apr: 'monthApr',
-        May: 'monthMay',
-        Jun: 'monthJun',
-        Jul: 'monthJul',
-        Aug: 'monthAug',
-        Sep: 'monthSep',
-        Oct: 'monthOct',
-        Nov: 'monthNov',
-        Dec: 'monthDec'
-    };
-
-    const translationKey = keyMap[monthName];
-    return translationKey ? t(translationKey) : monthName;
-}
-
-// Format day label for windguru view
-function formatDayLabel(dateStr) {
-    if (!dateStr) return '';
-    const tokens = dateStr.split(' ').filter(Boolean);
-    if (tokens.length < 4) return '';
-
-    const dayToken = tokens[0];
-    const dayOfMonthToken = tokens[1];
-    const monthToken = tokens[2];
-
-    const translatedDay = translateDayName(dayToken);
-    const shortDay = translatedDay.substring(0, 3);
-    const translatedMonth = translateMonthName(monthToken);
-
-    return `${shortDay} ${dayOfMonthToken}/${translatedMonth}`;
-}
-
-// Setup forecast tabs
+// Setup forecast view tabs (table vs. windguru)
 function setupForecastTabs() {
     const tabs = document.querySelectorAll('.forecast-tab');
     if (tabs.length === 0) return;
@@ -643,7 +715,7 @@ function setupForecastTabs() {
     // Restore saved preference from localStorage
     const savedView = localStorage.getItem('forecastViewPreference') || 'table';
 
-    // Set initial view based on saved preference
+    // Set the initial view based on saved preference
     const tableView = document.querySelector('.table-view');
     const windguruView = document.querySelector('.windguru-view');
 
@@ -720,7 +792,11 @@ function setupForecastTabs() {
     }
 }
 
-// Create spot card HTML
+// ============================================================================
+// SPOT CARD CREATION
+// ============================================================================
+
+// Create a detailed spot card HTML with all forecast views
 function createSpotCard(spot) {
     const countryFlag = getCountryFlag(spot.country);
 
@@ -732,10 +808,13 @@ function createSpotCard(spot) {
     // Check if any forecast has wave data
     const hasWaveData = forecastData && forecastData.some(day => day.wave !== undefined);
 
-    // Determine layout
+    // Determine layout (desktop vs mobile)
     const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
 
-    // Current conditions row (to be added at the top of the table)
+    // ========================================================================
+    // BUILD CURRENT CONDITIONS ROW (for table)
+    // ========================================================================
+
     let currentConditionsRow = '';
     if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
         let windClass, windTextClass;
@@ -790,6 +869,10 @@ function createSpotCard(spot) {
                 `;
     }
 
+    // ========================================================================
+    // BUILD FORECAST ROWS (for table)
+    // ========================================================================
+
     let forecastRows = '';
     if (forecastData && forecastData.length > 0) {
         let previousDay = null;
@@ -839,7 +922,7 @@ function createSpotCard(spot) {
                 }
             }
 
-            // Extract day from date string to detect day changes
+            // Detect day changes for alternating border colors
             const currentDay = day.date ? day.date.split(' ')[0] : null;
             const isDayChange = previousDay && currentDay && previousDay !== currentDay;
 
@@ -847,7 +930,6 @@ function createSpotCard(spot) {
                 dayColorIndex = (dayColorIndex + 1) % 2;
             }
 
-            // Alternating border colors for each day
             const borderColor = dayColorIndex === 0 ? 'rgba(74, 158, 255, 0.4)' : 'rgba(255, 158, 74, 0.4)';
             const combinedStyle = `border-left: 3px solid ${borderColor};`;
 
@@ -869,7 +951,10 @@ function createSpotCard(spot) {
         });
     }
 
-    // Build current conditions card HTML
+    // ========================================================================
+    // BUILD CURRENT CONDITIONS CARD (sidebar)
+    // ========================================================================
+
     let currentConditionsCardHtml = '';
     let conditionsData = null;
     let conditionsLabel = '';
@@ -886,7 +971,7 @@ function createSpotCard(spot) {
         };
         conditionsLabel = t('nowLabel');
     } else if (forecastData && forecastData.length > 0) {
-        // Use the forecast closest to current time
+        // Use the forecast closest to the current time
         const nearestForecast = findClosestForecast(forecastData);
         if (nearestForecast) {
             conditionsData = {
@@ -907,19 +992,14 @@ function createSpotCard(spot) {
 
         // Determine wind quality class
         let windQualityClass = '';
-        let windQualityText = '';
         if (avgWind < 12) {
             windQualityClass = 'wind-weak';
-            windQualityText = 'Weak';
         } else if (avgWind >= 12 && avgWind < 18) {
             windQualityClass = 'wind-moderate';
-            windQualityText = 'Good';
         } else if (avgWind >= 18 && avgWind <= 25) {
             windQualityClass = 'wind-strong';
-            windQualityText = 'Strong';
         } else {
             windQualityClass = 'wind-extreme';
-            windQualityText = 'Extreme';
         }
 
         currentConditionsCardHtml = `
@@ -959,7 +1039,10 @@ function createSpotCard(spot) {
             `;
     }
 
-    // Build spot info card HTML
+    // ========================================================================
+    // BUILD SPOT INFO CARD (sidebar)
+    // ========================================================================
+
     let spotInfoCardHtml = '';
     if (spot.spotInfo) {
         const info = getSpotInfo(spot);
@@ -1003,7 +1086,10 @@ function createSpotCard(spot) {
             `;
     }
 
-    // Build embedded map HTML (desktop only)
+    // ========================================================================
+    // BUILD EMBEDDED MAP (desktop only)
+    // ========================================================================
+
     const embeddedMapHtml = isDesktopView && spot.embeddedMap && spot.embeddedMap.trim().length > 0
         ? `
                 <div class="spot-embedded-map">
@@ -1012,9 +1098,12 @@ function createSpotCard(spot) {
             `
         : '';
 
+    // ========================================================================
+    // BUILD AI ANALYSIS CARD (sidebar)
+    // ========================================================================
+
     const aiAnalysisText = getAiAnalysisForCurrentLanguage(spot);
 
-    // Build AI analysis card HTML
     let aiAnalysisCardHtml = '';
     if (aiAnalysisText) {
         aiAnalysisCardHtml = `
@@ -1026,6 +1115,10 @@ function createSpotCard(spot) {
                 </div>
             `;
     }
+
+    // ========================================================================
+    // ASSEMBLE COMPLETE SPOT CARD
+    // ========================================================================
 
     return `
             <div class="spot-card" style="width: 100%;">
@@ -1100,7 +1193,11 @@ function createSpotCard(spot) {
         `;
 }
 
-// Display spot
+// ============================================================================
+// DISPLAY FUNCTIONS
+// ============================================================================
+
+// Display spot card in the UI
 function displaySpot(spot) {
     const spotContainer = document.getElementById('spotContainer');
     const loadingMessage = document.getElementById('loadingMessage');
@@ -1121,6 +1218,7 @@ function displaySpot(spot) {
     currentErrorText = '';
     currentLoadingKey = null;
 
+    // Preserve embedded map iframe to avoid reload
     let preservedMapNode = null;
     const shouldPreserveMap = previousSpot
         && previousSpot.embeddedMap
@@ -1137,6 +1235,7 @@ function displaySpot(spot) {
     if (spot) {
         spotContainer.innerHTML = createSpotCard(spot);
 
+        // Restore preserved map iframe
         if (shouldPreserveMap && preservedMapNode) {
             const newMapFrame = document.querySelector('.spot-embedded-map-frame');
             if (newMapFrame) {
@@ -1158,7 +1257,7 @@ function displaySpot(spot) {
     }
 }
 
-// Display error
+// Display error message
 function displayError(messageKey) {
     const loadingMessage = document.getElementById('loadingMessage');
     const errorMessage = document.getElementById('errorMessage');
@@ -1191,7 +1290,10 @@ function displayError(messageKey) {
     currentLoadingKey = null;
 }
 
-// Initialize theme
+// ============================================================================
+// THEME MANAGEMENT
+// ============================================================================
+
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     const themeToggle = document.getElementById('themeToggle');
@@ -1207,7 +1309,7 @@ function initTheme() {
         localStorage.setItem('theme', theme);
     }
 
-    // Set initial theme
+    // Set the initial theme
     updateTheme(savedTheme);
 
     // Theme toggle event
@@ -1220,7 +1322,11 @@ function initTheme() {
     }
 }
 
-// Initialize language
+// ============================================================================
+// LANGUAGE/INTERNATIONALIZATION MANAGEMENT
+// ============================================================================
+
+// Update all UI translations
 function updateUITranslations() {
     // Update app info modal
     const appInfoModalTitle = document.getElementById('appInfoModalTitle');
@@ -1289,6 +1395,7 @@ function updateUITranslations() {
         }
     }
 
+    // Update error message
     const errorMessage = document.getElementById('errorMessage');
     if (errorMessage && errorMessage.style.display !== 'none') {
         const errorTitle = document.getElementById('errorTitle');
@@ -1307,6 +1414,7 @@ function updateUITranslations() {
     }
 }
 
+// Initialize language and setup toggle
 function initLanguage() {
     const savedLang = localStorage.getItem('language') || 'en';
     currentLanguage = savedLang;
@@ -1335,12 +1443,14 @@ function initLanguage() {
             if (currentSpot) {
                 displaySpot(currentSpot);
             }
-
         });
     }
 }
 
-// Setup modal close handlers
+// ============================================================================
+// MODAL SETUP
+// ============================================================================
+
 function setupModals() {
     const infoModalClose = document.getElementById('infoModalClose');
     const aiModalClose = document.getElementById('aiModalClose');
@@ -1363,7 +1473,7 @@ function setupModals() {
         appInfoModalClose.addEventListener('click', closeAppInfoModal);
     }
 
-    // Close modals on overlay click
+    // Close modals on the overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
@@ -1376,7 +1486,11 @@ function setupModals() {
     });
 }
 
-// Setup info toggle
+// ============================================================================
+// UI SETUP FUNCTIONS
+// ============================================================================
+
+// Setup info toggle button
 function setupInfoToggle() {
     const infoToggle = document.getElementById('infoToggle');
     if (infoToggle) {
@@ -1386,7 +1500,7 @@ function setupInfoToggle() {
     }
 }
 
-// Setup hamburger menu
+// Setup mobile hamburger menu
 function setupHamburgerMenu() {
     const hamburgerMenu = document.getElementById('hamburgerMenu');
     const headerControls = document.getElementById('headerControls');
@@ -1415,14 +1529,18 @@ function setupHamburgerMenu() {
     });
 }
 
-// Setup header navigation
+// ============================================================================
+// HEADER NAVIGATION
+// ============================================================================
+
+// Normalize country name for URL
 function normalizeCountryForUrl(country) {
-    // Convert country name to URL-safe format: lowercase, no spaces or special chars
     return country.toLowerCase()
         .replace(/\s+/g, '')
         .replace(/[^a-z]/g, '');
 }
 
+// Setup header navigation (logo and title click)
 function setupHeaderNavigation() {
     const headerLogo = document.getElementById('headerLogo');
     const headerTitle = document.getElementById('headerTitle');
@@ -1446,7 +1564,11 @@ function setupHeaderNavigation() {
     }
 }
 
-// Setup window resize handler to re-render dates when crossing mobile/desktop threshold
+// ============================================================================
+// WINDOW RESIZE HANDLER
+// ============================================================================
+
+// Re-render spot when crossing a mobile/desktop threshold
 function setupResizeHandler() {
     let resizeTimeout;
     let wasMobile = window.innerWidth <= 768;
@@ -1475,7 +1597,11 @@ function setupResizeHandler() {
     });
 }
 
-// Setup model dropdown
+// ============================================================================
+// MODEL DROPDOWN (GFS vs IFS)
+// ============================================================================
+
+// Setup forecast model dropdown
 function setupModelDropdown() {
     const modelDropdown = document.getElementById('modelDropdown');
     const modelDropdownMenu = document.getElementById('modelDropdownMenu');
@@ -1485,7 +1611,7 @@ function setupModelDropdown() {
         return;
     }
 
-    // Initialize with current model
+    // Initialize with the current model
     const currentModel = getSelectedModel();
     modelDropdownText.textContent = currentModel.toUpperCase();
 
@@ -1503,7 +1629,7 @@ function setupModelDropdown() {
             setSelectedModel(newModel);
             modelDropdownText.textContent = newModel.toUpperCase();
 
-            // Update selected state
+            // Update the selected state
             options.forEach(opt => opt.classList.remove('selected'));
             option.classList.add('selected');
 
@@ -1511,7 +1637,7 @@ function setupModelDropdown() {
             modelDropdownMenu.classList.remove('open');
             modelDropdown.classList.remove('open');
 
-            // Reload data with new model
+            // Reload data with a new model
             if (currentSpotId) {
                 setLoadingMessage('loadingSpotData');
                 fetchSpotData(currentSpotId)
@@ -1534,7 +1660,7 @@ function setupModelDropdown() {
         });
     });
 
-    // Toggle dropdown on button click
+    // Toggle dropdown on the button click
     modelDropdown.addEventListener('click', () => {
         modelDropdownMenu.classList.toggle('open');
         modelDropdown.classList.toggle('open');
@@ -1549,7 +1675,58 @@ function setupModelDropdown() {
     });
 }
 
-// Main initialization
+// ============================================================================
+// SPONSORS FUNCTIONALITY
+// ============================================================================
+
+// Fetch sponsor by spot ID
+async function fetchSponsorBySpotId(spotId) {
+    try {
+        const response = await fetch(`/api/v1/sponsors/${spotId}`);
+        if (!response.ok) {
+            return null;
+        }
+        const sponsor = await response.json();
+        return sponsor || null;
+    } catch (error) {
+        console.error('Error fetching sponsor:', error);
+        return null;
+    }
+}
+
+// Render spot sponsor
+async function renderSpotSponsor(spotId) {
+    const sponsorsContainer = document.getElementById('sponsorsContainer');
+    if (!sponsorsContainer) {
+        return;
+    }
+
+    const sponsor = await fetchSponsorBySpotId(spotId);
+
+    if (!sponsor) {
+        sponsorsContainer.innerHTML = '';
+        return;
+    }
+
+    const sponsorsHTML = `
+        <div class="sponsors-container">
+            <div class="sponsors-list">
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        <span class="sponsor-name">${sponsor.name}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+
+    sponsorsContainer.innerHTML = sponsorsHTML;
+}
+
+// ============================================================================
+// MAIN INITIALIZATION
+// ============================================================================
+
 async function init() {
     initTheme();
     initLanguage();
@@ -1601,48 +1778,9 @@ async function init() {
     }
 }
 
-// Sponsors functionality
-async function fetchSponsorBySpotId(spotId) {
-    try {
-        const response = await fetch(`/api/v1/sponsors/${spotId}`);
-        if (!response.ok) {
-            return null;
-        }
-        const sponsor = await response.json();
-        return sponsor || null;
-    } catch (error) {
-        console.error('Error fetching sponsor:', error);
-        return null;
-    }
-}
-
-async function renderSpotSponsor(spotId) {
-    const sponsorsContainer = document.getElementById('sponsorsContainer');
-    if (!sponsorsContainer) {
-        return;
-    }
-
-    const sponsor = await fetchSponsorBySpotId(spotId);
-
-    if (!sponsor) {
-        sponsorsContainer.innerHTML = '';
-        return;
-    }
-
-    const sponsorsHTML = `
-        <div class="sponsors-container">
-            <div class="sponsors-list">
-                <div class="sponsor-item">
-                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
-                        <span class="sponsor-name">${sponsor.name}</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    sponsorsContainer.innerHTML = sponsorsHTML;
-}
+// ============================================================================
+// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
+// ============================================================================
 
 // Make functions global for onclick handlers
 window.openAIModal = openAIModal;
@@ -1652,5 +1790,8 @@ window.closeInfoModal = closeInfoModal;
 window.openIcmModal = openIcmModal;
 window.closeIcmModal = closeIcmModal;
 
-// Start the application
+// ============================================================================
+// START APPLICATION
+// ============================================================================
+
 document.addEventListener('DOMContentLoaded', init);

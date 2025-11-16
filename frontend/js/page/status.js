@@ -1,8 +1,15 @@
-// Set initial theme from localStorage
+// ============================================================================
+// THEME INITIALIZATION
+// ============================================================================
+
+// Set the initial theme from localStorage
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
 
-// Status page functionality
+// ============================================================================
+// STATUS API FUNCTIONS
+// ============================================================================
+
 async function fetchStatus() {
     try {
         const response = await fetch('/api/v1/status');
@@ -47,6 +54,10 @@ async function fetchStatus() {
     }
 }
 
+// ============================================================================
+// ENDPOINT HEALTH CHECK FUNCTIONS
+// ============================================================================
+
 async function checkEndpoint(endpoint) {
     const endpointEl = document.querySelector(`[data-endpoint="${endpoint}"]`);
     const statusSpan = endpointEl.querySelector('.status-endpoint-status');
@@ -77,6 +88,10 @@ async function refreshStatus() {
     await checkAllEndpoints();
 }
 
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
 // Initial load
 refreshStatus();
 
@@ -85,3 +100,8 @@ setInterval(refreshStatus, 30000);
 
 // Manual refresh button
 document.getElementById('refresh-status').addEventListener('click', refreshStatus);
+
+// Goes to the index.html page
+function goToIndex() {
+    window.location.href = '/'
+}
