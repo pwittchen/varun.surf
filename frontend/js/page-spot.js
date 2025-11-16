@@ -1,4 +1,3 @@
-// Global variables
 let currentSpot = null;
 let currentLanguage = 'en';
 let currentErrorKey = null;
@@ -429,35 +428,24 @@ function closeAppInfoModal() {
     document.body.style.overflow = 'auto';
 }
 
-// Helper function to find forecast closest to current time
 function findClosestForecast(forecastData) {
     if (!forecastData || forecastData.length === 0) {
-        console.log('findClosestForecast: No forecast data available');
         return null;
     }
 
     const now = new Date();
-    console.log('findClosestForecast: Current time:', now.toString());
-    console.log('findClosestForecast: Total forecasts:', forecastData.length);
-
     let closestForecast = forecastData[0];
     let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-    console.log('findClosestForecast: First forecast date string:', forecastData[0].date);
-    console.log('findClosestForecast: First forecast parsed:', parseForecastDate(forecastData[0].date).toString());
-    console.log('findClosestForecast: First forecast diff (ms):', minDiff);
 
     for (let i = 1; i < forecastData.length; i++) {
         const forecastTime = parseForecastDate(forecastData[i].date);
         const diff = Math.abs(forecastTime - now);
         if (diff < minDiff) {
-            console.log(`findClosestForecast: Found closer forecast at index ${i}:`, forecastData[i].date, 'diff:', diff);
             minDiff = diff;
             closestForecast = forecastData[i];
         }
     }
 
-    console.log('findClosestForecast: Selected forecast:', closestForecast.date, 'wind:', closestForecast.wind, 'kts');
     return closestForecast;
 }
 
@@ -1258,8 +1246,6 @@ function initTheme() {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
         localStorage.setItem('theme', theme);
-        // Update sponsor logos when theme changes
-        updateSponsorLogosForTheme(theme);
     }
 
     // Set initial theme
@@ -1671,15 +1657,6 @@ async function fetchSponsorBySpotId(spotId) {
     }
 }
 
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-    });
-}
-
 async function renderSpotSponsor(spotId) {
     const sponsorsContainer = document.getElementById('sponsorsContainer');
     if (!sponsorsContainer) {
@@ -1693,45 +1670,19 @@ async function renderSpotSponsor(spotId) {
         return;
     }
 
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-
-    // Determine which logo to use based on theme
-    const logoToUse = currentTheme === 'light' ? sponsor.logoLight : sponsor.logoDark;
-    const logoPath = `/img/sponsors/${logoToUse}`;
-    const imageExists = await checkImageExists(logoPath);
-
-    let sponsorsHTML = '<div class="sponsors-container"><div class="sponsors-list">';
-
-    if (imageExists) {
-        sponsorsHTML += `
-                <div class="sponsor-item">
-                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
-                        <img src="${logoPath}" alt="${sponsor.name}" class="sponsor-logo" data-logo-dark="${sponsor.logoDark}" data-logo-light="${sponsor.logoLight}">
-                    </a>
-                </div>
-            `;
-    } else {
-        sponsorsHTML += `
+    const sponsorsHTML = `
+        <div class="sponsors-container">
+            <div class="sponsors-list">
                 <div class="sponsor-item">
                     <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
                         <span class="sponsor-name">${sponsor.name}</span>
                     </a>
                 </div>
-            `;
-    }
+            </div>
+        </div>
+    `;
 
-    sponsorsHTML += '</div></div>';
     sponsorsContainer.innerHTML = sponsorsHTML;
-}
-
-function updateSponsorLogosForTheme(theme) {
-    const sponsorLogos = document.querySelectorAll('.sponsor-logo');
-    sponsorLogos.forEach(logo => {
-        const logoDark = logo.getAttribute('data-logo-dark');
-        const logoLight = logo.getAttribute('data-logo-light');
-        const logoToUse = theme === 'light' ? logoLight : logoDark;
-        logo.src = `/img/sponsors/${logoToUse}`;
-    });
 }
 
 // Make functions global for onclick handlers
