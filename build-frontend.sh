@@ -41,19 +41,31 @@ else
     echo "⚠️  frontend/css/styles.css not found, skipping CSS inlining"
 fi
 
-# Inline JavaScript (translations first, then page-index.js)
+# Inline JavaScript (translations, country flags, then page-index.js)
 if [ -f frontend/js/page-index.js ]; then
     echo "Inlining JavaScript..."
     # Create marker file
     sed 's|<script src="page-index.js"></script>|JSPLACEHOLDER|' index.temp.html > index.temp2.html
 
-    # Insert translations.js and page-index.js content at placeholder
+    # Remove standalone country flag script tag before inlining
+    perl -0pi -e 's|\s*<script src="country-flags\.js"></script>||' index.temp2.html
+
+    # Insert translations.js, country-flags.js, and page-index.js content at placeholder
     if [ -f frontend/js/translations.js ]; then
-        echo "Including translations..."
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        echo "Including translations and shared helpers..."
+        if [ -f frontend/js/country-flags.js ]; then
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        else
+            echo "⚠️  frontend/js/country-flags.js not found, skipping shared helper"
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        fi
     else
-        echo "⚠️  frontend/js/translations.js not found, inlining page-index.js only"
-        awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        echo "⚠️  frontend/js/translations.js not found, inlining remaining scripts only"
+        if [ -f frontend/js/country-flags.js ]; then
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        else
+            awk '/JSPLACEHOLDER/{system("echo \"<script>\"; cat frontend/js/page-index.js; echo \"</script>\"");next}1' index.temp2.html > index.temp.html
+        fi
     fi
     rm index.temp2.html
     echo "✅  JavaScript inlined successfully"
@@ -138,16 +150,28 @@ PY
     echo "✅  CSS inlined successfully into spot.html"
 fi
 
-# Inline JavaScript for spot.html (translations first, then page-spot.js)
+# Inline JavaScript for spot.html (translations, country flags, then page-spot.js)
 if [ -f frontend/js/page-spot.js ]; then
     echo "Inlining JavaScript into spot.html..."
     sed 's|<script src="page-spot.js"></script>|JSPLACEHOLDER_SPOT|' spot.temp.html > spot.temp2.html
+    # Remove standalone translations and country flag script tags before inlining
+    perl -0pi -e 's|\s*<script src="translations\.js"></script>||' spot.temp2.html
+    perl -0pi -e 's|\s*<script src="country-flags\.js"></script>||' spot.temp2.html
     if [ -f frontend/js/translations.js ]; then
-        echo "Including translations in spot.html..."
-        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        echo "Including translations and shared helpers in spot.html..."
+        if [ -f frontend/js/country-flags.js ]; then
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        else
+            echo "⚠️  frontend/js/country-flags.js not found, skipping shared helper"
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/translations.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        fi
     else
-        echo "⚠️  frontend/js/translations.js not found, inlining page-spot.js only"
-        awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        echo "⚠️  frontend/js/translations.js not found, inlining remaining scripts only"
+        if [ -f frontend/js/country-flags.js ]; then
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/country-flags.js; echo \"\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        else
+            awk '/JSPLACEHOLDER_SPOT/{system("echo \"<script>\"; cat frontend/js/page-spot.js; echo \"</script>\"");next}1' spot.temp2.html > spot.temp.html
+        fi
     fi
     rm spot.temp2.html
     echo "✅  JavaScript inlined successfully into spot.html"
