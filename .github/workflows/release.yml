@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.previoustag.outputs.current_tag }}
-          release_name: Release ${{ steps.previoustag.outputs.current_tag }}
+          release_name: ${{ steps.previoustag.outputs.current_tag }}
           body_path: release_notes.md
           draft: false
           prerelease: false
