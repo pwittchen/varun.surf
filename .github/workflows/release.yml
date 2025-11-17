@@ -1,9 +1,10 @@
 name: RELEASE # creates a new GitHub release with a changelog
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_run:
+    workflows: ["DOCKER"]
+    types:
+      - completed
 
 permissions:
   contents: write
@@ -12,6 +13,7 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Checkout code
