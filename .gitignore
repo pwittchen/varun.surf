@@ -42,3 +42,6 @@ application.log
 .env
 .env.local
 .env.prod
+
+### Node.js ###
+node_modules/
