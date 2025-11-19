@@ -47,6 +47,30 @@ function readFile(filePath) {
   }
 }
 
+// Strip ES6 import statements
+function stripImports(code) {
+  // Remove import statements (single-line and multi-line)
+  return code.replace(/import\s+.*?from\s+['"][^'"]+['"];?\s*/g, '');
+}
+
+// Strip ES6 export keywords
+function stripExports(code) {
+  // Remove 'export' keyword from declarations
+  return code
+    .replace(/export\s+default\s+/g, '')
+    .replace(/export\s+/g, '');
+}
+
+// Process JS file for bundling (strip imports/exports)
+function processJsFile(filePath) {
+  let content = readFile(filePath);
+  if (!content) return '';
+
+  content = stripImports(content);
+  content = stripExports(content);
+  return content;
+}
+
 // Inline CSS and JS into HTML
 function inlineAssets(html, cssFiles, jsFiles) {
   let result = html;
@@ -64,7 +88,7 @@ function inlineAssets(html, cssFiles, jsFiles) {
 
   // Remove script tags and inline JS
   if (jsFiles.length > 0) {
-    const jsContent = jsFiles.map(f => readFile(f)).filter(c => c).join('\n');
+    const jsContent = jsFiles.map(f => processJsFile(f)).filter(c => c).join('\n');
     if (jsContent) {
       // Remove individual script tags
       result = result.replace(/<script\s+src="[^"]*translations\.js"><\/script>/g, '');

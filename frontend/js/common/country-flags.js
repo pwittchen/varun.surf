@@ -1,4 +1,4 @@
-const COUNTRY_FLAGS = {
+export const COUNTRY_FLAGS = {
     'Poland': '🇵🇱',
     'Czech Republic': '🇨🇿',
     'Austria': '🇦🇹',
@@ -35,6 +35,6 @@ const COUNTRY_FLAGS = {
     'Costa Rica': '🇨🇷'
 };
 
-function getCountryFlag(country) {
+export function getCountryFlag(country) {
     return COUNTRY_FLAGS[country] || '🏴';
 }

@@ -1,5 +1,5 @@
 // Translations configuration
-const translations = {
+export const translations = {
     en: {
         // Page title
         pageTitle: "VARUN.SURF",
@@ -411,7 +411,7 @@ const translations = {
 };
 
 // Get translation for current language
-function t(key) {
+export function t(key) {
     const currentLang = localStorage.getItem('language') || 'en';
     return translations[currentLang][key] || translations.en[key] || key;
 }

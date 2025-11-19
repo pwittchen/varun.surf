@@ -1,3 +1,6 @@
+import { getCountryFlag } from '../common/country-flags.js';
+import { t, translations } from '../common/translations.js';
+
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
 // ============================================================================
