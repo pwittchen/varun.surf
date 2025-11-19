@@ -4,7 +4,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 import fs from 'fs';
 
-// Custom plugin to move HTML files to root and inline all assets
+// Custom plugin to move HTML files to root and make them single-line
 function flattenHtmlPlugin() {
   return {
     name: 'flatten-html',
@@ -19,8 +19,16 @@ function flattenHtmlPlugin() {
           if (file.endsWith('.html')) {
             const source = path.join(htmlDir, file);
             const dest = path.join(staticDir, file);
-            fs.copyFileSync(source, dest);
-            console.log(`✓ Moved ${file} to static root`);
+
+            // Read HTML content
+            let htmlContent = fs.readFileSync(source, 'utf-8');
+
+            // Remove all newlines and extra whitespace between tags
+            htmlContent = htmlContent.replace(/>\s+</g, '><').replace(/\n/g, '');
+
+            // Write single-line HTML to destination
+            fs.writeFileSync(dest, htmlContent);
+            console.log(`✓ Moved ${file} to static root (single-line)`);
           }
         }
 
