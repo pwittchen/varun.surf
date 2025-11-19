@@ -94,11 +94,11 @@ tasks.named('jacocoTestReport') {
 }
 
 tasks.register('buildFrontend', Exec) {
-    commandLine 'bash', '-c', 'npm install && node build.js'
+    commandLine 'bash', '-c', 'npm install && npm run build'
 }
 
 tasks.register('cleanFrontend', Exec) {
-    commandLine 'bash', '-c', 'rm -rf src/main/resources/static/*'
+    commandLine 'bash', '-c', 'npm run clean'
 }
 
 tasks.named('build') {
