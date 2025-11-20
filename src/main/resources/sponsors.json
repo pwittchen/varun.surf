@@ -1,2 +1,56 @@
 [
+  {
+    "id": 500760,
+    "main": true,
+    "name": "Jastarnia Kite School",
+    "link": "https://example.com/jastarnia-kite-school"
+  },
+  {
+    "id": 500757,
+    "main": false,
+    "name": "Chałupy Water Sports Center",
+    "link": "https://example.com/chalupy-sports"
+  },
+  {
+    "id": 500757,
+    "main": false,
+    "name": "Chałupy Surf & Kite Center",
+    "link": "https://example.com/chalupy-kite"
+  },
+  {
+    "id": 500751,
+    "main": true,
+    "name": "Baltic Kite Pro Shop",
+    "link": "https://example.com/baltic-kite-shop"
+  },
+  {
+    "id": 859182,
+    "main": false,
+    "name": "Podersdorf Kite & Surf",
+    "link": "https://example.com/podersdorf-kite"
+  },
+  {
+    "id": 183712,
+    "main": true,
+    "name": "Tarifa Wind Adventures",
+    "link": "https://example.com/tarifa-wind"
+  },
+  {
+    "id": 237848,
+    "main": false,
+    "name": "El Gouna Kite Center",
+    "link": "https://example.com/el-gouna-kite"
+  },
+  {
+    "id": 39,
+    "main": true,
+    "name": "Cabarete Kite Beach",
+    "link": "https://example.com/cabarete-kite"
+  },
+  {
+    "id": 49315,
+    "main": false,
+    "name": "Dakhla Kite Paradise",
+    "link": "https://example.com/dakhla-kite"
+  }
 ]

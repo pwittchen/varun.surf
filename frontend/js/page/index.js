@@ -2012,6 +2012,21 @@ function setupInfoToggle() {
 }
 
 // ============================================================================
+// PAGE RELOAD BEHAVIOR
+// ============================================================================
+
+// Reload the page after clicking on the logo
+function reloadPage() {
+    window.scrollTo(0, 0);
+    window.location.reload();
+}
+
+// Scroll to top on page reload
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+};
+
+// ============================================================================
 // GLOBAL WINDOW FUNCTIONS (for onclick handlers)
 // ============================================================================
 
@@ -2046,18 +2061,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMainSponsors();
     handleStarredURL();
 });
-
-// ============================================================================
-// PAGE RELOAD BEHAVIOR
-// ============================================================================
-
-// Scroll to top on page reload
-window.onbeforeunload = function () {
-    window.scrollTo(0, 0);
-};
-
-// Reload the page after clicking on the logo
-function reloadPage() {
-    window.scrollTo(0, 0);
-    window.location.reload();
-}

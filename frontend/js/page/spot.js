@@ -1,5 +1,5 @@
-import { getCountryFlag } from '../common/country-flags.js';
-import { t, translations } from '../common/translations.js';
+import {getCountryFlag} from '../common/country-flags.js';
+import {t, translations} from '../common/translations.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -1120,6 +1120,31 @@ function createSpotCard(spot) {
     }
 
     // ========================================================================
+    // BUILD SPONSORS CARD (sidebar)
+    // ========================================================================
+
+    let sponsorsCardHtml = '';
+    if (spot.sponsors && spot.sponsors.length > 0) {
+        let sponsorsListHtml = '';
+        for (const sponsor of spot.sponsors) {
+            sponsorsListHtml += `
+                <div class="sponsor-item">
+                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                        ${sponsor.name}
+                    </a>
+                </div>
+            `;
+        }
+        sponsorsCardHtml = `
+                <div class="sponsors-card">
+                    <div class="sponsors-list">
+                        ${sponsorsListHtml}
+                    </div>
+                </div>
+            `;
+    }
+
+    // ========================================================================
     // ASSEMBLE COMPLETE SPOT CARD
     // ========================================================================
 
@@ -1149,6 +1174,7 @@ function createSpotCard(spot) {
                         ${currentConditionsCardHtml}
                         ${spotInfoCardHtml}
                         ${aiAnalysisCardHtml}
+                        ${sponsorsCardHtml}
                     </div>
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
@@ -1682,47 +1708,31 @@ function setupModelDropdown() {
 // SPONSORS FUNCTIONALITY
 // ============================================================================
 
-// Fetch sponsor by spot ID
-async function fetchSponsorBySpotId(spotId) {
-    try {
-        const response = await fetch(`/api/v1/sponsors/${spotId}`);
-        if (!response.ok) {
-            return null;
-        }
-        const sponsor = await response.json();
-        return sponsor || null;
-    } catch (error) {
-        console.error('Error fetching sponsor:', error);
-        return null;
-    }
-}
-
-// Render spot sponsor
-async function renderSpotSponsor(spotId) {
+// Render spot sponsors from spot data
+function renderSpotSponsors(spot) {
     const sponsorsContainer = document.getElementById('sponsorsContainer');
     if (!sponsorsContainer) {
         return;
     }
 
-    const sponsor = await fetchSponsorBySpotId(spotId);
-
-    if (!sponsor) {
+    if (!spot.sponsors || spot.sponsors.length === 0) {
         sponsorsContainer.innerHTML = '';
         return;
     }
 
-    const sponsorsHTML = `
-        <div class="sponsors-container">
-            <div class="sponsors-list">
-                <div class="sponsor-item">
-                    <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
-                        <span class="sponsor-name">${sponsor.name}</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
+    let sponsorsHTML = '<div class="sponsors-container"><div class="sponsors-list">';
 
+    for (const sponsor of spot.sponsors) {
+        sponsorsHTML += `
+            <div class="sponsor-item">
+                <a href="${sponsor.link}" target="_blank" rel="noopener noreferrer" class="sponsor-link">
+                    <span class="sponsor-name">${sponsor.name}</span>
+                </a>
+            </div>
+        `;
+    }
+
+    sponsorsHTML += '</div></div>';
     sponsorsContainer.innerHTML = sponsorsHTML;
 }
 
@@ -1730,7 +1740,23 @@ async function renderSpotSponsor(spotId) {
 // MAIN INITIALIZATION
 // ============================================================================
 
-async function init() {
+// ============================================================================
+// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
+// ============================================================================
+
+// Make functions global for onclick handlers
+window.openAIModal = openAIModal;
+window.closeAIModal = closeAIModal;
+window.openInfoModal = openInfoModal;
+window.closeInfoModal = closeInfoModal;
+window.openIcmModal = openIcmModal;
+window.closeIcmModal = closeIcmModal;
+
+// ============================================================================
+// START APPLICATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', async function () {
     initTheme();
     initLanguage();
     setupModals();
@@ -1763,11 +1789,10 @@ async function init() {
             await new Promise(resolve => setTimeout(resolve, remainingDelay));
         }
 
-        // Load sponsors for this spot
-        renderSpotSponsor(spotId);
-
         if (hasForecastData(spot)) {
             displaySpot(spot);
+            // Render sponsors from spot data
+            renderSpotSponsors(spot);
         } else {
             setLoadingMessage('loadingForecast');
             startForecastPolling(spotId);
@@ -1779,22 +1804,4 @@ async function init() {
             displayError('errorLoadingSpot');
         }
     }
-}
-
-// ============================================================================
-// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
-// ============================================================================
-
-// Make functions global for onclick handlers
-window.openAIModal = openAIModal;
-window.closeAIModal = closeAIModal;
-window.openInfoModal = openInfoModal;
-window.closeInfoModal = closeInfoModal;
-window.openIcmModal = openIcmModal;
-window.closeIcmModal = closeIcmModal;
-
-// ============================================================================
-// START APPLICATION
-// ============================================================================
-
-document.addEventListener('DOMContentLoaded', init);
+});

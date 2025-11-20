@@ -2012,6 +2012,71 @@ body.spot-page .error-description {
     font-size: 0.8rem;
 }
 
+/* Sponsors card styling */
+.sponsors-card {
+    background: var(--bg-secondary);
+}
+
+.sponsors-card .sponsors-header {
+    padding: 0 0 12px 0;
+    border-bottom: 1px solid var(--border-primary);
+    margin-bottom: 12px;
+}
+
+.sponsors-card .sponsors-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.sponsors-card .sponsors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sponsors-card .sponsor-item {
+    background: var(--bg-tertiary);
+    padding: 10px 14px;
+    border-radius: 0;
+    transition: none;
+    width: 100%;
+    justify-content: left;
+}
+
+.sponsors-card .sponsor-item:hover {
+    transform: none;
+    opacity: 1;
+}
+
+.sponsors-card .sponsor-link {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s ease;
+}
+
+.sponsors-card .sponsor-link:hover {
+    color: var(--accent-primary);
+}
+
+.sponsors-card .sponsor-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: inherit;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    transition: none;
+}
+
 /* Desktop single spot view - hide info and AI buttons */
 body.spot-page .external-link.info-link,
 body.spot-page .external-link.ai-link {

@@ -9,6 +9,7 @@ import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
+import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
@@ -16,6 +17,7 @@ import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
+import com.github.pwittchen.varun.service.sponsors.SponsorsService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
@@ -70,6 +72,7 @@ public class AggregatorService {
     private final AiServiceEn aiServiceEn;
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
+    private final SponsorsService sponsorsService;
 
     private Disposable spotsDisposable;
     private final Semaphore forecastLimiter = new Semaphore(32);
@@ -84,7 +87,8 @@ public class AggregatorService {
             CurrentConditionsService currentConditionsService,
             AiServiceEn aiServiceEn,
             AiServicePl aiServicePl,
-            GoogleMapsService googleMapsService) {
+            GoogleMapsService googleMapsService,
+            SponsorsService sponsorsService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
@@ -100,6 +104,7 @@ public class AggregatorService {
         this.aiServiceEn = aiServiceEn;
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
+        this.sponsorsService = sponsorsService;
     }
 
     @PostConstruct
@@ -185,6 +190,15 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withEmbeddedMap(embeddedMap);
         } else {
             scheduleEmbeddedMapFetch(spot);
+        }
+
+        List<Sponsor> sponsors = sponsorsService.getSponsors()
+                .stream()
+                .filter(sponsor -> sponsor.id() == spot.wgId())
+                .toList();
+
+        if (!sponsors.isEmpty()) {
+            enrichedSpot = enrichedSpot.withSponsors(sponsors);
         }
 
         return enrichedSpot;

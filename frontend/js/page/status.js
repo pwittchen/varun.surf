@@ -88,20 +88,20 @@ async function refreshStatus() {
     await checkAllEndpoints();
 }
 
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
-
-// Initial load
-refreshStatus();
-
-// Auto-refresh every 30 seconds
-setInterval(refreshStatus, 30000);
-
-// Manual refresh button
-document.getElementById('refresh-status').addEventListener('click', refreshStatus);
-
 // Goes to the index.html page
 function goToIndex() {
     window.location.href = '/'
 }
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial load
+    refreshStatus();
+    // Auto-refresh every 30 seconds
+    setInterval(refreshStatus, 30000);
+    // Manual refresh button
+    document.getElementById('refresh-status').addEventListener('click', refreshStatus);
+});

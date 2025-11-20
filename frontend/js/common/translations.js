@@ -132,6 +132,7 @@ export const translations = {
         launchTypeLabel: "Launch Type",
         hazardsLabel: "Hazards",
         seasonLabel: "Season",
+        sponsorsLabel: "Sponsors of the spot",
 
         // Forecast view tabs
         tableViewLabel: "Vertical view",
@@ -336,6 +337,7 @@ export const translations = {
         launchTypeLabel: "Typ startu",
         hazardsLabel: "Zagrożenia",
         seasonLabel: "Sezon",
+        sponsorsLabel: "Sponsorzy spotu",
 
         // Forecast view tabs
         tableViewLabel: "Widok pionowy",
