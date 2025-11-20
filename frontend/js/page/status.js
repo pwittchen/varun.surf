@@ -1,5 +1,3 @@
-import {fetchStatus, getStatusEndpointsToMonitor} from '../common/api.js';
-
 // ============================================================================
 // THEME INITIALIZATION
 // ============================================================================
@@ -12,9 +10,9 @@ document.documentElement.setAttribute('data-theme', savedTheme);
 // STATUS API FUNCTIONS
 // ============================================================================
 
-async function renderStatus() {
+async function fetchStatus() {
     try {
-        const response = await fetchStatus();
+        const response = await fetch('/api/v1/status');
         if (!response.ok) throw new Error('Failed to fetch status');
 
         const data = await response.json();
@@ -81,12 +79,12 @@ async function checkEndpoint(endpoint) {
 }
 
 async function checkAllEndpoints() {
-    const endpoints = getStatusEndpointsToMonitor();
+    const endpoints = ['/api/v1/health', '/api/v1/status', '/api/v1/spots'];
     await Promise.all(endpoints.map(checkEndpoint));
 }
 
 async function refreshStatus() {
-    await renderStatus();
+    await fetchStatus();
     await checkAllEndpoints();
 }
 
