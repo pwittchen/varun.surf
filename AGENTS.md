@@ -197,9 +197,8 @@ chatClient.prompt().user(prompt)
 **Purpose**: REST API endpoints for sponsors.
 
 **Endpoints**:
-- `GET /api/v1/sponsors` - All sponsors (Flux<Sponsor>)
+- `GET /api/v1/sponsors` - Main sponsors (Flux<Sponsor>)
 - `GET /api/v1/sponsors/{id}` - Single sponsor by ID (Mono<Sponsor>)
-- `GET /api/v1/sponsors/main` - Main sponsors only (Flux<Sponsor>)
   - Filters by `isMain: true` flag
 
 **Data Source**:

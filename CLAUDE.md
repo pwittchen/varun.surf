@@ -107,9 +107,8 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 
 7. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
-     - `GET /api/v1/sponsors` - all sponsors
+     - `GET /api/v1/sponsors` - main sponsors only (isMain=true)
      - `GET /api/v1/sponsors/{id}` - single sponsor
-     - `GET /api/v1/sponsors/main` - main sponsors only (isMain=true)
    - Loads from sponsors.json at startup
 
 ### Data Model

@@ -18,11 +18,6 @@ public class SponsorsController {
     }
 
     @GetMapping("sponsors")
-    public Flux<Sponsor> sponsors() {
-        return Flux.fromIterable(sponsorsService.getSponsors());
-    }
-
-    @GetMapping("sponsors/main")
     public Flux<Sponsor> mainSponsors() {
         return Flux.fromIterable(sponsorsService.getMainSponsors());
     }

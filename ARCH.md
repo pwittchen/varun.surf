@@ -43,7 +43,7 @@
                     +-------------------+
                              |
                     +--------v---------+
-                    |SponsorsController|  GET /api/v1/sponsors, /api/v1/sponsors/{id}, /api/v1/sponsors/main
+                    |SponsorsController|  GET /api/v1/sponsors, /api/v1/sponsors/{id}
                     +------------------+
 ```
 
@@ -102,12 +102,7 @@
 
   GET /api/v1/sponsors
     -> SponsorsController.sponsors()
-    -> SponsorsService.getSponsors()
-    -> returns Flux<Sponsor>
-
-  GET /api/v1/sponsors/main
     -> SponsorsController.mainSponsors()
-    -> SponsorsService.getMainSponsors() [filtered by isMain flag]
     -> returns Flux<Sponsor>
 
 [Embedded Maps (Lazy Loading)]
@@ -369,16 +364,12 @@ Spots:
 
 Sponsors:
   GET /api/v1/sponsors
-    - Returns all sponsors
+    - Returns only main sponsors (isMain = true)
     - Response: Flux<Sponsor>
 
   GET /api/v1/sponsors/{id}
     - Returns single sponsor by id
     - Response: Mono<Sponsor>
-
-  GET /api/v1/sponsors/main
-    - Returns only main sponsors (isMain = true)
-    - Response: Flux<Sponsor>
 
 Health:
   GET /api/v1/health

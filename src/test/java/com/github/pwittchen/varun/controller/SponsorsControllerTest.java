@@ -34,49 +34,6 @@ class SponsorsControllerTest {
     }
 
     @Test
-    void shouldReturnEmptyFluxWhenNoSponsors() {
-        when(sponsorsService.getSponsors()).thenReturn(new ArrayList<>());
-
-        Flux<Sponsor> result = controller.sponsors();
-
-        StepVerifier.create(result)
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldReturnSponsorsFromService() {
-        List<Sponsor> mockSponsors = createMockSponsors();
-        when(sponsorsService.getSponsors()).thenReturn(mockSponsors);
-
-        Flux<Sponsor> result = controller.sponsors();
-
-        StepVerifier.create(result)
-                .expectNextCount(2)
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldReturnSponsorsWithCorrectData() {
-        List<Sponsor> mockSponsors = createMockSponsors();
-        when(sponsorsService.getSponsors()).thenReturn(mockSponsors);
-
-        Flux<Sponsor> result = controller.sponsors();
-
-        StepVerifier.create(result)
-                .assertNext(sponsor -> {
-                    assertThat(sponsor.name()).isEqualTo("Onet");
-                    assertThat(sponsor.link()).isEqualTo("https://onet.pl");
-                    assertThat(sponsor.main()).isTrue();
-                })
-                .assertNext(sponsor -> {
-                    assertThat(sponsor.name()).isEqualTo("Sponsor2");
-                    assertThat(sponsor.link()).isEqualTo("https://sponsor2.com");
-                    assertThat(sponsor.main()).isFalse();
-                })
-                .verifyComplete();
-    }
-
-    @Test
     void shouldReturnEmptyFluxWhenNoMainSponsors() {
         when(sponsorsService.getMainSponsors()).thenReturn(new ArrayList<>());
 

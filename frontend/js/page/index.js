@@ -1897,7 +1897,7 @@ function setupColumnToggle() {
 
 async function fetchMainSponsors() {
     try {
-        const response = await fetch('/api/v1/sponsors/main');
+        const response = await fetch('/api/v1/sponsors');
         if (!response.ok) {
             return [];
         }
