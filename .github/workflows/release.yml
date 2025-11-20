@@ -16,54 +16,56 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      # Checkout the full history so git tag sorting works
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get previous tag
-        id: previoustag
+      # Detect newest and previous tags
+      - name: Detect tags
+        id: tags
         run: |
-          # Get the current tag
-          CURRENT_TAG=${GITHUB_REF#refs/tags/}
-          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          # Get the latest tag starting with 'v'
+          CURRENT_TAG=$(git tag --sort=-version:refname | grep '^v' | head -n 1)
 
-          # Get the previous tag with 'v' prefix
+          if [ -z "$CURRENT_TAG" ]; then
+            echo "No tags found. Exiting."
+            exit 1
+          fi
+
+          # Get the tag just before CURRENT_TAG
           PREVIOUS_TAG=$(git tag --sort=-version:refname | grep '^v' | grep -A1 "^$CURRENT_TAG$" | tail -1)
 
-          if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" == "$CURRENT_TAG" ]; then
-            echo "No previous tag found, using initial commit"
+          # If no previous tag, use initial commit
+          if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" = "$CURRENT_TAG" ]; then
             PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
           fi
 
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
+      # Generate changelog between PREVIOUS_TAG and CURRENT_TAG
       - name: Generate release notes
-        id: release_notes
         run: |
-          CURRENT_TAG="${{ steps.previoustag.outputs.current_tag }}"
-          PREVIOUS_TAG="${{ steps.previoustag.outputs.previous_tag }}"
+          CURRENT_TAG=${{ steps.tags.outputs.current_tag }}
+          PREVIOUS_TAG=${{ steps.tags.outputs.previous_tag }}
 
           echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
 
-          # Get commit messages between tags
           COMMITS=$(git log $PREVIOUS_TAG..$CURRENT_TAG --pretty=format:"- %s (%h)" --no-merges)
 
-          # Create release notes
-          cat > release_notes.md << EOF
-
-          $COMMITS
-          EOF
-
+          echo "$COMMITS" > release_notes.md
           cat release_notes.md
 
+      # Create a GitHub Release
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.previoustag.outputs.current_tag }}
-          release_name: ${{ steps.previoustag.outputs.current_tag }}
+          tag_name: ${{ steps.tags.outputs.current_tag }}
+          release_name: ${{ steps.tags.outputs.current_tag }}
           body_path: release_notes.md
           draft: false
           prerelease: false
