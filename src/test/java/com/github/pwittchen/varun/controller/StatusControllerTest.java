@@ -16,16 +16,16 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AppControllerTest {
+public class StatusControllerTest {
 
-    private AppController controller;
+    private StatusController controller;
 
     @Mock
     private AggregatorService aggregatorService;
 
     @BeforeEach
     void setUp() {
-        controller = new AppController(aggregatorService);
+        controller = new StatusController(aggregatorService);
         ReflectionTestUtils.setField(controller, "version", "test-version");
     }
 

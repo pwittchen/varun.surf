@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/")
-public class AppController {
+public class StatusController {
 
     private final Instant startTime = Instant.now();
     private final AggregatorService aggregatorService;
@@ -22,7 +22,7 @@ public class AppController {
     @Value("${spring.application.version:unknown}")
     private String version;
 
-    public AppController(AggregatorService aggregatorService) {
+    public StatusController(AggregatorService aggregatorService) {
         this.aggregatorService = aggregatorService;
     }
 
