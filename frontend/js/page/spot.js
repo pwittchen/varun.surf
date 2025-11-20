@@ -1,5 +1,6 @@
 import {getCountryFlag} from '../common/country-flags.js';
 import {t, translations} from '../common/translations.js';
+import {fetchSpotData} from '../common/api.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -33,7 +34,6 @@ let selectedModel = 'gfs';
 // CONFIGURATION CONSTANTS
 // ============================================================================
 
-const API_ENDPOINT = '/api/v1/spots';
 const FORECAST_POLL_INTERVAL = 5000;       // 5 seconds
 const FORECAST_TIMEOUT_MS = 30000;         // 30 seconds
 const BACKGROUND_REFRESH_INTERVAL = 60000; // 1 minute
@@ -65,28 +65,6 @@ function getSelectedModel() {
 function setSelectedModel(model) {
     selectedModel = model;
     sessionStorage.setItem('forecastModel', model);
-}
-
-// ============================================================================
-// API FUNCTIONS
-// ============================================================================
-
-// Fetch single spot data from the API
-async function fetchSpotData(spotId) {
-    try {
-        const model = getSelectedModel();
-        const url = `${API_ENDPOINT}/${spotId}${model ? '/' + model : ''}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-            const error = new Error(`HTTP error! status: ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching spot data:', error);
-        throw error;
-    }
 }
 
 // ============================================================================
@@ -155,7 +133,7 @@ function startForecastPolling(spotId) {
         }
         pollingInProgress = true;
         try {
-            const latestSpot = await fetchSpotData(spotId);
+            const latestSpot = await fetchSpotData(spotId, getSelectedModel());
             if (hasForecastData(latestSpot)) {
                 clearForecastPolling();
                 displaySpot(latestSpot);
@@ -184,7 +162,7 @@ function startBackgroundRefresh(spotId) {
 
     backgroundRefreshIntervalId = setInterval(async () => {
         try {
-            const latestSpot = await fetchSpotData(spotId);
+            const latestSpot = await fetchSpotData(spotId, getSelectedModel());
             if (!hasForecastData(latestSpot)) {
                 return;
             }
@@ -1669,7 +1647,7 @@ function setupModelDropdown() {
             // Reload data with a new model
             if (currentSpotId) {
                 setLoadingMessage('loadingSpotData');
-                fetchSpotData(currentSpotId)
+                fetchSpotData(currentSpotId, getSelectedModel())
                     .then(spot => {
                         if (hasForecastData(spot)) {
                             displaySpot(spot);
@@ -1756,7 +1734,7 @@ async function setupSpot() {
     const minDelay = 2000;
 
     try {
-        const spot = await fetchSpotData(spotId);
+        const spot = await fetchSpotData(spotId, getSelectedModel());
         const elapsed = Date.now() - startTime;
         const remainingDelay = minDelay - elapsed;
 

@@ -1,5 +1,6 @@
-import { getCountryFlag } from '../common/country-flags.js';
-import { t } from '../common/translations.js';
+import {getCountryFlag} from '../common/country-flags.js';
+import {t} from '../common/translations.js';
+import {fetchWeatherData, fetchMainSponsors} from '../common/api.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -20,7 +21,6 @@ let previousUrl = localStorage.getItem('previousUrl') || '/';
 // CONFIGURATION CONSTANTS
 // ============================================================================
 
-const API_ENDPOINT = '/api/v1/spots';
 const AUTO_REFRESH_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 
 // ============================================================================
@@ -553,31 +553,6 @@ function initLanguage() {
         const newLang = currentLang === 'en' ? 'pl' : 'en';
         updateLanguage(newLang);
     });
-}
-
-// ============================================================================
-// API FUNCTIONS
-// ============================================================================
-
-async function fetchWeatherData() {
-    try {
-        const response = await fetch(API_ENDPOINT, {cache: 'no-store'});
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error('Invalid data format: Expected array of spots');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error fetching weather data:', error);
-        throw error;
-    }
 }
 
 // ============================================================================
@@ -1894,20 +1869,6 @@ function setupColumnToggle() {
 // ============================================================================
 // SPONSORS FUNCTIONALITY
 // ============================================================================
-
-async function fetchMainSponsors() {
-    try {
-        const response = await fetch('/api/v1/sponsors');
-        if (!response.ok) {
-            return [];
-        }
-        const sponsors = await response.json();
-        return sponsors || [];
-    } catch (error) {
-        console.error('Error fetching main sponsors:', error);
-        return [];
-    }
-}
 
 async function renderMainSponsors() {
     const sponsorsContainer = document.getElementById('sponsorsContainer');

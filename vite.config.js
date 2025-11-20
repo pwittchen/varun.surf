@@ -32,7 +32,7 @@ function flattenHtmlPlugin() {
           }
         }
 
-        // Remove the html directory
+        // Remove the HTML directory
         fs.rmSync(htmlDir, { recursive: true });
       }
     }
