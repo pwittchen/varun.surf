@@ -1740,32 +1740,7 @@ function renderSpotSponsors(spot) {
 // MAIN INITIALIZATION
 // ============================================================================
 
-// ============================================================================
-// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
-// ============================================================================
-
-// Make functions global for onclick handlers
-window.openAIModal = openAIModal;
-window.closeAIModal = closeAIModal;
-window.openInfoModal = openInfoModal;
-window.closeInfoModal = closeInfoModal;
-window.openIcmModal = openIcmModal;
-window.closeIcmModal = closeIcmModal;
-
-// ============================================================================
-// START APPLICATION
-// ============================================================================
-
-document.addEventListener('DOMContentLoaded', async function () {
-    initTheme();
-    initLanguage();
-    setupModals();
-    setupInfoToggle();
-    setupHamburgerMenu();
-    setupHeaderNavigation();
-    setupResizeHandler();
-    setupModelDropdown();
-
+async function setupSpot() {
     const spotId = getSpotIdFromUrl();
     currentSpotId = spotId;
 
@@ -1804,4 +1779,32 @@ document.addEventListener('DOMContentLoaded', async function () {
             displayError('errorLoadingSpot');
         }
     }
+}
+
+// ============================================================================
+// GLOBAL WINDOW FUNCTIONS (for onclick handlers)
+// ============================================================================
+
+// Make functions global for onclick handlers
+window.openAIModal = openAIModal;
+window.closeAIModal = closeAIModal;
+window.openInfoModal = openInfoModal;
+window.closeInfoModal = closeInfoModal;
+window.openIcmModal = openIcmModal;
+window.closeIcmModal = closeIcmModal;
+
+// ============================================================================
+// START APPLICATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', async function () {
+    initTheme();
+    initLanguage();
+    setupModals();
+    setupInfoToggle();
+    setupHamburgerMenu();
+    setupHeaderNavigation();
+    setupResizeHandler();
+    setupModelDropdown();
+    setupSpot();
 });
