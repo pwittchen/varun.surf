@@ -313,6 +313,7 @@ class AiServicePlTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -333,6 +334,7 @@ class AiServicePlTest {
                 null,
                 null,
                 spotInfo,
+                null,
                 null,
                 null
         );

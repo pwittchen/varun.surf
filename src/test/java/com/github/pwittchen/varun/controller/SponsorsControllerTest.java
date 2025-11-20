@@ -77,58 +77,6 @@ class SponsorsControllerTest {
     }
 
     @Test
-    void shouldReturnSponsorByIdWhenSponsorExists() {
-        Sponsor mockSponsor = new Sponsor(0, true, "Onet", "https://onet.pl");
-        when(sponsorsService.getSponsorById(0)).thenReturn(Optional.of(mockSponsor));
-
-        Mono<ResponseEntity<Sponsor>> result = controller.sponsor(0);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isNotNull();
-                    assertThat(response.getBody().name()).isEqualTo("Onet");
-                    assertThat(response.getBody().link()).isEqualTo("https://onet.pl");
-                    assertThat(response.getBody().id()).isEqualTo(0);
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldReturn404WhenSponsorNotFound() {
-        when(sponsorsService.getSponsorById(999)).thenReturn(Optional.empty());
-
-        Mono<ResponseEntity<Sponsor>> result = controller.sponsor(999);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-                    assertThat(response.getBody()).isNull();
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldReturnSponsorWithAllFields() {
-        Sponsor mockSponsor = new Sponsor(1, false, "TestSponsor", "https://test.com");
-        when(sponsorsService.getSponsorById(1)).thenReturn(Optional.of(mockSponsor));
-
-        Mono<ResponseEntity<Sponsor>> result = controller.sponsor(1);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isNotNull();
-                    Sponsor sponsor = response.getBody();
-                    assertThat(sponsor.id()).isEqualTo(1);
-                    assertThat(sponsor.main()).isFalse();
-                    assertThat(sponsor.name()).isEqualTo("TestSponsor");
-                    assertThat(sponsor.link()).isEqualTo("https://test.com");
-                })
-                .verifyComplete();
-    }
-
-    @Test
     void shouldReturnEmptyFluxWhenNoMainSponsors() {
         when(sponsorsService.getMainSponsors()).thenReturn(new ArrayList<>());
 

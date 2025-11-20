@@ -316,6 +316,7 @@ class AiServiceEnTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
@@ -336,6 +337,7 @@ class AiServiceEnTest {
                 null,
                 null,
                 spotInfo,
+                null,
                 null,
                 null
         );

@@ -92,6 +92,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 "2025-01-01 00:00:00 UTC"
         );
 
@@ -139,6 +140,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
         var emptyConditions = new CurrentConditions(null, 0, 0, null, 0);
@@ -163,6 +165,7 @@ class SpotTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                null,
                 null,
                 null,
                 null,
@@ -211,6 +214,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
 
@@ -238,6 +242,7 @@ class SpotTest {
                 currentConditions,
                 forecast,
                 new ArrayList<>(),
+                null,
                 null,
                 null,
                 null,
@@ -274,6 +279,7 @@ class SpotTest {
                 originalForecast,
                 originalHourly,
                 "AI analysis",
+                null,
                 null,
                 null,
                 null,
@@ -342,6 +348,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
 
@@ -370,6 +377,7 @@ class SpotTest {
                 forecast,
                 new ArrayList<>(),
                 "English AI",
+                null,
                 null,
                 null,
                 null,
@@ -421,6 +429,7 @@ class SpotTest {
                 null,
                 null,
                 null,
+                null,
                 originalTimestamp
         );
         var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0,  "N", 14.0, 0.1));
@@ -442,6 +451,7 @@ class SpotTest {
                 null,
                 new ArrayList<>(),
                 new ArrayList<>(),
+                null,
                 null,
                 null,
                 null,

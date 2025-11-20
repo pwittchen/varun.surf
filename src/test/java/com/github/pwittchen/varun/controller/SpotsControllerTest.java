@@ -299,6 +299,7 @@ class SpotsControllerTest {
                 null,
                 spotInfo1,
                 null,
+                null,
                 "2025-01-15 14:30:00 CET"
         );
 
@@ -317,6 +318,7 @@ class SpotsControllerTest {
                 null,
                 null,
                 spotInfo2,
+                null,
                 null,
                 "2025-01-15 14:30:00 CET"
         );
@@ -346,6 +348,7 @@ class SpotsControllerTest {
                 null,
                 null,
                 spotInfo,
+                null,
                 null,
                 "2025-01-15 14:30:00 CET"
         );
@@ -379,6 +382,7 @@ class SpotsControllerTest {
                 null,
                 spotInfo,
                 null,
+                null,
                 "2025-01-15 14:30:00 CET"
         );
 
@@ -403,6 +407,7 @@ class SpotsControllerTest {
                 null,
                 null,
                 spotInfo,
+                null,
                 null,
                 "2025-01-15 14:30:00 CET"
         );
@@ -439,6 +444,7 @@ class SpotsControllerTest {
                 null,
                 null,
                 spotInfo,
+                null,
                 null,
                 "2025-01-15 14:30:00 CET"
         );

@@ -13,6 +13,7 @@ import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
+import com.github.pwittchen.varun.service.sponsors.SponsorsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +56,9 @@ class AggregatorServiceTest {
     @Mock
     private GoogleMapsService googleMapsService;
 
+    @Mock
+    private SponsorsService sponsorsService;
+
     private AggregatorService aggregatorService;
 
     @BeforeEach
@@ -65,7 +69,8 @@ class AggregatorServiceTest {
                 currentConditionsService,
                 aiServiceEn,
                 aiServicePl,
-                googleMapsService
+                googleMapsService,
+                sponsorsService
         );
     }
 
@@ -595,6 +600,7 @@ class AggregatorServiceTest {
                 null,
                 forecast,
                 hourlyForecast,
+                null,
                 null,
                 null,
                 null,
