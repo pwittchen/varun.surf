@@ -94,11 +94,11 @@ tasks.named('jacocoTestReport') {
 }
 
 tasks.register('buildFrontend', Exec) {
-    commandLine 'bash', '-c', 'npm install && npm run build'
+    commandLine 'sh', '-c', 'npm install && npm run build'
 }
 
 tasks.register('cleanFrontend', Exec) {
-    commandLine 'bash', '-c', 'npm run clean'
+    commandLine 'sh', '-c', 'npm run clean'
 }
 
 tasks.named('build') {
@@ -106,5 +106,9 @@ tasks.named('build') {
 }
 
 tasks.named('bootRun') {
+    dependsOn 'buildFrontend'
+}
+
+tasks.named('bootJar') {
     dependsOn 'buildFrontend'
 }

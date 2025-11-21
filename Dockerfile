@@ -2,10 +2,13 @@
 FROM gradle:8.14.3-jdk24-alpine AS build
 ARG VERSION=0.0.1-SNAPSHOT
 WORKDIR /app
+RUN apk add --no-cache nodejs npm
 COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 RUN gradle dependencies --no-daemon || true
 COPY src ./src
+COPY frontend ./frontend
+COPY package.json package-lock.json vite.config.js ./
 RUN gradle clean bootJar -Pversion=${VERSION} --no-daemon
 
 # Runtime stage
