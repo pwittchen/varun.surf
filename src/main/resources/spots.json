@@ -1131,22 +1131,51 @@
     }
   },
   {
-    "name": "Tarifa",
+    "name": "Tarifa, Rio Jara",
     "country": "Spain",
-    "windguruUrl": "https://www.windguru.cz/976270",
+    "windguruUrl": "https://www.windguru.cz/48777",
     "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_rio_jara",
     "icmUrl": "",
     "webcamUrl": "https://www.kiteschool-ozutarifa.com/webcam-kitesurf-tarifa/",
-    "locationUrl": "https://maps.app.goo.gl/4uqxzKkEYRaTuarA9",
+    "locationUrl": "https://maps.app.goo.gl/U7xhQ3eM26VdFoJM7",
     "spotInfo": {
       "type": "Open sea, waves and chop",
-      "bestWind": "Levante E, Poniente W",
+      "bestWind": "Levante E",
       "waterTemp": "15-22°C",
       "experience": "Intermediate to Advanced",
       "launch": "Long sandy beach",
       "hazards": "Very strong wind, crowds",
       "season": "Year-round",
-      "description": "Kitesurf capital of Europe with powerful Levante and a bit lighter Poniente winds. There are a few kite spots: Balneario (small, for pros, no rescue), Rio Jara (wide beach, rescue boats), and Valdevaqueros. It's recommended to buy Sea Rescue package in case of riding in Levante wind. When the wind is too strong (over 40 kts) and your are not professional big air kitesurfer, it's recommended to visit Palmones spot, where wind will be around 20-25 kts at the same time."
+      "description": "Rio Jara is located between the mouth of the Rio Jara, and the entrance to the camping site with the same name. It forms a vast lagoon during high tide. Offers the most consistent wind with Levante. Due to the difficult access from the parking lot (about 10 minutes walk), there are fewer crowds. "
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Levante E",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, tłumy",
+      "season": "Cały rok",
+      "description": "Europejska stolica kitesurfingu z silnym Levante i nieco słabszym wiatrem Poniente. Rio Jara znajduje się pomiędzy ujściem Rio Jara a wejściem do kempingu o tej samej nazwie. Podczas przypływu tworzy rozległą lagunę. Oferuje najbardziej stabilny wiatr z Levante. Ze względu na trudny dojazd z parkingu (około 10 minut spacerem), jest tu mniej tłumów."
+    }
+  },
+  {
+    "name": "Tarifa, Balneario",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/48780",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tarifa",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/JiPenVr1oebLWdaFA",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": "Levante E, Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, crowds, waves, rocks, no rescue boats",
+      "season": "Year-round",
+      "description": "Kitesurf capital of Europe with powerful Levante and a bit lighter Poniente winds. This is the legendary starting point of Los Lances beach. It’s perfect for high jumps, and during strong Levante winds, you can witness a real show. Kitesurfing enthusiasts train here, and world champions compete with up to 40 Levante gusts. Maximum of 15 kitesurfers are allowed at this very dangerous and extreme spot. Only for experts!"
     },
     "spotInfoPL": {
       "type": "Otwarte morze, fale i zafalowana woda",
@@ -1156,7 +1185,152 @@
       "launch": "Długa piaszczysta plaża",
       "hazards": "Bardzo silny wiatr, tłumy",
       "season": "Cały rok",
-      "description": "Europejska stolica kitesurfingu z potężnym wiatrem Levante i nieco lżejszym Poniente. Jest kilka spotów kitesurfingowych: Balneario (mały, dla profesjonalistów, bez łodzi ratunkowych), Rio Jara (szeroka plaża, łodzie ratunkowe) i Valdevaqueros. Zaleca się zakup pakietu Sea Rescue w przypadku pływania przy wietrze Levante. Gdy wiatr jest zbyt silny (ponad 40 węzłów) i nie jesteś profesjonalnym big air kitesurferem, warto odwiedzić spot Palmones, gdzie siła wiatru będzie wynosić około 20-25 węzłów w tym samym czasie."
+      "description": "Europejska stolica kitesurfingu z silnym wiatrem Levante i nieco słabszym Poniente. To legendarny punkt startowy plaży Los Lances. Jest idealna do wysokich skoków, a podczas silnych wiatrów Levante można być świadkiem prawdziwego widowiska. Trenują tu pasjonaci kitesurfingu, a mistrzowie świata rywalizują z nawet 40 podmuchami Levante. Na tym bardzo niebezpiecznym i ekstremalnym spotie może przebywać maksymalnie 15 kitesurferów. Tylko dla ekspertów!"
+    }
+  },
+  {
+    "name": "Tarifa, Los Lances Sur",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/48776",
+    "windfinderUrl": "https://www.windfinder.com/forecast/los_lances",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/6hDfvuk8FkmRohzE9",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": " Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, waves, rescue card recommended",
+      "season": "Year-round",
+      "description": "The beach near the town is beautiful and an excellent choice for those who wants to kite close to the city. Besides the summer months, it’s a great place to enjoy Poniente winds."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, fale, karta rescue zalecana",
+      "season": "Cały rok",
+      "description": "Plaża w pobliżu miasta jest piękna i stanowi doskonały wybór dla tych, którzy chcą uprawiać kitesurfing blisko miasta. Poza miesiącami letnimi, to świetne miejsce do pływania w wietrze Poniente."
+    }
+  },
+  {
+    "name": "Tarifa, Campo de Futbol",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/976270",
+    "windfinderUrl": "https://www.windfinder.com/forecast/campo_de_futbol",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/34CtCFRkWBP4VJLu7",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": " Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, waves",
+      "season": "Year-round",
+      "description": "Just behind the town, near the football stadium, there’s a spot called Campo de Futbol. Poniente usually works better here than in the town itself. It offers more space and convenient parking."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, fale",
+      "season": "Cały rok",
+      "description": "Tuż za miastem, niedaleko stadionu piłkarskiego, znajduje się miejsce zwane Campo de Futbol. Poniente zazwyczaj działa tu lepiej niż w samym mieście. Oferuje więcej miejsca i wygodny parking."
+    }
+  },
+  {
+    "name": "Tarifa, Chirungito Agua",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/48778",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_stadtstrand",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/AmtCqL1BK9LdygiW9",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": " Poniente W, Levante E",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, waves, rescue card recommended",
+      "season": "Year-round",
+      "description": "Further to the west, right next to the parking lot and beach bars, you’ll find a spot where most of the schools are working. Many beginners near the shore – it’s a teaching zone. It can be very gusty during Levante, but it’s close to the bar and car."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Poniente W, Levante E",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, fale, karta rescue zalecana",
+      "season": "Cały rok",
+      "description": "Dalej na zachód, tuż obok parkingu i barów na plaży, znajdziesz miejsce, w którym działa większość szkółek. Wielu początkujących blisko brzegu – to strefa nauczania. W Levante może być bardzo porywiście, ale za to blisko baru i samochodu."
+    }
+  },
+  {
+    "name": "Tarifa, Arte Vida",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/48775",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_hotel_arte_vida",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/YWP79Bsswiw96z5N6",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": " Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, waves, rocks under the water, rescue card recommended",
+      "season": "Year-round",
+      "description": "The westernmost part of Los Lances beach. A more narrow  beach, ideal during Poniente. It’s a spot for advanced kitesurfers with stones under the water, creating significant waves. You can park near the Arte Vida hotel. Also a good spot for surfing when there is swell ans no wind."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, fale, kamienie pod wodą, karta rescue zalecana",
+      "season": "Cały rok",
+      "description": "Najbardziej wysunięta na zachód część plaży Los Lances. Wąska plaża, idealna podczas Poniente. To miejsce dla zaawansowanych kitesurferów, gdzie pod wodą znajdują się kamienie, tworzące spore fale. Można zaparkować w pobliżu hotelu Arte Vida. To również dobre miejsce do surfowania, gdy jest fala i nie ma wiatru."
+    }
+  },
+  {
+    "name": "Tarifa, Valdevaqueros",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/541946",
+    "windfinderUrl": "https://www.windfinder.com/forecast/valdevaqueros_spin_out_station",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/WHn2reo5ZT8KEz1g7",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": "Levante E, Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Very strong wind, waves, crowds, rocks on the beach, rescue card recommended",
+      "season": "Year-round",
+      "description": "Famous spot located in the bay, 9km west of Tarifa. Levante wind blows side or side on shore from the east here, while Poniente wind blows side on shore from the west. Due to the presence of a huge dune, Poniente wind is reinforced by the thermal effect. Therefore, during weak Poniente winds, this will be the only place in the area where you can kite. Levante wind is usually a few knots stronger here than at Los Lances. During the peak season, the beach is very crowded, and the lack of designated zones between beachgoers and kite surfers exacerbates the chaos. There are plenty of paid parking lots near the beach and beach bars. The beach is much narrower than Los Lances, with rocks underwater at both ends."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale i zafalowana woda",
+      "bestWind": "Levante E, Poniente W",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża",
+      "hazards": "Bardzo silny wiatr, fale, tłumy, kamienie na plaży, karta rescue zalecana",
+      "season": "Cały rok",
+      "description": "Znane miejsce położone w zatoce, 9 km na zachód od Tarify. Wiatr Levante wieje tu bokiem lub bokiem do brzegu ze wschodu, podczas gdy wiatr Poniente wieje bokiem do brzegu z zachodu. Ze względu na obecność ogromnej wydmy, wiatr Poniente jest wzmacniany przez efekt termiczny. Dlatego przy słabym wietrze Poniente będzie to jedyne miejsce w okolicy, gdzie można uprawiać kitesurfing. Wiatr Levante jest tu zazwyczaj o kilka węzłów silniejszy niż w Los Lances. W szczycie sezonu plaża jest bardzo zatłoczona, a brak wyznaczonych stref między plażowiczami a kitesurferami potęguje chaos. W pobliżu plaży i barów znajduje się wiele płatnych parkingów. Plaża jest znacznie węższa niż w Los Lances, ze skałami pod wodą na obu końcach."
     }
   },
   {
@@ -1169,7 +1343,7 @@
     "locationUrl": "https://maps.app.goo.gl/H6r4dHLVgb7eW1fS9",
     "spotInfo": {
       "type": "Flat water, river mouth",
-      "bestWind": "Levante E",
+      "bestWind": "Strong Levante E",
       "waterTemp": "15-22°C",
       "experience": "Intermediate",
       "launch": "Sandy river delta",
@@ -1179,7 +1353,7 @@
     },
     "spotInfoPL": {
       "type": "Płaska woda, ujście rzeki",
-      "bestWind": "Levante E",
+      "bestWind": "Silny Levante E",
       "waterTemp": "15-22°C",
       "experience": "Średniozaawansowany",
       "launch": "Piaszczysta delta rzeki",
@@ -1198,7 +1372,7 @@
     "locationUrl": "https://maps.app.goo.gl/mepQXz3niEz8hqyd9",
     "spotInfo": {
       "type": "Open sea, waves",
-      "bestWind": "Levante E, Poniente W",
+      "bestWind": "Strong Levante E",
       "waterTemp": "15-22°C",
       "experience": "Advanced",
       "launch": "Sandy beach",
@@ -1208,13 +1382,42 @@
     },
     "spotInfoPL": {
       "type": "Otwarte morze, fale",
-      "bestWind": "Levante E, Poniente W",
+      "bestWind": "Silny Levante E",
       "waterTemp": "15-22°C",
       "experience": "Zaawansowany",
       "launch": "Plaża piaszczysta",
       "hazards": "Silne fale, skaliste odcinki",
       "season": "Cały rok",
       "description": "Spot wave w pobliżu Tarify, dobra alternatywa, gdy Tarifa jest zbyt silna."
+    }
+  },
+  {
+    "name": "Getares",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/48784",
+    "windfinderUrl": "https://www.windfinder.com/forecast/getares",
+    "icmUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://maps.app.goo.gl/rL4druNQB6MPdvZe7",
+    "spotInfo": {
+      "type": "Open sea",
+      "bestWind": "Strong Levante E",
+      "waterTemp": "15-22°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Waves",
+      "season": "Year-round",
+      "description": "A spot with higher aesthetic values than Palmones is located about 35 kilometers away from Tarifa. The wind direction is side on shore, and outside the summer season, you may encounter a good wave. The wind is often weaker than in Palmones, but it’s definitely less crowded."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze",
+      "bestWind": "Silny Levante E",
+      "waterTemp": "15-22°C",
+      "experience": "Zaawansowany",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Fale",
+      "season": "Cały rok",
+      "description": "Miejsce o wyższych walorach estetycznych niż Palmones znajduje się około 35 kilometrów od Tarify. Wiatr wieje bokiem do brzegu, a poza sezonem letnim można trafić na dobrą falę. Wiatr jest często słabszy niż w Palmones, ale zdecydowanie mniej zatłoczony."
     }
   },
   {
