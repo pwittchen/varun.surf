@@ -64,9 +64,13 @@ async function checkEndpoint(endpoint) {
     const dotEl = endpointEl.querySelector('.status-endpoint-dot');
 
     try {
+        const startTime = performance.now();
         const response = await fetch(endpoint);
+        const endTime = performance.now();
+        const latency = Math.round(endTime - startTime);
+
         if (response.ok) {
-            statusSpan.textContent = 'operational';
+            statusSpan.textContent = `operational (${latency}ms)`;
             dotEl.className = 'status-endpoint-dot status-endpoint-dot-up';
         } else {
             statusSpan.textContent = `error (${response.status})`;
