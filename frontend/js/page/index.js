@@ -117,7 +117,6 @@ function updatePageTitle(country) {
 
 function showInvalidCountryError(countryName) {
     const spotsGrid = document.getElementById('spotsGrid');
-    updateSpotCounter(0);
     spotsGrid.innerHTML = `
             <div class="error-message">
                 <span class="error-icon">⚠️</span>
@@ -200,7 +199,6 @@ async function renderFavorites() {
     const favorites = getFavorites();
 
     if (favorites.length === 0) {
-        updateSpotCounter(0);
         spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⭐</span>
@@ -220,7 +218,6 @@ async function renderFavorites() {
 
         const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
-        updateSpotCounter(favoriteSpots.length);
         spotsGrid.innerHTML = '';
         favoriteSpots.forEach(spot => {
             spotsGrid.appendChild(createSpotCard(spot));
@@ -379,14 +376,6 @@ function initLanguage() {
         const langCode = document.getElementById('langCode');
         if (langCode) {
             langCode.textContent = t('langCode');
-        }
-
-        // Update spot counter text
-        const spotCounter = document.getElementById('spotCounter');
-        if (spotCounter) {
-            const spotCounterNumber = document.getElementById('spotCounterNumber');
-            const currentCount = spotCounterNumber ? spotCounterNumber.textContent : '0';
-            spotCounter.innerHTML = `<span class="spot-counter-number" id="spotCounterNumber">${currentCount}</span><span>${t('spotsCount')}</span>`;
         }
 
         // Update footer
@@ -1181,13 +1170,6 @@ function createSpotCard(spot) {
     return card;
 }
 
-function updateSpotCounter(count) {
-    const spotCounterNumber = document.getElementById('spotCounterNumber');
-    if (spotCounterNumber) {
-        spotCounterNumber.textContent = count;
-    }
-}
-
 function filterSpots(data, countryFilter, searchQuery) {
     let filtered = countryFilter === 'all' ? data : data.filter(spot => spot.country === countryFilter);
 
@@ -1246,7 +1228,6 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
 function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
-        updateSpotCounter(0);
         const message = searchQuery ?
             `${t('errorNoSpotsSearchDescription')} "${searchQuery}"` :
             `${t('errorNoSpotsDescription')}`;
@@ -1278,7 +1259,6 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                 renderSpots(filter, searchQuery, false, true);
             }, 5000);
         } else {
-            updateSpotCounter(filteredSpots.length);
             filteredSpots.forEach(spot => {
                 spotsGrid.appendChild(createSpotCard(spot));
             });
@@ -1531,9 +1511,6 @@ async function refreshDataInBackground() {
                     existingCard.replaceWith(newCard);
                 }
             });
-
-            // Update counter
-            updateSpotCounter(filteredSpots.length);
         }
 
         console.log('Data refreshed in background at', new Date().toLocaleTimeString());
