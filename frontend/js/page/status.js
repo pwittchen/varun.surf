@@ -70,14 +70,14 @@ async function checkEndpoint(endpoint) {
         const latency = Math.round(endTime - startTime);
 
         if (response.ok) {
-            statusSpan.textContent = `operational (${latency}ms)`;
+            statusSpan.innerHTML = `<span class="status-endpoint-text">operational</span> <span class="status-endpoint-latency">(${latency}ms)</span>`;
             dotEl.className = 'status-endpoint-dot status-endpoint-dot-up';
         } else {
-            statusSpan.textContent = `error (${response.status})`;
+            statusSpan.innerHTML = `<span class="status-endpoint-text">error (${response.status})</span>`;
             dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
         }
     } catch (error) {
-        statusSpan.textContent = 'unreachable';
+        statusSpan.innerHTML = '<span class="status-endpoint-text">unreachable</span>';
         dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
     }
 }

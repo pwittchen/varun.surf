@@ -3015,6 +3015,11 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         grid-template-columns: 1fr;
     }
 
+    .status-endpoint-text,
+    .status-endpoint-latency {
+        display: none;
+    }
+
     .status-actions {
         flex-direction: column;
         width: 100%;
