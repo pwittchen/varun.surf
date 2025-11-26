@@ -42,7 +42,7 @@ public abstract class AiService {
                 buildCustomContext(spot),
                 spot.name(),
                 spot.country(),
-                transformToToon(spot.forecast())
+                transformToToon(spot.forecastHourly())
         );
     }
 
