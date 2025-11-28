@@ -2395,12 +2395,51 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* Forecast view tabs (desktop only) */
-.forecast-tabs {
+.forecast-tabs-container {
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
+    align-items: flex-end;
     margin-top: 15px;
     margin-bottom: 8px;
     border-bottom: 2px solid var(--border-primary);
+}
+
+.forecast-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-windy-days-container {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    padding-right: 5px;
+}
+
+.filter-windy-days-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.filter-windy-days-label:hover {
+    color: var(--text-primary);
+}
+
+.filter-windy-days-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent-primary);
+}
+
+.filter-windy-days-label .filter-text {
+    font-weight: 500;
 }
 
 .forecast-tab {

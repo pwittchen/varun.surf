@@ -137,6 +137,7 @@ export const translations = {
         // Forecast view tabs
         tableViewLabel: "Vertical view",
         windguruViewLabel: "Horizontal view",
+        filterWindyDaysLabel: "Show windy days",
 
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kite & Board Size Calculator",
@@ -342,6 +343,7 @@ export const translations = {
         // Forecast view tabs
         tableViewLabel: "Widok pionowy",
         windguruViewLabel: "Widok poziomy",
+        filterWindyDaysLabel: "Pokaż wietrzne dni",
 
         // Kite size calculator
         kiteSizeCalculatorTitle: "Kalkulator rozmiaru latawca i deski",

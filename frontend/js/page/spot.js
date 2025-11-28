@@ -560,6 +560,21 @@ function closeAppInfoModal() {
 // FORECAST VIEW CREATION FUNCTIONS
 // ============================================================================
 
+// Check if a day has windy conditions (at least 12 knots base wind)
+function hasWindyConditions(dayForecasts) {
+    return dayForecasts.some(forecast => forecast.wind >= 12);
+}
+
+// Get filter windy days preference from localStorage
+function getFilterWindyDaysPreference() {
+    return localStorage.getItem('filterWindyDays') === 'true';
+}
+
+// Set filter windy days preference in localStorage
+function setFilterWindyDaysPreference(enabled) {
+    localStorage.setItem('filterWindyDays', enabled ? 'true' : 'false');
+}
+
 // Create a Windguru-style horizontal forecast view
 function createWindguruView(forecastData, hasWaveData) {
     if (!forecastData || forecastData.length === 0) {
@@ -597,6 +612,8 @@ function createWindguruView(forecastData, hasWaveData) {
     windguruHtml += '<div class="windguru-data-container">';
     windguruHtml += '<div class="windguru-data">';
 
+    const filterWindyDays = getFilterWindyDaysPreference();
+
     Object.keys(groupedByDay).forEach(dayKey => {
         const dayForecasts = groupedByDay[dayKey];
 
@@ -611,6 +628,9 @@ function createWindguruView(forecastData, hasWaveData) {
 
         // Skip this day if no daytime forecasts
         if (daytimeForecasts.length === 0) return;
+
+        // Skip this day if filtering windy days and no windy conditions
+        if (filterWindyDays && !hasWindyConditions(daytimeForecasts)) return;
 
         const firstForecast = daytimeForecasts[0];
         const dayLabel = formatDayLabel(firstForecast.date);
@@ -882,13 +902,36 @@ function createSpotCard(spot) {
         let dayColorIndex = 0;
 
         // Filter to only show daytime hours (06:00 to 21:00)
-        const daytimeForecasts = forecastData.filter(day => {
+        let daytimeForecasts = forecastData.filter(day => {
             if (!day.date) return false;
             const time = day.date.split(' ')[4];
             if (!time) return false;
             const hour = parseInt(time.split(':')[0]);
             return hour >= 6 && hour <= 21;
         });
+
+        // Apply windy days filter if enabled
+        const filterWindyDays = getFilterWindyDaysPreference();
+        if (filterWindyDays) {
+            // Group by day and filter days without windy conditions
+            const groupedByDay = {};
+            daytimeForecasts.forEach(forecast => {
+                const dayKey = forecast.date ? forecast.date.split(' ').slice(0, 4).join(' ') : 'Unknown';
+                if (!groupedByDay[dayKey]) {
+                    groupedByDay[dayKey] = [];
+                }
+                groupedByDay[dayKey].push(forecast);
+            });
+
+            // Filter out days without windy conditions
+            daytimeForecasts = [];
+            Object.keys(groupedByDay).forEach(dayKey => {
+                const dayForecasts = groupedByDay[dayKey];
+                if (hasWindyConditions(dayForecasts)) {
+                    daytimeForecasts.push(...dayForecasts);
+                }
+            });
+        }
 
         daytimeForecasts.forEach(day => {
             let windClass = '';
@@ -1179,19 +1222,27 @@ function createSpotCard(spot) {
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
                         ${isDesktopView ? `
-                        <div class="forecast-tabs">
-                            <button class="forecast-tab active" data-tab="table">
-                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11,22H5c-2.757,0-5-2.243-5-5V9H11v13ZM24,7c0-2.757-2.243-5-5-5H5C2.243,2,0,4.243,0,7H24Zm-11,2v13h6c2.757,0,5-2.243,5-5V9H13Z" fill="currentColor"/>
-                                </svg>
-                                ${t('tableViewLabel')}
-                            </button>
-                            <button class="forecast-tab" data-tab="windguru">
-                                <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5,22c-2.757,0-5-2.243-5-5V7C0,4.243,2.243,2,5,2V22Zm2-11H24V7c0-2.757-2.243-5-5-5H7V11Zm0,2v9h12c2.757,0,5-2.243,5-5v-4H7Z" fill="currentColor"/>
-                                </svg>
-                                ${t('windguruViewLabel')}
-                            </button>
+                        <div class="forecast-tabs-container">
+                            <div class="forecast-tabs">
+                                <button class="forecast-tab active" data-tab="table">
+                                    <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11,22H5c-2.757,0-5-2.243-5-5V9H11v13ZM24,7c0-2.757-2.243-5-5-5H5C2.243,2,0,4.243,0,7H24Zm-11,2v13h6c2.757,0,5-2.243,5-5V9H13Z" fill="currentColor"/>
+                                    </svg>
+                                    ${t('tableViewLabel')}
+                                </button>
+                                <button class="forecast-tab" data-tab="windguru">
+                                    <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5,22c-2.757,0-5-2.243-5-5V7C0,4.243,2.243,2,5,2V22Zm2-11H24V7c0-2.757-2.243-5-5-5H7V11Zm0,2v9h12c2.757,0,5-2.243,5-5v-4H7Z" fill="currentColor"/>
+                                    </svg>
+                                    ${t('windguruViewLabel')}
+                                </button>
+                            </div>
+                            <div class="filter-windy-days-container">
+                                <label class="filter-windy-days-label">
+                                    <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
+                                    <span class="filter-text">${t('filterWindyDaysLabel')}</span>
+                                </label>
+                            </div>
                         </div>
                         ` : ''}
                         <div class="forecast-view-container">
@@ -1277,6 +1328,9 @@ function displaySpot(spot) {
 
         // Setup forecast tabs after spot card is rendered
         setupForecastTabs();
+
+        // Setup filter windy days checkbox
+        setupFilterWindyDaysCheckbox();
     }
 
     currentSpot = spot;
@@ -1284,6 +1338,22 @@ function displaySpot(spot) {
     if (currentSpotId) {
         startBackgroundRefresh(currentSpotId);
     }
+}
+
+// Setup filter windy days checkbox
+function setupFilterWindyDaysCheckbox() {
+    const checkbox = document.getElementById('filterWindyDaysCheckbox');
+    if (!checkbox) return;
+
+    checkbox.addEventListener('change', (e) => {
+        const enabled = e.target.checked;
+        setFilterWindyDaysPreference(enabled);
+
+        // Re-render the spot to apply the filter
+        if (currentSpot) {
+            displaySpot(currentSpot);
+        }
+    });
 }
 
 // Display error message
