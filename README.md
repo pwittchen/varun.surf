@@ -4,7 +4,6 @@
 [![CD](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml)
 [![DOCKER](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml)
 [![RELEASE](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml)
-[![COVERAGE](https://github.com/pwittchen/varun.surf/actions/workflows/coverage.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/coverage.yml)
 
 modern weather forecast dashboard for kitesurfers on the web
 
