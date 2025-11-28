@@ -2442,6 +2442,30 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-weight: 500;
 }
 
+/* No windy days message */
+.no-windy-days-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.no-windy-days-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.no-windy-days-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
 .forecast-tab {
     background: transparent;
     border: none;

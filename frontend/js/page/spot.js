@@ -591,29 +591,11 @@ function createWindguruView(forecastData, hasWaveData) {
         groupedByDay[dayKey].push(forecast);
     });
 
-    let windguruHtml = '<div class="forecast-view windguru-view">';
-    windguruHtml += '<div class="windguru-wrapper">';
-
-    // Sticky labels column
-    windguruHtml += '<div class="windguru-labels">';
-    windguruHtml += '<div class="windguru-label-header"></div>'; // Empty header for alignment
-    windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('rainHeader')}</div>`;
-    if (hasWaveData) {
-        windguruHtml += `<div class="windguru-label">${t('waveHeader')}</div>`;
-    }
-    windguruHtml += '</div>';
-
-    // Scrollable data container
-    windguruHtml += '<div class="windguru-data-container">';
-    windguruHtml += '<div class="windguru-data">';
-
     const filterWindyDays = getFilterWindyDaysPreference();
+    let dayColumnsHtml = '';
+    let hasVisibleDays = false;
 
+    // Collect day columns first to determine if we have any visible days
     Object.keys(groupedByDay).forEach(dayKey => {
         const dayForecasts = groupedByDay[dayKey];
 
@@ -632,22 +614,24 @@ function createWindguruView(forecastData, hasWaveData) {
         // Skip this day if filtering windy days and no windy conditions
         if (filterWindyDays && !hasWindyConditions(daytimeForecasts)) return;
 
+        hasVisibleDays = true;
+
         const firstForecast = daytimeForecasts[0];
         const dayLabel = formatDayLabel(firstForecast.date);
 
-        windguruHtml += `<div class="windguru-day-column">`;
-        windguruHtml += `<div class="windguru-day-header">${dayLabel}</div>`;
+        dayColumnsHtml += `<div class="windguru-day-column">`;
+        dayColumnsHtml += `<div class="windguru-day-header">${dayLabel}</div>`;
 
         // Time row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const time = forecast.date ? forecast.date.split(' ')[4] : '';
-            windguruHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
+            dayColumnsHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Wind speed row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             let windClass = '';
             if (forecast.wind < 12) windClass = 'wind-weak';
@@ -655,12 +639,12 @@ function createWindguruView(forecastData, hasWaveData) {
             else if (forecast.wind >= 19 && forecast.wind <= 25) windClass = 'wind-strong';
             else windClass = 'wind-extreme';
 
-            windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.wind}</div>`;
+            dayColumnsHtml += `<div class="windguru-cell ${windClass}">${forecast.wind}</div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Gust speed row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             let windClass = '';
             if (forecast.gusts < 12) windClass = 'wind-weak';
@@ -668,37 +652,37 @@ function createWindguruView(forecastData, hasWaveData) {
             else if (forecast.gusts >= 19 && forecast.gusts <= 25) windClass = 'wind-strong';
             else windClass = 'wind-extreme';
 
-            windguruHtml += `<div class="windguru-cell ${windClass}">${forecast.gusts}</div>`;
+            dayColumnsHtml += `<div class="windguru-cell ${windClass}">${forecast.gusts}</div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Direction row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const windArrow = getWindArrow(forecast.direction);
-            windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
+            dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Temperature row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const tempClass = forecast.temp >= 18 ? 'temp-positive' : 'temp-negative';
-            windguruHtml += `<div class="windguru-cell ${tempClass}">${forecast.temp}°</div>`;
+            dayColumnsHtml += `<div class="windguru-cell ${tempClass}">${forecast.temp}°</div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Precipitation row
-        windguruHtml += `<div class="windguru-data-row">`;
+        dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const precipClass = forecast.precipitation === 0 ? 'precipitation-none' : 'precipitation';
-            windguruHtml += `<div class="windguru-cell ${precipClass}">${forecast.precipitation}</div>`;
+            dayColumnsHtml += `<div class="windguru-cell ${precipClass}">${forecast.precipitation}</div>`;
         });
-        windguruHtml += `</div>`;
+        dayColumnsHtml += `</div>`;
 
         // Wave row (if applicable)
         if (hasWaveData) {
-            windguruHtml += `<div class="windguru-data-row">`;
+            dayColumnsHtml += `<div class="windguru-data-row">`;
             daytimeForecasts.forEach(forecast => {
                 let waveClass = '';
                 let waveText = '-';
@@ -711,17 +695,52 @@ function createWindguruView(forecastData, hasWaveData) {
                         waveText = `${forecast.wave}m`;
                     }
                 }
-                windguruHtml += `<div class="windguru-cell ${waveClass}">${waveText}</div>`;
+                dayColumnsHtml += `<div class="windguru-cell ${waveClass}">${waveText}</div>`;
             });
-            windguruHtml += `</div>`;
+            dayColumnsHtml += `</div>`;
         }
 
-        windguruHtml += `</div>`; // Close day column
+        dayColumnsHtml += `</div>`; // Close day column
     });
 
-    windguruHtml += '</div>'; // Close windguru-data
-    windguruHtml += '</div>'; // Close windguru-data-container
-    windguruHtml += '</div>'; // Close windguru-wrapper
+    // Build windguru HTML based on whether we have visible days
+    let windguruHtml = '<div class="forecast-view windguru-view">';
+
+    if (filterWindyDays && !hasVisibleDays) {
+        // Show "No windy days!" message centered
+        windguruHtml += `
+            <div class="no-windy-days-message">
+                <span class="no-windy-days-icon">💨</span>
+                <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+            </div>
+        `;
+    } else {
+        // Show normal windguru layout with headers and data
+        windguruHtml += '<div class="windguru-wrapper">';
+
+        // Sticky labels column
+        windguruHtml += '<div class="windguru-labels">';
+        windguruHtml += '<div class="windguru-label-header"></div>'; // Empty header for alignment
+        windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${t('rainHeader')}</div>`;
+        if (hasWaveData) {
+            windguruHtml += `<div class="windguru-label">${t('waveHeader')}</div>`;
+        }
+        windguruHtml += '</div>';
+
+        // Scrollable data container
+        windguruHtml += '<div class="windguru-data-container">';
+        windguruHtml += '<div class="windguru-data">';
+        windguruHtml += dayColumnsHtml;
+        windguruHtml += '</div>'; // Close windguru-data
+        windguruHtml += '</div>'; // Close windguru-data-container
+        windguruHtml += '</div>'; // Close windguru-wrapper
+    }
+
     windguruHtml += '</div>'; // Close windguru-view
     return windguruHtml;
 }
@@ -1247,23 +1266,30 @@ function createSpotCard(spot) {
                         ` : ''}
                         <div class="forecast-view-container">
                             <div class="forecast-view table-view active">
-                                <table class="weather-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${t('dateHeader')}</th>
-                                            <th>${t('windHeader')}</th>
-                                            <th>${t('gustsHeader')}</th>
-                                            <th>${t('directionHeader')}</th>
-                                            <th>${t('tempHeader')}</th>
-                                            <th>${t('rainHeader')}</th>
-                                            ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${currentConditionsRow}
-                                        ${forecastRows}
-                                    </tbody>
-                                </table>
+                                ${getFilterWindyDaysPreference() && forecastRows === '' ? `
+                                    <div class="no-windy-days-message">
+                                        <span class="no-windy-days-icon">💨</span>
+                                        <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+                                    </div>
+                                ` : `
+                                    <table class="weather-table">
+                                        <thead>
+                                            <tr>
+                                                <th>${t('dateHeader')}</th>
+                                                <th>${t('windHeader')}</th>
+                                                <th>${t('gustsHeader')}</th>
+                                                <th>${t('directionHeader')}</th>
+                                                <th>${t('tempHeader')}</th>
+                                                <th>${t('rainHeader')}</th>
+                                                ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${currentConditionsRow}
+                                            ${forecastRows}
+                                        </tbody>
+                                    </table>
+                                `}
                             </div>
                             ${isDesktopView ? createWindguruView(forecastData, hasWaveData) : ''}
                         </div>
