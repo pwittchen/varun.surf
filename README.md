@@ -145,5 +145,6 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - AI forecast analysis
 - single spot view with hourly forecast (in horizontal and vertical view)
 - map of the spot (currently provided by Google Maps)
+- displaying photo of the spot (if available)
 - possibility to switch weather forecast model for the spot (currently available models: GFS, IFS)
 - embeddable HTML widget with current conditions and forecast for the spot
