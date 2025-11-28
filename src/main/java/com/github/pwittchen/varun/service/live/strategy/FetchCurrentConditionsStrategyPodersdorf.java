@@ -1,7 +1,9 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -14,6 +16,12 @@ public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentCondit
 
     private static final int PODERSDORF_WG_ID = 859182;
     private static final String KITERIDERS_LIVE_READINGS = "https://www.kiteriders.at/wind/weatherstat_kn.html";
+
+    private final OkHttpClient httpClient;
+
+    public FetchCurrentConditionsStrategyPodersdorf(HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
+    }
 
     @Override
     public boolean canProcess(int wgId) {
@@ -32,13 +40,18 @@ public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentCondit
     }
 
     @Override
+    protected OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    @Override
     public Mono<CurrentConditions> fetchCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request.Builder()
                     .url(url)
                     .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (Response response = getHttpClient().newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Failed to fetch forecast: " + response);
                 }

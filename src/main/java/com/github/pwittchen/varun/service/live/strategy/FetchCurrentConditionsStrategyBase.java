@@ -12,11 +12,11 @@ public abstract class FetchCurrentConditionsStrategyBase {
 
     protected static final double MS_TO_KNOTS = 1.94384;
 
-    protected final OkHttpClient httpClient = new OkHttpClient();
-
     protected abstract Mono<CurrentConditions> fetchCurrentConditions(String url);
 
     protected abstract String getUrl(int wgId);
+
+    protected abstract OkHttpClient getHttpClient();
 
     protected String normalizeDirection(String rawDirection) {
         if (WIND_DIRECTIONS.contains(rawDirection)) {

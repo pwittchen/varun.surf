@@ -1,7 +1,9 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -11,6 +13,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class is specifically designed to retrieve data for the MB weather station located on Góra Żar
+ * and uses an external weather provider to fetch live readings.
+ */
 public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
     private static final int MB_WG_ID = 1068590;
     private static final String MB_LIVE_READINGS_URL = "https://pogoda.cc/pl/stacje/zar";
@@ -24,9 +30,25 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
             "windspeed=([0-9]+\\.?[0-9]*)"
     );
 
+    private final OkHttpClient httpClient;
+
+    public FetchCurrentConditionsStrategyMB(HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
+    }
+
     @Override
     public boolean canProcess(int wgId) {
         return wgId == MB_WG_ID;
+    }
+
+    @Override
+    protected String getUrl(int wgId) {
+        return MB_LIVE_READINGS_URL;
+    }
+
+    @Override
+    protected OkHttpClient getHttpClient() {
+        return httpClient;
     }
 
     @Override
@@ -43,7 +65,7 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
                     .url(url)
                     .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (Response response = getHttpClient().newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Failed to fetch current conditions: " + response);
                 }
@@ -80,10 +102,5 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
                 .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         return new CurrentConditions(timestamp, windSpeedKnots, windGustsKnots, windDirection, tempC);
-    }
-
-    @Override
-    protected String getUrl(int wgId) {
-        return MB_LIVE_READINGS_URL;
     }
 }

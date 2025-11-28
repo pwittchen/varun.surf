@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service.forecast;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
@@ -36,8 +37,8 @@ public class ForecastService {
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
 
-    public ForecastService(WeatherForecastMapper mapper) {
-        this.httpClient = new OkHttpClient();
+    public ForecastService(WeatherForecastMapper mapper, HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
         this.mapper = mapper;
     }
 

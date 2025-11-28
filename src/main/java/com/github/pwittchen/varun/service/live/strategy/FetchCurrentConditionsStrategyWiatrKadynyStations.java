@@ -1,7 +1,9 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -21,6 +23,12 @@ public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurr
             4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt"
     );
 
+    private final OkHttpClient httpClient;
+
+    public FetchCurrentConditionsStrategyWiatrKadynyStations(HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
+    }
+
     @Override
     public boolean canProcess(int wgId) {
         return LIVE_CONDITIONS_URLS.containsKey(wgId);
@@ -38,6 +46,11 @@ public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurr
     }
 
     @Override
+    protected OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    @Override
     public Mono<CurrentConditions> fetchCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request
@@ -45,7 +58,7 @@ public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurr
                     .url(url)
                     .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (Response response = getHttpClient().newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Failed to fetch forecast: " + response);
                 }

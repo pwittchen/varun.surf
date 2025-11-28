@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -22,7 +23,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        strategy = new FetchCurrentConditionsStrategyWiatrKadynyStations();
+        strategy = new FetchCurrentConditionsStrategyWiatrKadynyStations(new HttpClientProvider());
     }
 
     @AfterEach

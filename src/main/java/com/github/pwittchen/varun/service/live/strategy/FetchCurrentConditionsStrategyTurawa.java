@@ -1,7 +1,9 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -24,6 +26,12 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
     private static final Pattern WIND_SPEED_PATTERN = Pattern.compile("wind_speed\\.png.*?padding-right: 10px;'>(\\d+\\.\\d+)\\s+m/s");
     private static final Pattern WIND_DIRECTION_PATTERN = Pattern.compile("wind_rose\\.png.*?padding-right: 10px;'>(\\d+)\\s+&deg;");
 
+    private final OkHttpClient httpClient;
+
+    public FetchCurrentConditionsStrategyTurawa(HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
+    }
+
     @Override
     public boolean canProcess(int wgId) {
         return wgId == TURAWA_WG_ID;
@@ -36,6 +44,16 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
     }
 
     @Override
+    protected String getUrl(int wgId) {
+        return TURAWA_LIVE_URL;
+    }
+
+    @Override
+    protected OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    @Override
     protected Mono<CurrentConditions> fetchCurrentConditions(String url) {
         return Mono.fromCallable(() -> {
             Request request = new Request
@@ -43,7 +61,7 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
                     .url(url)
                     .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (Response response = getHttpClient().newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Failed to fetch current conditions: " + response);
                 }
@@ -66,11 +84,6 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
         int windDirectionDegrees = Integer.parseInt(extractValue(body, WIND_DIRECTION_PATTERN, "wind direction"));
         String windDirection = windDirectionDegreesToCardinal(windDirectionDegrees);
         return new CurrentConditions(timestamp, windSpeedKnots, 0, windDirection, temperature);
-    }
-
-    @Override
-    protected String getUrl(int wgId) {
-        return TURAWA_LIVE_URL;
     }
 
     private String extractValue(String body, Pattern pattern, String fieldName) {

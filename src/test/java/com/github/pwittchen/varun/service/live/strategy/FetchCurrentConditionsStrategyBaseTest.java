@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -128,6 +129,15 @@ class FetchCurrentConditionsStrategyBaseTest {
         @Override
         protected String getUrl(int wgId) {
             return "";
+        }
+
+        @Override
+        protected OkHttpClient getHttpClient() {
+            return new OkHttpClient
+                    .Builder()
+                    .followRedirects(false)
+                    .followSslRedirects(false)
+                    .build();
         }
 
         // Expose protected methods for testing

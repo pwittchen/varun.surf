@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service.map;
 
+import com.github.pwittchen.varun.http.HttpClientProvider;
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -20,15 +21,8 @@ public class GoogleMapsService {
     private static final int MAX_REDIRECTS = 5;
     private final OkHttpClient httpClient;
 
-    public GoogleMapsService() {
-        this(new OkHttpClient.Builder()
-                .followRedirects(false)
-                .followSslRedirects(false)
-                .build());
-    }
-
-    GoogleMapsService(OkHttpClient httpClient) {
-        this.httpClient = httpClient;
+    GoogleMapsService(HttpClientProvider httpClientProvider) {
+        this.httpClient = httpClientProvider.getHttpClient();
     }
 
     public Mono<String> getEmbeddedMapCode(Spot spot) {
