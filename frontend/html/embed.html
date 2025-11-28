@@ -55,6 +55,15 @@
             margin-bottom: 4px;
         }
 
+        .varun-spot-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .varun-spot-name a:hover {
+            text-decoration: underline;
+        }
+
         .varun-country {
             font-size: 14px;
             opacity: 0.7;
@@ -449,7 +458,15 @@
                 const spotCountry = document.getElementById('spotCountry');
                 const widgetContent = document.getElementById('widgetContent');
 
-                spotName.textContent = spot.name;
+                if (spotName) {
+                    const spotLink = document.createElement('a');
+                    spotLink.href = `${apiBase}/spot/${encodeURIComponent(spotId)}`;
+                    spotLink.target = '_blank';
+                    spotLink.rel = 'noopener noreferrer';
+                    spotLink.textContent = spot.name;
+                    spotName.innerHTML = '';
+                    spotName.appendChild(spotLink);
+                }
                 spotCountry.textContent = spot.country;
 
                 if (view === 'conditions') {
