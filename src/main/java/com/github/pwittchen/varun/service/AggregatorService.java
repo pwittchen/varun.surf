@@ -24,6 +24,7 @@ import org.javatuples.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
 public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
+    private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
@@ -65,6 +67,7 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, String> embeddedMaps;
+    private final ConcurrentMap<Integer, String> spotPhotos;
 
     private final SpotsDataProvider spotsDataProvider;
     private final ForecastService forecastService;
@@ -97,6 +100,7 @@ public class AggregatorService {
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.embeddedMaps = new ConcurrentHashMap<>();
         this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
+        this.spotPhotos = new ConcurrentHashMap<>();
         this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
         this.forecastService = forecastService;
@@ -192,6 +196,11 @@ public class AggregatorService {
             scheduleEmbeddedMapFetch(spot);
         }
 
+        var spotPhotoUrl = spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
+        if (spotPhotoUrl != null && !spotPhotoUrl.isEmpty()) {
+            enrichedSpot = enrichedSpot.withSpotPhoto(spotPhotoUrl);
+        }
+
         List<Sponsor> sponsors = sponsorsService.getSponsors()
                 .stream()
                 .filter(sponsor -> sponsor.id() == spot.wgId())
@@ -228,6 +237,17 @@ public class AggregatorService {
                     log.warn("Failed to load embedded map for spot {} within timeout", spot.wgId(), error);
                     return Mono.empty();
                 });
+    }
+
+    private String loadSpotPhotoPath(int spotId) {
+        for (String extension : SPOT_PHOTO_EXTENSIONS) {
+            String resourcePath = "static/images/spots/" + spotId + "." + extension;
+            ClassPathResource resource = new ClassPathResource(resourcePath);
+            if (resource.exists()) {
+                return "/images/spots/" + spotId + "." + extension;
+            }
+        }
+        return "";
     }
 
     @Scheduled(fixedRate = 3 * 60 * 60 * 1000)

@@ -43,6 +43,9 @@ const FORECAST_POLL_INTERVAL = 5000;       // 5 seconds
 const FORECAST_TIMEOUT_MS = 30000;         // 30 seconds
 const BACKGROUND_REFRESH_INTERVAL = 60000; // 1 minute
 
+const MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,12A4,4,0,1,0,8,8,4,4,0,0,0,12,12Zm0-6a2,2,0,1,1-2,2A2,2,0,0,1,12,6Zm8.66,3.157-.719-.239A8,8,0,0,0,12,0,7.993,7.993,0,0,0,4.086,9.092a5.045,5.045,0,0,0-2.548,1.3A4.946,4.946,0,0,0,0,14v4.075a5.013,5.013,0,0,0,3.6,4.8l2.87.9A4.981,4.981,0,0,0,7.959,24a5.076,5.076,0,0,0,1.355-.186l5.78-1.71a2.987,2.987,0,0,1,1.573,0l2.387.8A4,4,0,0,0,24,19.021V13.872A5.015,5.015,0,0,0,20.66,9.156ZM7.758,3.762a5.987,5.987,0,0,1,8.484,0,6.037,6.037,0,0,1,.011,8.5L12.7,15.717a.992.992,0,0,1-1.389,0L7.758,12.277A6.04,6.04,0,0,1,7.758,3.762ZM22,19.021a1.991,1.991,0,0,1-.764,1.572,1.969,1.969,0,0,1-1.626.395L17.265,20.2a5.023,5.023,0,0,0-2.717-.016L8.764,21.892a3,3,0,0,1-1.694-.029l-2.894-.9A3.013,3.013,0,0,1,2,18.075V14a2.964,2.964,0,0,1,.92-2.163,3.024,3.024,0,0,1,1.669-.806A8.021,8.021,0,0,0,6.354,13.7l3.567,3.453a2.983,2.983,0,0,0,4.174,0l3.563-3.463a7.962,7.962,0,0,0,1.813-2.821l.537.178A3.006,3.006,0,0,1,22,13.872Z"/></svg>`;
+const PHOTO_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/><path fill="currentColor" d="M16,10.5A3.5,3.5,0,1,0,12.5,7,3.5,3.5,0,0,0,16,10.5Zm0-5A1.5,1.5,0,1,1,14.5,7,1.5,1.5,0,0,1,16,5.5Z"/></svg>`;
+
 // ============================================================================
 // URL AND MODEL SELECTION HELPERS
 // ============================================================================
@@ -1089,6 +1092,33 @@ function setupForecastTabs() {
     }
 }
 
+// Setup media (map/photo) tabs in desktop spot view
+function setupSpotMediaTabs() {
+    const tabButtons = Array.from(document.querySelectorAll('.spot-media-tab'));
+    if (tabButtons.length === 0) {
+        return;
+    }
+
+    const mapPanel = document.querySelector('.spot-media-panel-map');
+    const photoPanel = document.querySelector('.spot-media-panel-photo');
+    if (!mapPanel || !photoPanel) {
+        return;
+    }
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.classList.contains('active')) {
+                return;
+            }
+
+            const targetMedia = button.dataset.media;
+            tabButtons.forEach(tab => tab.classList.toggle('active', tab === button));
+            mapPanel.classList.toggle('active', targetMedia === 'map');
+            photoPanel.classList.toggle('active', targetMedia === 'photo');
+        });
+    });
+}
+
 // ============================================================================
 // SPOT CARD CREATION
 // ============================================================================
@@ -1107,6 +1137,8 @@ function createSpotCard(spot) {
 
     // Determine layout (desktop vs mobile)
     const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
+    const spotPhotoUrl = typeof spot.spotPhotoUrl === 'string' ? spot.spotPhotoUrl.trim() : '';
+    const hasSpotPhoto = isDesktopView && spotPhotoUrl.length > 0;
 
     // ========================================================================
     // BUILD CURRENT CONDITIONS ROW (for table)
@@ -1410,13 +1442,43 @@ function createSpotCard(spot) {
     // BUILD EMBEDDED MAP (desktop only)
     // ========================================================================
 
-    const embeddedMapHtml = isDesktopView && spot.embeddedMap && spot.embeddedMap.trim().length > 0
-        ? `
+    const hasEmbeddedMap = isDesktopView && spot.embeddedMap && spot.embeddedMap.trim().length > 0;
+
+    let embeddedMapHtml = '';
+    if (hasEmbeddedMap && hasSpotPhoto) {
+        embeddedMapHtml = `
+                <div class="spot-media-switcher">
+                    <div class="spot-media-tabs">
+                        <button type="button" class="spot-media-tab active" data-media="map">
+                            ${MAP_TAB_ICON}
+                            <span>${t('mapTabLabel')}</span>
+                        </button>
+                        <button type="button" class="spot-media-tab" data-media="photo">
+                            ${PHOTO_TAB_ICON}
+                            <span>${t('photoTabLabel')}</span>
+                        </button>
+                    </div>
+                    <div class="spot-media-panels">
+                        <div class="spot-media-panel spot-media-panel-map active">
+                            <div class="spot-embedded-map">
+                                <div class="spot-embedded-map-frame">${spot.embeddedMap}</div>
+                            </div>
+                        </div>
+                        <div class="spot-media-panel spot-media-panel-photo">
+                            <div class="spot-photo-frame">
+                                <img src="${spotPhotoUrl}" alt="${spot.name} photo" loading="lazy" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+    } else if (hasEmbeddedMap) {
+        embeddedMapHtml = `
                 <div class="spot-embedded-map">
                     <div class="spot-embedded-map-frame">${spot.embeddedMap}</div>
                 </div>
-            `
-        : '';
+            `;
+    }
 
     // ========================================================================
     // BUILD AI ANALYSIS CARD (sidebar)
@@ -1613,6 +1675,9 @@ function displaySpot(spot) {
 
         // Setup filter windy days checkbox
         setupFilterWindyDaysCheckbox();
+
+        // Setup media tabs if available
+        setupSpotMediaTabs();
     }
 
     currentSpot = spot;

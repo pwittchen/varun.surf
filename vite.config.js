@@ -39,6 +39,42 @@ function flattenHtmlPlugin() {
   };
 }
 
+const spotImagesDir = path.resolve(__dirname, 'frontend/images/spots');
+
+function findSpotImages(directory) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const entryPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...findSpotImages(entryPath));
+    } else if (/\.(png|jpe?g)$/i.test(entry.name)) {
+      files.push(entryPath);
+    }
+  }
+
+  return files;
+}
+
+const staticCopyTargets = [
+  { src: 'assets/logo.png', dest: '.' },
+  { src: 'assets/ai.txt', dest: '.' },
+  { src: 'assets/llms.txt', dest: '.' },
+  { src: 'assets/robots.txt', dest: '.' },
+  { src: 'assets/sitemap.xml', dest: '.' }
+];
+
+if (findSpotImages(spotImagesDir).length > 0) {
+  staticCopyTargets.push({ src: 'images/spots/**/*', dest: 'images/spots' });
+} else {
+  console.log('ℹ️  No spot images found, skipping copy step.');
+}
+
 export default defineConfig({
   root: 'frontend',
   base: '/',
@@ -95,13 +131,7 @@ export default defineConfig({
     }),
 
     viteStaticCopy({
-      targets: [
-        { src: 'assets/logo.png', dest: '.' },
-        { src: 'assets/ai.txt', dest: '.' },
-        { src: 'assets/llms.txt', dest: '.' },
-        { src: 'assets/robots.txt', dest: '.' },
-        { src: 'assets/sitemap.xml', dest: '.' }
-      ]
+      targets: staticCopyTargets
     }),
 
     flattenHtmlPlugin()

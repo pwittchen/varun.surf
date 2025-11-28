@@ -135,6 +135,8 @@ export const translations = {
         embedCopyButtonError: "Failed to copy to clipboard",
         embedLinkLabel: "EMBED",
         mapLinkLabel: "MAP",
+        mapTabLabel: "Map",
+        photoTabLabel: "Photo",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -355,6 +357,8 @@ export const translations = {
         embedCopyButtonError: "Nie udało się skopiować do schowka",
         embedLinkLabel: "OSADŹ",
         mapLinkLabel: "MAPA",
+        mapTabLabel: "Mapa",
+        photoTabLabel: "Zdjęcie",
 
         // Spot info labels
         overviewLabel: "Przegląd",

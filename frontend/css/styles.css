@@ -1963,6 +1963,92 @@ body.spot-page .error-description {
     border-radius: 12px;
 }
 
+.spot-media-panel-map .spot-embedded-map {
+    background: transparent;
+    border-radius: 12px;
+}
+
+.spot-media-switcher {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 12px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.spot-media-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid var(--border-primary);
+    margin-bottom: -2px;
+}
+
+.spot-media-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.spot-media-tab .tab-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.spot-media-tab:hover {
+    color: var(--text-primary);
+    background: rgba(74, 158, 255, 0.1);
+}
+
+.spot-media-tab:hover .tab-icon {
+    color: var(--text-primary);
+}
+
+.spot-media-tab.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.spot-media-tab.active .tab-icon {
+    color: var(--accent-primary);
+}
+
+.spot-media-panels {
+    position: relative;
+}
+
+.spot-media-panel {
+    display: none;
+}
+
+.spot-media-panel.active {
+    display: block;
+}
+
+.spot-photo-frame {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+}
+
+.spot-photo-frame img {
+    width: 100%;
+    height: clamp(260px, 40vw, 360px);
+    object-fit: cover;
+    display: block;
+}
+
 /* Spot info card styling */
 .spot-info-card {
     background: var(--bg-secondary);
@@ -3214,7 +3300,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .external-link.embed-link {
-    border: 1px solid #4a9eff;
     text-transform: uppercase;
 }
 
