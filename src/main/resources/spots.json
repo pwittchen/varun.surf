@@ -791,14 +791,14 @@
     "webcamUrl": "https://www.feratel.com/webcams/oesterreich/burgenland/podersdorf-neusiedler-see",
     "locationUrl": "https://maps.app.goo.gl/UJHbVRNix6GWLPXe7",
     "spotInfo": {
-      "type": "Jezioro Nezyderskie, płytka, mulista woda",
+      "type": "Lake Neusiedl, shallow, muddy water",
       "bestWind": "N, NW",
-      "waterTemp": "10-25°C",
-      "experience": "Beginner to Advanced",
-      "launch": "Szerokie trawiaste plaże",
-      "hazards": "Bardzo płytko, muliste dno, możliwe szkwały",
+      "Water temp.": "10-25°C",
+      "experience": "from beginner to advanced",
+      "launch": "Wide, grassy beaches",
+      "hazards": "Very shallow, muddy bottom, possible squalls",
       "season": "April-October",
-      "description": "One of the most famous inland kite spots in Europe with shallow water and strong, reliable wind. During the season, you need to pay for the entrance to the spot or use burgenland karte offered bye some hotels."
+      "description": "One of the most famous inland kitesurfing spots in Europe with shallow water and strong, reliable winds. During the season, you must pay an entrance fee or use the Burgenland Card offered by some hotels."
     },
     "spotInfoPL": {
       "type": "Jezioro Nezyderskie, płytka, mulista woda",
@@ -820,7 +820,7 @@
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/gxiiTUpRFeEokfAa9",
     "spotInfo": {
-      "type": "Jezioro Nezyderskie, płytka woda",
+      "type": "Lake Neusiedl, shallow water",
       "bestWind": "S, SE",
       "waterTemp": "10-25°C",
       "experience": "Beginner to Intermediate",
