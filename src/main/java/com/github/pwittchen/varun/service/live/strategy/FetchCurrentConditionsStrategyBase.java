@@ -10,6 +10,8 @@ import java.util.List;
 public abstract class FetchCurrentConditionsStrategyBase {
     private static final List<String> WIND_DIRECTIONS = Arrays.asList("N", "NE", "E", "SE", "S", "SW", "W", "NW");
 
+    protected static final double MS_TO_KNOTS = 1.94384;
+
     protected final OkHttpClient httpClient = new OkHttpClient();
 
     protected abstract Mono<CurrentConditions> fetchCurrentConditions(String url);

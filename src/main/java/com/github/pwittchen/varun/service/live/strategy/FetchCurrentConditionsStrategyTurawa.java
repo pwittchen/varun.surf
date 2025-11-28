@@ -24,8 +24,6 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
     private static final Pattern WIND_SPEED_PATTERN = Pattern.compile("wind_speed\\.png.*?padding-right: 10px;'>(\\d+\\.\\d+)\\s+m/s");
     private static final Pattern WIND_DIRECTION_PATTERN = Pattern.compile("wind_rose\\.png.*?padding-right: 10px;'>(\\d+)\\s+&deg;");
 
-    private static final double MS_TO_KNOTS = 1.94384;
-
     @Override
     public boolean canProcess(int wgId) {
         return wgId == TURAWA_WG_ID;

@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.live;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyMB;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyTurawa;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
@@ -19,6 +20,7 @@ public class CurrentConditionsService {
         strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations());
         strategies.add(new FetchCurrentConditionsStrategyPodersdorf());
         strategies.add(new FetchCurrentConditionsStrategyTurawa());
+        strategies.add(new FetchCurrentConditionsStrategyMB());
     }
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
