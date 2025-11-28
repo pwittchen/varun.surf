@@ -70,4 +70,18 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> embedRouter() {
+        return RouterFunctions.route(
+                GET("/embed"),
+                _ -> {
+                    Resource embedHtml = new ClassPathResource("static/embed.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(embedHtml);
+                }
+        );
+    }
 }

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VARUN.SURF Embed Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: transparent;
+        }
+
+        .varun-embed-widget {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .varun-embed-widget[data-theme="light"] {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .varun-embed-widget[data-theme="dark"] {
+            background: #1a1a1a;
+            color: #f5f5f5;
+        }
+
+        .varun-header {
+            padding: 16px;
+            border-bottom: 1px solid;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-header {
+            background: #f8f9fa;
+            border-bottom-color: #e0e0e0;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-header {
+            background: #2a2a2a;
+            border-bottom-color: #404040;
+        }
+
+        .varun-spot-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .varun-country {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .varun-content {
+            padding: 16px;
+        }
+
+        .varun-loading {
+            text-align: center;
+            padding: 32px;
+            opacity: 0.6;
+        }
+
+        .varun-error {
+            text-align: center;
+            padding: 32px;
+            color: #ef4444;
+        }
+
+        /* Current Conditions View */
+        .varun-current-conditions {
+            display: grid;
+            gap: 16px;
+        }
+
+        .varun-wind-main {
+            text-align: center;
+            padding: 24px;
+            border-radius: 8px;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-wind-main {
+            background: #f1f5f9;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-wind-main {
+            background: #2d3748;
+        }
+
+        .varun-wind-main.varun-wind-weak {
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-wind-main.varun-wind-weak {
+            background: rgba(148, 163, 184, 0.1);
+        }
+
+        .varun-wind-main.varun-wind-moderate {
+            background: rgba(59, 130, 246, 0.18);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-wind-main.varun-wind-moderate {
+            background: rgba(59, 130, 246, 0.12);
+        }
+
+        .varun-wind-main.varun-wind-strong {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-wind-main.varun-wind-strong {
+            background: rgba(34, 197, 94, 0.14);
+        }
+
+        .varun-wind-main.varun-wind-extreme {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-wind-main.varun-wind-extreme {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .varun-wind-speed {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .varun-wind-speed.weak { color: #94a3b8; }
+        .varun-wind-speed.moderate { color: #3b82f6; }
+        .varun-wind-speed.strong { color: #22c55e; }
+        .varun-wind-speed.extreme { color: #ef4444; }
+
+        .varun-wind-label {
+            font-size: 14px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .varun-conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .varun-condition-item {
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-condition-item {
+            background: #f8fafc;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-condition-item {
+            background: #374151;
+        }
+
+        .varun-condition-label {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .varun-condition-value {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Forecast Table View */
+        .varun-forecast-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .varun-forecast-table th,
+        .varun-forecast-table td {
+            padding: 8px 4px;
+            text-align: left;
+        }
+
+        .varun-forecast-table th {
+            font-weight: 600;
+            opacity: 0.7;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-forecast-table {
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-forecast-table {
+            border-top: 1px solid #404040;
+        }
+
+        .varun-forecast-table tr {
+            transition: background 0.2s ease;
+        }
+
+        .varun-forecast-table tr.varun-wind-weak {
+            border-left: 3px solid #94a3b8;
+        }
+
+        .varun-forecast-table tr.varun-wind-moderate {
+            border-left: 3px solid #3b82f6;
+        }
+
+        .varun-forecast-table tr.varun-wind-strong {
+            border-left: 3px solid #22c55e;
+        }
+
+        .varun-forecast-table tr.varun-wind-extreme {
+            border-left: 3px solid #ef4444;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-forecast-table tr.varun-wind-weak {
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-forecast-table tr.varun-wind-moderate {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-forecast-table tr.varun-wind-strong {
+            background: rgba(34, 197, 94, 0.15);
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-forecast-table tr.varun-wind-extreme {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-forecast-table tr.varun-wind-weak {
+            background: rgba(148, 163, 184, 0.1);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-forecast-table tr.varun-wind-moderate {
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-forecast-table tr.varun-wind-strong {
+            background: rgba(34, 197, 94, 0.12);
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-forecast-table tr.varun-wind-extreme {
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .varun-forecast-table td.varun-forecast-wind.varun-wind-weak,
+        .varun-forecast-table td.varun-forecast-gusts.varun-wind-weak {
+            color: #94a3b8;
+        }
+
+        .varun-forecast-table td.varun-forecast-wind.varun-wind-moderate,
+        .varun-forecast-table td.varun-forecast-gusts.varun-wind-moderate {
+            color: #3b82f6;
+        }
+
+        .varun-forecast-table td.varun-forecast-wind.varun-wind-strong,
+        .varun-forecast-table td.varun-forecast-gusts.varun-wind-strong {
+            color: #22c55e;
+        }
+
+        .varun-forecast-table td.varun-forecast-wind.varun-wind-extreme,
+        .varun-forecast-table td.varun-forecast-gusts.varun-wind-extreme {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .varun-wind-arrow {
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .varun-footer {
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 12px;
+            border-top: 1px solid;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-footer {
+            background: #f8f9fa;
+            border-top-color: #e0e0e0;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-footer {
+            background: #2a2a2a;
+            border-top-color: #404040;
+        }
+
+        .varun-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .varun-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .varun-wind-speed {
+                font-size: 36px;
+            }
+
+            .varun-conditions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .varun-forecast-table {
+                font-size: 12px;
+            }
+
+            .varun-forecast-table th,
+            .varun-forecast-table td {
+                padding: 6px 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="varun-embed-widget" id="varunWidget" data-theme="dark">
+        <div class="varun-header">
+            <div class="varun-spot-name" id="spotName">Loading...</div>
+            <div class="varun-country" id="spotCountry"></div>
+        </div>
+        <div class="varun-content" id="widgetContent">
+            <div class="varun-loading">Loading spot data...</div>
+        </div>
+        <div class="varun-footer" id="varunFooter">
+            Data provided by <a href="https://varun.surf" target="_blank" rel="noopener noreferrer">VARUN.SURF</a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Parse URL parameters
+            const params = new URLSearchParams(window.location.search);
+            const spotId = params.get('spotId');
+            const paramTheme = (params.get('theme') || 'dark').toLowerCase();
+            const theme = paramTheme === 'light' ? 'light' : 'dark';
+            const rawView = (params.get('view') || 'conditions').toLowerCase();
+            const view = rawView === 'forecast' ? 'forecast' : 'conditions';
+            const paramLang = (params.get('lang') || 'en').toLowerCase();
+            const lang = paramLang === 'pl' ? 'pl' : 'en';
+
+            const translations = {
+                en: {
+                    loadingSpotData: 'Loading spot data...',
+                    windSpeedLabel: 'Wind Speed',
+                    gustsLabel: 'Gusts',
+                    directionLabel: 'Direction',
+                    temperatureLabel: 'Temperature',
+                    precipitationLabel: 'Precipitation',
+                    timeHeader: 'Time',
+                    windHeader: 'Wind',
+                    gustsHeader: 'Gusts',
+                    dirHeader: 'Dir',
+                    tempHeader: 'Temp',
+                    noData: 'No data available',
+                    missingSpotId: 'Missing spotId parameter',
+                    spotNotFound: 'Spot not found',
+                    failedToLoad: 'Failed to load spot data',
+                    dataProvidedBy: 'Data provided by'
+                },
+                pl: {
+                    loadingSpotData: 'Ładowanie danych spotu...',
+                    windSpeedLabel: 'Prędkość wiatru',
+                    gustsLabel: 'Porywy',
+                    directionLabel: 'Kierunek',
+                    temperatureLabel: 'Temperatura',
+                    precipitationLabel: 'Opady',
+                    timeHeader: 'Czas',
+                    windHeader: 'Wiatr',
+                    gustsHeader: 'Porywy',
+                    dirHeader: 'Kier.',
+                    tempHeader: 'Temp.',
+                    noData: 'Brak danych',
+                    missingSpotId: 'Brak parametru spotId',
+                    spotNotFound: 'Nie znaleziono spotu',
+                    failedToLoad: 'Nie udało się załadować danych spotu',
+                    dataProvidedBy: 'Dane dostarcza'
+                }
+            };
+
+            function t(key) {
+                const dict = translations[lang] || translations.en;
+                return dict[key] || translations.en[key] || key;
+            }
+            const apiBase = (window.location && window.location.origin && window.location.origin.startsWith('http'))
+                ? window.location.origin.replace(/\/$/, '')
+                : 'https://varun.surf';
+
+            // Set theme
+            const widget = document.getElementById('varunWidget');
+            widget.setAttribute('data-theme', theme);
+
+            const widgetContent = document.getElementById('widgetContent');
+            if (widgetContent) {
+                widgetContent.innerHTML = `<div class="varun-loading">${t('loadingSpotData')}</div>`;
+            }
+
+            const footer = document.getElementById('varunFooter');
+            if (footer) {
+                footer.innerHTML = `${t('dataProvidedBy')} <a href="https://varun.surf" target="_blank" rel="noopener noreferrer">VARUN.SURF</a>`;
+            }
+
+            if (!spotId) {
+                showError(t('missingSpotId'));
+                return;
+            }
+
+            // Fetch spot data
+            fetchSpotData(spotId);
+
+            function fetchSpotData(id) {
+                fetch(`${apiBase}/api/v1/spots/${id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('spotNotFound');
+                        }
+                        return response.json();
+                    })
+                    .then(spot => {
+                        displaySpot(spot);
+                    })
+                    .catch(error => {
+                        const key = error && translations.en[error.message] ? error.message : 'failedToLoad';
+                        showError(t(key));
+                    });
+            }
+
+            function displaySpot(spot) {
+                const spotName = document.getElementById('spotName');
+                const spotCountry = document.getElementById('spotCountry');
+                const widgetContent = document.getElementById('widgetContent');
+
+                spotName.textContent = spot.name;
+                spotCountry.textContent = spot.country;
+
+                if (view === 'conditions') {
+                    displayCurrentConditions(spot, widgetContent);
+                } else {
+                    displayForecastVertical(spot, widgetContent);
+                }
+            }
+
+            function displayCurrentConditions(spot, container) {
+                let data = null;
+
+                // Prefer current conditions, fallback to nearest forecast
+                if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
+                    data = {
+                        wind: spot.currentConditions.wind,
+                        gusts: spot.currentConditions.gusts,
+                        direction: spot.currentConditions.direction,
+                        temp: spot.currentConditions.temp,
+                        precipitation: sanitizeNumber(spot.currentConditions.precipitation, 0)
+                    };
+                } else if (spot.forecastHourly && spot.forecastHourly.length > 0) {
+                    const nearest = spot.forecastHourly[0];
+                    data = {
+                        wind: nearest.wind,
+                        gusts: nearest.gusts,
+                        direction: nearest.direction,
+                        temp: nearest.temp,
+                        precipitation: sanitizeNumber(nearest.precipitation, 0)
+                    };
+                }
+
+                if (!data) {
+                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
+                    return;
+                }
+
+                const avgWind = getAverageWind(data.wind, data.gusts);
+                let windClass = 'weak';
+                if (avgWind >= 12 && avgWind < 18) windClass = 'moderate';
+                else if (avgWind >= 18 && avgWind <= 25) windClass = 'strong';
+                else if (avgWind > 25) windClass = 'extreme';
+
+                const arrow = getWindArrow(data.direction);
+
+            container.innerHTML = `
+                    <div class="varun-current-conditions">
+                        <div class="varun-wind-main ${windClass}">
+                            <div class="varun-wind-speed ${windClass}">${data.wind} kts</div>
+                            <div class="varun-wind-label">${t('windSpeedLabel')}</div>
+                        </div>
+                        <div class="varun-conditions-grid">
+                            <div class="varun-condition-item">
+                                <div class="varun-condition-label">${t('gustsLabel')}</div>
+                                <div class="varun-condition-value">${data.gusts} kts</div>
+                            </div>
+                            <div class="varun-condition-item">
+                                <div class="varun-condition-label">${t('directionLabel')}</div>
+                                <div class="varun-condition-value">${arrow} ${data.direction}</div>
+                            </div>
+                            <div class="varun-condition-item">
+                                <div class="varun-condition-label">${t('temperatureLabel')}</div>
+                                <div class="varun-condition-value">${data.temp}°C</div>
+                            </div>
+                            <div class="varun-condition-item">
+                                <div class="varun-condition-label">${t('precipitationLabel')}</div>
+                                <div class="varun-condition-value">${data.precipitation ?? 0} mm</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function displayForecastVertical(spot, container) {
+                const forecastData = spot.forecastHourly || spot.forecast || [];
+
+                if (forecastData.length === 0) {
+                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
+                    return;
+                }
+
+                // Show next 8 hours of forecast
+                const limitedForecast = forecastData.slice(0, 8);
+
+                let tableHtml = `
+                    <table class="varun-forecast-table">
+                        <thead>
+                            <tr>
+                                <th>${t('timeHeader')}</th>
+                                <th>${t('windHeader')}</th>
+                                <th>${t('gustsHeader')}</th>
+                                <th>${t('dirHeader')}</th>
+                                <th>${t('tempHeader')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                limitedForecast.forEach(forecast => {
+                    const time = formatTime(forecast.date);
+                    const arrow = getWindArrow(forecast.direction);
+                    const windClass = getWindClassFromValues(forecast.wind, forecast.gusts);
+                    const windText = `${forecast.wind} kts`;
+                    const gustText = `${forecast.gusts} kts`;
+                    tableHtml += `
+                        <tr class="${windClass}">
+                            <td><strong>${time}</strong></td>
+                            <td class="varun-forecast-wind ${windClass}">${windText}</td>
+                            <td class="varun-forecast-gusts ${windClass}">${gustText}</td>
+                            <td>${arrow} ${forecast.direction}</td>
+                            <td>${forecast.temp}°C</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = tableHtml;
+            }
+
+            function formatTime(dateStr) {
+                if (!dateStr) return '';
+                const parts = dateStr.split(' ');
+                if (parts.length >= 5) {
+                    return parts[4]; // HH:MM
+                }
+                return dateStr;
+            }
+
+            function getWindArrow(direction) {
+                const arrows = {
+                    'N': '↓', 'NE': '↙', 'E': '←', 'SE': '↖',
+                    'S': '↑', 'SW': '↗', 'W': '→', 'NW': '↘'
+                };
+                return arrows[direction] || '•';
+            }
+
+            function sanitizeNumber(value, fallback = 0) {
+                const parsed = Number(value);
+                return Number.isFinite(parsed) ? parsed : fallback;
+            }
+
+            function getAverageWind(wind, gusts) {
+                return (sanitizeNumber(wind) + sanitizeNumber(gusts)) / 2;
+            }
+
+            function getWindClassFromValues(wind, gusts) {
+                const avgWind = getAverageWind(wind, gusts);
+                if (avgWind < 12) return 'varun-wind-weak';
+                if (avgWind < 18) return 'varun-wind-moderate';
+                if (avgWind <= 25) return 'varun-wind-strong';
+                return 'varun-wind-extreme';
+            }
+
+            function showError(message) {
+                const widgetContent = document.getElementById('widgetContent');
+                widgetContent.innerHTML = `<div class="varun-error">${message}</div>`;
+            }
+        })();
+    </script>
+</body>
+</html>

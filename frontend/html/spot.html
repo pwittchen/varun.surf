@@ -165,6 +165,66 @@
     </div>
 </div>
 
+<!-- Modal for Embed Widget -->
+<div class="modal-overlay" id="embedModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span id="embedModalTitle">Embed Widget</span>
+            </div>
+            <button class="modal-close" id="embedModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p class="modal-intro" id="embedDescription">Copy the code below to embed this spot's weather data on your website.</p>
+
+            <div class="embed-config">
+                <div class="embed-dropdowns">
+                    <div class="dropdown-container embed-dropdown" id="embedViewDropdownContainer">
+                        <button class="dropdown-button" id="embedViewDropdown" type="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span id="embedViewDropdownText">Current Conditions</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="embedViewDropdownMenu" role="listbox">
+                            <div class="dropdown-option selected" data-value="conditions" data-label-key="embedViewConditionsLabel">Current Conditions</div>
+                            <div class="dropdown-option" data-value="forecast" data-label-key="embedViewForecastLabel">Forecast</div>
+                        </div>
+                    </div>
+
+                    <div class="dropdown-container embed-dropdown" id="embedThemeDropdownContainer">
+                        <button class="dropdown-button" id="embedThemeDropdown" type="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span id="embedThemeDropdownText">Dark Theme</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="embedThemeDropdownMenu" role="listbox">
+                            <div class="dropdown-option selected" data-value="dark" data-label-key="embedThemeDarkLabel">Dark Theme</div>
+                            <div class="dropdown-option" data-value="light" data-label-key="embedThemeLightLabel">Light Theme</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="embed-preview-section">
+                <h3 class="embed-section-title" id="embedPreviewTitle">Preview</h3>
+                <div class="embed-preview-container">
+                    <iframe id="embedPreview" class="embed-preview-frame"></iframe>
+                </div>
+            </div>
+
+            <div class="embed-code-section">
+                <h3 class="embed-section-title" id="embedCodeTitle">Embed Code</h3>
+                <textarea id="embedCode" class="embed-code-textarea" readonly></textarea>
+                <button id="copyEmbedCode" class="embed-copy-button">
+                    <svg class="embed-copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M19,21H8a3,3,0,0,1-3-3V7A3,3,0,0,1,8,4H19a3,3,0,0,1,3,3V18A3,3,0,0,1,19,21ZM8,6A1,1,0,0,0,7,7V18a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V7a1,1,0,0,0-1-1Z"/>
+                        <path d="M16,0H5A3,3,0,0,0,2,3V16a1,1,0,0,0,2,0V3A1,1,0,0,1,5,2H16a1,1,0,0,0,0-2Z"/>
+                    </svg>
+                    <span id="copyButtonText">Copy to Clipboard</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="module" src="../js/page/spot.js"></script>
 </body>
 </html>

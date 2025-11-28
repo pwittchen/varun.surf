@@ -29,6 +29,11 @@ let currentSpotId = null;
 // Selected forecast model (gfs or ifs)
 let selectedModel = 'gfs';
 
+// Embed widget configuration
+let embedViewSelection = 'conditions';
+let embedThemeSelection = 'dark';
+let embedLanguageSelection = 'en';
+
 // ============================================================================
 // CONFIGURATION CONSTANTS
 // ============================================================================
@@ -538,6 +543,256 @@ function closeIcmModal() {
     const modal = document.getElementById('icmModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
+}
+
+const embedDropdownRegistry = [];
+let embedDropdownsInitialized = false;
+
+// Open embed widget modal
+function openEmbedModal() {
+    if (!currentSpotId) return;
+
+    const modal = document.getElementById('embedModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    const copyButton = document.getElementById('copyEmbedCode');
+    const copyButtonText = document.getElementById('copyButtonText');
+    if (copyButton) {
+        copyButton.classList.remove('copied');
+    }
+    if (copyButtonText) {
+        copyButtonText.textContent = t('embedCopyButtonDefault');
+    }
+
+    refreshEmbedDropdownTranslations();
+    closeEmbedDropdowns();
+    updateEmbedCode();
+}
+
+// Close embed widget modal
+function closeEmbedModal() {
+    const modal = document.getElementById('embedModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    closeEmbedDropdowns();
+}
+
+function getEmbedBaseUrl() {
+    try {
+        return window.location.origin.replace(/\/$/, '');
+    } catch (e) {
+        return 'https://varun.surf';
+    }
+}
+
+function buildEmbedUrl(theme, view) {
+    const baseUrl = getEmbedBaseUrl();
+    return `${baseUrl}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
+}
+
+// Generate embed code based on configuration
+function generateEmbedCode() {
+    const embedUrl = buildEmbedUrl(embedThemeSelection, embedViewSelection);
+    return `<iframe src="${embedUrl}" width="100%" height="500" frameborder="0" style="border-radius: 12px; max-width: 600px;"></iframe>`;
+}
+
+// Update embed code and preview
+function updateEmbedCode() {
+    if (!currentSpotId) {
+        return;
+    }
+
+    const embedCode = generateEmbedCode();
+    const embedCodeTextarea = document.getElementById('embedCode');
+    const embedPreview = document.getElementById('embedPreview');
+
+    if (embedCodeTextarea) {
+        embedCodeTextarea.value = embedCode;
+    }
+
+    if (embedPreview) {
+        embedPreview.src = buildEmbedUrl(embedThemeSelection, embedViewSelection);
+    }
+}
+
+// Copy embed code to clipboard
+function copyEmbedCode() {
+    const embedCodeTextarea = document.getElementById('embedCode');
+    const copyButton = document.getElementById('copyEmbedCode');
+    const copyButtonText = document.getElementById('copyButtonText');
+
+    if (!embedCodeTextarea || !copyButton) return;
+
+    embedCodeTextarea.select();
+    embedCodeTextarea.setSelectionRange(0, 99999); // For mobile devices
+
+    navigator.clipboard.writeText(embedCodeTextarea.value)
+        .then(() => {
+            copyButton.classList.add('copied');
+            if (copyButtonText) {
+                copyButtonText.textContent = t('embedCopyButtonSuccess');
+            }
+
+            setTimeout(() => {
+                copyButton.classList.remove('copied');
+                if (copyButtonText) {
+                    copyButtonText.textContent = t('embedCopyButtonDefault');
+                }
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('Failed to copy:', err);
+            try {
+                document.execCommand('copy');
+                copyButton.classList.add('copied');
+                if (copyButtonText) {
+                    copyButtonText.textContent = t('embedCopyButtonSuccess');
+                }
+
+                setTimeout(() => {
+                    copyButton.classList.remove('copied');
+                    if (copyButtonText) {
+                        copyButtonText.textContent = t('embedCopyButtonDefault');
+                    }
+                }, 2000);
+            } catch (e) {
+                alert(t('embedCopyButtonError'));
+            }
+        });
+}
+
+function updateEmbedDropdownSelectedState(menu, value) {
+    menu.querySelectorAll('.dropdown-option').forEach(option => {
+        option.classList.toggle('selected', option.dataset.value === value);
+    });
+}
+
+function updateEmbedDropdownText(menuId, textId, value) {
+    const menu = document.getElementById(menuId);
+    const textElement = document.getElementById(textId);
+    if (!menu || !textElement) {
+        return;
+    }
+    const option = menu.querySelector(`.dropdown-option[data-value="${value}"]`);
+    if (option) {
+        const key = option.dataset.labelKey;
+        textElement.textContent = key ? t(key) : option.textContent;
+    }
+}
+
+function updateEmbedDropdownOptionsText(menuId) {
+    const menu = document.getElementById(menuId);
+    if (!menu) return;
+    menu.querySelectorAll('.dropdown-option').forEach(option => {
+        const key = option.dataset.labelKey;
+        if (key) {
+            option.textContent = t(key);
+        }
+    });
+}
+
+function refreshEmbedDropdownTranslations() {
+    updateEmbedDropdownOptionsText('embedViewDropdownMenu');
+    updateEmbedDropdownOptionsText('embedThemeDropdownMenu');
+    updateEmbedDropdownText('embedViewDropdownMenu', 'embedViewDropdownText', embedViewSelection);
+    updateEmbedDropdownText('embedThemeDropdownMenu', 'embedThemeDropdownText', embedThemeSelection);
+}
+
+function closeEmbedDropdowns() {
+    embedDropdownRegistry.forEach(({button, menu}) => {
+        button.classList.remove('open');
+        button.setAttribute('aria-expanded', 'false');
+        menu.classList.remove('open');
+    });
+}
+
+function setupEmbedDropdowns() {
+    if (embedDropdownsInitialized) {
+        return;
+    }
+
+    embedDropdownsInitialized = true;
+
+    const configs = [
+        {
+            buttonId: 'embedViewDropdown',
+            menuId: 'embedViewDropdownMenu',
+            textId: 'embedViewDropdownText',
+            getSelection: () => embedViewSelection,
+            setSelection: (value) => {
+                embedViewSelection = value;
+                updateEmbedCode();
+            }
+        },
+        {
+            buttonId: 'embedThemeDropdown',
+            menuId: 'embedThemeDropdownMenu',
+            textId: 'embedThemeDropdownText',
+            getSelection: () => embedThemeSelection,
+            setSelection: (value) => {
+                embedThemeSelection = value;
+                updateEmbedCode();
+            }
+        }
+    ];
+
+    configs.forEach(config => {
+        const button = document.getElementById(config.buttonId);
+        const menu = document.getElementById(config.menuId);
+        const textElement = document.getElementById(config.textId);
+        if (!button || !menu || !textElement) {
+            return;
+        }
+
+        embedDropdownRegistry.push({button, menu});
+
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = !button.classList.contains('open');
+            closeEmbedDropdowns();
+            if (isOpen) {
+                button.classList.add('open');
+                menu.classList.add('open');
+                button.setAttribute('aria-expanded', 'true');
+            } else {
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        menu.querySelectorAll('.dropdown-option').forEach(option => {
+            option.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const value = option.dataset.value;
+                config.setSelection(value);
+                updateEmbedDropdownSelectedState(menu, value);
+                updateEmbedDropdownText(config.menuId, config.textId, value);
+                closeEmbedDropdowns();
+            });
+        });
+
+        updateEmbedDropdownSelectedState(menu, config.getSelection());
+    });
+
+    document.addEventListener('click', (event) => {
+        const targetElement = event.target instanceof Element ? event.target : event.target?.parentElement;
+        if (!targetElement || !targetElement.closest('.embed-dropdown')) {
+            closeEmbedDropdowns();
+        }
+    });
+
+    refreshEmbedDropdownTranslations();
+}
+
+// Setup embed modal event listeners
+function setupEmbedModal() {
+    const copyEmbedCodeButton = document.getElementById('copyEmbedCode');
+
+    if (copyEmbedCodeButton) {
+        copyEmbedCodeButton.addEventListener('click', copyEmbedCode);
+    }
+
+    setupEmbedDropdowns();
 }
 
 // Open app information modal
@@ -1227,7 +1482,8 @@ function createSpotCard(spot) {
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
-                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">MAP</a>` : ''}
+                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
+                    <span class="external-link embed-link" onclick="openEmbedModal()">${t('embedLinkLabel')}</span>
                     ${aiAnalysisText ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 
@@ -1459,6 +1715,33 @@ function updateUITranslations() {
         appInfoModalTitle.textContent = t('appInfoModalTitle');
     }
 
+    const embedModalTitle = document.getElementById('embedModalTitle');
+    if (embedModalTitle) {
+        embedModalTitle.textContent = t('embedModalTitle');
+    }
+
+    const embedDescription = document.getElementById('embedDescription');
+    if (embedDescription) {
+        embedDescription.textContent = t('embedModalDescription');
+    }
+
+    refreshEmbedDropdownTranslations();
+
+    const embedPreviewTitle = document.getElementById('embedPreviewTitle');
+    if (embedPreviewTitle) {
+        embedPreviewTitle.textContent = t('embedPreviewTitle');
+    }
+
+    const embedCodeTitle = document.getElementById('embedCodeTitle');
+    if (embedCodeTitle) {
+        embedCodeTitle.textContent = t('embedCodeTitle');
+    }
+
+    const copyButtonText = document.getElementById('copyButtonText');
+    if (copyButtonText) {
+        copyButtonText.textContent = t('embedCopyButtonDefault');
+    }
+
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
     if (aiModalDisclaimer) {
         aiModalDisclaimer.textContent = t('aiDisclaimer');
@@ -1543,6 +1826,7 @@ function updateUITranslations() {
 function initLanguage() {
     const savedLang = localStorage.getItem('language') || 'en';
     currentLanguage = savedLang;
+    embedLanguageSelection = savedLang;
 
     const languageToggle = document.getElementById('languageToggle');
     const langCode = document.getElementById('langCode');
@@ -1558,6 +1842,7 @@ function initLanguage() {
             const newLang = currentLanguage === 'en' ? 'pl' : 'en';
 
             currentLanguage = newLang;
+            embedLanguageSelection = newLang;
             langCode.textContent = newLang.toUpperCase();
             localStorage.setItem('language', newLang);
 
@@ -1568,6 +1853,8 @@ function initLanguage() {
             if (currentSpot) {
                 displaySpot(currentSpot);
             }
+
+            updateEmbedCode();
         });
     }
 }
@@ -1581,6 +1868,7 @@ function setupModals() {
     const aiModalClose = document.getElementById('aiModalClose');
     const icmModalClose = document.getElementById('icmModalClose');
     const appInfoModalClose = document.getElementById('appInfoModalClose');
+    const embedModalClose = document.getElementById('embedModalClose');
 
     if (infoModalClose) {
         infoModalClose.addEventListener('click', closeInfoModal);
@@ -1598,6 +1886,10 @@ function setupModals() {
         appInfoModalClose.addEventListener('click', closeAppInfoModal);
     }
 
+    if (embedModalClose) {
+        embedModalClose.addEventListener('click', closeEmbedModal);
+    }
+
     // Close modals on the overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
@@ -1606,6 +1898,7 @@ function setupModals() {
                 closeAIModal();
                 closeIcmModal();
                 closeAppInfoModal();
+                closeEmbedModal();
             }
         });
     });
@@ -1888,6 +2181,8 @@ window.openInfoModal = openInfoModal;
 window.closeInfoModal = closeInfoModal;
 window.openIcmModal = openIcmModal;
 window.closeIcmModal = closeIcmModal;
+window.openEmbedModal = openEmbedModal;
+window.closeEmbedModal = closeEmbedModal;
 
 // ============================================================================
 // START APPLICATION
@@ -1897,6 +2192,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     initTheme();
     initLanguage();
     setupModals();
+    setupEmbedModal();
     setupInfoToggle();
     setupHamburgerMenu();
     setupHeaderNavigation();

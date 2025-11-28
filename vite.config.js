@@ -32,7 +32,7 @@ function flattenHtmlPlugin() {
           }
         }
 
-        // Remove the html directory
+        // Remove the HTML directory
         fs.rmSync(htmlDir, { recursive: true });
       }
     }
@@ -51,7 +51,8 @@ export default defineConfig({
       input: {
         index: path.resolve(__dirname, 'frontend/html/index.html'),
         spot: path.resolve(__dirname, 'frontend/html/spot.html'),
-        status: path.resolve(__dirname, 'frontend/html/status.html')
+        status: path.resolve(__dirname, 'frontend/html/status.html'),
+        embed: path.resolve(__dirname, 'frontend/html/embed.html')
       },
       output: {
         inlineDynamicImports: false,
