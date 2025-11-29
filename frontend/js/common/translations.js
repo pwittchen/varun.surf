@@ -137,6 +137,7 @@ export const translations = {
         mapLinkLabel: "MAP",
         mapTabLabel: "Map",
         photoTabLabel: "Photo",
+        windyMapTabLabel: "Windy Map",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -360,6 +361,7 @@ export const translations = {
         mapLinkLabel: "MAPA",
         mapTabLabel: "Mapa",
         photoTabLabel: "Zdjęcie",
+        windyMapTabLabel: "Mapa Wiatru",
 
         // Spot info labels
         overviewLabel: "Przegląd",

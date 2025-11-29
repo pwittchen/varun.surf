@@ -1963,6 +1963,13 @@ body.spot-page .error-description {
     border-radius: 12px;
 }
 
+.spot-windy-map iframe {
+    width: 100% !important;
+    height: clamp(260px, 40vw, 360px);
+    border: 0;
+    border-radius: 12px;
+}
+
 .spot-media-panel-map .spot-embedded-map {
     background: transparent;
     border-radius: 12px;
