@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -67,8 +68,7 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, String> aiAnalysisEn;
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
-    private final ConcurrentMap<Integer, String> embeddedMaps;
-    private final ConcurrentMap<Integer, Coordinates> coordinates;
+    private final ConcurrentMap<Integer, Coordinates> locationCoordinates;
     private final ConcurrentMap<Integer, String> spotPhotos;
 
     private final SpotsDataProvider spotsDataProvider;
@@ -83,7 +83,7 @@ public class AggregatorService {
     private final Semaphore forecastLimiter = new Semaphore(32);
     private final Semaphore currentConditionsLimiter = new Semaphore(32);
     private final Semaphore aiLimiter = new Semaphore(16);
-    private final ConcurrentMap<Integer, Disposable> embeddedMapFetchSubscriptions;
+    private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
 
     public AggregatorService(
@@ -100,9 +100,8 @@ public class AggregatorService {
         this.aiAnalysisEn = new ConcurrentHashMap<>();
         this.aiAnalysisPl = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
-        this.embeddedMaps = new ConcurrentHashMap<>();
-        this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
-        this.coordinates = new ConcurrentHashMap<>();
+        this.locationCoordinatesFetchSubscriptions = new ConcurrentHashMap<>();
+        this.locationCoordinates = new ConcurrentHashMap<>();
         this.spotPhotos = new ConcurrentHashMap<>();
         this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -132,8 +131,8 @@ public class AggregatorService {
         if (spotsDisposable != null) {
             spotsDisposable.dispose();
         }
-        embeddedMapFetchSubscriptions.values().forEach(Disposable::dispose);
-        embeddedMapFetchSubscriptions.clear();
+        locationCoordinatesFetchSubscriptions.values().forEach(Disposable::dispose);
+        locationCoordinatesFetchSubscriptions.clear();
     }
 
     public List<Spot> getSpots() {
@@ -192,21 +191,16 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withAiAnalysisPl(analysisPl);
         }
 
-        var embeddedMap = embeddedMaps.get(spot.wgId());
-        if (embeddedMap != null && !embeddedMap.isEmpty()) {
-            enrichedSpot = enrichedSpot.withEmbeddedMap(embeddedMap);
-        } else {
-            scheduleEmbeddedMapFetch(spot);
-        }
-
         var spotPhotoUrl = spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
         if (!spotPhotoUrl.isEmpty()) {
             enrichedSpot = enrichedSpot.withSpotPhoto(spotPhotoUrl);
         }
 
-        var coords = coordinates.get(spot.wgId());
+        var coords = locationCoordinates.get(spot.wgId());
         if (coords != null) {
             enrichedSpot = enrichedSpot.withCoordinates(coords);
+        } else {
+            scheduleLocationCoordinatesFetch(spot);
         }
 
         List<Sponsor> sponsors = sponsorsService.getSponsors()
@@ -221,31 +215,28 @@ public class AggregatorService {
         return enrichedSpot;
     }
 
-    private void scheduleEmbeddedMapFetch(final Spot spot) {
-        embeddedMapFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
-                loadEmbeddedMap(spot)
+    private void scheduleLocationCoordinatesFetch(final Spot spot) {
+        locationCoordinatesFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
+                loadCoordinates(spot)
                         .subscribeOn(Schedulers.boundedElastic())
-                        .doOnNext(map -> {
-                            embeddedMaps.put(id, map);
-                            googleMapsService.extractCoordinates(map).ifPresent(c -> coordinates.put(id, c));
-                        })
-                        .doOnError(error -> log.warn("Embedded map fetch failed for spot {}", id, error))
-                        .doFinally(_ -> embeddedMapFetchSubscriptions.remove(id))
+                        .doOnNext(c -> locationCoordinates.put(id, c))
+                        .doOnError(error -> log.warn("Coordinates fetch failed for spot {}", id, error))
+                        .doFinally(_ -> locationCoordinatesFetchSubscriptions.remove(id))
                         .subscribe()
         );
     }
 
-    private Mono<String> loadEmbeddedMap(Spot spot) {
+    private Mono<Coordinates> loadCoordinates(Spot spot) {
         if (spot.locationUrl() == null || spot.locationUrl().isEmpty()) {
             return Mono.empty();
         }
 
         return googleMapsService
-                .getEmbeddedMapCode(spot)
+                .getCoordinates(spot)
                 .timeout(Duration.ofSeconds(5))
-                .filter(map -> map != null && !map.isBlank())
+                .filter(Objects::nonNull)
                 .onErrorResume(error -> {
-                    log.warn("Failed to load embedded map for spot {} within timeout", spot.wgId(), error);
+                    log.warn("Failed to load coordinates for spot {} within timeout", spot.wgId(), error);
                     return Mono.empty();
                 });
     }

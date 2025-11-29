@@ -14,11 +14,9 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 public class GoogleMapsService {
-
     private static final Logger log = LoggerFactory.getLogger(GoogleMapsService.class);
     private static final int MAX_REDIRECTS = 5;
     private final OkHttpClient httpClient;
@@ -27,67 +25,56 @@ public class GoogleMapsService {
         this.httpClient = httpClientProvider.getHttpClient();
     }
 
-    public Mono<String> getEmbeddedMapCode(Spot spot) {
+    public Mono<Coordinates> getCoordinates(Spot spot) {
         String locationUrl = spot.locationUrl();
 
         if (locationUrl == null || locationUrl.isEmpty()) {
             log.warn("Location URL is empty for spot {}", spot.name());
-            return Mono.just("");
+            return Mono.empty();
         }
 
-        return convertToEmbedUrl(locationUrl)
-                .map(embedUrl -> String.format(
-                        "<iframe src=\"%s\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
-                        embedUrl
-                ))
-                .defaultIfEmpty("");
+        return extractCoordinatesFromUrl(locationUrl)
+                .onErrorResume(error -> {
+                    log.error("Error extracting coordinates for spot {}: {}", spot.name(), locationUrl, error);
+                    return Mono.empty();
+                });
     }
 
-    private Mono<String> convertToEmbedUrl(String locationUrl) {
+    private Mono<Coordinates> extractCoordinatesFromUrl(String locationUrl) {
         if (locationUrl.contains("maps.app.goo.gl") || locationUrl.contains("goo.gl")) {
             return unshortenUrl(locationUrl)
                     .flatMap(expandedUrl -> {
                         if (expandedUrl == null || expandedUrl.isEmpty()) {
                             log.warn("Failed to unshorten URL: {}", locationUrl);
-                            return Mono.just("");
+                            return Mono.empty();
                         }
-                        return Mono.just(processExpandedUrl(expandedUrl));
-                    })
-                    .onErrorResume(error -> {
-                        log.error("Error unshortening URL: {}", locationUrl, error);
-                        return Mono.just("");
+                        return parseCoordinatesFromExpandedUrl(expandedUrl);
                     });
         }
 
-        return Mono.just(processExpandedUrl(locationUrl));
+        return parseCoordinatesFromExpandedUrl(locationUrl);
     }
 
-    private String processExpandedUrl(String expandedUrl) {
+    private Mono<Coordinates> parseCoordinatesFromExpandedUrl(String expandedUrl) {
         if (expandedUrl.contains("@")) {
             String[] parts = expandedUrl.split("@");
             if (parts.length > 1) {
                 String[] coordParts = parts[1].split(",");
                 if (coordParts.length >= 2) {
-                    String coords = coordParts[0] + "," + coordParts[1];
-                    return "https://maps.google.com/maps?q=" + coords + "&z=13&t=k&output=embed";
+                    try {
+                        double lat = Double.parseDouble(coordParts[0].trim());
+                        double lon = Double.parseDouble(coordParts[1].trim());
+                        log.debug("Extracted coordinates from URL: lat={}, lon={}", lat, lon);
+                        return Mono.just(new Coordinates(lat, lon));
+                    } catch (NumberFormatException e) {
+                        log.warn("Failed to parse coordinates from URL: {}", expandedUrl, e);
+                    }
                 }
             }
         }
 
-        if (expandedUrl.contains("/place/")) {
-            String[] parts = expandedUrl.split("/place/");
-            if (parts.length > 1) {
-                String placeInfo = parts[1].split("/@")[0].split("/")[0];
-                return "https://maps.google.com/maps?q=" + placeInfo + "&output=embed";
-            }
-        }
-
-        if (expandedUrl.contains("?q=")) {
-            return expandedUrl.replace("?q=", "?output=embed&q=");
-        }
-
-        String separator = expandedUrl.contains("?") ? "&" : "?";
-        return expandedUrl + separator + "output=embed";
+        log.debug("No coordinates found in URL format @lat,lon: {}", expandedUrl);
+        return Mono.empty();
     }
 
     private Mono<String> unshortenUrl(String shortenedUrl) {
@@ -146,67 +133,5 @@ public class GoogleMapsService {
             case 300, 301, 302, 303, 307, 308 -> true;
             default -> false;
         };
-    }
-
-    public Optional<Coordinates> extractCoordinates(String embeddedMapHtml) {
-        if (embeddedMapHtml == null || embeddedMapHtml.isEmpty()) {
-            return Optional.empty();
-        }
-
-        try {
-            // Extract the src attribute from the iframe
-            int srcStart = embeddedMapHtml.indexOf("src=\"");
-            if (srcStart == -1) {
-                log.debug("No src attribute found in embedded map");
-                return Optional.empty();
-            }
-
-            srcStart += 5; // Skip past 'src="'
-            int srcEnd = embeddedMapHtml.indexOf("\"", srcStart);
-            if (srcEnd == -1) {
-                log.debug("Malformed src attribute in embedded map");
-                return Optional.empty();
-            }
-
-            String srcUrl = embeddedMapHtml.substring(srcStart, srcEnd);
-
-            // Extract coordinates from the URL (format: ?q=lat,lon or &q=lat,lon)
-            int qIndex = srcUrl.indexOf("?q=");
-            if (qIndex == -1) {
-                qIndex = srcUrl.indexOf("&q=");
-            }
-
-            if (qIndex == -1) {
-                log.debug("No coordinates (q parameter) found in embedded map URL");
-                return Optional.empty();
-            }
-
-            // Skip past '?q=' or '&q='
-            int coordStart = qIndex + 3;
-            int coordEnd = srcUrl.indexOf("&", coordStart);
-            if (coordEnd == -1) {
-                coordEnd = srcUrl.length();
-            }
-
-            String coordString = srcUrl.substring(coordStart, coordEnd);
-            String[] parts = coordString.split(",");
-
-            if (parts.length < 2) {
-                log.debug("Invalid coordinate format in embedded map URL");
-                return Optional.empty();
-            }
-
-            double lat = Double.parseDouble(parts[0].trim());
-            double lon = Double.parseDouble(parts[1].trim());
-
-            log.debug("Extracted and saved coordinates: lat={}, lon={}", lat, lon);
-            return Optional.of(new Coordinates(lat, lon));
-
-        } catch (NumberFormatException e) {
-            log.warn("Failed to parse coordinates from embedded map", e);
-        } catch (Exception e) {
-            log.warn("Error extracting coordinates from embedded map", e);
-        }
-        return Optional.empty();
     }
 }

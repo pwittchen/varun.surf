@@ -1449,10 +1449,17 @@ function createSpotCard(spot) {
     // BUILD EMBEDDED MAP (desktop only)
     // ========================================================================
 
-    const hasEmbeddedMap = isDesktopView && spot.embeddedMap && spot.embeddedMap.trim().length > 0;
+    const hasCoordinates = isDesktopView && spot.coordinates && spot.coordinates.lat && spot.coordinates.lon;
+
+    // Generate embedded map iframe from coordinates
+    let embeddedMapIframe = '';
+    if (hasCoordinates) {
+        const mapUrl = `https://maps.google.com/maps?q=${spot.coordinates.lat},${spot.coordinates.lon}&z=13&t=k&output=embed`;
+        embeddedMapIframe = `<iframe src="${mapUrl}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+    }
 
     let embeddedMapHtml = '';
-    if (hasEmbeddedMap && hasSpotPhoto) {
+    if (hasCoordinates && hasSpotPhoto) {
         embeddedMapHtml = `
                 <div class="spot-media-switcher">
                     <div class="spot-media-tabs">
@@ -1468,7 +1475,7 @@ function createSpotCard(spot) {
                     <div class="spot-media-panels">
                         <div class="spot-media-panel spot-media-panel-map active">
                             <div class="spot-embedded-map">
-                                <div class="spot-embedded-map-frame">${spot.embeddedMap}</div>
+                                <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
                             </div>
                         </div>
                         <div class="spot-media-panel spot-media-panel-photo">
@@ -1479,10 +1486,10 @@ function createSpotCard(spot) {
                     </div>
                 </div>
             `;
-    } else if (hasEmbeddedMap) {
+    } else if (hasCoordinates) {
         embeddedMapHtml = `
                 <div class="spot-embedded-map">
-                    <div class="spot-embedded-map-frame">${spot.embeddedMap}</div>
+                    <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
                 </div>
             `;
     }
@@ -1652,9 +1659,10 @@ function displaySpot(spot) {
     // Preserve embedded map iframe to avoid reload
     let preservedMapNode = null;
     const shouldPreserveMap = previousSpot
-        && previousSpot.embeddedMap
-        && spot.embeddedMap
-        && previousSpot.embeddedMap === spot.embeddedMap;
+        && previousSpot.coordinates
+        && spot.coordinates
+        && previousSpot.coordinates.lat === spot.coordinates.lat
+        && previousSpot.coordinates.lon === spot.coordinates.lon;
 
     if (shouldPreserveMap) {
         const currentMapFrame = document.querySelector('.spot-embedded-map-frame');
