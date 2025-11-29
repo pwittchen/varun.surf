@@ -44,6 +44,7 @@ public class StatusControllerTest {
     @Test
     void shouldReturnStatusWithSpotsCount() {
         when(aggregatorService.countSpots()).thenReturn(74);
+        when(aggregatorService.countCountries()).thenReturn(15);
 
         Mono<Map<String, Object>> result = controller.status();
 
@@ -52,6 +53,7 @@ public class StatusControllerTest {
                     assertThat(status).isNotNull();
                     assertThat(status).containsEntry("status", "UP");
                     assertThat(status).containsEntry("spotsCount", 74);
+                    assertThat(status).containsEntry("countriesCount", 15);
                     assertThat(status).containsKey("version");
                     assertThat(status).containsKey("uptime");
                     assertThat(status).containsKey("uptimeSeconds");

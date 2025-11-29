@@ -147,6 +147,15 @@ public class AggregatorService {
         return spots.get().size();
     }
 
+    public int countCountries() {
+        return Long.valueOf(spots
+                .get()
+                .stream()
+                .map(Spot::country)
+                .distinct()
+                .count()).intValue();
+    }
+
     public Optional<Spot> getSpotById(int id) {
         return getSpotById(id, ForecastModel.GFS);
     }

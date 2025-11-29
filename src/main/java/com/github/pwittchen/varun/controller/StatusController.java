@@ -35,13 +35,15 @@ public class StatusController {
     public Mono<Map<String, Object>> status() {
         Uptime uptime = getUptime();
         int spotsCount = aggregatorService.countSpots();
+        int countriesCount = aggregatorService.countCountries();
         return Mono.just(Map.of(
                 "status", "UP",
                 "version", version,
                 "uptime", uptime.formatted(),
                 "uptimeSeconds", uptime.seconds(),
                 "startTime", startTime.toString(),
-                "spotsCount", spotsCount
+                "spotsCount", spotsCount,
+                "countriesCount", countriesCount
         ));
     }
 

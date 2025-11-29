@@ -34,6 +34,7 @@ async function fetchStatus() {
         document.getElementById('version').textContent = data.version || 'unknown';
         document.getElementById('uptime').textContent = data.uptime || '-';
         document.getElementById('spots-count').textContent = data.spotsCount || '0';
+        document.getElementById('countries-count').textContent = data.countriesCount || '0';
 
         if (data.startTime) {
             const startDate = new Date(data.startTime);
