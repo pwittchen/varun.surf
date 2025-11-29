@@ -1255,7 +1255,7 @@ function createSpotCard(spot) {
     }
 
     let currentConditionsRow = '';
-    if (spotConditions) {
+    if (spotConditions && spotConditions.isCurrent) {
         const baseWind = spotConditions.wind;
         const gustWind = spotConditions.gusts;
         const windTextClass = getWindClass(baseWind);
@@ -1274,23 +1274,9 @@ function createSpotCard(spot) {
         const tempValue = hasTemperature ? `${spotConditions.temp}°C` : '-';
         const windArrow = getWindArrow(spotConditions.direction);
 
-        const indicatorHtml = spotConditions.isCurrent
-            ? `
-                                <div class="live-indicator">
-                                    <strong class="live-text">${t('nowLabel')}</strong>
-                                    <div class="live-dot"></div>
-                                </div>
-                            `
-            : `
-                                <div class="forecast-indicator">
-                                    <span class="forecast-indicator-label">${t('forecastEstimateLabel')}</span>
-                                    ${spotConditions.label ? `<span class="forecast-indicator-time">${spotConditions.label}</span>` : ''}
-                                </div>
-                            `;
-
         let currentWaveClass = '';
         let currentWaveText = '-';
-        if (spotConditions.isCurrent && spot.currentConditions && spot.currentConditions.wave !== undefined) {
+        if (spot.currentConditions && spot.currentConditions.wave !== undefined) {
             if (spot.currentConditions.wave < 1.0) {
                 currentWaveClass = 'wave-small';
             } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
@@ -1301,14 +1287,13 @@ function createSpotCard(spot) {
             currentWaveText = `${spot.currentConditions.wave}`;
         }
 
-        const precipitationValue = !spotConditions.isCurrent && Number.isFinite(spotConditions.precipitation)
-            ? `${spotConditions.precipitation}%`
-            : '-';
-
         currentConditionsRow = `
                     <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
-                            ${indicatorHtml}
+                            <div class="live-indicator">
+                                <strong class="live-text">${t('nowLabel')}</strong>
+                                <div class="live-dot"></div>
+                            </div>
                         </td>
                         <td class="${windTextClass}">${baseWind} kts</td>
                         <td class="${gustTextClass}">${gustWind} kts</td>
@@ -1316,7 +1301,7 @@ function createSpotCard(spot) {
                             <span class="wind-arrow">${windArrow}</span> ${spotConditions.direction || '-'}
                         </td>
                         <td class="${tempClass}">${tempValue}</td>
-                        <td>${precipitationValue}</td>
+                        <td>-</td>
                         ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
                     </tr>
                 `;
