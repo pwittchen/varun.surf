@@ -29,6 +29,7 @@ export const translations = {
         rainHeader: "Rain",
         waveHeader: "Wave",
         nowLabel: "NOW",
+        forecastEstimateLabel: "Forecast",
 
         // Current conditions card
         windLabel: "Wind",
@@ -254,6 +255,7 @@ export const translations = {
         rainHeader: "Deszcz",
         waveHeader: "Fala",
         nowLabel: "TERAZ",
+        forecastEstimateLabel: "Prognoza",
 
         // Current conditions card
         windLabel: "Wiatr",

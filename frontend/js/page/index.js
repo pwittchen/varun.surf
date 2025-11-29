@@ -700,6 +700,158 @@ function translateDayName(dayName) {
     return dayMap[dayName] || dayName;
 }
 
+function formatForecastDateLabel(rawDate) {
+    if (!rawDate || typeof rawDate !== 'string') {
+        return '';
+    }
+
+    const tokens = rawDate.trim().split(/\s+/);
+    if (tokens.length < 5) {
+        const translated = translateDayName(rawDate);
+        return translated || rawDate;
+    }
+
+    const [dayToken, dayOfMonthToken, , , timeToken] = tokens;
+    const translatedDay = translateDayName(dayToken);
+    const formattedDay = dayOfMonthToken.padStart(2, '0');
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        const hour = timeToken.split(':')[0];
+        const shortDay = translatedDay.substring(0, 2);
+        return `${shortDay} ${hour}`.trim();
+    }
+
+    return `${formattedDay}. ${translatedDay} ${timeToken}`.trim();
+}
+
+function parseForecastDate(dateStr) {
+    if (!dateStr) return new Date();
+
+    try {
+        const parts = dateStr.trim().split(/\s+/);
+        if (parts.length >= 5) {
+            const dayOfMonth = parseInt(parts[1]);
+            const monthName = parts[2];
+            const year = parseInt(parts[3]);
+            const timeParts = parts[4].split(':');
+            const hours = parseInt(timeParts[0]);
+            const minutes = parseInt(timeParts[1]);
+
+            const monthMap = {
+                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
+                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
+                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+            };
+
+            const monthNumber = monthMap[monthName];
+            if (monthNumber !== undefined) {
+                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
+                if (!isNaN(parsed.getTime())) {
+                    return parsed;
+                }
+            }
+        }
+    } catch (error) {
+        console.warn('Error parsing forecast date:', dateStr, error);
+    }
+
+    return new Date();
+}
+
+function findClosestForecast(forecastData) {
+    if (!Array.isArray(forecastData) || forecastData.length === 0) {
+        return null;
+    }
+
+    const now = new Date();
+    let closestForecast = forecastData[0];
+    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
+
+    for (let i = 1; i < forecastData.length; i++) {
+        const forecastTime = parseForecastDate(forecastData[i].date);
+        const diff = Math.abs(forecastTime - now);
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestForecast = forecastData[i];
+        }
+    }
+
+    return closestForecast;
+}
+
+function toNumber(value) {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
+function selectForecastForConditions(spot) {
+    if (!spot) {
+        return null;
+    }
+
+    if (Array.isArray(spot.forecastHourly) && spot.forecastHourly.length > 0) {
+        const closest = findClosestForecast(spot.forecastHourly);
+        if (closest) {
+            return closest;
+        }
+    }
+
+    if (Array.isArray(spot.forecast) && spot.forecast.length > 0) {
+        const todayForecast = spot.forecast.find(forecast => typeof forecast.date === 'string' && forecast.date.toLowerCase() === 'today');
+        return todayForecast || spot.forecast[0];
+    }
+
+    return null;
+}
+
+function getSpotConditions(spot) {
+    if (!spot) {
+        return null;
+    }
+
+    const current = spot.currentConditions;
+    if (current) {
+        const wind = toNumber(current.wind);
+        const gusts = toNumber(current.gusts);
+        if (wind !== null && gusts !== null) {
+            return {
+                wind,
+                gusts,
+                direction: current.direction || '',
+                temp: toNumber(current.temp),
+                precipitation: null,
+                label: t('nowLabel'),
+                isCurrent: true
+            };
+        }
+    }
+
+    const forecast = selectForecastForConditions(spot);
+    if (!forecast) {
+        return null;
+    }
+
+    const wind = toNumber(forecast.wind);
+    const gusts = toNumber(forecast.gusts);
+    if (wind === null || gusts === null) {
+        return null;
+    }
+
+    return {
+        wind,
+        gusts,
+        direction: forecast.direction || '',
+        temp: toNumber(forecast.temp),
+        precipitation: toNumber(forecast.precipitation),
+        label: formatForecastDateLabel(forecast.date),
+        isCurrent: false
+    };
+}
+
 // ============================================================================
 // COUNTRY DROPDOWN FUNCTIONS
 // ============================================================================
@@ -1051,6 +1203,8 @@ function createSpotCard(spot) {
     const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
         (spot.currentConditions && spot.currentConditions.wave !== undefined);
 
+    const spotConditions = getSpotConditions(spot);
+
     let forecastRows = '';
     if (spot.forecast && Array.isArray(spot.forecast)) {
         spot.forecast.forEach(day => {
@@ -1101,26 +1255,42 @@ function createSpotCard(spot) {
     }
 
     let currentConditionsRow = '';
-    if (spot.currentConditions) {
-        const windTextClass = getWindClass(spot.currentConditions.wind);
-        const gustTextClass = getWindClass(spot.currentConditions.gusts);
+    if (spotConditions) {
+        const baseWind = spotConditions.wind;
+        const gustWind = spotConditions.gusts;
+        const windTextClass = getWindClass(baseWind);
+        const gustTextClass = getWindClass(gustWind);
 
-        // Calculate average of base wind and gusts for a row background
-        const averageWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
+        const averageWind = (baseWind + gustWind) / 2;
         const averageWindClass = getWindClass(averageWind);
-
-        // Use average wind class for a row background
         const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
             averageWindClass === 'wind-moderate' ? 'moderate-wind' :
                 averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
-        const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
-        const windArrow = getWindArrow(spot.currentConditions.direction);
+        const hasTemperature = Number.isFinite(spotConditions.temp);
+        const tempClass = hasTemperature
+            ? (spotConditions.temp >= 20 ? 'temp-positive' : 'temp-negative')
+            : '';
+        const tempValue = hasTemperature ? `${spotConditions.temp}°C` : '-';
+        const windArrow = getWindArrow(spotConditions.direction);
 
-        // Current wave conditions
+        const indicatorHtml = spotConditions.isCurrent
+            ? `
+                                <div class="live-indicator">
+                                    <strong class="live-text">${t('nowLabel')}</strong>
+                                    <div class="live-dot"></div>
+                                </div>
+                            `
+            : `
+                                <div class="forecast-indicator">
+                                    <span class="forecast-indicator-label">${t('forecastEstimateLabel')}</span>
+                                    ${spotConditions.label ? `<span class="forecast-indicator-time">${spotConditions.label}</span>` : ''}
+                                </div>
+                            `;
+
         let currentWaveClass = '';
         let currentWaveText = '-';
-        if (spot.currentConditions.wave !== undefined) {
+        if (spotConditions.isCurrent && spot.currentConditions && spot.currentConditions.wave !== undefined) {
             if (spot.currentConditions.wave < 1.0) {
                 currentWaveClass = 'wave-small';
             } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
@@ -1131,21 +1301,22 @@ function createSpotCard(spot) {
             currentWaveText = `${spot.currentConditions.wave}`;
         }
 
+        const precipitationValue = !spotConditions.isCurrent && Number.isFinite(spotConditions.precipitation)
+            ? `${spotConditions.precipitation}%`
+            : '-';
+
         currentConditionsRow = `
                     <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
-                            <div class="live-indicator">
-                                <strong class="live-text">${t('nowLabel')}</strong>
-                                <div class="live-dot"></div>
-                            </div>
+                            ${indicatorHtml}
                         </td>
-                        <td class="${windTextClass}">${spot.currentConditions.wind} kts</td>
-                        <td class="${gustTextClass}">${spot.currentConditions.gusts} kts</td>
+                        <td class="${windTextClass}">${baseWind} kts</td>
+                        <td class="${gustTextClass}">${gustWind} kts</td>
                         <td class="${windTextClass}">
-                            <span class="wind-arrow">${windArrow}</span> ${spot.currentConditions.direction}
+                            <span class="wind-arrow">${windArrow}</span> ${spotConditions.direction || '-'}
                         </td>
-                        <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
-                        <td>-</td>
+                        <td class="${tempClass}">${tempValue}</td>
+                        <td>${precipitationValue}</td>
                         ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
                     </tr>
                 `;
@@ -2134,6 +2305,29 @@ function initMap() {
     updateMapTileLayer();
 }
 
+function buildMapPopupWindDetails(spotConditions) {
+    if (!spotConditions) {
+        return '';
+    }
+
+    const arrow = getWindArrow(spotConditions.direction);
+    const gustLabel = Number.isFinite(spotConditions.gusts) ? `${spotConditions.gusts} kts` : '-';
+    const windClass = getWindClass(spotConditions.wind);
+    const directionLabel = spotConditions.direction || '-';
+    const forecastMeta = !spotConditions.isCurrent
+        ? `<div class="map-popup-meta">${t('forecastEstimateLabel')}${spotConditions.label ? ` · ${spotConditions.label}` : ''}</div>`
+        : '';
+
+    return `
+        <div class="map-popup-wind ${windClass}">
+            <span class="wind-arrow">${arrow}</span>
+            <span class="map-popup-direction">${directionLabel}</span>
+            <span class="map-popup-speed">${spotConditions.wind} kts - ${gustLabel}</span>
+        </div>
+        ${forecastMeta}
+    `;
+}
+
 function addMarkersToMap(spots) {
     // Clear existing markers
     mapMarkers.forEach(marker => marker.remove());
@@ -2149,19 +2343,30 @@ function addMarkersToMap(spots) {
         const lat = spot.coordinates.lat;
         const lng = spot.coordinates.lon;
 
-        // Create custom red icon using bullet.svg
-        const redIcon = L.divIcon({
-            className: 'custom-marker',
-            html: '<div style="width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; border: 2px solid white;"></div>',
-            iconSize: [12, 12],
-            iconAnchor: [6, 6]
+        const spotConditions = getSpotConditions(spot);
+        const markerWindClass = spotConditions
+            ? getWindClass(spotConditions.wind)
+            : 'wind-no-data';
+
+        const markerIcon = L.divIcon({
+            className: 'custom-marker-icon',
+            html: `<div class="custom-marker ${markerWindClass}"><div class="marker-dot"></div></div>`,
+            iconSize: [18, 18],
+            iconAnchor: [9, 9]
         });
 
         // Create marker
-        const marker = L.marker([lat, lng], { icon: redIcon }).addTo(map);
+        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(map);
 
-        // Add popup with clickable spot name
-        marker.bindPopup(`<a href="/spot/${spot.wgId}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>`);
+        const popupWindDetails = buildMapPopupWindDetails(spotConditions);
+
+        // Add popup with clickable spot name and wind summary
+        marker.bindPopup(`
+            <div class="map-popup">
+                <a href="/spot/${spot.wgId}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
+                ${popupWindDetails}
+            </div>
+        `);
 
         mapMarkers.push(marker);
         bounds.push([lat, lng]);

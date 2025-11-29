@@ -1335,6 +1335,25 @@ body {
     color: var(--success-color);
 }
 
+.forecast-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.forecast-indicator-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-primary);
+}
+
+.forecast-indicator-time {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
 .live-dot {
     width: 8px;
     height: 8px;
@@ -3370,6 +3389,84 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     width: 100%;
     height: 100%;
     z-index: 1;
+}
+
+.custom-marker-icon {
+    background: transparent;
+    border: none;
+}
+
+.custom-marker {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-marker .marker-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    background-color: #ef4444;
+}
+
+.custom-marker.wind-weak .marker-dot {
+    background-color: #6b7280;
+}
+
+.custom-marker.wind-moderate .marker-dot {
+    background-color: #22c55e;
+}
+
+.custom-marker.wind-strong .marker-dot {
+    background-color: #f59e0b;
+}
+
+.custom-marker.wind-extreme .marker-dot {
+    background-color: #ef4444;
+}
+
+.custom-marker.wind-no-data .marker-dot {
+    background-color: #9ca3af;
+}
+
+.map-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.map-popup-wind {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.map-popup-wind .wind-arrow {
+    font-size: 1rem;
+}
+
+.map-popup-direction {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.map-popup-speed {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.map-popup-meta {
+    margin-top: 2px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
 /* Leaflet popup customization */
