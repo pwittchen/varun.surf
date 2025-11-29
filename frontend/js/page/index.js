@@ -233,17 +233,12 @@ function setupFavorites() {
     const favoritesButton = document.getElementById('favoritesToggle');
 
     favoritesButton.addEventListener('click', () => {
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
+
         if (showingFavorites) {
-            // Exit favorites mode
-            showingFavorites = false;
-            localStorage.setItem('showingFavorites', 'false');
-            favoritesButton.classList.remove('active');
-
-            // Restore previous URL
-            restorePreviousUrl();
-
-            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-            renderSpots(savedCountry, '');
+            exitFavoritesMode();
         } else {
             // Enter favorites mode
             localStorage.setItem('showingFavorites', 'true');
@@ -268,6 +263,35 @@ function setupFavorites() {
     }
 }
 
+function exitFavoritesMode(options = {}) {
+    if (!showingFavorites) {
+        return;
+    }
+
+    const { skipRender = false, skipScroll = false } = options;
+
+    showingFavorites = false;
+    localStorage.setItem('showingFavorites', 'false');
+    const favoritesButton = document.getElementById('favoritesToggle');
+    if (favoritesButton) {
+        favoritesButton.classList.remove('active');
+    }
+
+    restorePreviousUrl();
+
+    if (!skipRender) {
+        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+        renderSpots(savedCountry, '');
+    }
+
+    if (!skipScroll) {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+}
+
 // ============================================================================
 // THEME MANAGEMENT
 // ============================================================================
@@ -285,6 +309,7 @@ function initTheme() {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
         localStorage.setItem('theme', theme);
+        updateMapTileLayer(theme);
     }
 
     // Set the initial theme
@@ -356,6 +381,11 @@ function initLanguage() {
         const infoToggleLabel = document.getElementById('infoToggleLabel');
         if (infoToggleLabel) {
             infoToggleLabel.textContent = t('infoButtonLabel');
+        }
+
+        const mapToggleLabel = document.getElementById('mapToggleLabel');
+        if (mapToggleLabel) {
+            mapToggleLabel.textContent = t('mapButtonLabel');
         }
 
         const kiteSizeToggle = document.getElementById('kiteSizeToggle');
@@ -760,6 +790,10 @@ function setupDropdownEvents() {
                 showingFavorites = false;
                 localStorage.setItem('showingFavorites', 'false');
                 document.getElementById('favoritesToggle').classList.remove('active');
+            }
+
+            if (isMapView) {
+                hideMapView({ skipRender: true });
             }
 
             renderSpots(country, searchInput.value, true);
@@ -1276,8 +1310,18 @@ function setupSearch() {
     const searchClear = document.getElementById('searchClear');
     let searchTimeout;
 
+    searchInput.addEventListener('focus', () => {
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
+    });
+
     searchInput.addEventListener('input', (e) => {
         const value = e.target.value;
+
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
 
         // Show/hide clear button
         if (value.trim() !== '') {
@@ -1305,6 +1349,10 @@ function setupSearch() {
     });
 
     searchClear.addEventListener('click', () => {
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
+
         searchInput.value = '';
         searchClear.classList.remove('visible');
         renderSpots(currentFilter, '');
@@ -1315,6 +1363,9 @@ function setupSearch() {
     // Clear search on an Escape key
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && searchInput.value !== '') {
+            if (isMapView) {
+                hideMapView({ skipRender: true });
+            }
             searchInput.value = '';
             searchClear.classList.remove('visible');
             renderSpots(currentFilter, '');
@@ -1818,6 +1869,10 @@ function setupKiteSizeCalculator() {
 
 function setupColumnToggle() {
     const columnToggle = document.getElementById('columnToggle');
+    if (!columnToggle) {
+        return;
+    }
+
     const spotsGrid = document.getElementById('spotsGrid');
     const icon3Columns = document.getElementById('icon3Columns');
     const icon2Columns = document.getElementById('icon2Columns');
@@ -1859,6 +1914,10 @@ function setupColumnToggle() {
     }
 
     columnToggle.addEventListener('click', () => {
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
+
         spotsGrid.classList.toggle('three-columns');
 
         // Save preference
@@ -1961,6 +2020,11 @@ function handleCountryURL() {
 }
 
 function handleStarredURL() {
+    if (isMapUrl()) {
+        handleMapRoute();
+        return;
+    }
+
     // Check for /starred URL first
     if (isStarredUrl()) {
         // Load favorites directly
@@ -1977,6 +2041,20 @@ function handleStarredURL() {
     } else {
         handleCountryURL();
     }
+}
+
+function handleMapRoute() {
+    const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+
+    renderSpots(savedCountry, '', true)
+        .then(() => {
+            updatePageTitle(savedCountry);
+            showMapView();
+            startAutoRefresh();
+        })
+        .catch(error => {
+            console.error('Failed to initialize map route:', error);
+        });
 }
 
 function setupInfoToggle() {
@@ -2002,6 +2080,200 @@ function reloadPage() {
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
+
+// ============================================================================
+// MAP VIEW FUNCTIONALITY
+// ============================================================================
+
+let map = null;
+let mapMarkers = [];
+let mapTileLayer = null;
+let isMapView = false;
+
+function getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+}
+
+function getMapTileConfig(theme) {
+    if (theme === 'light') {
+        return {
+            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            options: {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }
+        };
+    }
+
+    return {
+        url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+        options: {
+            attribution: '© Stadia Maps © OpenMapTiles © OpenStreetMap contributors',
+            maxZoom: 20
+        }
+    };
+}
+
+function updateMapTileLayer(theme) {
+    if (!map) {
+        return;
+    }
+
+    const config = getMapTileConfig(theme);
+    if (!config) {
+        return;
+    }
+
+    if (mapTileLayer) {
+        map.removeLayer(mapTileLayer);
+    }
+
+    mapTileLayer = L.tileLayer(config.url, config.options).addTo(map);
+}
+
+function isMapUrl() {
+    return window.location.pathname === '/map';
+}
+
+function initMap() {
+    if (map) return; // Already initialized
+
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
+
+    // Initialize Leaflet map
+    map = L.map('map').setView([51.505, -0.09], 2); // Default world view
+
+    // Add theme-aware tile layer
+    updateMapTileLayer(getCurrentTheme());
+}
+
+function addMarkersToMap(spots) {
+    // Clear existing markers
+    mapMarkers.forEach(marker => marker.remove());
+    mapMarkers = [];
+
+    if (!map || !spots || spots.length === 0) return;
+
+    const bounds = [];
+
+    spots.forEach(spot => {
+        if (!spot.coordinates || !spot.coordinates.lat || !spot.coordinates.lon) return;
+
+        const lat = spot.coordinates.lat;
+        const lng = spot.coordinates.lon;
+
+        // Create custom red icon using bullet.svg
+        const redIcon = L.divIcon({
+            className: 'custom-marker',
+            html: '<div style="width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; border: 2px solid white;"></div>',
+            iconSize: [12, 12],
+            iconAnchor: [6, 6]
+        });
+
+        // Create marker
+        const marker = L.marker([lat, lng], { icon: redIcon }).addTo(map);
+
+        // Add popup with clickable spot name
+        marker.bindPopup(`<a href="/spot/${spot.wgId}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>`);
+
+        mapMarkers.push(marker);
+        bounds.push([lat, lng]);
+    });
+
+    // Fit map to show all markers
+    if (bounds.length > 0) {
+        map.fitBounds(bounds, { padding: [50, 50] });
+    }
+}
+
+function showMapView() {
+    if (showingFavorites) {
+        exitFavoritesMode({ skipRender: true, skipScroll: true });
+    }
+
+    isMapView = true;
+    const spotsGrid = document.getElementById('spotsGrid');
+    const mapContainer = document.getElementById('mapContainer');
+    const mapToggle = document.getElementById('mapToggle');
+
+    // Hide spots grid
+    spotsGrid.style.display = 'none';
+
+    // Show map container
+    mapContainer.style.display = 'block';
+
+    // Mark button as active
+    mapToggle.classList.add('active');
+
+
+    // Initialize map if not already done
+    initMap();
+
+    // Add markers for filtered spots
+    const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
+    addMarkersToMap(filteredSpots);
+
+    // Invalidate map size (needed for proper rendering)
+    setTimeout(() => {
+        if (map) map.invalidateSize();
+    }, 100);
+
+    // Update URL to /map
+    window.history.pushState({ map: true }, '', '/map');
+}
+
+function hideMapView(options = {}) {
+    if (!isMapView) {
+        return;
+    }
+
+    const { skipRender = false } = options;
+
+    isMapView = false;
+    const spotsGrid = document.getElementById('spotsGrid');
+    const mapContainer = document.getElementById('mapContainer');
+    const mapToggle = document.getElementById('mapToggle');
+
+    // Show spots grid
+    spotsGrid.style.display = '';
+
+    // Hide map container
+    mapContainer.style.display = 'none';
+
+    // Remove active state from button
+    mapToggle.classList.remove('active');
+
+
+    // Restore previous URL
+    const urlCountry = currentFilter === 'all' ? '/' : `/country/${normalizeCountryForUrl(currentFilter)}`;
+    window.history.pushState({}, '', urlCountry);
+
+    // Re-render spots to clear any filter changes
+    if (!skipRender) {
+        renderSpots(currentFilter, currentSearchQuery, true);
+    }
+}
+
+function setupMapToggle() {
+    const mapToggle = document.getElementById('mapToggle');
+    if (!mapToggle) return;
+
+    mapToggle.addEventListener('click', () => {
+        if (isMapView) {
+            hideMapView();
+        } else {
+            showMapView();
+        }
+    });
+}
+
+function updateMapMarkers() {
+    if (!isMapView) return;
+
+    const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
+    addMarkersToMap(filteredSpots);
+}
 
 // ============================================================================
 // GLOBAL WINDOW FUNCTIONS (for onclick handlers)
@@ -2033,6 +2305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupHamburgerMenu();
     setupKiteSizeCalculator();
     setupColumnToggle();
+    setupMapToggle();
     handlePopState();
     setupInfoToggle();
     renderMainSponsors();

@@ -84,4 +84,17 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+    @Bean
+    public RouterFunction<ServerResponse> mapRouter() {
+        return RouterFunctions.route(
+                GET("/map"),
+                _ -> {
+                    Resource indexHtml = new ClassPathResource("static/index.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(indexHtml);
+                }
+        );
+    }
 }

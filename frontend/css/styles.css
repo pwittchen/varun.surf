@@ -196,6 +196,17 @@ body {
     padding-top: 4px;
 }
 
+.map-toggle {
+    width: auto;
+}
+
+.map-label {
+    display: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding-top: 4px;
+}
+
 .theme-toggle:hover {
     background: var(--gradient-button-hover);
     border-color: var(--border-hover);
@@ -1543,11 +1554,25 @@ body {
         order: 1;
     }
 
-    .info-toggle {
+    .map-toggle {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
         order: 2;
+        display: flex;
+        justify-content: flex-start;
+        padding: 10px 14px;
+    }
+
+    .map-toggle .map-label {
+        display: inline;
+    }
+
+    .info-toggle {
+        width: 100%;
+        max-width: 300px;
+        flex: 0 0 100%;
+        order: 3;
         display: flex;
         justify-content: flex-start;
         padding: 10px 14px;
@@ -1561,14 +1586,14 @@ body {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 3;
+        order: 4;
     }
 
     .dropdown-container {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 4;
+        order: 5;
     }
 
     #modelDropdownContainer {
@@ -1588,7 +1613,7 @@ body {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 5;
+        order: 6;
     }
 
     .main-content {
@@ -3314,4 +3339,68 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     content: "</>";
     font-size: .7rem;
     opacity: .8;
+}
+
+/* ============================================================================ */
+/* MAP VIEW STYLES                                                             */
+/* ============================================================================ */
+
+/* Desktop-only visibility */
+.desktop-only {
+    display: flex !important;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* Map container styles */
+#mapContainer {
+    width: 100%;
+    height: calc(100vh - 180px);
+    margin: 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+}
+
+.leaflet-popup-tip {
+    background: var(--bg-secondary);
+}
+
+.leaflet-popup-content {
+    margin: 12px 44px 12px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.leaflet-popup-content a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.leaflet-popup-content a:hover {
+    text-decoration: underline;
+}
+
+.leaflet-popup-close-button {
+    padding: 10px 12px 0 0;
 }
