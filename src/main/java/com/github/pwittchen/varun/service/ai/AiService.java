@@ -18,7 +18,7 @@ public abstract class AiService {
     }
 
     public Mono<String> fetchAiAnalysis(Spot spot) {
-        if (spot.name().isEmpty() || spot.country().isEmpty() || spot.forecastHourly().isEmpty()) {
+        if (spot.name().isEmpty() || spot.country().isEmpty() || spot.forecast().isEmpty()) {
             return Mono.empty();
         }
 
@@ -42,7 +42,7 @@ public abstract class AiService {
                 buildCustomContext(spot),
                 spot.name(),
                 spot.country(),
-                transformToToon(spot.forecastHourly())
+                transformToToon(spot.forecast())
         );
     }
 
