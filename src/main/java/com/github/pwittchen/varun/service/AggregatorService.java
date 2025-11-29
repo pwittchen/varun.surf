@@ -10,6 +10,7 @@ import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
+import com.github.pwittchen.varun.model.spot.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
@@ -67,6 +68,7 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, String> embeddedMaps;
+    private final ConcurrentMap<Integer, Coordinates> coordinates;
     private final ConcurrentMap<Integer, String> spotPhotos;
 
     private final SpotsDataProvider spotsDataProvider;
@@ -100,6 +102,7 @@ public class AggregatorService {
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.embeddedMaps = new ConcurrentHashMap<>();
         this.embeddedMapFetchSubscriptions = new ConcurrentHashMap<>();
+        this.coordinates = new ConcurrentHashMap<>();
         this.spotPhotos = new ConcurrentHashMap<>();
         this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -201,6 +204,11 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withSpotPhoto(spotPhotoUrl);
         }
 
+        var coords = coordinates.get(spot.wgId());
+        if (coords != null) {
+            enrichedSpot = enrichedSpot.withCoordinates(coords);
+        }
+
         List<Sponsor> sponsors = sponsorsService.getSponsors()
                 .stream()
                 .filter(sponsor -> sponsor.id() == spot.wgId())
@@ -217,7 +225,10 @@ public class AggregatorService {
         embeddedMapFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
                 loadEmbeddedMap(spot)
                         .subscribeOn(Schedulers.boundedElastic())
-                        .doOnNext(map -> embeddedMaps.put(id, map))
+                        .doOnNext(map -> {
+                            embeddedMaps.put(id, map);
+                            googleMapsService.extractCoordinates(map).ifPresent(c -> coordinates.put(id, c));
+                        })
                         .doOnError(error -> log.warn("Embedded map fetch failed for spot {}", id, error))
                         .doFinally(_ -> embeddedMapFetchSubscriptions.remove(id))
                         .subscribe()

@@ -1398,6 +1398,12 @@ function createSpotCard(spot) {
     let spotInfoCardHtml = '';
     if (spot.spotInfo) {
         const info = getSpotInfo(spot);
+        const coordinatesHtml = spot.coordinates
+            ? `<div class="info-item" style="grid-column: 1 / -1;">
+                   <div class="info-label">${t('coordinatesLabel')}</div>
+                   <div class="info-value">${spot.coordinates.lat.toFixed(6)}, ${spot.coordinates.lon.toFixed(6)}</div>
+               </div>`
+            : '';
         spotInfoCardHtml = `
                 <div class="spot-info-card">
                     <div class="info-grid">
@@ -1433,6 +1439,7 @@ function createSpotCard(spot) {
                             <div class="info-label">${t('seasonLabel')}</div>
                             <div class="info-value">${info.season}</div>
                         </div>
+                        ${coordinatesHtml}
                     </div>
                 </div>
             `;

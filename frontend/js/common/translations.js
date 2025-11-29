@@ -148,6 +148,7 @@ export const translations = {
         hazardsLabel: "Hazards",
         seasonLabel: "Season",
         sponsorsLabel: "Sponsors of the spot",
+        coordinatesLabel: "Coordinates",
 
         // Forecast view tabs
         tableViewLabel: "Vertical view",
@@ -370,6 +371,7 @@ export const translations = {
         hazardsLabel: "Zagrożenia",
         seasonLabel: "Sezon",
         sponsorsLabel: "Sponsorzy spotu",
+        coordinatesLabel: "Współrzędne",
 
         // Forecast view tabs
         tableViewLabel: "Widok pionowy",

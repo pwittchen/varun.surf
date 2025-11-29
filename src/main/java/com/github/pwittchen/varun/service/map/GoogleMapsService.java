@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.map;
 
 import com.github.pwittchen.varun.http.HttpClientProvider;
+import com.github.pwittchen.varun.model.spot.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class GoogleMapsService {
@@ -144,5 +146,67 @@ public class GoogleMapsService {
             case 300, 301, 302, 303, 307, 308 -> true;
             default -> false;
         };
+    }
+
+    public Optional<Coordinates> extractCoordinates(String embeddedMapHtml) {
+        if (embeddedMapHtml == null || embeddedMapHtml.isEmpty()) {
+            return Optional.empty();
+        }
+
+        try {
+            // Extract the src attribute from the iframe
+            int srcStart = embeddedMapHtml.indexOf("src=\"");
+            if (srcStart == -1) {
+                log.debug("No src attribute found in embedded map");
+                return Optional.empty();
+            }
+
+            srcStart += 5; // Skip past 'src="'
+            int srcEnd = embeddedMapHtml.indexOf("\"", srcStart);
+            if (srcEnd == -1) {
+                log.debug("Malformed src attribute in embedded map");
+                return Optional.empty();
+            }
+
+            String srcUrl = embeddedMapHtml.substring(srcStart, srcEnd);
+
+            // Extract coordinates from the URL (format: ?q=lat,lon or &q=lat,lon)
+            int qIndex = srcUrl.indexOf("?q=");
+            if (qIndex == -1) {
+                qIndex = srcUrl.indexOf("&q=");
+            }
+
+            if (qIndex == -1) {
+                log.debug("No coordinates (q parameter) found in embedded map URL");
+                return Optional.empty();
+            }
+
+            // Skip past '?q=' or '&q='
+            int coordStart = qIndex + 3;
+            int coordEnd = srcUrl.indexOf("&", coordStart);
+            if (coordEnd == -1) {
+                coordEnd = srcUrl.length();
+            }
+
+            String coordString = srcUrl.substring(coordStart, coordEnd);
+            String[] parts = coordString.split(",");
+
+            if (parts.length < 2) {
+                log.debug("Invalid coordinate format in embedded map URL");
+                return Optional.empty();
+            }
+
+            double lat = Double.parseDouble(parts[0].trim());
+            double lon = Double.parseDouble(parts[1].trim());
+
+            log.debug("Extracted and saved coordinates: lat={}, lon={}", lat, lon);
+            return Optional.of(new Coordinates(lat, lon));
+
+        } catch (NumberFormatException e) {
+            log.warn("Failed to parse coordinates from embedded map", e);
+        } catch (Exception e) {
+            log.warn("Error extracting coordinates from embedded map", e);
+        }
+        return Optional.empty();
     }
 }
