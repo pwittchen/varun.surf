@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
 
 import java.time.ZonedDateTime;

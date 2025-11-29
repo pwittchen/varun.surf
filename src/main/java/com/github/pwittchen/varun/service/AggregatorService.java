@@ -10,7 +10,7 @@ import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
-import com.github.pwittchen.varun.model.spot.Coordinates;
+import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;

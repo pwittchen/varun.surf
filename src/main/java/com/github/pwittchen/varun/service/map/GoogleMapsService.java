@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.service.map;
 
 import com.github.pwittchen.varun.http.HttpClientProvider;
-import com.github.pwittchen.varun.model.spot.Coordinates;
+import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
