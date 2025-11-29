@@ -105,27 +105,33 @@
     -> SponsorsController.mainSponsors()
     -> returns Flux<Sponsor>
 
-[Embedded Maps (Lazy Loading)]
-  -> On spot enrichment, if embeddedMap not in cache
-  -> scheduleEmbeddedMapFetch(spot) triggered
-  -> GoogleMapsService.getEmbeddedMapCode(spot)
-  -> unshortens goo.gl URLs, converts to embeddable iframe
-  -> stores in embeddedMaps{spotId -> String}
+[Coordinates Extraction (Lazy Loading)]
+  -> On spot enrichment, if coordinates not in cache
+  -> scheduleCoordinatesFetch(spot) triggered
+  -> GoogleMapsService.getCoordinates(spot)
+  -> unshortens goo.gl URLs, extracts @lat,lon from Google Maps URLs
+  -> stores in coordinates{spotId -> Coordinates}
   -> cached for subsequent requests
+  -> Frontend generates embedded map iframe from coordinates
 ```
 
 ### Data Model (simplified)
 ```
 Spot
 ├─ id (int) / wgId (int) / name / country / windguruUrl / locationUrl
+├─ forecast : List<Forecast> (48-hour hourly forecast, GFS or IFS)
 ├─ forecastDaily : List<Forecast> (3-day daily forecast)
-├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS)
+├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS - legacy)
 ├─ currentConditions : CurrentConditions
 ├─ aiAnalysisEn : String (optional, AI-generated forecast summary in English)
 ├─ aiAnalysisPl : String (optional, AI-generated forecast summary in Polish)
-├─ embeddedMap : String (lazy-loaded iframe HTML)
+├─ coordinates : Coordinates (lat, lon - lazy-loaded, used for map generation in frontend)
 ├─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType in English)
 └─ spotInfoPL : SpotInfo (description, bestWind, hazards, season, waterType in Polish)
+
+Coordinates
+├─ lat : double (latitude)
+└─ lon : double (longitude)
 
 ForecastData (internal cache structure)
 ├─ daily : List<Forecast> (GFS daily forecasts)
@@ -184,8 +190,9 @@ Sponsor
 
 3. Google Maps
    - URL unshortening (goo.gl, maps.app.goo.gl)
-   - Conversion to embeddable iframe format
+   - Coordinate extraction from @lat,lon format in Google Maps URLs
    - Lazy-loaded and cached per spot
+   - Frontend generates embedded iframe from coordinates
 
 4. Spring AI (optional, feature-flagged)
    - OpenAI API (gpt-4o-mini) OR Ollama (smollm2:135m)
@@ -286,11 +293,12 @@ In-Memory Caches (ConcurrentHashMap):
      - Updated: every 8 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
-  5. embeddedMaps: Map<Integer, String>
+  5. coordinates: Map<Integer, Coordinates>
      - Key: spotId (wgId)
-     - Value: iframe HTML string
+     - Value: Coordinates (lat, lon)
      - Updated: lazy-loaded on first request
      - Lifetime: persists until application restart
+     - Frontend uses coordinates to generate embedded map iframe
 
   6. hourlyForecastCacheTimestamps: Map<Integer, Long>
      - Key: spotId (wgId)

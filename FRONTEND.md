@@ -770,8 +770,13 @@ if (conditions.includes('Waves')) kiteSize *= 1.1;
 **Google Maps Integration**:
 - Lazy-loaded on single spot page (left sidebar)
 - Satellite view with marker
-- Backend resolves short URLs (goo.gl) to coordinates
-- Cached in backend (no repeated API calls)
+- Backend extracts coordinates from location URLs (goo.gl, maps.app.goo.gl)
+- Coordinates cached in backend (no repeated API calls)
+- Frontend generates embedded iframe from coordinates:
+  ```javascript
+  const mapUrl = `https://maps.google.com/maps?q=${lat},${lon}&z=13&t=k&output=embed`;
+  const iframe = `<iframe src="${mapUrl}" ...></iframe>`;
+  ```
 
 ## Performance Optimizations
 

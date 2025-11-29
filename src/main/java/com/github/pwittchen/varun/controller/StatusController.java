@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
-import com.github.pwittchen.varun.model.app.Uptime;
+import com.github.pwittchen.varun.model.status.Uptime;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
