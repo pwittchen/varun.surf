@@ -197,7 +197,7 @@ public class AggregatorService {
         }
 
         var spotPhotoUrl = spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
-        if (spotPhotoUrl != null && !spotPhotoUrl.isEmpty()) {
+        if (!spotPhotoUrl.isEmpty()) {
             enrichedSpot = enrichedSpot.withSpotPhoto(spotPhotoUrl);
         }
 
