@@ -309,7 +309,7 @@ function initTheme() {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
         localStorage.setItem('theme', theme);
-        updateMapTileLayer(theme);
+        updateMapTileLayer();
     }
 
     // Set the initial theme
@@ -2090,36 +2090,22 @@ let mapMarkers = [];
 let mapTileLayer = null;
 let isMapView = false;
 
-function getCurrentTheme() {
-    return document.documentElement.getAttribute('data-theme') || 'dark';
-}
-
-function getMapTileConfig(theme) {
-    if (theme === 'light') {
-        return {
-            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            options: {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
-            }
-        };
-    }
-
+function getMapTileConfig() {
     return {
-        url: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         options: {
-            attribution: '© Stadia Maps © OpenMapTiles © OpenStreetMap contributors',
-            maxZoom: 20
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
         }
     };
 }
 
-function updateMapTileLayer(theme) {
+function updateMapTileLayer() {
     if (!map) {
         return;
     }
 
-    const config = getMapTileConfig(theme);
+    const config = getMapTileConfig();
     if (!config) {
         return;
     }
@@ -2144,8 +2130,8 @@ function initMap() {
     // Initialize Leaflet map
     map = L.map('map').setView([51.505, -0.09], 2); // Default world view
 
-    // Add theme-aware tile layer
-    updateMapTileLayer(getCurrentTheme());
+    // Add base tile layer
+    updateMapTileLayer();
 }
 
 function addMarkersToMap(spots) {
