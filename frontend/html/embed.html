@@ -478,25 +478,33 @@
 
             function displayCurrentConditions(spot, container) {
                 let data = null;
+                let isRealTime = false;
 
-                // Prefer current conditions, fallback to nearest forecast
-                if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
+                // Prefer current conditions if available and valid, fallback to nearest forecast
+                if (spot.currentConditions &&
+                    spot.currentConditions.wind != null &&
+                    spot.currentConditions.wind >= 0) {
                     data = {
                         wind: spot.currentConditions.wind,
                         gusts: spot.currentConditions.gusts,
                         direction: spot.currentConditions.direction,
                         temp: spot.currentConditions.temp,
-                        precipitation: sanitizeNumber(spot.currentConditions.precipitation, 0)
+                        precipitation: 0 // Current conditions don't have precipitation
                     };
+                    isRealTime = true;
                 } else if (spot.forecastHourly && spot.forecastHourly.length > 0) {
-                    const nearest = spot.forecastHourly[0];
-                    data = {
-                        wind: nearest.wind,
-                        gusts: nearest.gusts,
-                        direction: nearest.direction,
-                        temp: nearest.temp,
-                        precipitation: sanitizeNumber(nearest.precipitation, 0)
-                    };
+                    // Use current hour forecast as fallback
+                    const currentHourForecast = getCurrentOrNextForecast(spot.forecastHourly);
+                    if (currentHourForecast) {
+                        data = {
+                            wind: currentHourForecast.wind,
+                            gusts: currentHourForecast.gusts,
+                            direction: currentHourForecast.direction,
+                            temp: currentHourForecast.temp,
+                            precipitation: sanitizeNumber(currentHourForecast.precipitation, 0)
+                        };
+                        isRealTime = false;
+                    }
                 }
 
                 if (!data) {
@@ -511,12 +519,16 @@
                 else if (avgWind > 25) windClass = 'extreme';
 
                 const arrow = getWindArrow(data.direction);
+                const dataSource = isRealTime
+                    ? '<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">Live data</div>'
+                    : '<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">Estimated from forecast</div>';
 
             container.innerHTML = `
                     <div class="varun-current-conditions">
                         <div class="varun-wind-main ${windClass}">
                             <div class="varun-wind-speed ${windClass}">${data.wind} kts</div>
                             <div class="varun-wind-label">${t('windSpeedLabel')}</div>
+                            ${dataSource}
                         </div>
                         <div class="varun-conditions-grid">
                             <div class="varun-condition-item">
@@ -548,8 +560,16 @@
                     return;
                 }
 
+                // Filter to show only future forecasts starting from current hour
+                const futureForecasts = filterFutureForecasts(forecastData);
+
+                if (futureForecasts.length === 0) {
+                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
+                    return;
+                }
+
                 // Show next 8 hours of forecast
-                const limitedForecast = forecastData.slice(0, 8);
+                const limitedForecast = futureForecasts.slice(0, 8);
 
                 let tableHtml = `
                     <table class="varun-forecast-table">
@@ -622,6 +642,58 @@
                 if (avgWind < 18) return 'varun-wind-moderate';
                 if (avgWind <= 25) return 'varun-wind-strong';
                 return 'varun-wind-extreme';
+            }
+
+            /**
+             * Parse forecast date string to Date object
+             * Expected format: "Day Mon DD YYYY HH:MM:SS GMT+OFFSET (ZONE)"
+             * Example: "Mon Nov 30 2025 14:00:00 GMT+0100 (CET)"
+             */
+            function parseForecastDate(dateStr) {
+                if (!dateStr) return null;
+                try {
+                    // Try to parse the date directly
+                    const parsed = new Date(dateStr);
+                    if (!isNaN(parsed.getTime())) {
+                        return parsed;
+                    }
+                    return null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            /**
+             * Filter forecasts to only include future hours (from current hour onwards)
+             */
+            function filterFutureForecasts(forecasts) {
+                const now = new Date();
+                const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
+
+                return forecasts.filter(forecast => {
+                    const forecastDate = parseForecastDate(forecast.date);
+                    if (!forecastDate) return false;
+                    return forecastDate >= currentHour;
+                });
+            }
+
+            /**
+             * Get the forecast for current or next hour
+             */
+            function getCurrentOrNextForecast(forecasts) {
+                const now = new Date();
+                const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
+
+                // Find forecast for current hour or next available hour
+                for (const forecast of forecasts) {
+                    const forecastDate = parseForecastDate(forecast.date);
+                    if (forecastDate && forecastDate >= currentHour) {
+                        return forecast;
+                    }
+                }
+
+                // Fallback to first forecast if no future forecast found
+                return forecasts.length > 0 ? forecasts[0] : null;
             }
 
             function showError(message) {

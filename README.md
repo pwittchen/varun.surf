@@ -130,6 +130,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
 - browsing forecasts for multiple kite spots
+- browsing all kite spots on the map
 - watching live wind conditions in the selected spots
 - refreshing live wind every one minute on the backend (requires page refresh on the frontend)
 - refreshing forecasts every 3 hours in the backend (requires page refresh on the frontend)
@@ -145,6 +146,6 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - AI forecast analysis
 - single spot view with hourly forecast (in horizontal and vertical view)
 - map of the spot (currently provided by Google Maps)
-- displaying photo of the spot (if available)
-- possibility to switch weather forecast model for the spot (currently available models: GFS, IFS)
+- displaying a photo of the spot (if available)
+- possibility to switch a weather forecast model for the spot (currently available models: GFS, IFS)
 - embeddable HTML widget with current conditions and forecast for the spot
