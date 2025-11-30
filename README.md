@@ -153,7 +153,8 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - kite and board size calculator
 - AI forecast analysis
 - single spot view with hourly forecast (in horizontal and vertical view)
-- map of the spot (currently provided by Google Maps)
+- additional TV-friendly view for the single spot
+- map of the spot (provided by Google Maps, OSM and Windy)
 - displaying a photo of the spot (if available)
 - possibility to switch a weather forecast model for the spot (currently available models: GFS, IFS)
 - embeddable HTML widget with current conditions and forecast for the spot
