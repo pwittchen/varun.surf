@@ -97,4 +97,18 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> tvRouter() {
+        return RouterFunctions.route(
+                GET("/spot/{id}/tv"),
+                _ -> {
+                    Resource tvHtml = new ClassPathResource("static/tv.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(tvHtml);
+                }
+        );
+    }
 }

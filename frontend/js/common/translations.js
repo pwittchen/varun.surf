@@ -36,6 +36,7 @@ export const translations = {
         gustsLabel: "Gusts",
         directionLabel: "Direction",
         temperatureLabel: "Temperature",
+        tempLabel: "Temp",
         precipitationLabel: "Precipitation",
 
         // Footer
@@ -128,6 +129,8 @@ export const translations = {
         embedModalDescription: "Copy the code below to embed this spot's weather data on your website.",
         embedViewConditionsLabel: "Current Conditions",
         embedViewForecastLabel: "Forecast",
+        tvCurrentConditionsLive: "Current Conditions (Live Data)",
+        tvCurrentConditionsEstimated: "Current Conditions (Estimated from Forecast)",
         embedThemeDarkLabel: "Dark Theme",
         embedThemeLightLabel: "Light Theme",
         embedPreviewTitle: "Preview",
@@ -136,6 +139,7 @@ export const translations = {
         embedCopyButtonSuccess: "Copied!",
         embedCopyButtonError: "Failed to copy to clipboard",
         embedLinkLabel: "EMBED",
+        tvLinkLabel: "TV",
         mapLinkLabel: "MAP",
         mapTabLabel: "Google Map",
         osmMapTabLabel: "OSM Map",
@@ -263,6 +267,7 @@ export const translations = {
         gustsLabel: "Szkwały",
         directionLabel: "Kierunek",
         temperatureLabel: "Temperatura",
+        tempLabel: "Temp",
         precipitationLabel: "Opady",
 
         // Footer
@@ -355,6 +360,8 @@ export const translations = {
         embedModalDescription: "Skopiuj kod poniżej, aby osadzić dane pogodowe tego spotu na swojej stronie.",
         embedViewConditionsLabel: "Aktualne warunki",
         embedViewForecastLabel: "Prognoza",
+        tvCurrentConditionsLive: "Aktualne warunki (Dane na żywo)",
+        tvCurrentConditionsEstimated: "Aktualne warunki (Szacowane z prognozy)",
         embedThemeDarkLabel: "Motyw ciemny",
         embedThemeLightLabel: "Motyw jasny",
         embedPreviewTitle: "Podgląd",
@@ -363,6 +370,7 @@ export const translations = {
         embedCopyButtonSuccess: "Skopiowano!",
         embedCopyButtonError: "Nie udało się skopiować do schowka",
         embedLinkLabel: "OSADŹ",
+        tvLinkLabel: "TV",
         mapLinkLabel: "MAPA",
         mapTabLabel: "Mapa Google",
         osmMapTabLabel: "Mapa OSM",

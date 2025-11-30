@@ -1634,6 +1634,7 @@ function createSpotCard(spot) {
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
                     <span class="external-link embed-link" onclick="openEmbedModal()">${t('embedLinkLabel')}</span>
+                    <a href="/spot/${spot.wgId}/tv" target="_blank" class="external-link tv-link">${t('tvLinkLabel')}</a>
                     ${aiAnalysisText ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 

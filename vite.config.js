@@ -88,7 +88,8 @@ export default defineConfig({
         index: path.resolve(__dirname, 'frontend/html/index.html'),
         spot: path.resolve(__dirname, 'frontend/html/spot.html'),
         status: path.resolve(__dirname, 'frontend/html/status.html'),
-        embed: path.resolve(__dirname, 'frontend/html/embed.html')
+        embed: path.resolve(__dirname, 'frontend/html/embed.html'),
+        tv: path.resolve(__dirname, 'frontend/html/tv.html')
       },
       output: {
         inlineDynamicImports: false,
