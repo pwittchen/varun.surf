@@ -137,7 +137,8 @@ export const translations = {
         embedCopyButtonError: "Failed to copy to clipboard",
         embedLinkLabel: "EMBED",
         mapLinkLabel: "MAP",
-        mapTabLabel: "Map",
+        mapTabLabel: "Google Map",
+        osmMapTabLabel: "OSM Map",
         photoTabLabel: "Photo",
         windyMapTabLabel: "Windy Map",
 
@@ -363,7 +364,8 @@ export const translations = {
         embedCopyButtonError: "Nie udało się skopiować do schowka",
         embedLinkLabel: "OSADŹ",
         mapLinkLabel: "MAPA",
-        mapTabLabel: "Mapa",
+        mapTabLabel: "Mapa Google",
+        osmMapTabLabel: "Mapa OSM",
         photoTabLabel: "Zdjęcie",
         windyMapTabLabel: "Mapa Wiatru",
 

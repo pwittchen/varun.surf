@@ -44,6 +44,7 @@ const FORECAST_TIMEOUT_MS = 30000;         // 30 seconds
 const BACKGROUND_REFRESH_INTERVAL = 60000; // 1 minute
 
 const MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,12A4,4,0,1,0,8,8,4,4,0,0,0,12,12Zm0-6a2,2,0,1,1-2,2A2,2,0,0,1,12,6Zm8.66,3.157-.719-.239A8,8,0,0,0,12,0,7.993,7.993,0,0,0,4.086,9.092a5.045,5.045,0,0,0-2.548,1.3A4.946,4.946,0,0,0,0,14v4.075a5.013,5.013,0,0,0,3.6,4.8l2.87.9A4.981,4.981,0,0,0,7.959,24a5.076,5.076,0,0,0,1.355-.186l5.78-1.71a2.987,2.987,0,0,1,1.573,0l2.387.8A4,4,0,0,0,24,19.021V13.872A5.015,5.015,0,0,0,20.66,9.156ZM7.758,3.762a5.987,5.987,0,0,1,8.484,0,6.037,6.037,0,0,1,.011,8.5L12.7,15.717a.992.992,0,0,1-1.389,0L7.758,12.277A6.04,6.04,0,0,1,7.758,3.762ZM22,19.021a1.991,1.991,0,0,1-.764,1.572,1.969,1.969,0,0,1-1.626.395L17.265,20.2a5.023,5.023,0,0,0-2.717-.016L8.764,21.892a3,3,0,0,1-1.694-.029l-2.894-.9A3.013,3.013,0,0,1,2,18.075V14a2.964,2.964,0,0,1,.92-2.163,3.024,3.024,0,0,1,1.669-.806A8.021,8.021,0,0,0,6.354,13.7l3.567,3.453a2.983,2.983,0,0,0,4.174,0l3.563-3.463a7.962,7.962,0,0,0,1.813-2.821l.537.178A3.006,3.006,0,0,1,22,13.872Z"/></svg>`;
+const OSM_MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9.553,14.397c.675.66,1.561.99,2.447.99s1.772-.33,2.447-.99l2.502-2.448c1.322-1.322,2.051-3.08,2.051-4.95s-.729-3.627-2.051-4.95c-1.321-1.322-3.079-2.05-4.949-2.05s-3.628.728-4.95,2.05c-2.729,2.729-2.729,7.17.008,9.907l2.495,2.44Zm-1.089-10.933c.944-.944,2.2-1.464,3.536-1.464s2.591.52,3.535,1.464,1.465,2.2,1.465,3.536-.521,2.591-1.457,3.528l-2.494,2.44c-.578.564-1.52.564-2.098,0l-2.487-2.432c-1.949-1.95-1.949-5.122,0-7.071Zm.536,3.526c0-1.657,1.343-3,3-3s3,1.343,3,3-1.343,3-3,3-3-1.343-3-3Zm15,9.777c0,.352-.185.677-.485.857l-9.861,5.917c-.51.306-1.082.459-1.653.459s-1.144-.153-1.653-.459L.485,17.625c-.301-.181-.485-.506-.485-.857s.185-.677.485-.857l4.229-2.537c.475-.285,1.089-.131,1.372.343.284.474.131,1.088-.343,1.372l-2.8,1.68,8.433,5.06c.385.23.863.23,1.248,0l8.433-5.06-2.8-1.68c-.474-.284-.627-.898-.343-1.372s.897-.628,1.372-.343l4.229,2.537c.301.181.485.506.485.857Z"/></svg>`;
 const PHOTO_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/><path fill="currentColor" d="M16,10.5A3.5,3.5,0,1,0,12.5,7,3.5,3.5,0,0,0,16,10.5Zm0-5A1.5,1.5,0,1,1,14.5,7,1.5,1.5,0,0,1,16,5.5Z"/></svg>`;
 const WINDY_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.5,13h-5a1.5,1.5,0,0,1,0-3h5A1.5,1.5,0,0,1,6.5,13Z"/><path fill="currentColor" d="M18.5,13h-7a1.5,1.5,0,0,1,0-3h7A2.5,2.5,0,0,0,21,7.468a2.031,2.031,0,0,0-1.656-1.941A2,2,0,0,0,17,7.5,1.5,1.5,0,0,1,15.5,9c-2.767-.318-1.178-4.225.26-5.308A5,5,0,0,1,24,7.431,5.5,5.5,0,0,1,18.5,13Z"/><path fill="currentColor" d="M7,8H1.5a1.5,1.5,0,0,1,0-3H7a1.069,1.069,0,0,0,1.075-.777.982.982,0,0,0-.208-.818,1.158,1.158,0,0,0-1.681.088A1.5,1.5,0,1,1,3.859,1.6a4.125,4.125,0,0,1,6.307-.116,3.989,3.989,0,0,1,.858,3.275A4.031,4.031,0,0,1,7,8Z"/><path fill="currentColor" d="M15.585,24.008a4.832,4.832,0,0,1-3.709-1.752,1.5,1.5,0,0,1,2.323-1.9,1.736,1.736,0,0,0,2.542.11,1.508,1.508,0,0,0,.322-1.256A1.606,1.606,0,0,0,15.438,18H1.5a1.5,1.5,0,0,1,0-3H15.438a4.577,4.577,0,0,1,4.577,3.678,4.506,4.506,0,0,1-4.43,5.33Z"/></svg>`;
 
@@ -1101,6 +1102,7 @@ function setupSpotMediaTabs() {
     }
 
     const mapPanel = document.querySelector('.spot-media-panel-map');
+    const osmPanel = document.querySelector('.spot-media-panel-osm');
     const windyPanel = document.querySelector('.spot-media-panel-windy');
     const photoPanel = document.querySelector('.spot-media-panel-photo');
 
@@ -1118,6 +1120,9 @@ function setupSpotMediaTabs() {
             const targetMedia = button.dataset.media;
             tabButtons.forEach(tab => tab.classList.toggle('active', tab === button));
             mapPanel.classList.toggle('active', targetMedia === 'map');
+            if (osmPanel) {
+                osmPanel.classList.toggle('active', targetMedia === 'osm');
+            }
             windyPanel.classList.toggle('active', targetMedia === 'windy');
             if (photoPanel) {
                 photoPanel.classList.toggle('active', targetMedia === 'photo');
@@ -1472,6 +1477,13 @@ function createSpotCard(spot) {
         windyMapIframe = `<iframe src="${windyUrl}" width="100%" height="360" frameborder="0"></iframe>`;
     }
 
+    // Generate OpenStreetMap iframe
+    let osmMapIframe = '';
+    if (hasCoordinates) {
+        const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${spot.coordinates.lon-0.02},${spot.coordinates.lat-0.02},${spot.coordinates.lon+0.02},${spot.coordinates.lat+0.02}&layer=mapnik&marker=${spot.coordinates.lat},${spot.coordinates.lon}`;
+        osmMapIframe = `<iframe src="${osmUrl}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+    }
+
     let embeddedMapHtml = '';
     if (hasCoordinates && hasSpotPhoto) {
         embeddedMapHtml = `
@@ -1480,6 +1492,10 @@ function createSpotCard(spot) {
                         <button type="button" class="spot-media-tab active" data-media="map">
                             ${MAP_TAB_ICON}
                             <span>${t('mapTabLabel')}</span>
+                        </button>
+                        <button type="button" class="spot-media-tab" data-media="osm">
+                            ${OSM_MAP_TAB_ICON}
+                            <span>${t('osmMapTabLabel')}</span>
                         </button>
                         <button type="button" class="spot-media-tab" data-media="windy">
                             ${WINDY_TAB_ICON}
@@ -1494,6 +1510,11 @@ function createSpotCard(spot) {
                         <div class="spot-media-panel spot-media-panel-map active">
                             <div class="spot-embedded-map">
                                 <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
+                            </div>
+                        </div>
+                        <div class="spot-media-panel spot-media-panel-osm">
+                            <div class="spot-embedded-map">
+                                <div class="spot-embedded-map-frame">${osmMapIframe}</div>
                             </div>
                         </div>
                         <div class="spot-media-panel spot-media-panel-windy">
@@ -1517,6 +1538,10 @@ function createSpotCard(spot) {
                             ${MAP_TAB_ICON}
                             <span>${t('mapTabLabel')}</span>
                         </button>
+                        <button type="button" class="spot-media-tab" data-media="osm">
+                            ${OSM_MAP_TAB_ICON}
+                            <span>${t('osmMapTabLabel')}</span>
+                        </button>
                         <button type="button" class="spot-media-tab" data-media="windy">
                             ${WINDY_TAB_ICON}
                             <span>${t('windyMapTabLabel')}</span>
@@ -1526,6 +1551,11 @@ function createSpotCard(spot) {
                         <div class="spot-media-panel spot-media-panel-map active">
                             <div class="spot-embedded-map">
                                 <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
+                            </div>
+                        </div>
+                        <div class="spot-media-panel spot-media-panel-osm">
+                            <div class="spot-embedded-map">
+                                <div class="spot-embedded-map-frame">${osmMapIframe}</div>
                             </div>
                         </div>
                         <div class="spot-media-panel spot-media-panel-windy">
