@@ -34,6 +34,14 @@ docker build -t varun-surf .
 docker run -p 8080:8080 varun-surf
 ```
 
+## docker compose (local)
+
+```
+./deployment.sh dev
+```
+
+for prod setup, check [continuous delivery](#continuous-delivery) and [zero-downtime deployment](#zero-downtime-deployment) sections.
+
 ## docker container registry
 
 docker image is automatically deployed to the registry at ghcr.io via `docker.yml` GitHub action from the `master` branch
