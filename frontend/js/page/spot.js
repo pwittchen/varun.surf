@@ -2295,18 +2295,8 @@ async function setupSpot() {
 
     setLoadingMessage('loadingSpotData');
 
-    // Wait at least 2 seconds before loading spot data
-    const startTime = Date.now();
-    const minDelay = 2000;
-
     try {
         const spot = await fetchSpotData(spotId);
-        const elapsed = Date.now() - startTime;
-        const remainingDelay = minDelay - elapsed;
-
-        if (remainingDelay > 0) {
-            await new Promise(resolve => setTimeout(resolve, remainingDelay));
-        }
 
         if (hasForecastData(spot)) {
             displaySpot(spot);

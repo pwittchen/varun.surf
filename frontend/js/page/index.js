@@ -1389,18 +1389,8 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     // Show loading message immediately
     showLoadingMessage();
 
-    // Wait at least 2 seconds before showing any content (unless skipped)
-    const startTime = Date.now();
-    const minDelay = skipDelay ? 0 : 2000;
-
     try {
         const data = await fetchWeatherData();
-        const elapsed = Date.now() - startTime;
-        const remainingDelay = minDelay - elapsed;
-
-        if (remainingDelay > 0) {
-            await new Promise(resolve => setTimeout(resolve, remainingDelay));
-        }
 
         globalWeatherData = data;
 
@@ -2391,9 +2381,7 @@ function showMapView() {
     addMarkersToMap(filteredSpots);
 
     // Invalidate map size (needed for proper rendering)
-    setTimeout(() => {
-        if (map) map.invalidateSize();
-    }, 100);
+    if (map) map.invalidateSize();
 
     // Update URL to /map
     window.history.pushState({ map: true }, '', '/map');
