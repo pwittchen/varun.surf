@@ -45,6 +45,7 @@ public class StatusControllerTest {
     void shouldReturnStatusWithSpotsCount() {
         when(aggregatorService.countSpots()).thenReturn(74);
         when(aggregatorService.countCountries()).thenReturn(15);
+        when(aggregatorService.countLiveStations()).thenReturn(5);
 
         Mono<Map<String, Object>> result = controller.status();
 
@@ -54,10 +55,28 @@ public class StatusControllerTest {
                     assertThat(status).containsEntry("status", "UP");
                     assertThat(status).containsEntry("spotsCount", 74);
                     assertThat(status).containsEntry("countriesCount", 15);
+                    assertThat(status).containsEntry("liveStations", 5);
                     assertThat(status).containsKey("version");
                     assertThat(status).containsKey("uptime");
                     assertThat(status).containsKey("uptimeSeconds");
                     assertThat(status).containsKey("startTime");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnStatusWithZeroLiveStations() {
+        when(aggregatorService.countSpots()).thenReturn(10);
+        when(aggregatorService.countCountries()).thenReturn(2);
+        when(aggregatorService.countLiveStations()).thenReturn(0);
+
+        Mono<Map<String, Object>> result = controller.status();
+
+        StepVerifier.create(result)
+                .assertNext(status -> {
+                    assertThat(status).isNotNull();
+                    assertThat(status).containsEntry("status", "UP");
+                    assertThat(status).containsEntry("liveStations", 0);
                 })
                 .verifyComplete();
     }

@@ -156,6 +156,20 @@ public class AggregatorService {
                 .count()).intValue();
     }
 
+    public int countLiveStations() {
+        return Long.valueOf(currentConditions
+                .values()
+                .stream()
+                .filter(conditions -> conditions != null && !isEmptyConditions(conditions))
+                .count()).intValue();
+    }
+
+    private boolean isEmptyConditions(CurrentConditions conditions) {
+        return conditions.wind() == 0 &&
+                conditions.gusts() == 0 &&
+                (conditions.direction() == null || conditions.direction().isEmpty());
+    }
+
     public Optional<Spot> getSpotById(int id) {
         return getSpotById(id, ForecastModel.GFS);
     }

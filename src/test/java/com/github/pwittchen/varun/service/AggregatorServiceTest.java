@@ -586,6 +586,78 @@ class AggregatorServiceTest {
         assertThat(spots.get(0).currentConditions()).isEqualTo(currentConditions);
     }
 
+    @Test
+    void shouldCountLiveStationsWithNonEmptyConditions() throws InterruptedException {
+        // given
+        var spot1 = createTestSpot(123, "Test Spot 1");
+        var spot2 = createTestSpot(124, "Test Spot 2");
+        var spot3 = createTestSpot(125, "Test Spot 3");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2, spot3));
+
+        var liveConditions = new CurrentConditions("2025-01-01T12:00:00", 15, 20, "S", 10);
+        var emptyConditions = new CurrentConditions("2025-01-01T12:00:00", 0, 0, "", 0);
+
+        when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(liveConditions));
+        when(currentConditionsService.fetchCurrentConditions(124)).thenReturn(Mono.just(emptyConditions));
+        when(currentConditionsService.fetchCurrentConditions(125)).thenReturn(Mono.just(liveConditions));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        aggregatorService.fetchCurrentConditionsEveryOneMinute();
+        Thread.sleep(100);
+
+        // then
+        var liveStationsCount = aggregatorService.countLiveStations();
+        assertThat(liveStationsCount).isEqualTo(2);
+    }
+
+    @Test
+    void shouldCountZeroLiveStationsWhenAllConditionsAreEmpty() throws InterruptedException {
+        // given
+        var spot1 = createTestSpot(123, "Test Spot 1");
+        var spot2 = createTestSpot(124, "Test Spot 2");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
+
+        var emptyConditions = new CurrentConditions("2025-01-01T12:00:00", 0, 0, "", 0);
+
+        when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(emptyConditions));
+        when(currentConditionsService.fetchCurrentConditions(124)).thenReturn(Mono.just(emptyConditions));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        // when
+        aggregatorService.fetchCurrentConditionsEveryOneMinute();
+        Thread.sleep(100);
+
+        // then
+        var liveStationsCount = aggregatorService.countLiveStations();
+        assertThat(liveStationsCount).isEqualTo(0);
+    }
+
+    @Test
+    void shouldCountZeroLiveStationsWhenNoConditionsExist() {
+        // given
+        var spot1 = createTestSpot(123, "Test Spot 1");
+        var spot2 = createTestSpot(124, "Test Spot 2");
+
+        ReflectionTestUtils.setField(
+                aggregatorService,
+                "spots",
+                new java.util.concurrent.atomic.AtomicReference<>(List.of(spot1, spot2))
+        );
+
+        // when
+        var liveStationsCount = aggregatorService.countLiveStations();
+
+        // then
+        assertThat(liveStationsCount).isEqualTo(0);
+    }
+
     private Spot createTestSpot(int wgId, String name) {
         var forecast = new ArrayList<Forecast>();
         var hourlyForecast = new ArrayList<Forecast>();

@@ -36,6 +36,7 @@ public class StatusController {
         Uptime uptime = getUptime();
         int spotsCount = aggregatorService.countSpots();
         int countriesCount = aggregatorService.countCountries();
+        int liveStations = aggregatorService.countLiveStations();
         return Mono.just(Map.of(
                 "status", "UP",
                 "version", version,
@@ -43,7 +44,8 @@ public class StatusController {
                 "uptimeSeconds", uptime.seconds(),
                 "startTime", startTime.toString(),
                 "spotsCount", spotsCount,
-                "countriesCount", countriesCount
+                "countriesCount", countriesCount,
+                "liveStations", liveStations
         ));
     }
 
