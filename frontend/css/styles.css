@@ -3438,6 +3438,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     background-color: #9ca3af;
 }
 
+.custom-marker.custom-marker-red .marker-dot {
+    background-color: #ef4444;
+}
+
 .map-popup {
     display: flex;
     flex-direction: column;

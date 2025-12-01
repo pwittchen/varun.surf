@@ -1094,6 +1094,48 @@ function setupForecastTabs() {
     }
 }
 
+// Initialize OSM satellite map with Leaflet
+let osmSatelliteMap = null;
+
+function initOsmSatelliteMap() {
+    const mapContainer = document.getElementById('osm-satellite-map');
+    if (!mapContainer || !currentSpot || !currentSpot.coordinates) {
+        return;
+    }
+
+    // Destroy existing map if any
+    if (osmSatelliteMap) {
+        osmSatelliteMap.remove();
+        osmSatelliteMap = null;
+    }
+
+    // Initialize Leaflet map
+    osmSatelliteMap = L.map('osm-satellite-map').setView(
+        [currentSpot.coordinates.lat, currentSpot.coordinates.lon],
+        13
+    );
+
+    // Add ESRI World Imagery tiles
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19
+    }).addTo(osmSatelliteMap);
+
+    // Create custom red marker icon (matching main map style)
+    const markerIcon = L.divIcon({
+        className: 'custom-marker-icon',
+        html: `<div class="custom-marker custom-marker-red"><div class="marker-dot"></div></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+    });
+
+    // Add marker at spot location with custom icon
+    L.marker([currentSpot.coordinates.lat, currentSpot.coordinates.lon], { icon: markerIcon })
+        .addTo(osmSatelliteMap)
+        .bindPopup(`<b>${currentSpot.name}</b>`)
+        .openPopup();
+}
+
 // Setup media (map/photo/windy) tabs in desktop spot view
 function setupSpotMediaTabs() {
     const tabButtons = Array.from(document.querySelectorAll('.spot-media-tab'));
@@ -1122,6 +1164,16 @@ function setupSpotMediaTabs() {
             mapPanel.classList.toggle('active', targetMedia === 'map');
             if (osmPanel) {
                 osmPanel.classList.toggle('active', targetMedia === 'osm');
+                // Initialize OSM satellite map when the tab is activated
+                if (targetMedia === 'osm' && !osmSatelliteMap) {
+                    // Small delay to ensure container is visible
+                    setTimeout(() => {
+                        initOsmSatelliteMap();
+                    }, 100);
+                } else if (targetMedia === 'osm' && osmSatelliteMap) {
+                    // Invalidate map size if already initialized
+                    osmSatelliteMap.invalidateSize();
+                }
             }
             windyPanel.classList.toggle('active', targetMedia === 'windy');
             if (photoPanel) {
@@ -1477,11 +1529,10 @@ function createSpotCard(spot) {
         windyMapIframe = `<iframe src="${windyUrl}" width="100%" height="360" frameborder="0"></iframe>`;
     }
 
-    // Generate OpenStreetMap iframe
+    // Generate OpenStreetMap with ESRI satellite tiles (custom Leaflet map)
     let osmMapIframe = '';
     if (hasCoordinates) {
-        const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${spot.coordinates.lon-0.02},${spot.coordinates.lat-0.02},${spot.coordinates.lon+0.02},${spot.coordinates.lat+0.02}&layer=mapnik&marker=${spot.coordinates.lat},${spot.coordinates.lon}`;
-        osmMapIframe = `<iframe src="${osmUrl}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
+        osmMapIframe = `<div id="osm-satellite-map" style="width: 100%; height: 360px; border-radius: 8px;"></div>`;
     }
 
     let embeddedMapHtml = '';
@@ -1631,7 +1682,7 @@ function createSpotCard(spot) {
                     ${spot.windguruUrl ? `<a href="${spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
-                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">CAM</a>` : ''}
+                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${t('camLinkLabel')}</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
                     <span class="external-link embed-link" onclick="openEmbedModal()">${t('embedLinkLabel')}</span>
                     <a href="/spot/${spot.wgId}/tv" target="_blank" class="external-link tv-link">${t('tvLinkLabel')}</a>
