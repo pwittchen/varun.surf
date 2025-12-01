@@ -30,6 +30,20 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> tvRouter() {
+        return RouterFunctions.route(
+                GET("/spot/{id}/tv"),
+                _ -> {
+                    Resource tvHtml = new ClassPathResource("static/tv.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(tvHtml);
+                }
+        );
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> countryRouter() {
         return RouterFunctions.route(
                 GET("/country/{countryName}"),
@@ -58,20 +72,6 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> statusRouter() {
-        return RouterFunctions.route(
-                GET("/status"),
-                _ -> {
-                    Resource statusHtml = new ClassPathResource("static/status.html");
-                    return ServerResponse
-                            .ok()
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(statusHtml);
-                }
-        );
-    }
-
-    @Bean
     public RouterFunction<ServerResponse> embedRouter() {
         return RouterFunctions.route(
                 GET("/embed"),
@@ -84,6 +84,7 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
     @Bean
     public RouterFunction<ServerResponse> mapRouter() {
         return RouterFunctions.route(
@@ -99,15 +100,15 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> tvRouter() {
+    public RouterFunction<ServerResponse> statusRouter() {
         return RouterFunctions.route(
-                GET("/spot/{id}/tv"),
+                GET("/status"),
                 _ -> {
-                    Resource tvHtml = new ClassPathResource("static/tv.html");
+                    Resource statusHtml = new ClassPathResource("static/status.html");
                     return ServerResponse
                             .ok()
                             .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(tvHtml);
+                            .bodyValue(statusHtml);
                 }
         );
     }
