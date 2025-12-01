@@ -2263,6 +2263,11 @@ body.spot-page .weather-table tbody tr:hover {
         display: inline-flex;
     }
 
+    /* Hide TV link in mobile view */
+    body.spot-page .external-link.tv-link {
+        display: none;
+    }
+
     /* Add padding to spot header in mobile */
     body.spot-page .spot-header {
         padding-left: 0;
