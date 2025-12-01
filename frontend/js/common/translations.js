@@ -142,8 +142,7 @@ export const translations = {
         tvLinkLabel: "TV",
         mapLinkLabel: "NAV",
         camLinkLabel: "CAM",
-        mapTabLabel: "Google Map",
-        osmMapTabLabel: "OSM Map",
+        osmMapTabLabel: "Map",
         photoTabLabel: "Photo",
         windyMapTabLabel: "Windy Map",
 
@@ -374,8 +373,7 @@ export const translations = {
         tvLinkLabel: "TV",
         mapLinkLabel: "NAW",
         camLinkLabel: "KAM",
-        mapTabLabel: "Mapa Google",
-        osmMapTabLabel: "Mapa OSM",
+        osmMapTabLabel: "Mapa",
         photoTabLabel: "Zdjęcie",
         windyMapTabLabel: "Mapa Wiatru",
 

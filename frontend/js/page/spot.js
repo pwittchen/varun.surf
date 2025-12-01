@@ -1136,21 +1136,28 @@ function initOsmSatelliteMap() {
         .openPopup();
 }
 
-// Setup media (map/photo/windy) tabs in desktop spot view
+// Setup media (OSM map/photo/windy) tabs in desktop spot view
 function setupSpotMediaTabs() {
     const tabButtons = Array.from(document.querySelectorAll('.spot-media-tab'));
     if (tabButtons.length === 0) {
         return;
     }
 
-    const mapPanel = document.querySelector('.spot-media-panel-map');
     const osmPanel = document.querySelector('.spot-media-panel-osm');
     const windyPanel = document.querySelector('.spot-media-panel-windy');
     const photoPanel = document.querySelector('.spot-media-panel-photo');
 
-    // At minimum we need map and windy panels
-    if (!mapPanel || !windyPanel) {
+    // At minimum we need OSM and windy panels
+    if (!osmPanel || !windyPanel) {
         return;
+    }
+
+    // Initialize OSM map on page load if it's the active panel
+    if (osmPanel.classList.contains('active') && !osmSatelliteMap) {
+        // Small delay to ensure container is visible
+        setTimeout(() => {
+            initOsmSatelliteMap();
+        }, 100);
     }
 
     tabButtons.forEach(button => {
@@ -1161,20 +1168,19 @@ function setupSpotMediaTabs() {
 
             const targetMedia = button.dataset.media;
             tabButtons.forEach(tab => tab.classList.toggle('active', tab === button));
-            mapPanel.classList.toggle('active', targetMedia === 'map');
-            if (osmPanel) {
-                osmPanel.classList.toggle('active', targetMedia === 'osm');
-                // Initialize OSM satellite map when the tab is activated
-                if (targetMedia === 'osm' && !osmSatelliteMap) {
-                    // Small delay to ensure container is visible
-                    setTimeout(() => {
-                        initOsmSatelliteMap();
-                    }, 100);
-                } else if (targetMedia === 'osm' && osmSatelliteMap) {
-                    // Invalidate map size if already initialized
-                    osmSatelliteMap.invalidateSize();
-                }
+
+            osmPanel.classList.toggle('active', targetMedia === 'osm');
+            // Initialize OSM satellite map when the tab is activated
+            if (targetMedia === 'osm' && !osmSatelliteMap) {
+                // Small delay to ensure container is visible
+                setTimeout(() => {
+                    initOsmSatelliteMap();
+                }, 100);
+            } else if (targetMedia === 'osm' && osmSatelliteMap) {
+                // Invalidate map size if already initialized
+                osmSatelliteMap.invalidateSize();
             }
+
             windyPanel.classList.toggle('active', targetMedia === 'windy');
             if (photoPanel) {
                 photoPanel.classList.toggle('active', targetMedia === 'photo');
@@ -1515,12 +1521,7 @@ function createSpotCard(spot) {
 
     const hasCoordinates = isDesktopView && spot.coordinates && spot.coordinates.lat && spot.coordinates.lon;
 
-    // Generate embedded map iframe from coordinates
-    let embeddedMapIframe = '';
-    if (hasCoordinates) {
-        const mapUrl = `https://maps.google.com/maps?q=${spot.coordinates.lat},${spot.coordinates.lon}&z=13&t=k&output=embed`;
-        embeddedMapIframe = `<iframe src="${mapUrl}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-    }
+    // Google Maps removed - using OSM satellite map instead
 
     // Generate Windy.com iframe
     let windyMapIframe = '';
@@ -1540,11 +1541,7 @@ function createSpotCard(spot) {
         embeddedMapHtml = `
                 <div class="spot-media-switcher">
                     <div class="spot-media-tabs">
-                        <button type="button" class="spot-media-tab active" data-media="map">
-                            ${MAP_TAB_ICON}
-                            <span>${t('mapTabLabel')}</span>
-                        </button>
-                        <button type="button" class="spot-media-tab" data-media="osm">
+                        <button type="button" class="spot-media-tab active" data-media="osm">
                             ${OSM_MAP_TAB_ICON}
                             <span>${t('osmMapTabLabel')}</span>
                         </button>
@@ -1558,12 +1555,7 @@ function createSpotCard(spot) {
                         </button>
                     </div>
                     <div class="spot-media-panels">
-                        <div class="spot-media-panel spot-media-panel-map active">
-                            <div class="spot-embedded-map">
-                                <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
-                            </div>
-                        </div>
-                        <div class="spot-media-panel spot-media-panel-osm">
+                        <div class="spot-media-panel spot-media-panel-osm active">
                             <div class="spot-embedded-map">
                                 <div class="spot-embedded-map-frame">${osmMapIframe}</div>
                             </div>
@@ -1585,11 +1577,7 @@ function createSpotCard(spot) {
         embeddedMapHtml = `
                 <div class="spot-media-switcher">
                     <div class="spot-media-tabs">
-                        <button type="button" class="spot-media-tab active" data-media="map">
-                            ${MAP_TAB_ICON}
-                            <span>${t('mapTabLabel')}</span>
-                        </button>
-                        <button type="button" class="spot-media-tab" data-media="osm">
+                        <button type="button" class="spot-media-tab active" data-media="osm">
                             ${OSM_MAP_TAB_ICON}
                             <span>${t('osmMapTabLabel')}</span>
                         </button>
@@ -1599,12 +1587,7 @@ function createSpotCard(spot) {
                         </button>
                     </div>
                     <div class="spot-media-panels">
-                        <div class="spot-media-panel spot-media-panel-map active">
-                            <div class="spot-embedded-map">
-                                <div class="spot-embedded-map-frame">${embeddedMapIframe}</div>
-                            </div>
-                        </div>
-                        <div class="spot-media-panel spot-media-panel-osm">
+                        <div class="spot-media-panel spot-media-panel-osm active">
                             <div class="spot-embedded-map">
                                 <div class="spot-embedded-map-frame">${osmMapIframe}</div>
                             </div>
