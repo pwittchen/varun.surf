@@ -2385,6 +2385,12 @@ function showMapView() {
 
     // Update URL to /map
     window.history.pushState({ map: true }, '', '/map');
+
+    // Scroll to top when opening map view
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
 function hideMapView(options = {}) {
