@@ -45,3 +45,6 @@ application.log
 
 ### Node.js ###
 node_modules/
+
+### automatically generated frontend static files ###
+src/main/resources/static/*
