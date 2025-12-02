@@ -5,7 +5,7 @@
 [![DOCKER](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml)
 [![RELEASE](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml)
 
-modern weather forecast dashboard for kitesurfers on the web
+kite spots database and weather forecast for kitesurfers on the web
 
 see it online at: https://varun.surf
 
