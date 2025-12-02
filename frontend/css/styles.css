@@ -3510,3 +3510,76 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .leaflet-popup-close-button {
     padding: 10px 12px 0 0;
 }
+
+/* Leaflet layer switcher control */
+.leaflet-control-layer-switcher {
+    background: #fff;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    position: relative;
+}
+
+.layer-switcher-button {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.layer-switcher-button:hover {
+    background: #f4f4f4;
+}
+
+.layer-switcher-button.open {
+    background: #f4f4f4;
+}
+
+.layer-switcher-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.layer-switcher-dropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    min-width: 120px;
+}
+
+.layer-switcher-option {
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #333;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.layer-switcher-option:last-child {
+    border-bottom: none;
+}
+
+.layer-switcher-option:hover {
+    background: #f4f4f4;
+}
+
+.layer-switcher-option.active {
+    background: #0078d7;
+    color: #fff;
+}

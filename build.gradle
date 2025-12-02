@@ -109,6 +109,10 @@ tasks.named('bootRun') {
     dependsOn 'buildFrontend'
 }
 
+tasks.register('run') {
+    dependsOn 'bootRun'
+}
+
 tasks.named('bootJar') {
     dependsOn 'buildFrontend'
 }

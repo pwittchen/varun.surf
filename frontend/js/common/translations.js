@@ -145,6 +145,8 @@ export const translations = {
         osmMapTabLabel: "Map",
         photoTabLabel: "Photo",
         windyMapTabLabel: "Windy Map",
+        mapLayerOsm: "Map",
+        mapLayerSatellite: "Satellite",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -376,6 +378,8 @@ export const translations = {
         osmMapTabLabel: "Mapa",
         photoTabLabel: "Zdjęcie",
         windyMapTabLabel: "Mapa Wiatru",
+        mapLayerOsm: "Mapa",
+        mapLayerSatellite: "Satelita",
 
         // Spot info labels
         overviewLabel: "Przegląd",
