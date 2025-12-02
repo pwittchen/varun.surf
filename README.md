@@ -138,7 +138,7 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
 - browsing forecasts for multiple kite spots
-- browsing all kite spots on the map
+- browsing all kite spots on the map (Open Street Maps)
 - watching live wind conditions in the selected spots
 - refreshing live wind every one minute on the backend (requires page refresh on the frontend)
 - refreshing forecasts every 3 hours in the backend (requires page refresh on the frontend)
@@ -148,13 +148,14 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - possibility to add spots to favorites
 - organizing spots in the custom order with a drag and drop mechanism
 - dark/light theme
-- possibility to switch between a 2-column view and a 3-column view
+- possibility to switch between a list view and a grid view
 - mobile-friendly UI
 - kite and board size calculator
 - AI forecast analysis
 - single spot view with hourly forecast (in horizontal and vertical view)
 - additional TV-friendly view for the single spot
-- map of the spot (provided by Google Maps, OSM and Windy)
+- map of the spot (provided by Open Street Maps and Windy)
+- link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)
 - possibility to switch a weather forecast model for the spot (currently available models: GFS, IFS)
 - embeddable HTML widget with current conditions and forecast for the spot

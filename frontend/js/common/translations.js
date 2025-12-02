@@ -22,12 +22,14 @@ export const translations = {
         // Weather table headers
         dateHeader: "Date",
         timeLabel: "Time",
+        spotHeader: "Spot",
         windHeader: "Wind",
         gustsHeader: "Gusts",
         directionHeader: "Direction",
         tempHeader: "Temp",
         rainHeader: "Rain",
         waveHeader: "Wave",
+        countryHeader: "Country",
         nowLabel: "NOW",
         forecastEstimateLabel: "Forecast",
 
@@ -257,12 +259,14 @@ export const translations = {
         // Weather table headers
         dateHeader: "Data",
         timeLabel: "Czas",
+        spotHeader: "Spot",
         windHeader: "Wiatr",
         gustsHeader: "Szkwały",
         directionHeader: "Kierunek",
         tempHeader: "Temp",
         rainHeader: "Deszcz",
         waveHeader: "Fala",
+        countryHeader: "Kraj",
         nowLabel: "TERAZ",
         forecastEstimateLabel: "Prognoza",
 

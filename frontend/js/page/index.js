@@ -180,16 +180,36 @@ function toggleFavorite(spotName) {
     // Update all instances of this spot's favorite icon
     const allFavoriteIcons = document.querySelectorAll('.favorite-icon');
     allFavoriteIcons.forEach(icon => {
+        // Check if it's in a card (grid view)
         const card = icon.closest('.spot-card');
         if (card) {
             const spotNameElement = card.querySelector('.spot-name');
             if (spotNameElement && spotNameElement.textContent === spotName) {
                 if (index > -1) {
                     icon.classList.remove('favorited');
-                    icon.title = 'Add to favorites';
+                    icon.title = t('addToFavorites');
                 } else {
                     icon.classList.add('favorited');
-                    icon.title = 'Remove from favorites';
+                    icon.title = t('removeFromFavorites');
+                }
+
+                // Add animation
+                icon.classList.add('animate');
+                setTimeout(() => icon.classList.remove('animate'), 400);
+            }
+        }
+
+        // Check if it's in a list row (list view)
+        const row = icon.closest('.list-row');
+        if (row) {
+            const spotNameElement = row.querySelector('.list-spot-name');
+            if (spotNameElement && spotNameElement.textContent === spotName) {
+                if (index > -1) {
+                    icon.classList.remove('favorited');
+                    icon.title = t('addToFavorites');
+                } else {
+                    icon.classList.add('favorited');
+                    icon.title = t('removeFromFavorites');
                 }
 
                 // Add animation
@@ -234,10 +254,24 @@ async function renderFavorites() {
         const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
         spotsGrid.innerHTML = '';
-        favoriteSpots.forEach(spot => {
-            spotsGrid.appendChild(createSpotCard(spot));
-        });
-        loadCardOrder();
+
+        // Render based on current view mode
+        if (currentViewMode === 'list') {
+            // Apply sorting if a column is selected
+            const sortedSpots = listSortColumn ? sortSpots(favoriteSpots, listSortColumn, listSortDirection) : favoriteSpots;
+
+            // Render list view
+            spotsGrid.appendChild(createListHeader());
+            sortedSpots.forEach(spot => {
+                spotsGrid.appendChild(createListRow(spot));
+            });
+        } else {
+            // Render grid view
+            favoriteSpots.forEach(spot => {
+                spotsGrid.appendChild(createSpotCard(spot));
+            });
+            loadCardOrder();
+        }
     } catch (error) {
         console.error('Failed to load favorites:', error.message);
         showErrorMessage(error);
@@ -1431,6 +1465,231 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     }
 }
 
+// ============================================================================
+// LIST VIEW FUNCTIONS
+// ============================================================================
+
+function createListHeader() {
+    const header = document.createElement('div');
+    header.className = 'spots-list-header';
+
+    const columns = [
+        { key: '', label: '', sortable: false },
+        { key: 'spot', label: t('spotHeader'), sortable: true },
+        { key: 'wind', label: t('windHeader'), sortable: true },
+        { key: 'gust', label: t('gustsHeader'), sortable: true },
+        { key: 'direction', label: t('directionHeader'), sortable: true },
+        { key: 'temp', label: t('tempHeader'), sortable: true },
+        { key: 'rain', label: t('rainHeader'), sortable: true },
+        { key: 'country', label: t('countryHeader'), sortable: true },
+        { key: '', label: '', sortable: false }
+    ];
+
+    columns.forEach(col => {
+        const cell = document.createElement('div');
+        cell.className = 'header-cell';
+        if (col.sortable) {
+            cell.classList.add('sortable');
+            cell.dataset.column = col.key;
+
+            if (listSortColumn === col.key) {
+                cell.classList.add(listSortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc');
+            }
+
+            cell.addEventListener('click', () => {
+                handleListSort(col.key);
+            });
+        }
+        cell.textContent = col.label;
+        header.appendChild(cell);
+    });
+
+    return header;
+}
+
+function createListRow(spot) {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.dataset.country = t(spot.country.replace(/\s+/g, ''));
+
+    const spotConditions = getSpotConditions(spot);
+    const isCurrent = spotConditions && spotConditions.isCurrent;
+
+    if (isCurrent) {
+        row.classList.add('current-conditions');
+    }
+
+    // Indicator column
+    const indicatorCell = document.createElement('div');
+    indicatorCell.className = 'list-indicator-cell';
+    if (isCurrent) {
+        const indicator = document.createElement('div');
+        indicator.className = 'list-indicator';
+        indicatorCell.appendChild(indicator);
+    }
+    row.appendChild(indicatorCell);
+
+    // Spot name column
+    const nameCell = document.createElement('div');
+    nameCell.className = 'list-spot-name';
+    nameCell.textContent = spot.name || 'Unknown Spot';
+    nameCell.onclick = () => window.location.href = `/spot/${spot.wgId}`;
+    row.appendChild(nameCell);
+
+    if (spotConditions) {
+        // Wind column
+        const windCell = document.createElement('div');
+        windCell.className = `list-wind ${getWindClass(spotConditions.wind)}`;
+        windCell.textContent = `${spotConditions.wind} kts`;
+        row.appendChild(windCell);
+
+        // Gust column
+        const gustCell = document.createElement('div');
+        gustCell.className = `list-gust ${getWindClass(spotConditions.gusts)}`;
+        gustCell.textContent = `${spotConditions.gusts} kts`;
+        row.appendChild(gustCell);
+
+        // Direction column
+        const directionCell = document.createElement('div');
+        directionCell.className = 'list-direction';
+        const arrow = getWindArrow(spotConditions.direction);
+        directionCell.innerHTML = `<span class="wind-arrow">${arrow}</span> ${spotConditions.direction || '-'}`;
+        row.appendChild(directionCell);
+
+        // Temperature column
+        const tempCell = document.createElement('div');
+        const tempClass = Number.isFinite(spotConditions.temp)
+            ? (spotConditions.temp >= 18 ? 'temp-positive' : 'temp-negative')
+            : '';
+        tempCell.className = `list-temp ${tempClass}`;
+        tempCell.textContent = Number.isFinite(spotConditions.temp) ? `${spotConditions.temp}°C` : '-';
+        row.appendChild(tempCell);
+
+        // Rain column
+        const rainCell = document.createElement('div');
+        rainCell.className = 'list-rain';
+        rainCell.textContent = spotConditions.precipitation !== null && !isCurrent
+            ? `${spotConditions.precipitation}%`
+            : '-';
+        row.appendChild(rainCell);
+    } else {
+        // No conditions available
+        for (let i = 0; i < 5; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.textContent = '-';
+            row.appendChild(emptyCell);
+        }
+    }
+
+    // Country column
+    const countryCell = document.createElement('div');
+    countryCell.className = 'list-country';
+    countryCell.textContent = t(spot.country.replace(/\s+/g, '')) || 'Unknown';
+    row.appendChild(countryCell);
+
+    // Favorite column
+    const favoriteCell = document.createElement('div');
+    favoriteCell.className = 'list-favorite';
+    const isFavorited = isFavorite(spot.name);
+    const favoriteClass = isFavorited ? 'favorited' : '';
+
+    const favoriteIcon = document.createElement('div');
+    favoriteIcon.className = `favorite-icon ${favoriteClass}`;
+    favoriteIcon.title = isFavorited ? t('removeFromFavorites') : t('addToFavorites');
+    favoriteIcon.innerHTML = `
+        <svg class="favorite-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
+        </svg>
+    `;
+
+    favoriteIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFavorite(spot.name);
+    });
+
+    favoriteCell.appendChild(favoriteIcon);
+    row.appendChild(favoriteCell);
+
+    return row;
+}
+
+function handleListSort(column) {
+    if (listSortColumn === column) {
+        // Toggle direction if same column
+        listSortDirection = listSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        // New column, default to ascending
+        listSortColumn = column;
+        listSortDirection = 'asc';
+    }
+
+    // Re-render with sorted data
+    renderSpots(currentFilter, currentSearchQuery, true);
+}
+
+function sortSpots(spots, sortColumn, sortDirection) {
+    if (!sortColumn) return spots;
+
+    const sorted = [...spots].sort((a, b) => {
+        let aValue, bValue;
+
+        switch (sortColumn) {
+            case 'spot':
+                aValue = a.name || '';
+                bValue = b.name || '';
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+
+            case 'wind':
+            case 'gust':
+            case 'temp':
+            case 'rain': {
+                const aConditions = getSpotConditions(a);
+                const bConditions = getSpotConditions(b);
+
+                if (sortColumn === 'wind') {
+                    aValue = aConditions ? aConditions.wind : -Infinity;
+                    bValue = bConditions ? bConditions.wind : -Infinity;
+                } else if (sortColumn === 'gust') {
+                    aValue = aConditions ? aConditions.gusts : -Infinity;
+                    bValue = bConditions ? bConditions.gusts : -Infinity;
+                } else if (sortColumn === 'temp') {
+                    aValue = aConditions && Number.isFinite(aConditions.temp) ? aConditions.temp : -Infinity;
+                    bValue = bConditions && Number.isFinite(bConditions.temp) ? bConditions.temp : -Infinity;
+                } else if (sortColumn === 'rain') {
+                    aValue = aConditions && aConditions.precipitation !== null ? aConditions.precipitation : -Infinity;
+                    bValue = bConditions && bConditions.precipitation !== null ? bConditions.precipitation : -Infinity;
+                }
+
+                return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            }
+
+            case 'direction': {
+                const aConditions = getSpotConditions(a);
+                const bConditions = getSpotConditions(b);
+                aValue = aConditions ? aConditions.direction || '' : '';
+                bValue = bConditions ? bConditions.direction || '' : '';
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+            }
+
+            case 'country':
+                aValue = t(a.country.replace(/\s+/g, '')) || '';
+                bValue = t(b.country.replace(/\s+/g, '')) || '';
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+
+            default:
+                return 0;
+        }
+    });
+
+    return sorted;
+}
+
 function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
@@ -1465,10 +1724,23 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                 renderSpots(filter, searchQuery, false, true);
             }, 5000);
         } else {
-            filteredSpots.forEach(spot => {
-                spotsGrid.appendChild(createSpotCard(spot));
-            });
-            loadCardOrder();
+            // Check current view mode and render accordingly
+            if (currentViewMode === 'list') {
+                // Apply sorting if a column is selected
+                const sortedSpots = listSortColumn ? sortSpots(filteredSpots, listSortColumn, listSortDirection) : filteredSpots;
+
+                // Render list view
+                spotsGrid.appendChild(createListHeader());
+                sortedSpots.forEach(spot => {
+                    spotsGrid.appendChild(createListRow(spot));
+                });
+            } else {
+                // Render grid view
+                filteredSpots.forEach(spot => {
+                    spotsGrid.appendChild(createSpotCard(spot));
+                });
+                loadCardOrder();
+            }
         }
     }
 }
@@ -2039,6 +2311,16 @@ function setupKiteSizeCalculator() {
 // COLUMN LAYOUT TOGGLE (2 vs 3 columns)
 // ============================================================================
 
+// Global variables for list view
+let currentViewMode = 'grid'; // 'grid' or 'list'
+let desktopViewMode = 'grid'; // Store desktop preference separately
+let listSortColumn = null;
+let listSortDirection = 'asc';
+
+function isMobileView() {
+    return window.innerWidth <= 768;
+}
+
 function setupColumnToggle() {
     const columnToggle = document.getElementById('columnToggle');
     if (!columnToggle) {
@@ -2046,56 +2328,84 @@ function setupColumnToggle() {
     }
 
     const spotsGrid = document.getElementById('spotsGrid');
-    const icon3Columns = document.getElementById('icon3Columns');
-    const icon2Columns = document.getElementById('icon2Columns');
+    const iconGrid = document.getElementById('iconGrid');
+    const iconList = document.getElementById('iconList');
 
-    // Detect if user is on mobile device
-    const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Load saved desktop preference or default to grid
+    const savedDesktopView = localStorage.getItem('desktopViewMode') || 'grid';
+    desktopViewMode = savedDesktopView;
 
-    const storedPreference = localStorage.getItem('threeColumns');
-    let isThreeColumns = storedPreference === null ? true : storedPreference === 'true';
-
-    // Force 2-column layout on mobile devices
-    if (isMobile && isThreeColumns) {
-        isThreeColumns = false;
-        localStorage.setItem('threeColumns', 'false');
+    // Set initial view based on viewport width
+    if (isMobileView()) {
+        currentViewMode = 'list'; // Always list on mobile
+    } else {
+        currentViewMode = desktopViewMode; // Use saved preference on desktop
     }
 
-    function updateIcons(isThreeColumns) {
-        if (isThreeColumns) {
-            // Show 3-column icon, hide 2-column icon
-            icon3Columns.style.display = 'block';
-            icon2Columns.style.display = 'none';
+    function updateView() {
+        if (currentViewMode === 'list') {
+            spotsGrid.classList.remove('spots-grid', 'three-columns');
+            spotsGrid.classList.add('spots-list');
+            iconGrid.style.display = 'none';
+            iconList.style.display = 'block';
         } else {
-            // Show 2-column icon, hide 3-column icon
-            icon3Columns.style.display = 'none';
-            icon2Columns.style.display = 'block';
+            spotsGrid.classList.remove('spots-list');
+            spotsGrid.classList.add('spots-grid', 'three-columns');
+            iconGrid.style.display = 'block';
+            iconList.style.display = 'none';
         }
     }
 
-    if (isThreeColumns) {
-        spotsGrid.classList.add('three-columns');
-    } else {
-        spotsGrid.classList.remove('three-columns');
-    }
-
-    updateIcons(isThreeColumns);
-
-    if (storedPreference === null) {
-        localStorage.setItem('threeColumns', String(isThreeColumns));
-    }
+    updateView();
 
     columnToggle.addEventListener('click', () => {
         if (isMapView) {
             hideMapView({ skipRender: true });
         }
 
-        spotsGrid.classList.toggle('three-columns');
+        // Toggle view mode
+        currentViewMode = currentViewMode === 'grid' ? 'list' : 'grid';
 
-        // Save preference
-        const isThreeColumns = spotsGrid.classList.contains('three-columns');
-        localStorage.setItem('threeColumns', String(isThreeColumns));
-        updateIcons(isThreeColumns);
+        // Only save to desktop preference if not in mobile view
+        if (!isMobileView()) {
+            desktopViewMode = currentViewMode;
+            localStorage.setItem('desktopViewMode', desktopViewMode);
+        }
+
+        updateView();
+
+        // Re-render with current filter and search
+        renderSpots(currentFilter, currentSearchQuery, true);
+    });
+
+    // Handle viewport resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const wasMobile = currentViewMode === 'list' && isMobileView();
+
+            if (isMobileView()) {
+                // Switch to list view on mobile
+                if (currentViewMode !== 'list') {
+                    currentViewMode = 'list';
+                    updateView();
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
+            } else {
+                // Switch back to desktop preference when expanding
+                if (currentViewMode !== desktopViewMode && !wasMobile) {
+                    currentViewMode = desktopViewMode;
+                    updateView();
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                } else if (wasMobile) {
+                    // Was in mobile mode, now expanding to desktop - use desktop preference
+                    currentViewMode = desktopViewMode;
+                    updateView();
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
+            }
+        }, 250); // Debounce resize events
     });
 }
 
