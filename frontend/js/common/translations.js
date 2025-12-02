@@ -40,9 +40,10 @@ export const translations = {
         precipitationLabel: "Precipitation",
 
         // Footer
-        footerDisclaimer: "weather forecast and real-time wind conditions dashboard for kitesurfers",
+        footerDisclaimer: "kite spots database and weather forecast for kitesurfers",
+        footerMadeInLabel: "made in 🇵🇱 by ",
 
-        // Days of week (short forms as they appear in forecast)
+        // Days of the week (short forms as they appear in the forecast)
         dayToday: "Today",
         dayTomorrow: "Tomorrow",
         dayDay3: "Day 3",
@@ -274,9 +275,10 @@ export const translations = {
         precipitationLabel: "Opady",
 
         // Footer
-        footerDisclaimer: "prognoza pogody i warunki wiatrowe w czasie rzeczywistym dla kitesurferów",
+        footerDisclaimer: "baza kite spotów i prognoza pogody dla kitesurferów",
+        footerMadeInLabel: "stworzył w 🇵🇱 ",
 
-        // Days of week (short forms as they appear in forecast)
+        // Days of the week (short forms as they appear in the forecast)
         dayToday: "Dzisiaj",
         dayTomorrow: "Jutro",
         dayDay3: "Dzień 3",

@@ -1,3 +1,5 @@
+import { t } from '../common/translations.js';
+
 // ============================================================================
 // THEME INITIALIZATION
 // ============================================================================
@@ -5,6 +7,33 @@
 // Set the initial theme from localStorage
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
+
+// ============================================================================
+// FOOTER HELPERS
+// ============================================================================
+
+function updateFooterDisclaimer() {
+    const yearElements = document.querySelectorAll('.footer-year');
+    if (yearElements.length) {
+        const currentYear = new Date().getFullYear();
+        yearElements.forEach((el) => {
+            el.textContent = currentYear + " "
+        });
+    }
+
+    const footerDisclaimer = document.querySelector('.footer-disclaimer');
+    if (footerDisclaimer) {
+        footerDisclaimer.textContent = t('footerDisclaimer');
+    }
+
+    const footerMadeInElements = document.querySelectorAll('.footer-made-in');
+    if (footerMadeInElements.length) {
+        const label = t('footerMadeInLabel');
+        footerMadeInElements.forEach((element) => {
+            element.textContent = label;
+        });
+    }
+}
 
 // ============================================================================
 // STATUS API FUNCTIONS
@@ -110,4 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(refreshStatus, 30000);
     // Manual refresh button
     document.getElementById('refresh-status').addEventListener('click', refreshStatus);
+
+    updateFooterDisclaimer();
 });

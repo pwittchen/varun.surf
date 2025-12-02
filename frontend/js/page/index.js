@@ -2,6 +2,21 @@ import { getCountryFlag } from '../common/country-flags.js';
 import { t } from '../common/translations.js';
 
 // ============================================================================
+// FOOTER HELPERS
+// ============================================================================
+
+function updateFooterYear() {
+    const yearElements = document.querySelectorAll('.footer-year');
+    if (!yearElements.length) {
+        return;
+    }
+    const currentYear = new Date().getFullYear();
+    yearElements.forEach((el) => {
+        el.textContent = currentYear + " "
+    });
+}
+
+// ============================================================================
 // GLOBAL STATE MANAGEMENT
 // ============================================================================
 
@@ -412,6 +427,14 @@ function initLanguage() {
         const footerDisclaimer = document.querySelector('.footer-disclaimer');
         if (footerDisclaimer) {
             footerDisclaimer.textContent = t('footerDisclaimer');
+        }
+
+        const footerMadeInElements = document.querySelectorAll('.footer-made-in');
+        if (footerMadeInElements.length) {
+            const label = t('footerMadeInLabel');
+            footerMadeInElements.forEach((element) => {
+                element.textContent = label;
+            });
         }
 
         // Update "All" in the dropdown if selected
@@ -2589,4 +2612,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInfoToggle();
     renderMainSponsors();
     handleStarredURL();
+    updateFooterYear();
 });
