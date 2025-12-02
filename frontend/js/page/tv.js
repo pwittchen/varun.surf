@@ -169,6 +169,7 @@ function displaySpot(spot) {
     // Update header
     const spotName = document.getElementById('tvSpotName');
     const spotCountry = document.getElementById('tvSpotCountry');
+    const providerText = document.getElementById('tvProviderText');
 
     if (spotName) {
         spotName.textContent = spot.name;
@@ -177,6 +178,9 @@ function displaySpot(spot) {
         const countryFlag = getCountryFlag(spot.country);
         const countryName = t(spot.country) || spot.country;
         spotCountry.textContent = `${countryFlag} ${countryName}`;
+    }
+    if (providerText) {
+        providerText.textContent = t('tvProviderLabel');
     }
 
     // Update title

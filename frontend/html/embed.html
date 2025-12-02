@@ -384,7 +384,9 @@
                     missingSpotId: 'Missing spotId parameter',
                     spotNotFound: 'Spot not found',
                     failedToLoad: 'Failed to load spot data',
-                    dataProvidedBy: 'Data provided by'
+                    dataProvidedBy: 'Data provided by',
+                    liveDataLabel: 'Live data',
+                    estimatedFromForecastLabel: 'Estimated from forecast'
                 },
                 pl: {
                     loadingSpotData: 'Ładowanie danych spotu...',
@@ -402,7 +404,9 @@
                     missingSpotId: 'Brak parametru spotId',
                     spotNotFound: 'Nie znaleziono spotu',
                     failedToLoad: 'Nie udało się załadować danych spotu',
-                    dataProvidedBy: 'Dane dostarcza'
+                    dataProvidedBy: 'Dane dostarcza',
+                    liveDataLabel: 'Dane na żywo',
+                    estimatedFromForecastLabel: 'Szacowane z prognozy'
                 }
             };
 
@@ -519,9 +523,8 @@
                 else if (avgWind > 25) windClass = 'extreme';
 
                 const arrow = getWindArrow(data.direction);
-                const dataSource = isRealTime
-                    ? '<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">Live data</div>'
-                    : '<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">Estimated from forecast</div>';
+                const dataSourceLabel = isRealTime ? t('liveDataLabel') : t('estimatedFromForecastLabel');
+                const dataSource = `<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">${dataSourceLabel}</div>`;
 
             container.innerHTML = `
                     <div class="varun-current-conditions">
