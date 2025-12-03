@@ -1751,23 +1751,26 @@ body {
 }
 
 .list-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
     background: var(--success-color);
-    animation: pulse-indicator 2s ease-in-out infinite;
+    border-radius: 50%;
+    position: relative;
+    animation: pulse-glow 2s ease-in-out infinite;
     margin: 0 auto;
 }
 
-@keyframes pulse-indicator {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.6;
-        transform: scale(1.1);
-    }
+.list-indicator::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--success-color);
+    border-radius: 50%;
+    opacity: .4;
+    animation: pulse-ring 2s ease-in-out infinite;
 }
 
 .list-spot-name {
