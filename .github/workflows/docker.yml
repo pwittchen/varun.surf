@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+    paths-ignore:
+      - '**.md'
 
 permissions:
   contents: read
