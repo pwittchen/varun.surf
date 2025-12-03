@@ -2321,6 +2321,10 @@ function isMobileView() {
     return window.innerWidth <= 768;
 }
 
+function isDrawerView() {
+    return window.innerWidth <= 1430;
+}
+
 function setupColumnToggle() {
     const columnToggle = document.getElementById('columnToggle');
     if (!columnToggle) {
@@ -2336,10 +2340,10 @@ function setupColumnToggle() {
     desktopViewMode = savedDesktopView;
 
     // Set initial view based on viewport width
-    if (isMobileView()) {
-        currentViewMode = 'list'; // Always list on mobile
+    if (isDrawerView()) {
+        currentViewMode = 'list'; // Always list when drawer menu is active
     } else {
-        currentViewMode = desktopViewMode; // Use saved preference on desktop
+        currentViewMode = desktopViewMode; // Use saved preference on full desktop
     }
 
     function updateView() {
@@ -2366,8 +2370,8 @@ function setupColumnToggle() {
         // Toggle view mode
         currentViewMode = currentViewMode === 'grid' ? 'list' : 'grid';
 
-        // Only save to desktop preference if not in mobile view
-        if (!isMobileView()) {
+        // Only save to desktop preference if not in drawer/mobile view
+        if (!isDrawerView()) {
             desktopViewMode = currentViewMode;
             localStorage.setItem('desktopViewMode', desktopViewMode);
         }
@@ -2380,30 +2384,43 @@ function setupColumnToggle() {
 
     // Handle viewport resize
     let resizeTimer;
+    let wasDrawerView = isDrawerView();
+
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
+            const isNowDrawerView = isDrawerView();
             const wasMobile = currentViewMode === 'list' && isMobileView();
 
-            if (isMobileView()) {
-                // Switch to list view on mobile
+            // Drawer menu appears at <= 1430px, same as in CSS
+            if (isNowDrawerView && !wasDrawerView) {
+                // Just entered drawer view - switch to list view
+                if (currentViewMode === 'grid') {
+                    currentViewMode = 'list';
+                    updateView();
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
+                wasDrawerView = true;
+            } else if (!isNowDrawerView && wasDrawerView) {
+                // Just exited drawer view - restore original desktop view
+                if (currentViewMode !== desktopViewMode) {
+                    currentViewMode = desktopViewMode;
+                    updateView();
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
+                wasDrawerView = false;
+            } else if (isMobileView()) {
+                // Mobile view (<=768px) - always use list view
                 if (currentViewMode !== 'list') {
                     currentViewMode = 'list';
                     updateView();
                     renderSpots(currentFilter, currentSearchQuery, true);
                 }
-            } else {
-                // Switch back to desktop preference when expanding
-                if (currentViewMode !== desktopViewMode && !wasMobile) {
-                    currentViewMode = desktopViewMode;
-                    updateView();
-                    renderSpots(currentFilter, currentSearchQuery, true);
-                } else if (wasMobile) {
-                    // Was in mobile mode, now expanding to desktop - use desktop preference
-                    currentViewMode = desktopViewMode;
-                    updateView();
-                    renderSpots(currentFilter, currentSearchQuery, true);
-                }
+            } else if (!isMobileView() && wasMobile) {
+                // Was in mobile mode, now expanding - use desktop preference
+                currentViewMode = desktopViewMode;
+                updateView();
+                renderSpots(currentFilter, currentSearchQuery, true);
             }
         }, 250); // Debounce resize events
     });
