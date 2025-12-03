@@ -321,26 +321,24 @@ The AI forecast analysis is disabled by default because:
 
 ## Adding New Kite Spots
 
-When the user requests to add a new kite spot, use the `@new-kite-spot` reference which points to `prompts/new-kite-spot.md`. This file contains:
-- Complete JSON schema for spots
-- Field-by-field guidelines
-- Research tips for finding Windguru IDs and accurate data
-- Polish translation requirements
-- Validation checklist
+**Automated Method (Recommended)**:
+Use the specialized `kite-spot-creator` agent available in `.claude/agents/kite-spot-creator.md`. This agent automates the entire process of researching, validating, and generating properly formatted spot entries with both English and Polish translations.
 
-**Usage Example**:
-```
-User: @new-kite-spot Lago Di Garda
-```
+To trigger the agent, users can simply request:
+- "Add [location name] as a new kite spot"
+- "I want to add [spot name] to the spots list"
 
-**Process**:
-1. Read `prompts/new-kite-spot.md` for the complete schema and requirements
-2. Research the spot (Windguru URL, coordinates, conditions)
-3. Generate valid JSON following the exact schema
-4. Validate all URLs are real and accessible
-5. Include both English (`spotInfo`) and Polish (`spotInfoPL`) translations
-6. Add the new spot to `src/main/resources/spots.json`
-7. Test the application to ensure it loads correctly
+The agent handles all research, validation, and JSON generation automatically.
+
+**Manual Method**:
+When adding a new kite spot manually, follow this process:
+
+1. Research the spot (Windguru URL, coordinates, conditions)
+2. Generate valid JSON following the schema from existing spots in `src/main/resources/spots.json`
+3. Validate all URLs are real and accessible
+4. Include both English (`spotInfo`) and Polish (`spotInfoPL`) translations
+5. Add the new spot to `src/main/resources/spots.json`
+6. Test the application to ensure it loads correctly
 
 **Important**:
 - All fields must be filled (use "" for optional URLs if unavailable)
@@ -353,7 +351,6 @@ User: @new-kite-spot Lago Di Garda
 
 - **README.md**: User-facing documentation, build instructions, deployment
 - **ARCH.md**: Detailed ASCII architecture diagrams and system flow
-- **prompts/new-kite-spot.md**: Template and guidelines for adding new kite spots
 
 ## Contact & Contributing
 

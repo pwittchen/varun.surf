@@ -656,44 +656,38 @@ Use `MockWebServer` from OkHttp for mocking external API calls.
 
 ## Adding New Kite Spots
 
-When the user requests to add a new kite spot, use the `@new-kite-spot` reference which points to `prompts/new-kite-spot.md`. This provides a complete workflow for generating accurate spot data.
+**Automated Method (Recommended)**:
+Use the specialized `kite-spot-creator` agent available in `.claude/agents/kite-spot-creator.md`. This agent automates the entire process of researching, validating, and generating properly formatted spot entries with translations.
 
-**Reference File**: `prompts/new-kite-spot.md`
+To use the agent, simply ask Claude to add a new kite spot:
+- "Add [location name] as a new kite spot"
+- "I want to add [spot name] to the spots list"
 
-This file contains:
-- Complete JSON schema with all required fields
-- Field-by-field guidelines (type, bestWind, hazards, etc.)
-- Research tips for finding real Windguru IDs and coordinates
-- Polish translation requirements (`spotInfoPL`)
-- URL validation checklist
-- Common mistakes to avoid
+The agent will handle research, URL validation, coordinate lookup, and JSON generation automatically.
 
-**Usage Example**:
-```
-User: @new-kite-spot Lago Di Garda
-```
+**Manual Method**:
+When adding a new kite spot manually, follow this workflow:
 
 **Workflow**:
-1. **Read the template**: Load `prompts/new-kite-spot.md` to understand the schema
-2. **Research the spot**:
+1. **Research the spot**:
    - Search windguru.cz for the actual station ID (e.g., windguru.cz/12345)
    - Find coordinates on Google Maps (exact launch area)
    - Research local conditions (wind directions, water type, hazards)
    - Look up typical water temperature range for the region
-3. **Generate JSON**:
-   - Follow the exact schema structure
+2. **Generate JSON**:
+   - Follow the exact schema structure from existing spots in `src/main/resources/spots.json`
    - Fill all required fields (no empty strings except for optional URLs)
    - Include accurate `spotInfo` (English) and `spotInfoPL` (Polish translation)
-4. **Validate**:
+3. **Validate**:
    - Ensure all URLs are real and accessible
    - Verify Windguru URL points to a real station
    - Check coordinates are correct
    - Validate JSON syntax
-5. **Add to spots.json**:
+4. **Add to spots.json**:
    - Open `src/main/resources/spots.json`
    - Append the new spot to the JSON array
    - Ensure proper JSON formatting (commas, brackets)
-6. **Test**:
+5. **Test**:
    - Run `./gradlew bootRun`
    - Open http://localhost:8080
    - Verify the new spot appears with forecast data
@@ -752,7 +746,6 @@ User: @new-kite-spot Lago Di Garda
 - **README.md**: User-facing documentation, project description, build instructions
 - **ARCH.md**: Detailed ASCII architecture diagrams, system flow visualization
 - **CLAUDE.md**: Context documentation for Claude AI assistant
-- **prompts/new-kite-spot.md**: Template and guidelines for adding new kite spots
 
 ## Project Maintenance
 
@@ -772,8 +765,8 @@ User: @new-kite-spot Lago Di Garda
 4. Add unit tests for new strategy
 
 **Add a new kite spot**:
-1. Use `@new-kite-spot [spot name]` reference (see "Adding New Kite Spots" section below)
-2. Follow the schema in `prompts/new-kite-spot.md`
+1. Follow the schema from existing spots in `src/main/resources/spots.json`
+2. Research the spot details (see "Adding New Kite Spots" section)
 3. Add generated JSON to `src/main/resources/spots.json`
 4. Restart application and test
 
