@@ -32,6 +32,7 @@ export const translations = {
         countryHeader: "Country",
         nowLabel: "NOW",
         forecastEstimateLabel: "Forecast",
+        liveStationsOnly: "Live stations only",
 
         // Current conditions card
         windLabel: "Wind",
@@ -269,6 +270,7 @@ export const translations = {
         countryHeader: "Kraj",
         nowLabel: "TERAZ",
         forecastEstimateLabel: "Prognoza",
+        liveStationsOnly: "Tylko stacje live",
 
         // Current conditions card
         windLabel: "Wiatr",

@@ -1474,7 +1474,7 @@ function createListHeader() {
     header.className = 'spots-list-header';
 
     const columns = [
-        { key: '', label: '', sortable: false },
+        { key: '', label: '', sortable: false, isCheckbox: true },
         { key: 'spot', label: t('spotHeader'), sortable: true },
         { key: 'wind', label: t('windHeader'), sortable: true },
         { key: 'gust', label: t('gustsHeader'), sortable: true },
@@ -1488,7 +1488,20 @@ function createListHeader() {
     columns.forEach(col => {
         const cell = document.createElement('div');
         cell.className = 'header-cell';
-        if (col.sortable) {
+
+        if (col.isCheckbox) {
+            // Create checkbox in first column
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'liveStationsFilter';
+            checkbox.className = 'live-stations-checkbox';
+            checkbox.checked = showOnlyLiveStations;
+            checkbox.addEventListener('change', (e) => {
+                showOnlyLiveStations = e.target.checked;
+                renderSpots(currentFilter, currentSearchQuery, true);
+            });
+            cell.appendChild(checkbox);
+        } else if (col.sortable) {
             cell.classList.add('sortable');
             cell.dataset.column = col.key;
 
@@ -1499,8 +1512,11 @@ function createListHeader() {
             cell.addEventListener('click', () => {
                 handleListSort(col.key);
             });
+            cell.textContent = col.label;
+        } else {
+            cell.textContent = col.label;
         }
-        cell.textContent = col.label;
+
         header.appendChild(cell);
     });
 
@@ -1726,8 +1742,17 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
         } else {
             // Check current view mode and render accordingly
             if (currentViewMode === 'list') {
+                // Filter live stations if checkbox is enabled
+                let spotsToShow = filteredSpots;
+                if (showOnlyLiveStations) {
+                    spotsToShow = filteredSpots.filter(spot => {
+                        const conditions = getSpotConditions(spot);
+                        return conditions && conditions.isCurrent;
+                    });
+                }
+
                 // Apply sorting if a column is selected
-                const sortedSpots = listSortColumn ? sortSpots(filteredSpots, listSortColumn, listSortDirection) : filteredSpots;
+                const sortedSpots = listSortColumn ? sortSpots(spotsToShow, listSortColumn, listSortDirection) : spotsToShow;
 
                 // Render list view
                 spotsGrid.appendChild(createListHeader());
@@ -2316,6 +2341,7 @@ let currentViewMode = 'grid'; // 'grid' or 'list'
 let desktopViewMode = 'grid'; // Store desktop preference separately
 let listSortColumn = null;
 let listSortDirection = 'asc';
+let showOnlyLiveStations = false; // Filter for live stations in list view
 
 function isMobileView() {
     return window.innerWidth <= 768;

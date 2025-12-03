@@ -1723,6 +1723,33 @@ body {
     color: var(--accent-primary);
 }
 
+.live-stations-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #888;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin: 0 auto;
+    display: block;
+}
+
+.live-stations-checkbox:hover {
+    transform: scale(1.1);
+}
+
+.live-stations-checkbox:checked {
+    background-color: var(--success-color);
+}
+
+.live-stations-checkbox:active {
+    transform: scale(0.95);
+}
+
 .list-row {
     background: var(--bg-secondary);
     border-left: 1px solid var(--border-primary);
