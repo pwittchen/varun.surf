@@ -23,6 +23,7 @@
     --success-color: #22c55e;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
+    --chart-grid: #333333;
 }
 
 [data-theme="light"] {
@@ -50,6 +51,7 @@
     --success-color: #059669;
     --warning-color: #ea580c;
     --danger-color: #dc2626;
+    --chart-grid: rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -2946,6 +2948,67 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: block;
 }
 
+/* Wind/Gust Chart View */
+.chart-view {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.wind-chart-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.wind-chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-line {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.legend-wind {
+    background: #22c55e;
+}
+
+.legend-gust {
+    background: #f59e0b;
+}
+
+.legend-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.wind-chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    min-height: 250px;
+}
+
+.wind-chart-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* Windguru-like vertical view */
 .windguru-view {
     width: 100%;
@@ -3181,7 +3244,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-weight: 700;
 }
 
-/* Tablet/small desktop view - hide tabs and windguru view */
+/* Tablet/small desktop view - hide tabs and windguru/chart views */
 @media (max-width: 1430px) {
     body.spot-page .forecast-tabs {
         display: none;
@@ -3192,6 +3255,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     }
 
     body.spot-page .windguru-view {
+        display: none !important;
+    }
+
+    body.spot-page .chart-view {
         display: none !important;
     }
 
@@ -3207,6 +3274,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     }
 
     .windguru-view {
+        display: none !important;
+    }
+
+    .chart-view {
         display: none !important;
     }
 

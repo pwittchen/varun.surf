@@ -1020,11 +1020,246 @@ function createWindguruView(forecastData, hasWaveData) {
     return windguruHtml;
 }
 
+// Create wind/gust line chart view
+function createChartView(forecastData) {
+    if (!forecastData || forecastData.length === 0) {
+        return '<div class="forecast-view chart-view"></div>';
+    }
+
+    const filterWindyDays = getFilterWindyDaysPreference();
+
+    // Filter to daytime hours and apply windy days filter if enabled
+    const filteredData = forecastData.filter(forecast => {
+        if (!forecast.date) return false;
+        const time = forecast.date.split(' ')[4];
+        if (!time) return false;
+        const hour = parseInt(time.split(':')[0]);
+        if (hour < 6 || hour > 21) return false;
+
+        if (filterWindyDays) {
+            return forecast.wind >= 12 || forecast.gusts >= 12;
+        }
+        return true;
+    });
+
+    if (filteredData.length === 0) {
+        return `
+            <div class="forecast-view chart-view">
+                <div class="no-windy-days-message">
+                    <span class="no-windy-days-icon">💨</span>
+                    <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Prepare data for the chart
+    const chartData = filteredData.map(forecast => ({
+        time: forecast.date,
+        wind: forecast.wind,
+        gust: forecast.gusts
+    }));
+
+    // Store chart data for rendering
+    const chartDataJson = JSON.stringify(chartData);
+
+    return `
+        <div class="forecast-view chart-view">
+            <div class="wind-chart-container" data-chart='${chartDataJson}'>
+                <div class="wind-chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-line legend-wind"></span>
+                        <span class="legend-label">${t('chartWindLabel')}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-line legend-gust"></span>
+                        <span class="legend-label">${t('chartGustLabel')}</span>
+                    </div>
+                </div>
+                <div class="wind-chart-wrapper">
+                    <canvas class="wind-chart-canvas" id="windChartCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Render the wind/gust chart on canvas
+function renderWindChart() {
+    const container = document.querySelector('.wind-chart-container');
+    if (!container) return;
+
+    const chartDataAttr = container.getAttribute('data-chart');
+    if (!chartDataAttr) return;
+
+    const chartData = JSON.parse(chartDataAttr);
+    if (!chartData || chartData.length === 0) return;
+
+    const canvas = document.getElementById('windChartCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    // Get computed styles for theming
+    const computedStyle = getComputedStyle(document.documentElement);
+    const textColor = computedStyle.getPropertyValue('--text-secondary').trim() || '#9ca3af';
+    const textPrimaryColor = computedStyle.getPropertyValue('--text-primary').trim() || '#e8e8e8';
+    const chartGridColor = computedStyle.getPropertyValue('--chart-grid').trim() || '#262626';
+    const accentColor = computedStyle.getPropertyValue('--accent-primary').trim() || '#4a9eff';
+
+    // Chart colors
+    const windColor = '#22c55e'; // Green for wind
+    const gustColor = '#f59e0b'; // Orange for gusts
+
+    // Set canvas size for high DPI displays
+    const wrapper = canvas.parentElement;
+    const rect = wrapper.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    // Chart dimensions
+    const padding = { top: 20, right: 20, bottom: 60, left: 45 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Find min/max values for Y axis
+    const allValues = chartData.flatMap(d => [d.wind, d.gust]);
+    const maxValue = Math.max(...allValues);
+    const minValue = 0;
+    const yRange = maxValue - minValue;
+    const yPadding = yRange * 0.1;
+    const yMax = Math.ceil((maxValue + yPadding) / 5) * 5; // Round up to nearest 5
+
+    // Calculate X scale
+    const xStep = chartWidth / (chartData.length - 1 || 1);
+
+    // Draw horizontal grid lines
+    ctx.strokeStyle = chartGridColor;
+    ctx.lineWidth = 1;
+    const yGridLines = 5;
+    for (let i = 0; i <= yGridLines; i++) {
+        const y = padding.top + (chartHeight * i / yGridLines);
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
+    }
+
+    // Draw Y axis labels
+    ctx.fillStyle = textColor;
+    ctx.font = '11px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= yGridLines; i++) {
+        const value = Math.round(yMax * (1 - i / yGridLines));
+        const y = padding.top + (chartHeight * i / yGridLines);
+        ctx.fillText(value + '', padding.left - 8, y);
+    }
+
+    // Draw Y axis unit label
+    ctx.fillStyle = textColor;
+    ctx.font = '10px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.save();
+    ctx.translate(12, padding.top + chartHeight / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(t('chartKnotsLabel'), 0, 0);
+    ctx.restore();
+
+    // Draw X axis labels (time)
+    ctx.fillStyle = textColor;
+    ctx.font = '10px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // Show labels at intervals to avoid crowding
+    const labelInterval = Math.ceil(chartData.length / 12);
+    let lastDayLabel = '';
+
+    chartData.forEach((point, i) => {
+        if (i % labelInterval === 0 || i === chartData.length - 1) {
+            const x = padding.left + (i * xStep);
+            const timeParts = point.time.split(' ');
+            const dayPart = timeParts.slice(0, 3).join(' '); // e.g., "Fri Jan 10"
+            const time = timeParts[4] || ''; // e.g., "12:00"
+
+            // Draw time
+            ctx.fillText(time, x, height - padding.bottom + 8);
+
+            // Draw day label if it changed
+            if (dayPart !== lastDayLabel) {
+                ctx.fillStyle = textPrimaryColor;
+                ctx.font = '10px system-ui, -apple-system, sans-serif';
+                ctx.fillText(dayPart.split(' ').slice(0, 2).join(' '), x, height - padding.bottom + 22);
+                ctx.fillStyle = textColor;
+                ctx.font = '10px system-ui, -apple-system, sans-serif';
+                lastDayLabel = dayPart;
+            }
+        }
+    });
+
+    // Function to draw a smooth curved line using cubic Bézier splines
+    function drawLine(data, valueKey, color) {
+        if (data.length < 2) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        // Calculate points
+        const points = data.map((point, i) => ({
+            x: padding.left + (i * xStep),
+            y: padding.top + chartHeight - (point[valueKey] / yMax * chartHeight)
+        }));
+
+        // Start at first point
+        ctx.moveTo(points[0].x, points[0].y);
+
+        // Draw smooth curves using cubic Bézier
+        for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[i - 1] || points[i];
+            const p1 = points[i];
+            const p2 = points[i + 1];
+            const p3 = points[i + 2] || p2;
+
+            // Catmull-Rom to Cubic Bézier conversion
+            const tension = 0.3;
+            const cp1x = p1.x + (p2.x - p0.x) * tension;
+            const cp1y = p1.y + (p2.y - p0.y) * tension;
+            const cp2x = p2.x - (p3.x - p1.x) * tension;
+            const cp2y = p2.y - (p3.y - p1.y) * tension;
+
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+        }
+
+        ctx.stroke();
+    }
+
+    // Draw gust line first (behind wind line)
+    drawLine(chartData, 'gust', gustColor);
+
+    // Draw wind line
+    drawLine(chartData, 'wind', windColor);
+}
+
 // ============================================================================
 // FORECAST TABS SETUP
 // ============================================================================
 
-// Setup forecast view tabs (table vs. windguru)
+// Setup forecast view tabs (table vs. windguru vs. chart)
 function setupForecastTabs() {
     const tabs = document.querySelectorAll('.forecast-tab');
     if (tabs.length === 0) return;
@@ -1035,6 +1270,20 @@ function setupForecastTabs() {
     // Set the initial view based on saved preference
     const tableView = document.querySelector('.table-view');
     const windguruView = document.querySelector('.windguru-view');
+    const chartView = document.querySelector('.chart-view');
+
+    // Helper function to update view visibility
+    function updateViewVisibility(targetView) {
+        if (tableView) tableView.classList.toggle('active', targetView === 'table');
+        if (windguruView) windguruView.classList.toggle('active', targetView === 'windguru');
+        if (chartView) chartView.classList.toggle('active', targetView === 'chart');
+
+        // Render chart when chart view becomes active
+        if (targetView === 'chart') {
+            // Small delay to ensure DOM is ready
+            setTimeout(() => renderWindChart(), 50);
+        }
+    }
 
     tabs.forEach(t => {
         if (t.dataset.tab === savedView) {
@@ -1044,13 +1293,7 @@ function setupForecastTabs() {
         }
     });
 
-    if (savedView === 'table') {
-        if (tableView) tableView.classList.add('active');
-        if (windguruView) windguruView.classList.remove('active');
-    } else if (savedView === 'windguru') {
-        if (tableView) tableView.classList.remove('active');
-        if (windguruView) windguruView.classList.add('active');
-    }
+    updateViewVisibility(savedView);
 
     // Add click listeners
     tabs.forEach(tab => {
@@ -1065,13 +1308,7 @@ function setupForecastTabs() {
             tab.classList.add('active');
 
             // Update view visibility
-            if (targetView === 'table') {
-                if (tableView) tableView.classList.add('active');
-                if (windguruView) windguruView.classList.remove('active');
-            } else if (targetView === 'windguru') {
-                if (tableView) tableView.classList.remove('active');
-                if (windguruView) windguruView.classList.add('active');
-            }
+            updateViewVisibility(targetView);
         });
     });
 
@@ -1107,6 +1344,17 @@ function setupForecastTabs() {
             windguruContainer.scrollLeft = scrollLeft - walk;
         });
     }
+
+    // Handle window resize for chart
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (chartView && chartView.classList.contains('active')) {
+                renderWindChart();
+            }
+        }, 150);
+    });
 }
 
 // Initialize OSM satellite map with Leaflet
@@ -1827,6 +2075,16 @@ function createSpotCard(spot) {
                                     </svg>
                                     ${t('windguruViewLabel')}
                                 </button>
+                                <button class="forecast-tab" data-tab="chart">
+                                    <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M23,22H3a1,1,0,0,1-1-1V3A1,1,0,0,0,0,3V21a3,3,0,0,0,3,3H23a1,1,0,0,0,0-2Z" fill="currentColor"/>
+                                        <path d="M15,20a1,1,0,0,0,1-1V12a1,1,0,0,0-2,0v7A1,1,0,0,0,15,20Z" fill="currentColor"/>
+                                        <path d="M7,20a1,1,0,0,0,1-1V12a1,1,0,0,0-2,0v7A1,1,0,0,0,7,20Z" fill="currentColor"/>
+                                        <path d="M19,20a1,1,0,0,0,1-1V7a1,1,0,0,0-2,0V19A1,1,0,0,0,19,20Z" fill="currentColor"/>
+                                        <path d="M11,20a1,1,0,0,0,1-1V7a1,1,0,0,0-2,0V19A1,1,0,0,0,11,20Z" fill="currentColor"/>
+                                    </svg>
+                                    ${t('chartViewLabel')}
+                                </button>
                             </div>
                             <div class="filter-windy-days-container">
                                 <label class="filter-windy-days-label">
@@ -1864,6 +2122,7 @@ function createSpotCard(spot) {
                                 `}
                             </div>
                             ${isDesktopView ? createWindguruView(forecastData, hasWaveData) : ''}
+                            ${isDesktopView ? createChartView(forecastData) : ''}
                         </div>
                     </div>
                 </div>
@@ -2008,6 +2267,8 @@ function initTheme() {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
         localStorage.setItem('theme', theme);
+        // Re-render wind chart to update colors for new theme
+        renderWindChart();
     }
 
     // Set the initial theme
