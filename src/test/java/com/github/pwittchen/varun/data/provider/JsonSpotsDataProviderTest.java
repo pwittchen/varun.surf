@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.provider;
+package com.github.pwittchen.varun.data.provider;
 
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.data.provider.spots.JsonSpotsDataProvider;

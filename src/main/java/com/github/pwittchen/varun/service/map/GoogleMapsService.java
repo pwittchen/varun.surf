@@ -88,7 +88,6 @@ public class GoogleMapsService {
 
     private String unshortenUrlBlocking(String url) throws IOException {
         String currentUrl = url;
-        boolean redirected = false;
 
         for (int redirectCount = 0; redirectCount < MAX_REDIRECTS; redirectCount++) {
             Request request = new Request.Builder()
@@ -98,18 +97,12 @@ public class GoogleMapsService {
 
             try (Response response = httpClient.newCall(request).execute()) {
                 if (!isRedirect(response.code())) {
-                    if (redirected) {
-                        log.debug("Final unshortened URL: {}", currentUrl);
-                    }
                     return currentUrl;
                 }
 
                 String location = response.header("Location");
                 if (location == null || location.isEmpty()) {
                     log.warn("Redirect without Location header for URL: {}", currentUrl);
-                    if (redirected) {
-                        log.debug("Final unshortened URL: {}", currentUrl);
-                    }
                     return currentUrl;
                 }
 
@@ -117,12 +110,7 @@ public class GoogleMapsService {
                 String nextUrl = resolved != null ? resolved.toString() : location;
                 log.debug("Redirect {} -> {}", currentUrl, nextUrl);
                 currentUrl = nextUrl;
-                redirected = true;
             }
-        }
-
-        if (redirected) {
-            log.debug("Final unshortened URL: {}", currentUrl);
         }
         log.warn("Max redirects reached for URL: {}", currentUrl);
         return currentUrl;
