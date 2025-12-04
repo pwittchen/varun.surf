@@ -6,6 +6,7 @@ services:
   varun-nginx:
     image: nginx:1.27-alpine
     container_name: varun-nginx
+    restart: unless-stopped
     volumes:
       - /root/apps/varun.surf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
@@ -17,6 +18,7 @@ services:
     image: ghcr.io/pwittchen/varun.surf:latest
     platform: linux/amd64
     container_name: varun-app-blue-live
+    restart: unless-stopped
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
       --app.ai.provider=openai
@@ -40,6 +42,7 @@ services:
     image: ghcr.io/pwittchen/varun.surf:latest
     platform: linux/amd64
     container_name: varun-app-green-live
+    restart: unless-stopped
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
       --app.ai.provider=openai
