@@ -1,6 +1,5 @@
 package com.github.pwittchen.varun.service.map;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;
@@ -21,8 +20,8 @@ public class GoogleMapsService {
     private static final int MAX_REDIRECTS = 5;
     private final OkHttpClient httpClient;
 
-    GoogleMapsService(HttpClientProxy httpClientProxy) {
-        this.httpClient = httpClientProxy.getHttpClient();
+    GoogleMapsService(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     public Mono<Coordinates> getCoordinates(Spot spot) {

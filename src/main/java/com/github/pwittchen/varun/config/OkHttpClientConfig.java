@@ -1,19 +1,19 @@
-package com.github.pwittchen.varun.component.http;
+package com.github.pwittchen.varun.config;
 
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-@Component
-public class HttpClientProxy {
+@Configuration
+public class OkHttpClientConfig {
 
-    private final OkHttpClient client;
-
-    public HttpClientProxy() {
-        client = new OkHttpClient
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient
                 .Builder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .readTimeout(Duration.ofSeconds(30))
@@ -25,9 +25,4 @@ public class HttpClientProxy {
                 .retryOnConnectionFailure(true)
                 .build();
     }
-
-    public OkHttpClient getHttpClient() {
-        return client;
-    }
-
 }

@@ -1,11 +1,11 @@
 package com.github.pwittchen.varun.service.live;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyMB;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyTurawa;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
+import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -17,11 +17,11 @@ public class CurrentConditionsService {
 
     private final List<FetchCurrentConditions> strategies = new LinkedList<>();
 
-    public CurrentConditionsService(HttpClientProxy httpClientProxy) {
-        strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations(httpClientProxy));
-        strategies.add(new FetchCurrentConditionsStrategyPodersdorf(httpClientProxy));
-        strategies.add(new FetchCurrentConditionsStrategyTurawa(httpClientProxy));
-        strategies.add(new FetchCurrentConditionsStrategyMB(httpClientProxy));
+    public CurrentConditionsService(OkHttpClient httpClient) {
+        strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations(httpClient));
+        strategies.add(new FetchCurrentConditionsStrategyPodersdorf(httpClient));
+        strategies.add(new FetchCurrentConditionsStrategyTurawa(httpClient));
+        strategies.add(new FetchCurrentConditionsStrategyMB(httpClient));
     }
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {

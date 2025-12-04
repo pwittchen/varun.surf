@@ -1,6 +1,5 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
 import okhttp3.OkHttpClient;
@@ -19,8 +18,8 @@ public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentCondit
 
     private final OkHttpClient httpClient;
 
-    public FetchCurrentConditionsStrategyPodersdorf(HttpClientProxy httpClientProxy) {
-        this.httpClient = httpClientProxy.getHttpClient();
+    public FetchCurrentConditionsStrategyPodersdorf(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @Override

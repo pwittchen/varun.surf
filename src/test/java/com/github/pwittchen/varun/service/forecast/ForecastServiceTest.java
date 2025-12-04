@@ -1,9 +1,9 @@
 package com.github.pwittchen.varun.service.forecast;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -20,8 +20,8 @@ class ForecastServiceTest {
     @BeforeEach
     void setUp() {
         WeatherForecastMapper mapper = new WeatherForecastMapper();
-        HttpClientProxy httpClientProxy = new HttpClientProxy();
-        service = new ForecastService(mapper, httpClientProxy);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        service = new ForecastService(mapper, okHttpClient);
     }
 
     @Test

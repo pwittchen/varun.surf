@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -23,7 +23,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        strategy = new FetchCurrentConditionsStrategyWiatrKadynyStations(new HttpClientProxy());
+        strategy = new FetchCurrentConditionsStrategyWiatrKadynyStations(new OkHttpClient());
     }
 
     @AfterEach

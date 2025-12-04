@@ -1,7 +1,7 @@
 package com.github.pwittchen.varun.service.live;
 
-import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -15,7 +15,7 @@ class CurrentConditionsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CurrentConditionsService(new HttpClientProxy());
+        service = new CurrentConditionsService(new OkHttpClient());
     }
 
     @Test

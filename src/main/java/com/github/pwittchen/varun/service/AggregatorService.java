@@ -1,22 +1,22 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
-import com.github.pwittchen.varun.model.live.CurrentConditions;
-import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
-import com.github.pwittchen.varun.model.sponsor.Sponsor;
+import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.map.Coordinates;
+import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
-import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
+import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
 import jakarta.annotation.PostConstruct;
