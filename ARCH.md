@@ -118,16 +118,19 @@
 ### Data Model (simplified)
 ```
 Spot
-├─ id (int) / wgId (int) / name / country / windguruUrl / locationUrl
-├─ forecast : List<Forecast> (48-hour hourly forecast, GFS or IFS)
-├─ forecastDaily : List<Forecast> (3-day daily forecast)
-├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS - legacy)
+├─ wgId : int (derived from windguruUrl, exposed via @JsonProperty)
+├─ name / country / windguruUrl / windfinderUrl / icmUrl / webcamUrl / locationUrl
+├─ forecast : List<Forecast> (3-day daily forecast)
+├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS)
 ├─ currentConditions : CurrentConditions
 ├─ aiAnalysisEn : String (optional, AI-generated forecast summary in English)
 ├─ aiAnalysisPl : String (optional, AI-generated forecast summary in Polish)
+├─ spotPhotoUrl : String (optional, spot photo URL)
 ├─ coordinates : Coordinates (lat, lon - lazy-loaded, used for map generation in frontend)
 ├─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType in English)
-└─ spotInfoPL : SpotInfo (description, bestWind, hazards, season, waterType in Polish)
+├─ spotInfoPL : SpotInfo (description, bestWind, hazards, season, waterType in Polish)
+├─ sponsors : List<Sponsor> (list of sponsors associated with this spot)
+└─ lastUpdated : String (timestamp of last update, ISO format with timezone)
 
 Coordinates
 ├─ lat : double (latitude)
@@ -152,12 +155,11 @@ Forecast
 └─ precipMm : double
 
 CurrentConditions
-├─ windSpeed : double (knots)
-├─ gust : double (knots)
-├─ directionDeg : int (0-360)
-├─ directionCardinal : String (N, NE, E, etc.)
-├─ tempC : double
-└─ updatedAt : String (timestamp of last update)
+├─ date : String (timestamp of last update)
+├─ wind : int (wind speed in knots)
+├─ gusts : int (gust speed in knots)
+├─ direction : String (cardinal direction: N, NE, E, etc.)
+└─ temp : int (temperature in °C)
 
 SpotInfo
 ├─ description : String
@@ -185,8 +187,10 @@ Sponsor
 2. Weather Station Providers (via strategy pattern)
    - WiatrKadyny (wiatrkadyny.pl) - Polish stations
    - Kiteriders (kiteriders.at) - Austrian Podersdorf station
+   - MB Weather (mb-wetter.com) - German/Polish stations
+   - Turawa (turawa.pl) - Polish Turawa lake station
    - HTML scraping/parsing for real-time wind data
-   - Strategy implementations in service/currentconditions/strategy/
+   - Strategy implementations in service/live/strategy/
 
 3. Google Maps
    - URL unshortening (goo.gl, maps.app.goo.gl)
@@ -389,6 +393,9 @@ Health:
 ```
 src/main/java/com/github/pwittchen/varun/
 ├── Application.java                      # Main entry point
+├── component/                            # Shared components
+│   └── http/
+│       └── HttpClientProxy.java          # OkHttp client wrapper
 ├── config/                               # Spring configuration
 │   ├── AsyncConfig.java                  # @Async executor config
 │   ├── CorsConfig.java                   # CORS policy
@@ -400,6 +407,14 @@ src/main/java/com/github/pwittchen/varun/
 ├── controller/                           # REST controllers
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
 │   └── SpotsController.java              # /api/v1/spots/*
+├── data/                                 # Data layer
+│   └── provider/                         # Data providers
+│       ├── sponsors/
+│       │   ├── JsonSponsorsDataProvider.java
+│       │   └── SponsorsDataProvider.java (interface)
+│       └── spots/
+│           ├── JsonSpotsDataProvider.java
+│           └── SpotsDataProvider.java (interface)
 ├── exception/                            # Custom exceptions
 │   ├── FetchingAiForecastAnalysisException.java
 │   ├── FetchingCurrentConditionsException.java
@@ -408,41 +423,40 @@ src/main/java/com/github/pwittchen/varun/
 ├── mapper/                               # Data transformation
 │   └── WeatherForecastMapper.java        # Degrees -> cardinal directions
 ├── model/                                # Domain models
-│   ├── currentconditions/
-│   │   ├── CurrentConditions.java
-│   │   └── filter/CurrentConditionsEmptyFilter.java
 │   ├── forecast/
 │   │   ├── Forecast.java
 │   │   ├── ForecastData.java
 │   │   ├── ForecastModel.java (enum: GFS, IFS)
 │   │   └── ForecastWg.java
+│   ├── live/                             # Live conditions
+│   │   ├── CurrentConditions.java
+│   │   └── filter/CurrentConditionsEmptyFilter.java
+│   ├── map/
+│   │   └── Coordinates.java
 │   ├── sponsor/
 │   │   └── Sponsor.java
-│   └── spot/
-│       ├── Spot.java
-│       └── SpotInfo.java
-├── provider/                             # Data providers
-│   ├── sponsors/
-│   │   ├── JsonSponsorsDataProvider.java
-│   │   └── SponsorsDataProvider.java (interface)
-│   └── spots/
-│       ├── JsonSpotsDataProvider.java
-│       └── SpotsDataProvider.java (interface)
+│   ├── spot/
+│   │   ├── Spot.java
+│   │   └── SpotInfo.java
+│   └── status/
+│       └── Health.java
 └── service/                              # Business logic
     ├── AggregatorService.java            # Core orchestrator
     ├── ai/                               # AI forecast analysis
     │   ├── AiService.java                # Base service (abstract)
     │   ├── AiServiceEn.java              # English AI analysis
     │   └── AiServicePl.java              # Polish AI analysis
-    ├── currentconditions/                # Live conditions
+    ├── forecast/
+    │   └── ForecastService.java          # Windguru API client
+    ├── live/                             # Live conditions
     │   ├── CurrentConditionsService.java # Station data aggregator
     │   └── strategy/                     # Strategy pattern for stations
     │       ├── FetchCurrentConditions.java (interface)
     │       ├── FetchCurrentConditionsStrategyBase.java
+    │       ├── FetchCurrentConditionsStrategyMB.java
     │       ├── FetchCurrentConditionsStrategyPodersdorf.java
+    │       ├── FetchCurrentConditionsStrategyTurawa.java
     │       └── FetchCurrentConditionsStrategyWiatrKadynyStations.java
-    ├── forecast/
-    │   └── ForecastService.java          # Windguru API client
     ├── map/
     │   └── GoogleMapsService.java        # Maps URL converter
     └── sponsors/
