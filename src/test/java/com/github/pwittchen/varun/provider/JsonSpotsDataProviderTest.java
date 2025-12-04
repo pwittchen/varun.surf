@@ -1,13 +1,12 @@
 package com.github.pwittchen.varun.provider;
 
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.github.pwittchen.varun.provider.spots.JsonSpotsDataProvider;
+import com.github.pwittchen.varun.data.provider.spots.JsonSpotsDataProvider;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import static com.google.common.truth.Truth.assertThat;

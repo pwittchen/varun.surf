@@ -7,7 +7,7 @@ import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.github.pwittchen.varun.provider.spots.SpotsDataProvider;
+import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
