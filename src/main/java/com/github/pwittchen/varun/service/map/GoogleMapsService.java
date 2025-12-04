@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.map;
 
-import com.github.pwittchen.varun.http.HttpClientProxy;
+import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
 import okhttp3.HttpUrl;

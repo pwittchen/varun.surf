@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.forecast;
 
-import com.github.pwittchen.varun.http.HttpClientProxy;
+import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;

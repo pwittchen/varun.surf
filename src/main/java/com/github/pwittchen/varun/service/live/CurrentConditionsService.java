@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.live;
 
-import com.github.pwittchen.varun.http.HttpClientProxy;
+import com.github.pwittchen.varun.component.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyMB;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;

@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.http;
+package com.github.pwittchen.varun.component.http;
 
 import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Component;
