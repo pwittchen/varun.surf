@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.forecast;
 
-import com.github.pwittchen.varun.http.HttpClientProvider;
+import com.github.pwittchen.varun.http.HttpClientProxy;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
@@ -20,8 +20,8 @@ class ForecastServiceTest {
     @BeforeEach
     void setUp() {
         WeatherForecastMapper mapper = new WeatherForecastMapper();
-        HttpClientProvider httpClientProvider = new HttpClientProvider();
-        service = new ForecastService(mapper, httpClientProvider);
+        HttpClientProxy httpClientProxy = new HttpClientProxy();
+        service = new ForecastService(mapper, httpClientProxy);
     }
 
     @Test

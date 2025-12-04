@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
-import com.github.pwittchen.varun.http.HttpClientProvider;
+import com.github.pwittchen.varun.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
 import okhttp3.OkHttpClient;
@@ -25,8 +25,8 @@ public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurr
 
     private final OkHttpClient httpClient;
 
-    public FetchCurrentConditionsStrategyWiatrKadynyStations(HttpClientProvider httpClientProvider) {
-        this.httpClient = httpClientProvider.getHttpClient();
+    public FetchCurrentConditionsStrategyWiatrKadynyStations(HttpClientProxy httpClientProxy) {
+        this.httpClient = httpClientProxy.getHttpClient();
     }
 
     @Override

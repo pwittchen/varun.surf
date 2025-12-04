@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service.live;
 
-import com.github.pwittchen.varun.http.HttpClientProvider;
+import com.github.pwittchen.varun.http.HttpClientProxy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyMB;
 import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;
@@ -17,11 +17,11 @@ public class CurrentConditionsService {
 
     private final List<FetchCurrentConditions> strategies = new LinkedList<>();
 
-    public CurrentConditionsService(HttpClientProvider httpClientProvider) {
-        strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations(httpClientProvider));
-        strategies.add(new FetchCurrentConditionsStrategyPodersdorf(httpClientProvider));
-        strategies.add(new FetchCurrentConditionsStrategyTurawa(httpClientProvider));
-        strategies.add(new FetchCurrentConditionsStrategyMB(httpClientProvider));
+    public CurrentConditionsService(HttpClientProxy httpClientProxy) {
+        strategies.add(new FetchCurrentConditionsStrategyWiatrKadynyStations(httpClientProxy));
+        strategies.add(new FetchCurrentConditionsStrategyPodersdorf(httpClientProxy));
+        strategies.add(new FetchCurrentConditionsStrategyTurawa(httpClientProxy));
+        strategies.add(new FetchCurrentConditionsStrategyMB(httpClientProxy));
     }
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
