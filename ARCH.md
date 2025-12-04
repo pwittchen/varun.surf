@@ -393,9 +393,6 @@ Health:
 ```
 src/main/java/com/github/pwittchen/varun/
 ├── Application.java                      # Main entry point
-├── component/                            # Shared components
-│   └── http/
-│       └── HttpClientProxy.java          # OkHttp client wrapper
 ├── config/                               # Spring configuration
 │   ├── AsyncConfig.java                  # @Async executor config
 │   ├── CorsConfig.java                   # CORS policy
@@ -403,6 +400,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── LLMConfig.java                    # Spring AI ChatClient
 │   ├── LoggingFilter.java                # HTTP request logging
 │   ├── NettyConfig.java                  # Netty HTTP client tuning
+│   ├── OkHttpClientConfig.java           # OkHttpClient bean configuration
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
