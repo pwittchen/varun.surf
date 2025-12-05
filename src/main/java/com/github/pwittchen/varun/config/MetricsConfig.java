@@ -13,17 +13,24 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Configuration
 public class MetricsConfig {
 
+    private final AtomicInteger appStatus = new AtomicInteger(1);
     private final ConcurrentMap<String, AtomicLong> lastSuccessTimestamps = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Counter> taskSuccessCounters = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Counter> taskFailureCounters = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Timer> taskTimers = new ConcurrentHashMap<>();
 
     public MetricsConfig(MeterRegistry meterRegistry, AggregatorService aggregatorService) {
+        // Application status metric (1 = UP, 0 = DOWN)
+        Gauge.builder("varun_up", appStatus, AtomicInteger::get)
+                .description("Application status (1 = UP, 0 = DOWN)")
+                .register(meterRegistry);
+
         // Application metrics
         Gauge.builder("varun_spots", aggregatorService::countSpots)
                 .description("Total number of kite spots")
