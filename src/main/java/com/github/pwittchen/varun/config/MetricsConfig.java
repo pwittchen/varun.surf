@@ -25,15 +25,15 @@ public class MetricsConfig {
 
     public MetricsConfig(MeterRegistry meterRegistry, AggregatorService aggregatorService) {
         // Application metrics
-        Gauge.builder("varun_spots_total", aggregatorService::countSpots)
+        Gauge.builder("varun_spots", aggregatorService::countSpots)
                 .description("Total number of kite spots")
                 .register(meterRegistry);
 
-        Gauge.builder("varun_countries_total", aggregatorService::countCountries)
+        Gauge.builder("varun_countries", aggregatorService::countCountries)
                 .description("Total number of countries with kite spots")
                 .register(meterRegistry);
 
-        Gauge.builder("varun_live_stations_total", aggregatorService::countLiveStations)
+        Gauge.builder("varun_live_stations", aggregatorService::countLiveStations)
                 .description("Number of live weather stations currently reporting")
                 .register(meterRegistry);
 
