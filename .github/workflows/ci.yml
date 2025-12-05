@@ -36,8 +36,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
+      - name: Cache Gradle build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches/build-cache-1
+          key: ${{ runner.os }}-gradle-build-cache-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-build-cache-
+
       - name: Assemble
-        run: ./gradlew clean assemble --stacktrace
+        run: ./gradlew assemble --stacktrace --build-cache
 
       - name: Test
-        run: ./gradlew test --stacktrace
+        run: ./gradlew test --stacktrace --build-cache
