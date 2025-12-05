@@ -2988,6 +2988,14 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     background: #f59e0b;
 }
 
+.legend-arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 12px solid var(--accent-color);
+}
+
 .legend-label {
     font-size: 0.85rem;
     color: var(--text-secondary);

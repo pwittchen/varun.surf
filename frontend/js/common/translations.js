@@ -173,6 +173,7 @@ export const translations = {
         noWindyDaysMessage: "No windy days!",
         chartWindLabel: "Wind",
         chartGustLabel: "Gust",
+        chartDirectionLabel: "Direction",
         chartKnotsLabel: "kts",
 
         // Kite size calculator
@@ -415,6 +416,7 @@ export const translations = {
         noWindyDaysMessage: "Brak wietrznych dni!",
         chartWindLabel: "Wiatr",
         chartGustLabel: "Porywy",
+        chartDirectionLabel: "Kierunek",
         chartKnotsLabel: "węzły",
 
         // Kite size calculator

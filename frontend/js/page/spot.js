@@ -1057,7 +1057,8 @@ function createChartView(forecastData) {
     const chartData = filteredData.map(forecast => ({
         time: forecast.date,
         wind: forecast.wind,
-        gust: forecast.gusts
+        gust: forecast.gusts,
+        direction: forecast.direction
     }));
 
     // Store chart data for rendering
@@ -1253,6 +1254,39 @@ function renderWindChart() {
 
     // Draw wind line
     drawLine(chartData, 'wind', windColor);
+
+    // Draw wind direction arrows along the chart
+    const directionColor = accentColor;
+    const arrowInterval = Math.max(1, Math.ceil(chartData.length / 20)); // Show ~20 arrows max
+
+    chartData.forEach((point, i) => {
+        if (i % arrowInterval !== 0) return;
+        if (!point.direction) return;
+
+        const x = padding.left + (i * xStep);
+        // Position arrows at the top of the chart area
+        const y = padding.top + 12;
+
+        // Get rotation angle for the direction (wind blows TO this direction, opposite of FROM)
+        const rotation = getWindRotation(point.direction) + 180;
+
+        // Draw arrow
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate((rotation * Math.PI) / 180);
+
+        // Draw arrow pointing down (wind direction indicator)
+        ctx.fillStyle = directionColor;
+        ctx.beginPath();
+        ctx.moveTo(0, -6);  // Top point
+        ctx.lineTo(4, 4);   // Bottom right
+        ctx.lineTo(0, 2);   // Bottom center notch
+        ctx.lineTo(-4, 4);  // Bottom left
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+    });
 }
 
 // ============================================================================
