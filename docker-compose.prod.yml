@@ -13,6 +13,8 @@ services:
       - "20245:80"
     networks:
       - bluegreen
+    depends_on:
+      - grafana
 
   varun-app-blue-live:
     image: ghcr.io/pwittchen/varun.surf:latest
@@ -61,3 +63,45 @@ services:
     profiles: ["green-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=green
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: varun-prometheus
+    restart: unless-stopped
+    volumes:
+      - /root/apps/varun.surf/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    expose:
+      - "9090"
+    networks:
+      - bluegreen
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: varun-grafana
+    restart: unless-stopped
+    volumes:
+      - /root/apps/varun.surf/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - /root/apps/varun.surf/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s/monitor
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    expose:
+      - "3000"
+    networks:
+      - bluegreen
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus-data:
+  grafana-data:

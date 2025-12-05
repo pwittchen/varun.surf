@@ -164,6 +164,22 @@ public class AggregatorService {
                 .count()).intValue();
     }
 
+    public int getForecastCacheSize() {
+        return forecastCache.size();
+    }
+
+    public int getCurrentConditionsCacheSize() {
+        return currentConditions.size();
+    }
+
+    public int getAiAnalysisCacheSize() {
+        return aiAnalysisEn.size() + aiAnalysisPl.size();
+    }
+
+    public int getCoordinatesCacheSize() {
+        return locationCoordinates.size();
+    }
+
     private boolean isEmptyConditions(CurrentConditions conditions) {
         return conditions.wind() == 0 &&
                 conditions.gusts() == 0 &&

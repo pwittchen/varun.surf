@@ -93,6 +93,10 @@ To do that, follow the instructions below.
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.
 
+We can view grafana monitoring page, by visiting [/monitor](https://varun.surf/monitor) page (protected by the password).
+
+Password for grafana is configured in the `.env` file.
+
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
@@ -111,6 +115,8 @@ docker run -p 8080:8080 varun-surf \
     --app.ai.provider=openai \
     --spring.ai.openai.api-key=your-api-key-here
 ```
+
+You can also configure OpenAI API key in the `.env` file.
 
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
 so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs

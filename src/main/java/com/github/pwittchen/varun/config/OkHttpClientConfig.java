@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.config;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpMetricsEventListener;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class OkHttpClientConfig {
 
     @Bean
-    public OkHttpClient okHttpClient() {
+    public OkHttpClient okHttpClient(MeterRegistry meterRegistry) {
         return new OkHttpClient
                 .Builder()
                 .connectTimeout(Duration.ofSeconds(10))
@@ -23,6 +25,7 @@ public class OkHttpClientConfig {
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .retryOnConnectionFailure(true)
+                .eventListener(OkHttpMetricsEventListener.builder(meterRegistry, "okhttp.requests").build())
                 .build();
     }
 }
