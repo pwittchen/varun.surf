@@ -21,7 +21,7 @@
   - JavaTuples (tuple data structures)
 - **Containerization**: Docker, deployed to GitHub Container Registry (GHCR)
 - **Frontend**: Vanilla JavaScript, HTML, CSS (no framework)
-- **Testing Framework**: JUnit 5, Truth assertions library, MockWebServer
+- **Testing Framework**: JUnit 5, Truth assertions library, MockWebServer, Playwright (E2E)
 
 ## System Architecture
 
@@ -328,8 +328,14 @@ spring:
 # Build and run locally
 ./gradlew bootRun
 
-# Run tests
+# Run unit tests
 ./gradlew test
+
+# Run E2E tests (headless mode for CI)
+./gradlew testE2e
+
+# Run E2E tests (visible browser for debugging)
+./gradlew testE2eNoHeadless
 
 # Run with coverage
 ./gradlew test jacocoTestReport
@@ -352,7 +358,9 @@ docker run -p 8080:8080 -e OPENAI_API_KEY=your_key varun-surf
 
 ### Gradle Tasks
 - `./gradlew bootRun` - Run Spring Boot application
-- `./gradlew test` - Run tests
+- `./gradlew test` - Run unit tests
+- `./gradlew testE2e` - Run E2E tests (headless)
+- `./gradlew testE2eNoHeadless` - Run E2E tests (visible browser)
 - `./gradlew build` - Build JAR
 - `./gradlew clean` - Clean build artifacts
 - `./gradlew jacocoTestReport` - Generate test coverage report
@@ -381,9 +389,26 @@ docker run -p 8080:8080 -e OPENAI_API_KEY=your_key varun-surf
 - **Assertions**: Google Truth library (`assertThat()`)
 - **Mocking**: Mockito for service mocking
 - **HTTP Mocking**: MockWebServer for external API calls
+- **E2E Testing**: Playwright with Chromium browser
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Structure**: Given-When-Then or Arrange-Act-Assert
 - **Test Naming**: `methodName_scenario_expectedBehavior()`
+
+### E2E Testing
+- **Framework**: Playwright with Chromium browser
+- **Location**: `src/e2e/java/com/github/pwittchen/varun/e2e/`
+- **Base Class**: `BaseE2eTest` - starts embedded Spring Boot app, manages Playwright lifecycle
+- **Test Classes**:
+  - `MainPageE2eTest` - main page functionality (spots grid, search, country filter, view toggles, theme, modals)
+  - `SingleSpotE2eTest` - single spot view (forecast tabs, model dropdown, chart view, navigation)
+  - `StatusPageE2eTest` - status page (system status, API endpoints, service info, refresh)
+- **Commands**:
+  - `./gradlew testE2e` - run in headless mode (for CI)
+  - `./gradlew testE2eNoHeadless` - run with visible browser (for debugging)
+- **Configuration**:
+  - Tests start embedded Spring Boot server on port 8080
+  - Default timeout: 60s, navigation timeout: 90s
+  - Viewport: 1920x1080
 
 ### Code Organization
 ```

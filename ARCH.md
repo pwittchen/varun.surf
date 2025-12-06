@@ -249,6 +249,8 @@ Build:
   - Gradle 8.x with Java 24 + preview features enabled
   - ./gradlew build (build) or ./gradlew bootRun (build + run)
   - ./gradlew test (JUnit 5 + Truth assertions)
+  - ./gradlew testE2e (Playwright E2E tests, headless)
+  - ./gradlew testE2eNoHeadless (E2E tests with visible browser)
 
 Configuration:
   - application.yml (NOT .properties)
@@ -459,6 +461,81 @@ src/main/java/com/github/pwittchen/varun/
     │   └── GoogleMapsService.java        # Maps URL converter
     └── sponsors/
         └── SponsorsService.java          # Sponsors management
+
+src/e2e/java/com/github/pwittchen/varun/e2e/
+├── BaseE2eTest.java                      # Base class: Spring Boot + Playwright setup
+├── MainPageE2eTest.java                  # Main page tests (spots, filters, modals)
+├── SingleSpotE2eTest.java                # Single spot view tests (tabs, models)
+└── StatusPageE2eTest.java                # Status page tests (system info, endpoints)
+```
+
+### E2E Testing Architecture
+```
+E2E Test Execution Flow:
+  @BeforeAll (per test class)
+    -> SpringApplication.run() starts embedded server on port 8080
+    -> waitForApplicationReady() polls /api/v1/health
+    -> Playwright.create() initializes browser automation
+    -> browser.chromium().launch() starts Chromium (headless or visible)
+
+  @BeforeEach (per test method)
+    -> browser.newContext() creates isolated browser context
+    -> context.newPage() creates new browser page
+    -> page.setDefaultTimeout(60000) configures timeouts
+
+  Test Execution
+    -> page.navigate(BASE_URL + path) loads page
+    -> page.locator(selector).waitFor() waits for elements
+    -> page.locator(selector).click() / .fill() / etc. interacts
+    -> assertThat(condition).isTrue() verifies expectations
+
+  @AfterEach (per test method)
+    -> context.close() cleans up browser context
+
+  @AfterAll (per test class)
+    -> browser.close() closes Chromium
+    -> playwright.close() cleans up Playwright
+    -> applicationContext.close() stops Spring Boot
+
+Test Classes:
+  MainPageE2eTest (10 tests)
+    - Page loading and title verification
+    - Spots grid display with cards
+    - Grid/list view toggle (#columnToggle)
+    - Map view toggle (#mapToggle)
+    - Info modal open/close (#infoToggle, #appInfoModal)
+    - Kite size calculator modal (#kiteSizeToggle, #kiteSizeModal)
+    - Search filtering (#searchInput)
+    - Theme toggle (#themeToggle)
+    - Country dropdown filter (#dropdownButton, #dropdownMenu)
+
+  SingleSpotE2eTest (8 tests)
+    - Spot page loading (/spot/{wgId})
+    - Spot container content display
+    - Forecast tabs switching
+    - Chart view toggle
+    - Model dropdown (GFS/IFS) (#modelDropdown)
+    - Info modal on spot page
+    - Theme toggle on spot page
+    - Navigation back to main page via logo
+    - Language toggle (#languageToggle)
+
+  StatusPageE2eTest (8 tests)
+    - Status page loading (/status)
+    - System status indicator (#status-indicator)
+    - Service information display (version, uptime, spots count)
+    - API endpoints status (.status-endpoint)
+    - Refresh status button (#refresh-status)
+    - Back to dashboard navigation (a[href='/'])
+    - Operational status text
+    - Last updated timestamp (#last-updated)
+
+Configuration:
+  - Headless mode: controlled by -Dplaywright.headless=true/false
+  - Viewport: 1920x1080
+  - Default timeout: 60s
+  - Navigation timeout: 90s
+  - Browser: Chromium (via Playwright)
 ```
 
 ### Legend

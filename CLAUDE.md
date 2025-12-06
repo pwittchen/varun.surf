@@ -19,7 +19,7 @@
   - JavaTuples
 - **Containerization**: Docker with GHCR deployment
 - **Frontend**: Vanilla JavaScript (static/index.html)
-- **Testing**: JUnit 5, Truth assertions, MockWebServer
+- **Testing**: JUnit 5, Truth assertions, MockWebServer, Playwright (E2E)
 
 ## Architecture Overview
 
@@ -206,6 +206,12 @@ spring:
 # Test
 ./gradlew test
 
+# E2E tests (headless)
+./gradlew testE2e
+
+# E2E tests (visible browser)
+./gradlew testE2eNoHeadless
+
 # Docker
 docker build -t varun-surf .
 docker run -p 8080:8080 varun-surf
@@ -223,8 +229,22 @@ docker run -p 8080:8080 varun-surf
 ### Testing
 - Unit tests use JUnit 5 + Truth assertions
 - MockWebServer for HTTP mocking
+- E2E tests use Playwright with Chromium browser
 - Test coverage for services, controllers, mappers, and strategies
 - Test coverage should be at least 80%
+
+### E2E Testing
+- **Framework**: Playwright with Chromium browser
+- **Location**: `src/e2e/java/com/github/pwittchen/varun/e2e/`
+- **Base Class**: `BaseE2eTest` - starts Spring Boot app, manages Playwright lifecycle
+- **Test Classes**:
+  - `MainPageE2eTest` - main page functionality (spots grid, filters, modals, theme)
+  - `SingleSpotE2eTest` - single spot view (forecast tabs, model dropdown, navigation)
+  - `StatusPageE2eTest` - status page (system status, API endpoints, refresh)
+- **Commands**:
+  - `./gradlew testE2e` - run headless (CI mode)
+  - `./gradlew testE2eNoHeadless` - run with visible browser (debugging)
+- **Configuration**: Tests start embedded Spring Boot server on port 8080
 
 ### Code Organization
 ```
