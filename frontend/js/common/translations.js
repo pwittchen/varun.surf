@@ -417,7 +417,7 @@ export const translations = {
         filterWindyDaysLabel: "Pokaż wietrzne dni",
         noWindyDaysMessage: "Brak wietrznych dni!",
         dataSourceForecast: "Prognoza",
-        dataSourceLiveData: "Dane live",
+        dataSourceLiveData: "Na żywo",
         chartWindLabel: "Wiatr",
         chartGustLabel: "Porywy",
         chartDirectionLabel: "Kierunek",
