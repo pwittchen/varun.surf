@@ -617,7 +617,6 @@ body {
     position: absolute;
     top: 18px;
     left: 28px;
-    font-size: 1.2rem;
     cursor: grab;
     color: var(--text-secondary);
     transition: color 0.2s ease;
@@ -628,8 +627,15 @@ body {
     border-bottom: 1px solid var(--border-primary);
 }
 
+.drag-handle .drag-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
 .three-columns .drag-handle {
-    padding-bottom: 41px;
+    padding-bottom: 43px;
+    top: 28px !important;
 }
 
 .drag-handle:hover {

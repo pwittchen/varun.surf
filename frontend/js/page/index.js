@@ -1372,7 +1372,7 @@ function createSpotCard(spot) {
     const favoriteClass = isFavorited ? 'favorited' : '';
 
     card.innerHTML = `
-                <div class="drag-handle" draggable="true">𓃌</div>
+                <div class="drag-handle" draggable="true"><svg class="drag-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg></div>
                 <div class="spot-header">
                     <div class="spot-title">
                         <div class="spot-name" onclick="window.location.href='/spot/${spot.wgId}'">${spot.name || 'Unknown Spot'}</div>
