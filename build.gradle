@@ -67,6 +67,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.google.truth:truth:1.4.4'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+    testImplementation 'com.microsoft.playwright:playwright:1.49.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -115,4 +116,46 @@ tasks.register('run') {
 
 tasks.named('bootJar') {
     dependsOn 'buildFrontend'
+}
+
+sourceSets {
+    e2e {
+        java {
+            srcDir 'src/e2e/java'
+        }
+        resources {
+            srcDir 'src/e2e/resources'
+        }
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    e2eImplementation.extendsFrom testImplementation
+    e2eRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+tasks.register('testE2e', Test) {
+    description = 'Runs E2E tests with Playwright in headless mode'
+    group = 'verification'
+    testClassesDirs = sourceSets.e2e.output.classesDirs
+    classpath = sourceSets.e2e.runtimeClasspath
+    useJUnitPlatform()
+    jvmArgs '--enable-preview'
+    systemProperty 'playwright.headless', 'true'
+    dependsOn 'assemble'
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('testE2eNoHeadless', Test) {
+    description = 'Runs E2E tests with Playwright in visible browser mode'
+    group = 'verification'
+    testClassesDirs = sourceSets.e2e.output.classesDirs
+    classpath = sourceSets.e2e.runtimeClasspath
+    useJUnitPlatform()
+    jvmArgs '--enable-preview'
+    systemProperty 'playwright.headless', 'false'
+    dependsOn 'assemble'
+    outputs.upToDateWhen { false }
 }

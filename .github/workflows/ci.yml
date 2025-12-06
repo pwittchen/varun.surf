@@ -50,4 +50,24 @@ jobs:
         run: ./gradlew assemble --stacktrace --build-cache
 
       - name: Test
-        run: ./gradlew test --stacktrace --build-cache
+        run: ./gradlew test --stacktrace --build-cache --rerun-tasks
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: ./gradlew --stop && npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: E2E Test
+        run: ./gradlew testE2e --stacktrace --build-cache

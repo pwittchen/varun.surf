@@ -27,6 +27,18 @@ see it online at: https://varun.surf
 ./gradlew test
 ```
 
+## e2e testing
+
+```
+./gradlew testE2e
+```
+
+or when you want to see the browser window:
+
+```
+./gradlew testE2eNoHeadless
+```
+
 ## docker
 
 ```
