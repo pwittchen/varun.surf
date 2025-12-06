@@ -39,6 +39,16 @@ services:
     profiles: ["blue-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=blue
+    depends_on:
+      - loki
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+        loki-batch-size: "100"
+        loki-retries: "5"
+        loki-max-backoff: "800ms"
+        loki-external-labels: "job=varun-app,container=varun-app-blue"
 
   varun-app-green-live:
     image: ghcr.io/pwittchen/varun.surf:latest
@@ -63,6 +73,16 @@ services:
     profiles: ["green-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=green
+    depends_on:
+      - loki
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+        loki-batch-size: "100"
+        loki-retries: "5"
+        loki-max-backoff: "800ms"
+        loki-external-labels: "job=varun-app,container=varun-app-green"
 
   prometheus:
     image: prom/prometheus:v2.47.0
@@ -101,7 +121,23 @@ services:
       - bluegreen
     depends_on:
       - prometheus
+      - loki
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: varun-loki
+    restart: unless-stopped
+    user: "0"
+    volumes:
+      - /root/apps/varun.surf/monitoring/loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "127.0.0.1:3100:3100"
+    networks:
+      - bluegreen
 
 volumes:
   prometheus-data:
   grafana-data:
+  loki-data:
