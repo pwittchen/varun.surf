@@ -23,17 +23,19 @@ see it online at: https://varun.surf
 
 ## testing
 
+unit testing:
+
 ```
 ./gradlew test
 ```
 
-## e2e testing
+e2e testing:
 
 ```
 ./gradlew testE2e
 ```
 
-or when you want to see the browser window:
+e2e testing with visible browser:
 
 ```
 ./gradlew testE2eNoHeadless
