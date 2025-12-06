@@ -49,6 +49,9 @@ let embedViewSelection = 'conditions';
 let embedThemeSelection = 'dark';
 let embedLanguageSelection = 'en';
 
+// Selected data source ('forecast' or 'liveData')
+let selectedDataSource = 'forecast';
+
 // ============================================================================
 // CONFIGURATION CONSTANTS
 // ============================================================================
@@ -850,10 +853,59 @@ function setFilterWindyDaysPreference(enabled) {
     localStorage.setItem('filterWindyDays', enabled ? 'true' : 'false');
 }
 
+// Check if spot has sufficient live data history (>= 5 readings)
+function hasLiveDataHistory(spot) {
+    return spot &&
+           spot.currentConditionsHistory &&
+           Array.isArray(spot.currentConditionsHistory) &&
+           spot.currentConditionsHistory.length >= 5;
+}
+
+// Get selected data source
+function getSelectedDataSource() {
+    return selectedDataSource;
+}
+
+// Set selected data source
+function setSelectedDataSource(source) {
+    selectedDataSource = source;
+}
+
+// Format live data time without seconds (e.g., "2025-01-15 14:30:45" -> "2025-01-15 14:30")
+function formatLiveDataTime(dateStr) {
+    if (!dateStr) return '';
+    // Remove seconds from time if present (HH:MM:SS -> HH:MM)
+    return dateStr.replace(/(\d{2}:\d{2}):\d{2}/, '$1');
+}
+
+// Convert currentConditionsHistory to forecast-like format for views
+function convertHistoryToForecastFormat(history) {
+    if (!history || !Array.isArray(history)) return [];
+
+    return history.map(condition => ({
+        date: formatLiveDataTime(condition.date),
+        wind: condition.wind || 0,
+        gusts: condition.gusts || 0,
+        direction: condition.direction || '',
+        temp: condition.temp || 0,
+        precipitation: 0, // Live data doesn't have precipitation
+        wave: undefined,  // Live data doesn't have wave data
+        isLiveData: true  // Flag to identify live data entries
+    }));
+}
+
 // Create a Windguru-style horizontal forecast view
 function createWindguruView(forecastData, hasWaveData) {
     if (!forecastData || forecastData.length === 0) {
         return '';
+    }
+
+    // Check if this is live data (from currentConditionsHistory)
+    const isLiveData = forecastData.length > 0 && forecastData[0].isLiveData;
+
+    // For live data, create a simpler single-column view
+    if (isLiveData) {
+        return createWindguruViewForLiveData(forecastData);
     }
 
     // Group forecasts by day
@@ -1020,27 +1072,121 @@ function createWindguruView(forecastData, hasWaveData) {
     return windguruHtml;
 }
 
+// Create a Windguru-style horizontal view for live data (simpler layout without day grouping)
+function createWindguruViewForLiveData(liveData) {
+    if (!liveData || liveData.length === 0) {
+        return '';
+    }
+
+    let windguruHtml = '<div class="forecast-view windguru-view">';
+    windguruHtml += '<div class="windguru-wrapper">';
+
+    // Sticky labels column (no precipitation or wave for live data)
+    windguruHtml += '<div class="windguru-labels">';
+    windguruHtml += '<div class="windguru-label-header"></div>';
+    windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
+    windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
+    windguruHtml += '</div>';
+
+    // Scrollable data container - single column for all live data
+    windguruHtml += '<div class="windguru-data-container">';
+    windguruHtml += '<div class="windguru-data">';
+
+    // Single column for live data
+    windguruHtml += `<div class="windguru-day-column">`;
+    windguruHtml += `<div class="windguru-day-header">${t('dataSourceLiveData')}</div>`;
+
+    // Time row
+    windguruHtml += `<div class="windguru-data-row">`;
+    liveData.forEach(entry => {
+        // For live data, date format is simpler (e.g., "2025-01-15 14:30")
+        const time = entry.date ? entry.date.split(' ')[1] || entry.date : '';
+        windguruHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
+    });
+    windguruHtml += `</div>`;
+
+    // Wind speed row
+    windguruHtml += `<div class="windguru-data-row">`;
+    liveData.forEach(entry => {
+        let windClass = '';
+        if (entry.wind < 12) windClass = 'wind-weak';
+        else if (entry.wind >= 12 && entry.wind <= 18) windClass = 'wind-moderate';
+        else if (entry.wind >= 19 && entry.wind <= 25) windClass = 'wind-strong';
+        else windClass = 'wind-extreme';
+        windguruHtml += `<div class="windguru-cell ${windClass}">${entry.wind}</div>`;
+    });
+    windguruHtml += `</div>`;
+
+    // Gust speed row
+    windguruHtml += `<div class="windguru-data-row">`;
+    liveData.forEach(entry => {
+        let windClass = '';
+        if (entry.gusts < 12) windClass = 'wind-weak';
+        else if (entry.gusts >= 12 && entry.gusts <= 18) windClass = 'wind-moderate';
+        else if (entry.gusts >= 19 && entry.gusts <= 25) windClass = 'wind-strong';
+        else windClass = 'wind-extreme';
+        windguruHtml += `<div class="windguru-cell ${windClass}">${entry.gusts}</div>`;
+    });
+    windguruHtml += `</div>`;
+
+    // Direction row
+    windguruHtml += `<div class="windguru-data-row">`;
+    liveData.forEach(entry => {
+        const windArrow = getWindArrow(entry.direction);
+        windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${entry.direction}</span></div>`;
+    });
+    windguruHtml += `</div>`;
+
+    // Temperature row
+    windguruHtml += `<div class="windguru-data-row">`;
+    liveData.forEach(entry => {
+        const tempClass = entry.temp >= 18 ? 'temp-positive' : 'temp-negative';
+        windguruHtml += `<div class="windguru-cell ${tempClass}">${entry.temp}°</div>`;
+    });
+    windguruHtml += `</div>`;
+
+    windguruHtml += `</div>`; // Close day column
+    windguruHtml += '</div>'; // Close windguru-data
+    windguruHtml += '</div>'; // Close windguru-data-container
+    windguruHtml += '</div>'; // Close windguru-wrapper
+    windguruHtml += '</div>'; // Close windguru-view
+
+    return windguruHtml;
+}
+
 // Create wind/gust line chart view
 function createChartView(forecastData) {
     if (!forecastData || forecastData.length === 0) {
         return '<div class="forecast-view chart-view"></div>';
     }
 
-    const filterWindyDays = getFilterWindyDaysPreference();
+    // Check if this is live data (from currentConditionsHistory)
+    const isLiveData = forecastData.length > 0 && forecastData[0].isLiveData;
 
-    // Filter to daytime hours and apply windy days filter if enabled
-    const filteredData = forecastData.filter(forecast => {
-        if (!forecast.date) return false;
-        const time = forecast.date.split(' ')[4];
-        if (!time) return false;
-        const hour = parseInt(time.split(':')[0]);
-        if (hour < 6 || hour > 21) return false;
+    let filteredData;
+    if (isLiveData) {
+        // Live data: show all entries, no filtering
+        filteredData = [...forecastData];
+    } else {
+        const filterWindyDays = getFilterWindyDaysPreference();
 
-        if (filterWindyDays) {
-            return forecast.wind >= 12 || forecast.gusts >= 12;
-        }
-        return true;
-    });
+        // Filter to daytime hours and apply windy days filter if enabled
+        filteredData = forecastData.filter(forecast => {
+            if (!forecast.date) return false;
+            const time = forecast.date.split(' ')[4];
+            if (!time) return false;
+            const hour = parseInt(time.split(':')[0]);
+            if (hour < 6 || hour > 21) return false;
+
+            if (filterWindyDays) {
+                return forecast.wind >= 12 || forecast.gusts >= 12;
+            }
+            return true;
+        });
+    }
 
     if (filteredData.length === 0) {
         return `
@@ -1061,8 +1207,8 @@ function createChartView(forecastData) {
         direction: forecast.direction
     }));
 
-    // Store chart data for rendering
-    const chartDataJson = JSON.stringify(chartData);
+    // Store chart data for rendering (include isLiveData flag for label formatting)
+    const chartDataJson = JSON.stringify({ data: chartData, isLiveData: isLiveData });
 
     return `
         <div class="forecast-view chart-view">
@@ -1093,7 +1239,10 @@ function renderWindChart() {
     const chartDataAttr = container.getAttribute('data-chart');
     if (!chartDataAttr) return;
 
-    const chartData = JSON.parse(chartDataAttr);
+    const chartDataParsed = JSON.parse(chartDataAttr);
+    // Handle both old format (array) and new format (object with data and isLiveData)
+    const chartData = Array.isArray(chartDataParsed) ? chartDataParsed : chartDataParsed.data;
+    const isLiveDataChart = !Array.isArray(chartDataParsed) && chartDataParsed.isLiveData;
     if (!chartData || chartData.length === 0) return;
 
     const canvas = document.getElementById('windChartCanvas');
@@ -1191,21 +1340,31 @@ function renderWindChart() {
     chartData.forEach((point, i) => {
         if (i % labelInterval === 0 || i === chartData.length - 1) {
             const x = padding.left + (i * xStep);
-            const timeParts = point.time.split(' ');
-            const dayPart = timeParts.slice(0, 3).join(' '); // e.g., "Fri Jan 10"
-            const time = timeParts[4] || ''; // e.g., "12:00"
 
-            // Draw time
-            ctx.fillText(time, x, height - padding.bottom + 8);
+            if (isLiveDataChart) {
+                // Live data: show only the hour (HH:MM), no date
+                // Live data format is "2025-01-15 14:30"
+                const timeParts = point.time.split(' ');
+                const time = timeParts[1] || timeParts[0] || ''; // Get time part (HH:MM)
+                ctx.fillText(time, x, height - padding.bottom + 8);
+            } else {
+                // Forecast: show time and day label
+                const timeParts = point.time.split(' ');
+                const dayPart = timeParts.slice(0, 3).join(' '); // e.g., "Fri Jan 10"
+                const time = timeParts[4] || ''; // e.g., "12:00"
 
-            // Draw day label if it changed
-            if (dayPart !== lastDayLabel) {
-                ctx.fillStyle = textPrimaryColor;
-                ctx.font = '10px system-ui, -apple-system, sans-serif';
-                ctx.fillText(dayPart.split(' ').slice(0, 2).join(' '), x, height - padding.bottom + 22);
-                ctx.fillStyle = textColor;
-                ctx.font = '10px system-ui, -apple-system, sans-serif';
-                lastDayLabel = dayPart;
+                // Draw time
+                ctx.fillText(time, x, height - padding.bottom + 8);
+
+                // Draw day label if it changed
+                if (dayPart !== lastDayLabel) {
+                    ctx.fillStyle = textPrimaryColor;
+                    ctx.font = '10px system-ui, -apple-system, sans-serif';
+                    ctx.fillText(dayPart.split(' ').slice(0, 2).join(' '), x, height - padding.bottom + 22);
+                    ctx.fillStyle = textColor;
+                    ctx.font = '10px system-ui, -apple-system, sans-serif';
+                    lastDayLabel = dayPart;
+                }
             }
         }
     });
@@ -1610,13 +1769,25 @@ function setupSpotMediaTabs() {
 function createSpotCard(spot) {
     const countryFlag = getCountryFlag(spot.country);
 
-    // Use forecastHourly if available, otherwise fall back to forecast
-    const forecastData = (spot.forecastHourly && spot.forecastHourly.length > 0)
-        ? spot.forecastHourly
-        : (spot.forecast || []);
+    // Check if spot has sufficient live data history for data source dropdown
+    const showDataSourceDropdown = hasLiveDataHistory(spot);
 
-    // Check if any forecast has wave data
-    const hasWaveData = forecastData && forecastData.some(day => day.wave !== undefined);
+    // Determine data source: use live data if selected and available, otherwise forecast
+    const isLiveDataMode = showDataSourceDropdown && getSelectedDataSource() === 'liveData';
+
+    // Use forecastHourly if available, otherwise fall back to forecast
+    // When in live data mode, use converted history data
+    let forecastData;
+    if (isLiveDataMode) {
+        forecastData = convertHistoryToForecastFormat(spot.currentConditionsHistory);
+    } else {
+        forecastData = (spot.forecastHourly && spot.forecastHourly.length > 0)
+            ? spot.forecastHourly
+            : (spot.forecast || []);
+    }
+
+    // Check if any forecast has wave data (live data doesn't have wave data)
+    const hasWaveData = !isLiveDataMode && forecastData && forecastData.some(day => day.wave !== undefined);
 
     // Determine layout (desktop vs mobile)
     const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
@@ -1627,8 +1798,9 @@ function createSpotCard(spot) {
     // BUILD CURRENT CONDITIONS ROW (for table)
     // ========================================================================
 
+    // Don't show current conditions row in live data mode (history already includes all data)
     let currentConditionsRow = '';
-    if (spot.currentConditions && spot.currentConditions.wind !== undefined) {
+    if (!isLiveDataMode && spot.currentConditions && spot.currentConditions.wind !== undefined) {
         let windClass, windTextClass;
         const avgWind = (spot.currentConditions.wind + spot.currentConditions.gusts) / 2;
         if (avgWind < 12) {
@@ -1690,36 +1862,45 @@ function createSpotCard(spot) {
         let previousDay = null;
         let dayColorIndex = 0;
 
-        // Filter to only show daytime hours (06:00 to 21:00)
-        let daytimeForecasts = forecastData.filter(day => {
-            if (!day.date) return false;
-            const time = day.date.split(' ')[4];
-            if (!time) return false;
-            const hour = parseInt(time.split(':')[0]);
-            return hour >= 6 && hour <= 21;
-        });
-
-        // Apply windy days filter if enabled
-        const filterWindyDays = getFilterWindyDaysPreference();
-        if (filterWindyDays) {
-            // Group by day and filter days without windy conditions
-            const groupedByDay = {};
-            daytimeForecasts.forEach(forecast => {
-                const dayKey = forecast.date ? forecast.date.split(' ').slice(0, 4).join(' ') : 'Unknown';
-                if (!groupedByDay[dayKey]) {
-                    groupedByDay[dayKey] = [];
-                }
-                groupedByDay[dayKey].push(forecast);
+        // For live data, show all entries; for forecast, filter to daytime hours (06:00 to 21:00)
+        let daytimeForecasts;
+        const isMobile = window.innerWidth <= 768;
+        if (isLiveDataMode) {
+            // Live data: show all entries, no filtering
+            // On mobile, reverse order to show most recent first
+            daytimeForecasts = isMobile ? [...forecastData].reverse() : [...forecastData];
+        } else {
+            // Forecast: filter to only show daytime hours (06:00 to 21:00)
+            daytimeForecasts = forecastData.filter(day => {
+                if (!day.date) return false;
+                const time = day.date.split(' ')[4];
+                if (!time) return false;
+                const hour = parseInt(time.split(':')[0]);
+                return hour >= 6 && hour <= 21;
             });
 
-            // Filter out days without windy conditions
-            daytimeForecasts = [];
-            Object.keys(groupedByDay).forEach(dayKey => {
-                const dayForecasts = groupedByDay[dayKey];
-                if (hasWindyConditions(dayForecasts)) {
-                    daytimeForecasts.push(...dayForecasts);
-                }
-            });
+            // Apply windy days filter if enabled (only for forecast mode)
+            const filterWindyDays = getFilterWindyDaysPreference();
+            if (filterWindyDays) {
+                // Group by day and filter days without windy conditions
+                const groupedByDay = {};
+                daytimeForecasts.forEach(forecast => {
+                    const dayKey = forecast.date ? forecast.date.split(' ').slice(0, 4).join(' ') : 'Unknown';
+                    if (!groupedByDay[dayKey]) {
+                        groupedByDay[dayKey] = [];
+                    }
+                    groupedByDay[dayKey].push(forecast);
+                });
+
+                // Filter out days without windy conditions
+                daytimeForecasts = [];
+                Object.keys(groupedByDay).forEach(dayKey => {
+                    const dayForecasts = groupedByDay[dayKey];
+                    if (hasWindyConditions(dayForecasts)) {
+                        daytimeForecasts.push(...dayForecasts);
+                    }
+                });
+            }
         }
 
         daytimeForecasts.forEach(day => {
@@ -1770,9 +1951,24 @@ function createSpotCard(spot) {
 
             previousDay = currentDay;
 
+            // Format date label: use raw date for live data (hour only on mobile), formatted date for forecast
+            let dateLabel;
+            if (day.isLiveData) {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    // Mobile: show only hour (HH:MM) for live data
+                    const timeParts = day.date.split(' ');
+                    dateLabel = timeParts[1] || timeParts[0] || '';
+                } else {
+                    dateLabel = day.date;
+                }
+            } else {
+                dateLabel = formatForecastDateLabel(day.date);
+            }
+
             forecastRows += `
                         <tr class="${windClass}" style="${combinedStyle}">
-                            <td><strong>${formatForecastDateLabel(day.date)}</strong></td>
+                            <td><strong>${dateLabel}</strong></td>
                             <td class="${windTextClass}">${day.wind} kts</td>
                             <td class="${windTextClass}">${day.gusts} kts</td>
                             <td class="${windTextClass}">
@@ -2085,6 +2281,17 @@ function createSpotCard(spot) {
                     ${aiAnalysisText ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 
+                ${!isDesktopView && showDataSourceDropdown ? `
+                <div class="mobile-data-source-container">
+                    <div class="data-source-radio-container">
+                        <input type="radio" name="dataSource" id="dataSourceForecastMobile" value="forecast" ${!isLiveDataMode ? 'checked' : ''} />
+                        <label for="dataSourceForecastMobile">${t('dataSourceForecast')}</label>
+                        <input type="radio" name="dataSource" id="dataSourceLiveDataMobile" value="liveData" ${isLiveDataMode ? 'checked' : ''} />
+                        <label for="dataSourceLiveDataMobile">${t('dataSourceLiveData')}</label>
+                    </div>
+                </div>
+                ` : ''}
+
                 <div class="spot-detail-container">
                     <div class="spot-detail-left">
                         ${currentConditionsCardHtml}
@@ -2117,11 +2324,21 @@ function createSpotCard(spot) {
                                     ${t('chartViewLabel')}
                                 </button>
                             </div>
-                            <div class="filter-windy-days-container">
-                                <label class="filter-windy-days-label">
-                                    <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
-                                    <span class="filter-text">${t('filterWindyDaysLabel')}</span>
-                                </label>
+                            <div class="forecast-filters-right">
+                                <div class="filter-windy-days-container" ${isLiveDataMode ? 'style="display: none;"' : ''}>
+                                    <label class="filter-windy-days-label">
+                                        <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
+                                        <span class="filter-text">${t('filterWindyDaysLabel')}</span>
+                                    </label>
+                                </div>
+                                ${showDataSourceDropdown ? `
+                                <div class="data-source-radio-container">
+                                    <input type="radio" name="dataSource" id="dataSourceForecast" value="forecast" ${!isLiveDataMode ? 'checked' : ''} />
+                                    <label for="dataSourceForecast">${t('dataSourceForecast')}</label>
+                                    <input type="radio" name="dataSource" id="dataSourceLiveData" value="liveData" ${isLiveDataMode ? 'checked' : ''} />
+                                    <label for="dataSourceLiveData">${t('dataSourceLiveData')}</label>
+                                </div>
+                                ` : ''}
                             </div>
                         </div>
                         ` : ''}
@@ -2221,6 +2438,9 @@ function displaySpot(spot) {
         // Setup filter windy days checkbox
         setupFilterWindyDaysCheckbox();
 
+        // Setup data source dropdown
+        setupDataSourceDropdown();
+
         // Setup media tabs if available
         setupSpotMediaTabs();
     }
@@ -2245,6 +2465,29 @@ function setupFilterWindyDaysCheckbox() {
         if (currentSpot) {
             displaySpot(currentSpot);
         }
+    });
+}
+
+// Setup data source radio buttons (Forecast / Live) - handles both desktop and mobile
+function setupDataSourceDropdown() {
+    const radioContainers = document.querySelectorAll('.data-source-radio-container');
+    if (!radioContainers.length) return;
+
+    radioContainers.forEach(container => {
+        const radioButtons = container.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const source = e.target.value;
+                if (source !== getSelectedDataSource()) {
+                    setSelectedDataSource(source);
+
+                    // Re-render the spot to apply the change
+                    if (currentSpot) {
+                        displaySpot(currentSpot);
+                    }
+                }
+            });
+        });
     });
 }
 

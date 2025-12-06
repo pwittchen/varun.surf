@@ -59,7 +59,7 @@ public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
     private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
-    private static final int CURRENT_CONDITIONS_HISTORY_LIMIT = 100;
+    private static final int CURRENT_CONDITIONS_HISTORY_LIMIT = 60; // keep readings from the last hour
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
