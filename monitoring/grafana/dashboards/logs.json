@@ -72,7 +72,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(count_over_time({job=\"varun-app\"} [$__range]))",
+          "expr": "sum(count_over_time({job=~\"varun-app.*\"} [$__range]))",
           "refId": "A"
         }
       ],
@@ -137,7 +137,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(count_over_time({job=\"varun-app\"} |= \"ERROR\" [$__range]))",
+          "expr": "sum(count_over_time({job=~\"varun-app.*\"} |= \"ERROR\" [$__range]))",
           "refId": "A"
         }
       ],
@@ -202,7 +202,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(count_over_time({job=\"varun-app\"} |= \"WARN\" [$__range]))",
+          "expr": "sum(count_over_time({job=~\"varun-app.*\"} |= \"WARN\" [$__range]))",
           "refId": "A"
         }
       ],
@@ -259,7 +259,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(count_over_time({job=\"varun-app\"} |= \"INFO\" [$__range]))",
+          "expr": "sum(count_over_time({job=~\"varun-app.*\"} |= \"INFO\" [$__range]))",
           "refId": "A"
         }
       ],
@@ -407,7 +407,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum by (level) (count_over_time({job=\"varun-app\"} | pattern `<timestamp> <level> <_>` [$__interval]))",
+          "expr": "sum by (level) (count_over_time({job=~\"varun-app.*\"} | pattern `<timestamp> <level> <_>` [$__interval]))",
           "legendFormat": "{{level}}",
           "refId": "A"
         }
@@ -457,7 +457,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "{job=\"varun-app\"} |= \"$search\"",
+          "expr": "{job=~\"varun-app.*\"} |= \"$search\"",
           "refId": "A"
         }
       ],
@@ -503,7 +503,7 @@
                 "type": "loki",
                 "uid": "loki"
               },
-              "expr": "{job=\"varun-app\"} |= \"ERROR\"",
+              "expr": "{job=~\"varun-app.*\"} |= \"ERROR\"",
               "refId": "A"
             }
           ],
@@ -553,7 +553,7 @@
                 "type": "loki",
                 "uid": "loki"
               },
-              "expr": "{job=\"varun-app\"} |= \"WARN\"",
+              "expr": "{job=~\"varun-app.*\"} |= \"WARN\"",
               "refId": "A"
             }
           ],

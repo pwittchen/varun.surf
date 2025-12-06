@@ -18,7 +18,5 @@ datasources:
     editable: false
     jsonData:
       maxLines: 1000
-      derivedFields:
-        - name: TraceID
-          matcherRegex: "traceId=(\\w+)"
-          url: ""
+      timeout: 60
+    secureJsonData: {}

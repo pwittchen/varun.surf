@@ -14,14 +14,15 @@ scrape_configs:
       - host: unix:///var/run/docker.sock
         refresh_interval: 5s
     relabel_configs:
-      # Only keep varun-app containers
-      - source_labels: ['__meta_docker_container_name']
-        regex: '/varun-app-.*'
-        action: keep
-      # Extract container name
+      # Set job label from compose service name
+      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
+        target_label: 'job'
+      # Fallback job label if no compose service
+      - source_labels: ['job']
+        regex: ''
+        replacement: 'docker'
+        target_label: 'job'
+      # Extract container name without leading slash
       - source_labels: ['__meta_docker_container_name']
         regex: '/(.*)'
         target_label: 'container'
-      # Set job label - this must come after keep
-      - replacement: 'varun-app'
-        target_label: 'job'
