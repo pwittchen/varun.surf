@@ -1686,7 +1686,7 @@ body {
     border-radius: 12px 12px 0 0;
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 40px 1fr 100px 100px 120px 80px 80px 1fr 40px;
+    grid-template-columns: 24px 40px 1fr 100px 100px 120px 80px 80px 1fr 40px;
     gap: 16px;
     align-items: center;
     font-weight: 600;
@@ -1759,7 +1759,7 @@ body {
     border-bottom: 1px solid var(--border-primary);
     padding: 16px 20px;
     display: grid;
-    grid-template-columns: 40px 1fr 100px 100px 120px 80px 80px 1fr 40px;
+    grid-template-columns: 24px 40px 1fr 100px 100px 120px 80px 80px 1fr 40px;
     gap: 16px;
     align-items: center;
     font-size: 0.95rem;
@@ -1911,11 +1911,56 @@ body {
     fill: #f59e0b;
 }
 
+/* List view drag handle styles */
+.list-drag-header {
+    cursor: default;
+}
+
+.list-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    color: var(--text-tertiary);
+    transition: color 0.2s ease;
+}
+
+.list-drag-handle:hover {
+    color: var(--text-primary);
+}
+
+.list-drag-handle:active {
+    cursor: grabbing;
+}
+
+.list-drag-handle .drag-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.list-row.dragging {
+    opacity: 0.3;
+    cursor: grabbing;
+}
+
+.list-row-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0.8;
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-primary);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+    cursor: grabbing;
+}
+
 /* Mobile responsiveness for list view */
 @media (max-width: 1200px) {
     .spots-list-header,
     .list-row {
-        grid-template-columns: 40px 1fr 90px 90px 100px 70px 70px 120px 40px;
+        grid-template-columns: 24px 40px 1fr 90px 90px 100px 70px 70px 120px 40px;
         gap: 12px;
         font-size: 0.85rem;
     }
@@ -1937,13 +1982,15 @@ body {
         font-size: 0.8rem;
     }
 
-    /* Hide direction, rain, and country columns on mobile */
-    .spots-list-header .header-cell:nth-child(5),
-    .spots-list-header .header-cell:nth-child(7),
+    /* Hide drag handle, direction, rain, and country columns on mobile */
+    .spots-list-header .header-cell:nth-child(1),
+    .spots-list-header .header-cell:nth-child(6),
     .spots-list-header .header-cell:nth-child(8),
-    .list-row > div:nth-child(5),
-    .list-row > div:nth-child(7),
-    .list-row > div:nth-child(8) {
+    .spots-list-header .header-cell:nth-child(9),
+    .list-row > div:nth-child(1),
+    .list-row > div:nth-child(6),
+    .list-row > div:nth-child(8),
+    .list-row > div:nth-child(9) {
         display: none;
     }
 }

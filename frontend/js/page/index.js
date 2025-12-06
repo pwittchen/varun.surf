@@ -1474,6 +1474,7 @@ function createListHeader() {
     header.className = 'spots-list-header';
 
     const columns = [
+        { key: '', label: '', sortable: false, isDragHandle: true },
         { key: '', label: '', sortable: false, isCheckbox: true },
         { key: 'spot', label: t('spotHeader'), sortable: true },
         { key: 'wind', label: t('windHeader'), sortable: true },
@@ -1489,7 +1490,10 @@ function createListHeader() {
         const cell = document.createElement('div');
         cell.className = 'header-cell';
 
-        if (col.isCheckbox) {
+        if (col.isDragHandle) {
+            // Empty header cell for drag handle column
+            cell.className = 'header-cell list-drag-header';
+        } else if (col.isCheckbox) {
             // Create checkbox in first column
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
@@ -1527,6 +1531,7 @@ function createListRow(spot) {
     const row = document.createElement('div');
     row.className = 'list-row';
     row.dataset.country = t(spot.country.replace(/\s+/g, ''));
+    row.dataset.spotId = spot.wgId;
 
     const spotConditions = getSpotConditions(spot);
     const isCurrent = spotConditions && spotConditions.isCurrent;
@@ -1534,6 +1539,19 @@ function createListRow(spot) {
     if (isCurrent) {
         row.classList.add('current-conditions');
     }
+
+    // Drag handle column
+    const dragHandleCell = document.createElement('div');
+    dragHandleCell.className = 'list-drag-handle';
+    dragHandleCell.innerHTML = `
+        <svg class="drag-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="4" cy="4" r="1.5"/>
+            <circle cx="12" cy="4" r="1.5"/>
+            <circle cx="4" cy="12" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+        </svg>
+    `;
+    row.appendChild(dragHandleCell);
 
     // Indicator column
     const indicatorCell = document.createElement('div');
@@ -1639,8 +1657,16 @@ function handleListSort(column) {
         listSortDirection = 'asc';
     }
 
+    // Clear any saved custom list order when sorting is applied
+    clearListOrder();
+
     // Re-render with sorted data
     renderSpots(currentFilter, currentSearchQuery, true);
+}
+
+function clearListOrder() {
+    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
+    localStorage.removeItem(orderKey);
 }
 
 function sortSpots(spots, sortColumn, sortDirection) {
@@ -1759,6 +1785,7 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                 sortedSpots.forEach(spot => {
                     spotsGrid.appendChild(createListRow(spot));
                 });
+                loadListOrder();
             } else {
                 // Render grid view
                 filteredSpots.forEach(spot => {
@@ -1977,6 +2004,168 @@ function loadCardOrder() {
         });
     } catch (e) {
         console.error('Failed to load card order:', e);
+    }
+}
+
+// ============================================================================
+// LIST VIEW DRAG AND DROP FUNCTIONALITY
+// ============================================================================
+
+function setupListDragAndDrop() {
+    const spotsGrid = document.getElementById('spotsGrid');
+    let draggedRow = null;
+    let dragGhost = null;
+    let ghostOffsetY = 0;
+    let isDragging = false;
+
+    spotsGrid.addEventListener('mousedown', handleDragStart);
+    spotsGrid.addEventListener('touchstart', handleDragStart, { passive: false });
+
+    function handleDragStart(e) {
+        // Only handle list view
+        if (currentViewMode !== 'list') return;
+
+        const handle = e.target.closest('.list-drag-handle');
+        if (!handle) return;
+
+        const row = handle.closest('.list-row');
+        if (!row) return;
+
+        e.preventDefault();
+        isDragging = true;
+        draggedRow = row;
+
+        // Clear sorting state when drag starts
+        if (listSortColumn) {
+            listSortColumn = null;
+            listSortDirection = 'asc';
+            // Remove sorting indicators from header
+            const headerCells = spotsGrid.querySelectorAll('.header-cell.sortable');
+            headerCells.forEach(cell => {
+                cell.classList.remove('sorted-asc', 'sorted-desc');
+            });
+        }
+
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+        // Create ghost element
+        const rect = row.getBoundingClientRect();
+        ghostOffsetY = clientY - rect.top;
+        dragGhost = row.cloneNode(true);
+        dragGhost.classList.add('list-row-ghost');
+        dragGhost.style.width = rect.width + 'px';
+        dragGhost.style.left = rect.left + 'px';
+        dragGhost.style.top = (clientY - ghostOffsetY) + 'px';
+        document.body.appendChild(dragGhost);
+
+        row.classList.add('dragging');
+
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
+    }
+
+    function handleDragMove(e) {
+        if (!isDragging || !draggedRow || !dragGhost) return;
+
+        e.preventDefault();
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+        // Move ghost to follow cursor
+        dragGhost.style.top = (clientY - ghostOffsetY) + 'px';
+
+        // Find the row we're hovering over
+        const rows = Array.from(spotsGrid.querySelectorAll('.list-row:not(.dragging)'));
+        const afterRow = getListAfterElement(rows, clientY);
+
+        if (afterRow === null) {
+            // Append to end (after header)
+            spotsGrid.appendChild(draggedRow);
+        } else if (afterRow !== draggedRow) {
+            spotsGrid.insertBefore(draggedRow, afterRow);
+        }
+    }
+
+    function handleDragEnd() {
+        if (!isDragging) return;
+
+        isDragging = false;
+
+        if (draggedRow) {
+            draggedRow.classList.remove('dragging');
+            saveListOrder();
+            draggedRow = null;
+        }
+
+        if (dragGhost) {
+            dragGhost.remove();
+            dragGhost = null;
+        }
+
+        document.removeEventListener('mousemove', handleDragMove);
+        document.removeEventListener('mouseup', handleDragEnd);
+        document.removeEventListener('touchmove', handleDragMove);
+        document.removeEventListener('touchend', handleDragEnd);
+    }
+
+    function getListAfterElement(rows, y) {
+        let closestElement = null;
+        let closestOffset = Number.NEGATIVE_INFINITY;
+
+        rows.forEach(row => {
+            const box = row.getBoundingClientRect();
+            const centerY = box.top + box.height / 2;
+            const offset = y - centerY;
+
+            // Find the element that is just after the cursor
+            if (offset < 0 && offset > closestOffset) {
+                closestOffset = offset;
+                closestElement = row;
+            }
+        });
+
+        return closestElement;
+    }
+}
+
+function saveListOrder() {
+    const spotsGrid = document.getElementById('spotsGrid');
+    const rows = spotsGrid.querySelectorAll('.list-row');
+    const order = Array.from(rows).map(row => row.dataset.spotId);
+
+    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
+    localStorage.setItem(orderKey, JSON.stringify(order));
+}
+
+function loadListOrder() {
+    // Don't apply custom order when sorting is active
+    if (listSortColumn) return;
+
+    const spotsGrid = document.getElementById('spotsGrid');
+    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
+    const savedOrder = localStorage.getItem(orderKey);
+
+    if (!savedOrder) return;
+
+    try {
+        const order = JSON.parse(savedOrder);
+        const rows = Array.from(spotsGrid.querySelectorAll('.list-row'));
+        const header = spotsGrid.querySelector('.spots-list-header');
+
+        order.forEach(spotId => {
+            const row = rows.find(r => r.dataset.spotId === spotId);
+            if (row) {
+                spotsGrid.appendChild(row);
+            }
+        });
+
+        // Ensure header stays at top
+        if (header) {
+            spotsGrid.insertBefore(header, spotsGrid.firstChild);
+        }
+    } catch (e) {
+        console.error('Failed to load list order:', e);
     }
 }
 
@@ -2956,6 +3145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModals();
     setupSearch();
     setupDragAndDrop();
+    setupListDragAndDrop();
     setupFavorites();
     setupHamburgerMenu();
     setupKiteSizeCalculator();
