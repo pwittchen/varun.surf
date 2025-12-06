@@ -25,26 +25,10 @@ java {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += ['--enable-preview']
-}
-
-tasks.withType(Test).configureEach {
-    jvmArgs '--enable-preview'
-}
-
-tasks.withType(JavaExec).configureEach {
-    jvmArgs '--enable-preview'
-}
-
 processResources {
     filesMatching('application.yml') {
         expand(project.properties)
     }
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
 
 repositories {
@@ -55,6 +39,28 @@ ext {
     set('springAiVersion', "1.0.2")
 }
 
+sourceSets {
+    e2e {
+        java {
+            srcDir 'src/e2e/java'
+        }
+        resources {
+            srcDir 'src/e2e/resources'
+        }
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+configurations {
+    e2eImplementation.extendsFrom testImplementation
+    e2eRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+jacoco {
+    toolVersion = "0.8.13"
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -63,6 +69,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.javatuples:javatuples:1.2'
+    implementation 'com.google.guava:guava:33.4.8-jre'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.google.truth:truth:1.4.4'
@@ -77,8 +84,20 @@ dependencyManagement {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.13"
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['--enable-preview']
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '--enable-preview'
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs '--enable-preview'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 tasks.named('test') {
@@ -116,24 +135,6 @@ tasks.register('run') {
 
 tasks.named('bootJar') {
     dependsOn 'buildFrontend'
-}
-
-sourceSets {
-    e2e {
-        java {
-            srcDir 'src/e2e/java'
-        }
-        resources {
-            srcDir 'src/e2e/resources'
-        }
-        compileClasspath += sourceSets.main.output + sourceSets.test.output
-        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
-    }
-}
-
-configurations {
-    e2eImplementation.extendsFrom testImplementation
-    e2eRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 tasks.register('testE2e', Test) {

@@ -23,6 +23,8 @@ public record Spot(
         String locationUrl,
         @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = CurrentConditionsEmptyFilter.class)
         CurrentConditions currentConditions,
+        List<CurrentConditions> currentConditionsHistory,
+
         List<Forecast> forecast,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<Forecast> forecastHourly,
@@ -62,6 +64,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -85,6 +88,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -110,6 +114,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 aiAnalysisEn,
@@ -135,6 +140,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -160,6 +166,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 forecast,
                 forecastHourly,
                 this.aiAnalysisEn,
@@ -183,6 +190,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 forecastHourly,
                 this.aiAnalysisEn,
@@ -205,6 +213,7 @@ public record Spot(
             String webcamUrl,
             String locationUrl,
             CurrentConditions currentConditions,
+            List<CurrentConditions> currentConditionsHistory,
             List<Forecast> forecast,
             List<Forecast> forecastHourly,
             String aiAnalysisEn,
@@ -224,6 +233,7 @@ public record Spot(
                 webcamUrl,
                 locationUrl,
                 currentConditions,
+                currentConditionsHistory,
                 forecast,
                 forecastHourly,
                 aiAnalysisEn,
@@ -247,6 +257,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -270,6 +281,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -293,6 +305,7 @@ public record Spot(
                 this.webcamUrl,
                 this.locationUrl,
                 this.currentConditions,
+                this.currentConditionsHistory,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,
@@ -302,6 +315,30 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 sponsors,
+                this.lastUpdated
+        );
+    }
+
+    public Spot withCurrentConditionsHistory(List<CurrentConditions> currentConditionsHistory) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                currentConditionsHistory,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
+                this.spotPhotoUrl,
+                this.coordinates,
+                this.spotInfo,
+                this.spotInfoPL,
+                this.sponsors,
                 this.lastUpdated
         );
     }

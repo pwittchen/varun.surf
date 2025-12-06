@@ -19,6 +19,7 @@ import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
+import com.google.common.collect.EvictingQueue;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
@@ -58,6 +59,7 @@ public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
     private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
+    private static final int CURRENT_CONDITIONS_HISTORY_LIMIT = 100;
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
@@ -65,6 +67,7 @@ public class AggregatorService {
     private final AtomicReference<List<Spot>> spots;
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
+    private final ConcurrentMap<Integer, EvictingQueue<CurrentConditions>> currentConditionsHistory;
     private final ConcurrentMap<Integer, String> aiAnalysisEn;
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
@@ -97,6 +100,7 @@ public class AggregatorService {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
+        this.currentConditionsHistory = new ConcurrentHashMap<>();
         this.aiAnalysisEn = new ConcurrentHashMap<>();
         this.aiAnalysisPl = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
@@ -202,6 +206,11 @@ public class AggregatorService {
         var conditions = currentConditions.get(spot.wgId());
         if (conditions != null) {
             enrichedSpot = enrichedSpot.withCurrentConditions(conditions);
+        }
+
+        var conditionsHistory = currentConditionsHistory.get(spot.wgId());
+        if (conditionsHistory != null && !conditionsHistory.isEmpty()) {
+            enrichedSpot = enrichedSpot.withCurrentConditionsHistory(new ArrayList<>(conditionsHistory));
         }
 
         var analysisEn = aiAnalysisEn.get(spot.wgId());
@@ -390,6 +399,9 @@ public class AggregatorService {
     private void updateSpotCurrentConditions(int spotId, CurrentConditions conditions) {
         if (!CurrentConditionsEmptyFilter.isEmpty(conditions)) {
             currentConditions.put(spotId, conditions);
+            currentConditionsHistory
+                    .computeIfAbsent(spotId, _ -> EvictingQueue.create(CURRENT_CONDITIONS_HISTORY_LIMIT))
+                    .add(conditions);
         }
     }
 
