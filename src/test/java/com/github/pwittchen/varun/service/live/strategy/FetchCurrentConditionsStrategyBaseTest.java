@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.service.live.FetchCurrentConditionsStrategyBase;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

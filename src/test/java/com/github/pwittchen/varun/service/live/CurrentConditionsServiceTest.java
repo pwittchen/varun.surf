@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.live;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class CurrentConditionsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CurrentConditionsService(new OkHttpClient());
+        service = new CurrentConditionsService(new OkHttpClient(), new Gson());
     }
 
     @Test

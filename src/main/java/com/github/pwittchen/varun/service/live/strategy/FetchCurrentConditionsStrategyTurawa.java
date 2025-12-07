@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.service.live.strategy;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
+import com.github.pwittchen.varun.service.live.FetchCurrentConditionsStrategyBase;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
