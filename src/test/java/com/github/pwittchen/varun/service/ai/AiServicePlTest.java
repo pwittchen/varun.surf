@@ -301,6 +301,7 @@ class AiServicePlTest {
                 name,
                 country,
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null,
                 null,
                 null,
@@ -325,6 +326,7 @@ class AiServicePlTest {
                 name,
                 country,
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null,
                 null,
                 null,

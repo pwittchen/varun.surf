@@ -70,7 +70,10 @@ class JsonSpotsStructureValidationTest {
                 // Validate required string fields are not empty (allow empty for optional fields)
                 assertThat(spot.name()).isNotEmpty();
                 assertThat(spot.country()).isNotEmpty();
-                assertThat(spot.windguruUrl()).isNotEmpty();
+                // windguruUrl can be empty if windguruFallbackUrl is provided
+                if (spot.windguruUrl() == null || spot.windguruUrl().isEmpty()) {
+                    assertThat(spot.windguruFallbackUrl()).isNotEmpty();
+                }
             }
         }
     }
@@ -127,13 +130,22 @@ class JsonSpotsStructureValidationTest {
             List<Spot> spots = gson.fromJson(reader, listType);
 
             for (Spot spot : spots) {
-                // Validate windguruUrl format
-                assertThat(spot.windguruUrl()).startsWith("https://www.windguru.cz/");
+                // windguruUrl can be empty if windguruFallbackUrl is provided
+                if (spot.windguruUrl() != null && !spot.windguruUrl().isEmpty()) {
+                    // Validate windguruUrl format
+                    assertThat(spot.windguruUrl()).startsWith("https://www.windguru.cz/");
 
-                // Validate wgId can be extracted (i.e., URL ends with a number)
-                String[] parts = spot.windguruUrl().split("/");
-                String lastPart = parts[parts.length - 1];
-                assertThat(lastPart).matches("\\d+");
+                    // Validate wgId can be extracted (i.e., URL ends with a number)
+                    String[] parts = spot.windguruUrl().split("/");
+                    String lastPart = parts[parts.length - 1];
+                    assertThat(lastPart).matches("\\d+");
+                } else {
+                    // If windguruUrl is empty, windguruFallbackUrl must be valid
+                    assertThat(spot.windguruFallbackUrl()).startsWith("https://www.windguru.cz/");
+                    String[] parts = spot.windguruFallbackUrl().split("/");
+                    String lastPart = parts[parts.length - 1];
+                    assertThat(lastPart).matches("\\d+");
+                }
             }
         }
     }

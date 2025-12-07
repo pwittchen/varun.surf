@@ -17,6 +17,8 @@ public record Spot(
         String name,
         String country,
         String windguruUrl,
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        String windguruFallbackUrl,
         String windfinderUrl,
         String icmUrl,
         String webcamUrl,
@@ -50,8 +52,46 @@ public record Spot(
 
     @JsonProperty("wgId")
     public int wgId() {
+        if (this.windguruUrl == null || this.windguruUrl.isEmpty()) {
+            // Generate deterministic ID based on spot name and country
+            return generateDeterministicId();
+        }
         String[] parts = this.windguruUrl.split("/");
         return Integer.parseInt(parts[parts.length - 1]);
+    }
+
+    /**
+     * Generates a deterministic positive integer ID based on spot name and country.
+     * This is used when windguruUrl is empty (no windguru station available).
+     * The ID is guaranteed to be positive and consistent for the same spot data.
+     */
+    private int generateDeterministicId() {
+        String seed = this.name + ":" + this.country;
+        int hash = seed.hashCode();
+        // Ensure positive value and avoid collision with typical windguru IDs (which are usually < 1_000_000)
+        // Use a high range starting from 9_000_000 to avoid collisions
+        return 9_000_000 + Math.abs(hash % 1_000_000);
+    }
+
+    /**
+     * Returns the Windguru spot ID to use for fetching forecasts.
+     * If windguruUrl is empty and a fallbackUrl is available, extracts ID from fallback.
+     */
+    public int forecastWgId() {
+        if ((this.windguruUrl == null || this.windguruUrl.isEmpty())
+                && windguruFallbackUrl != null && !windguruFallbackUrl.isEmpty()) {
+            String[] fallbackParts = windguruFallbackUrl.split("/");
+            return Integer.parseInt(fallbackParts[fallbackParts.length - 1]);
+        }
+        return wgId();
+    }
+
+    /**
+     * Returns true if this spot uses a fallback URL for forecasts.
+     */
+    public boolean usesFallbackUrl() {
+        return (this.windguruUrl == null || this.windguruUrl.isEmpty())
+                && windguruFallbackUrl != null && !windguruFallbackUrl.isEmpty();
     }
 
     public Spot withUpdatedTimestamp() {
@@ -59,6 +99,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -83,6 +124,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -109,6 +151,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -135,6 +178,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -161,6 +205,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -185,6 +230,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -208,6 +254,7 @@ public record Spot(
             String name,
             String country,
             String windguruUrl,
+            String windguruFallbackUrl,
             String windfinderUrl,
             String icmUrl,
             String webcamUrl,
@@ -228,6 +275,7 @@ public record Spot(
                 name,
                 country,
                 windguruUrl,
+                windguruFallbackUrl,
                 windfinderUrl,
                 icmUrl,
                 webcamUrl,
@@ -252,6 +300,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -276,6 +325,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -300,6 +350,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,
@@ -324,6 +375,7 @@ public record Spot(
                 this.name,
                 this.country,
                 this.windguruUrl,
+                this.windguruFallbackUrl,
                 this.windfinderUrl,
                 this.icmUrl,
                 this.webcamUrl,

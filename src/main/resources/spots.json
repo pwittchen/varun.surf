@@ -205,7 +205,8 @@
   {
     "name": "Kadyny",
     "country": "Poland",
-    "windguruUrl": "https://www.windguru.cz/126330",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/126330",
     "windfinderUrl": "https://www.windfinder.com/forecast/kadyny",
     "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=346&col=227&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/index.php",

@@ -19,7 +19,7 @@ import java.util.Map;
 public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
-            126330, "https://www.wiatrkadyny.pl/wiatrkadyny.txt",
+            9153554, "https://www.wiatrkadyny.pl/wiatrkadyny.txt", // generated ID for the fallback WG ID
             509469, "https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt",
             500760, "https://www.wiatrkadyny.pl/draga/wiatrkadyny.txt",
             4165, "https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt"

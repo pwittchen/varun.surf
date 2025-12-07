@@ -665,6 +665,7 @@ class AggregatorServiceTest {
                 name,
                 "Poland",
                 "https://windguru.cz/" + wgId,
+                null, // windguruFallbackUrl
                 null,
                 null,
                 null,

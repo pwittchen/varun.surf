@@ -298,15 +298,19 @@ public class AggregatorService {
 
     @Async
     public void fetchForecasts() throws FetchingForecastException {
-        var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
+        var spotsList = spots.get();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
-            var tasks = spotWgIds
+            var tasks = spotsList
                     .stream()
-                    .map(id -> scope.fork(() -> {
+                    .map(spot -> scope.fork(() -> {
                         forecastLimiter.acquire();
                         try {
-                            return Pair.with(id, forecastService.getForecastData(id).block());
+                            // Use forecastWgId() for fetching (extracts ID from fallback URL if needed)
+                            // but use wgId() for caching (unique deterministic ID for the spot)
+                            int forecastId = spot.forecastWgId();
+                            int cacheId = spot.wgId();
+                            return Pair.with(cacheId, forecastService.getForecastData(forecastId).block());
                         } finally {
                             forecastLimiter.release();
                         }
@@ -430,7 +434,11 @@ public class AggregatorService {
                 return;
             }
 
-            log.info("Fetching forecast models for the spot {}", spotId);
+            // Find the spot to get the forecastWgId (which may differ from spotId for fallback URLs)
+            Optional<Spot> spotOpt = spots.get().stream().filter(s -> s.wgId() == spotId).findFirst();
+            int forecastId = spotOpt.map(Spot::forecastWgId).orElse(spotId);
+
+            log.info("Fetching forecast models for the spot {} (forecastId: {})", spotId, forecastId);
             final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
 
             try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
@@ -439,7 +447,7 @@ public class AggregatorService {
                         .map(forecastModel -> scope.fork(() -> {
                             forecastLimiter.acquire();
                             try {
-                                return Pair.with(forecastModel, forecastService.getForecastData(spotId, forecastModel.name().toLowerCase()).block());
+                                return Pair.with(forecastModel, forecastService.getForecastData(forecastId, forecastModel.name().toLowerCase()).block());
                             } finally {
                                 forecastLimiter.release();
                             }

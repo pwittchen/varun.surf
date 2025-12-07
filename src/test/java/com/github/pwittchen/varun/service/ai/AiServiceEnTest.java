@@ -304,6 +304,7 @@ class AiServiceEnTest {
                 name,
                 country,
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null,
                 null,
                 null,
@@ -328,6 +329,7 @@ class AiServiceEnTest {
                 name,
                 country,
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null,
                 null,
                 null,

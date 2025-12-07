@@ -287,6 +287,7 @@ class SpotsControllerTest {
                 "Jastarnia",
                 "Poland",
                 "https://www.windguru.cz/500760",
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/jastarnia",
                 "https://www.meteo.pl",
                 "https://www.webcam.pl",
@@ -309,6 +310,7 @@ class SpotsControllerTest {
                 "Podersdorf",
                 "Austria",
                 "https://www.windguru.cz/859182",
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/podersdorf",
                 "https://www.zamg.ac.at",
                 "https://www.webcam.at",
@@ -341,6 +343,7 @@ class SpotsControllerTest {
                 "Jastarnia",
                 "Poland",
                 "https://www.windguru.cz/500760",
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/jastarnia",
                 "https://www.meteo.pl",
                 "https://www.webcam.pl",
@@ -376,6 +379,7 @@ class SpotsControllerTest {
                 "Jastarnia",
                 "Poland",
                 "https://www.windguru.cz/500760",
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/jastarnia",
                 "https://www.meteo.pl",
                 "https://www.webcam.pl",
@@ -404,6 +408,7 @@ class SpotsControllerTest {
                 name,
                 country,
                 "https://www.windguru.cz/" + wgId,
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/" + name.toLowerCase(),
                 "https://www.meteo.pl",
                 "https://www.webcam.pl",
@@ -443,6 +448,7 @@ class SpotsControllerTest {
                 "Jastarnia",
                 "Poland",
                 "https://www.windguru.cz/500760",
+                null, // windguruFallbackUrl
                 "https://www.windfinder.com/forecast/jastarnia",
                 "https://www.meteo.pl",
                 "https://www.webcam.pl",

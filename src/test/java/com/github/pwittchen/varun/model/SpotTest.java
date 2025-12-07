@@ -58,6 +58,89 @@ class SpotTest {
     }
 
     @Test
+    void shouldGenerateDeterministicIdWhenWindguruUrlIsEmpty() {
+        // given
+        var spot = createSpotWithFallback("", "https://windguru.cz/123456");
+
+        // when
+        var wgId = spot.wgId();
+
+        // then
+        // The ID should be generated deterministically and be in the range 9_000_000+
+        assertThat(wgId).isGreaterThanOrEqualTo(9_000_000);
+        assertThat(wgId).isLessThan(10_000_000);
+
+        // Creating the same spot again should produce the same ID
+        var sameSpot = createSpotWithFallback("", "https://windguru.cz/123456");
+        assertThat(sameSpot.wgId()).isEqualTo(wgId);
+    }
+
+    @Test
+    void shouldReturnForecastWgIdFromFallbackUrl() {
+        // given
+        var spot = createSpotWithFallback("", "https://windguru.cz/123456");
+
+        // when
+        var forecastWgId = spot.forecastWgId();
+
+        // then
+        assertThat(forecastWgId).isEqualTo(123456);
+    }
+
+    @Test
+    void shouldReturnRegularWgIdAsForecastWgIdWhenNoFallback() {
+        // given
+        var spot = createSpot("https://windguru.cz/789");
+
+        // when
+        var forecastWgId = spot.forecastWgId();
+
+        // then
+        assertThat(forecastWgId).isEqualTo(789);
+    }
+
+    @Test
+    void shouldReturnTrueForUsesFallbackUrlWhenWindguruUrlIsEmptyAndFallbackExists() {
+        // given
+        var spot = createSpotWithFallback("", "https://windguru.cz/123456");
+
+        // when/then
+        assertThat(spot.usesFallbackUrl()).isTrue();
+    }
+
+    @Test
+    void shouldReturnFalseForUsesFallbackUrlWhenWindguruUrlIsNotEmpty() {
+        // given
+        var spot = createSpot("https://windguru.cz/123456");
+
+        // when/then
+        assertThat(spot.usesFallbackUrl()).isFalse();
+    }
+
+    @Test
+    void shouldReturnFalseForUsesFallbackUrlWhenNoFallbackProvided() {
+        // given
+        var spot = createSpotWithFallback("", null);
+
+        // when/then
+        assertThat(spot.usesFallbackUrl()).isFalse();
+    }
+
+    @Test
+    void shouldGenerateDifferentIdsForDifferentSpots() {
+        // given
+        var spot1 = createSpotWithNameAndFallback("Spot A", "Poland", "", null);
+        var spot2 = createSpotWithNameAndFallback("Spot B", "Poland", "", null);
+
+        // when
+        var wgId1 = spot1.wgId();
+        var wgId2 = spot2.wgId();
+
+        // then
+        assertThat(wgId1).isNotEqualTo(wgId2);
+    }
+
+    @Test
     void shouldUpdateTimestampWhenCallingWithUpdatedTimestamp() {
         // given
         var spot = createSpot("https://windguru.cz/123");
@@ -80,6 +163,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 "https://windfinder.com/test",
                 "https://icm.edu.pl",
                 "https://webcam.com",
@@ -133,6 +217,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
@@ -165,6 +250,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
@@ -211,6 +297,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
@@ -243,6 +330,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 "https://windfinder.com/test",
                 "https://icm.edu.pl",
                 "https://webcam.com",
@@ -281,6 +369,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 "https://windfinder.com/test",
                 "https://icm.edu.pl",
                 "https://webcam.com",
@@ -351,6 +440,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
@@ -383,6 +473,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 "https://windfinder.com/test",
                 "https://icm.edu.pl",
                 "https://webcam.com",
@@ -436,6 +527,7 @@ class SpotTest {
                 "Hel",
                 "Poland",
                 "https://windguru.cz/123",
+                null, // windguruFallbackUrl
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
@@ -465,6 +557,51 @@ class SpotTest {
                 "Test Spot",
                 "Poland",
                 windguruUrl,
+                null, // windguruFallbackUrl
+                null, null, null, null,
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private Spot createSpotWithFallback(String windguruUrl, String windguruFallbackUrl) {
+        return new Spot(
+                "Test Spot",
+                "Poland",
+                windguruUrl,
+                windguruFallbackUrl,
+                null, null, null, null,
+                null,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private Spot createSpotWithNameAndFallback(String name, String country, String windguruUrl, String windguruFallbackUrl) {
+        return new Spot(
+                name,
+                country,
+                windguruUrl,
+                windguruFallbackUrl,
                 null, null, null, null,
                 null,
                 new ArrayList<>(),
