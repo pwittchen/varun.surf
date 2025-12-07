@@ -1,12 +1,19 @@
 package com.github.pwittchen.varun.service.live;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyMB;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPodersdorf;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyPuck;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyTurawa;
+import com.github.pwittchen.varun.service.live.strategy.FetchCurrentConditionsStrategyWiatrKadynyStations;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -16,7 +23,16 @@ class CurrentConditionsServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CurrentConditionsService(new OkHttpClient(), new Gson());
+        OkHttpClient httpClient = new OkHttpClient();
+        Gson gson = new Gson();
+        List<FetchCurrentConditions> strategies = List.of(
+                new FetchCurrentConditionsStrategyMB(httpClient),
+                new FetchCurrentConditionsStrategyPodersdorf(httpClient),
+                new FetchCurrentConditionsStrategyPuck(httpClient, gson),
+                new FetchCurrentConditionsStrategyTurawa(httpClient),
+                new FetchCurrentConditionsStrategyWiatrKadynyStations(httpClient)
+        );
+        service = new CurrentConditionsService(strategies);
     }
 
     @Test

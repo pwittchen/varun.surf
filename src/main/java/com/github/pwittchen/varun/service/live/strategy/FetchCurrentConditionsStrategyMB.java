@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  * This class is specifically designed to retrieve data for the MB weather station located on Góra Żar
  * and uses an external weather provider to fetch live readings.
  */
+@Component
 public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
     private static final int MB_WG_ID = 1068590;
     private static final String MB_LIVE_READINGS_URL = "https://pogoda.cc/pl/stacje/zar";

@@ -7,11 +7,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
  * Strategy for fetching current conditions from the Podersdorf spot in Austria basing on kiteriders.at website
  */
+@Component
 public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final int PODERSDORF_WG_ID = 859182;

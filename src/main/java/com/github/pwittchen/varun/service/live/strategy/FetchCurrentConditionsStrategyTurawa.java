@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.regex.Pattern;
  * Fetches current conditions for Turawa Lake available
  * on the <a href="https://airmax.pl/kamery/turawa">Airmax</a> website.
  */
+@Component
 public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
     private static final int TURAWA_WG_ID = 726;
     private static final String TURAWA_LIVE_URL = "https://airmax.pl/kamery/turawa";

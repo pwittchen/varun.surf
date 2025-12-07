@@ -9,8 +9,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+/**
+ * This class is specifically designed to retrieve data for the WiatrKadyny Puck weather station located on Molo Puck.
+ */
+@Component
 public class FetchCurrentConditionsStrategyPuck extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final int PUCK_WG_ID = 48009;

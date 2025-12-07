@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
 /**
  * Strategy for fetching current conditions from the Polish coast near Puck Bay basing on wiatrkadyny.pl website
  */
+@Component
 public class FetchCurrentConditionsStrategyWiatrKadynyStations extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
     private static final Map<Integer, String> LIVE_CONDITIONS_URLS = Map.of(
