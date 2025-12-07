@@ -33,7 +33,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
 
     @Test
     void shouldReturnTrueForSupportedWgIds() {
-        assertThat(strategy.canProcess(126330)).isTrue();
+        assertThat(strategy.canProcess(9153554)).isTrue();
         assertThat(strategy.canProcess(509469)).isTrue();
         assertThat(strategy.canProcess(500760)).isTrue();
         assertThat(strategy.canProcess(4165)).isTrue();
@@ -132,7 +132,7 @@ class FetchCurrentConditionsStrategyWiatrKadynyStationsTest {
 
     @Test
     void shouldReturnCorrectUrlForWgId() {
-        assertThat(strategy.getUrl(126330)).isEqualTo("https://www.wiatrkadyny.pl/wiatrkadyny.txt");
+        assertThat(strategy.getUrl(9153554)).isEqualTo("https://www.wiatrkadyny.pl/wiatrkadyny.txt");
         assertThat(strategy.getUrl(509469)).isEqualTo("https://www.wiatrkadyny.pl/kuznica/wiatrkadyny.txt");
         assertThat(strategy.getUrl(500760)).isEqualTo("https://www.wiatrkadyny.pl/draga/wiatrkadyny.txt");
         assertThat(strategy.getUrl(4165)).isEqualTo("https://www.wiatrkadyny.pl/rewa/wiatrkadyny.txt");
