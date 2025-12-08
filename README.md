@@ -107,6 +107,8 @@ To do that, follow the instructions below.
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.
 
+We can enable application and JVM metrics in the `application.yml` file and then use `/actuator/prometheus` endpoint to view metrics.
+
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.

@@ -6,6 +6,7 @@ import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
+import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +33,17 @@ class SpotsControllerTest {
     @Mock
     private AggregatorService aggregatorService;
 
+    @Mock
+    private Counter apiSpotsRequestCounter;
+
+    @Mock
+    private Counter apiSpotByIdRequestCounter;
+
     private SpotsController controller;
 
     @BeforeEach
     void setUp() {
-        controller = new SpotsController(aggregatorService);
+        controller = new SpotsController(aggregatorService, apiSpotsRequestCounter, apiSpotByIdRequestCounter);
     }
 
     @Test

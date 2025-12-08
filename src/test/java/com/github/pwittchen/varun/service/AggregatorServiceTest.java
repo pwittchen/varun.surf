@@ -14,6 +14,8 @@ import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +28,8 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -59,6 +63,42 @@ class AggregatorServiceTest {
     @Mock
     private SponsorsService sponsorsService;
 
+    @Mock
+    private Counter forecastFetchCounter;
+
+    @Mock
+    private Counter forecastFetchSuccessCounter;
+
+    @Mock
+    private Counter forecastFetchFailureCounter;
+
+    @Mock
+    private Counter conditionsFetchCounter;
+
+    @Mock
+    private Counter conditionsFetchSuccessCounter;
+
+    @Mock
+    private Counter conditionsFetchFailureCounter;
+
+    @Mock
+    private Counter aiFetchCounter;
+
+    @Mock
+    private Counter aiFetchSuccessCounter;
+
+    @Mock
+    private Counter aiFetchFailureCounter;
+
+    @Mock
+    private Timer forecastFetchTimer;
+
+    @Mock
+    private Timer conditionsFetchTimer;
+
+    @Mock
+    private Timer aiFetchTimer;
+
     private AggregatorService aggregatorService;
 
     @BeforeEach
@@ -70,7 +110,26 @@ class AggregatorServiceTest {
                 aiServiceEn,
                 aiServicePl,
                 googleMapsService,
-                sponsorsService
+                sponsorsService,
+                forecastFetchCounter,
+                forecastFetchSuccessCounter,
+                forecastFetchFailureCounter,
+                conditionsFetchCounter,
+                conditionsFetchSuccessCounter,
+                conditionsFetchFailureCounter,
+                aiFetchCounter,
+                aiFetchSuccessCounter,
+                aiFetchFailureCounter,
+                forecastFetchTimer,
+                conditionsFetchTimer,
+                aiFetchTimer,
+                new AtomicInteger(0),
+                new AtomicInteger(0),
+                new AtomicInteger(0),
+                new AtomicInteger(0),
+                new AtomicInteger(0),
+                new AtomicLong(0),
+                new AtomicLong(0)
         );
     }
 

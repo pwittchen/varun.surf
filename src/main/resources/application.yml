@@ -17,6 +17,23 @@ spring:
         options:
           model: smollm2:135m
 
+management:
+  endpoints:
+    web:
+      exposure:
+         include: health #,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    prometheus:
+      access: unrestricted
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: varun.surf
+
 app:
   feature:
     ai:
