@@ -6,6 +6,8 @@ import java.util.List;
 
 public record ForecastData(
         List<Forecast> daily,
+
+        //TODO: transform lists below into map
         List<Forecast> hourlyGfs,       // gfs
         List<Forecast> hourlyIfs        // ifs
 ) {
