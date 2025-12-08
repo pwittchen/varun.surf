@@ -25,6 +25,7 @@ public record Spot(
         String locationUrl,
         @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = CurrentConditionsEmptyFilter.class)
         CurrentConditions currentConditions,
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         List<CurrentConditions> currentConditionsHistory,
 
         List<Forecast> forecast,
@@ -382,6 +383,31 @@ public record Spot(
                 this.locationUrl,
                 this.currentConditions,
                 currentConditionsHistory,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
+                this.spotPhotoUrl,
+                this.coordinates,
+                this.spotInfo,
+                this.spotInfoPL,
+                this.sponsors,
+                this.lastUpdated
+        );
+    }
+
+    public Spot withoutCurrentConditionsHistory() {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windguruFallbackUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                null,
                 this.forecast,
                 this.forecastHourly,
                 this.aiAnalysisEn,

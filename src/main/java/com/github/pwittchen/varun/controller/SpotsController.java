@@ -27,7 +27,9 @@ public class SpotsController {
     @GetMapping("spots")
     public Flux<Spot> spots() {
         metrics.incrementSpotsRequestCounter();
-        return Flux.fromIterable(aggregatorService.getSpots());
+        return Flux
+                .fromIterable(aggregatorService.getSpots())
+                .map(Spot::withoutCurrentConditionsHistory);
     }
 
     @GetMapping("spots/{id}")
