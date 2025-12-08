@@ -5,6 +5,7 @@ import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
+import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
@@ -20,8 +21,6 @@ import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
 import com.google.common.collect.EvictingQueue;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Timer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
@@ -83,26 +82,7 @@ public class AggregatorService {
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
     private final SponsorsService sponsorsService;
-
-    private final Counter forecastFetchCounter;
-    private final Counter forecastFetchSuccessCounter;
-    private final Counter forecastFetchFailureCounter;
-    private final Counter conditionsFetchCounter;
-    private final Counter conditionsFetchSuccessCounter;
-    private final Counter conditionsFetchFailureCounter;
-    private final Counter aiFetchCounter;
-    private final Counter aiFetchSuccessCounter;
-    private final Counter aiFetchFailureCounter;
-    private final Timer forecastFetchTimer;
-    private final Timer conditionsFetchTimer;
-    private final Timer aiFetchTimer;
-    private final java.util.concurrent.atomic.AtomicInteger spotsCount;
-    private final java.util.concurrent.atomic.AtomicInteger countriesCount;
-    private final java.util.concurrent.atomic.AtomicInteger liveStationsCount;
-    private final java.util.concurrent.atomic.AtomicInteger forecastCacheSize;
-    private final java.util.concurrent.atomic.AtomicInteger currentConditionsCacheSize;
-    private final java.util.concurrent.atomic.AtomicLong lastForecastFetchTimestamp;
-    private final java.util.concurrent.atomic.AtomicLong lastConditionsFetchTimestamp;
+    private final AggregatorServiceMetrics metricsService;
 
     private Disposable spotsDisposable;
     private final Semaphore forecastLimiter = new Semaphore(32);
@@ -119,25 +99,7 @@ public class AggregatorService {
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
             SponsorsService sponsorsService,
-            Counter forecastFetchCounter,
-            Counter forecastFetchSuccessCounter,
-            Counter forecastFetchFailureCounter,
-            Counter conditionsFetchCounter,
-            Counter conditionsFetchSuccessCounter,
-            Counter conditionsFetchFailureCounter,
-            Counter aiFetchCounter,
-            Counter aiFetchSuccessCounter,
-            Counter aiFetchFailureCounter,
-            Timer forecastFetchTimer,
-            Timer conditionsFetchTimer,
-            Timer aiFetchTimer,
-            java.util.concurrent.atomic.AtomicInteger spotsCount,
-            java.util.concurrent.atomic.AtomicInteger countriesCount,
-            java.util.concurrent.atomic.AtomicInteger liveStationsCount,
-            java.util.concurrent.atomic.AtomicInteger forecastCacheSize,
-            java.util.concurrent.atomic.AtomicInteger currentConditionsCacheSize,
-            java.util.concurrent.atomic.AtomicLong lastForecastFetchTimestamp,
-            java.util.concurrent.atomic.AtomicLong lastConditionsFetchTimestamp) {
+            AggregatorServiceMetrics metricsService) {
         this.spots = new AtomicReference<>(new ArrayList<>());
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
@@ -156,25 +118,7 @@ public class AggregatorService {
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
         this.sponsorsService = sponsorsService;
-        this.forecastFetchCounter = forecastFetchCounter;
-        this.forecastFetchSuccessCounter = forecastFetchSuccessCounter;
-        this.forecastFetchFailureCounter = forecastFetchFailureCounter;
-        this.conditionsFetchCounter = conditionsFetchCounter;
-        this.conditionsFetchSuccessCounter = conditionsFetchSuccessCounter;
-        this.conditionsFetchFailureCounter = conditionsFetchFailureCounter;
-        this.aiFetchCounter = aiFetchCounter;
-        this.aiFetchSuccessCounter = aiFetchSuccessCounter;
-        this.aiFetchFailureCounter = aiFetchFailureCounter;
-        this.forecastFetchTimer = forecastFetchTimer;
-        this.conditionsFetchTimer = conditionsFetchTimer;
-        this.aiFetchTimer = aiFetchTimer;
-        this.spotsCount = spotsCount;
-        this.countriesCount = countriesCount;
-        this.liveStationsCount = liveStationsCount;
-        this.forecastCacheSize = forecastCacheSize;
-        this.currentConditionsCacheSize = currentConditionsCacheSize;
-        this.lastForecastFetchTimestamp = lastForecastFetchTimestamp;
-        this.lastConditionsFetchTimestamp = lastConditionsFetchTimestamp;
+        this.metricsService = metricsService;
     }
 
     @PostConstruct
@@ -192,11 +136,13 @@ public class AggregatorService {
     }
 
     private void updateMetricsGauges() {
-        spotsCount.set(countSpots());
-        countriesCount.set(countCountries());
-        liveStationsCount.set(countLiveStations());
-        forecastCacheSize.set(forecastCache.size());
-        currentConditionsCacheSize.set(currentConditions.size());
+        metricsService.updateGauges(
+                countSpots(),
+                countCountries(),
+                countLiveStations(),
+                forecastCache.size(),
+                currentConditions.size()
+        );
     }
 
     @PreDestroy
@@ -367,7 +313,7 @@ public class AggregatorService {
 
     @Async
     public void fetchForecasts() throws FetchingForecastException {
-        forecastFetchCounter.increment();
+        metricsService.incrementForecastFetchCounter();
         var startTime = System.nanoTime();
         var spotsList = spots.get();
 
@@ -392,17 +338,17 @@ public class AggregatorService {
                 scope.join().throwIfFailed();
             } catch (Exception e) {
                 log.error("Error while fetching forecasts", e);
-                forecastFetchFailureCounter.increment();
+                metricsService.incrementForecastFetchFailureCounter();
                 throw new FetchingForecastException(e.getMessage());
             }
 
             log.info("Forecasts fetched");
             updateSpotsAndForecasts(tasks);
-            forecastFetchSuccessCounter.increment();
-            lastForecastFetchTimestamp.set(System.currentTimeMillis());
+            metricsService.incrementForecastFetchSuccessCounter();
+            metricsService.updateLastForecastFetchTimestamp();
             updateMetricsGauges();
         } finally {
-            forecastFetchTimer.record(java.time.Duration.ofNanos(System.nanoTime() - startTime));
+            metricsService.recordForecastFetchDuration(startTime);
         }
     }
 
@@ -443,7 +389,7 @@ public class AggregatorService {
 
     @Async
     public void fetchCurrentConditions() throws FetchingCurrentConditionsException {
-        conditionsFetchCounter.increment();
+        metricsService.incrementConditionsFetchCounter();
         var startTime = System.nanoTime();
         var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
 
@@ -466,7 +412,7 @@ public class AggregatorService {
                 scope.join();
             } catch (Exception e) {
                 log.error("Error while fetching current conditions", e);
-                conditionsFetchFailureCounter.increment();
+                metricsService.incrementConditionsFetchFailureCounter();
                 throw new FetchingCurrentConditionsException(e.getMessage());
             }
 
@@ -477,11 +423,11 @@ public class AggregatorService {
                     .forEach(log::warn);
 
             log.info("Current conditions fetched");
-            conditionsFetchSuccessCounter.increment();
-            lastConditionsFetchTimestamp.set(System.currentTimeMillis());
+            metricsService.incrementConditionsFetchSuccessCounter();
+            metricsService.updateLastConditionsFetchTimestamp();
             updateMetricsGauges();
         } finally {
-            conditionsFetchTimer.record(java.time.Duration.ofNanos(System.nanoTime() - startTime));
+            metricsService.recordConditionsFetchDuration(startTime);
         }
     }
 
@@ -629,7 +575,7 @@ public class AggregatorService {
 
     @Async
     public void fetchAiForecastAnalysisEn() throws FetchingAiForecastAnalysisException {
-        aiFetchCounter.increment();
+        metricsService.incrementAiFetchCounter();
         var startTime = System.nanoTime();
         try (var scope = new StructuredTaskScope<>("aiAnalysisEn", Thread.ofVirtual().factory())) {
             var tasks = spots
@@ -651,7 +597,7 @@ public class AggregatorService {
                 scope.join();
             } catch (Exception e) {
                 log.error("Error while fetching AI forecast analysis (EN)", e);
-                aiFetchFailureCounter.increment();
+                metricsService.incrementAiFetchFailureCounter();
             }
 
             tasks
@@ -661,15 +607,15 @@ public class AggregatorService {
                     .forEach(log::warn);
 
             log.info("AI forecast analysis fetched (EN)");
-            aiFetchSuccessCounter.increment();
+            metricsService.incrementAiFetchSuccessCounter();
         } finally {
-            aiFetchTimer.record(java.time.Duration.ofNanos(System.nanoTime() - startTime));
+            metricsService.recordAiFetchDuration(startTime);
         }
     }
 
     @Async
     public void fetchAiForecastAnalysisPl() throws FetchingAiForecastAnalysisException {
-        aiFetchCounter.increment();
+        metricsService.incrementAiFetchCounter();
         var startTime = System.nanoTime();
         try (var scope = new StructuredTaskScope<>("aiAnalysisPl", Thread.ofVirtual().factory())) {
             var tasks = spots
@@ -691,7 +637,7 @@ public class AggregatorService {
                 scope.join();
             } catch (Exception e) {
                 log.error("Error while fetching AI forecast analysis (PL)", e);
-                aiFetchFailureCounter.increment();
+                metricsService.incrementAiFetchFailureCounter();
             }
 
             tasks
@@ -701,9 +647,9 @@ public class AggregatorService {
                     .forEach(log::warn);
 
             log.info("AI forecast analysis fetched (PL)");
-            aiFetchSuccessCounter.increment();
+            metricsService.incrementAiFetchSuccessCounter();
         } finally {
-            aiFetchTimer.record(java.time.Duration.ofNanos(System.nanoTime() - startTime));
+            metricsService.recordAiFetchDuration(startTime);
         }
     }
 

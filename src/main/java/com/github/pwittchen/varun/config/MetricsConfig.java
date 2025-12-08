@@ -180,18 +180,4 @@ public class MetricsConfig {
                 .description("Duration of AI analysis fetch operations")
                 .register(registry);
     }
-
-    @Bean
-    public Counter apiSpotsRequestCounter(MeterRegistry registry) {
-        return Counter.builder("varun.api.spots.requests")
-                .description("Number of requests to /api/v1/spots endpoint")
-                .register(registry);
-    }
-
-    @Bean
-    public Counter apiSpotByIdRequestCounter(MeterRegistry registry) {
-        return Counter.builder("varun.api.spot.requests")
-                .description("Number of requests to /api/v1/spots/{id} endpoint")
-                .register(registry);
-    }
 }
