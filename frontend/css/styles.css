@@ -1834,12 +1834,12 @@ body {
 
 .list-wind.wind-moderate,
 .list-gust.wind-moderate {
-    color: var(--warning-color);
+    color: var(--success-color);
 }
 
 .list-wind.wind-strong,
 .list-gust.wind-strong {
-    color: var(--success-color);
+    color: var(--warning-color);
 }
 
 .list-wind.wind-extreme,
