@@ -1,20 +1,9 @@
 import {getCountryFlag} from '../common/country-flags.js';
 import {t, translations} from '../common/translations.js';
-
-// ============================================================================
-// FOOTER HELPERS
-// ============================================================================
-
-function updateFooterYear() {
-    const yearElements = document.querySelectorAll('.footer-year');
-    if (!yearElements.length) {
-        return;
-    }
-    const currentYear = new Date().getFullYear();
-    yearElements.forEach((el) => {
-        el.textContent = currentYear + " ";
-    });
-}
+import {updateFooterYear} from '../common/dom-utils.js';
+import {getWindArrow, getWindRotation} from '../common/weather-utils.js';
+import {API_ENDPOINT, FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
+import {findClosestForecast} from '../common/date-utils.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -53,13 +42,8 @@ let embedLanguageSelection = 'en';
 let selectedDataSource = 'forecast';
 
 // ============================================================================
-// CONFIGURATION CONSTANTS
+// SVG ICONS (spot page specific)
 // ============================================================================
-
-const API_ENDPOINT = '/api/v1/spots';
-const FORECAST_POLL_INTERVAL = 5000;       // 5 seconds
-const FORECAST_TIMEOUT_MS = 30000;         // 30 seconds
-const BACKGROUND_REFRESH_INTERVAL = 60000; // 1 minute
 
 const MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12,12A4,4,0,1,0,8,8,4,4,0,0,0,12,12Zm0-6a2,2,0,1,1-2,2A2,2,0,0,1,12,6Zm8.66,3.157-.719-.239A8,8,0,0,0,12,0,7.993,7.993,0,0,0,4.086,9.092a5.045,5.045,0,0,0-2.548,1.3A4.946,4.946,0,0,0,0,14v4.075a5.013,5.013,0,0,0,3.6,4.8l2.87.9A4.981,4.981,0,0,0,7.959,24a5.076,5.076,0,0,0,1.355-.186l5.78-1.71a2.987,2.987,0,0,1,1.573,0l2.387.8A4,4,0,0,0,24,19.021V13.872A5.015,5.015,0,0,0,20.66,9.156ZM7.758,3.762a5.987,5.987,0,0,1,8.484,0,6.037,6.037,0,0,1,.011,8.5L12.7,15.717a.992.992,0,0,1-1.389,0L7.758,12.277A6.04,6.04,0,0,1,7.758,3.762ZM22,19.021a1.991,1.991,0,0,1-.764,1.572,1.969,1.969,0,0,1-1.626.395L17.265,20.2a5.023,5.023,0,0,0-2.717-.016L8.764,21.892a3,3,0,0,1-1.694-.029l-2.894-.9A3.013,3.013,0,0,1,2,18.075V14a2.964,2.964,0,0,1,.92-2.163,3.024,3.024,0,0,1,1.669-.806A8.021,8.021,0,0,0,6.354,13.7l3.567,3.453a2.983,2.983,0,0,0,4.174,0l3.563-3.463a7.962,7.962,0,0,0,1.813-2.821l.537.178A3.006,3.006,0,0,1,22,13.872Z"/></svg>`;
 const OSM_MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9.553,14.397c.675.66,1.561.99,2.447.99s1.772-.33,2.447-.99l2.502-2.448c1.322-1.322,2.051-3.08,2.051-4.95s-.729-3.627-2.051-4.95c-1.321-1.322-3.079-2.05-4.949-2.05s-3.628.728-4.95,2.05c-2.729,2.729-2.729,7.17.008,9.907l2.495,2.44Zm-1.089-10.933c.944-.944,2.2-1.464,3.536-1.464s2.591.52,3.535,1.464,1.465,2.2,1.465,3.536-.521,2.591-1.457,3.528l-2.494,2.44c-.578.564-1.52.564-2.098,0l-2.487-2.432c-1.949-1.95-1.949-5.122,0-7.071Zm.536,3.526c0-1.657,1.343-3,3-3s3,1.343,3,3-1.343,3-3,3-3-1.343-3-3Zm15,9.777c0,.352-.185.677-.485.857l-9.861,5.917c-.51.306-1.082.459-1.653.459s-1.144-.153-1.653-.459L.485,17.625c-.301-.181-.485-.506-.485-.857s.185-.677.485-.857l4.229-2.537c.475-.285,1.089-.131,1.372.343.284.474.131,1.088-.343,1.372l-2.8,1.68,8.433,5.06c.385.23.863.23,1.248,0l8.433-5.06-2.8-1.68c-.474-.284-.627-.898-.343-1.372s.897-.628,1.372-.343l4.229,2.537c.301.181.485.506.485.857Z"/></svg>`;
@@ -233,40 +217,6 @@ function startBackgroundRefresh(spotId) {
 }
 
 // ============================================================================
-// WEATHER DISPLAY HELPER FUNCTIONS
-// ============================================================================
-
-// Get wind arrow symbol based on a direction
-function getWindArrow(direction) {
-    const arrows = {
-        'N': '↓',
-        'NE': '↙',
-        'E': '←',
-        'SE': '↖',
-        'S': '↑',
-        'SW': '↗',
-        'W': '→',
-        'NW': '↘'
-    };
-    return arrows[direction] || '•';
-}
-
-// Get wind rotation angle for arrow (in degrees)
-function getWindRotation(direction) {
-    const rotations = {
-        'N': 0,
-        'NE': 45,
-        'E': 90,
-        'SE': 135,
-        'S': 180,
-        'SW': 225,
-        'W': 270,
-        'NW': 315
-    };
-    return rotations[direction] || 0;
-}
-
-// ============================================================================
 // DATE AND TIME FORMATTING FUNCTIONS
 // ============================================================================
 
@@ -360,64 +310,6 @@ function formatDayLabel(dateStr) {
     const translatedMonth = translateMonthName(monthToken);
 
     return `${shortDay} ${dayOfMonthToken}/${translatedMonth}`;
-}
-
-// Parse forecast date string (e.g., "Tue 28 Oct 2025 14:00")
-function parseForecastDate(dateStr) {
-    if (!dateStr) return new Date();
-
-    try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length >= 5) {
-            const dayOfMonth = parseInt(parts[1]);
-            const monthName = parts[2];
-            const year = parseInt(parts[3]);
-            const timeParts = parts[4].split(':');
-            const hours = parseInt(timeParts[0]);
-            const minutes = parseInt(timeParts[1]);
-
-            // Map month names to month numbers (0-11)
-            const monthMap = {
-                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
-                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
-                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-            };
-
-            const monthNumber = monthMap[monthName];
-            if (monthNumber !== undefined) {
-                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
-                if (!isNaN(parsed.getTime())) {
-                    return parsed;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn('Error parsing forecast date:', dateStr, e);
-    }
-
-    return new Date();
-}
-
-// Find forecast closest to current time
-function findClosestForecast(forecastData) {
-    if (!forecastData || forecastData.length === 0) {
-        return null;
-    }
-
-    const now = new Date();
-    let closestForecast = forecastData[0];
-    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-    for (let i = 1; i < forecastData.length; i++) {
-        const forecastTime = parseForecastDate(forecastData[i].date);
-        const diff = Math.abs(forecastTime - now);
-        if (diff < minDiff) {
-            minDiff = diff;
-            closestForecast = forecastData[i];
-        }
-    }
-
-    return closestForecast;
 }
 
 // ============================================================================
