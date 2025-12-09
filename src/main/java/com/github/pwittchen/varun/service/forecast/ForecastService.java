@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.service.forecast;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.forecast.ForecastWg;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +31,6 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_MODEL_GFS = "gfs";
-    private static final String FORECAST_MODEL_IFS = "ifs";
     private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1";
 
     private final OkHttpClient httpClient;
@@ -42,18 +42,18 @@ public class ForecastService {
     }
 
     public Mono<ForecastData> getForecastData(int wgSpotId) {
-        return getForecastData(wgSpotId, FORECAST_MODEL_GFS);
+        return getForecastData(wgSpotId, ForecastModel.GFS);
     }
 
-    public Mono<ForecastData> getForecastData(int wgSpotId, String forecastModel) {
+    public Mono<ForecastData> getForecastData(int wgSpotId, ForecastModel forecastModel) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
-        if (httpUrl == null) return Mono.just(new ForecastData(List.of(), List.of(), List.of()));
+        if (httpUrl == null) return Mono.just(new ForecastData(List.of(), Map.of()));
         return executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
                         .newBuilder()
                         .addQueryParameter("s", String.valueOf(wgSpotId))
-                        .addQueryParameter("m", forecastModel)
+                        .addQueryParameter("m", forecastModel.name().toLowerCase())
                         .addQueryParameter("v", FORECAST_PARAMS)
                         .build()
                         .toString())
@@ -62,8 +62,7 @@ public class ForecastService {
                 .map(this::retrieveWgForecasts)
                 .map(forecasts -> new ForecastData(
                         mapper.toWeatherForecasts(forecasts),
-                        forecastModel.equals(FORECAST_MODEL_GFS) ? mapper.toHourlyForecasts(forecasts) : List.of(),
-                        forecastModel.equals(FORECAST_MODEL_IFS) ? mapper.toHourlyForecasts(forecasts) : List.of()
+                        Map.of(forecastModel, mapper.toHourlyForecasts(forecasts))
                 ));
     }
 

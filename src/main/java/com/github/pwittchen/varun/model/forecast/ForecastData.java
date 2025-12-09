@@ -1,19 +1,20 @@
 package com.github.pwittchen.varun.model.forecast;
 
 import java.util.List;
+import java.util.Map;
 
 // all models are documented here: https://micro.windguru.cz/help.php
 
 public record ForecastData(
         List<Forecast> daily,
-
-        //TODO: transform lists below into map
-        List<Forecast> hourlyGfs,       // gfs
-        List<Forecast> hourlyIfs        // ifs
+        Map<ForecastModel, List<Forecast>> hourly
 ) {
     public ForecastData {
         daily = daily == null ? List.of() : List.copyOf(daily);
-        hourlyGfs = hourlyGfs == null ? List.of() : List.copyOf(hourlyGfs);
-        hourlyIfs = hourlyIfs == null ? List.of() : List.copyOf(hourlyIfs);
+        hourly = hourly == null ? Map.of() : Map.copyOf(hourly);
+    }
+
+    public List<Forecast> hourly(ForecastModel model) {
+        return hourly.getOrDefault(model, List.of());
     }
 }

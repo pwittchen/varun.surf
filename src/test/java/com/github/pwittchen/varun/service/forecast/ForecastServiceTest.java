@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.service.forecast;
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -183,59 +184,59 @@ class ForecastServiceTest {
 
         StepVerifier.create(result)
                 .assertNext(data -> {
-                    assertThat(data.hourlyGfs()).isNotNull();
-                    assertThat(data.hourlyGfs()).isNotEmpty();
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotNull();
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldReturnGfsModelForecastData() {
-        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.GFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
                     assertThat(data).isNotNull();
-                    assertThat(data.hourlyGfs()).isNotEmpty();
-                    assertThat(data.hourlyIfs()).isEmpty();
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
+                    assertThat(data.hourly(ForecastModel.IFS)).isEmpty();
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldReturnIfsModelForecastData() {
-        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.IFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
                     assertThat(data).isNotNull();
-                    assertThat(data.hourlyIfs()).isNotEmpty();
-                    assertThat(data.hourlyGfs()).isEmpty();
+                    assertThat(data.hourly(ForecastModel.IFS)).isNotEmpty();
+                    assertThat(data.hourly(ForecastModel.GFS)).isEmpty();
                 })
                 .verifyComplete();
     }
 
     @Test
-    void shouldHandleLowerCaseModelParameter() {
-        Mono<ForecastData> resultGfs = service.getForecastData(500760, "gfs");
-        Mono<ForecastData> resultIfs = service.getForecastData(500760, "ifs");
+    void shouldReturnForecastsForBothModels() {
+        Mono<ForecastData> resultGfs = service.getForecastData(500760, ForecastModel.GFS);
+        Mono<ForecastData> resultIfs = service.getForecastData(500760, ForecastModel.IFS);
 
         StepVerifier.create(resultGfs)
                 .assertNext(data -> {
-                    assertThat(data.hourlyGfs()).isNotEmpty();
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
                 })
                 .verifyComplete();
 
         StepVerifier.create(resultIfs)
                 .assertNext(data -> {
-                    assertThat(data.hourlyIfs()).isNotEmpty();
+                    assertThat(data.hourly(ForecastModel.IFS)).isNotEmpty();
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldReturnDailyForecastsWithGfsModel() {
-        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.GFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
@@ -247,7 +248,7 @@ class ForecastServiceTest {
 
     @Test
     void shouldReturnDailyForecastsWithIfsModel() {
-        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.IFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
@@ -259,12 +260,12 @@ class ForecastServiceTest {
 
     @Test
     void shouldReturnValidHourlyForecastsForGfs() {
-        Mono<ForecastData> result = service.getForecastData(500760, "gfs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.GFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
-                    assertThat(data.hourlyGfs()).isNotEmpty();
-                    Forecast firstHourly = data.hourlyGfs().get(0);
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
+                    Forecast firstHourly = data.hourly(ForecastModel.GFS).get(0);
                     assertThat(firstHourly.date()).isNotEmpty();
                     assertThat(firstHourly.wind()).isAtLeast(0.0);
                     assertThat(firstHourly.gusts()).isAtLeast(0.0);
@@ -275,12 +276,12 @@ class ForecastServiceTest {
 
     @Test
     void shouldReturnValidHourlyForecastsForIfs() {
-        Mono<ForecastData> result = service.getForecastData(500760, "ifs");
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.IFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
-                    assertThat(data.hourlyIfs()).isNotEmpty();
-                    Forecast firstHourly = data.hourlyIfs().get(0);
+                    assertThat(data.hourly(ForecastModel.IFS)).isNotEmpty();
+                    Forecast firstHourly = data.hourly(ForecastModel.IFS).get(0);
                     assertThat(firstHourly.date()).isNotEmpty();
                     assertThat(firstHourly.wind()).isAtLeast(0.0);
                     assertThat(firstHourly.gusts()).isAtLeast(0.0);
@@ -292,14 +293,14 @@ class ForecastServiceTest {
     @Test
     void shouldDefaultToGfsWhenNoModelSpecified() {
         Mono<ForecastData> resultDefault = service.getForecastData(500760);
-        Mono<ForecastData> resultGfs = service.getForecastData(500760, "gfs");
+        Mono<ForecastData> resultGfs = service.getForecastData(500760, ForecastModel.GFS);
 
         StepVerifier.create(resultDefault)
                 .assertNext(dataDefault -> {
                     StepVerifier.create(resultGfs)
                             .assertNext(dataGfs -> {
                                 assertThat(dataDefault.daily()).hasSize(dataGfs.daily().size());
-                                assertThat(dataDefault.hourlyGfs()).isNotEmpty();
+                                assertThat(dataDefault.hourly(ForecastModel.GFS)).isNotEmpty();
                             })
                             .verifyComplete();
                 })

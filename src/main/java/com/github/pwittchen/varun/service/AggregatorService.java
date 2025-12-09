@@ -211,10 +211,11 @@ public class AggregatorService {
 
         var data = forecastCache.get(spot.wgId());
         if (data != null) {
-            if (forecastModel == ForecastModel.IFS && !data.hourlyIfs().isEmpty()) {
-                enrichedSpot = enrichedSpot.withForecastHourly(data.hourlyIfs());
-            } else if (!data.hourlyGfs().isEmpty()) {
-                enrichedSpot = enrichedSpot.withForecastHourly(data.hourlyGfs());
+            var hourlyForecasts = data.hourly(forecastModel);
+            if (!hourlyForecasts.isEmpty()) {
+                enrichedSpot = enrichedSpot.withForecastHourly(hourlyForecasts);
+            } else if (!data.hourly(ForecastModel.GFS).isEmpty()) {
+                enrichedSpot = enrichedSpot.withForecastHourly(data.hourly(ForecastModel.GFS));
             }
         }
 
@@ -478,7 +479,7 @@ public class AggregatorService {
                         .map(forecastModel -> scope.fork(() -> {
                             forecastLimiter.acquire();
                             try {
-                                return Pair.with(forecastModel, forecastService.getForecastData(forecastId, forecastModel.name().toLowerCase()).block());
+                                return Pair.with(forecastModel, forecastService.getForecastData(forecastId, forecastModel).block());
                             } finally {
                                 forecastLimiter.release();
                             }
@@ -513,8 +514,8 @@ public class AggregatorService {
         if (data == null) {
             return false;
         }
-        boolean gfsEmpty = data.hourlyGfs().isEmpty();
-        boolean ifsEmpty = data.hourlyIfs().isEmpty();
+        boolean gfsEmpty = data.hourly(ForecastModel.GFS).isEmpty();
+        boolean ifsEmpty = data.hourly(ForecastModel.IFS).isEmpty();
         return !gfsEmpty && !ifsEmpty;
     }
 
@@ -527,17 +528,20 @@ public class AggregatorService {
                 .map(StructuredTaskScope.Subtask::get)
                 .toList();
 
-        List<Forecast> hourlyIfs = forecasts
-                .stream()
-                .map(Pair::getValue1)
-                .map(ForecastData::hourlyIfs)
-                .flatMap(List::stream)
-                .toList();
+        Map<ForecastModel, List<Forecast>> hourlyMap = new java.util.HashMap<>(forecastCache.get(spotId).hourly());
+
+        for (Pair<ForecastModel, ForecastData> pair : forecasts) {
+            ForecastModel model = pair.getValue0();
+            ForecastData fetchedData = pair.getValue1();
+            List<Forecast> hourlyForecasts = fetchedData.hourly(model);
+            if (!hourlyForecasts.isEmpty()) {
+                hourlyMap.put(model, hourlyForecasts);
+            }
+        }
 
         final ForecastData data = new ForecastData(
                 forecastCache.get(spotId).daily(),
-                forecastCache.get(spotId).hourlyGfs(),
-                hourlyIfs
+                hourlyMap
         );
 
         forecastCache.put(spotId, data);

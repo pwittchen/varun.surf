@@ -7,6 +7,7 @@ import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
+import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +161,7 @@ class AggregatorServiceTest {
         var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), List.of(), List.of())));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), Map.of())));
 
         aggregatorService.init();
         Thread.sleep(100);
@@ -187,7 +189,7 @@ class AggregatorServiceTest {
         @SuppressWarnings("unchecked")
         var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
                 ReflectionTestUtils.getField(aggregatorService, "forecastCache");
-        forecastCache.put(123, new ForecastData(dailyForecast, hourlyForecast, List.of()));
+        forecastCache.put(123, new ForecastData(dailyForecast, Map.of(ForecastModel.GFS, hourlyForecast)));
 
         // when
         var result = aggregatorService.getSpotById(123);
