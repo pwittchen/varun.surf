@@ -1,20 +1,9 @@
 import { getCountryFlag } from '../common/country-flags.js';
 import { t } from '../common/translations.js';
-
-// ============================================================================
-// FOOTER HELPERS
-// ============================================================================
-
-function updateFooterYear() {
-    const yearElements = document.querySelectorAll('.footer-year');
-    if (!yearElements.length) {
-        return;
-    }
-    const currentYear = new Date().getFullYear();
-    yearElements.forEach((el) => {
-        el.textContent = currentYear + " "
-    });
-}
+import { updateFooter } from '../common/footer.js';
+import { getWindArrow, getWindClass } from '../common/weather.js';
+import { API_ENDPOINT, AUTO_REFRESH_INTERVAL } from '../common/constants.js';
+import { findClosestForecast } from '../common/date.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -30,13 +19,6 @@ let currentFilter = 'all';
 
 // Track previous URL for favorite toggle
 let previousUrl = localStorage.getItem('previousUrl') || '/';
-
-// ============================================================================
-// CONFIGURATION CONSTANTS
-// ============================================================================
-
-const API_ENDPOINT = '/api/v1/spots';
-const AUTO_REFRESH_INTERVAL = 60 * 1000; // 1 minute in milliseconds
 
 // ============================================================================
 // URL ROUTING HELPERS
@@ -91,7 +73,7 @@ function updateUrlForCountry(country) {
 }
 
 function updateUrlForStarred() {
-    // Store current URL before switching to starred
+    // Store the current URL before switching to starred
     if (!isStarredUrl()) {
         previousUrl = window.location.pathname;
         localStorage.setItem('previousUrl', previousUrl);
@@ -255,7 +237,7 @@ async function renderFavorites() {
 
         spotsGrid.innerHTML = '';
 
-        // Render based on current view mode
+        // Render based on the current view mode
         if (currentViewMode === 'list') {
             // Apply sorting if a column is selected
             const sortedSpots = listSortColumn ? sortSpots(favoriteSpots, listSortColumn, listSortDirection) : favoriteSpots;
@@ -458,18 +440,7 @@ function initLanguage() {
         }
 
         // Update footer
-        const footerDisclaimer = document.querySelector('.footer-disclaimer');
-        if (footerDisclaimer) {
-            footerDisclaimer.textContent = t('footerDisclaimer');
-        }
-
-        const footerMadeInElements = document.querySelectorAll('.footer-made-in');
-        if (footerMadeInElements.length) {
-            const label = t('footerMadeInLabel');
-            footerMadeInElements.forEach((element) => {
-                element.textContent = label;
-            });
-        }
+        updateFooter(t);
 
         // Update "All" in the dropdown if selected
         if (globalWeatherData.length > 0) {
@@ -709,32 +680,6 @@ function showErrorMessage(error) {
 // WEATHER DISPLAY HELPER FUNCTIONS
 // ============================================================================
 
-function getWindArrow(direction) {
-    const arrows = {
-        'N': '↓',
-        'NE': '↙',
-        'E': '←',
-        'SE': '↖',
-        'S': '↑',
-        'SW': '↗',
-        'W': '→',
-        'NW': '↘'
-    };
-    return arrows[direction] || '•';
-}
-
-function getWindClass(windValue) {
-    if (windValue < 12) {
-        return 'wind-weak';
-    } else if (windValue >= 12 && windValue < 18) {
-        return 'wind-moderate';
-    } else if (windValue >= 18 && windValue <= 25) {
-        return 'wind-strong';
-    } else {
-        return 'wind-extreme';
-    }
-}
-
 function getSpotInfo(spot) {
     if (!spot) return null;
     const lang = localStorage.getItem('language') || 'en';
@@ -783,61 +728,6 @@ function formatForecastDateLabel(rawDate) {
     }
 
     return `${formattedDay}. ${translatedDay} ${timeToken}`.trim();
-}
-
-function parseForecastDate(dateStr) {
-    if (!dateStr) return new Date();
-
-    try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length >= 5) {
-            const dayOfMonth = parseInt(parts[1]);
-            const monthName = parts[2];
-            const year = parseInt(parts[3]);
-            const timeParts = parts[4].split(':');
-            const hours = parseInt(timeParts[0]);
-            const minutes = parseInt(timeParts[1]);
-
-            const monthMap = {
-                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
-                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
-                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-            };
-
-            const monthNumber = monthMap[monthName];
-            if (monthNumber !== undefined) {
-                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
-                if (!isNaN(parsed.getTime())) {
-                    return parsed;
-                }
-            }
-        }
-    } catch (error) {
-        console.warn('Error parsing forecast date:', dateStr, error);
-    }
-
-    return new Date();
-}
-
-function findClosestForecast(forecastData) {
-    if (!Array.isArray(forecastData) || forecastData.length === 0) {
-        return null;
-    }
-
-    const now = new Date();
-    let closestForecast = forecastData[0];
-    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-    for (let i = 1; i < forecastData.length; i++) {
-        const forecastTime = parseForecastDate(forecastData[i].date);
-        const diff = Math.abs(forecastTime - now);
-        if (diff < minDiff) {
-            minDiff = diff;
-            closestForecast = forecastData[i];
-        }
-    }
-
-    return closestForecast;
 }
 
 function toNumber(value) {
@@ -3155,5 +3045,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInfoToggle();
     renderMainSponsors();
     handleStarredURL();
-    updateFooterYear();
 });

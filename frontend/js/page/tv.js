@@ -1,5 +1,8 @@
 import {getCountryFlag} from '../common/country-flags.js';
 import {translations} from '../common/translations.js';
+import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather.js';
+import {API_ENDPOINT, AUTO_REFRESH_INTERVAL} from '../common/constants.js';
+import {parseForecastDate, findClosestForecast, formatTime} from '../common/date.js';
 
 // ============================================================================
 // GLOBAL STATE
@@ -9,13 +12,6 @@ let currentSpot = null;
 let currentSpotId = null;
 let refreshIntervalId = null;
 let currentLanguage = 'en';
-
-// ============================================================================
-// CONFIGURATION
-// ============================================================================
-
-const API_ENDPOINT = '/api/v1/spots';
-const REFRESH_INTERVAL = 60000; // 1 minute
 
 // ============================================================================
 // URL HELPERS
@@ -61,73 +57,6 @@ function t(key) {
 // HELPER FUNCTIONS
 // ============================================================================
 
-function getWindArrow(direction) {
-    const arrows = {
-        'N': '↓', 'NE': '↙', 'E': '←', 'SE': '↖',
-        'S': '↑', 'SW': '↗', 'W': '→', 'NW': '↘'
-    };
-    return arrows[direction] || '•';
-}
-
-function getWindRotation(direction) {
-    const rotations = {
-        'N': 0, 'NE': 45, 'E': 90, 'SE': 135,
-        'S': 180, 'SW': 225, 'W': 270, 'NW': 315
-    };
-    return rotations[direction] || 0;
-}
-
-function getWindClass(wind, gusts) {
-    const avgWind = (wind + gusts) / 2;
-    if (avgWind < 12) return 'weak';
-    if (avgWind >= 12 && avgWind < 18) return 'moderate';
-    if (avgWind >= 18 && avgWind <= 25) return 'strong';
-    return 'extreme';
-}
-
-function formatTime(dateStr) {
-    if (!dateStr) return '';
-    const parts = dateStr.split(' ');
-    if (parts.length >= 5) {
-        return parts[4]; // HH:MM
-    }
-    return dateStr;
-}
-
-function parseForecastDate(dateStr) {
-    if (!dateStr) return new Date();
-
-    try {
-        const parts = dateStr.trim().split(/\s+/);
-        if (parts.length >= 5) {
-            const dayOfMonth = parseInt(parts[1]);
-            const monthName = parts[2];
-            const year = parseInt(parts[3]);
-            const timeParts = parts[4].split(':');
-            const hours = parseInt(timeParts[0]);
-            const minutes = parseInt(timeParts[1]);
-
-            const monthMap = {
-                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
-                'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
-                'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-            };
-
-            const monthNumber = monthMap[monthName];
-            if (monthNumber !== undefined) {
-                const parsed = new Date(year, monthNumber, dayOfMonth, hours, minutes);
-                if (!isNaN(parsed.getTime())) {
-                    return parsed;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn('Error parsing forecast date:', dateStr, e);
-    }
-
-    return new Date();
-}
-
 function filterFutureForecasts(forecasts) {
     const now = new Date();
     const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
@@ -136,27 +65,6 @@ function filterFutureForecasts(forecasts) {
         const forecastDate = parseForecastDate(forecast.date);
         return forecastDate >= currentHour;
     });
-}
-
-function findClosestForecast(forecastData) {
-    if (!forecastData || forecastData.length === 0) {
-        return null;
-    }
-
-    const now = new Date();
-    let closestForecast = forecastData[0];
-    let minDiff = Math.abs(parseForecastDate(forecastData[0].date) - now);
-
-    for (let i = 1; i < forecastData.length; i++) {
-        const forecastTime = parseForecastDate(forecastData[i].date);
-        const diff = Math.abs(forecastTime - now);
-        if (diff < minDiff) {
-            minDiff = diff;
-            closestForecast = forecastData[i];
-        }
-    }
-
-    return closestForecast;
 }
 
 // ============================================================================
@@ -226,7 +134,7 @@ function displaySpot(spot) {
 
     // Current conditions section
     if (conditionsData) {
-        const windClass = getWindClass(conditionsData.wind, conditionsData.gusts);
+        const windClass = getWindClassSimple(conditionsData.wind, conditionsData.gusts);
         const windArrow = getWindArrow(conditionsData.direction);
         const rotation = getWindRotation(conditionsData.direction);
 
@@ -272,7 +180,7 @@ function displaySpot(spot) {
 
             limitedForecasts.forEach(forecast => {
                 const time = formatTime(forecast.date);
-                const windClass = getWindClass(forecast.wind, forecast.gusts);
+                const windClass = getWindClassSimple(forecast.wind, forecast.gusts);
                 const windArrow = getWindArrow(forecast.direction);
 
                 contentHtml += `
@@ -400,7 +308,7 @@ function startAutoRefresh(spotId) {
         } catch (error) {
             console.warn('Auto refresh failed:', error);
         }
-    }, REFRESH_INTERVAL);
+    }, AUTO_REFRESH_INTERVAL);
 }
 
 function stopAutoRefresh() {

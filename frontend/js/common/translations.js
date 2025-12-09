@@ -1,4 +1,7 @@
-// Translations configuration
+// ============================================================================
+// TRANSLATIONS
+// ============================================================================
+
 export const translations = {
     en: {
         // Page title
@@ -44,7 +47,10 @@ export const translations = {
 
         // Footer
         footerDisclaimer: "kite spots database and weather forecast for kitesurfers",
-        footerMadeInLabel: "made in 🇵🇱 by ",
+        footerMadeInLabel: "made in 🇵🇱 by",
+        footerOpenSource: "open-source",
+        footerChangelog: "changelog",
+        footerStatus: "status",
 
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Today",
@@ -289,7 +295,10 @@ export const translations = {
 
         // Footer
         footerDisclaimer: "baza kite spotów i prognoza pogody dla kitesurferów",
-        footerMadeInLabel: "stworzył w 🇵🇱 ",
+        footerMadeInLabel: "stworzył w 🇵🇱",
+        footerOpenSource: "open-source",
+        footerChangelog: "historia zmian",
+        footerStatus: "status",
 
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Dzisiaj",

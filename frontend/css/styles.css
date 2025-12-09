@@ -24,6 +24,7 @@
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
     --chart-grid: #333333;
+    --accent-color: #4a9eff;
 }
 
 [data-theme="light"] {
@@ -52,6 +53,7 @@
     --warning-color: #ea580c;
     --danger-color: #dc2626;
     --chart-grid: rgba(0, 0, 0, 0.15);
+    --accent-color: #0d6efd;
 }
 
 * {
