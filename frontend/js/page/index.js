@@ -73,7 +73,7 @@ function updateUrlForCountry(country) {
 }
 
 function updateUrlForStarred() {
-    // Store current URL before switching to starred
+    // Store the current URL before switching to starred
     if (!isStarredUrl()) {
         previousUrl = window.location.pathname;
         localStorage.setItem('previousUrl', previousUrl);
@@ -237,7 +237,7 @@ async function renderFavorites() {
 
         spotsGrid.innerHTML = '';
 
-        // Render based on current view mode
+        // Render based on the current view mode
         if (currentViewMode === 'list') {
             // Apply sorting if a column is selected
             const sortedSpots = listSortColumn ? sortSpots(favoriteSpots, listSortColumn, listSortDirection) : favoriteSpots;
