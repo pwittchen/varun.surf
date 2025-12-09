@@ -1,9 +1,9 @@
 import {getCountryFlag} from '../common/country-flags.js';
 import {t, translations} from '../common/translations.js';
-import {updateFooterYear} from '../common/dom-utils.js';
-import {getWindArrow, getWindRotation} from '../common/weather-utils.js';
+import { updateFooter } from '../common/footer.js';
+import {getWindArrow, getWindRotation} from '../common/weather.js';
 import {API_ENDPOINT, FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
-import {findClosestForecast} from '../common/date-utils.js';
+import {findClosestForecast} from '../common/date.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -2572,18 +2572,7 @@ function updateUITranslations() {
     }
 
     // Keep footer text consistent with current language
-    const footerDisclaimer = document.querySelector('.footer-disclaimer');
-    if (footerDisclaimer) {
-        footerDisclaimer.textContent = t('footerDisclaimer');
-    }
-
-    const footerMadeInElements = document.querySelectorAll('.footer-made-in');
-    if (footerMadeInElements.length) {
-        const label = t('footerMadeInLabel');
-        footerMadeInElements.forEach((element) => {
-            element.textContent = label;
-        });
-    }
+    updateFooter(t);
 }
 
 // Initialize language and setup toggle
@@ -2953,5 +2942,4 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupResizeHandler();
     setupModelDropdown();
     setupSpot();
-    updateFooterYear();
 });

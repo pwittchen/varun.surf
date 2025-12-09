@@ -12,7 +12,7 @@ const MONTH_MAP = {
 };
 
 /**
- * Parse forecast date string to Date object.
+ * Parse forecast date string to a Date object.
  * Format: "Tue 28 Oct 2025 14:00"
  * @param {string} dateStr - Date string in forecast format
  * @returns {Date} Parsed date or current date if parsing fails

@@ -1,9 +1,9 @@
 import { getCountryFlag } from '../common/country-flags.js';
 import { t } from '../common/translations.js';
-import { updateFooterYear } from '../common/dom-utils.js';
-import { getWindArrow, getWindClass } from '../common/weather-utils.js';
+import { updateFooter } from '../common/footer.js';
+import { getWindArrow, getWindClass } from '../common/weather.js';
 import { API_ENDPOINT, AUTO_REFRESH_INTERVAL } from '../common/constants.js';
-import { findClosestForecast } from '../common/date-utils.js';
+import { findClosestForecast } from '../common/date.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -440,18 +440,7 @@ function initLanguage() {
         }
 
         // Update footer
-        const footerDisclaimer = document.querySelector('.footer-disclaimer');
-        if (footerDisclaimer) {
-            footerDisclaimer.textContent = t('footerDisclaimer');
-        }
-
-        const footerMadeInElements = document.querySelectorAll('.footer-made-in');
-        if (footerMadeInElements.length) {
-            const label = t('footerMadeInLabel');
-            footerMadeInElements.forEach((element) => {
-                element.textContent = label;
-            });
-        }
+        updateFooter(t);
 
         // Update "All" in the dropdown if selected
         if (globalWeatherData.length > 0) {
@@ -3056,5 +3045,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setupInfoToggle();
     renderMainSponsors();
     handleStarredURL();
-    updateFooterYear();
 });

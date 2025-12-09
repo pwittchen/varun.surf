@@ -1,8 +1,8 @@
 import {getCountryFlag} from '../common/country-flags.js';
 import {translations} from '../common/translations.js';
-import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather-utils.js';
+import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather.js';
 import {API_ENDPOINT, AUTO_REFRESH_INTERVAL} from '../common/constants.js';
-import {parseForecastDate, findClosestForecast, formatTime} from '../common/date-utils.js';
+import {parseForecastDate, findClosestForecast, formatTime} from '../common/date.js';
 
 // ============================================================================
 // GLOBAL STATE
