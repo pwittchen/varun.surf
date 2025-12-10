@@ -396,7 +396,7 @@ public record Spot(
         );
     }
 
-    public Spot withoutCurrentConditionsHistory() {
+    public Spot withoutCurrentConditionsHistoryAndForecastHourly() {
         return new Spot(
                 this.name,
                 this.country,
@@ -409,7 +409,7 @@ public record Spot(
                 this.currentConditions,
                 null,
                 this.forecast,
-                this.forecastHourly,
+                null,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
                 this.spotPhotoUrl,

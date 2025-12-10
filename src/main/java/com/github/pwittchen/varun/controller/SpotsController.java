@@ -29,7 +29,7 @@ public class SpotsController {
         metrics.incrementSpotsRequestCounter();
         return Flux
                 .fromIterable(aggregatorService.getSpots())
-                .map(Spot::withoutCurrentConditionsHistory);
+                .map(Spot::withoutCurrentConditionsHistoryAndForecastHourly);
     }
 
     @GetMapping("spots/{id}")
