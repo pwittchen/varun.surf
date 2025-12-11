@@ -60,7 +60,8 @@ public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
     private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
-    private static final int CURRENT_CONDITIONS_HISTORY_LIMIT = 60; // keep readings from the last hour
+    // keep readings from the last 180 minutes = 3 hours (this data is fetched every 1 minute)
+    private static final int CURRENT_CONDITIONS_HISTORY_LIMIT = 180;
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
