@@ -1,4 +1,4 @@
-import { getCountryFlag } from '../common/country-flags.js';
+import { getCountryFlag } from '../common/flags.js';
 import { t } from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
 import { getWindArrow, getWindClass } from '../common/weather.js';

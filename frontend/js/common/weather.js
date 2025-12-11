@@ -3,7 +3,7 @@
 // ============================================================================
 
 /**
- * Get wind direction arrow character based on cardinal direction.
+ * Get wind direction arrow character based on a cardinal direction.
  * @param {string} direction - Cardinal direction (N, NE, E, SE, S, SW, W, NW)
  * @returns {string} Arrow character pointing in wind direction
  */

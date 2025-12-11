@@ -28,7 +28,7 @@ varun.surf/
 │   ├── js/                        # JavaScript files
 │   │   ├── common/
 │   │   │   ├── translations.js    # i18n configuration
-│   │   │   └── country-flags.js   # Shared emoji flags helper
+│   │   │   └── flags.js           # Shared emoji flags helper
 │   │   └── page/
 │   │       ├── index.js           # Dashboard page logic
 │   │       ├── spot.js            # Single spot page logic

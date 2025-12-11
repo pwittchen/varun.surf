@@ -1,4 +1,4 @@
-import {getCountryFlag} from '../common/country-flags.js';
+import {getCountryFlag} from '../common/flags.js';
 import {translations} from '../common/translations.js';
 import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather.js';
 import {API_ENDPOINT, AUTO_REFRESH_INTERVAL} from '../common/constants.js';
