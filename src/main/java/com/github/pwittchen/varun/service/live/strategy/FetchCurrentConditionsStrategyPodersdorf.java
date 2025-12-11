@@ -10,6 +10,8 @@ import okhttp3.ResponseBody;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+
 /**
  * Strategy for fetching current conditions from the Podersdorf spot in Austria basing on kiteriders.at website
  */
@@ -54,37 +56,7 @@ public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentCondit
                     .build();
 
             try (Response response = getHttpClient().newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    throw new RuntimeException("Failed to fetch forecast: " + response);
-                }
-
-                ResponseBody responseBody = response.body();
-
-                if (responseBody == null) {
-                    throw new RuntimeException("Failed to fetch forecast: " + response);
-                }
-
-                String body = responseBody.string();
-                String[] lines = body.split("\n");
-
-                String dataRow = null;
-
-                int trCount = 0;
-                for (String line : lines) {
-                    if (line.trim().startsWith("<tr")) {
-                        trCount++;
-                        if (trCount == 2) {
-                            dataRow = line;
-                            break;
-                        }
-                    }
-                }
-
-                if (dataRow == null) {
-                    throw new RuntimeException("No data row found");
-                }
-
-                String[] cells = dataRow.split("</td>");
+                String[] cells = getDataCells(response);
 
                 String dateCell = extractTextFromTd(cells[0]);
                 String timeCell = extractTextFromTd(cells[1]);
@@ -102,6 +74,40 @@ public class FetchCurrentConditionsStrategyPodersdorf extends FetchCurrentCondit
                 return new CurrentConditions(date, wind, gusts, direction, temp);
             }
         });
+    }
+
+    private static String[] getDataCells(Response response) throws IOException {
+        if (!response.isSuccessful()) {
+            throw new RuntimeException("Failed to fetch forecast: " + response);
+        }
+
+        ResponseBody responseBody = response.body();
+
+        if (responseBody == null) {
+            throw new RuntimeException("Failed to fetch forecast: " + response);
+        }
+
+        String body = responseBody.string();
+        String[] lines = body.split("\n");
+
+        String dataRow = null;
+
+        int trCount = 0;
+        for (String line : lines) {
+            if (line.trim().startsWith("<tr")) {
+                trCount++;
+                if (trCount == 2) {
+                    dataRow = line;
+                    break;
+                }
+            }
+        }
+
+        if (dataRow == null) {
+            throw new RuntimeException("No data row found");
+        }
+
+        return dataRow.split("</td>");
     }
 
     private String extractTextFromTd(String tdContent) {
