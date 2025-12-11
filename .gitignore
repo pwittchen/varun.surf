@@ -48,3 +48,6 @@ node_modules/
 
 ### automatically generated frontend static files ###
 src/main/resources/static/*
+
+### Claude Code config
+.claude/settings.local.json
