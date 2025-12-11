@@ -14,7 +14,12 @@ import java.util.concurrent.TimeUnit;
 public class OkHttpClientConfig {
 
     @Bean
-    public OkHttpClient okHttpClient(MeterRegistry meterRegistry) {
+    public HttpClientMetricsEventListener httpClientMetricsEventListener(MeterRegistry meterRegistry) {
+        return new HttpClientMetricsEventListener(meterRegistry);
+    }
+
+    @Bean
+    public OkHttpClient okHttpClient(HttpClientMetricsEventListener metricsEventListener) {
         return new OkHttpClient
                 .Builder()
                 .connectTimeout(Duration.ofSeconds(10))
@@ -25,7 +30,7 @@ public class OkHttpClientConfig {
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .retryOnConnectionFailure(true)
-                .eventListenerFactory(_ -> new HttpClientMetricsEventListener(meterRegistry))
+                .eventListenerFactory(_ -> metricsEventListener)
                 .build();
     }
 }
