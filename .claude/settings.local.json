@@ -4,7 +4,10 @@
       "Bash(./gradlew build:*)",
       "Bash(xargs cat:*)",
       "Bash(./gradlew test:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:holfuy.com)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

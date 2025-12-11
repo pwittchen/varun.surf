@@ -11,25 +11,60 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This class is specifically designed to retrieve data for the MB weather station located on Góra Żar
- * and uses an external weather provider to fetch live readings.
+ * and uses Holfuy weather station HTML page to fetch live readings from the 15-minute averages table.
  */
 @Component
 public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
     private static final int MB_WG_ID = 1068590;
-    private static final String MB_LIVE_READINGS_URL = "https://pogoda.cc/pl/stacje/zar";
+    private static final int HOLFUY_STATION_ID = 1612;
+    private static final String HOLFUY_PAGE_URL = "https://holfuy.com/en/weather/" + HOLFUY_STATION_ID;
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private static final Pattern STATION_DATA_PATTERN = Pattern.compile(
-            "#&lt;struct StationData.*?" +
-            "epoch=(\\d+).*?" +
-            "temperature=(-?[0-9]+\\.?[0-9]*).*?" +
-            "winddir=(\\d+).*?" +
-            "windgusts=([0-9]+\\.?[0-9]*).*?" +
-            "windspeed=([0-9]+\\.?[0-9]*)"
+    // Pattern to extract wind speed values from the first table row (Speed row)
+    // Matches: <td class="h_header" ...>Speed</td>...<td...>value</td>...</tr>
+    private static final Pattern SPEED_ROW_PATTERN = Pattern.compile(
+            ">Speed</td>(.*?)</tr>",
+            Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+    );
+
+    // Pattern to extract gust values from the Gust row
+    // Note: Header cell contains <span> element, so we match until </td> allowing any content
+    private static final Pattern GUST_ROW_PATTERN = Pattern.compile(
+            ">Gust.*?</td>(.*?)</tr>",
+            Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+    );
+
+    // Pattern to extract direction degrees from the Direction Deg row
+    private static final Pattern DIRECTION_ROW_PATTERN = Pattern.compile(
+            ">Direction<br>.*?Deg\\..*?</td>(.*?)</tr>",
+            Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+    );
+
+    // Pattern to extract temperature values from the Temp row
+    // Note: Header cell contains <span> element, so we match until </td> allowing any content
+    private static final Pattern TEMP_ROW_PATTERN = Pattern.compile(
+            ">Temp\\..*?</td>(.*?)</tr>",
+            Pattern.DOTALL | Pattern.CASE_INSENSITIVE
+    );
+
+    // Pattern to extract numeric values from table cells
+    private static final Pattern CELL_VALUE_PATTERN = Pattern.compile(
+            "<td[^>]*>([0-9.]+)</td>"
+    );
+
+    // Pattern to extract direction with degrees from cells like "NE<br>34°"
+    private static final Pattern DIRECTION_CELL_PATTERN = Pattern.compile(
+            "<td>([A-Z]+)<br>(\\d+)°</td>"
     );
 
     private final OkHttpClient httpClient;
@@ -45,7 +80,7 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
 
     @Override
     protected String getUrl(int wgId) {
-        return MB_LIVE_READINGS_URL;
+        return HOLFUY_PAGE_URL;
     }
 
     @Override
@@ -82,27 +117,70 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
     }
 
     private CurrentConditions createCurrentConditions(ResponseBody responseBody) throws IOException {
-        String body = responseBody.string();
+        // Remove all newlines and extra whitespace to simplify parsing
+        String body = responseBody.string().replaceAll("\\s+", " ");
 
-        Matcher matcher = STATION_DATA_PATTERN.matcher(body);
-        if (!matcher.find()) {
-            throw new RuntimeException("Could not extract StationData from HTML");
-        }
+        // Extract wind speed (last value from first Speed row in first table)
+        double windSpeedMs = extractLastValueFromRow(body, SPEED_ROW_PATTERN);
 
-        long epoch = Long.parseLong(matcher.group(1));
-        double temperature = Double.parseDouble(matcher.group(2));
-        int windDirectionDeg = Integer.parseInt(matcher.group(3));
-        double windGustsMs = Double.parseDouble(matcher.group(4));
-        double windSpeedMs = Double.parseDouble(matcher.group(5));
+        // Extract wind gust (last value from Gust row)
+        double windGustMs = extractLastValueFromRow(body, GUST_ROW_PATTERN);
+
+        // Extract wind direction degrees (last value from Direction Deg row)
+        int windDirectionDeg = extractLastDirectionDegrees(body);
+
+        // Extract temperature (last value from Temp row)
+        double temperature = extractLastValueFromRow(body, TEMP_ROW_PATTERN);
 
         int windSpeedKnots = (int) Math.round(windSpeedMs * MS_TO_KNOTS);
-        int windGustsKnots = (int) Math.round(windGustsMs * MS_TO_KNOTS);
+        int windGustsKnots = (int) Math.round(windGustMs * MS_TO_KNOTS);
         int tempC = (int) Math.round(temperature);
         String windDirection = windDirectionDegreesToCardinal(windDirectionDeg);
-        String timestamp = java.time.Instant.ofEpochSecond(epoch)
-                .atZone(java.time.ZoneId.of("Europe/Warsaw"))
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String timestamp = ZonedDateTime.now(ZoneId.of("Europe/Warsaw"))
+                .format(TIMESTAMP_FORMATTER);
 
         return new CurrentConditions(timestamp, windSpeedKnots, windGustsKnots, windDirection, tempC);
+    }
+
+    private double extractLastValueFromRow(String html, Pattern rowPattern) {
+        Matcher rowMatcher = rowPattern.matcher(html);
+        if (!rowMatcher.find()) {
+            throw new RuntimeException("Could not find row in HTML");
+        }
+
+        String rowContent = rowMatcher.group(1);
+        List<Double> values = new ArrayList<>();
+
+        Matcher cellMatcher = CELL_VALUE_PATTERN.matcher(rowContent);
+        while (cellMatcher.find()) {
+            values.add(Double.parseDouble(cellMatcher.group(1)));
+        }
+
+        if (values.isEmpty()) {
+            throw new RuntimeException("No values found in row");
+        }
+
+        return values.getLast();
+    }
+
+    private int extractLastDirectionDegrees(String html) {
+        Matcher rowMatcher = DIRECTION_ROW_PATTERN.matcher(html);
+        if (!rowMatcher.find()) {
+            throw new RuntimeException("Could not find direction row in HTML");
+        }
+
+        String rowContent = rowMatcher.group(1);
+        List<Integer> degrees = new ArrayList<>();
+
+        Matcher cellMatcher = DIRECTION_CELL_PATTERN.matcher(rowContent);
+        while (cellMatcher.find()) {
+            degrees.add(Integer.parseInt(cellMatcher.group(2)));
+        }
+
+        if (degrees.isEmpty()) {
+            throw new RuntimeException("No direction values found in row");
+        }
+
+        return degrees.getLast();
     }
 }

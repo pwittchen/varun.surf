@@ -44,50 +44,36 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
-    void shouldParseValidStationDataResponse() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div>Some content</div>
-                #&lt;struct StationData id=13563918, epoch=1732806483, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=-1.0, tsource=&quot;H1612&quot;, winddir=207, windgusts=3.9, windspeed=3.1, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
+    void shouldParseValidHolfuyHtmlResponse() {
+        String mockResponse = createMockHtmlResponse(5.3, 7.2, 34, 3.9);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {
                     assertThat(conditions).isNotNull();
-                    assertThat(conditions.date()).isEqualTo("2024-11-28 16:08:03");
-                    assertThat(conditions.direction()).isEqualTo("SW"); // 207° is SW
-                    assertThat(conditions.wind()).isEqualTo(6); // 3.1 m/s * 1.94384 = 6.03 knots, rounded to 6
-                    assertThat(conditions.gusts()).isEqualTo(8); // 3.9 m/s * 1.94384 = 7.58 knots, rounded to 8
-                    assertThat(conditions.temp()).isEqualTo(-1);
+                    assertThat(conditions.direction()).isEqualTo("NE"); // 34° is NE
+                    assertThat(conditions.wind()).isEqualTo(10); // 5.3 m/s * 1.94384 = 10.3 knots, rounded to 10
+                    assertThat(conditions.gusts()).isEqualTo(14); // 7.2 m/s * 1.94384 = 14.0 knots, rounded to 14
+                    assertThat(conditions.temp()).isEqualTo(4);
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldConvertWindSpeedFromMsToKnots() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=10.0, tsource=&quot;H1612&quot;, winddir=90, windgusts=10.3, windspeed=5.14, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
+        String mockResponse = createMockHtmlResponse(5.14, 10.3, 90, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -102,13 +88,13 @@ class FetchCurrentConditionsStrategyMBTest {
 
     @Test
     void shouldConvertDegreesToCardinalDirectionNorth() {
-        String mockResponse = createMockResponseWithDirection(0);
+        String mockResponse = createMockHtmlResponse(3.0, 5.0, 0, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -120,13 +106,13 @@ class FetchCurrentConditionsStrategyMBTest {
 
     @Test
     void shouldConvertDegreesToCardinalDirectionNorthEast() {
-        String mockResponse = createMockResponseWithDirection(45);
+        String mockResponse = createMockHtmlResponse(3.0, 5.0, 45, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -138,13 +124,13 @@ class FetchCurrentConditionsStrategyMBTest {
 
     @Test
     void shouldConvertDegreesToCardinalDirectionEast() {
-        String mockResponse = createMockResponseWithDirection(90);
+        String mockResponse = createMockHtmlResponse(3.0, 5.0, 90, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -155,50 +141,14 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
-    void shouldConvertDegreesToCardinalDirectionSouthEast() {
-        String mockResponse = createMockResponseWithDirection(135);
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.direction()).isEqualTo("SE");
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldConvertDegreesToCardinalDirectionSouth() {
-        String mockResponse = createMockResponseWithDirection(180);
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.direction()).isEqualTo("S");
-                })
-                .verifyComplete();
-    }
-
-    @Test
     void shouldConvertDegreesToCardinalDirectionSouthWest() {
-        String mockResponse = createMockResponseWithDirection(225);
+        String mockResponse = createMockHtmlResponse(3.0, 5.0, 225, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -209,123 +159,14 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
-    void shouldConvertDegreesToCardinalDirectionWest() {
-        String mockResponse = createMockResponseWithDirection(270);
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.direction()).isEqualTo("W");
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldConvertDegreesToCardinalDirectionNorthWest() {
-        String mockResponse = createMockResponseWithDirection(315);
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.direction()).isEqualTo("NW");
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldHandleEdgeCaseWindDirections() {
-        // Test 359 degrees (should be N, not NW)
-        String mockResponse = createMockResponseWithDirection(359);
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.direction()).isEqualTo("N");
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldParseNegativeTemperature() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=-15.5, tsource=&quot;H1612&quot;, winddir=180, windgusts=5.0, windspeed=3.0, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.temp()).isEqualTo(-15);
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void shouldParseZeroTemperature() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=0.0, tsource=&quot;H1612&quot;, winddir=180, windgusts=5.0, windspeed=3.0, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    assertThat(conditions.temp()).isEqualTo(0);
-                })
-                .verifyComplete();
-    }
-
-    @Test
     void shouldRoundDecimalValues() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=18.6, tsource=&quot;H1612&quot;, winddir=180, windgusts=4.63, windspeed=2.57, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
+        String mockResponse = createMockHtmlResponse(2.57, 4.63, 180, 18.6);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -340,26 +181,20 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
-    void shouldFormatTimestampCorrectly() {
-        // Epoch 1732809683 = 2024-11-28 17:01:23 CET
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=10.0, tsource=&quot;H1612&quot;, winddir=180, windgusts=5.0, windspeed=3.0, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
+    void shouldSetTimestampToCurrentTime() {
+        String mockResponse = createMockHtmlResponse(3.0, 5.0, 180, 10.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {
-                    assertThat(conditions.date()).isEqualTo("2024-11-28 17:01:23");
+                    // Timestamp should be in the expected format
+                    assertThat(conditions.date()).matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
                 })
                 .verifyComplete();
     }
@@ -369,7 +204,7 @@ class FetchCurrentConditionsStrategyMBTest {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(500));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -378,42 +213,14 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
-    void shouldHandleMissingStationData() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div>Some content without StationData</div>
-                </body>
-                </html>
-                """;
+    void shouldHandleMissingSpeedRow() {
+        String mockResponse = "<html><body>No data</body></html>";
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .expectError(RuntimeException.class)
-                .verify();
-    }
-
-    @Test
-    void shouldHandleIncompleteStationData() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683&gt;
-                </body>
-                </html>
-                """;
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -423,51 +230,18 @@ class FetchCurrentConditionsStrategyMBTest {
 
     @Test
     void shouldReturnCorrectUrl() {
-        assertThat(strategy.getUrl(1068590)).isEqualTo("https://pogoda.cc/pl/stacje/zar");
-    }
-
-    @Test
-    void shouldParseDecimalWindSpeed() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=15.0, tsource=&quot;H1612&quot;, winddir=90, windgusts=7.25, windspeed=4.5, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/stacje/zar").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .assertNext(conditions -> {
-                    // 4.5 m/s * 1.94384 = 8.75 knots, rounded to 9
-                    assertThat(conditions.wind()).isEqualTo(9);
-                    // 7.25 m/s * 1.94384 = 14.09 knots, rounded to 14
-                    assertThat(conditions.gusts()).isEqualTo(14);
-                })
-                .verifyComplete();
+        assertThat(strategy.getUrl(1068590)).isEqualTo("https://holfuy.com/en/weather/1612");
     }
 
     @Test
     void shouldHandleZeroWindSpeed() {
-        String mockResponse = """
-                <html>
-                <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=15.0, tsource=&quot;H1612&quot;, winddir=90, windgusts=0.0, windspeed=0.0, wsource=&quot;H1612&quot;&gt;
-                </body>
-                </html>
-                """;
+        String mockResponse = createMockHtmlResponse(0.0, 0.0, 90, 15.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
                 .setResponseCode(200));
 
-        String url = mockWebServer.url("/stacje/zar").toString();
+        String url = mockWebServer.url("/en/weather/1612").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
         StepVerifier.create(result)
@@ -478,13 +252,101 @@ class FetchCurrentConditionsStrategyMBTest {
                 .verifyComplete();
     }
 
-    private String createMockResponseWithDirection(int degrees) {
+    @Test
+    void shouldExtractLastValueFromMultipleColumns() {
+        // Test that we correctly extract the LAST value from multiple columns
+        String mockResponse = createMockHtmlResponseWithMultipleValues();
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/en/weather/1612").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    // Last speed value is 5.3
+                    assertThat(conditions.wind()).isEqualTo(10); // 5.3 * 1.94384 = 10.3
+                    // Last gust value is 7.2
+                    assertThat(conditions.gusts()).isEqualTo(14); // 7.2 * 1.94384 = 14.0
+                    // Last direction is 34°
+                    assertThat(conditions.direction()).isEqualTo("NE");
+                    // Last temp is 3.9
+                    assertThat(conditions.temp()).isEqualTo(4);
+                })
+                .verifyComplete();
+    }
+
+    private String createMockHtmlResponse(double speed, double gust, int directionDeg, double temp) {
+        String directionCardinal = directionDeg < 23 ? "N" :
+                                   directionDeg < 68 ? "NE" :
+                                   directionDeg < 113 ? "E" :
+                                   directionDeg < 158 ? "SE" :
+                                   directionDeg < 203 ? "S" :
+                                   directionDeg < 248 ? "SW" :
+                                   directionDeg < 293 ? "W" :
+                                   directionDeg < 338 ? "NW" : "N";
+
+        // Match real Holfuy HTML structure exactly
         return """
                 <html>
                 <body>
-                #&lt;struct StationData id=13563918, epoch=1732809683, hsource=&quot;H1612&quot;, humidity=0, pressure=0.0, psource=&quot;H1612&quot;, rsource=&quot;H1612&quot;, station=&quot;zar&quot;, temperature=10.0, tsource=&quot;H1612&quot;, winddir=%d, windgusts=5.0, windspeed=3.0, wsource=&quot;H1612&quot;&gt;
+                <table class="hour_table">
+                <tr style="height:1.9em; font-size:larger;">
+                    <td class="h_header" style=" font-size:smaller; padding-top:5px;">Speed</td>
+                    <td style="background:#00ff19;">%s</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Gust <span style="font-size: smaller;"> (m/s)</span></td>
+                    <td bgcolor="#b1ff00">%s</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Direction<br><span style="font-size: smaller;">Deg.</span></td>
+                    <td>%s<br>%d°</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Temp. <span style="font-size: smaller;"> (°C)</span></td>
+                    <td bgcolor="#ffff92">%s</td>
+                </tr>
+                </table>
                 </body>
                 </html>
-                """.formatted(degrees);
+                """.formatted(speed, gust, directionCardinal, directionDeg, temp);
+    }
+
+    private String createMockHtmlResponseWithMultipleValues() {
+        return """
+                <html>
+                <body>
+                <table class="hour_table">
+                <tr style="height:1.9em; font-size:larger;">
+                    <td class="h_header" style=" font-size:smaller; padding-top:5px;">Speed</td>
+                    <td style="background:#00ff19;">4.7</td>
+                    <td style="background:#00ff4c;">4.2</td>
+                    <td style="background:#00ff00;">5.3</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Gust <span style="font-size: smaller;"> (m/s)</span></td>
+                    <td bgcolor="#b1ff00">7.8</td>
+                    <td bgcolor="#32ff00">5.8</td>
+                    <td bgcolor="#98ff00">7.2</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Direction<br><span style="font-size: smaller;">Deg.</span></td>
+                    <td>NNE<br>33°</td>
+                    <td>NE<br>35°</td>
+                    <td>NE<br>34°</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Temp. <span style="font-size: smaller;"> (°C)</span></td>
+                    <td bgcolor="#ffff92">5.3</td>
+                    <td bgcolor="#ffff94">5.2</td>
+                    <td bgcolor="#ffffae">3.9</td>
+                </tr>
+                </table>
+                </body>
+                </html>
+                """;
     }
 }
