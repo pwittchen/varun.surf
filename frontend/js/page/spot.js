@@ -2,8 +2,9 @@ import {getCountryFlag} from '../common/flags.js';
 import {t, translations} from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
 import {getWindArrow, getWindRotation} from '../common/weather.js';
-import {API_ENDPOINT, FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
+import {FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
 import {findClosestForecast} from '../common/date.js';
+import {fetchSpot} from '../common/api.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -81,22 +82,10 @@ function setSelectedModel(model) {
 // API FUNCTIONS
 // ============================================================================
 
-// Fetch single spot data from the API
+// Fetch single spot data from the API using imported fetchSpot
 async function fetchSpotData(spotId) {
-    try {
-        const model = getSelectedModel();
-        const url = `${API_ENDPOINT}/${spotId}${model ? '/' + model : ''}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-            const error = new Error(`HTTP error! status: ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching spot data:', error);
-        throw error;
-    }
+    const model = getSelectedModel();
+    return fetchSpot(spotId, model);
 }
 
 // ============================================================================

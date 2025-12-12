@@ -2,8 +2,9 @@ import { getCountryFlag } from '../common/flags.js';
 import { t } from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
 import { getWindArrow, getWindClass } from '../common/weather.js';
-import { API_ENDPOINT, AUTO_REFRESH_INTERVAL } from '../common/constants.js';
+import { AUTO_REFRESH_INTERVAL } from '../common/constants.js';
 import { findClosestForecast } from '../common/date.js';
+import { fetchAllSpots, fetchSponsors } from '../common/api.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -609,26 +610,8 @@ function initLanguage() {
 // API FUNCTIONS
 // ============================================================================
 
-async function fetchWeatherData() {
-    try {
-        const response = await fetch(API_ENDPOINT, {cache: 'no-store'});
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error('Invalid data format: Expected array of spots');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error fetching weather data:', error);
-        throw error;
-    }
-}
+// fetchWeatherData is now imported as fetchAllSpots from common/api.js
+const fetchWeatherData = fetchAllSpots;
 
 // ============================================================================
 // UI MESSAGE FUNCTIONS
@@ -2535,19 +2518,8 @@ function setupColumnToggle() {
 // SPONSORS FUNCTIONALITY
 // ============================================================================
 
-async function fetchMainSponsors() {
-    try {
-        const response = await fetch('/api/v1/sponsors');
-        if (!response.ok) {
-            return [];
-        }
-        const sponsors = await response.json();
-        return sponsors || [];
-    } catch (error) {
-        console.error('Error fetching main sponsors:', error);
-        return [];
-    }
-}
+// fetchMainSponsors is now imported as fetchSponsors from common/api.js
+const fetchMainSponsors = fetchSponsors;
 
 async function renderMainSponsors() {
     const sponsorsContainer = document.getElementById('sponsorsContainer');

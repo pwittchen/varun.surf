@@ -1,8 +1,9 @@
 import {getCountryFlag} from '../common/flags.js';
 import {translations} from '../common/translations.js';
 import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather.js';
-import {API_ENDPOINT, AUTO_REFRESH_INTERVAL} from '../common/constants.js';
+import {AUTO_REFRESH_INTERVAL} from '../common/constants.js';
 import {parseForecastDate, findClosestForecast, formatTime} from '../common/date.js';
+import {fetchSpot} from '../common/api.js';
 
 // ============================================================================
 // GLOBAL STATE
@@ -31,19 +32,8 @@ function getSpotIdFromUrl() {
 // API FUNCTIONS
 // ============================================================================
 
-async function fetchSpotData(spotId) {
-    try {
-        const url = `${API_ENDPOINT}/${spotId}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching spot data:', error);
-        throw error;
-    }
-}
+// Fetch single spot data using imported fetchSpot
+const fetchSpotData = fetchSpot;
 
 // ============================================================================
 // TRANSLATION FUNCTIONS

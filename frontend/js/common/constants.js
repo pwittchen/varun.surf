@@ -2,9 +2,6 @@
 // SHARED CONSTANTS
 // ============================================================================
 
-// API Configuration
-export const API_ENDPOINT = '/api/v1/spots';
-
 // Refresh Intervals (in milliseconds)
 export const AUTO_REFRESH_INTERVAL = 60 * 1000;      // 1 minute
 export const FORECAST_POLL_INTERVAL = 5000;          // 5 seconds

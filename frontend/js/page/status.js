@@ -1,5 +1,6 @@
 import { t } from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
+import { fetchStatus as fetchStatusApi, checkEndpointHealth } from '../common/api.js';
 
 // ============================================================================
 // THEME INITIALIZATION
@@ -15,10 +16,7 @@ document.documentElement.setAttribute('data-theme', savedTheme);
 
 async function fetchStatus() {
     try {
-        const response = await fetch('/api/v1/status');
-        if (!response.ok) throw new Error('Failed to fetch status');
-
-        const data = await response.json();
+        const data = await fetchStatusApi();
 
         // Update status indicator
         const indicator = document.getElementById('status-indicator');
@@ -68,21 +66,16 @@ async function checkEndpoint(endpoint) {
     const statusSpan = endpointEl.querySelector('.status-endpoint-status');
     const dotEl = endpointEl.querySelector('.status-endpoint-dot');
 
-    try {
-        const startTime = performance.now();
-        const response = await fetch(endpoint);
-        const endTime = performance.now();
-        const latency = Math.round(endTime - startTime);
+    const result = await checkEndpointHealth(endpoint);
 
-        if (response.ok) {
-            statusSpan.innerHTML = `<span class="status-endpoint-text">operational</span> <span class="status-endpoint-latency">(${latency}ms)</span>`;
-            dotEl.className = 'status-endpoint-dot status-endpoint-dot-up';
-        } else {
-            statusSpan.innerHTML = `<span class="status-endpoint-text">error (${response.status})</span>`;
-            dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
-        }
-    } catch (error) {
+    if (result.ok) {
+        statusSpan.innerHTML = `<span class="status-endpoint-text">operational</span> <span class="status-endpoint-latency">(${result.latency}ms)</span>`;
+        dotEl.className = 'status-endpoint-dot status-endpoint-dot-up';
+    } else if (result.error) {
         statusSpan.innerHTML = '<span class="status-endpoint-text">unreachable</span>';
+        dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
+    } else {
+        statusSpan.innerHTML = `<span class="status-endpoint-text">error (${result.status})</span>`;
         dotEl.className = 'status-endpoint-dot status-endpoint-dot-down';
     }
 }
