@@ -3,9 +3,9 @@
 // ============================================================================
 
 // API Endpoints
-const API_ENDPOINT = '/api/v1/spots';
-const SPONSORS_ENDPOINT = '/api/v1/sponsors';
-const STATUS_ENDPOINT = '/api/v1/status';
+const API_ENDPOINT_SPOTS = '/api/v1/spots';
+const API_ENDPOINT_SPONSORS = '/api/v1/sponsors';
+const API_ENDPOINT_STATUS = '/api/v1/status';
 
 // ============================================================================
 // SPOTS API
@@ -17,7 +17,7 @@ const STATUS_ENDPOINT = '/api/v1/status';
  */
 export async function fetchAllSpots() {
     try {
-        const response = await fetch(API_ENDPOINT, { cache: 'no-store' });
+        const response = await fetch(API_ENDPOINT_SPOTS, { cache: 'no-store' });
 
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
@@ -44,7 +44,7 @@ export async function fetchAllSpots() {
  */
 export async function fetchSpot(spotId, model = null) {
     try {
-        const url = `${API_ENDPOINT}/${spotId}${model ? '/' + model : ''}`;
+        const url = `${API_ENDPOINT_SPOTS}/${spotId}${model ? '/' + model : ''}`;
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -70,7 +70,7 @@ export async function fetchSpot(spotId, model = null) {
  */
 export async function fetchSponsors() {
     try {
-        const response = await fetch(SPONSORS_ENDPOINT);
+        const response = await fetch(API_ENDPOINT_SPONSORS);
 
         if (!response.ok) {
             return [];
@@ -93,7 +93,7 @@ export async function fetchSponsors() {
  * @returns {Promise<Object>} Status object
  */
 export async function fetchStatus() {
-    const response = await fetch(STATUS_ENDPOINT);
+    const response = await fetch(API_ENDPOINT_STATUS);
 
     if (!response.ok) {
         throw new Error('Failed to fetch status');
