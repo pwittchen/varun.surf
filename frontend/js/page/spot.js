@@ -12,6 +12,13 @@ import {
     getBaseUrl,
     buildSpotTvUrl
 } from '../common/routing.js';
+import {
+    updateTileLayer,
+    createLayerSwitcher,
+    updateLayerSwitcherLabels,
+    createMarkerIcon,
+    buildWindyEmbedUrl
+} from '../common/map.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -1422,119 +1429,6 @@ let osmSatelliteMap = null;
 let currentSpotMapLayer = 'satellite'; // Default to satellite view
 let spotTileLayer = null; // Track current tile layer
 
-function createSpotLayerSwitcher() {
-    const LayerSwitcher = L.Control.extend({
-        options: {
-            position: 'bottomleft'
-        },
-
-        onAdd: function(map) {
-            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-layer-switcher');
-
-            // Create button with layers icon
-            const button = L.DomUtil.create('button', 'layer-switcher-button', container);
-            button.type = 'button';
-            button.title = 'Switch map layer';
-            button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="m12,18.838c-.572,0-1.143-.153-1.653-.459L.485,12.462c-.474-.284-.627-.898-.343-1.372.283-.475.897-.627,1.372-.343l9.861,5.917c.385.23.864.23,1.249,0l9.861-5.917c.474-.284,1.088-.131,1.372.343s.131,1.088-.343,1.372l-9.861,5.917c-.51.306-1.082.459-1.653.459Zm1.653,3.836l9.861-5.917c.474-.284.627-.898.343-1.372s-.898-.627-1.372-.343l-9.862,5.917c-.384.23-.863.23-1.248,0L1.515,15.042c-.475-.285-1.089-.131-1.372.343-.284.474-.131,1.088.343,1.372l9.861,5.917c.51.307,1.082.459,1.654.459s1.144-.152,1.653-.459Zm-1.653-16.84l5.308-3.185L13.653.456c-1.02-.612-2.287-.612-3.307,0l-3.655,2.193,5.308,3.185Zm11.515.539l-4.263-2.558-5.308,3.185,5.692,3.415,3.879-2.327c.301-.181.485-.506.485-.857s-.184-.677-.485-.857Zm-13.459.627l-5.308-3.185L.485,6.373c-.301.181-.485.506-.485.857s.184.677.485.857l3.879,2.327,5.692-3.415Zm1.944,1.166l-5.692,3.415,4.039,2.423c.51.306,1.081.459,1.653.459s1.143-.153,1.653-.459l4.039-2.423-5.692-3.415Z"/></svg>';
-
-            // Create dropdown menu
-            const dropdown = L.DomUtil.create('div', 'layer-switcher-dropdown', container);
-            dropdown.style.display = 'none';
-
-            // Create dropdown options with translation keys
-            const options = [
-                { value: 'osm', translationKey: 'mapLayerOsm' },
-                { value: 'satellite', translationKey: 'mapLayerSatellite' }
-            ];
-
-            options.forEach(option => {
-                const optionEl = L.DomUtil.create('div', 'layer-switcher-option', dropdown);
-                optionEl.textContent = t(option.translationKey);
-                optionEl.dataset.value = option.value;
-                optionEl.dataset.translationKey = option.translationKey;
-
-                if (option.value === currentSpotMapLayer) {
-                    optionEl.classList.add('active');
-                }
-
-                L.DomEvent.on(optionEl, 'click', function(e) {
-                    L.DomEvent.stopPropagation(e);
-
-                    // Update active state
-                    dropdown.querySelectorAll('.layer-switcher-option').forEach(opt => {
-                        opt.classList.remove('active');
-                    });
-                    optionEl.classList.add('active');
-
-                    // Switch layer
-                    currentSpotMapLayer = option.value;
-                    updateSpotMapTileLayer();
-
-                    // Close dropdown
-                    dropdown.style.display = 'none';
-                    button.classList.remove('open');
-                });
-            });
-
-            // Toggle dropdown on button click
-            L.DomEvent.on(button, 'click', function(e) {
-                L.DomEvent.stopPropagation(e);
-                const isOpen = dropdown.style.display === 'block';
-                dropdown.style.display = isOpen ? 'none' : 'block';
-                button.classList.toggle('open', !isOpen);
-            });
-
-            // Close dropdown when clicking outside
-            L.DomEvent.on(map.getContainer(), 'click', function() {
-                dropdown.style.display = 'none';
-                button.classList.remove('open');
-            });
-
-            L.DomEvent.disableClickPropagation(container);
-
-            return container;
-        }
-    });
-
-    return new LayerSwitcher();
-}
-
-function updateSpotMapTileLayer() {
-    if (!osmSatelliteMap) return;
-
-    // Remove existing tile layer
-    if (spotTileLayer) {
-        osmSatelliteMap.removeLayer(spotTileLayer);
-    }
-
-    // Add new tile layer based on selection
-    if (currentSpotMapLayer === 'satellite') {
-        spotTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-            maxZoom: 19
-        }).addTo(osmSatelliteMap);
-    } else {
-        spotTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
-        }).addTo(osmSatelliteMap);
-    }
-}
-
-function updateLayerSwitcherLabels() {
-    // Update layer switcher labels when language changes
-    const dropdowns = document.querySelectorAll('.layer-switcher-dropdown');
-    dropdowns.forEach(dropdown => {
-        const options = dropdown.querySelectorAll('.layer-switcher-option');
-        options.forEach(optionEl => {
-            const translationKey = optionEl.dataset.translationKey;
-            if (translationKey) {
-                optionEl.textContent = t(translationKey);
-            }
-        });
-    });
-}
-
 function initOsmSatelliteMap() {
     const mapContainer = document.getElementById('osm-satellite-map');
     if (!mapContainer || !currentSpot || !currentSpot.coordinates) {
@@ -1555,18 +1449,20 @@ function initOsmSatelliteMap() {
     );
 
     // Add initial tile layer based on current selection
-    updateSpotMapTileLayer();
+    spotTileLayer = updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
 
-    // Add layer switcher control
-    createSpotLayerSwitcher().addTo(osmSatelliteMap);
-
-    // Create a custom red marker icon (matching main map style)
-    const markerIcon = L.divIcon({
-        className: 'custom-marker-icon',
-        html: `<div class="custom-marker custom-marker-red"><div class="marker-dot"></div></div>`,
-        iconSize: [18, 18],
-        iconAnchor: [9, 9]
+    // Add layer switcher control using common module
+    const layerSwitcher = createLayerSwitcher({
+        getCurrentLayer: () => currentSpotMapLayer,
+        onLayerChange: (newLayer) => {
+            currentSpotMapLayer = newLayer;
+            spotTileLayer = updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
+        }
     });
+    layerSwitcher.addTo(osmSatelliteMap);
+
+    // Create a custom red marker icon using common module
+    const markerIcon = createMarkerIcon('custom-marker-red');
 
     // Add marker at spot location with custom icon
     L.marker([currentSpot.coordinates.lat, currentSpot.coordinates.lon], { icon: markerIcon })
@@ -2002,7 +1898,7 @@ function createSpotCard(spot) {
     // Generate Windy.com iframe
     let windyMapIframe = '';
     if (hasCoordinates) {
-        const windyUrl = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=kt&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=${spot.coordinates.lat}&lon=${spot.coordinates.lon}&message=true`;
+        const windyUrl = buildWindyEmbedUrl(spot.coordinates.lat, spot.coordinates.lon);
         windyMapIframe = `<iframe src="${windyUrl}" width="100%" height="360" frameborder="0"></iframe>`;
     }
 
