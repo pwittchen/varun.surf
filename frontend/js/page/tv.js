@@ -4,6 +4,7 @@ import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weath
 import {AUTO_REFRESH_INTERVAL} from '../common/constants.js';
 import {parseForecastDate, findClosestForecast, formatTime} from '../common/date.js';
 import {fetchSpot} from '../common/api.js';
+import {getSpotIdFromUrl} from '../common/routing.js';
 
 // ============================================================================
 // GLOBAL STATE
@@ -13,20 +14,6 @@ let currentSpot = null;
 let currentSpotId = null;
 let refreshIntervalId = null;
 let currentLanguage = 'en';
-
-// ============================================================================
-// URL HELPERS
-// ============================================================================
-
-// Extract spot ID from the URL pattern: /spot/{spotId}/tv
-function getSpotIdFromUrl() {
-    const pathParts = window.location.pathname.split('/');
-    const spotIndex = pathParts.indexOf('spot');
-    if (spotIndex !== -1 && pathParts.length > spotIndex + 1) {
-        return pathParts[spotIndex + 1];
-    }
-    return null;
-}
 
 // ============================================================================
 // API FUNCTIONS

@@ -5,6 +5,23 @@ import { getWindArrow, getWindClass } from '../common/weather.js';
 import { AUTO_REFRESH_INTERVAL } from '../common/constants.js';
 import { findClosestForecast } from '../common/date.js';
 import { fetchAllSpots, fetchSponsors } from '../common/api.js';
+import {
+    normalizeCountryForUrl,
+    getCountryFromUrl,
+    getCurrentPath,
+    isStarredUrl,
+    isMapUrl,
+    navigateToHome,
+    navigateToCountry,
+    navigateToSpot,
+    pushCountryUrl,
+    pushStarredUrl,
+    pushMapUrl,
+    pushUrl,
+    buildCountryUrl,
+    buildSpotUrl,
+    reloadPage
+} from '../common/routing.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -25,28 +42,6 @@ let previousUrl = localStorage.getItem('previousUrl') || '/';
 // URL ROUTING HELPERS
 // ============================================================================
 
-function normalizeCountryForUrl(country) {
-    // Convert country name to URL-safe format: lowercase, no spaces or special chars
-    return country.toLowerCase()
-        .replace(/\s+/g, '')
-        .replace(/[^a-z]/g, '');
-}
-
-function getCountryFromUrl() {
-    // Extract country from the URL pattern: /country/{countryName}
-    const pathParts = window.location.pathname.split('/');
-    const countryIndex = pathParts.indexOf('country');
-    if (countryIndex !== -1 && pathParts.length > countryIndex + 1) {
-        return pathParts[countryIndex + 1];
-    }
-    return null;
-}
-
-function isStarredUrl() {
-    // Check if the URL is /starred
-    return window.location.pathname === '/starred';
-}
-
 function findCountryByNormalizedName(normalizedName) {
     // Find the actual country name from normalized URL name
     for (const country of availableCountries) {
@@ -61,33 +56,26 @@ function updateUrlForCountry(country) {
     // Update browser URL without reloading the page
     // Store previous URL before changing (if not already starred)
     if (!isStarredUrl()) {
-        previousUrl = window.location.pathname;
+        previousUrl = getCurrentPath();
         localStorage.setItem('previousUrl', previousUrl);
     }
-
-    if (country === 'all') {
-        window.history.pushState({country: 'all'}, '', '/');
-    } else {
-        const normalizedCountry = normalizeCountryForUrl(country);
-        window.history.pushState({country: country}, '', `/country/${normalizedCountry}`);
-    }
+    pushCountryUrl(country);
 }
 
 function updateUrlForStarred() {
     // Store the current URL before switching to starred
     if (!isStarredUrl()) {
-        previousUrl = window.location.pathname;
+        previousUrl = getCurrentPath();
         localStorage.setItem('previousUrl', previousUrl);
     }
-    // Update browser URL to /starred
-    window.history.pushState({starred: true}, '', '/starred');
+    pushStarredUrl();
     document.title = `${t('favoritesToggleTooltip')} - VARUN.SURF`;
 }
 
 function restorePreviousUrl() {
     // Restore previous URL when exiting starred view
     const targetUrl = previousUrl || '/';
-    window.history.pushState({}, '', targetUrl);
+    pushUrl(targetUrl);
 
     // Update page title based on URL
     if (targetUrl === '/') {
@@ -360,10 +348,9 @@ function initTheme() {
         headerLogo.addEventListener('click', () => {
             const savedCountry = localStorage.getItem('selectedCountry') || 'all';
             if (savedCountry === 'all') {
-                window.location.href = '/';
+                navigateToHome();
             } else {
-                const normalizedCountry = normalizeCountryForUrl(savedCountry);
-                window.location.href = `/country/${normalizedCountry}`;
+                navigateToCountry(savedCountry);
             }
         });
     }
@@ -1248,7 +1235,7 @@ function createSpotCard(spot) {
                 <div class="drag-handle" draggable="true"><svg class="drag-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg></div>
                 <div class="spot-header">
                     <div class="spot-title">
-                        <div class="spot-name" onclick="window.location.href='/spot/${spot.wgId}'">${spot.name || 'Unknown Spot'}</div>
+                        <div class="spot-name" onclick="window.location.href='${buildSpotUrl(spot.wgId)}'">${spot.name || 'Unknown Spot'}</div>
                     </div>
                     <div class="spot-meta">
                         <div class="country-tag-wrapper">
@@ -1440,7 +1427,7 @@ function createListRow(spot) {
     const nameCell = document.createElement('div');
     nameCell.className = 'list-spot-name';
     nameCell.textContent = spot.name || 'Unknown Spot';
-    nameCell.onclick = () => window.location.href = `/spot/${spot.wgId}`;
+    nameCell.onclick = () => navigateToSpot(spot.wgId);
     row.appendChild(nameCell);
 
     if (spotConditions) {
@@ -2647,9 +2634,17 @@ function setupInfoToggle() {
 // ============================================================================
 
 // Reload the page after clicking on the logo
-function reloadPage() {
+function scrollAndReloadPage() {
     window.scrollTo(0, 0);
-    window.location.reload();
+    reloadPage();
+}
+
+// Setup header title click handler
+function setupHeaderTitle() {
+    const headerTitle = document.getElementById('headerTitle');
+    if (headerTitle) {
+        headerTitle.addEventListener('click', scrollAndReloadPage);
+    }
 }
 
 // Scroll to top on page reload
@@ -2796,10 +2791,6 @@ function createLayerSwitcher() {
     return new LayerSwitcher();
 }
 
-function isMapUrl() {
-    return window.location.pathname === '/map';
-}
-
 function initMap() {
     if (map) return; // Already initialized
 
@@ -2874,7 +2865,7 @@ function addMarkersToMap(spots) {
         // Add popup with clickable spot name and wind summary
         marker.bindPopup(`
             <div class="map-popup">
-                <a href="/spot/${spot.wgId}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
+                <a href="${buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
                 ${popupWindDetails}
             </div>
         `);
@@ -2920,7 +2911,7 @@ function showMapView() {
     if (map) map.invalidateSize();
 
     // Update URL to /map
-    window.history.pushState({ map: true }, '', '/map');
+    pushMapUrl();
 
     // Scroll to top when opening map view
     window.scrollTo({
@@ -2952,8 +2943,7 @@ function hideMapView(options = {}) {
 
 
     // Restore previous URL
-    const urlCountry = currentFilter === 'all' ? '/' : `/country/${normalizeCountryForUrl(currentFilter)}`;
-    window.history.pushState({}, '', urlCountry);
+    pushUrl(buildCountryUrl(currentFilter));
 
     // Re-render spots to clear any filter changes
     if (!skipRender) {
@@ -3003,6 +2993,7 @@ window.toggleFavorite = toggleFavorite;
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
+    setupHeaderTitle();
     setupDropdown();
     setupModals();
     setupSearch();

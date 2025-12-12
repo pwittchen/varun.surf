@@ -5,6 +5,13 @@ import {getWindArrow, getWindRotation} from '../common/weather.js';
 import {FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
 import {findClosestForecast} from '../common/date.js';
 import {fetchSpot} from '../common/api.js';
+import {
+    getSpotIdFromUrl,
+    navigateToHome,
+    navigateToCountry,
+    getBaseUrl,
+    buildSpotTvUrl
+} from '../common/routing.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -50,18 +57,8 @@ const PHOTO_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg"
 const WINDY_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.5,13h-5a1.5,1.5,0,0,1,0-3h5A1.5,1.5,0,0,1,6.5,13Z"/><path fill="currentColor" d="M18.5,13h-7a1.5,1.5,0,0,1,0-3h7A2.5,2.5,0,0,0,21,7.468a2.031,2.031,0,0,0-1.656-1.941A2,2,0,0,0,17,7.5,1.5,1.5,0,0,1,15.5,9c-2.767-.318-1.178-4.225.26-5.308A5,5,0,0,1,24,7.431,5.5,5.5,0,0,1,18.5,13Z"/><path fill="currentColor" d="M7,8H1.5a1.5,1.5,0,0,1,0-3H7a1.069,1.069,0,0,0,1.075-.777.982.982,0,0,0-.208-.818,1.158,1.158,0,0,0-1.681.088A1.5,1.5,0,1,1,3.859,1.6a4.125,4.125,0,0,1,6.307-.116,3.989,3.989,0,0,1,.858,3.275A4.031,4.031,0,0,1,7,8Z"/><path fill="currentColor" d="M15.585,24.008a4.832,4.832,0,0,1-3.709-1.752,1.5,1.5,0,0,1,2.323-1.9,1.736,1.736,0,0,0,2.542.11,1.508,1.508,0,0,0,.322-1.256A1.606,1.606,0,0,0,15.438,18H1.5a1.5,1.5,0,0,1,0-3H15.438a4.577,4.577,0,0,1,4.577,3.678,4.506,4.506,0,0,1-4.43,5.33Z"/></svg>`;
 
 // ============================================================================
-// URL AND MODEL SELECTION HELPERS
+// MODEL SELECTION HELPERS
 // ============================================================================
-
-// Extract spot ID from the URL pattern: /spot/{spotId}
-function getSpotIdFromUrl() {
-    const pathParts = window.location.pathname.split('/');
-    const spotIndex = pathParts.indexOf('spot');
-    if (spotIndex !== -1 && pathParts.length > spotIndex + 1) {
-        return pathParts[spotIndex + 1];
-    }
-    return null;
-}
 
 // Get a selected forecast model from sessionStorage
 function getSelectedModel() {
@@ -480,17 +477,8 @@ function closeEmbedModal() {
     closeEmbedDropdowns();
 }
 
-function getEmbedBaseUrl() {
-    try {
-        return window.location.origin.replace(/\/$/, '');
-    } catch (e) {
-        return 'https://varun.surf';
-    }
-}
-
 function buildEmbedUrl(theme, view) {
-    const baseUrl = getEmbedBaseUrl();
-    return `${baseUrl}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
+    return `${getBaseUrl()}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
 }
 
 // Generate embed code based on configuration
@@ -2156,7 +2144,7 @@ function createSpotCard(spot) {
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${t('camLinkLabel')}</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
                     <span class="external-link embed-link" onclick="openEmbedModal()">${t('embedLinkLabel')}</span>
-                    <a href="/spot/${spot.wgId}/tv" target="_blank" class="external-link tv-link">${t('tvLinkLabel')}</a>
+                    <a href="${buildSpotTvUrl(spot.wgId)}" target="_blank" class="external-link tv-link">${t('tvLinkLabel')}</a>
                     ${aiAnalysisText ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 
@@ -2691,34 +2679,26 @@ function setupHamburgerMenu() {
 // HEADER NAVIGATION
 // ============================================================================
 
-// Normalize country name for URL
-function normalizeCountryForUrl(country) {
-    return country.toLowerCase()
-        .replace(/\s+/g, '')
-        .replace(/[^a-z]/g, '');
-}
-
 // Setup header navigation (logo and title click)
 function setupHeaderNavigation() {
     const headerLogo = document.getElementById('headerLogo');
     const headerTitle = document.getElementById('headerTitle');
 
-    function navigateToHome() {
+    function handleNavigateToHome() {
         const savedCountry = localStorage.getItem('selectedCountry') || 'all';
         if (savedCountry === 'all') {
-            window.location.href = '/';
+            navigateToHome();
         } else {
-            const normalizedCountry = normalizeCountryForUrl(savedCountry);
-            window.location.href = `/country/${normalizedCountry}`;
+            navigateToCountry(savedCountry);
         }
     }
 
     if (headerLogo) {
-        headerLogo.addEventListener('click', navigateToHome);
+        headerLogo.addEventListener('click', handleNavigateToHome);
     }
 
     if (headerTitle) {
-        headerTitle.addEventListener('click', navigateToHome);
+        headerTitle.addEventListener('click', handleNavigateToHome);
     }
 }
 

@@ -1,6 +1,7 @@
 import { t } from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
 import { fetchStatus as fetchStatusApi, checkEndpointHealth } from '../common/api.js';
+import { navigateToHome } from '../common/routing.js';
 
 // ============================================================================
 // THEME INITIALIZATION
@@ -90,16 +91,17 @@ async function refreshStatus() {
     await checkAllEndpoints();
 }
 
-// Goes to the index.html page
-function goToIndex() {
-    window.location.href = '/'
-}
-
 // ============================================================================
 // INITIALIZATION
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Setup header title click handler
+    const headerTitle = document.getElementById('headerTitle');
+    if (headerTitle) {
+        headerTitle.addEventListener('click', navigateToHome);
+    }
+
     // Initial load
     refreshStatus();
     // Auto-refresh every 30 seconds
