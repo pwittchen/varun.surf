@@ -16,13 +16,6 @@ let refreshIntervalId = null;
 let currentLanguage = 'en';
 
 // ============================================================================
-// API FUNCTIONS
-// ============================================================================
-
-// Fetch single spot data using imported fetchSpot
-const fetchSpotData = fetchSpot;
-
-// ============================================================================
 // TRANSLATION FUNCTIONS
 // ============================================================================
 
@@ -280,7 +273,7 @@ function startAutoRefresh(spotId) {
 
     refreshIntervalId = setInterval(async () => {
         try {
-            const latestSpot = await fetchSpotData(spotId);
+            const latestSpot = await fetchSpot(spotId);
             displaySpot(latestSpot);
         } catch (error) {
             console.warn('Auto refresh failed:', error);
@@ -309,7 +302,7 @@ async function setupTvView() {
     }
 
     try {
-        const spot = await fetchSpotData(spotId);
+        const spot = await fetchSpot(spotId);
         displaySpot(spot);
         startAutoRefresh(spotId);
     } catch (error) {

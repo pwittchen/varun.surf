@@ -219,7 +219,7 @@ async function renderFavorites() {
 
     try {
         if (globalWeatherData.length === 0) {
-            globalWeatherData = await fetchWeatherData();
+            globalWeatherData = await fetchAllSpots();
         }
 
         const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
@@ -592,13 +592,6 @@ function initLanguage() {
         updateLanguage(newLang);
     });
 }
-
-// ============================================================================
-// API FUNCTIONS
-// ============================================================================
-
-// fetchWeatherData is now imported as fetchAllSpots from common/api.js
-const fetchWeatherData = fetchAllSpots;
 
 // ============================================================================
 // UI MESSAGE FUNCTIONS
@@ -1310,7 +1303,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     showLoadingMessage();
 
     try {
-        const data = await fetchWeatherData();
+        const data = await fetchAllSpots();
 
         globalWeatherData = data;
 
@@ -2036,7 +2029,7 @@ function loadListOrder() {
 async function refreshDataInBackground() {
     try {
         // Fetch new data silently
-        const freshData = await fetchWeatherData();
+        const freshData = await fetchAllSpots();
 
         // Update global data
         globalWeatherData = freshData;
@@ -2505,16 +2498,13 @@ function setupColumnToggle() {
 // SPONSORS FUNCTIONALITY
 // ============================================================================
 
-// fetchMainSponsors is now imported as fetchSponsors from common/api.js
-const fetchMainSponsors = fetchSponsors;
-
 async function renderMainSponsors() {
     const sponsorsContainer = document.getElementById('sponsorsContainer');
     if (!sponsorsContainer) {
         return;
     }
 
-    const sponsors = await fetchMainSponsors();
+    const sponsors = await fetchSponsors();
 
     if (!sponsors || sponsors.length === 0) {
         sponsorsContainer.innerHTML = '';
@@ -2547,7 +2537,7 @@ function handleCountryURL() {
 
     if (urlCountry) {
         // Wait for data to be loaded to validate country
-        fetchWeatherData().then(data => {
+        fetchAllSpots().then(data => {
             globalWeatherData = data;
             populateCountryDropdown(data);
 
