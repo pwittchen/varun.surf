@@ -51,7 +51,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,7 +65,7 @@ public class AggregatorService {
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
 
-    private final AtomicReference<List<Spot>> spots;
+    private final ConcurrentMap<Integer, Spot> spots;
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
     private final ConcurrentMap<Integer, EvictingQueue<CurrentConditions>> currentConditionsHistory;
@@ -101,7 +100,7 @@ public class AggregatorService {
             GoogleMapsService googleMapsService,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
-        this.spots = new AtomicReference<>(new ArrayList<>());
+        this.spots = new ConcurrentHashMap<>();
         this.forecastCache = new ConcurrentHashMap<>();
         this.currentConditions = new ConcurrentHashMap<>();
         this.currentConditionsHistory = new ConcurrentHashMap<>();
@@ -129,9 +128,10 @@ public class AggregatorService {
                 .collectList()
                 .doOnSubscribe(_ -> log.info("Loading spots"))
                 .subscribeOn(Schedulers.boundedElastic())
-                .subscribe(spots -> {
-                    this.spots.set(spots);
-                    log.info("Loaded {} spots", spots.size());
+                .subscribe(spotsList -> {
+                    this.spots.clear();
+                    spotsList.forEach(spot -> this.spots.put(spot.wgId(), spot));
+                    log.info("Loaded {} spots", this.spots.size());
                     updateMetricsGauges();
                 }, error -> log.error("Failed to load spots", error));
     }
@@ -157,19 +157,19 @@ public class AggregatorService {
 
     public List<Spot> getSpots() {
         return spots
-                .get()
+                .values()
                 .stream()
                 .map(this::enrichSpotWithCachedData)
                 .toList();
     }
 
     public int countSpots() {
-        return spots.get().size();
+        return spots.size();
     }
 
     public int countCountries() {
         return Long.valueOf(spots
-                .get()
+                .values()
                 .stream()
                 .map(Spot::country)
                 .distinct()
@@ -185,9 +185,10 @@ public class AggregatorService {
     }
 
     private boolean isEmptyConditions(CurrentConditions conditions) {
-        return conditions.wind() == 0 &&
-                conditions.gusts() == 0 &&
-                (conditions.direction() == null || conditions.direction().isEmpty());
+        boolean noWind = conditions.wind() == 0;
+        boolean noGusts = conditions.gusts() == 0;
+        boolean noWindDirection = conditions.direction() == null || conditions.direction().isEmpty();
+        return noWind && noGusts && noWindDirection;
     }
 
     public Optional<Spot> getSpotById(int id) {
@@ -195,11 +196,8 @@ public class AggregatorService {
     }
 
     public Optional<Spot> getSpotById(int id, ForecastModel forecastModel) {
-        return spots
-                .get()
-                .stream()
-                .filter(spot -> spot.wgId() == id)
-                .findFirst()
+        return Optional
+                .ofNullable(spots.get(id))
                 .map(spot -> enrichSpotWithCachedData(spot, forecastModel));
     }
 
@@ -317,10 +315,10 @@ public class AggregatorService {
     public void fetchForecasts() throws FetchingForecastException {
         metricsService.incrementForecastFetchCounter();
         var startTime = System.nanoTime();
-        var spotsList = spots.get();
 
         try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
-            var tasks = spotsList
+            var tasks = spots
+                    .values()
                     .stream()
                     .map(spot -> scope.fork(() -> {
                         forecastLimiter.acquire();
@@ -363,17 +361,10 @@ public class AggregatorService {
 
         forecastCache.putAll(newForecasts);
 
-        spots.set(spots
-                .get()
-                .stream()
-                .map(spot -> {
-                    var data = forecastCache.get(spot.wgId());
-                    if (data == null) {
-                        return spot;
-                    }
-                    return spot.withForecasts(data.daily(), Collections.emptyList());
-                })
-                .toList()
+        spots.replaceAll((_, spot) -> Optional
+                .ofNullable(forecastCache.get(spot.wgId()))
+                .map(data -> spot.withForecasts(data.daily(), Collections.emptyList()))
+                .orElse(spot)
         );
     }
 
@@ -393,10 +384,10 @@ public class AggregatorService {
     public void fetchCurrentConditions() throws FetchingCurrentConditionsException {
         metricsService.incrementConditionsFetchCounter();
         var startTime = System.nanoTime();
-        var spotWgIds = spots.get().stream().map(Spot::wgId).toList();
 
         try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
-            var tasks = spotWgIds
+            var tasks = spots
+                    .keySet()
                     .stream()
                     .map(id -> scope.fork(() -> {
                         currentConditionsLimiter.acquire();
@@ -468,8 +459,10 @@ public class AggregatorService {
             }
 
             // Find the spot to get the forecastWgId (which may differ from spotId for fallback URLs)
-            Optional<Spot> spotOpt = spots.get().stream().filter(s -> s.wgId() == spotId).findFirst();
-            int forecastId = spotOpt.map(Spot::forecastWgId).orElse(spotId);
+            int forecastId = Optional
+                    .ofNullable(spots.get(spotId))
+                    .map(Spot::forecastWgId)
+                    .orElse(spotId);
 
             log.info("Fetching forecast models for the spot {} (forecastId: {})", spotId, forecastId);
             final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
@@ -584,7 +577,7 @@ public class AggregatorService {
         var startTime = System.nanoTime();
         try (var scope = new StructuredTaskScope<>("aiAnalysisEn", Thread.ofVirtual().factory())) {
             var tasks = spots
-                    .get()
+                    .values()
                     .stream()
                     .map(spot -> scope.fork(() -> {
                         aiLimiter.acquire();
@@ -624,7 +617,7 @@ public class AggregatorService {
         var startTime = System.nanoTime();
         try (var scope = new StructuredTaskScope<>("aiAnalysisPl", Thread.ofVirtual().factory())) {
             var tasks = spots
-                    .get()
+                    .values()
                     .stream()
                     .map(spot -> scope.fork(() -> {
                         aiLimiter.acquire();

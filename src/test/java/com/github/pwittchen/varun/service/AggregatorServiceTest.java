@@ -140,11 +140,9 @@ class AggregatorServiceTest {
     void shouldGetSpots() {
         // given
         var spot = createTestSpot(1, "Test Spot");
-        ReflectionTestUtils.setField(
-                aggregatorService,
-                "spots",
-                new java.util.concurrent.atomic.AtomicReference<>(List.of(spot))
-        );
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
 
         // when
         var result = aggregatorService.getSpots();
@@ -180,11 +178,9 @@ class AggregatorServiceTest {
         var hourlyForecast = List.of(new Forecast("Mon 01 Jan 2025 01:00", 9.0, 11.0, "N", 14.0, 0.1));
         var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5));
 
-        ReflectionTestUtils.setField(
-                aggregatorService,
-                "spots",
-                new java.util.concurrent.atomic.AtomicReference<>(List.of(spot))
-        );
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
 
         @SuppressWarnings("unchecked")
         var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
@@ -652,11 +648,10 @@ class AggregatorServiceTest {
         var spot1 = createTestSpot(123, "Test Spot 1");
         var spot2 = createTestSpot(124, "Test Spot 2");
 
-        ReflectionTestUtils.setField(
-                aggregatorService,
-                "spots",
-                new java.util.concurrent.atomic.AtomicReference<>(List.of(spot1, spot2))
-        );
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot1.wgId(), spot1);
+        spotsMap.put(spot2.wgId(), spot2);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
 
         // when
         var liveStationsCount = aggregatorService.countLiveStations();
