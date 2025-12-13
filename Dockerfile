@@ -7,7 +7,6 @@ COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 RUN gradle dependencies --no-daemon || true
 COPY src ./src
-COPY frontend ./frontend
 COPY package.json package-lock.json vite.config.js ./
 RUN gradle clean bootJar -Pversion=${VERSION} --no-daemon
 

@@ -39,7 +39,7 @@ function flattenHtmlPlugin() {
   };
 }
 
-const spotImagesDir = path.resolve(__dirname, 'frontend/images/spots');
+const spotImagesDir = path.resolve(__dirname, 'src/frontend/images/spots');
 
 function findSpotImages(directory) {
   if (!fs.existsSync(directory)) {
@@ -76,20 +76,20 @@ if (findSpotImages(spotImagesDir).length > 0) {
 }
 
 export default defineConfig({
-  root: 'frontend',
+  root: 'src/frontend',
   base: '/',
 
   build: {
-    outDir: '../src/main/resources/static',
+    outDir: '../../src/main/resources/static',
     emptyOutDir: true,
 
     rollupOptions: {
       input: {
-        index: path.resolve(__dirname, 'frontend/html/index.html'),
-        spot: path.resolve(__dirname, 'frontend/html/spot.html'),
-        status: path.resolve(__dirname, 'frontend/html/status.html'),
-        embed: path.resolve(__dirname, 'frontend/html/embed.html'),
-        tv: path.resolve(__dirname, 'frontend/html/tv.html')
+        index: path.resolve(__dirname, 'src/frontend/html/index.html'),
+        spot: path.resolve(__dirname, 'src/frontend/html/spot.html'),
+        status: path.resolve(__dirname, 'src/frontend/html/status.html'),
+        embed: path.resolve(__dirname, 'src/frontend/html/embed.html'),
+        tv: path.resolve(__dirname, 'src/frontend/html/tv.html')
       },
       output: {
         inlineDynamicImports: false,
@@ -140,9 +140,9 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'frontend'),
-      '@js': path.resolve(__dirname, 'frontend/js'),
-      '@css': path.resolve(__dirname, 'frontend/css')
+      '@': path.resolve(__dirname, 'src/frontend'),
+      '@js': path.resolve(__dirname, 'src/frontend/js'),
+      '@css': path.resolve(__dirname, 'src/frontend/css')
     }
   }
 });

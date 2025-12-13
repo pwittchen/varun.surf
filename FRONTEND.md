@@ -24,7 +24,7 @@ The **varun.surf** frontend is a modern, single-page application (SPA) built wit
 
 ```
 varun.surf/
-├── frontend/                      # Source files (NOT deployed)
+├── src/frontend/                  # Source files (NOT deployed)
 │   ├── js/                        # JavaScript files
 │   │   ├── common/
 │   │   │   ├── translations.js    # i18n configuration
@@ -56,7 +56,7 @@ varun.surf/
 │   └── sitemap.xml                # SEO sitemap
 ```
 
-**Important**: Files in `src/main/resources/static/` are generated artifacts. All source editing should happen in `frontend/` directory.
+**Important**: Files in `src/main/resources/static/` are generated artifacts. All source editing should happen in `src/frontend/` directory.
 
 ## Architecture Overview
 
@@ -876,7 +876,7 @@ None required (vanilla JS, modern browsers only).
 ## Build Process
 
 ### Compilation Pipeline
-1. **Source Files** (`frontend/`):
+1. **Source Files** (`src/frontend/`):
    - `js/common/translations.js` - i18n translations
    - `js/page/index.js` - Dashboard logic
    - `js/page/spot.js` - Single spot logic
