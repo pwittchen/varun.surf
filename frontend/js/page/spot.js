@@ -19,6 +19,21 @@ import {
     createMarkerIcon,
     buildWindyEmbedUrl
 } from '../common/map.js';
+import {
+    getTheme,
+    setTheme,
+    applyTheme,
+    getCurrentTheme,
+    getLanguage,
+    setLanguage,
+    getSelectedCountry,
+    getSelectedModel as getSelectedModelState,
+    setSelectedModel as setSelectedModelState,
+    getForecastViewPreference,
+    setForecastViewPreference,
+    getFilterWindyDays,
+    setFilterWindyDays
+} from '../common/state.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -69,17 +84,13 @@ const WINDY_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg"
 
 // Get a selected forecast model from sessionStorage
 function getSelectedModel() {
-    const model = sessionStorage.getItem('forecastModel');
-    if (model && (model === 'gfs' || model === 'ifs')) {
-        return model;
-    }
-    return 'gfs';
+    return getSelectedModelState();
 }
 
 // Set the selected forecast model in sessionStorage
 function setSelectedModel(model) {
     selectedModel = model;
-    sessionStorage.setItem('forecastModel', model);
+    setSelectedModelState(model);
 }
 
 // ============================================================================
@@ -310,14 +321,13 @@ function formatDayLabel(dateStr) {
 // Get spot info based on the current language
 function getSpotInfo(spot) {
     if (!spot) return null;
-    const lang = localStorage.getItem('language') || 'en';
     // Direct access - no fallback, all translations are complete
-    return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    return getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
 }
 
 // Get current language code
 function getCurrentLanguageCode() {
-    return currentLanguage || localStorage.getItem('language') || 'en';
+    return currentLanguage || getLanguage();
 }
 
 // Get AI analysis for the current language with fallbacks
@@ -717,14 +727,14 @@ function hasWindyConditions(dayForecasts) {
     return dayForecasts.some(forecast => forecast.wind >= 12);
 }
 
-// Get filter windy days preference from localStorage
+// Get filter windy days preference
 function getFilterWindyDaysPreference() {
-    return localStorage.getItem('filterWindyDays') === 'true';
+    return getFilterWindyDays();
 }
 
-// Set filter windy days preference in localStorage
+// Set filter windy days preference
 function setFilterWindyDaysPreference(enabled) {
-    localStorage.setItem('filterWindyDays', enabled ? 'true' : 'false');
+    setFilterWindyDays(enabled);
 }
 
 // Check if spot has sufficient live data history (>= 5 readings)
@@ -1331,8 +1341,8 @@ function setupForecastTabs() {
     const tabs = document.querySelectorAll('.forecast-tab');
     if (tabs.length === 0) return;
 
-    // Restore saved preference from localStorage
-    const savedView = localStorage.getItem('forecastViewPreference') || 'table';
+    // Restore saved preference
+    const savedView = getForecastViewPreference();
 
     // Set the initial view based on saved preference
     const tableView = document.querySelector('.table-view');
@@ -1367,8 +1377,8 @@ function setupForecastTabs() {
         tab.addEventListener('click', () => {
             const targetView = tab.dataset.tab;
 
-            // Save preference to localStorage
-            localStorage.setItem('forecastViewPreference', targetView);
+            // Save preference
+            setForecastViewPreference(targetView);
 
             // Update tab active state
             tabs.forEach(t => t.classList.remove('active'));
@@ -2292,31 +2302,31 @@ function displayError(messageKey) {
 // ============================================================================
 
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = getTheme();
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
 
-    function updateTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
+    function updateThemeUI(theme) {
+        applyTheme(theme);
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5-1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
-        localStorage.setItem('theme', theme);
+        setTheme(theme);
         // Re-render wind chart to update colors for new theme
         renderWindChart();
     }
 
     // Set the initial theme
-    updateTheme(savedTheme);
+    updateThemeUI(savedTheme);
 
     // Theme toggle event
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            updateTheme(newTheme);
+            const currentThemeValue = getCurrentTheme();
+            const newTheme = currentThemeValue === 'dark' ? 'light' : 'dark';
+            updateThemeUI(newTheme);
         });
     }
 }
@@ -2448,7 +2458,7 @@ function updateUITranslations() {
 
 // Initialize language and setup toggle
 function initLanguage() {
-    const savedLang = localStorage.getItem('language') || 'en';
+    const savedLang = getLanguage();
     currentLanguage = savedLang;
     embedLanguageSelection = savedLang;
 
@@ -2468,7 +2478,7 @@ function initLanguage() {
             currentLanguage = newLang;
             embedLanguageSelection = newLang;
             langCode.textContent = newLang.toUpperCase();
-            localStorage.setItem('language', newLang);
+            setLanguage(newLang);
 
             // Update UI translations
             updateUITranslations();
@@ -2581,7 +2591,7 @@ function setupHeaderNavigation() {
     const headerTitle = document.getElementById('headerTitle');
 
     function handleNavigateToHome() {
-        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+        const savedCountry = getSelectedCountry();
         if (savedCountry === 'all') {
             navigateToHome();
         } else {

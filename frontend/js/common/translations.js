@@ -1,3 +1,5 @@
+import {getLanguage} from './state.js';
+
 // ============================================================================
 // TRANSLATIONS
 // ============================================================================
@@ -501,8 +503,6 @@ export const translations = {
     }
 };
 
-// Get translation for current language
 export function t(key) {
-    const currentLang = localStorage.getItem('language') || 'en';
-    return translations[currentLang][key] || translations.en[key] || key;
+    return translations[getLanguage()][key] || translations.en[key] || key;
 }

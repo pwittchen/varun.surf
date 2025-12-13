@@ -27,6 +27,31 @@ import {
     createLayerSwitcher,
     updateLayerSwitcherLabels
 } from '../common/map.js';
+import {
+    getTheme,
+    setTheme,
+    applyTheme,
+    getCurrentTheme,
+    getLanguage,
+    setLanguage,
+    getFavorites,
+    saveFavorites,
+    isFavorite as checkIsFavorite,
+    toggleFavorite as toggleFavoriteState,
+    getShowingFavorites,
+    setShowingFavorites,
+    getSelectedCountry,
+    setSelectedCountry,
+    getDesktopViewMode,
+    setDesktopViewMode,
+    getPreviousUrl,
+    setPreviousUrl,
+    getSpotOrder,
+    saveSpotOrder,
+    removeSpotOrder,
+    getListOrder,
+    saveListOrder
+} from '../common/state.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -41,7 +66,7 @@ let autoRefreshInterval = null;
 let currentFilter = 'all';
 
 // Track previous URL for favorite toggle
-let previousUrl = localStorage.getItem('previousUrl') || '/';
+let previousUrl = getPreviousUrl();
 
 // ============================================================================
 // URL ROUTING HELPERS
@@ -62,7 +87,7 @@ function updateUrlForCountry(country) {
     // Store previous URL before changing (if not already starred)
     if (!isStarredUrl()) {
         previousUrl = getCurrentPath();
-        localStorage.setItem('previousUrl', previousUrl);
+        setPreviousUrl(previousUrl);
     }
     pushCountryUrl(country);
 }
@@ -71,7 +96,7 @@ function updateUrlForStarred() {
     // Store the current URL before switching to starred
     if (!isStarredUrl()) {
         previousUrl = getCurrentPath();
-        localStorage.setItem('previousUrl', previousUrl);
+        setPreviousUrl(previousUrl);
     }
     pushStarredUrl();
     document.title = `${t('favoritesToggleTooltip')} - VARUN.SURF`;
@@ -125,33 +150,12 @@ function showInvalidCountryError(countryName) {
 // FAVORITES MANAGEMENT
 // ============================================================================
 
-function getFavorites() {
-    const favorites = localStorage.getItem('favoriteSpots');
-    return favorites ? JSON.parse(favorites) : [];
-}
-
-function saveFavorites(favorites) {
-    localStorage.setItem('favoriteSpots', JSON.stringify(favorites));
-}
-
 function isFavorite(spotName) {
-    const favorites = getFavorites();
-    return favorites.includes(spotName);
+    return checkIsFavorite(spotName);
 }
 
 function toggleFavorite(spotName) {
-    let favorites = getFavorites();
-    const index = favorites.indexOf(spotName);
-
-    if (index > -1) {
-        // Remove from favorites
-        favorites.splice(index, 1);
-    } else {
-        // Add to favorites
-        favorites.push(spotName);
-    }
-
-    saveFavorites(favorites);
+    const wasAdded = toggleFavoriteState(spotName);
 
     // Update all instances of this spot's favorite icon
     const allFavoriteIcons = document.querySelectorAll('.favorite-icon');
@@ -161,12 +165,12 @@ function toggleFavorite(spotName) {
         if (card) {
             const spotNameElement = card.querySelector('.spot-name');
             if (spotNameElement && spotNameElement.textContent === spotName) {
-                if (index > -1) {
-                    icon.classList.remove('favorited');
-                    icon.title = t('addToFavorites');
-                } else {
+                if (wasAdded) {
                     icon.classList.add('favorited');
                     icon.title = t('removeFromFavorites');
+                } else {
+                    icon.classList.remove('favorited');
+                    icon.title = t('addToFavorites');
                 }
 
                 // Add animation
@@ -180,12 +184,12 @@ function toggleFavorite(spotName) {
         if (row) {
             const spotNameElement = row.querySelector('.list-spot-name');
             if (spotNameElement && spotNameElement.textContent === spotName) {
-                if (index > -1) {
-                    icon.classList.remove('favorited');
-                    icon.title = t('addToFavorites');
-                } else {
+                if (wasAdded) {
                     icon.classList.add('favorited');
                     icon.title = t('removeFromFavorites');
+                } else {
+                    icon.classList.remove('favorited');
+                    icon.title = t('addToFavorites');
                 }
 
                 // Add animation
@@ -266,7 +270,7 @@ function setupFavorites() {
             exitFavoritesMode();
         } else {
             // Enter favorites mode
-            localStorage.setItem('showingFavorites', 'true');
+            setShowingFavorites(true);
 
             // Update URL to /starred
             updateUrlForStarred();
@@ -282,8 +286,7 @@ function setupFavorites() {
     });
 
     // Restore favorites state on page load
-    const savedFavoritesState = localStorage.getItem('showingFavorites');
-    if (savedFavoritesState === 'true') {
+    if (getShowingFavorites()) {
         renderFavorites();
     }
 }
@@ -296,7 +299,7 @@ function exitFavoritesMode(options = {}) {
     const { skipRender = false, skipScroll = false } = options;
 
     showingFavorites = false;
-    localStorage.setItem('showingFavorites', 'false');
+    setShowingFavorites(false);
     const favoritesButton = document.getElementById('favoritesToggle');
     if (favoritesButton) {
         favoritesButton.classList.remove('active');
@@ -305,8 +308,7 @@ function exitFavoritesMode(options = {}) {
     restorePreviousUrl();
 
     if (!skipRender) {
-        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-        renderSpots(savedCountry, '');
+        renderSpots(getSelectedCountry(), '');
     }
 
     if (!skipScroll) {
@@ -322,36 +324,36 @@ function exitFavoritesMode(options = {}) {
 // ============================================================================
 
 function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = getTheme();
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
 
-    function updateTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
+    function updateThemeUI(theme) {
+        applyTheme(theme);
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
-        localStorage.setItem('theme', theme);
+        setTheme(theme);
         mapTileLayer = updateTileLayer(map, mapTileLayer, currentMapLayer);
     }
 
     // Set the initial theme
-    updateTheme(savedTheme);
+    updateThemeUI(savedTheme);
 
     // Theme toggle event
     themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        updateTheme(newTheme);
+        const currentThemeValue = getCurrentTheme();
+        const newTheme = currentThemeValue === 'dark' ? 'light' : 'dark';
+        updateThemeUI(newTheme);
     });
 
     // Make the logo clickable to go back home with the current country filter
     const headerLogo = document.getElementById('headerLogo');
     if (headerLogo) {
         headerLogo.addEventListener('click', () => {
-            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+            const savedCountry = getSelectedCountry();
             if (savedCountry === 'all') {
                 navigateToHome();
             } else {
@@ -366,19 +368,18 @@ function initTheme() {
 // ============================================================================
 
 function initLanguage() {
-    const savedLanguage = localStorage.getItem('language') || 'en';
+    const savedLanguage = getLanguage();
     const languageToggle = document.getElementById('languageToggle');
 
-    function updateLanguage(lang) {
-        localStorage.setItem('language', lang);
+    function updateLanguageUI(lang) {
+        setLanguage(lang);
         // Update all UI elements with translations
         updateUITranslations();
     }
 
     function updateUITranslations() {
         // Update page title with current country
-        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-        updatePageTitle(savedCountry);
+        updatePageTitle(getSelectedCountry());
 
         // Update search placeholder
         const searchInput = document.getElementById('searchInput');
@@ -439,8 +440,7 @@ function initLanguage() {
         if (globalWeatherData.length > 0) {
             populateCountryDropdown(globalWeatherData);
         } else {
-            const savedCountry = localStorage.getItem('selectedCountry') || 'all';
-            updateSelectedCountryLabel(savedCountry);
+            updateSelectedCountryLabel(getSelectedCountry());
         }
 
         // Update dropdown "All" option
@@ -588,13 +588,13 @@ function initLanguage() {
     }
 
     // Set initial language and update UI
-    updateLanguage(savedLanguage);
+    updateLanguageUI(savedLanguage);
 
     // Language toggle event
     languageToggle.addEventListener('click', () => {
-        const currentLang = localStorage.getItem('language') || 'en';
+        const currentLang = getLanguage();
         const newLang = currentLang === 'en' ? 'pl' : 'en';
-        updateLanguage(newLang);
+        updateLanguageUI(newLang);
     });
 }
 
@@ -650,9 +650,8 @@ function showErrorMessage(error) {
 
 function getSpotInfo(spot) {
     if (!spot) return null;
-    const lang = localStorage.getItem('language') || 'en';
     // Direct access - no fallback, all translations are complete
-    return lang === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    return getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
 }
 
 function translateDayName(dayName) {
@@ -793,8 +792,8 @@ function populateCountryDropdown(data) {
         return nameA.localeCompare(nameB);
     });
 
-    // Get saved country from localStorage
-    const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+    // Get saved country
+    const savedCountry = getSelectedCountry();
 
     // Build dropdown HTML
     const allLabel = t('allCountries');
@@ -846,8 +845,8 @@ function setupDropdownEvents() {
             const country = option.dataset.country;
             updateSelectedCountryLabel(country);
 
-            // Save selected country to localStorage
-            localStorage.setItem('selectedCountry', country);
+            // Save selected country
+            setSelectedCountry(country);
 
             // Update URL
             updateUrlForCountry(country);
@@ -858,7 +857,7 @@ function setupDropdownEvents() {
             // Deselect favorites if changing country
             if (showingFavorites) {
                 showingFavorites = false;
-                localStorage.setItem('showingFavorites', 'false');
+                setShowingFavorites(false);
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
@@ -939,8 +938,7 @@ function closeAppInfoModal() {
 
 function openAIModal(spotName) {
     const spot = globalWeatherData.find(spot => spot.name === spotName);
-    const currentLang = localStorage.getItem('language') || 'en';
-    const aiAnalysis = currentLang === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
+    const aiAnalysis = getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
 
     if (!spot || !aiAnalysis) return;
 
@@ -1524,8 +1522,7 @@ function handleListSort(column) {
 }
 
 function clearListOrder() {
-    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
-    localStorage.removeItem(orderKey);
+    removeListOrder(currentFilter, currentSearchQuery);
 }
 
 function sortSpots(spots, sortColumn, sortDirection) {
@@ -1644,7 +1641,7 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                 sortedSpots.forEach(spot => {
                     spotsGrid.appendChild(createListRow(spot));
                 });
-                loadListOrder();
+                loadListOrderFn();
             } else {
                 // Render grid view
                 filteredSpots.forEach(spot => {
@@ -1838,21 +1835,18 @@ function saveCardOrder() {
 
     const isThreeColumns = spotsGrid.classList.contains('three-columns');
     const columnMode = isThreeColumns ? '3col' : '2col';
-    const orderKey = `spotOrder_${columnMode}_${currentFilter}_${currentSearchQuery}`;
-    localStorage.setItem(orderKey, JSON.stringify(order));
+    saveSpotOrder(columnMode, currentFilter, currentSearchQuery, order);
 }
 
 function loadCardOrder() {
     const spotsGrid = document.getElementById('spotsGrid');
     const isThreeColumns = spotsGrid.classList.contains('three-columns');
     const columnMode = isThreeColumns ? '3col' : '2col';
-    const orderKey = `spotOrder_${columnMode}_${currentFilter}_${currentSearchQuery}`;
-    const savedOrder = localStorage.getItem(orderKey);
+    const order = getSpotOrder(columnMode, currentFilter, currentSearchQuery);
 
-    if (!savedOrder) return;
+    if (!order) return;
 
     try {
-        const order = JSON.parse(savedOrder);
         const cards = Array.from(spotsGrid.querySelectorAll('.spot-card'));
 
         order.forEach(spotName => {
@@ -1953,7 +1947,7 @@ function setupListDragAndDrop() {
 
         if (draggedRow) {
             draggedRow.classList.remove('dragging');
-            saveListOrder();
+            saveListOrderFn();
             draggedRow = null;
         }
 
@@ -1988,27 +1982,23 @@ function setupListDragAndDrop() {
     }
 }
 
-function saveListOrder() {
+function saveListOrderFn() {
     const spotsGrid = document.getElementById('spotsGrid');
     const rows = spotsGrid.querySelectorAll('.list-row');
     const order = Array.from(rows).map(row => row.dataset.spotId);
-
-    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
-    localStorage.setItem(orderKey, JSON.stringify(order));
+    saveListOrder(currentFilter, currentSearchQuery, order);
 }
 
-function loadListOrder() {
+function loadListOrderFn() {
     // Don't apply custom order when sorting is active
     if (listSortColumn) return;
 
     const spotsGrid = document.getElementById('spotsGrid');
-    const orderKey = `listOrder_${currentFilter}_${currentSearchQuery}`;
-    const savedOrder = localStorage.getItem(orderKey);
+    const order = getListOrder(currentFilter, currentSearchQuery);
 
-    if (!savedOrder) return;
+    if (!order) return;
 
     try {
-        const order = JSON.parse(savedOrder);
         const rows = Array.from(spotsGrid.querySelectorAll('.list-row'));
         const header = spotsGrid.querySelector('.spots-list-header');
 
@@ -2120,7 +2110,7 @@ function handlePopState() {
         if (isStarredUrl()) {
             if (!showingFavorites) {
                 showingFavorites = true;
-                localStorage.setItem('showingFavorites', 'true');
+                setShowingFavorites(true);
                 document.getElementById('favoritesToggle').classList.add('active');
                 renderFavorites();
             }
@@ -2128,7 +2118,7 @@ function handlePopState() {
             // Navigating away from starred
             if (showingFavorites) {
                 showingFavorites = false;
-                localStorage.setItem('showingFavorites', 'false');
+                setShowingFavorites(false);
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
@@ -2137,13 +2127,13 @@ function handlePopState() {
             if (urlCountry) {
                 const actualCountry = findCountryByNormalizedName(urlCountry);
                 if (actualCountry) {
-                    localStorage.setItem('selectedCountry', actualCountry);
+                    setSelectedCountry(actualCountry);
                     updatePageTitle(actualCountry);
                     renderSpots(actualCountry, '', true);
                 }
             } else {
                 // Default to saved country or 'all'
-                const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+                const savedCountry = getSelectedCountry();
                 updatePageTitle(savedCountry);
                 renderSpots(savedCountry, '', true);
             }
@@ -2410,8 +2400,7 @@ function setupColumnToggle() {
     const iconList = document.getElementById('iconList');
 
     // Load saved desktop preference or default to grid
-    const savedDesktopView = localStorage.getItem('desktopViewMode') || 'grid';
-    desktopViewMode = savedDesktopView;
+    desktopViewMode = getDesktopViewMode();
 
     // Set initial view based on viewport width
     if (isDrawerView()) {
@@ -2447,7 +2436,7 @@ function setupColumnToggle() {
         // Only save to desktop preference if not in drawer/mobile view
         if (!isDrawerView()) {
             desktopViewMode = currentViewMode;
-            localStorage.setItem('desktopViewMode', desktopViewMode);
+            setDesktopViewMode(desktopViewMode);
         }
 
         updateView();
@@ -2552,7 +2541,7 @@ function handleCountryURL() {
 
             if (actualCountry) {
                 // Valid country in URL
-                localStorage.setItem('selectedCountry', actualCountry);
+                setSelectedCountry(actualCountry);
                 updatePageTitle(actualCountry);
                 renderSpots(actualCountry, '', true);
             } else {
@@ -2568,7 +2557,7 @@ function handleCountryURL() {
         });
     } else {
         // No country or starred in URL - use saved/default country
-        const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+        const savedCountry = getSelectedCountry();
         updateUrlForCountry(savedCountry);
         updatePageTitle(savedCountry);
         renderSpots(savedCountry);
@@ -2588,7 +2577,7 @@ function handleStarredURL() {
     if (isStarredUrl()) {
         // Load favorites directly
         showingFavorites = true;
-        localStorage.setItem('showingFavorites', 'true');
+        setShowingFavorites(true);
         const favoritesToggle = document.getElementById('favoritesToggle');
         if (favoritesToggle) {
             favoritesToggle.classList.add('active');
@@ -2603,7 +2592,7 @@ function handleStarredURL() {
 }
 
 function handleMapRoute() {
-    const savedCountry = localStorage.getItem('selectedCountry') || 'all';
+    const savedCountry = getSelectedCountry();
 
     renderSpots(savedCountry, '', true)
         .then(() => {

@@ -2,14 +2,14 @@ import { t } from '../common/translations.js';
 import { updateFooter } from '../common/footer.js';
 import { fetchStatus as fetchStatusApi, checkEndpointHealth } from '../common/api.js';
 import { navigateToHome } from '../common/routing.js';
+import { getTheme, applyTheme } from '../common/state.js';
 
 // ============================================================================
 // THEME INITIALIZATION
 // ============================================================================
 
-// Set the initial theme from localStorage
-const savedTheme = localStorage.getItem('theme') || 'dark';
-document.documentElement.setAttribute('data-theme', savedTheme);
+// Set the initial theme
+applyTheme(getTheme());
 
 // ============================================================================
 // STATUS API FUNCTIONS
