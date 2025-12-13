@@ -337,7 +337,7 @@ The AI forecast analysis is disabled by default because:
 
 11. **Error Handling**: Uses `@Retryable` with exponential backoff, `@Recover` fallback methods, and reactive error operators (`onErrorResume`, `onErrorReturn`).
 
-12. **Generated Frontend Assets**: Do not edit `.html`, `.css`, or `.js` files inside `src/main/java/resources`; they are minified outputs generated during the build process.
+12. **Generated Frontend Assets**: Do not edit `.html`, `.css`, or `.js` files inside `src/main/resources/static`; they are minified outputs generated during the build process. Source files are in `src/frontend/`.
 
 ## Adding New Kite Spots
 
