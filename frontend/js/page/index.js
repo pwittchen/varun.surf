@@ -1,57 +1,13 @@
-import { getCountryFlag } from '../common/flags.js';
-import { t } from '../common/translations.js';
-import { updateFooter } from '../common/footer.js';
-import { getWindArrow, getWindClass } from '../common/weather.js';
-import { AUTO_REFRESH_INTERVAL } from '../common/constants.js';
-import { findClosestForecast } from '../common/date.js';
-import { fetchAllSpots, fetchSponsors } from '../common/api.js';
-import {
-    normalizeCountryForUrl,
-    getCountryFromUrl,
-    getCurrentPath,
-    isStarredUrl,
-    isMapUrl,
-    navigateToHome,
-    navigateToCountry,
-    navigateToSpot,
-    pushCountryUrl,
-    pushStarredUrl,
-    pushMapUrl,
-    pushUrl,
-    buildCountryUrl,
-    buildSpotUrl,
-    reloadPage
-} from '../common/routing.js';
-import {
-    updateTileLayer,
-    createLayerSwitcher,
-    updateLayerSwitcherLabels
-} from '../common/map.js';
-import {
-    getTheme,
-    setTheme,
-    applyTheme,
-    getCurrentTheme,
-    getLanguage,
-    setLanguage,
-    getFavorites,
-    saveFavorites,
-    isFavorite as checkIsFavorite,
-    toggleFavorite as toggleFavoriteState,
-    getShowingFavorites,
-    setShowingFavorites,
-    getSelectedCountry,
-    setSelectedCountry,
-    getDesktopViewMode,
-    setDesktopViewMode,
-    getPreviousUrl,
-    setPreviousUrl,
-    getSpotOrder,
-    saveSpotOrder,
-    removeSpotOrder,
-    getListOrder,
-    saveListOrder
-} from '../common/state.js';
+import * as flags from '../common/flags.js';
+import * as translations from '../common/translations.js';
+import * as footer from '../common/footer.js';
+import * as weather from '../common/weather.js';
+import * as constants from '../common/constants.js';
+import * as date from '../common/date.js';
+import * as api from '../common/api.js';
+import * as routing from '../common/routing.js';
+import * as map from '../common/map.js';
+import * as state from '../common/state.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -66,7 +22,7 @@ let autoRefreshInterval = null;
 let currentFilter = 'all';
 
 // Track previous URL for favorite toggle
-let previousUrl = getPreviousUrl();
+let previousUrl = state.getPreviousUrl();
 
 // ============================================================================
 // URL ROUTING HELPERS
@@ -75,7 +31,7 @@ let previousUrl = getPreviousUrl();
 function findCountryByNormalizedName(normalizedName) {
     // Find the actual country name from normalized URL name
     for (const country of availableCountries) {
-        if (normalizeCountryForUrl(country) === normalizedName) {
+        if (routing.normalizeCountryForUrl(country) === normalizedName) {
             return country;
         }
     }
@@ -85,33 +41,33 @@ function findCountryByNormalizedName(normalizedName) {
 function updateUrlForCountry(country) {
     // Update browser URL without reloading the page
     // Store previous URL before changing (if not already starred)
-    if (!isStarredUrl()) {
-        previousUrl = getCurrentPath();
-        setPreviousUrl(previousUrl);
+    if (!routing.isStarredUrl()) {
+        previousUrl = routing.getCurrentPath();
+        state.setPreviousUrl(previousUrl);
     }
-    pushCountryUrl(country);
+    routing.pushCountryUrl(country);
 }
 
 function updateUrlForStarred() {
     // Store the current URL before switching to starred
-    if (!isStarredUrl()) {
-        previousUrl = getCurrentPath();
-        setPreviousUrl(previousUrl);
+    if (!routing.isStarredUrl()) {
+        previousUrl = routing.getCurrentPath();
+        state.setPreviousUrl(previousUrl);
     }
-    pushStarredUrl();
-    document.title = `${t('favoritesToggleTooltip')} - VARUN.SURF`;
+    routing.pushStarredUrl();
+    document.title = `${translations.t('favoritesToggleTooltip')} - VARUN.SURF`;
 }
 
 function restorePreviousUrl() {
     // Restore previous URL when exiting starred view
     const targetUrl = previousUrl || '/';
-    pushUrl(targetUrl);
+    routing.pushUrl(targetUrl);
 
     // Update page title based on URL
     if (targetUrl === '/') {
         updatePageTitle('all');
     } else {
-        const urlCountry = getCountryFromUrl();
+        const urlCountry = routing.getCountryFromUrl();
         if (urlCountry) {
             const actualCountry = findCountryByNormalizedName(urlCountry);
             if (actualCountry) {
@@ -126,7 +82,7 @@ function updatePageTitle(country) {
     if (country === 'all' || !country) {
         document.title = 'VARUN.SURF - Kitesurfing Weather Forecast';
     } else {
-        const translatedCountry = t(country.replace(/\s+/g, ''));
+        const translatedCountry = translations.t(country.replace(/\s+/g, ''));
         document.title = `${translatedCountry} - VARUN.SURF`;
     }
 }
@@ -136,9 +92,9 @@ function showInvalidCountryError(countryName) {
     spotsGrid.innerHTML = `
             <div class="error-message">
                 <span class="error-icon">⚠️</span>
-                <div class="error-title">${t('invalidCountry')}</div>
+                <div class="error-title">${translations.t('invalidCountry')}</div>
                 <div class="error-description">
-                    ${t('invalidCountryDescription')}<br/>
+                    ${translations.t('invalidCountryDescription')}<br/>
                     <br/>
                     <strong>Invalid country: "${countryName}"</strong>
                 </div>
@@ -151,11 +107,11 @@ function showInvalidCountryError(countryName) {
 // ============================================================================
 
 function isFavorite(spotName) {
-    return checkIsFavorite(spotName);
+    return state.isFavorite(spotName);
 }
 
 function toggleFavorite(spotName) {
-    const wasAdded = toggleFavoriteState(spotName);
+    const wasAdded = state.toggleFavorite(spotName);
 
     // Update all instances of this spot's favorite icon
     const allFavoriteIcons = document.querySelectorAll('.favorite-icon');
@@ -167,10 +123,10 @@ function toggleFavorite(spotName) {
             if (spotNameElement && spotNameElement.textContent === spotName) {
                 if (wasAdded) {
                     icon.classList.add('favorited');
-                    icon.title = t('removeFromFavorites');
+                    icon.title = translations.t('removeFromFavorites');
                 } else {
                     icon.classList.remove('favorited');
-                    icon.title = t('addToFavorites');
+                    icon.title = translations.t('addToFavorites');
                 }
 
                 // Add animation
@@ -186,10 +142,10 @@ function toggleFavorite(spotName) {
             if (spotNameElement && spotNameElement.textContent === spotName) {
                 if (wasAdded) {
                     icon.classList.add('favorited');
-                    icon.title = t('removeFromFavorites');
+                    icon.title = translations.t('removeFromFavorites');
                 } else {
                     icon.classList.remove('favorited');
-                    icon.title = t('addToFavorites');
+                    icon.title = translations.t('addToFavorites');
                 }
 
                 // Add animation
@@ -211,15 +167,15 @@ async function renderFavorites() {
     favoritesButton.classList.add('active');
 
     const spotsGrid = document.getElementById('spotsGrid');
-    const favorites = getFavorites();
+    const favorites = state.getFavorites();
 
     if (favorites.length === 0) {
         spotsGrid.innerHTML = `
                 <div class="error-message">
                     <span class="error-icon">⭐</span>
-                    <div class="error-title">${t('noFavoritesTitle')}</div>
+                    <div class="error-title">${translations.t('noFavoritesTitle')}</div>
                     <div class="error-description">
-                        ${t('noFavoritesDescription')}
+                        ${translations.t('noFavoritesDescription')}
                     </div>
                 </div>
             `;
@@ -228,7 +184,7 @@ async function renderFavorites() {
 
     try {
         if (globalWeatherData.length === 0) {
-            globalWeatherData = await fetchAllSpots();
+            globalWeatherData = await api.fetchAllSpots();
         }
 
         const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
@@ -270,7 +226,7 @@ function setupFavorites() {
             exitFavoritesMode();
         } else {
             // Enter favorites mode
-            setShowingFavorites(true);
+            state.setShowingFavorites(true);
 
             // Update URL to /starred
             updateUrlForStarred();
@@ -286,7 +242,7 @@ function setupFavorites() {
     });
 
     // Restore favorites state on page load
-    if (getShowingFavorites()) {
+    if (state.getShowingFavorites()) {
         renderFavorites();
     }
 }
@@ -299,7 +255,7 @@ function exitFavoritesMode(options = {}) {
     const { skipRender = false, skipScroll = false } = options;
 
     showingFavorites = false;
-    setShowingFavorites(false);
+    state.setShowingFavorites(false);
     const favoritesButton = document.getElementById('favoritesToggle');
     if (favoritesButton) {
         favoritesButton.classList.remove('active');
@@ -308,7 +264,7 @@ function exitFavoritesMode(options = {}) {
     restorePreviousUrl();
 
     if (!skipRender) {
-        renderSpots(getSelectedCountry(), '');
+        renderSpots(state.getSelectedCountry(), '');
     }
 
     if (!skipScroll) {
@@ -324,19 +280,19 @@ function exitFavoritesMode(options = {}) {
 // ============================================================================
 
 function initTheme() {
-    const savedTheme = getTheme();
+    const savedTheme = state.getTheme();
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
 
     function updateThemeUI(theme) {
-        applyTheme(theme);
+        state.applyTheme(theme);
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
-        setTheme(theme);
-        mapTileLayer = updateTileLayer(map, mapTileLayer, currentMapLayer);
+        state.setTheme(theme);
+        mapTileLayer = map.updateTileLayer(leafletMap, mapTileLayer, currentMapLayer);
     }
 
     // Set the initial theme
@@ -344,7 +300,7 @@ function initTheme() {
 
     // Theme toggle event
     themeToggle.addEventListener('click', () => {
-        const currentThemeValue = getCurrentTheme();
+        const currentThemeValue = state.getCurrentTheme();
         const newTheme = currentThemeValue === 'dark' ? 'light' : 'dark';
         updateThemeUI(newTheme);
     });
@@ -353,11 +309,11 @@ function initTheme() {
     const headerLogo = document.getElementById('headerLogo');
     if (headerLogo) {
         headerLogo.addEventListener('click', () => {
-            const savedCountry = getSelectedCountry();
+            const savedCountry = state.getSelectedCountry();
             if (savedCountry === 'all') {
-                navigateToHome();
+                routing.navigateToHome();
             } else {
-                navigateToCountry(savedCountry);
+                routing.navigateToCountry(savedCountry);
             }
         });
     }
@@ -368,79 +324,79 @@ function initTheme() {
 // ============================================================================
 
 function initLanguage() {
-    const savedLanguage = getLanguage();
+    const savedLanguage = state.getLanguage();
     const languageToggle = document.getElementById('languageToggle');
 
     function updateLanguageUI(lang) {
-        setLanguage(lang);
+        state.setLanguage(lang);
         // Update all UI elements with translations
         updateUITranslations();
     }
 
     function updateUITranslations() {
         // Update page title with current country
-        updatePageTitle(getSelectedCountry());
+        updatePageTitle(state.getSelectedCountry());
 
         // Update search placeholder
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.placeholder = t('searchPlaceholder');
+            searchInput.placeholder = translations.t('searchPlaceholder');
         }
 
         // Update tooltips
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            themeToggle.title = t('themeToggleTooltip');
+            themeToggle.title = translations.t('themeToggleTooltip');
         }
 
         const favoritesToggle = document.getElementById('favoritesToggle');
         if (favoritesToggle) {
-            favoritesToggle.title = t('favoritesToggleTooltip');
+            favoritesToggle.title = translations.t('favoritesToggleTooltip');
         }
 
         const infoToggle = document.getElementById('infoToggle');
         if (infoToggle) {
-            infoToggle.title = t('infoToggleTooltip');
+            infoToggle.title = translations.t('infoToggleTooltip');
         }
 
         const infoToggleLabel = document.getElementById('infoToggleLabel');
         if (infoToggleLabel) {
-            infoToggleLabel.textContent = t('infoButtonLabel');
+            infoToggleLabel.textContent = translations.t('infoButtonLabel');
         }
 
         const mapToggleLabel = document.getElementById('mapToggleLabel');
         if (mapToggleLabel) {
-            mapToggleLabel.textContent = t('mapButtonLabel');
+            mapToggleLabel.textContent = translations.t('mapButtonLabel');
         }
 
         const kiteSizeToggle = document.getElementById('kiteSizeToggle');
         if (kiteSizeToggle) {
-            kiteSizeToggle.title = t('kiteSizeToggleTooltip');
+            kiteSizeToggle.title = translations.t('kiteSizeToggleTooltip');
         }
 
         const columnToggle = document.getElementById('columnToggle');
         if (columnToggle) {
-            columnToggle.title = t('columnToggleTooltip');
+            columnToggle.title = translations.t('columnToggleTooltip');
         }
 
         if (languageToggle) {
-            languageToggle.title = t('languageToggleTooltip');
+            languageToggle.title = translations.t('languageToggleTooltip');
         }
 
         // Update language code text
         const langCode = document.getElementById('langCode');
         if (langCode) {
-            langCode.textContent = t('langCode');
+            langCode.textContent = translations.t('langCode');
         }
 
         // Update footer
-        updateFooter(t);
+        footer.updateFooter(translations.t);
 
         // Update "All" in the dropdown if selected
         if (globalWeatherData.length > 0) {
             populateCountryDropdown(globalWeatherData);
         } else {
-            updateSelectedCountryLabel(getSelectedCountry());
+            updateSelectedCountryLabel(state.getSelectedCountry());
         }
 
         // Update dropdown "All" option
@@ -448,134 +404,134 @@ function initLanguage() {
         if (dropdownMenu) {
             const allOption = dropdownMenu.querySelector('[data-country="all"]');
             if (allOption) {
-                allOption.textContent = `🌎 ${t('allCountries')}`;
+                allOption.textContent = `🌎 ${translations.t('allCountries')}`;
             }
         }
 
         // Update loading message if visible
         const loadingText = document.querySelector('.loading-text');
         if (loadingText) {
-            loadingText.textContent = t('loadingText');
+            loadingText.textContent = translations.t('loadingText');
         }
 
         // Update app info modal content
         const appInfoModalTitle = document.getElementById('appInfoModalTitle');
         if (appInfoModalTitle) {
-            appInfoModalTitle.textContent = t('appInfoModalTitle');
+            appInfoModalTitle.textContent = translations.t('appInfoModalTitle');
         }
 
         const appInfoDescription = document.getElementById('appInfoDescription');
         if (appInfoDescription) {
-            appInfoDescription.textContent = t('appInfoDescription');
+            appInfoDescription.textContent = translations.t('appInfoDescription');
         }
 
         const appInfoContactTitle = document.getElementById('appInfoContactTitle');
         if (appInfoContactTitle) {
-            appInfoContactTitle.textContent = t('appInfoContactTitle');
+            appInfoContactTitle.textContent = translations.t('appInfoContactTitle');
         }
 
         const appInfoContactText = document.getElementById('appInfoContactText');
         if (appInfoContactText) {
-            appInfoContactText.innerHTML = t('appInfoContactText');
+            appInfoContactText.innerHTML = translations.t('appInfoContactText');
         }
 
         const appInfoNewSpotTitle = document.getElementById('appInfoNewSpotTitle');
         if (appInfoNewSpotTitle) {
-            appInfoNewSpotTitle.textContent = t('appInfoNewSpotTitle');
+            appInfoNewSpotTitle.textContent = translations.t('appInfoNewSpotTitle');
         }
 
         const appInfoNewSpotText = document.getElementById('appInfoNewSpotText');
         if (appInfoNewSpotText) {
-            appInfoNewSpotText.innerHTML = t('appInfoNewSpotText');
+            appInfoNewSpotText.innerHTML = translations.t('appInfoNewSpotText');
         }
 
         const appInfoCollaborationTitle = document.getElementById('appInfoCollaborationTitle');
         if (appInfoCollaborationTitle) {
-            appInfoCollaborationTitle.textContent = t('appInfoCollaborationTitle');
+            appInfoCollaborationTitle.textContent = translations.t('appInfoCollaborationTitle');
         }
 
         const appInfoCollaborationText = document.getElementById('appInfoCollaborationText');
         if (appInfoCollaborationText) {
-            appInfoCollaborationText.innerHTML = t('appInfoCollaborationText');
+            appInfoCollaborationText.innerHTML = translations.t('appInfoCollaborationText');
         }
 
         // Update kite size calculator modal content
         const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
         if (kiteSizeModalTitle) {
-            kiteSizeModalTitle.textContent = t('kiteSizeCalculatorTitle');
+            kiteSizeModalTitle.textContent = translations.t('kiteSizeCalculatorTitle');
         }
 
         const windSpeedLabel = document.querySelector('label[for="windSpeed"]');
         if (windSpeedLabel) {
-            windSpeedLabel.textContent = t('windSpeedLabel');
+            windSpeedLabel.textContent = translations.t('windSpeedLabel');
         }
 
         const windSpeedInput = document.getElementById('windSpeed');
         if (windSpeedInput) {
-            windSpeedInput.placeholder = t('windSpeedPlaceholder');
+            windSpeedInput.placeholder = translations.t('windSpeedPlaceholder');
         }
 
         const riderWeightLabel = document.querySelector('label[for="riderWeight"]');
         if (riderWeightLabel) {
-            riderWeightLabel.textContent = t('riderWeightLabel');
+            riderWeightLabel.textContent = translations.t('riderWeightLabel');
         }
 
         const riderWeightInput = document.getElementById('riderWeight');
         if (riderWeightInput) {
-            riderWeightInput.placeholder = t('riderWeightPlaceholder');
+            riderWeightInput.placeholder = translations.t('riderWeightPlaceholder');
         }
 
         const skillLevelLabel = document.querySelector('label[for="skillLevel"]');
         if (skillLevelLabel) {
-            skillLevelLabel.textContent = t('skillLevelLabel');
+            skillLevelLabel.textContent = translations.t('skillLevelLabel');
         }
 
         const skillLevelSelect = document.getElementById('skillLevel');
         if (skillLevelSelect) {
             const options = skillLevelSelect.querySelectorAll('option');
-            options[0].textContent = t('skillLevelPlaceholder');
-            options[1].textContent = t('skillBeginnerFlat');
-            options[2].textContent = t('skillBeginnerSmall');
-            options[3].textContent = t('skillIntermediateFlat');
-            options[4].textContent = t('skillIntermediateMedium');
-            options[5].textContent = t('skillAdvancedFlat');
-            options[6].textContent = t('skillAdvancedMedium');
-            options[7].textContent = t('skillAdvancedLarge');
+            options[0].textContent = translations.t('skillLevelPlaceholder');
+            options[1].textContent = translations.t('skillBeginnerFlat');
+            options[2].textContent = translations.t('skillBeginnerSmall');
+            options[3].textContent = translations.t('skillIntermediateFlat');
+            options[4].textContent = translations.t('skillIntermediateMedium');
+            options[5].textContent = translations.t('skillAdvancedFlat');
+            options[6].textContent = translations.t('skillAdvancedMedium');
+            options[7].textContent = translations.t('skillAdvancedLarge');
         }
 
         const calculateBtn = document.getElementById('calculateBtn');
         if (calculateBtn) {
-            calculateBtn.textContent = t('calculateButton');
+            calculateBtn.textContent = translations.t('calculateButton');
         }
 
         const calcResultTitle = document.querySelector('#calcResult .calc-result-title');
         if (calcResultTitle) {
-            calcResultTitle.textContent = t('recommendedEquipment');
+            calcResultTitle.textContent = translations.t('recommendedEquipment');
         }
 
         const kiteSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(2) .calc-result-label');
         if (kiteSizeLabel) {
-            kiteSizeLabel.textContent = t('kiteSizeLabel');
+            kiteSizeLabel.textContent = translations.t('kiteSizeLabel');
         }
 
         const boardSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(3) .calc-result-label');
         if (boardSizeLabel) {
-            boardSizeLabel.textContent = t('boardSizeLabel');
+            boardSizeLabel.textContent = translations.t('boardSizeLabel');
         }
 
         const calcDisclaimer = document.querySelector('#calcResult .modal-disclaimer');
         if (calcDisclaimer) {
-            calcDisclaimer.textContent = t('calcDisclaimer');
+            calcDisclaimer.textContent = translations.t('calcDisclaimer');
         }
 
         // Update AI modal disclaimer
         const aiDisclaimer = document.querySelector('#aiModal .modal-disclaimer');
         if (aiDisclaimer) {
-            aiDisclaimer.textContent = t('aiDisclaimer');
+            aiDisclaimer.textContent = translations.t('aiDisclaimer');
         }
 
         // Update map layer switcher labels
-        updateLayerSwitcherLabels();
+        map.updateLayerSwitcherLabels();
 
         // Re-render spots to update table headers and content
         if (globalWeatherData.length > 0) {
@@ -592,7 +548,7 @@ function initLanguage() {
 
     // Language toggle event
     languageToggle.addEventListener('click', () => {
-        const currentLang = getLanguage();
+        const currentLang = state.getLanguage();
         const newLang = currentLang === 'en' ? 'pl' : 'en';
         updateLanguageUI(newLang);
     });
@@ -607,7 +563,7 @@ function showLoadingMessage() {
     spotsGrid.innerHTML = `
                 <div class="loading-message">
                     <div class="loading-spinner"></div>
-                    <span class="loading-text">${t('loadingText')}</span>
+                    <span class="loading-text">${translations.t('loadingText')}</span>
                 </div>
             `;
 }
@@ -615,21 +571,21 @@ function showLoadingMessage() {
 function showErrorMessage(error) {
     const spotsGrid = document.getElementById('spotsGrid');
 
-    let errorTitle = t('errorLoadDataTitle');
-    let errorMessage = t('errorLoadDataDescription');
+    let errorTitle = translations.t('errorLoadDataTitle');
+    let errorMessage = translations.t('errorLoadDataDescription');
 
     if (error.message.includes('HTTP Error: 404')) {
-        errorTitle = t('errorDataNotFoundTitle');
-        errorMessage = t('errorDataNotFoundDescription');
+        errorTitle = translations.t('errorDataNotFoundTitle');
+        errorMessage = translations.t('errorDataNotFoundDescription');
     } else if (error.message.includes('HTTP Error: 500')) {
-        errorTitle = t('errorServerTitle');
-        errorMessage = t('errorServerDescription');
+        errorTitle = translations.t('errorServerTitle');
+        errorMessage = translations.t('errorServerDescription');
     } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-        errorTitle = t('errorConnectionTitle');
-        errorMessage = t('errorConnectionDescription');
+        errorTitle = translations.t('errorConnectionTitle');
+        errorMessage = translations.t('errorConnectionDescription');
     } else if (error.message.includes('JSON') || error.message.includes('Invalid data format')) {
-        errorTitle = t('errorDataFormatTitle');
-        errorMessage = t('errorDataFormatDescription');
+        errorTitle = translations.t('errorDataFormatTitle');
+        errorMessage = translations.t('errorDataFormatDescription');
     }
 
     spotsGrid.innerHTML = `
@@ -638,7 +594,7 @@ function showErrorMessage(error) {
                     <div class="error-title">${errorTitle}</div>
                     <div class="error-description">
                         ${errorMessage}<br/>
-                        ${t('errorRefresh')}
+                        ${translations.t('errorRefresh')}
                     </div>
                 </div>
             `;
@@ -651,23 +607,23 @@ function showErrorMessage(error) {
 function getSpotInfo(spot) {
     if (!spot) return null;
     // Direct access - no fallback, all translations are complete
-    return getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    return state.getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
 }
 
 function translateDayName(dayName) {
     const dayMap = {
-        'Mon': t('dayMon'),
-        'Tue': t('dayTue'),
-        'Wed': t('dayWed'),
-        'Thu': t('dayThu'),
-        'Fri': t('dayFri'),
-        'Sat': t('daySat'),
-        'Sun': t('daySun'),
-        'Today': t('dayToday'),
-        'Tomorrow': t('dayTomorrow'),
-        'Day 3': t('dayDay3'),
-        'Day 4': t('dayDay4'),
-        'Day 5': t('dayDay5')
+        'Mon': translations.t('dayMon'),
+        'Tue': translations.t('dayTue'),
+        'Wed': translations.t('dayWed'),
+        'Thu': translations.t('dayThu'),
+        'Fri': translations.t('dayFri'),
+        'Sat': translations.t('daySat'),
+        'Sun': translations.t('daySun'),
+        'Today': translations.t('dayToday'),
+        'Tomorrow': translations.t('dayTomorrow'),
+        'Day 3': translations.t('dayDay3'),
+        'Day 4': translations.t('dayDay4'),
+        'Day 5': translations.t('dayDay5')
     };
     return dayMap[dayName] || dayName;
 }
@@ -711,7 +667,7 @@ function selectForecastForConditions(spot) {
     }
 
     if (Array.isArray(spot.forecastHourly) && spot.forecastHourly.length > 0) {
-        const closest = findClosestForecast(spot.forecastHourly);
+        const closest = date.findClosestForecast(spot.forecastHourly);
         if (closest) {
             return closest;
         }
@@ -741,7 +697,7 @@ function getSpotConditions(spot) {
                 direction: current.direction || '',
                 temp: toNumber(current.temp),
                 precipitation: null,
-                label: t('nowLabel'),
+                label: translations.t('nowLabel'),
                 isCurrent: true
             };
         }
@@ -787,22 +743,22 @@ function populateCountryDropdown(data) {
 
     // Sort countries alphabetically based on translated names
     const sortedCountries = Array.from(availableCountries).sort((a, b) => {
-        const nameA = t(a.replace(/\s+/g, ''));
-        const nameB = t(b.replace(/\s+/g, ''));
+        const nameA = translations.t(a.replace(/\s+/g, ''));
+        const nameB = translations.t(b.replace(/\s+/g, ''));
         return nameA.localeCompare(nameB);
     });
 
     // Get saved country
-    const savedCountry = getSelectedCountry();
+    const savedCountry = state.getSelectedCountry();
 
     // Build dropdown HTML
-    const allLabel = t('allCountries');
+    const allLabel = translations.t('allCountries');
     let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 ${allLabel}</div>`;
 
     sortedCountries.forEach(country => {
-        const countryFlag = getCountryFlag(country);
+        const countryFlag = flags.getCountryFlag(country);
         const isSelected = savedCountry === country ? 'selected' : '';
-        const countryName = t(country.replace(/\s+/g, ''));
+        const countryName = translations.t(country.replace(/\s+/g, ''));
         dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} ${countryName.toUpperCase()}</div>`;
     });
 
@@ -822,12 +778,12 @@ function updateSelectedCountryLabel(countryKey) {
     }
 
     if (!countryKey || countryKey === 'all') {
-        selectedCountry.textContent = `🌎 ${t('allCountries')}`;
+        selectedCountry.textContent = `🌎 ${translations.t('allCountries')}`;
         return;
     }
 
-    const countryFlag = getCountryFlag(countryKey);
-    const countryName = t(countryKey.replace(/\s+/g, ''));
+    const countryFlag = flags.getCountryFlag(countryKey);
+    const countryName = translations.t(countryKey.replace(/\s+/g, ''));
     selectedCountry.textContent = `${countryFlag} ${countryName.toUpperCase()}`;
 }
 
@@ -846,7 +802,7 @@ function setupDropdownEvents() {
             updateSelectedCountryLabel(country);
 
             // Save selected country
-            setSelectedCountry(country);
+            state.setSelectedCountry(country);
 
             // Update URL
             updateUrlForCountry(country);
@@ -857,7 +813,7 @@ function setupDropdownEvents() {
             // Deselect favorites if changing country
             if (showingFavorites) {
                 showingFavorites = false;
-                setShowingFavorites(false);
+                state.setShowingFavorites(false);
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
@@ -938,7 +894,7 @@ function closeAppInfoModal() {
 
 function openAIModal(spotName) {
     const spot = globalWeatherData.find(spot => spot.name === spotName);
-    const aiAnalysis = getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
+    const aiAnalysis = state.getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
 
     if (!spot || !aiAnalysis) return;
 
@@ -947,9 +903,9 @@ function openAIModal(spotName) {
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
 
-    modalSpotName.textContent = `${t('aiAnalysisTitle')} - ${spotName}`;
+    modalSpotName.textContent = `${translations.t('aiAnalysisTitle')} - ${spotName}`;
     aiAnalysisContent.innerHTML = aiAnalysis.trim();
-    aiModalDisclaimer.textContent = t('aiDisclaimer');
+    aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -969,35 +925,35 @@ function openInfoModal(spotName) {
     spotInfoContent.innerHTML = `
                 <div class="info-grid">
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${t('overviewLabel')}</div>
+                        <div class="info-label">${translations.t('overviewLabel')}</div>
                         <div class="info-value">${info.description}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('spotTypeLabel')}</div>
+                        <div class="info-label">${translations.t('spotTypeLabel')}</div>
                         <div class="info-value">${info.type}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('bestWindLabel')}</div>
+                        <div class="info-label">${translations.t('bestWindLabel')}</div>
                         <div class="info-value">${info.bestWind}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('waterTempLabel')}</div>
+                        <div class="info-label">${translations.t('waterTempLabel')}</div>
                         <div class="info-value">${info.waterTemp}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('experienceLabel')}</div>
+                        <div class="info-label">${translations.t('experienceLabel')}</div>
                         <div class="info-value">${info.experience}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('launchTypeLabel')}</div>
+                        <div class="info-label">${translations.t('launchTypeLabel')}</div>
                         <div class="info-value">${info.launch}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('hazardsLabel')}</div>
+                        <div class="info-label">${translations.t('hazardsLabel')}</div>
                         <div class="info-value">${info.hazards}</div>
                     </div>
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${t('seasonLabel')}</div>
+                        <div class="info-label">${translations.t('seasonLabel')}</div>
                         <div class="info-value">${info.season}</div>
                     </div>
                 </div>
@@ -1024,9 +980,9 @@ function openIcmModal(spotName, icmUrl) {
     const modalSpotName = document.getElementById('icmModalSpotName');
     const icmImage = document.getElementById('icmImage');
 
-    modalSpotName.textContent = `${spotName} - ${t('icmForecastTitle')}`;
+    modalSpotName.textContent = `${spotName} - ${translations.t('icmForecastTitle')}`;
     icmImage.src = icmUrl;
-    icmImage.alt = `${t('icmForecastTitle')} for ${spotName}`;
+    icmImage.alt = `${translations.t('icmForecastTitle')} for ${spotName}`;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -1114,7 +1070,7 @@ function setupModals() {
 function createSpotCard(spot) {
     const card = document.createElement('div');
     card.className = 'spot-card';
-    card.dataset.country = t(spot.country.replace(/\s+/g, ''));
+    card.dataset.country = translations.t(spot.country.replace(/\s+/g, ''));
 
     // Check if a spot has wave data
     const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
@@ -1125,12 +1081,12 @@ function createSpotCard(spot) {
     let forecastRows = '';
     if (spot.forecast && Array.isArray(spot.forecast)) {
         spot.forecast.forEach(day => {
-            const windTextClass = getWindClass(day.wind);
-            const gustTextClass = getWindClass(day.gusts);
+            const windTextClass = weather.getWindClass(day.wind);
+            const gustTextClass = weather.getWindClass(day.gusts);
 
             // Calculate average of base wind and gusts for row background
             const averageWind = (day.wind + day.gusts) / 2;
-            const averageWindClass = getWindClass(averageWind);
+            const averageWindClass = weather.getWindClass(averageWind);
 
             // Use average wind class for row background
             const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
@@ -1138,7 +1094,7 @@ function createSpotCard(spot) {
                     averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
 
             const tempClass = day.temp >= 18 ? 'temp-positive' : 'temp-negative';
-            const windArrow = getWindArrow(day.direction);
+            const windArrow = weather.getWindArrow(day.direction);
             const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
 
             // Wave classes
@@ -1175,11 +1131,11 @@ function createSpotCard(spot) {
     if (spotConditions && spotConditions.isCurrent) {
         const baseWind = spotConditions.wind;
         const gustWind = spotConditions.gusts;
-        const windTextClass = getWindClass(baseWind);
-        const gustTextClass = getWindClass(gustWind);
+        const windTextClass = weather.getWindClass(baseWind);
+        const gustTextClass = weather.getWindClass(gustWind);
 
         const averageWind = (baseWind + gustWind) / 2;
-        const averageWindClass = getWindClass(averageWind);
+        const averageWindClass = weather.getWindClass(averageWind);
         const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
             averageWindClass === 'wind-moderate' ? 'moderate-wind' :
                 averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
@@ -1189,7 +1145,7 @@ function createSpotCard(spot) {
             ? (spotConditions.temp >= 20 ? 'temp-positive' : 'temp-negative')
             : '';
         const tempValue = hasTemperature ? `${spotConditions.temp}°C` : '-';
-        const windArrow = getWindArrow(spotConditions.direction);
+        const windArrow = weather.getWindArrow(spotConditions.direction);
 
         let currentWaveClass = '';
         let currentWaveText = '-';
@@ -1208,7 +1164,7 @@ function createSpotCard(spot) {
                     <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
-                                <strong class="live-text">${t('nowLabel')}</strong>
+                                <strong class="live-text">${translations.t('nowLabel')}</strong>
                                 <div class="live-dot"></div>
                             </div>
                         </td>
@@ -1232,7 +1188,7 @@ function createSpotCard(spot) {
                 <div class="drag-handle" draggable="true"><svg class="drag-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg></div>
                 <div class="spot-header">
                     <div class="spot-title">
-                        <div class="spot-name" onclick="window.location.href='${buildSpotUrl(spot.wgId)}'">${spot.name || 'Unknown Spot'}</div>
+                        <div class="spot-name" onclick="window.location.href='${routing.buildSpotUrl(spot.wgId)}'">${spot.name || 'Unknown Spot'}</div>
                     </div>
                     <div class="spot-meta">
                         <div class="country-tag-wrapper">
@@ -1241,7 +1197,7 @@ function createSpotCard(spot) {
                                     <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
                                 </svg>
                             </div>
-                            <div class="country-tag">${t(spot.country.replace(/\s+/g, '')) || 'Unknown'}</div>
+                            <div class="country-tag">${translations.t(spot.country.replace(/\s+/g, '')) || 'Unknown'}</div>
                         </div>
                         <div class="last-updated">${spot.lastUpdated || 'No data'}</div>
                     </div>
@@ -1251,20 +1207,20 @@ function createSpotCard(spot) {
                     ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
-                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${t('camLinkLabel')}</a>` : ''}
-                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
+                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
+                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
                     ${(spot.aiAnalysisEn || spot.aiAnalysisPl) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
                 <table class="weather-table">
                     <thead>
                         <tr>
-                            <th>${t('dateHeader')}</th>
-                            <th>${t('windHeader')}</th>
-                            <th>${t('gustsHeader')}</th>
-                            <th>${t('directionHeader')}</th>
-                            <th>${t('tempHeader')}</th>
-                            <th>${t('rainHeader')}</th>
-                            ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
+                            <th>${translations.t('dateHeader')}</th>
+                            <th>${translations.t('windHeader')}</th>
+                            <th>${translations.t('gustsHeader')}</th>
+                            <th>${translations.t('directionHeader')}</th>
+                            <th>${translations.t('tempHeader')}</th>
+                            <th>${translations.t('rainHeader')}</th>
+                            ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
                         </tr>
                     </thead>
                     <tbody>
@@ -1307,7 +1263,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     showLoadingMessage();
 
     try {
-        const data = await fetchAllSpots();
+        const data = await api.fetchAllSpots();
 
         globalWeatherData = data;
 
@@ -1333,13 +1289,13 @@ function createListHeader() {
     const columns = [
         { key: '', label: '', sortable: false, isDragHandle: true },
         { key: '', label: '', sortable: false, isCheckbox: true },
-        { key: 'spot', label: t('spotHeader'), sortable: true },
-        { key: 'wind', label: t('windHeader'), sortable: true },
-        { key: 'gust', label: t('gustsHeader'), sortable: true },
-        { key: 'direction', label: t('directionHeader'), sortable: true },
-        { key: 'temp', label: t('tempHeader'), sortable: true },
-        { key: 'rain', label: t('rainHeader'), sortable: true },
-        { key: 'country', label: t('countryHeader'), sortable: true },
+        { key: 'spot', label: translations.t('spotHeader'), sortable: true },
+        { key: 'wind', label: translations.t('windHeader'), sortable: true },
+        { key: 'gust', label: translations.t('gustsHeader'), sortable: true },
+        { key: 'direction', label: translations.t('directionHeader'), sortable: true },
+        { key: 'temp', label: translations.t('tempHeader'), sortable: true },
+        { key: 'rain', label: translations.t('rainHeader'), sortable: true },
+        { key: 'country', label: translations.t('countryHeader'), sortable: true },
         { key: '', label: '', sortable: false }
     ];
 
@@ -1387,7 +1343,7 @@ function createListHeader() {
 function createListRow(spot) {
     const row = document.createElement('div');
     row.className = 'list-row';
-    row.dataset.country = t(spot.country.replace(/\s+/g, ''));
+    row.dataset.country = translations.t(spot.country.replace(/\s+/g, ''));
     row.dataset.spotId = spot.wgId;
 
     const spotConditions = getSpotConditions(spot);
@@ -1424,26 +1380,26 @@ function createListRow(spot) {
     const nameCell = document.createElement('div');
     nameCell.className = 'list-spot-name';
     nameCell.textContent = spot.name || 'Unknown Spot';
-    nameCell.onclick = () => navigateToSpot(spot.wgId);
+    nameCell.onclick = () => routing.navigateToSpot(spot.wgId);
     row.appendChild(nameCell);
 
     if (spotConditions) {
         // Wind column
         const windCell = document.createElement('div');
-        windCell.className = `list-wind ${getWindClass(spotConditions.wind)}`;
+        windCell.className = `list-wind ${weather.getWindClass(spotConditions.wind)}`;
         windCell.textContent = `${spotConditions.wind} kts`;
         row.appendChild(windCell);
 
         // Gust column
         const gustCell = document.createElement('div');
-        gustCell.className = `list-gust ${getWindClass(spotConditions.gusts)}`;
+        gustCell.className = `list-gust ${weather.getWindClass(spotConditions.gusts)}`;
         gustCell.textContent = `${spotConditions.gusts} kts`;
         row.appendChild(gustCell);
 
         // Direction column
         const directionCell = document.createElement('div');
         directionCell.className = 'list-direction';
-        const arrow = getWindArrow(spotConditions.direction);
+        const arrow = weather.getWindArrow(spotConditions.direction);
         directionCell.innerHTML = `<span class="wind-arrow">${arrow}</span> ${spotConditions.direction || '-'}`;
         row.appendChild(directionCell);
 
@@ -1475,7 +1431,7 @@ function createListRow(spot) {
     // Country column
     const countryCell = document.createElement('div');
     countryCell.className = 'list-country';
-    countryCell.textContent = t(spot.country.replace(/\s+/g, '')) || 'Unknown';
+    countryCell.textContent = translations.t(spot.country.replace(/\s+/g, '')) || 'Unknown';
     row.appendChild(countryCell);
 
     // Favorite column
@@ -1486,7 +1442,7 @@ function createListRow(spot) {
 
     const favoriteIcon = document.createElement('div');
     favoriteIcon.className = `favorite-icon ${favoriteClass}`;
-    favoriteIcon.title = isFavorited ? t('removeFromFavorites') : t('addToFavorites');
+    favoriteIcon.title = isFavorited ? translations.t('removeFromFavorites') : translations.t('addToFavorites');
     favoriteIcon.innerHTML = `
         <svg class="favorite-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
@@ -1574,8 +1530,8 @@ function sortSpots(spots, sortColumn, sortDirection) {
             }
 
             case 'country':
-                aValue = t(a.country.replace(/\s+/g, '')) || '';
-                bValue = t(b.country.replace(/\s+/g, '')) || '';
+                aValue = translations.t(a.country.replace(/\s+/g, '')) || '';
+                bValue = translations.t(b.country.replace(/\s+/g, '')) || '';
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
@@ -1592,15 +1548,15 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
         const message = searchQuery ?
-            `${t('errorNoSpotsSearchDescription')} "${searchQuery}"` :
-            `${t('errorNoSpotsDescription')}`;
+            `${translations.t('errorNoSpotsSearchDescription')} "${searchQuery}"` :
+            `${translations.t('errorNoSpotsDescription')}`;
         spotsGrid.innerHTML = `
                     <div class="error-message">
                         <span class="error-icon">🔍</span>
-                        <div class="error-title">${t('errorNoSpotsTitle')}</div>
+                        <div class="error-title">${translations.t('errorNoSpotsTitle')}</div>
                         <div class="error-description">
                             ${message}<br/>
-                            ${t('errorTryAdjusting')}
+                            ${translations.t('errorTryAdjusting')}
                         </div>
                     </div>
                 `;
@@ -1614,7 +1570,7 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
             spotsGrid.innerHTML = `
                     <div class="loading-message">
                         <div class="loading-spinner"></div>
-                        <span class="loading-text">${t('loadingText')}</span>
+                        <span class="loading-text">${translations.t('loadingText')}</span>
                     </div>
                 `;
             // Retry loading after 5 seconds
@@ -1835,14 +1791,14 @@ function saveCardOrder() {
 
     const isThreeColumns = spotsGrid.classList.contains('three-columns');
     const columnMode = isThreeColumns ? '3col' : '2col';
-    saveSpotOrder(columnMode, currentFilter, currentSearchQuery, order);
+    state.saveSpotOrder(columnMode, currentFilter, currentSearchQuery, order);
 }
 
 function loadCardOrder() {
     const spotsGrid = document.getElementById('spotsGrid');
     const isThreeColumns = spotsGrid.classList.contains('three-columns');
     const columnMode = isThreeColumns ? '3col' : '2col';
-    const order = getSpotOrder(columnMode, currentFilter, currentSearchQuery);
+    const order = state.getSpotOrder(columnMode, currentFilter, currentSearchQuery);
 
     if (!order) return;
 
@@ -1986,7 +1942,7 @@ function saveListOrderFn() {
     const spotsGrid = document.getElementById('spotsGrid');
     const rows = spotsGrid.querySelectorAll('.list-row');
     const order = Array.from(rows).map(row => row.dataset.spotId);
-    saveListOrder(currentFilter, currentSearchQuery, order);
+    state.saveListOrder(currentFilter, currentSearchQuery, order);
 }
 
 function loadListOrderFn() {
@@ -1994,7 +1950,7 @@ function loadListOrderFn() {
     if (listSortColumn) return;
 
     const spotsGrid = document.getElementById('spotsGrid');
-    const order = getListOrder(currentFilter, currentSearchQuery);
+    const order = state.getListOrder(currentFilter, currentSearchQuery);
 
     if (!order) return;
 
@@ -2025,7 +1981,7 @@ function loadListOrderFn() {
 async function refreshDataInBackground() {
     try {
         // Fetch new data silently
-        const freshData = await fetchAllSpots();
+        const freshData = await api.fetchAllSpots();
 
         // Update global data
         globalWeatherData = freshData;
@@ -2037,7 +1993,7 @@ async function refreshDataInBackground() {
         if (showingFavorites) {
             // Update favorites without re-rendering (to avoid disruption)
             const spotsGrid = document.getElementById('spotsGrid');
-            const favorites = getFavorites();
+            const favorites = state.getFavorites();
             const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
             // Update existing cards instead of recreating them
@@ -2087,9 +2043,9 @@ function startAutoRefresh() {
     // Start a new interval
     autoRefreshInterval = setInterval(() => {
         refreshDataInBackground();
-    }, AUTO_REFRESH_INTERVAL);
+    }, constants.AUTO_REFRESH_INTERVAL);
 
-    console.log('Auto-refresh started: updating every', AUTO_REFRESH_INTERVAL / 1000, 'seconds');
+    console.log('Auto-refresh started: updating every', constants.AUTO_REFRESH_INTERVAL / 1000, 'seconds');
 }
 
 function stopAutoRefresh() {
@@ -2107,10 +2063,10 @@ function stopAutoRefresh() {
 function handlePopState() {
     window.addEventListener('popstate', () => {
         // Check if we're navigating to /starred
-        if (isStarredUrl()) {
+        if (routing.isStarredUrl()) {
             if (!showingFavorites) {
                 showingFavorites = true;
-                setShowingFavorites(true);
+                state.setShowingFavorites(true);
                 document.getElementById('favoritesToggle').classList.add('active');
                 renderFavorites();
             }
@@ -2118,22 +2074,22 @@ function handlePopState() {
             // Navigating away from starred
             if (showingFavorites) {
                 showingFavorites = false;
-                setShowingFavorites(false);
+                state.setShowingFavorites(false);
                 document.getElementById('favoritesToggle').classList.remove('active');
             }
 
             // Check if there's a country in URL
-            const urlCountry = getCountryFromUrl();
+            const urlCountry = routing.getCountryFromUrl();
             if (urlCountry) {
                 const actualCountry = findCountryByNormalizedName(urlCountry);
                 if (actualCountry) {
-                    setSelectedCountry(actualCountry);
+                    state.setSelectedCountry(actualCountry);
                     updatePageTitle(actualCountry);
                     renderSpots(actualCountry, '', true);
                 }
             } else {
                 // Default to saved country or 'all'
-                const savedCountry = getSelectedCountry();
+                const savedCountry = state.getSelectedCountry();
                 updatePageTitle(savedCountry);
                 renderSpots(savedCountry, '', true);
             }
@@ -2400,7 +2356,7 @@ function setupColumnToggle() {
     const iconList = document.getElementById('iconList');
 
     // Load saved desktop preference or default to grid
-    desktopViewMode = getDesktopViewMode();
+    desktopViewMode = state.getDesktopViewMode();
 
     // Set initial view based on viewport width
     if (isDrawerView()) {
@@ -2436,7 +2392,7 @@ function setupColumnToggle() {
         // Only save to desktop preference if not in drawer/mobile view
         if (!isDrawerView()) {
             desktopViewMode = currentViewMode;
-            setDesktopViewMode(desktopViewMode);
+            state.setDesktopViewMode(desktopViewMode);
         }
 
         updateView();
@@ -2499,7 +2455,7 @@ async function renderMainSponsors() {
         return;
     }
 
-    const sponsors = await fetchSponsors();
+    const sponsors = await api.fetchSponsors();
 
     if (!sponsors || sponsors.length === 0) {
         sponsorsContainer.innerHTML = '';
@@ -2528,11 +2484,11 @@ async function renderMainSponsors() {
 
 function handleCountryURL() {
     // Check for country in URL
-    const urlCountry = getCountryFromUrl();
+    const urlCountry = routing.getCountryFromUrl();
 
     if (urlCountry) {
         // Wait for data to be loaded to validate country
-        fetchAllSpots().then(data => {
+        api.fetchAllSpots().then(data => {
             globalWeatherData = data;
             populateCountryDropdown(data);
 
@@ -2541,7 +2497,7 @@ function handleCountryURL() {
 
             if (actualCountry) {
                 // Valid country in URL
-                setSelectedCountry(actualCountry);
+                state.setSelectedCountry(actualCountry);
                 updatePageTitle(actualCountry);
                 renderSpots(actualCountry, '', true);
             } else {
@@ -2557,7 +2513,7 @@ function handleCountryURL() {
         });
     } else {
         // No country or starred in URL - use saved/default country
-        const savedCountry = getSelectedCountry();
+        const savedCountry = state.getSelectedCountry();
         updateUrlForCountry(savedCountry);
         updatePageTitle(savedCountry);
         renderSpots(savedCountry);
@@ -2568,16 +2524,16 @@ function handleCountryURL() {
 }
 
 function handleStarredURL() {
-    if (isMapUrl()) {
+    if (routing.isMapUrl()) {
         handleMapRoute();
         return;
     }
 
     // Check for /starred URL first
-    if (isStarredUrl()) {
+    if (routing.isStarredUrl()) {
         // Load favorites directly
         showingFavorites = true;
-        setShowingFavorites(true);
+        state.setShowingFavorites(true);
         const favoritesToggle = document.getElementById('favoritesToggle');
         if (favoritesToggle) {
             favoritesToggle.classList.add('active');
@@ -2592,7 +2548,7 @@ function handleStarredURL() {
 }
 
 function handleMapRoute() {
-    const savedCountry = getSelectedCountry();
+    const savedCountry = state.getSelectedCountry();
 
     renderSpots(savedCountry, '', true)
         .then(() => {
@@ -2621,7 +2577,7 @@ function setupInfoToggle() {
 // Reload the page after clicking on the logo
 function scrollAndReloadPage() {
     window.scrollTo(0, 0);
-    reloadPage();
+    routing.reloadPage();
 }
 
 // Setup header title click handler
@@ -2641,33 +2597,33 @@ window.onbeforeunload = function () {
 // MAP VIEW FUNCTIONALITY
 // ============================================================================
 
-let map = null;
+let leafletMap = null;
 let mapMarkers = [];
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite' or 'osm'
 
 function initMap() {
-    if (map) return; // Already initialized
+    if (leafletMap) return; // Already initialized
 
     const mapContainer = document.getElementById('map');
     if (!mapContainer) return;
 
     // Initialize Leaflet map
-    map = L.map('map').setView([51.505, -0.09], 2); // Default world view
+    leafletMap = L.map('map').setView([51.505, -0.09], 2); // Default world view
 
     // Add base tile layer
-    mapTileLayer = updateTileLayer(map, mapTileLayer, currentMapLayer);
+    mapTileLayer = map.updateTileLayer(leafletMap, mapTileLayer, currentMapLayer);
 
     // Add layer switcher control using common module
-    const layerSwitcher = createLayerSwitcher({
+    const layerSwitcher = map.createLayerSwitcher({
         getCurrentLayer: () => currentMapLayer,
         onLayerChange: (newLayer) => {
             currentMapLayer = newLayer;
-            mapTileLayer = updateTileLayer(map, mapTileLayer, currentMapLayer);
+            mapTileLayer = map.updateTileLayer(leafletMap, mapTileLayer, currentMapLayer);
         }
     });
-    map.addControl(layerSwitcher);
+    leafletMap.addControl(layerSwitcher);
 }
 
 function buildMapPopupWindDetails(spotConditions) {
@@ -2675,12 +2631,12 @@ function buildMapPopupWindDetails(spotConditions) {
         return '';
     }
 
-    const arrow = getWindArrow(spotConditions.direction);
+    const arrow = weather.getWindArrow(spotConditions.direction);
     const gustLabel = Number.isFinite(spotConditions.gusts) ? `${spotConditions.gusts} kts` : '-';
-    const windClass = getWindClass(spotConditions.wind);
+    const windClass = weather.getWindClass(spotConditions.wind);
     const directionLabel = spotConditions.direction || '-';
     const forecastMeta = !spotConditions.isCurrent
-        ? `<div class="map-popup-meta">${t('forecastEstimateLabel')}${spotConditions.label ? ` · ${spotConditions.label}` : ''}</div>`
+        ? `<div class="map-popup-meta">${translations.t('forecastEstimateLabel')}${spotConditions.label ? ` · ${spotConditions.label}` : ''}</div>`
         : '';
 
     return `
@@ -2698,7 +2654,7 @@ function addMarkersToMap(spots) {
     mapMarkers.forEach(marker => marker.remove());
     mapMarkers = [];
 
-    if (!map || !spots || spots.length === 0) return;
+    if (!leafletMap || !spots || spots.length === 0) return;
 
     const bounds = [];
 
@@ -2710,7 +2666,7 @@ function addMarkersToMap(spots) {
 
         const spotConditions = getSpotConditions(spot);
         const markerWindClass = spotConditions
-            ? getWindClass(spotConditions.wind)
+            ? weather.getWindClass(spotConditions.wind)
             : 'wind-no-data';
 
         const markerIcon = L.divIcon({
@@ -2721,14 +2677,14 @@ function addMarkersToMap(spots) {
         });
 
         // Create marker
-        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(map);
+        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(leafletMap);
 
         const popupWindDetails = buildMapPopupWindDetails(spotConditions);
 
         // Add popup with clickable spot name and wind summary
         marker.bindPopup(`
             <div class="map-popup">
-                <a href="${buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
+                <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
                 ${popupWindDetails}
             </div>
         `);
@@ -2739,7 +2695,7 @@ function addMarkersToMap(spots) {
 
     // Fit map to show all markers
     if (bounds.length > 0) {
-        map.fitBounds(bounds, { padding: [50, 50] });
+        leafletMap.fitBounds(bounds, { padding: [50, 50] });
     }
 }
 
@@ -2771,10 +2727,10 @@ function showMapView() {
     addMarkersToMap(filteredSpots);
 
     // Invalidate map size (needed for proper rendering)
-    if (map) map.invalidateSize();
+    if (leafletMap) leafletMap.invalidateSize();
 
     // Update URL to /map
-    pushMapUrl();
+    routing.pushMapUrl();
 
     // Scroll to top when opening map view
     window.scrollTo({
@@ -2806,7 +2762,7 @@ function hideMapView(options = {}) {
 
 
     // Restore previous URL
-    pushUrl(buildCountryUrl(currentFilter));
+    routing.pushUrl(routing.buildCountryUrl(currentFilter));
 
     // Re-render spots to clear any filter changes
     if (!skipRender) {

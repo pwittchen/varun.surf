@@ -3,7 +3,7 @@
 // Common map-related functions for OSM and satellite tile layers
 // ============================================================================
 
-import { t } from './translations.js';
+import * as translations from './translations.js';
 
 // ============================================================================
 // TILE LAYER CONFIGURATIONS
@@ -118,7 +118,7 @@ export function createLayerSwitcher(options) {
 
             layerOptions.forEach(option => {
                 const optionEl = L.DomUtil.create('div', 'layer-switcher-option', dropdown);
-                optionEl.textContent = t(option.translationKey);
+                optionEl.textContent = translations.t(option.translationKey);
                 optionEl.dataset.value = option.value;
                 optionEl.dataset.translationKey = option.translationKey;
 
@@ -178,7 +178,7 @@ export function updateLayerSwitcherLabels() {
         options.forEach(optionEl => {
             const translationKey = optionEl.dataset.translationKey;
             if (translationKey) {
-                optionEl.textContent = t(translationKey);
+                optionEl.textContent = translations.t(translationKey);
             }
         });
     });

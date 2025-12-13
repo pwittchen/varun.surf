@@ -1,4 +1,4 @@
-import {getLanguage} from './state.js';
+import * as state from './state.js';
 
 // ============================================================================
 // TRANSLATIONS
@@ -504,5 +504,5 @@ export const translations = {
 };
 
 export function t(key) {
-    return translations[getLanguage()][key] || translations.en[key] || key;
+    return translations[state.getLanguage()][key] || translations.en[key] || key;
 }

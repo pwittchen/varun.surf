@@ -1,15 +1,15 @@
-import { t } from '../common/translations.js';
-import { updateFooter } from '../common/footer.js';
-import { fetchStatus as fetchStatusApi, checkEndpointHealth } from '../common/api.js';
-import { navigateToHome } from '../common/routing.js';
-import { getTheme, applyTheme } from '../common/state.js';
+import * as translations from '../common/translations.js';
+import * as footer from '../common/footer.js';
+import * as api from '../common/api.js';
+import * as routing from '../common/routing.js';
+import * as state from '../common/state.js';
 
 // ============================================================================
 // THEME INITIALIZATION
 // ============================================================================
 
 // Set the initial theme
-applyTheme(getTheme());
+state.applyTheme(state.getTheme());
 
 // ============================================================================
 // STATUS API FUNCTIONS
@@ -17,7 +17,7 @@ applyTheme(getTheme());
 
 async function fetchStatus() {
     try {
-        const data = await fetchStatusApi();
+        const data = await api.fetchStatus();
 
         // Update status indicator
         const indicator = document.getElementById('status-indicator');
@@ -67,7 +67,7 @@ async function checkEndpoint(endpoint) {
     const statusSpan = endpointEl.querySelector('.status-endpoint-status');
     const dotEl = endpointEl.querySelector('.status-endpoint-dot');
 
-    const result = await checkEndpointHealth(endpoint);
+    const result = await api.checkEndpointHealth(endpoint);
 
     if (result.ok) {
         statusSpan.innerHTML = `<span class="status-endpoint-text">operational</span> <span class="status-endpoint-latency">(${result.latency}ms)</span>`;
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup header title click handler
     const headerTitle = document.getElementById('headerTitle');
     if (headerTitle) {
-        headerTitle.addEventListener('click', navigateToHome);
+        headerTitle.addEventListener('click', routing.navigateToHome);
     }
 
     // Initial load
@@ -109,5 +109,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manual refresh button
     document.getElementById('refresh-status').addEventListener('click', refreshStatus);
 
-    updateFooter(t);
+    footer.updateFooter(translations.t);
 });

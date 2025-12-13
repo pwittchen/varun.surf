@@ -1,18 +1,11 @@
-import {getCountryFlag} from '../common/flags.js';
-import {translations} from '../common/translations.js';
-import {getWindArrow, getWindRotation, getWindClassSimple} from '../common/weather.js';
-import {AUTO_REFRESH_INTERVAL} from '../common/constants.js';
-import {parseForecastDate, findClosestForecast, formatTime} from '../common/date.js';
-import {fetchSpot} from '../common/api.js';
-import {getSpotIdFromUrl} from '../common/routing.js';
-import {
-    getTheme,
-    setTheme,
-    applyTheme,
-    getCurrentTheme,
-    getLanguage,
-    setLanguage
-} from '../common/state.js';
+import * as flags from '../common/flags.js';
+import * as translations from '../common/translations.js';
+import * as weather from '../common/weather.js';
+import * as constants from '../common/constants.js';
+import * as date from '../common/date.js';
+import * as api from '../common/api.js';
+import * as routing from '../common/routing.js';
+import * as state from '../common/state.js';
 
 // ============================================================================
 // GLOBAL STATE
@@ -28,7 +21,7 @@ let currentLanguage = 'en';
 // ============================================================================
 
 function t(key) {
-    return translations[currentLanguage]?.[key] || key;
+    return translations.translations[currentLanguage]?.[key] || key;
 }
 
 // ============================================================================
@@ -40,7 +33,7 @@ function filterFutureForecasts(forecasts) {
     const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
 
     return forecasts.filter(forecast => {
-        const forecastDate = parseForecastDate(forecast.date);
+        const forecastDate = date.parseForecastDate(forecast.date);
         return forecastDate >= currentHour;
     });
 }
@@ -61,7 +54,7 @@ function displaySpot(spot) {
         spotName.textContent = spot.name;
     }
     if (spotCountry) {
-        const countryFlag = getCountryFlag(spot.country);
+        const countryFlag = flags.getCountryFlag(spot.country);
         const countryName = t(spot.country) || spot.country;
         spotCountry.textContent = `${countryFlag} ${countryName}`;
     }
@@ -93,7 +86,7 @@ function displaySpot(spot) {
         conditionsLabel = t('tvCurrentConditionsLive');
         isRealTime = true;
     } else if (forecastData && forecastData.length > 0) {
-        const nearestForecast = findClosestForecast(forecastData);
+        const nearestForecast = date.findClosestForecast(forecastData);
         if (nearestForecast) {
             conditionsData = {
                 wind: nearestForecast.wind,
@@ -112,9 +105,9 @@ function displaySpot(spot) {
 
     // Current conditions section
     if (conditionsData) {
-        const windClass = getWindClassSimple(conditionsData.wind, conditionsData.gusts);
-        const windArrow = getWindArrow(conditionsData.direction);
-        const rotation = getWindRotation(conditionsData.direction);
+        const windClass = weather.getWindClassSimple(conditionsData.wind, conditionsData.gusts);
+        const windArrow = weather.getWindArrow(conditionsData.direction);
+        const rotation = weather.getWindRotation(conditionsData.direction);
 
         contentHtml += `
             <div class="tv-current-conditions">
@@ -157,9 +150,9 @@ function displaySpot(spot) {
             `;
 
             limitedForecasts.forEach(forecast => {
-                const time = formatTime(forecast.date);
-                const windClass = getWindClassSimple(forecast.wind, forecast.gusts);
-                const windArrow = getWindArrow(forecast.direction);
+                const time = date.formatTime(forecast.date);
+                const windClass = weather.getWindClassSimple(forecast.wind, forecast.gusts);
+                const windArrow = weather.getWindArrow(forecast.direction);
 
                 contentHtml += `
                     <div class="tv-forecast-hour">
@@ -208,18 +201,18 @@ function displayError(message) {
 // ============================================================================
 
 function initTheme() {
-    const savedTheme = getTheme(true); // isTvMode = true
+    const savedTheme = state.getTheme(true); // isTvMode = true
     const themeToggle = document.getElementById('tvThemeToggle');
     const themeIcon = document.getElementById('tvThemeIcon');
 
     function updateThemeUI(theme) {
-        applyTheme(theme);
+        state.applyTheme(theme);
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5-1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
-        setTheme(theme, true); // isTvMode = true
+        state.setTheme(theme, true); // isTvMode = true
     }
 
     // Set initial theme
@@ -228,7 +221,7 @@ function initTheme() {
     // Theme toggle event
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentThemeValue = getCurrentTheme();
+            const currentThemeValue = state.getCurrentTheme();
             const newTheme = currentThemeValue === 'dark' ? 'light' : 'dark';
             updateThemeUI(newTheme);
         });
@@ -240,13 +233,13 @@ function initTheme() {
 // ============================================================================
 
 function initLanguage() {
-    const savedLang = getLanguage(true); // isTvMode = true
+    const savedLang = state.getLanguage(true); // isTvMode = true
     const languageToggle = document.getElementById('tvLanguageToggle');
     const langCode = document.getElementById('tvLangCode');
 
     function updateLanguageUI(lang) {
         currentLanguage = lang;
-        setLanguage(lang, true); // isTvMode = true
+        state.setLanguage(lang, true); // isTvMode = true
 
         if (langCode) {
             langCode.textContent = lang.toUpperCase();
@@ -281,12 +274,12 @@ function startAutoRefresh(spotId) {
 
     refreshIntervalId = setInterval(async () => {
         try {
-            const latestSpot = await fetchSpot(spotId);
+            const latestSpot = await api.fetchSpot(spotId);
             displaySpot(latestSpot);
         } catch (error) {
             console.warn('Auto refresh failed:', error);
         }
-    }, AUTO_REFRESH_INTERVAL);
+    }, constants.AUTO_REFRESH_INTERVAL);
 }
 
 function stopAutoRefresh() {
@@ -301,7 +294,7 @@ function stopAutoRefresh() {
 // ============================================================================
 
 async function setupTvView() {
-    const spotId = getSpotIdFromUrl();
+    const spotId = routing.getSpotIdFromUrl();
     currentSpotId = spotId;
 
     if (!spotId) {
@@ -310,7 +303,7 @@ async function setupTvView() {
     }
 
     try {
-        const spot = await fetchSpot(spotId);
+        const spot = await api.fetchSpot(spotId);
         displaySpot(spot);
         startAutoRefresh(spotId);
     } catch (error) {

@@ -1,39 +1,13 @@
-import {getCountryFlag} from '../common/flags.js';
-import {t, translations} from '../common/translations.js';
-import { updateFooter } from '../common/footer.js';
-import {getWindArrow, getWindRotation} from '../common/weather.js';
-import {FORECAST_POLL_INTERVAL, FORECAST_TIMEOUT_MS, BACKGROUND_REFRESH_INTERVAL} from '../common/constants.js';
-import {findClosestForecast} from '../common/date.js';
-import {fetchSpot} from '../common/api.js';
-import {
-    getSpotIdFromUrl,
-    navigateToHome,
-    navigateToCountry,
-    getBaseUrl,
-    buildSpotTvUrl
-} from '../common/routing.js';
-import {
-    updateTileLayer,
-    createLayerSwitcher,
-    updateLayerSwitcherLabels,
-    createMarkerIcon,
-    buildWindyEmbedUrl
-} from '../common/map.js';
-import {
-    getTheme,
-    setTheme,
-    applyTheme,
-    getCurrentTheme,
-    getLanguage,
-    setLanguage,
-    getSelectedCountry,
-    getSelectedModel as getSelectedModelState,
-    setSelectedModel as setSelectedModelState,
-    getForecastViewPreference,
-    setForecastViewPreference,
-    getFilterWindyDays,
-    setFilterWindyDays
-} from '../common/state.js';
+import * as flags from '../common/flags.js';
+import * as translations from '../common/translations.js';
+import * as footer from '../common/footer.js';
+import * as weather from '../common/weather.js';
+import * as constants from '../common/constants.js';
+import * as date from '../common/date.js';
+import * as api from '../common/api.js';
+import * as routing from '../common/routing.js';
+import * as map from '../common/map.js';
+import * as state from '../common/state.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -84,13 +58,13 @@ const WINDY_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg"
 
 // Get a selected forecast model from sessionStorage
 function getSelectedModel() {
-    return getSelectedModelState();
+    return state.getSelectedModel();
 }
 
 // Set the selected forecast model in sessionStorage
 function setSelectedModel(model) {
     selectedModel = model;
-    setSelectedModelState(model);
+    state.setSelectedModel(model);
 }
 
 // ============================================================================
@@ -100,7 +74,7 @@ function setSelectedModel(model) {
 // Fetch single spot data from the API using imported fetchSpot
 async function fetchSpotData(spotId) {
     const model = getSelectedModel();
-    return fetchSpot(spotId, model);
+    return api.fetchSpot(spotId, model);
 }
 
 // ============================================================================
@@ -153,7 +127,7 @@ function setLoadingMessage(key) {
     }
 
     if (loadingText) {
-        loadingText.textContent = t(key);
+        loadingText.textContent = translations.t(key);
     }
 }
 
@@ -182,12 +156,12 @@ function startForecastPolling(spotId) {
         } finally {
             pollingInProgress = false;
         }
-    }, FORECAST_POLL_INTERVAL);
+    }, constants.FORECAST_POLL_INTERVAL);
 
     forecastTimeoutId = setTimeout(() => {
         clearForecastPolling();
         displayError('forecastTimeout');
-    }, FORECAST_TIMEOUT_MS);
+    }, constants.FORECAST_TIMEOUT_MS);
 }
 
 // Start background refresh for live data updates
@@ -215,7 +189,7 @@ function startBackgroundRefresh(spotId) {
                 console.warn('Background refresh failed:', error);
             }
         }
-    }, BACKGROUND_REFRESH_INTERVAL);
+    }, constants.BACKGROUND_REFRESH_INTERVAL);
 }
 
 // ============================================================================
@@ -240,7 +214,7 @@ function translateDayName(dayName) {
     };
 
     const translationKey = keyMap[token];
-    return translationKey ? t(translationKey) : dayName;
+    return translationKey ? translations.t(translationKey) : dayName;
 }
 
 // Translate month names (Jan, Feb, Mar, etc.)
@@ -265,7 +239,7 @@ function translateMonthName(monthName) {
     };
 
     const translationKey = keyMap[monthName];
-    return translationKey ? t(translationKey) : monthName;
+    return translationKey ? translations.t(translationKey) : monthName;
 }
 
 // Format forecast date label for table view (responsive)
@@ -322,12 +296,12 @@ function formatDayLabel(dateStr) {
 function getSpotInfo(spot) {
     if (!spot) return null;
     // Direct access - no fallback, all translations are complete
-    return getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    return state.getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
 }
 
 // Get current language code
 function getCurrentLanguageCode() {
-    return currentLanguage || getLanguage();
+    return currentLanguage || state.getLanguage();
 }
 
 // Get AI analysis for the current language with fallbacks
@@ -366,35 +340,35 @@ function openInfoModal(spotName) {
     spotInfoContent.innerHTML = `
                 <div class="info-grid">
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${t('overviewLabel')}</div>
+                        <div class="info-label">${translations.t('overviewLabel')}</div>
                         <div class="info-value">${info.description}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('spotTypeLabel')}</div>
+                        <div class="info-label">${translations.t('spotTypeLabel')}</div>
                         <div class="info-value">${info.type}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('bestWindLabel')}</div>
+                        <div class="info-label">${translations.t('bestWindLabel')}</div>
                         <div class="info-value">${info.bestWind}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('waterTempLabel')}</div>
+                        <div class="info-label">${translations.t('waterTempLabel')}</div>
                         <div class="info-value">${info.waterTemp}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('experienceLabel')}</div>
+                        <div class="info-label">${translations.t('experienceLabel')}</div>
                         <div class="info-value">${info.experience}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('launchTypeLabel')}</div>
+                        <div class="info-label">${translations.t('launchTypeLabel')}</div>
                         <div class="info-value">${info.launch}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">${t('hazardsLabel')}</div>
+                        <div class="info-label">${translations.t('hazardsLabel')}</div>
                         <div class="info-value">${info.hazards}</div>
                     </div>
                     <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${t('seasonLabel')}</div>
+                        <div class="info-label">${translations.t('seasonLabel')}</div>
                         <div class="info-value">${info.season}</div>
                     </div>
                 </div>
@@ -422,12 +396,12 @@ function openAIModal(spotName) {
     const modalTitle = document.getElementById('aiModalTitle');
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
 
-    modalTitle.textContent = `${spotName} - ${t('aiAnalysisTitle')}`;
+    modalTitle.textContent = `${spotName} - ${translations.t('aiAnalysisTitle')}`;
     aiAnalysisContent.innerHTML = `<p>${aiAnalysis}</p>`;
 
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
     if (aiModalDisclaimer) {
-        aiModalDisclaimer.textContent = t('aiDisclaimer');
+        aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
     }
 
     modal.classList.add('active');
@@ -478,7 +452,7 @@ function openEmbedModal() {
         copyButton.classList.remove('copied');
     }
     if (copyButtonText) {
-        copyButtonText.textContent = t('embedCopyButtonDefault');
+        copyButtonText.textContent = translations.t('embedCopyButtonDefault');
     }
 
     refreshEmbedDropdownTranslations();
@@ -495,7 +469,7 @@ function closeEmbedModal() {
 }
 
 function buildEmbedUrl(theme, view) {
-    return `${getBaseUrl()}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
+    return `${routing.getBaseUrl()}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
 }
 
 // Generate embed code based on configuration
@@ -538,13 +512,13 @@ function copyEmbedCode() {
         .then(() => {
             copyButton.classList.add('copied');
             if (copyButtonText) {
-                copyButtonText.textContent = t('embedCopyButtonSuccess');
+                copyButtonText.textContent = translations.t('embedCopyButtonSuccess');
             }
 
             setTimeout(() => {
                 copyButton.classList.remove('copied');
                 if (copyButtonText) {
-                    copyButtonText.textContent = t('embedCopyButtonDefault');
+                    copyButtonText.textContent = translations.t('embedCopyButtonDefault');
                 }
             }, 2000);
         })
@@ -554,17 +528,17 @@ function copyEmbedCode() {
                 document.execCommand('copy');
                 copyButton.classList.add('copied');
                 if (copyButtonText) {
-                    copyButtonText.textContent = t('embedCopyButtonSuccess');
+                    copyButtonText.textContent = translations.t('embedCopyButtonSuccess');
                 }
 
                 setTimeout(() => {
                     copyButton.classList.remove('copied');
                     if (copyButtonText) {
-                        copyButtonText.textContent = t('embedCopyButtonDefault');
+                        copyButtonText.textContent = translations.t('embedCopyButtonDefault');
                     }
                 }, 2000);
             } catch (e) {
-                alert(t('embedCopyButtonError'));
+                alert(translations.t('embedCopyButtonError'));
             }
         });
 }
@@ -584,7 +558,7 @@ function updateEmbedDropdownText(menuId, textId, value) {
     const option = menu.querySelector(`.dropdown-option[data-value="${value}"]`);
     if (option) {
         const key = option.dataset.labelKey;
-        textElement.textContent = key ? t(key) : option.textContent;
+        textElement.textContent = key ? translations.t(key) : option.textContent;
     }
 }
 
@@ -594,7 +568,7 @@ function updateEmbedDropdownOptionsText(menuId) {
     menu.querySelectorAll('.dropdown-option').forEach(option => {
         const key = option.dataset.labelKey;
         if (key) {
-            option.textContent = t(key);
+            option.textContent = translations.t(key);
         }
     });
 }
@@ -729,12 +703,12 @@ function hasWindyConditions(dayForecasts) {
 
 // Get filter windy days preference
 function getFilterWindyDaysPreference() {
-    return getFilterWindyDays();
+    return state.getFilterWindyDays();
 }
 
 // Set filter windy days preference
 function setFilterWindyDaysPreference(enabled) {
-    setFilterWindyDays(enabled);
+    state.setFilterWindyDays(enabled);
 }
 
 // Check if spot has sufficient live data history (>= 5 readings)
@@ -870,7 +844,7 @@ function createWindguruView(forecastData, hasWaveData) {
         // Direction row
         dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
-            const windArrow = getWindArrow(forecast.direction);
+            const windArrow = weather.getWindArrow(forecast.direction);
             dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
         });
         dayColumnsHtml += `</div>`;
@@ -922,7 +896,7 @@ function createWindguruView(forecastData, hasWaveData) {
         windguruHtml += `
             <div class="no-windy-days-message">
                 <span class="no-windy-days-icon">💨</span>
-                <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+                <p class="no-windy-days-text">${translations.t('noWindyDaysMessage')}</p>
             </div>
         `;
     } else {
@@ -932,14 +906,14 @@ function createWindguruView(forecastData, hasWaveData) {
         // Sticky labels column
         windguruHtml += '<div class="windguru-labels">';
         windguruHtml += '<div class="windguru-label-header"></div>'; // Empty header for alignment
-        windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
-        windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
-        windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
-        windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
-        windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
-        windguruHtml += `<div class="windguru-label">${t('rainHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('timeLabel')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('windHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('gustsHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('directionHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('tempHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('rainHeader')}</div>`;
         if (hasWaveData) {
-            windguruHtml += `<div class="windguru-label">${t('waveHeader')}</div>`;
+            windguruHtml += `<div class="windguru-label">${translations.t('waveHeader')}</div>`;
         }
         windguruHtml += '</div>';
 
@@ -968,11 +942,11 @@ function createWindguruViewForLiveData(liveData) {
     // Sticky labels column (no precipitation or wave for live data)
     windguruHtml += '<div class="windguru-labels">';
     windguruHtml += '<div class="windguru-label-header"></div>';
-    windguruHtml += `<div class="windguru-label">${t('timeLabel')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('windHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('gustsHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('directionHeader')}</div>`;
-    windguruHtml += `<div class="windguru-label">${t('tempHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${translations.t('timeLabel')}</div>`;
+    windguruHtml += `<div class="windguru-label">${translations.t('windHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${translations.t('gustsHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${translations.t('directionHeader')}</div>`;
+    windguruHtml += `<div class="windguru-label">${translations.t('tempHeader')}</div>`;
     windguruHtml += '</div>';
 
     // Scrollable data container - single column for all live data
@@ -981,7 +955,7 @@ function createWindguruViewForLiveData(liveData) {
 
     // Single column for live data
     windguruHtml += `<div class="windguru-day-column">`;
-    windguruHtml += `<div class="windguru-day-header">${t('dataSourceLiveData')}</div>`;
+    windguruHtml += `<div class="windguru-day-header">${translations.t('dataSourceLiveData')}</div>`;
 
     // Time row
     windguruHtml += `<div class="windguru-data-row">`;
@@ -1019,7 +993,7 @@ function createWindguruViewForLiveData(liveData) {
     // Direction row
     windguruHtml += `<div class="windguru-data-row">`;
     liveData.forEach(entry => {
-        const windArrow = getWindArrow(entry.direction);
+        const windArrow = weather.getWindArrow(entry.direction);
         windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${entry.direction}</span></div>`;
     });
     windguruHtml += `</div>`;
@@ -1077,7 +1051,7 @@ function createChartView(forecastData) {
             <div class="forecast-view chart-view">
                 <div class="no-windy-days-message">
                     <span class="no-windy-days-icon">💨</span>
-                    <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+                    <p class="no-windy-days-text">${translations.t('noWindyDaysMessage')}</p>
                 </div>
             </div>
         `;
@@ -1100,11 +1074,11 @@ function createChartView(forecastData) {
                 <div class="wind-chart-legend">
                     <div class="legend-item">
                         <span class="legend-line legend-wind"></span>
-                        <span class="legend-label">${t('chartWindLabel')}</span>
+                        <span class="legend-label">${translations.t('chartWindLabel')}</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-line legend-gust"></span>
-                        <span class="legend-label">${t('chartGustLabel')}</span>
+                        <span class="legend-label">${translations.t('chartGustLabel')}</span>
                     </div>
                 </div>
                 <div class="wind-chart-wrapper">
@@ -1208,7 +1182,7 @@ function renderWindChart() {
     ctx.save();
     ctx.translate(12, padding.top + chartHeight / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(t('chartKnotsLabel'), 0, 0);
+    ctx.fillText(translations.t('chartKnotsLabel'), 0, 0);
     ctx.restore();
 
     // Draw X axis labels (time)
@@ -1311,7 +1285,7 @@ function renderWindChart() {
         const y = padding.top + 12;
 
         // Get rotation angle for the direction (wind blows TO this direction, opposite of FROM)
-        const rotation = getWindRotation(point.direction) + 180;
+        const rotation = weather.getWindRotation(point.direction) + 180;
 
         // Draw arrow
         ctx.save();
@@ -1342,7 +1316,7 @@ function setupForecastTabs() {
     if (tabs.length === 0) return;
 
     // Restore saved preference
-    const savedView = getForecastViewPreference();
+    const savedView = state.getForecastViewPreference();
 
     // Set the initial view based on saved preference
     const tableView = document.querySelector('.table-view');
@@ -1378,7 +1352,7 @@ function setupForecastTabs() {
             const targetView = tab.dataset.tab;
 
             // Save preference
-            setForecastViewPreference(targetView);
+            state.setForecastViewPreference(targetView);
 
             // Update tab active state
             tabs.forEach(t => t.classList.remove('active'));
@@ -1459,20 +1433,20 @@ function initOsmSatelliteMap() {
     );
 
     // Add initial tile layer based on current selection
-    spotTileLayer = updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
+    spotTileLayer = map.updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
 
     // Add layer switcher control using common module
-    const layerSwitcher = createLayerSwitcher({
+    const layerSwitcher = map.createLayerSwitcher({
         getCurrentLayer: () => currentSpotMapLayer,
         onLayerChange: (newLayer) => {
             currentSpotMapLayer = newLayer;
-            spotTileLayer = updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
+            spotTileLayer = map.updateTileLayer(osmSatelliteMap, spotTileLayer, currentSpotMapLayer);
         }
     });
     layerSwitcher.addTo(osmSatelliteMap);
 
     // Create a custom red marker icon using common module
-    const markerIcon = createMarkerIcon('custom-marker-red');
+    const markerIcon = map.createMarkerIcon('custom-marker-red');
 
     // Add marker at spot location with custom icon
     L.marker([currentSpot.coordinates.lat, currentSpot.coordinates.lon], { icon: markerIcon })
@@ -1540,7 +1514,7 @@ function setupSpotMediaTabs() {
 
 // Create a detailed spot card HTML with all forecast views
 function createSpotCard(spot) {
-    const countryFlag = getCountryFlag(spot.country);
+    const countryFlag = flags.getCountryFlag(spot.country);
 
     // Check if spot has sufficient live data history for data source dropdown
     const showDataSourceDropdown = hasLiveDataHistory(spot);
@@ -1591,7 +1565,7 @@ function createSpotCard(spot) {
         }
 
         const tempClass = spot.currentConditions.temp >= 20 ? 'temp-positive' : 'temp-negative';
-        const windArrow = getWindArrow(spot.currentConditions.direction);
+        const windArrow = weather.getWindArrow(spot.currentConditions.direction);
 
         // Current wave conditions
         let currentWaveClass = '';
@@ -1610,7 +1584,7 @@ function createSpotCard(spot) {
                     <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
-                                <strong class="live-text">${t('nowLabel')}</strong>
+                                <strong class="live-text">${translations.t('nowLabel')}</strong>
                                 <div class="live-dot"></div>
                             </div>
                         </td>
@@ -1695,7 +1669,7 @@ function createSpotCard(spot) {
             }
 
             const tempClass = day.temp >= 18 ? 'temp-positive' : 'temp-negative';
-            const windArrow = getWindArrow(day.direction);
+            const windArrow = weather.getWindArrow(day.direction);
             const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
 
             // Wave classes
@@ -1773,10 +1747,10 @@ function createSpotCard(spot) {
             precipitation: 0, // Current conditions don't have precipitation
             isCurrent: true
         };
-        conditionsLabel = t('nowLabel');
+        conditionsLabel = translations.t('nowLabel');
     } else if (forecastData && forecastData.length > 0) {
         // Use the forecast closest to the current time
-        const nearestForecast = findClosestForecast(forecastData);
+        const nearestForecast = date.findClosestForecast(forecastData);
         if (nearestForecast) {
             conditionsData = {
                 wind: nearestForecast.wind,
@@ -1791,7 +1765,7 @@ function createSpotCard(spot) {
     }
 
     if (conditionsData) {
-        const windArrow = getWindArrow(conditionsData.direction);
+        const windArrow = weather.getWindArrow(conditionsData.direction);
         const avgWind = (conditionsData.wind + conditionsData.gusts) / 2;
 
         // Determine wind quality class
@@ -1813,29 +1787,29 @@ function createSpotCard(spot) {
                         ${conditionsData.isCurrent ? '<div class="live-dot"></div>' : ''}
                     </div>
                     <div class="conditions-main">
-                        <div class="wind-arrow-large ${windQualityClass}" style="transform: rotate(${getWindRotation(conditionsData.direction)}deg);">
+                        <div class="wind-arrow-large ${windQualityClass}" style="transform: rotate(${weather.getWindRotation(conditionsData.direction)}deg);">
                             ↓
                         </div>
                         <div class="wind-details">
                             <div class="wind-speed ${windQualityClass}">${conditionsData.wind} kts</div>
-                            <div class="wind-label">${t('windLabel')}</div>
+                            <div class="wind-label">${translations.t('windLabel')}</div>
                         </div>
                     </div>
                     <div class="conditions-grid">
                         <div class="condition-item">
-                            <div class="condition-label">${t('gustsLabel')}</div>
+                            <div class="condition-label">${translations.t('gustsLabel')}</div>
                             <div class="condition-value ${windQualityClass}">${conditionsData.gusts} kts</div>
                         </div>
                         <div class="condition-item">
-                            <div class="condition-label">${t('directionLabel')}</div>
+                            <div class="condition-label">${translations.t('directionLabel')}</div>
                             <div class="condition-value">${conditionsData.direction}</div>
                         </div>
                         <div class="condition-item">
-                            <div class="condition-label">${t('temperatureLabel')}</div>
+                            <div class="condition-label">${translations.t('temperatureLabel')}</div>
                             <div class="condition-value ${conditionsData.temp >= 18 ? 'temp-positive' : 'temp-negative'}">${conditionsData.temp}°C</div>
                         </div>
                         <div class="condition-item">
-                            <div class="condition-label">${t('precipitationLabel')}</div>
+                            <div class="condition-label">${translations.t('precipitationLabel')}</div>
                             <div class="condition-value ${conditionsData.precipitation === 0 ? 'precipitation-none' : 'precipitation'}">${conditionsData.precipitation} mm</div>
                         </div>
                     </div>
@@ -1852,7 +1826,7 @@ function createSpotCard(spot) {
         const info = getSpotInfo(spot);
         const coordinatesHtml = spot.coordinates
             ? `<div class="info-item" style="grid-column: 1 / -1;">
-                   <div class="info-label">${t('coordinatesLabel')}</div>
+                   <div class="info-label">${translations.t('coordinatesLabel')}</div>
                    <div class="info-value">${spot.coordinates.lat.toFixed(6)}, ${spot.coordinates.lon.toFixed(6)}</div>
                </div>`
             : '';
@@ -1860,35 +1834,35 @@ function createSpotCard(spot) {
                 <div class="spot-info-card">
                     <div class="info-grid">
                         <div class="info-item" style="grid-column: 1 / -1;">
-                            <div class="info-label">${t('overviewLabel')}</div>
+                            <div class="info-label">${translations.t('overviewLabel')}</div>
                             <div class="info-value">${info.description}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('spotTypeLabel')}</div>
+                            <div class="info-label">${translations.t('spotTypeLabel')}</div>
                             <div class="info-value">${info.type}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('bestWindLabel')}</div>
+                            <div class="info-label">${translations.t('bestWindLabel')}</div>
                             <div class="info-value">${info.bestWind}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('waterTempLabel')}</div>
+                            <div class="info-label">${translations.t('waterTempLabel')}</div>
                             <div class="info-value">${info.waterTemp}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('experienceLabel')}</div>
+                            <div class="info-label">${translations.t('experienceLabel')}</div>
                             <div class="info-value">${info.experience}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('launchTypeLabel')}</div>
+                            <div class="info-label">${translations.t('launchTypeLabel')}</div>
                             <div class="info-value">${info.launch}</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">${t('hazardsLabel')}</div>
+                            <div class="info-label">${translations.t('hazardsLabel')}</div>
                             <div class="info-value">${info.hazards}</div>
                         </div>
                         <div class="info-item" style="grid-column: 1 / -1;">
-                            <div class="info-label">${t('seasonLabel')}</div>
+                            <div class="info-label">${translations.t('seasonLabel')}</div>
                             <div class="info-value">${info.season}</div>
                         </div>
                         ${coordinatesHtml}
@@ -1908,7 +1882,7 @@ function createSpotCard(spot) {
     // Generate Windy.com iframe
     let windyMapIframe = '';
     if (hasCoordinates) {
-        const windyUrl = buildWindyEmbedUrl(spot.coordinates.lat, spot.coordinates.lon);
+        const windyUrl = map.buildWindyEmbedUrl(spot.coordinates.lat, spot.coordinates.lon);
         windyMapIframe = `<iframe src="${windyUrl}" width="100%" height="360" frameborder="0"></iframe>`;
     }
 
@@ -1925,15 +1899,15 @@ function createSpotCard(spot) {
                     <div class="spot-media-tabs">
                         <button type="button" class="spot-media-tab active" data-media="osm">
                             ${OSM_MAP_TAB_ICON}
-                            <span>${t('osmMapTabLabel')}</span>
+                            <span>${translations.t('osmMapTabLabel')}</span>
                         </button>
                         <button type="button" class="spot-media-tab" data-media="windy">
                             ${WINDY_TAB_ICON}
-                            <span>${t('windyMapTabLabel')}</span>
+                            <span>${translations.t('windyMapTabLabel')}</span>
                         </button>
                         <button type="button" class="spot-media-tab" data-media="photo">
                             ${PHOTO_TAB_ICON}
-                            <span>${t('photoTabLabel')}</span>
+                            <span>${translations.t('photoTabLabel')}</span>
                         </button>
                     </div>
                     <div class="spot-media-panels">
@@ -1961,11 +1935,11 @@ function createSpotCard(spot) {
                     <div class="spot-media-tabs">
                         <button type="button" class="spot-media-tab active" data-media="osm">
                             ${OSM_MAP_TAB_ICON}
-                            <span>${t('osmMapTabLabel')}</span>
+                            <span>${translations.t('osmMapTabLabel')}</span>
                         </button>
                         <button type="button" class="spot-media-tab" data-media="windy">
                             ${WINDY_TAB_ICON}
-                            <span>${t('windyMapTabLabel')}</span>
+                            <span>${translations.t('windyMapTabLabel')}</span>
                         </button>
                     </div>
                     <div class="spot-media-panels">
@@ -1997,7 +1971,7 @@ function createSpotCard(spot) {
                     <div class="ai-analysis">
                         <p>${aiAnalysisText}</p>
                     </div>
-                    <div class="modal-disclaimer">${t('aiDisclaimer')}</div>
+                    <div class="modal-disclaimer">${translations.t('aiDisclaimer')}</div>
                 </div>
             `;
     }
@@ -2036,10 +2010,10 @@ function createSpotCard(spot) {
                 <div class="spot-header" style="margin-left: 0;">
                     <div class="spot-title">
                         <h2 class="spot-name spot-name-single">${spot.name}</h2>
-                        <div class="last-updated">${spot.lastUpdated || t('noData')}</div>
+                        <div class="last-updated">${spot.lastUpdated || translations.t('noData')}</div>
                     </div>
                     <div class="spot-meta">
-                        <span class="country-tag">${countryFlag} ${t(spot.country.replace(/\s+/g, ''))}</span>
+                        <span class="country-tag">${countryFlag} ${translations.t(spot.country.replace(/\s+/g, ''))}</span>
                     </div>
                 </div>
                 <div class="external-links">
@@ -2047,10 +2021,10 @@ function createSpotCard(spot) {
                     ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
-                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${t('camLinkLabel')}</a>` : ''}
-                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${t('mapLinkLabel')}</a>` : ''}
-                    <span class="external-link embed-link" onclick="openEmbedModal()">${t('embedLinkLabel')}</span>
-                    <a href="${buildSpotTvUrl(spot.wgId)}" target="_blank" class="external-link tv-link">${t('tvLinkLabel')}</a>
+                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
+                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
+                    <span class="external-link embed-link" onclick="openEmbedModal()">${translations.t('embedLinkLabel')}</span>
+                    <a href="${routing.buildSpotTvUrl(spot.wgId)}" target="_blank" class="external-link tv-link">${translations.t('tvLinkLabel')}</a>
                     ${aiAnalysisText ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
 
@@ -2058,9 +2032,9 @@ function createSpotCard(spot) {
                 <div class="mobile-data-source-container">
                     <div class="data-source-radio-container">
                         <input type="radio" name="dataSource" id="dataSourceForecastMobile" value="forecast" ${!isLiveDataMode ? 'checked' : ''} />
-                        <label for="dataSourceForecastMobile">${t('dataSourceForecast')}</label>
+                        <label for="dataSourceForecastMobile">${translations.t('dataSourceForecast')}</label>
                         <input type="radio" name="dataSource" id="dataSourceLiveDataMobile" value="liveData" ${isLiveDataMode ? 'checked' : ''} />
-                        <label for="dataSourceLiveDataMobile">${t('dataSourceLiveData')}</label>
+                        <label for="dataSourceLiveDataMobile">${translations.t('dataSourceLiveData')}</label>
                     </div>
                 </div>
                 ` : ''}
@@ -2081,35 +2055,35 @@ function createSpotCard(spot) {
                                     <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11,22H5c-2.757,0-5-2.243-5-5V9H11v13ZM24,7c0-2.757-2.243-5-5-5H5C2.243,2,0,4.243,0,7H24Zm-11,2v13h6c2.757,0,5-2.243,5-5V9H13Z" fill="currentColor"/>
                                     </svg>
-                                    ${t('tableViewLabel')}
+                                    ${translations.t('tableViewLabel')}
                                 </button>
                                 <button class="forecast-tab" data-tab="windguru">
                                     <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5,22c-2.757,0-5-2.243-5-5V7C0,4.243,2.243,2,5,2V22Zm2-11H24V7c0-2.757-2.243-5-5-5H7V11Zm0,2v9h12c2.757,0,5-2.243,5-5v-4H7Z" fill="currentColor"/>
                                     </svg>
-                                    ${t('windguruViewLabel')}
+                                    ${translations.t('windguruViewLabel')}
                                 </button>
                                 <button class="forecast-tab" data-tab="chart">
                                     <svg class="tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M23,22H3a1,1,0,0,1-1-1V3A1,1,0,0,0,0,3V21a3,3,0,0,0,3,3H23a1,1,0,0,0,0-2Z" fill="currentColor"/>
                                         <path d="M5,16L10,10L14,14L22,5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                                     </svg>
-                                    ${t('chartViewLabel')}
+                                    ${translations.t('chartViewLabel')}
                                 </button>
                             </div>
                             <div class="forecast-filters-right">
                                 <div class="filter-windy-days-container" ${isLiveDataMode ? 'style="display: none;"' : ''}>
                                     <label class="filter-windy-days-label">
                                         <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
-                                        <span class="filter-text">${t('filterWindyDaysLabel')}</span>
+                                        <span class="filter-text">${translations.t('filterWindyDaysLabel')}</span>
                                     </label>
                                 </div>
                                 ${showDataSourceDropdown ? `
                                 <div class="data-source-radio-container">
                                     <input type="radio" name="dataSource" id="dataSourceForecast" value="forecast" ${!isLiveDataMode ? 'checked' : ''} />
-                                    <label for="dataSourceForecast">${t('dataSourceForecast')}</label>
+                                    <label for="dataSourceForecast">${translations.t('dataSourceForecast')}</label>
                                     <input type="radio" name="dataSource" id="dataSourceLiveData" value="liveData" ${isLiveDataMode ? 'checked' : ''} />
-                                    <label for="dataSourceLiveData">${t('dataSourceLiveData')}</label>
+                                    <label for="dataSourceLiveData">${translations.t('dataSourceLiveData')}</label>
                                 </div>
                                 ` : ''}
                             </div>
@@ -2120,19 +2094,19 @@ function createSpotCard(spot) {
                                 ${getFilterWindyDaysPreference() && forecastRows === '' ? `
                                     <div class="no-windy-days-message">
                                         <span class="no-windy-days-icon">💨</span>
-                                        <p class="no-windy-days-text">${t('noWindyDaysMessage')}</p>
+                                        <p class="no-windy-days-text">${translations.t('noWindyDaysMessage')}</p>
                                     </div>
                                 ` : `
                                     <table class="weather-table">
                                         <thead>
                                             <tr>
-                                                <th>${t('dateHeader')}</th>
-                                                <th>${t('windHeader')}</th>
-                                                <th>${t('gustsHeader')}</th>
-                                                <th>${t('directionHeader')}</th>
-                                                <th>${t('tempHeader')}</th>
-                                                <th>${t('rainHeader')}</th>
-                                                ${hasWaveData ? `<th>${t('waveHeader')}</th>` : ''}
+                                                <th>${translations.t('dateHeader')}</th>
+                                                <th>${translations.t('windHeader')}</th>
+                                                <th>${translations.t('gustsHeader')}</th>
+                                                <th>${translations.t('directionHeader')}</th>
+                                                <th>${translations.t('tempHeader')}</th>
+                                                <th>${translations.t('rainHeader')}</th>
+                                                ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -2286,13 +2260,13 @@ function displayError(messageKey) {
 
     if (hasTranslation) {
         currentErrorKey = messageKey;
-        currentErrorText = t(messageKey);
+        currentErrorText = translations.t(messageKey);
     } else {
         currentErrorKey = null;
         currentErrorText = typeof messageKey === 'string' ? messageKey : '';
     }
 
-    errorTitle.textContent = t('error');
+    errorTitle.textContent = translations.t('error');
     errorDescription.textContent = currentErrorText;
     currentLoadingKey = null;
 }
@@ -2302,18 +2276,18 @@ function displayError(messageKey) {
 // ============================================================================
 
 function initTheme() {
-    const savedTheme = getTheme();
+    const savedTheme = state.getTheme();
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
 
     function updateThemeUI(theme) {
-        applyTheme(theme);
+        state.applyTheme(theme);
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5-1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
             themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
         }
-        setTheme(theme);
+        state.setTheme(theme);
         // Re-render wind chart to update colors for new theme
         renderWindChart();
     }
@@ -2324,7 +2298,7 @@ function initTheme() {
     // Theme toggle event
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentThemeValue = getCurrentTheme();
+            const currentThemeValue = state.getCurrentTheme();
             const newTheme = currentThemeValue === 'dark' ? 'light' : 'dark';
             updateThemeUI(newTheme);
         });
@@ -2340,88 +2314,88 @@ function updateUITranslations() {
     // Update app info modal
     const appInfoModalTitle = document.getElementById('appInfoModalTitle');
     if (appInfoModalTitle) {
-        appInfoModalTitle.textContent = t('appInfoModalTitle');
+        appInfoModalTitle.textContent = translations.t('appInfoModalTitle');
     }
 
     const embedModalTitle = document.getElementById('embedModalTitle');
     if (embedModalTitle) {
-        embedModalTitle.textContent = t('embedModalTitle');
+        embedModalTitle.textContent = translations.t('embedModalTitle');
     }
 
     const embedDescription = document.getElementById('embedDescription');
     if (embedDescription) {
-        embedDescription.textContent = t('embedModalDescription');
+        embedDescription.textContent = translations.t('embedModalDescription');
     }
 
     refreshEmbedDropdownTranslations();
 
     const embedPreviewTitle = document.getElementById('embedPreviewTitle');
     if (embedPreviewTitle) {
-        embedPreviewTitle.textContent = t('embedPreviewTitle');
+        embedPreviewTitle.textContent = translations.t('embedPreviewTitle');
     }
 
     const embedCodeTitle = document.getElementById('embedCodeTitle');
     if (embedCodeTitle) {
-        embedCodeTitle.textContent = t('embedCodeTitle');
+        embedCodeTitle.textContent = translations.t('embedCodeTitle');
     }
 
     const copyButtonText = document.getElementById('copyButtonText');
     if (copyButtonText) {
-        copyButtonText.textContent = t('embedCopyButtonDefault');
+        copyButtonText.textContent = translations.t('embedCopyButtonDefault');
     }
 
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
     if (aiModalDisclaimer) {
-        aiModalDisclaimer.textContent = t('aiDisclaimer');
+        aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
     }
 
     const aiModalTitle = document.getElementById('aiModalTitle');
     if (aiModalTitle && currentSpot) {
-        aiModalTitle.textContent = `${currentSpot.name} - ${t('aiAnalysisTitle')}`;
+        aiModalTitle.textContent = `${currentSpot.name} - ${translations.t('aiAnalysisTitle')}`;
     }
 
     const appInfoDescription = document.getElementById('appInfoDescription');
     if (appInfoDescription) {
-        appInfoDescription.textContent = t('appInfoDescription');
+        appInfoDescription.textContent = translations.t('appInfoDescription');
     }
 
     const appInfoContactTitle = document.getElementById('appInfoContactTitle');
     if (appInfoContactTitle) {
-        appInfoContactTitle.textContent = t('appInfoContactTitle');
+        appInfoContactTitle.textContent = translations.t('appInfoContactTitle');
     }
 
     const appInfoContactText = document.getElementById('appInfoContactText');
     if (appInfoContactText) {
-        appInfoContactText.innerHTML = t('appInfoContactText');
+        appInfoContactText.innerHTML = translations.t('appInfoContactText');
     }
 
     const appInfoNewSpotTitle = document.getElementById('appInfoNewSpotTitle');
     if (appInfoNewSpotTitle) {
-        appInfoNewSpotTitle.textContent = t('appInfoNewSpotTitle');
+        appInfoNewSpotTitle.textContent = translations.t('appInfoNewSpotTitle');
     }
 
     const appInfoNewSpotText = document.getElementById('appInfoNewSpotText');
     if (appInfoNewSpotText) {
-        appInfoNewSpotText.innerHTML = t('appInfoNewSpotText');
+        appInfoNewSpotText.innerHTML = translations.t('appInfoNewSpotText');
     }
 
     const appInfoCollaborationTitle = document.getElementById('appInfoCollaborationTitle');
     if (appInfoCollaborationTitle) {
-        appInfoCollaborationTitle.textContent = t('appInfoCollaborationTitle');
+        appInfoCollaborationTitle.textContent = translations.t('appInfoCollaborationTitle');
     }
 
     const appInfoCollaborationText = document.getElementById('appInfoCollaborationText');
     if (appInfoCollaborationText) {
-        appInfoCollaborationText.innerHTML = t('appInfoCollaborationText');
+        appInfoCollaborationText.innerHTML = translations.t('appInfoCollaborationText');
     }
 
     // Update map layer switcher labels
-    updateLayerSwitcherLabels();
+    map.updateLayerSwitcherLabels();
 
     // Update info toggle button label
     const infoToggleLabel = document.getElementById('infoToggleLabel');
     if (infoToggleLabel) {
-        infoToggleLabel.textContent = t('infoButtonLabel');
+        infoToggleLabel.textContent = translations.t('infoButtonLabel');
     }
 
     // Update loading text
@@ -2430,7 +2404,7 @@ function updateUITranslations() {
         const loadingTextEl = document.getElementById('loadingText');
         if (loadingTextEl) {
             const key = currentLoadingKey || 'loadingSpotData';
-            loadingTextEl.textContent = t(key);
+            loadingTextEl.textContent = translations.t(key);
         }
     }
 
@@ -2441,24 +2415,24 @@ function updateUITranslations() {
         const errorDescription = document.getElementById('errorDescription');
 
         if (errorTitle) {
-            errorTitle.textContent = t('error');
+            errorTitle.textContent = translations.t('error');
         }
 
         if (errorDescription) {
             if (currentErrorKey) {
-                currentErrorText = t(currentErrorKey);
+                currentErrorText = translations.t(currentErrorKey);
             }
             errorDescription.textContent = currentErrorText;
         }
     }
 
     // Keep footer text consistent with current language
-    updateFooter(t);
+    footer.updateFooter(translations.t);
 }
 
 // Initialize language and setup toggle
 function initLanguage() {
-    const savedLang = getLanguage();
+    const savedLang = state.getLanguage();
     currentLanguage = savedLang;
     embedLanguageSelection = savedLang;
 
@@ -2478,7 +2452,7 @@ function initLanguage() {
             currentLanguage = newLang;
             embedLanguageSelection = newLang;
             langCode.textContent = newLang.toUpperCase();
-            setLanguage(newLang);
+            state.setLanguage(newLang);
 
             // Update UI translations
             updateUITranslations();
@@ -2591,11 +2565,11 @@ function setupHeaderNavigation() {
     const headerTitle = document.getElementById('headerTitle');
 
     function handleNavigateToHome() {
-        const savedCountry = getSelectedCountry();
+        const savedCountry = state.getSelectedCountry();
         if (savedCountry === 'all') {
-            navigateToHome();
+            routing.navigateToHome();
         } else {
-            navigateToCountry(savedCountry);
+            routing.navigateToCountry(savedCountry);
         }
     }
 
@@ -2756,7 +2730,7 @@ function renderSpotSponsors(spot) {
 // ============================================================================
 
 async function setupSpot() {
-    const spotId = getSpotIdFromUrl();
+    const spotId = routing.getSpotIdFromUrl();
     currentSpotId = spotId;
 
     if (!spotId) {
