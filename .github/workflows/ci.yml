@@ -58,7 +58,7 @@ jobs:
         run: ./gradlew assemble --stacktrace --build-cache
 
       - name: Test
-        run: ./gradlew test --stacktrace --build-cache --rerun-tasks
+        run: ./gradlew test --stacktrace --build-cache
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
