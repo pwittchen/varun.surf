@@ -1478,7 +1478,7 @@ function handleListSort(column) {
 }
 
 function clearListOrder() {
-    removeListOrder(currentFilter, currentSearchQuery);
+    state.removeListOrder(currentFilter, currentSearchQuery);
 }
 
 function sortSpots(spots, sortColumn, sortDirection) {
@@ -1503,17 +1503,17 @@ function sortSpots(spots, sortColumn, sortDirection) {
                 const bConditions = getSpotConditions(b);
 
                 if (sortColumn === 'wind') {
-                    aValue = aConditions ? aConditions.wind : -Infinity;
-                    bValue = bConditions ? bConditions.wind : -Infinity;
+                    aValue = aConditions && Number.isFinite(aConditions.wind) ? aConditions.wind : -Infinity;
+                    bValue = bConditions && Number.isFinite(bConditions.wind) ? bConditions.wind : -Infinity;
                 } else if (sortColumn === 'gust') {
-                    aValue = aConditions ? aConditions.gusts : -Infinity;
-                    bValue = bConditions ? bConditions.gusts : -Infinity;
+                    aValue = aConditions && Number.isFinite(aConditions.gusts) ? aConditions.gusts : -Infinity;
+                    bValue = bConditions && Number.isFinite(bConditions.gusts) ? bConditions.gusts : -Infinity;
                 } else if (sortColumn === 'temp') {
                     aValue = aConditions && Number.isFinite(aConditions.temp) ? aConditions.temp : -Infinity;
                     bValue = bConditions && Number.isFinite(bConditions.temp) ? bConditions.temp : -Infinity;
                 } else if (sortColumn === 'rain') {
-                    aValue = aConditions && aConditions.precipitation !== null ? aConditions.precipitation : -Infinity;
-                    bValue = bConditions && bConditions.precipitation !== null ? bConditions.precipitation : -Infinity;
+                    aValue = aConditions && Number.isFinite(aConditions.precipitation) ? aConditions.precipitation : -Infinity;
+                    bValue = bConditions && Number.isFinite(bConditions.precipitation) ? bConditions.precipitation : -Infinity;
                 }
 
                 return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
@@ -1522,19 +1522,22 @@ function sortSpots(spots, sortColumn, sortDirection) {
             case 'direction': {
                 const aConditions = getSpotConditions(a);
                 const bConditions = getSpotConditions(b);
-                aValue = aConditions ? aConditions.direction || '' : '';
-                bValue = bConditions ? bConditions.direction || '' : '';
+                aValue = aConditions && aConditions.direction ? aConditions.direction : '';
+                bValue = bConditions && bConditions.direction ? bConditions.direction : '';
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
             }
 
-            case 'country':
-                aValue = translations.t(a.country.replace(/\s+/g, '')) || '';
-                bValue = translations.t(b.country.replace(/\s+/g, '')) || '';
+            case 'country': {
+                const aCountry = a.country || '';
+                const bCountry = b.country || '';
+                aValue = translations.t(aCountry.replace(/\s+/g, '')) || aCountry;
+                bValue = translations.t(bCountry.replace(/\s+/g, '')) || bCountry;
                 return sortDirection === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
+            }
 
             default:
                 return 0;
