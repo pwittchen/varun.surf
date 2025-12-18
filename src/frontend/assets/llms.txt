@@ -123,7 +123,7 @@ A: VARUN.SURF aggregates Windguru forecasts with real-time wind data, shows mult
 
 ## Contact
 **Website**: https://varun.surf
-**Email**: piotr@varun.surf
+**Email**: hello@varun.surf
 **GitHub**: https://github.com/pwittchen/varun.surf
 **Developer**: Piotr Wittchen (https://wittchen.io)
 

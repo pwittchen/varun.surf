@@ -1020,7 +1020,7 @@ None required (vanilla JS, modern browsers only).
 
 For frontend-related issues, feature requests, or contributions:
 - **GitHub Issues**: https://github.com/pwittchen/varun.surf/issues
-- **Email**: piotr@varun.surf
+- **Email**: hello@varun.surf
 - **Pull Requests**: Welcome! Follow existing code style and conventions
 
 ---
