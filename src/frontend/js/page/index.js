@@ -2698,7 +2698,15 @@ function addMarkersToMap(spots) {
 
     // Fit map to show all markers
     if (bounds.length > 0) {
-        leafletMap.fitBounds(bounds, { padding: [50, 50] });
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            // On mobile, fit bounds then zoom in by 1 level to fill vertical space better
+            leafletMap.fitBounds(bounds, { padding: [0, 0] });
+            const currentZoom = leafletMap.getZoom();
+            leafletMap.setZoom(currentZoom + 1);
+        } else {
+            leafletMap.fitBounds(bounds, { padding: [50, 50] });
+        }
     }
 }
 
