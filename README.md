@@ -184,12 +184,32 @@ Remember that you can also trigger agents by natural language according to Claud
 
 ### custom skills
 
-The project includes Claude Code skills that can be invoked as slash commands:
+The project includes Claude Code skills that can be invoked as slash commands. Skills are lightweight, focused tasks that run directly in the conversation.
+
+**How to use:**
+1. Type the run + slash command in Claude Code (e.g., `run /check-spots`)
+2. For skills with arguments, add them after the command (e.g., `run /explain caching flow`)
+3. Skills run immediately and return a structured report
+
+**Examples:**
+
+```
+run /check-spots
+run /explain caching flow
+```
 
 | Command | Purpose |
 |---------|---------|
 | `/check-spots` | Validate spots.json for missing fields, invalid URLs, duplicates, and data consistency |
 | `/check-live-stations` | Analyze live weather station integrations, test data sources, identify spots without live data |
+| `/explain [topic]` | Explain data flows, features, and code paths with visual diagrams and step-by-step breakdowns |
+| `/review [target]` | Quick code review for files or git changes, checking for bugs and best practices |
+| `/audit-security` | Security audit for secrets, SSRF, injection points, dependencies, and headers |
+| `/check-deps` | Analyze Gradle dependencies for outdated versions, CVEs, conflicts, and bloat |
+| `/profile-blocking` | Find blocking calls in reactive WebFlux code that cause thread starvation |
+| `/check-concurrency` | Find race conditions, deadlocks, unsafe shared state, and synchronization issues |
+| `/arch-check` | Verify architecture health: layer violations, circular deps, design patterns |
+| `/check-errors` | Find error handling gaps: swallowed exceptions, missing handlers, resource leaks |
 
 Skill definitions are located in `.claude/skills/`.
 
