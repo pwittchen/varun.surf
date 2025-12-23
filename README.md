@@ -159,6 +159,10 @@ The project includes specialized Claude Code agents that can be triggered using 
 | `@debug-api [target]` | api-debugger | Diagnose issues with external APIs (Windguru, weather stations, maps) |
 | `@e2e-test [feature]` | e2e-test-writer | Write E2E tests for features using Playwright |
 | `@review [file/feature]` | code-reviewer | General code review for quality, bugs, and best practices |
+| `@arch [topic]` | arch-analyzer | System architecture analysis, dependencies, and design patterns |
+| `@security [target]` | security-auditor | Security vulnerability assessment and OWASP compliance |
+| `@perf [target]` | perf-analyzer | Performance analysis for speed, memory, and resource optimization |
+| `@async [target]` | async-reviewer | WebFlux/Reactor patterns, Virtual Threads, and concurrency review |
 
 **Examples:**
 
@@ -168,6 +172,10 @@ The project includes specialized Claude Code agents that can be triggered using 
 @debug-api windguru spot 48009
 @e2e-test favorites feature
 @review AggregatorService
+@arch data flow from API to caching
+@security check input validation in controllers
+@perf analyze caching efficiency
+@async review StructuredTaskScope in AggregatorService
 ```
 
 Agent definitions are located in `.claude/agents/`.
