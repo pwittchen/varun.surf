@@ -170,6 +170,16 @@ Agent definitions are located in `.claude/agents/`.
 
 Remember that you can also trigger agents by natural language according to Claude Code guidelines.
 
+### custom skills
+
+The project includes Claude Code skills that can be invoked as slash commands:
+
+| Command | Purpose |
+|---------|---------|
+| `/check-spots` | Validate spots.json for missing fields, invalid URLs, duplicates, and data consistency |
+
+Skill definitions are located in `.claude/skills/`.
+
 ## features
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
