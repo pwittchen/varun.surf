@@ -148,6 +148,26 @@ Nevertheless, more advanced analysis, more tokens or stronger model, should incr
 - Claude → see: [CLAUDE.md](CLAUDE.md) file
 - Codex → see: [AGENTS.md](AGENTS.md) file
 
+### custom agent triggers
+
+The project includes specialized Claude Code agents that can be triggered using shortcuts:
+
+| Trigger | Agent | Purpose |
+|---------|-------|---------|
+| `@new-kite-spot [location]` | kite-spot-creator | Research and add a new kite spot to spots.json |
+| `@new-weather-station [url]` | weather-station-strategy | Create a new weather station integration strategy |
+
+**Examples:**
+
+```
+@new-kite-spot Tarifa, Spain
+@new-weather-station https://holfuy.com/en/weather/1234
+```
+
+Agent definitions are located in `.claude/agents/`.
+
+Remember that you can also trigger agents by natural language according to Claude Code guidelines.
+
 ## features
 
 - showing all kite spots with forecasts and live conditions on the single page without switching between tabs or windows
