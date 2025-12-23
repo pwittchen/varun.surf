@@ -8,6 +8,7 @@ import * as api from '../common/api.js';
 import * as routing from '../common/routing.js';
 import * as map from '../common/map.js';
 import * as state from '../common/state.js';
+import * as modals from '../common/modals.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -875,21 +876,11 @@ function setupDropdown() {
 // ============================================================================
 
 function openAppInfoModal() {
-    const modal = document.getElementById('appInfoModal');
-    if (!modal) {
-        return;
-    }
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('appInfoModal');
 }
 
 function closeAppInfoModal() {
-    const modal = document.getElementById('appInfoModal');
-    if (!modal) {
-        return;
-    }
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('appInfoModal');
 }
 
 function openAIModal(spotName) {
@@ -898,7 +889,6 @@ function openAIModal(spotName) {
 
     if (!spot || !aiAnalysis) return;
 
-    const modal = document.getElementById('aiModal');
     const modalSpotName = document.getElementById('modalSpotName');
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
@@ -907,15 +897,17 @@ function openAIModal(spotName) {
     aiAnalysisContent.innerHTML = aiAnalysis.trim();
     aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('aiModal');
+}
+
+function closeAIModal() {
+    modals.closeModal('aiModal');
 }
 
 function openInfoModal(spotName) {
     const spot = globalWeatherData.find(spot => spot.name === spotName);
     if (!spot || !spot.spotInfo) return;
 
-    const modal = document.getElementById('infoModal');
     const modalSpotName = document.getElementById('infoModalSpotName');
     const spotInfoContent = document.getElementById('spotInfoContent');
 
@@ -959,24 +951,14 @@ function openInfoModal(spotName) {
                 </div>
             `;
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeAIModal() {
-    const modal = document.getElementById('aiModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.openModal('infoModal');
 }
 
 function closeInfoModal() {
-    const modal = document.getElementById('infoModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('infoModal');
 }
 
 function openIcmModal(spotName, icmUrl) {
-    const modal = document.getElementById('icmModal');
     const modalSpotName = document.getElementById('icmModalSpotName');
     const icmImage = document.getElementById('icmImage');
 
@@ -984,14 +966,11 @@ function openIcmModal(spotName, icmUrl) {
     icmImage.src = icmUrl;
     icmImage.alt = `${translations.t('icmForecastTitle')} for ${spotName}`;
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('icmModal');
 }
 
 function closeIcmModal() {
-    const modal = document.getElementById('icmModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('icmModal');
 
     // Clear the image source to stop loading
     const icmImage = document.getElementById('icmImage');
@@ -999,68 +978,14 @@ function closeIcmModal() {
 }
 
 function setupModals() {
-    const aiModal = document.getElementById('aiModal');
-    const aiCloseButton = document.getElementById('modalClose');
-    const appInfoModal = document.getElementById('appInfoModal');
-    const appInfoCloseButton = document.getElementById('appInfoModalClose');
-    const infoModal = document.getElementById('infoModal');
-    const infoCloseButton = document.getElementById('infoModalClose');
-    const icmModal = document.getElementById('icmModal');
-    const icmCloseButton = document.getElementById('icmModalClose');
+    const modalConfigs = [
+        { modalId: 'aiModal', closeButtonId: 'modalClose', closeCallback: closeAIModal },
+        { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
+        { modalId: 'infoModal', closeButtonId: 'infoModalClose', closeCallback: closeInfoModal },
+        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal }
+    ];
 
-    // AI Modal events
-    aiCloseButton.addEventListener('click', closeAIModal);
-    aiModal.addEventListener('click', (e) => {
-        if (e.target === aiModal) {
-            closeAIModal();
-        }
-    });
-
-    // App Info Modal events
-    if (appInfoCloseButton) {
-        appInfoCloseButton.addEventListener('click', closeAppInfoModal);
-    }
-    if (appInfoModal) {
-        appInfoModal.addEventListener('click', (e) => {
-            if (e.target === appInfoModal) {
-                closeAppInfoModal();
-            }
-        });
-    }
-
-    // Info Modal events
-    infoCloseButton.addEventListener('click', closeInfoModal);
-    infoModal.addEventListener('click', (e) => {
-        if (e.target === infoModal) {
-            closeInfoModal();
-        }
-    });
-
-    // ICM Modal events
-    icmCloseButton.addEventListener('click', closeIcmModal);
-    icmModal.addEventListener('click', (e) => {
-        if (e.target === icmModal) {
-            closeIcmModal();
-        }
-    });
-
-    // Escape key for all modals
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            if (aiModal.classList.contains('active')) {
-                closeAIModal();
-            }
-            if (appInfoModal && appInfoModal.classList.contains('active')) {
-                closeAppInfoModal();
-            }
-            if (infoModal.classList.contains('active')) {
-                closeInfoModal();
-            }
-            if (icmModal.classList.contains('active')) {
-                closeIcmModal();
-            }
-        }
-    });
+    modals.setupModals(modalConfigs);
 }
 
 // ============================================================================

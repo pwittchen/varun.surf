@@ -8,6 +8,7 @@ import * as api from '../common/api.js';
 import * as routing from '../common/routing.js';
 import * as map from '../common/map.js';
 import * as state from '../common/state.js';
+import * as modals from '../common/modals.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -330,7 +331,6 @@ function getAiAnalysisForCurrentLanguage(spot) {
 function openInfoModal(spotName) {
     if (!currentSpot || !currentSpot.spotInfo) return;
 
-    const modal = document.getElementById('infoModal');
     const modalSpotName = document.getElementById('infoModalSpotName');
     const spotInfoContent = document.getElementById('spotInfoContent');
 
@@ -374,15 +374,12 @@ function openInfoModal(spotName) {
                 </div>
             `;
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('infoModal');
 }
 
 // Closing spot information modal
 function closeInfoModal() {
-    const modal = document.getElementById('infoModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('infoModal');
 }
 
 // Open AI analysis modal
@@ -392,7 +389,6 @@ function openAIModal(spotName) {
     const aiAnalysis = getAiAnalysisForCurrentLanguage(currentSpot);
     if (!aiAnalysis) return;
 
-    const modal = document.getElementById('aiModal');
     const modalTitle = document.getElementById('aiModalTitle');
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
 
@@ -404,35 +400,28 @@ function openAIModal(spotName) {
         aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
     }
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('aiModal');
 }
 
 // Close AI analysis modal
 function closeAIModal() {
-    const modal = document.getElementById('aiModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('aiModal');
 }
 
 // Open ICM forecast modal
 function openIcmModal(spotName, icmUrl) {
-    const modal = document.getElementById('icmModal');
     const modalTitle = document.getElementById('icmModalTitle');
     const icmImage = document.getElementById('icmImage');
 
     modalTitle.textContent = `${spotName} - ICM Forecast`;
     icmImage.src = icmUrl;
 
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('icmModal');
 }
 
 // Close ICM forecast modal
 function closeIcmModal() {
-    const modal = document.getElementById('icmModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('icmModal');
 }
 
 const embedDropdownRegistry = [];
@@ -442,9 +431,7 @@ let embedDropdownsInitialized = false;
 function openEmbedModal() {
     if (!currentSpotId) return;
 
-    const modal = document.getElementById('embedModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('embedModal');
 
     const copyButton = document.getElementById('copyEmbedCode');
     const copyButtonText = document.getElementById('copyButtonText');
@@ -462,9 +449,7 @@ function openEmbedModal() {
 
 // Close embed widget modal
 function closeEmbedModal() {
-    const modal = document.getElementById('embedModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('embedModal');
     closeEmbedDropdowns();
 }
 
@@ -678,18 +663,12 @@ function setupEmbedModal() {
 
 // Open app information modal
 function openAppInfoModal() {
-    const modal = document.getElementById('appInfoModal');
-    if (!modal) return;
-
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modals.openModal('appInfoModal');
 }
 
 // Close app information modal
 function closeAppInfoModal() {
-    const modal = document.getElementById('appInfoModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    modals.closeModal('appInfoModal');
 }
 
 // ============================================================================
@@ -2472,44 +2451,15 @@ function initLanguage() {
 // ============================================================================
 
 function setupModals() {
-    const infoModalClose = document.getElementById('infoModalClose');
-    const aiModalClose = document.getElementById('aiModalClose');
-    const icmModalClose = document.getElementById('icmModalClose');
-    const appInfoModalClose = document.getElementById('appInfoModalClose');
-    const embedModalClose = document.getElementById('embedModalClose');
+    const modalConfigs = [
+        { modalId: 'infoModal', closeButtonId: 'infoModalClose', closeCallback: closeInfoModal },
+        { modalId: 'aiModal', closeButtonId: 'aiModalClose', closeCallback: closeAIModal },
+        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal },
+        { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
+        { modalId: 'embedModal', closeButtonId: 'embedModalClose', closeCallback: closeEmbedModal }
+    ];
 
-    if (infoModalClose) {
-        infoModalClose.addEventListener('click', closeInfoModal);
-    }
-
-    if (aiModalClose) {
-        aiModalClose.addEventListener('click', closeAIModal);
-    }
-
-    if (icmModalClose) {
-        icmModalClose.addEventListener('click', closeIcmModal);
-    }
-
-    if (appInfoModalClose) {
-        appInfoModalClose.addEventListener('click', closeAppInfoModal);
-    }
-
-    if (embedModalClose) {
-        embedModalClose.addEventListener('click', closeEmbedModal);
-    }
-
-    // Close modals on the overlay click
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeInfoModal();
-                closeAIModal();
-                closeIcmModal();
-                closeAppInfoModal();
-                closeEmbedModal();
-            }
-        });
-    });
+    modals.setupModals(modalConfigs);
 }
 
 // ============================================================================
