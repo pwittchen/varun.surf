@@ -177,6 +177,7 @@ The project includes Claude Code skills that can be invoked as slash commands:
 | Command | Purpose |
 |---------|---------|
 | `/check-spots` | Validate spots.json for missing fields, invalid URLs, duplicates, and data consistency |
+| `/check-live-stations` | Analyze live weather station integrations, test data sources, identify spots without live data |
 
 Skill definitions are located in `.claude/skills/`.
 
