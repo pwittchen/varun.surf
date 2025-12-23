@@ -157,6 +157,7 @@ The project includes specialized Claude Code agents that can be triggered using 
 | `@new-kite-spot [location]` | kite-spot-creator | Research and add a new kite spot to spots.json |
 | `@new-weather-station [url]` | weather-station-strategy | Create a new weather station integration strategy |
 | `@debug-api [target]` | api-debugger | Diagnose issues with external APIs (Windguru, weather stations, maps) |
+| `@e2e-test [feature]` | e2e-test-writer | Write E2E tests for features using Playwright |
 
 **Examples:**
 
@@ -164,6 +165,7 @@ The project includes specialized Claude Code agents that can be triggered using 
 @new-kite-spot Tarifa, Spain
 @new-weather-station https://holfuy.com/en/weather/1234
 @debug-api windguru spot 48009
+@e2e-test favorites feature
 ```
 
 Agent definitions are located in `.claude/agents/`.
