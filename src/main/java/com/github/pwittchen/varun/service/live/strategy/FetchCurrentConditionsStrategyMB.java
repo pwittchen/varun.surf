@@ -57,9 +57,9 @@ public class FetchCurrentConditionsStrategyMB extends FetchCurrentConditionsStra
             Pattern.DOTALL | Pattern.CASE_INSENSITIVE
     );
 
-    // Pattern to extract numeric values from table cells
+    // Pattern to extract numeric values from table cells (including negative values)
     private static final Pattern CELL_VALUE_PATTERN = Pattern.compile(
-            "<td[^>]*>([0-9.]+)</td>"
+            "<td[^>]*>(-?[0-9.]+)</td>"
     );
 
     // Pattern to extract direction with degrees from cells like "NE<br>34°"

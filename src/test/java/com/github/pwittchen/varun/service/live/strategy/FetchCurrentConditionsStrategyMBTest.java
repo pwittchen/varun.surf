@@ -253,6 +253,24 @@ class FetchCurrentConditionsStrategyMBTest {
     }
 
     @Test
+    void shouldHandleNegativeTemperature() {
+        String mockResponse = createMockHtmlResponseWithNegativeTemp(-8.2);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/en/weather/1612").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    assertThat(conditions.temp()).isEqualTo(-8);
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldExtractLastValueFromMultipleColumns() {
         // Test that we correctly extract the LAST value from multiple columns
         String mockResponse = createMockHtmlResponseWithMultipleValues();
@@ -348,5 +366,32 @@ class FetchCurrentConditionsStrategyMBTest {
                 </body>
                 </html>
                 """;
+    }
+
+    private String createMockHtmlResponseWithNegativeTemp(double temp) {
+        return """
+                <html>
+                <body>
+                <table class="hour_table">
+                <tr style="height:1.9em; font-size:larger;">
+                    <td class="h_header" style=" font-size:smaller; padding-top:5px;">Speed</td>
+                    <td style="background:#b1ff00;">7.8</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Gust <span style="font-size: smaller;"> (m/s)</span></td>
+                    <td bgcolor="#ffcc00">10.3</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Direction<br><span style="font-size: smaller;">Deg.</span></td>
+                    <td>SW<br>225°</td>
+                </tr>
+                <tr>
+                    <td class="h_header">Temp. <span style="font-size: smaller;"> (°C)</span></td>
+                    <td bgcolor="#bebeff">%s</td>
+                </tr>
+                </table>
+                </body>
+                </html>
+                """.formatted(temp);
     }
 }
