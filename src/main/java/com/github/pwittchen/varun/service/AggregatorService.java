@@ -17,6 +17,7 @@ import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
+import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
@@ -80,6 +81,7 @@ public class AggregatorService {
     private final AiServiceEn aiServiceEn;
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
+    private final IcmGridMapper icmGridMapper;
     private final SponsorsService sponsorsService;
     private final AggregatorServiceMetrics metricsService;
 
@@ -97,6 +99,7 @@ public class AggregatorService {
             AiServiceEn aiServiceEn,
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
+            IcmGridMapper icmGridMapper,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
         this.spots = new ConcurrentHashMap<>();
@@ -116,6 +119,7 @@ public class AggregatorService {
         this.aiServiceEn = aiServiceEn;
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
+        this.icmGridMapper = icmGridMapper;
         this.sponsorsService = sponsorsService;
         this.metricsService = metricsService;
     }
@@ -245,6 +249,10 @@ public class AggregatorService {
         var coords = locationCoordinates.get(spot.wgId());
         if (coords != null) {
             enrichedSpot = enrichedSpot.withCoordinates(coords);
+            var icmUrl = icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
+            if (icmUrl.isPresent()) {
+                enrichedSpot = enrichedSpot.withIcmUrl(icmUrl.get());
+            }
         } else {
             scheduleLocationCoordinatesFetch(spot);
         }

@@ -27,7 +27,6 @@ public record Spot(
         CurrentConditions currentConditions,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         List<CurrentConditions> currentConditionsHistory,
-
         List<Forecast> forecast,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<Forecast> forecastHourly,
@@ -339,6 +338,31 @@ public record Spot(
                 this.aiAnalysisPl,
                 this.spotPhotoUrl,
                 coordinates,
+                this.spotInfo,
+                this.spotInfoPL,
+                this.sponsors,
+                this.lastUpdated
+        );
+    }
+
+    public Spot withIcmUrl(String icmUrl) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windguruFallbackUrl,
+                this.windfinderUrl,
+                icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.currentConditionsHistory,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
+                this.spotPhotoUrl,
+                this.coordinates,
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,

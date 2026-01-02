@@ -12,6 +12,7 @@ import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
+import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
@@ -60,6 +61,9 @@ class AggregatorServiceTest {
     private GoogleMapsService googleMapsService;
 
     @Mock
+    private IcmGridMapper icmGridMapper;
+
+    @Mock
     private SponsorsService sponsorsService;
 
     @Mock
@@ -76,6 +80,7 @@ class AggregatorServiceTest {
                 aiServiceEn,
                 aiServicePl,
                 googleMapsService,
+                icmGridMapper,
                 sponsorsService,
                 metricsService
         );

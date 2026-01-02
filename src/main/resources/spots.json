@@ -4,7 +4,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500760",
     "windfinderUrl": "https://www.windfinder.com/forecast/jastarnia",
-    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/draga",
     "locationUrl": "https://maps.app.goo.gl/ki7gDmXiDmQyfmp2A",
     "spotInfo": {
@@ -33,7 +32,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500757",
     "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
-    "icmUrl": "",
     "webcamUrl": "https://surfpeople.pl/pogoda-chalupy-hel/",
     "locationUrl": "https://maps.app.goo.gl/Yv8AH8nHJ2keBa338",
     "spotInfo": {
@@ -62,7 +60,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/4165",
     "windfinderUrl": "https://www.windfinder.com/forecast/cypel",
-    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=206&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/rewa",
     "locationUrl": "https://maps.app.goo.gl/SJS6gR7Xxv14WwY86",
     "spotInfo": {
@@ -91,7 +88,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/509469",
     "windfinderUrl": "",
-    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=339&col=213&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/kuznica/",
     "locationUrl": "https://maps.app.goo.gl/pt3M72t8ivf8UDDSA",
     "spotInfo": {
@@ -120,7 +116,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/48009",
     "windfinderUrl": "https://www.windfinder.com/forecast/puck",
-    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=336&col=206&lang=pl",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/LvKyh4VKvwH8Fyos5",
     "spotInfo": {
@@ -149,7 +144,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500761",
     "windfinderUrl": "https://www.windfinder.com/forecast/jurata_hel",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/uFBhPnAVRkm8R6bj7",
     "spotInfo": {
@@ -178,7 +172,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/14473",
     "windfinderUrl": "https://www.windfinder.com/forecast/krynica_morska",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/BVSnbZBCu2Z2RZ9j8",
     "spotInfo": {
@@ -208,7 +201,6 @@
     "windguruUrl": "",
     "windguruFallbackUrl": "https://www.windguru.cz/126330",
     "windfinderUrl": "https://www.windfinder.com/forecast/kadyny",
-    "icmUrl": "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=346&col=227&lang=pl",
     "webcamUrl": "https://www.wiatrkadyny.pl/index.php",
     "locationUrl": "https://maps.app.goo.gl/RZLNq3RbixGvTWrL6",
     "spotInfo": {
@@ -237,7 +229,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/3159",
     "windfinderUrl": "https://www.windfinder.com/forecast/leba",
-    "icmUrl": "",
     "webcamUrl": "https://flyresort.pl/",
     "locationUrl": "https://maps.app.goo.gl/qw5HeYgAQs1RPDZQA",
     "spotInfo": {
@@ -266,7 +257,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/4857",
     "windfinderUrl": "",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/LBouJ5U7m3ArufT18",
     "spotInfo": {
@@ -295,7 +285,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/1299485",
     "windfinderUrl": "https://www.windfinder.com/forecast/jastrzebia_gora",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/CTFGygV9vYgtYZDt7",
     "spotInfo": {
@@ -324,7 +313,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/1106370",
     "windfinderUrl": "https://www.windfinder.com/forecast/kolobrzeg",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/ACYHM3ZHQgY8iXKDA",
     "spotInfo": {
@@ -353,7 +341,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/3636",
     "windfinderUrl": "https://www.windfinder.com/forecast/swinoujscie",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/8NcBgYboWCatea1k8",
     "spotInfo": {
@@ -382,7 +369,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/217357",
     "windfinderUrl": "https://www.windfinder.com/forecast/wolin_west_pomerania_poland",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/NX6zNv9Gv9Dcj9eAA",
     "spotInfo": {
@@ -411,7 +397,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/799881",
     "windfinderUrl": "https://www.windfinder.com/forecast/jezioro-goczalkowickie",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=470&col=211&lang=pl",
     "webcamUrl": "https://www.youtube.com/@qdwhaty/streams",
     "locationUrl": "https://maps.app.goo.gl/ZxLHs7UickQfTvUB6",
     "spotInfo": {
@@ -440,7 +425,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/726",
     "windfinderUrl": "https://www.windfinder.com/forecast/jezioro_turawskie",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=447&col=199&lang=pl",
     "webcamUrl": "https://airmax.pl/kamery/turawa",
     "locationUrl": "https://maps.app.goo.gl/cmZTqjfZfNvBjhV38",
     "spotInfo": {
@@ -469,7 +453,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/1068590",
     "windfinderUrl": "",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=473&col=219&lang=pl",
     "webcamUrl": "https://worldcam.live/pl/webcam/jmiedzybrodzkie2",
     "locationUrl": "https://maps.app.goo.gl/54VrwzmTzdAz849e8",
     "spotInfo": {
@@ -498,7 +481,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/304",
     "windfinderUrl": "https://www.windfinder.com/forecast/mietkowskie",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=440&col=174&lang=pl",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/wetCLQh5YMddSn9D6",
     "spotInfo": {
@@ -527,7 +509,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/30007",
     "windfinderUrl": "https://www.windfinder.com/forecast/pogoria_lakes",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=459&col=220&lang=pl",
     "webcamUrl": "https://www.dabrowa-gornicza.pl/atrakcje/kamery-online/",
     "locationUrl": "https://maps.app.goo.gl/AZeeBXia9iE9bWo87",
     "spotInfo": {
@@ -556,7 +537,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/68544",
     "windfinderUrl": "https://www.windfinder.com/forecast/lake_plawniowice",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=457&col=209&lang=pl",
     "webcamUrl": "https://www.ipcamlive.com/szkwalorg",
     "locationUrl": "https://maps.app.goo.gl/FzcB3qQjKVqGgMbM6",
     "spotInfo": {
@@ -585,7 +565,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/66601",
     "windfinderUrl": "https://www.windfinder.com/forecast/jezioro_dzierzno-duze_male",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=460&col=209&lang=pl",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/jyymNMEi3g8rRp9MA",
     "spotInfo": {
@@ -614,7 +593,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/29289",
     "windfinderUrl": "https://www.windfinder.com/forecast/rybnik",
-    "icmUrl": "https://old.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=465&col=207&lang=pl",
     "webcamUrl": "https://fundacjaelektrownirybnik.pl/kamera/",
     "locationUrl": "https://maps.app.goo.gl/DGLtRUqbk1X2Lvnh9",
     "spotInfo": {
@@ -643,7 +621,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/3644",
     "windfinderUrl": "",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/qisDuectLyu2FmDBA",
     "spotInfo": {
@@ -672,7 +649,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/3635",
     "windfinderUrl": "https://www.windfinder.com/forecast/wrzosowo_plaza",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/nZuSntG7QesR8Bqx9",
     "spotInfo": {
@@ -701,7 +677,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/62514",
     "windfinderUrl": "https://www.windfinder.com/forecast/sarbsko_see_leba",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/GQsqm1RxDvWh2E8R7",
     "spotInfo": {
@@ -730,7 +705,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/32462",
     "windfinderUrl": "https://www.windfinder.com/forecast/zalew_sulejowski",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/sCHsPHb27ij9eLJVA",
     "spotInfo": {
@@ -759,7 +733,6 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/102604",
     "windfinderUrl": "",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/v6mzLyXyEkTH3Zkw9",
     "spotInfo": {
@@ -788,7 +761,6 @@
     "country": "Austria",
     "windguruUrl": "https://www.windguru.cz/859182",
     "windfinderUrl": "https://www.windfinder.com/forecast/neusiedler_see_podersdorf_nordnord",
-    "icmUrl": "",
     "webcamUrl": "https://www.feratel.com/webcams/oesterreich/burgenland/podersdorf-neusiedler-see",
     "locationUrl": "https://maps.app.goo.gl/UJHbVRNix6GWLPXe7",
     "spotInfo": {
@@ -817,7 +789,6 @@
     "country": "Austria",
     "windguruUrl": "https://www.windguru.cz/33",
     "windfinderUrl": "https://www.windfinder.com/forecast/lake_neusiedl_breitenbrunn",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/gxiiTUpRFeEokfAa9",
     "spotInfo": {
@@ -846,7 +817,6 @@
     "country": "Lithuania",
     "windguruUrl": "https://www.windguru.cz/1025272",
     "windfinderUrl": "https://www.windfinder.com/forecast/dreverna",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/aMkBk1WSw94PqxhR8",
     "spotInfo": {
@@ -875,7 +845,6 @@
     "country": "Lithuania",
     "windguruUrl": "https://www.windguru.cz/64975",
     "windfinderUrl": "https://www.windfinder.com/forecast/monciskes",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/DFkwysQGXMYYnzMg9",
     "spotInfo": {
@@ -904,7 +873,6 @@
     "country": "Estonia",
     "windguruUrl": "https://www.windguru.cz/872453",
     "windfinderUrl": "https://www.windfinder.com/forecast/haeaedemeeste",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/EVyCfAWHqUg2zhCg6",
     "spotInfo": {
@@ -933,7 +901,6 @@
     "country": "Estonia",
     "windguruUrl": "https://www.windguru.cz/956419",
     "windfinderUrl": "https://www.windfinder.com/forecast/hiiumaa_island_surfers_paradise",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/22EcMp9oS3v4ooF89",
     "spotInfo": {
@@ -962,7 +929,6 @@
     "country": "Czech Republic",
     "windguruUrl": "https://www.windguru.cz/4",
     "windfinderUrl": "https://www.windfinder.com/forecast/rozkos_mala_laguna",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/gu3M1wn75qiuU8RX6",
     "spotInfo": {
@@ -991,7 +957,6 @@
     "country": "Czech Republic",
     "windguruUrl": "https://www.windguru.cz/3",
     "windfinderUrl": "https://www.windfinder.com/forecast/nove_mlynyat_mushow_beach",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/hZqQ2cJAx4FPeKMfA",
     "spotInfo": {
@@ -1020,7 +985,6 @@
     "country": "Italy",
     "windguruUrl": "https://www.windguru.cz/542133",
     "windfinderUrl": "https://www.windfinder.com/forecast/lo-stagnone_kiteboarding-club",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/B4nsfbMNK6vzcB1j8",
     "spotInfo": {
@@ -1049,7 +1013,6 @@
     "country": "Italy",
     "windguruUrl": "https://www.windguru.cz/436366",
     "windfinderUrl": "https://www.windfinder.com/forecast/punta_trettu",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/68hnsAoxCmasWqBd6",
     "spotInfo": {
@@ -1078,7 +1041,6 @@
     "country": "Italy",
     "windguruUrl": "https://www.windguru.cz/49162",
     "windfinderUrl": "https://www.windfinder.com/forecast/sardinia_porto_pollo",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/kS4DnZhFZ2656CK67",
     "spotInfo": {
@@ -1107,7 +1069,6 @@
     "country": "Italy",
     "windguruUrl": "https://www.windguru.cz/766",
     "windfinderUrl": "https://www.windfinder.com/forecast/lake_como_colico",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/6MuCVHFUHVfHgzwh7",
     "spotInfo": {
@@ -1136,7 +1097,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48777",
     "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_rio_jara",
-    "icmUrl": "",
     "webcamUrl": "https://www.kiteschool-ozutarifa.com/webcam-kitesurf-tarifa/",
     "locationUrl": "https://maps.app.goo.gl/U7xhQ3eM26VdFoJM7",
     "spotInfo": {
@@ -1165,7 +1125,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48780",
     "windfinderUrl": "https://www.windfinder.com/forecast/tarifa",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/JiPenVr1oebLWdaFA",
     "spotInfo": {
@@ -1194,7 +1153,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48776",
     "windfinderUrl": "https://www.windfinder.com/forecast/los_lances",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/6hDfvuk8FkmRohzE9",
     "spotInfo": {
@@ -1223,7 +1181,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/976270",
     "windfinderUrl": "https://www.windfinder.com/forecast/campo_de_futbol",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/34CtCFRkWBP4VJLu7",
     "spotInfo": {
@@ -1252,7 +1209,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48778",
     "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_stadtstrand",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/AmtCqL1BK9LdygiW9",
     "spotInfo": {
@@ -1281,7 +1237,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48775",
     "windfinderUrl": "https://www.windfinder.com/forecast/tarifa_hotel_arte_vida",
-    "icmUrl": "",
     "webcamUrl": "https://surfcentertarifa.com/#webcam",
     "locationUrl": "https://maps.app.goo.gl/YWP79Bsswiw96z5N6",
     "spotInfo": {
@@ -1310,7 +1265,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/541946",
     "windfinderUrl": "https://www.windfinder.com/forecast/valdevaqueros_spin_out_station",
-    "icmUrl": "",
     "webcamUrl": "https://de.tarifaspinout.com/webcam-tarifa-spin-out",
     "locationUrl": "https://maps.app.goo.gl/WHn2reo5ZT8KEz1g7",
     "spotInfo": {
@@ -1339,7 +1293,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48785",
     "windfinderUrl": "https://www.windfinder.com/forecast/palmones",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/H6r4dHLVgb7eW1fS9",
     "spotInfo": {
@@ -1368,7 +1321,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/5691",
     "windfinderUrl": "https://www.windfinder.com/forecast/canos_de_meca",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/mepQXz3niEz8hqyd9",
     "spotInfo": {
@@ -1397,7 +1349,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48784",
     "windfinderUrl": "https://www.windfinder.com/forecast/getares",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/rL4druNQB6MPdvZe7",
     "spotInfo": {
@@ -1426,7 +1377,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/48827",
     "windfinderUrl": "https://www.windfinder.com/forecast/mar_menor_la_manga",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/Sye88Ge8FvaWbkoP7",
     "spotInfo": {
@@ -1455,7 +1405,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/207008",
     "windfinderUrl": "https://www.windfinder.com/forecast/el_medano",
-    "icmUrl": "",
     "webcamUrl": "https://www.canariansurffruit.com/webcam/",
     "locationUrl": "https://maps.app.goo.gl/7zLyMRYixztSMsc57",
     "spotInfo": {
@@ -1484,7 +1433,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/49329",
     "windfinderUrl": "https://www.windfinder.com/forecast/sotavento",
-    "icmUrl": "",
     "webcamUrl": "https://spainwebcam.com/90-rene-egli-sotavento-beach.html",
     "locationUrl": "https://maps.app.goo.gl/P9FXVqZzQKM6Pog79",
     "spotInfo": {
@@ -1513,7 +1461,6 @@
     "country": "Spain",
     "windguruUrl": "https://www.windguru.cz/49341",
     "windfinderUrl": "https://www.windfinder.com/forecast/fuerteventura_flag_beach",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/ARBWaG8JYxb7BAkm7",
     "spotInfo": {
@@ -1542,7 +1489,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/1102295",
     "windfinderUrl": "https://www.windfinder.com/forecast/guincho",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/y2EBEVhobfBifdyr6",
     "spotInfo": {
@@ -1571,7 +1517,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/177",
     "windfinderUrl": "https://www.windfinder.com/forecast/obidos",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/tMVJXqeidZBRTBBz7",
     "spotInfo": {
@@ -1600,7 +1545,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/103",
     "windfinderUrl": "https://www.windfinder.com/forecast/viana_do_castelo",
-    "icmUrl": "",
     "webcamUrl": "https://www.windfinder.com/forecast/viana_do_castelo_praia_norte",
     "locationUrl": "https://maps.app.goo.gl/rKQQLzj2NA5Jrpjc6",
     "spotInfo": {
@@ -1629,7 +1573,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/317",
     "windfinderUrl": "https://www.windfinder.com/forecast/fonte_da_telha",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/64XRNHtmwS1Rgo3t8",
     "spotInfo": {
@@ -1658,7 +1601,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/1528",
     "windfinderUrl": "https://www.windfinder.com/forecast/peniche",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/C6N63jt7MqXdaNfu8",
     "spotInfo": {
@@ -1687,7 +1629,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/75856",
     "windfinderUrl": "https://www.windfinder.com/forecast/nazare",
-    "icmUrl": "",
     "webcamUrl": "https://www.surftotal.com/livecams/nazare",
     "locationUrl": "https://maps.app.goo.gl/Ef7RfBYEoCnrysRp9",
     "spotInfo": {
@@ -1716,7 +1657,6 @@
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/501161",
     "windfinderUrl": "https://www.windfinder.com/forecast/algarve",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/ntfcxeXxRnvcYF1G6",
     "spotInfo": {
@@ -1745,7 +1685,6 @@
     "country": "Germany",
     "windguruUrl": "https://www.windguru.cz/48225",
     "windfinderUrl": "https://www.windfinder.com/forecast/buesum-hafen",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/AF8PgcBA7ojfpak28",
     "spotInfo": {
@@ -1774,7 +1713,6 @@
     "country": "Germany",
     "windguruUrl": "https://www.windguru.cz/233",
     "windfinderUrl": "https://www.windfinder.com/forecast/sankt_peter_ording_schleswig_holstein_germany",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/UUgQuqpJGEum8Yeo6",
     "spotInfo": {
@@ -1803,7 +1741,6 @@
     "country": "Germany",
     "windguruUrl": "https://www.windguru.cz/500821",
     "windfinderUrl": "https://www.windfinder.com/forecast/sylt_rantum_k4",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/S8xRVH75rxSzmCND6",
     "spotInfo": {
@@ -1832,7 +1769,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/1524",
     "windfinderUrl": "https://www.windfinder.com/forecast/romo_surf_beach",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/GqKG8X6zEM4Nzecv7",
     "spotInfo": {
@@ -1861,7 +1797,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/48029",
     "windfinderUrl": "https://www.windfinder.com/forecast/hvide_sande_west_wind_nord",
-    "icmUrl": "",
     "webcamUrl": "https://westwind.dk/pages/webcam",
     "locationUrl": "https://maps.app.goo.gl/ydQm9vfX7G2n7TCE8",
     "spotInfo": {
@@ -1890,7 +1825,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/48030",
     "windfinderUrl": "https://www.windfinder.com/forecast/hvide_sande",
-    "icmUrl": "",
     "webcamUrl": "https://westwind.dk/pages/webcam",
     "locationUrl": "https://maps.app.goo.gl/wzpB55fpRYoukzUL7",
     "spotInfo": {
@@ -1919,7 +1853,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/500768",
     "windfinderUrl": "https://www.windfinder.com/forecast/ringk_bing_fjord_kloster",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/1j2ge6EmoLbfQvqb9",
     "spotInfo": {
@@ -1948,7 +1881,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/48035",
     "windfinderUrl": "https://www.windfinder.com/forecast/agger_dorf",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/zRfdiB8jBnYo7kCX7",
     "spotInfo": {
@@ -1977,7 +1909,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/48037",
     "windfinderUrl": "https://www.windfinder.com/forecast/norre_vorupor_bay",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/KeT5W6kMtUSxt1Pq9",
     "spotInfo": {
@@ -2006,7 +1937,6 @@
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/11",
     "windfinderUrl": "https://www.windfinder.com/forecast/klitmoller",
-    "icmUrl": "",
     "webcamUrl": "https://www.youtube.com/watch?v=SykOKOqIYm0",
     "locationUrl": "https://maps.app.goo.gl/ENetNNFDKDJpZFJX8",
     "spotInfo": {
@@ -2035,7 +1965,6 @@
     "country": "Switzerland",
     "windguruUrl": "https://www.windguru.cz/1584",
     "windfinderUrl": "https://www.windfinder.com/forecast/silvaplana_see",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/AHcupA1MNvUCDyNJ7",
     "spotInfo": {
@@ -2064,7 +1993,6 @@
     "country": "France",
     "windguruUrl": "https://www.windguru.cz/258",
     "windfinderUrl": "https://www.windfinder.com/forecast/leucate-plage",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/qMgJnEQiT7tUzYzNA",
     "spotInfo": {
@@ -2093,7 +2021,6 @@
     "country": "Netherlands",
     "windguruUrl": "https://www.windguru.cz/575",
     "windfinderUrl": "https://www.windfinder.com/forecast/noordwijk_aan_zee",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/SvwnJ6LXSfvGHeaAA",
     "spotInfo": {
@@ -2122,7 +2049,6 @@
     "country": "Netherlands",
     "windguruUrl": "https://www.windguru.cz/572",
     "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/JWNy7TaRTgiuVFVe6",
     "spotInfo": {
@@ -2151,7 +2077,6 @@
     "country": "Croatia",
     "windguruUrl": "https://www.windguru.cz/275794",
     "windfinderUrl": "https://www.windfinder.com/forecast/neretva",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/CJmFg5t8VAJXkM6TA",
     "spotInfo": {
@@ -2180,7 +2105,6 @@
     "country": "Greece",
     "windguruUrl": "https://www.windguru.cz/805332",
     "windfinderUrl": "https://www.windfinder.com/forecast/prasonisi",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/sg9Ffw2qqQsWZLzf6",
     "spotInfo": {
@@ -2209,7 +2133,6 @@
     "country": "Morocco",
     "windguruUrl": "https://www.windguru.cz/49315",
     "windfinderUrl": "https://www.windfinder.com/forecast/dakhla_attitude",
-    "icmUrl": "",
     "webcamUrl": "https://dakhlakitesurfhotels.com/webcam",
     "locationUrl": "https://maps.app.goo.gl/JoRCGYfiBZfrEMYW6",
     "spotInfo": {
@@ -2238,7 +2161,6 @@
     "country": "Egypt",
     "windguruUrl": "https://www.windguru.cz/1250511",
     "windfinderUrl": "https://www.windfinder.com/forecast/el_gouna",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/4Unszany64K3Tdc27",
     "spotInfo": {
@@ -2267,7 +2189,6 @@
     "country": "Egypt",
     "windguruUrl": "https://www.windguru.cz/153754",
     "windfinderUrl": "https://www.windfinder.com/forecast/soma_bay_surf_motion",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/1eJvFQ8rwT3tzHf57",
     "spotInfo": {
@@ -2296,7 +2217,6 @@
     "country": "Egypt",
     "windguruUrl": "https://www.windguru.cz/12",
     "windfinderUrl": "https://www.windfinder.com/forecast/dahab",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/81DK3nsdqTffMvNi9",
     "spotInfo": {
@@ -2325,7 +2245,6 @@
     "country": "Egypt",
     "windguruUrl": "https://www.windguru.cz/172696",
     "windfinderUrl": "https://www.windfinder.com/forecast/wadi_lahami_hamata",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/xctZhiFSgR41U65B9",
     "spotInfo": {
@@ -2354,7 +2273,6 @@
     "country": "Mauritius",
     "windguruUrl": "https://www.windguru.cz/1122030",
     "windfinderUrl": "https://www.windfinder.com/forecast/le_morne_mauritius",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/upvtoNx2E1nG6Wqo7",
     "spotInfo": {
@@ -2383,7 +2301,6 @@
     "country": "Cape Verde",
     "windguruUrl": "https://www.windguru.cz/896357",
     "windfinderUrl": "https://www.windfinder.com/forecast/kitebeach-sal_cabo-verde",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/L7ccH6UjYtDt7XUg7",
     "spotInfo": {
@@ -2412,7 +2329,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/206863",
     "windfinderUrl": "https://www.windfinder.com/forecast/lagoa_de_taiba",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/eC2cXeCoj9tUoxyU6",
     "spotInfo": {
@@ -2441,7 +2357,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/206872",
     "windfinderUrl": "https://www.windfinder.com/forecast/lagoa_tatajuba",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/SKpoTeUUryVMhpdk6",
     "spotInfo": {
@@ -2470,7 +2385,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/122082",
     "windfinderUrl": "https://www.windfinder.com/forecast/ilha_guajiru_itarema",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/du6voXX7KQrLfNyJ8",
     "spotInfo": {
@@ -2499,7 +2413,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/209223",
     "windfinderUrl": "https://www.windfinder.com/forecast/paracuru",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/GZu5FnrFWBdgKXAo6",
     "spotInfo": {
@@ -2528,7 +2441,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/206854",
     "windfinderUrl": "",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/uMzNS5Y2Cb2Aycvm9",
     "spotInfo": {
@@ -2557,7 +2469,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/743",
     "windfinderUrl": "https://www.windfinder.com/forecast/praia_de_jericoacoara",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/rFTr3xrEK7aYg9W97",
     "spotInfo": {
@@ -2586,7 +2497,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/206855",
     "windfinderUrl": "https://www.windfinder.com/forecast/guajiru",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/nxTm4pUaQdpeeNtx8",
     "spotInfo": {
@@ -2615,7 +2525,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/68535",
     "windfinderUrl": "https://www.windfinder.com/forecast/cumbuco",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/77YUjctGZ1rRxAnT6",
     "spotInfo": {
@@ -2644,7 +2553,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/209220",
     "windfinderUrl": "https://www.windfinder.com/forecast/cauipe_lagoon",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/e8aoKXyQ2SUb1WKT7",
     "spotInfo": {
@@ -2673,7 +2581,6 @@
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/235167",
     "windfinderUrl": "https://www.windfinder.com/forecast/barra_grande",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/hp1prCiwzyUSRWrd6",
     "spotInfo": {
@@ -2702,7 +2609,6 @@
     "country": "Chile",
     "windguruUrl": "https://www.windguru.cz/209143",
     "windfinderUrl": "",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/tVFdWAeaifBxBRrG6",
     "spotInfo": {
@@ -2731,7 +2637,6 @@
     "country": "Peru",
     "windguruUrl": "https://www.windguru.cz/52627",
     "windfinderUrl": "https://www.windfinder.com/forecast/pacasmayo",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/KXv7EGZqiKdYmwqA7",
     "spotInfo": {
@@ -2760,7 +2665,6 @@
     "country": "Peru",
     "windguruUrl": "https://www.windguru.cz/52615",
     "windfinderUrl": "https://www.windfinder.com/forecast/paracas_bay",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/sfztzT4SJK9e1kDE8",
     "spotInfo": {
@@ -2789,7 +2693,6 @@
     "country": "USA",
     "windguruUrl": "https://www.windguru.cz/208850",
     "windfinderUrl": "https://www.windfinder.com/forecast/hood_river",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/nh42dBrVzRoYrxnU7",
     "spotInfo": {
@@ -2818,7 +2721,6 @@
     "country": "Mexico",
     "windguruUrl": "https://www.windguru.cz/206922",
     "windfinderUrl": "https://www.windfinder.com/forecast/baja_california_la_ventana",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/i71JFNSzrwXS7SE86",
     "spotInfo": {
@@ -2849,7 +2751,6 @@
     "country": "Mexico",
     "windguruUrl": "https://www.windguru.cz/85080",
     "windfinderUrl": "https://www.windfinder.com/forecast/tulum",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/gvLeqQG3YBYvg5fq8",
     "spotInfo": {
@@ -2880,7 +2781,6 @@
     "country": "Namibia",
     "windguruUrl": "https://www.windguru.cz/4262",
     "windfinderUrl": "https://www.windfinder.com/forecast/walvis_bay",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/sJmNZxJb6DbYxmNi6",
     "spotInfo": {
@@ -2911,7 +2811,6 @@
     "country": "Costa Rica",
     "windguruUrl": "https://www.windguru.cz/29853",
     "windfinderUrl": "https://www.windfinder.com/forecast/bahia_salinas_playa_copal",
-    "icmUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/NhLySQi5bA3XPmEVA",
     "spotInfo": {
@@ -2942,7 +2841,6 @@
     "country": "Czech Republic",
     "windguruUrl": "https://www.windguru.cz/184",
     "windfinderUrl": "https://www.windfinder.com/forecast/hlucin_moravskoslezsky_czech_republic",
-    "icmUrl": "",
     "webcamUrl": "https://webc.wakeparkhlucin.cz/web/1.jpg",
     "locationUrl": "https://maps.app.goo.gl/rmJ6pe6JtJH7n15D9",
     "spotInfo": {
