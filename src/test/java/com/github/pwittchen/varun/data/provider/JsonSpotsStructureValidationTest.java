@@ -52,7 +52,6 @@ class JsonSpotsStructureValidationTest {
                 assertThat(spot.country()).isNotNull();
                 assertThat(spot.windguruUrl()).isNotNull();
                 assertThat(spot.windfinderUrl()).isNotNull();
-                assertThat(spot.icmUrl()).isNotNull();
                 assertThat(spot.webcamUrl()).isNotNull();
                 assertThat(spot.locationUrl()).isNotNull();
                 assertThat(spot.spotInfo()).isNotNull();

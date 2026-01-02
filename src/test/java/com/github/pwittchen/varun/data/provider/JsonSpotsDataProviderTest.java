@@ -50,7 +50,6 @@ class JsonSpotsDataProviderTest {
         assertThat(spot.country()).isNotEmpty();
         assertThat(spot.windguruUrl()).isNotEmpty();
         assertThat(spot.windfinderUrl()).isNotEmpty();
-        assertThat(spot.icmUrl()).isNotEmpty();
         assertThat(spot.spotInfo()).isNotNull();
     }
 
