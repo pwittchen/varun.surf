@@ -9,6 +9,11 @@ kite spots database and weather forecast for kitesurfers on the web
 
 see it online at: https://varun.surf
 
+## tech stack overview
+
+- backend: Java, Spring Boot, Gradle
+- frontend (bundled with the backend app): Vanilla JS, HTML, CSS, Bun
+
 ## building
 
 ```
