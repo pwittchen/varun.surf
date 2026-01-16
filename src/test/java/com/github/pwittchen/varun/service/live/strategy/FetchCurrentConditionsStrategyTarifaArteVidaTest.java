@@ -12,7 +12,9 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -44,42 +46,24 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
         assertThat(strategy.canProcess(999999)).isFalse();
     }
 
+    /**
+     * Creates a mock JavaScript response matching the Spotfav format.
+     * The format uses HTML entities and wraps data in {"hours": [...]}
+     */
+    private String createMockJsResponse(double windSpeedMs, double gustMs, int windDirectionDeg, double tempC) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        // Build JSON with HTML entities like the real response
+        String jsonData = String.format(Locale.US,
+                "{&quot;hours&quot;:[{&quot;time&quot;:&quot;%s&quot;,&quot;windSpeed&quot;:{&quot;sg&quot;:%.2f},&quot;gust&quot;:{&quot;sg&quot;:%.2f},&quot;windDirection&quot;:{&quot;sg&quot;:%d},&quot;airTemperature&quot;:{&quot;sg&quot;:%.1f}}]}",
+                currentTime, windSpeedMs, gustMs, windDirectionDeg, tempC
+        );
+        return "const hourly_weather_forecast = JSON.parse((\"" + jsonData + "\").replaceAll('&amp;', '&'));";
+    }
+
     @Test
-    void shouldParseValidSpotfavResponse() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div class='wind-direction'>
-                <div class='wind-direction-icon'>
-                <i class='fa fa-long-arrow-alt-down' id='wind-direction'></i>
-                </div>
-                <div id='report_wind_direction_deg'>
-                e
-                </div>
-                <div id='report_wind_direction'>
-                85 º
-                </div>
-                </div>
-                <div class='wind-speed'>
-                13 knots
-                </div>
-                <div class='wind-speed-gust-helper-text'>
-                speed
-                </div>
-                <div class='wind-gust'>
-                25 knots
-                </div>
-                <div class='wind-speed-gust-helper-text'>
-                gusts
-                </div>
-                <div class='temperature'>
-                15 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+    void shouldParseValidSpotfavJsonResponse() {
+        // 6.69 m/s = ~13 knots, 12.86 m/s = ~25 knots
+        String mockResponse = createMockJsResponse(6.69, 12.86, 85, 15.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -104,26 +88,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldParseNorthWindDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                5 º
-                </div>
-                <div class='wind-speed'>
-                18 knots
-                </div>
-                <div class='wind-gust'>
-                28 knots
-                </div>
-                <div class='temperature'>
-                20 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 9.26 m/s = ~18 knots, 14.40 m/s = ~28 knots
+        String mockResponse = createMockJsResponse(9.26, 14.40, 5, 20.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -143,26 +109,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldParseSouthWestWindDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                225 º
-                </div>
-                <div class='wind-speed'>
-                22 knots
-                </div>
-                <div class='wind-gust'>
-                30 knots
-                </div>
-                <div class='temperature'>
-                18 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 11.32 m/s = ~22 knots, 15.43 m/s = ~30 knots
+        String mockResponse = createMockJsResponse(11.32, 15.43, 225, 18.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -180,26 +128,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandleStrongLevante() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                90 º
-                </div>
-                <div class='wind-speed'>
-                35 knots
-                </div>
-                <div class='wind-gust'>
-                45 knots
-                </div>
-                <div class='temperature'>
-                25 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 18.01 m/s = ~35 knots, 23.15 m/s = ~45 knots
+        String mockResponse = createMockJsResponse(18.01, 23.15, 90, 25.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -220,26 +150,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandlePonienteWind() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                270 º
-                </div>
-                <div class='wind-speed'>
-                20 knots
-                </div>
-                <div class='wind-gust'>
-                28 knots
-                </div>
-                <div class='temperature'>
-                22 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 10.29 m/s = ~20 knots, 14.40 m/s = ~28 knots
+        String mockResponse = createMockJsResponse(10.29, 14.40, 270, 22.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -285,56 +197,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
     }
 
     @Test
-    void shouldHandleMissingWindSpeed() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                85 º
-                </div>
-                <div class='wind-gust'>
-                25 knots
-                </div>
-                <div class='temperature'>
-                15 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
-
-        mockWebServer.enqueue(new MockResponse()
-                .setBody(mockResponse)
-                .setResponseCode(200));
-
-        String url = mockWebServer.url("/update/").toString();
-        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
-
-        StepVerifier.create(result)
-                .expectError(RuntimeException.class)
-                .verify();
-    }
-
-    @Test
-    void shouldHandleMissingWindDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div class='wind-speed'>
-                13 knots
-                </div>
-                <div class='wind-gust'>
-                25 knots
-                </div>
-                <div class='temperature'>
-                15 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+    void shouldHandleMissingForecastData() {
+        String mockResponse = "const some_other_variable = 'value';";
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -350,26 +214,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandleLightWind() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                180 º
-                </div>
-                <div class='wind-speed'>
-                5 knots
-                </div>
-                <div class='wind-gust'>
-                8 knots
-                </div>
-                <div class='temperature'>
-                28 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 2.57 m/s = ~5 knots, 4.12 m/s = ~8 knots
+        String mockResponse = createMockJsResponse(2.57, 4.12, 180, 28.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -395,26 +241,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandleNorthEastDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                45 º
-                </div>
-                <div class='wind-speed'>
-                15 knots
-                </div>
-                <div class='wind-gust'>
-                22 knots
-                </div>
-                <div class='temperature'>
-                19 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 7.72 m/s = ~15 knots, 11.32 m/s = ~22 knots
+        String mockResponse = createMockJsResponse(7.72, 11.32, 45, 19.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -432,26 +260,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandleNorthWestDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                315 º
-                </div>
-                <div class='wind-speed'>
-                12 knots
-                </div>
-                <div class='wind-gust'>
-                18 knots
-                </div>
-                <div class='temperature'>
-                17 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 6.17 m/s = ~12 knots, 9.26 m/s = ~18 knots
+        String mockResponse = createMockJsResponse(6.17, 9.26, 315, 17.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -469,26 +279,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
 
     @Test
     void shouldHandleSouthEastDirection() {
-        String mockResponse = """
-                <html>
-                <body>
-                <div id='current-wind-data'>
-                <div id='report_wind_direction'>
-                135 º
-                </div>
-                <div class='wind-speed'>
-                16 knots
-                </div>
-                <div class='wind-gust'>
-                24 knots
-                </div>
-                <div class='temperature'>
-                21 º C
-                </div>
-                </div>
-                </body>
-                </html>
-                """;
+        // 8.23 m/s = ~16 knots, 12.35 m/s = ~24 knots
+        String mockResponse = createMockJsResponse(8.23, 12.35, 135, 21.0);
 
         mockWebServer.enqueue(new MockResponse()
                 .setBody(mockResponse)
@@ -500,6 +292,64 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
         StepVerifier.create(result)
                 .assertNext(conditions -> {
                     assertThat(conditions.direction()).isEqualTo("SE");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConvertMetersPerSecondToKnots() {
+        // 10 m/s = 19.44 knots (rounds to 19)
+        // 15 m/s = 29.16 knots (rounds to 29)
+        String mockResponse = createMockJsResponse(10.0, 15.0, 90, 20.0);
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/update/").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    assertThat(conditions.wind()).isEqualTo(19);
+                    assertThat(conditions.gusts()).isEqualTo(29);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSelectClosestTimeEntry() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime pastTime = now.minusHours(2);
+        LocalDateTime futureTime = now.plusHours(2);
+        LocalDateTime closestTime = now.minusMinutes(30);
+
+        String jsonData = String.format(Locale.US,
+                "{&quot;hours&quot;:[" +
+                        "{&quot;time&quot;:&quot;%s&quot;,&quot;windSpeed&quot;:{&quot;sg&quot;:5.0},&quot;gust&quot;:{&quot;sg&quot;:8.0},&quot;windDirection&quot;:{&quot;sg&quot;:90},&quot;airTemperature&quot;:{&quot;sg&quot;:15.0}}," +
+                        "{&quot;time&quot;:&quot;%s&quot;,&quot;windSpeed&quot;:{&quot;sg&quot;:10.0},&quot;gust&quot;:{&quot;sg&quot;:15.0},&quot;windDirection&quot;:{&quot;sg&quot;:180},&quot;airTemperature&quot;:{&quot;sg&quot;:20.0}}," +
+                        "{&quot;time&quot;:&quot;%s&quot;,&quot;windSpeed&quot;:{&quot;sg&quot;:15.0},&quot;gust&quot;:{&quot;sg&quot;:22.0},&quot;windDirection&quot;:{&quot;sg&quot;:270},&quot;airTemperature&quot;:{&quot;sg&quot;:25.0}}" +
+                        "]}",
+                pastTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                closestTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                futureTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        );
+        String mockResponse = "const hourly_weather_forecast = JSON.parse((\"" + jsonData + "\").replaceAll('&amp;', '&'));";
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/update/").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    // Should pick the closest entry (10 m/s = 19 knots, 15 m/s = 29 knots, S direction)
+                    assertThat(conditions.wind()).isEqualTo(19);
+                    assertThat(conditions.gusts()).isEqualTo(29);
+                    assertThat(conditions.direction()).isEqualTo("S");
+                    assertThat(conditions.temp()).isEqualTo(20);
                 })
                 .verifyComplete();
     }

@@ -3,6 +3,10 @@ package com.github.pwittchen.varun.service.live.strategy;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditionsStrategyBase;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,6 +22,10 @@ import java.util.regex.Pattern;
 /**
  * Strategy for fetching current conditions from Spotfav Weatherflow stations.
  * Used for Tarifa, Arte Vida spot which has a Weatherflow Tempest station.
+ *
+ * The Spotfav page returns JavaScript with embedded JSON data containing hourly forecasts.
+ * The JSON is HTML-encoded (using &quot; for quotes, etc.) and wrapped in {"hours": [...]}.
+ * We extract the most recent data point from the hours array.
  */
 @Component
 public class FetchCurrentConditionsStrategyTarifaArteVida extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
@@ -25,16 +33,21 @@ public class FetchCurrentConditionsStrategyTarifaArteVida extends FetchCurrentCo
     private static final int TARIFA_ARTE_VIDA_WG_ID = 48775;
     private static final String SPOTFAV_URL = "https://www.spotfav.com/public/meteo/weatherflow-4eee927b185476763900001b/update/";
 
-    // Regex patterns to extract data from HTML
-    private static final Pattern WIND_DIRECTION_DEG_PATTERN = Pattern.compile("<div id='report_wind_direction'>\\s*(\\d+)\\s*º\\s*</div>");
-    private static final Pattern WIND_SPEED_PATTERN = Pattern.compile("<div class='wind-speed'>\\s*(\\d+)\\s*knots\\s*</div>");
-    private static final Pattern WIND_GUST_PATTERN = Pattern.compile("<div class='wind-gust'>\\s*(\\d+)\\s*knots\\s*</div>");
-    private static final Pattern TEMPERATURE_PATTERN = Pattern.compile("<div class='temperature'>\\s*(\\d+)\\s*º\\s*C\\s*</div>");
+    // Regex pattern to extract hourly_weather_forecast JSON from JavaScript
+    // Format: const hourly_weather_forecast = JSON.parse(("...").replaceAll(...))
+    private static final Pattern FORECAST_JSON_PATTERN = Pattern.compile(
+            "const\\s+hourly_weather_forecast\\s*=\\s*JSON\\.parse\\(\\(\"(.+?)\"\\)"
+    );
+
+    // Conversion factor from m/s to knots
+    private static final double MS_TO_KNOTS = 1.94384;
 
     private final OkHttpClient httpClient;
+    private final Gson gson;
 
     public FetchCurrentConditionsStrategyTarifaArteVida(OkHttpClient httpClient) {
         this.httpClient = httpClient;
+        this.gson = new Gson();
     }
 
     @Override
@@ -66,45 +79,108 @@ public class FetchCurrentConditionsStrategyTarifaArteVida extends FetchCurrentCo
                 }
 
                 String body = responseBody.string();
-                return parseHtmlResponse(body);
+                return parseJavaScriptResponse(body);
             }
         });
     }
 
-    private CurrentConditions parseHtmlResponse(String html) {
-        // Parse wind direction in degrees
-        Matcher directionMatcher = WIND_DIRECTION_DEG_PATTERN.matcher(html);
-        if (!directionMatcher.find()) {
-            throw new RuntimeException("Wind direction not found in HTML response");
+    private CurrentConditions parseJavaScriptResponse(String content) {
+        // Extract the JSON from the JavaScript variable assignment
+        Matcher matcher = FORECAST_JSON_PATTERN.matcher(content);
+        if (!matcher.find()) {
+            throw new RuntimeException("Could not find hourly_weather_forecast in response");
         }
-        int directionDeg = Integer.parseInt(directionMatcher.group(1));
-        String direction = windDirectionDegreesToCardinal(directionDeg);
 
-        // Parse wind speed
-        Matcher windSpeedMatcher = WIND_SPEED_PATTERN.matcher(html);
-        if (!windSpeedMatcher.find()) {
-            throw new RuntimeException("Wind speed not found in HTML response");
+        String jsonString = matcher.group(1);
+
+        // Decode HTML entities (the JSON uses &quot; for quotes, &amp; for &, etc.)
+        jsonString = decodeHtmlEntities(jsonString);
+
+        // Parse the JSON - it's wrapped in {"hours": [...]}
+        JsonObject rootObject = gson.fromJson(jsonString, JsonObject.class);
+        if (rootObject == null) {
+            throw new RuntimeException("Failed to parse forecast JSON");
         }
-        int windSpeed = Integer.parseInt(windSpeedMatcher.group(1));
 
-        // Parse wind gusts
-        Matcher gustMatcher = WIND_GUST_PATTERN.matcher(html);
-        if (!gustMatcher.find()) {
-            throw new RuntimeException("Wind gusts not found in HTML response");
+        JsonArray forecastArray = rootObject.getAsJsonArray("hours");
+        if (forecastArray == null || forecastArray.isEmpty()) {
+            throw new RuntimeException("Empty forecast data - no hours array found");
         }
-        int windGusts = Integer.parseInt(gustMatcher.group(1));
 
-        // Parse temperature
-        Matcher tempMatcher = TEMPERATURE_PATTERN.matcher(html);
-        if (!tempMatcher.find()) {
-            throw new RuntimeException("Temperature not found in HTML response");
-        }
-        int temp = Integer.parseInt(tempMatcher.group(1));
+        // Find the entry closest to current time
+        JsonObject currentData = findCurrentEntry(forecastArray);
 
-        // Create timestamp with current time
+        // Extract wind data - values are nested under "sg" key
+        double windSpeedMs = getNestedDouble(currentData, "windSpeed", "sg");
+        double gustMs = getNestedDouble(currentData, "gust", "sg");
+        int windDirectionDeg = (int) getNestedDouble(currentData, "windDirection", "sg");
+        int temperature = (int) Math.round(getNestedDouble(currentData, "airTemperature", "sg"));
+
+        // Convert m/s to knots
+        int windSpeedKnots = (int) Math.round(windSpeedMs * MS_TO_KNOTS);
+        int gustKnots = (int) Math.round(gustMs * MS_TO_KNOTS);
+
+        String direction = windDirectionDegreesToCardinal(windDirectionDeg);
         String timestamp = formatTimestamp();
 
-        return new CurrentConditions(timestamp, windSpeed, windGusts, direction, temp);
+        return new CurrentConditions(timestamp, windSpeedKnots, gustKnots, direction, temperature);
+    }
+
+    private String decodeHtmlEntities(String input) {
+        return input
+                .replace("&quot;", "\"")
+                .replace("&amp;", "&")
+                .replace("&lt;", "<")
+                .replace("&gt;", ">")
+                .replace("&#039;", "'")
+                .replace("&apos;", "'");
+    }
+
+    private JsonObject findCurrentEntry(JsonArray forecastArray) {
+        LocalDateTime now = LocalDateTime.now();
+        JsonObject bestMatch = null;
+        long smallestDiff = Long.MAX_VALUE;
+
+        for (JsonElement element : forecastArray) {
+            JsonObject entry = element.getAsJsonObject();
+            JsonElement timeElement = entry.get("time");
+            if (timeElement == null) {
+                continue;
+            }
+            String timeStr = timeElement.getAsString();
+
+            try {
+                LocalDateTime entryTime = LocalDateTime.parse(timeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                long diff = Math.abs(java.time.Duration.between(now, entryTime).toMinutes());
+
+                if (diff < smallestDiff) {
+                    smallestDiff = diff;
+                    bestMatch = entry;
+                }
+            } catch (Exception e) {
+                // Skip entries with invalid time format
+            }
+        }
+
+        if (bestMatch == null) {
+            // Fallback to first entry
+            return forecastArray.get(0).getAsJsonObject();
+        }
+
+        return bestMatch;
+    }
+
+    private double getNestedDouble(JsonObject obj, String field, String nestedKey) {
+        JsonElement fieldElement = obj.get(field);
+        if (fieldElement == null || !fieldElement.isJsonObject()) {
+            throw new RuntimeException(field + " not found in forecast data");
+        }
+        JsonObject nested = fieldElement.getAsJsonObject();
+        JsonElement value = nested.get(nestedKey);
+        if (value == null) {
+            throw new RuntimeException(nestedKey + " not found in " + field);
+        }
+        return value.getAsDouble();
     }
 
     private String formatTimestamp() {
