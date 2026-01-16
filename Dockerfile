@@ -2,12 +2,14 @@
 FROM gradle:8.14.3-jdk24-alpine AS build
 ARG VERSION=0.0.1-SNAPSHOT
 WORKDIR /app
-RUN apk add --no-cache nodejs npm
+RUN apk add --no-cache curl bash unzip && \
+    curl -fsSL https://bun.sh/install | bash && \
+    ln -s /root/.bun/bin/bun /usr/local/bin/bun
 COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 RUN gradle dependencies --no-daemon || true
 COPY src ./src
-COPY package.json package-lock.json vite.config.js ./
+COPY package.json bun.lock build.ts ./
 RUN gradle clean bootJar -Pversion=${VERSION} --no-daemon
 
 # Runtime stage
