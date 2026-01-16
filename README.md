@@ -92,7 +92,7 @@ It's done automatically via GitHub actions `ci.yml` and `coverage.yml`
 We can trigger CI manually via GitHub Actions web UI or via CLI:
 
 ```
-gh workflow run CD
+gh workflow run CI
 ```
 
 ## continuous delivery
