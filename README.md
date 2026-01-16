@@ -89,10 +89,24 @@ docker run -p 8080:8080 ghcr.io/pwittchen/varun.surf:latest
 After each push to the master or PR, a new build is triggered with tests and test coverage report.
 It's done automatically via GitHub actions `ci.yml` and `coverage.yml`
 
+We can trigger CI manually via GitHub Actions web UI or via CLI:
+
+```
+gh workflow run CD
+```
+
 ## continuous delivery
 
 After each tag push with `v` prefix, `cd.yml` GitHub action is triggered,
 and this action deploys the latest version of the app to the VPS.
+
+## manual deployment
+
+We can trigger deployment manually via GithHub Actions web UI or via CLI:
+
+```
+gh workflow run CD
+```
 
 ## zero-downtime deployment
 
