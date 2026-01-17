@@ -29,7 +29,8 @@ public class FetchCurrentConditionsStrategyElMedano extends FetchCurrentConditio
     // Regex patterns to extract data from HTML table
     private static final Pattern TIME_PATTERN = Pattern.compile("<td>(\\d{2}:\\d{2})</td>");
     private static final Pattern WIND_PATTERN = Pattern.compile("<td class=\"[^\"]*knt(\\d+)\"[^>]*>");
-    private static final Pattern DIRECTION_PATTERN = Pattern.compile("<strong><span title=\"\\d+\">([A-Z]+)</span></strong>");
+    // Direction pattern now allows negative numbers in title and captures optional direction letters
+    private static final Pattern DIRECTION_PATTERN = Pattern.compile("<strong><span title=\"-?\\d+\">([A-Z]*)</span></strong>");
     private static final Pattern TEMP_PATTERN = Pattern.compile("<td class=\"mobile-hidden\">([\\d.]+) &deg;C</td>");
 
     private final OkHttpClient httpClient;
@@ -124,7 +125,7 @@ public class FetchCurrentConditionsStrategyElMedano extends FetchCurrentConditio
     }
 
     private String findFirstDataRow(String[] lines) {
-        // The first data row is the second <tr> in the table (first is header)
+        // Find the first data row (after header) that has valid wind direction data
         int trCount = 0;
         StringBuilder rowBuilder = new StringBuilder();
         boolean inRow = false;
@@ -135,8 +136,9 @@ public class FetchCurrentConditionsStrategyElMedano extends FetchCurrentConditio
             // Count <tr> tags (both with and without closing tags on same line)
             if (trimmedLine.startsWith("<tr")) {
                 trCount++;
-                if (trCount == 2) {
+                if (trCount >= 2) {
                     inRow = true;
+                    rowBuilder = new StringBuilder();
                 }
             }
 
@@ -145,7 +147,14 @@ public class FetchCurrentConditionsStrategyElMedano extends FetchCurrentConditio
             }
 
             if (inRow && trimmedLine.endsWith("</tr>")) {
-                return rowBuilder.toString();
+                String row = rowBuilder.toString();
+                // Check if this row has valid direction data (non-empty direction letters)
+                Matcher dirMatcher = DIRECTION_PATTERN.matcher(row);
+                if (dirMatcher.find() && !dirMatcher.group(1).isEmpty()) {
+                    return row;
+                }
+                // Reset for next row
+                inRow = false;
             }
         }
 

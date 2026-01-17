@@ -499,4 +499,87 @@ class FetchCurrentConditionsStrategyElMedanoTest {
                 })
                 .verifyComplete();
     }
+
+    @Test
+    void shouldSkipRowsWithEmptyDirection() {
+        // Real scenario: first rows may have empty direction (e.g., title="-40" with empty span)
+        // The strategy should skip these and find the first row with valid direction
+        String mockResponse = """
+                <html>
+                <body>
+                <table>
+                <tr><th>Header</th></tr>
+                <tr >
+                    <td>17:30</td>
+                    <td class="bft0 knt0">
+                        <strong>0 kts</strong>
+                    </td>
+                    <td class="bft0 knt0" style="width: 0px;"></td>
+                    <td>
+                        <strong>0 kts</strong>
+                    </td>
+                    <td>
+                        <div style="position: relative; text-align: center;">
+                            <strong><span title="-40"></span></strong>
+                        </div>
+                    </td>
+                    <td class="mobile-hidden">54.6 &deg;C</td>
+                </tr>
+                <tr >
+                    <td>17:25</td>
+                    <td class="bft0 knt0">
+                        <strong>0 kts</strong>
+                    </td>
+                    <td class="bft0 knt0" style="width: 0px;"></td>
+                    <td>
+                        <strong>0 kts</strong>
+                    </td>
+                    <td>
+                        <div style="position: relative; text-align: center;">
+                            <strong><span title="-40"></span></strong>
+                        </div>
+                    </td>
+                    <td class="mobile-hidden">54.6 &deg;C</td>
+                </tr>
+                <tr >
+                    <td>17:20</td>
+                    <td class="bft3 knt8">
+                        <strong>8 kts</strong>
+                    </td>
+                    <td class="bft4 knt12" style="width: 0px;"></td>
+                    <td>
+                        <strong>12 kts</strong>
+                    </td>
+                    <td>
+                        <div style="position: relative; text-align: center;">
+                            <strong><span title="96">E</span></strong>
+                        </div>
+                    </td>
+                    <td class="mobile-hidden">22.6 &deg;C</td>
+                </tr>
+                </table>
+                </body>
+                </html>
+                """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(mockResponse)
+                .setResponseCode(200));
+
+        String url = mockWebServer.url("/wetterstation/").toString();
+        Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
+
+        String expectedDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + " 17:20:00";
+
+        StepVerifier.create(result)
+                .assertNext(conditions -> {
+                    // Should skip the first two rows with empty direction and use the third row
+                    assertThat(conditions.date()).isEqualTo(expectedDate);
+                    assertThat(conditions.direction()).isEqualTo("E");
+                    assertThat(conditions.wind()).isEqualTo(8);
+                    assertThat(conditions.gusts()).isEqualTo(12);
+                    assertThat(conditions.temp()).isEqualTo(23);
+                })
+                .verifyComplete();
+    }
 }
