@@ -52,22 +52,28 @@ class MainPageE2eTest extends BaseE2eTest {
         waitForSpotsToLoad();
 
         Locator spotsGrid = page.locator("#spotsGrid");
-        Locator columnToggle = page.locator("#columnToggle");
+        Locator listViewBtn = page.locator("#listViewBtn");
+        Locator gridViewBtn = page.locator("#gridViewBtn");
 
         String initialClass = spotsGrid.getAttribute("class");
         assertThat(initialClass).isNotNull();
+        assertThat(initialClass).contains("spots-grid");
 
-        columnToggle.click();
+        // Switch to list view
+        listViewBtn.click();
         page.waitForTimeout(500);
 
-        String classAfterFirstClick = spotsGrid.getAttribute("class");
-        assertThat(classAfterFirstClick).isNotNull();
+        String classAfterListClick = spotsGrid.getAttribute("class");
+        assertThat(classAfterListClick).isNotNull();
+        assertThat(classAfterListClick).contains("spots-list");
 
-        columnToggle.click();
+        // Switch back to grid view
+        gridViewBtn.click();
         page.waitForTimeout(500);
 
-        String classAfterSecondClick = spotsGrid.getAttribute("class");
-        assertThat(classAfterSecondClick).isNotNull();
+        String classAfterGridClick = spotsGrid.getAttribute("class");
+        assertThat(classAfterGridClick).isNotNull();
+        assertThat(classAfterGridClick).contains("spots-grid");
     }
 
     @Test
