@@ -3833,7 +3833,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         min-width: 0 !important;
     }
 
-    .column-toggle {
+    .view-toggle {
         display: none !important;
     }
 

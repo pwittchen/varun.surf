@@ -376,9 +376,14 @@ function initLanguage() {
             kiteSizeToggle.title = translations.t('kiteSizeToggleTooltip');
         }
 
-        const columnToggle = document.getElementById('columnToggle');
-        if (columnToggle) {
-            columnToggle.title = translations.t('columnToggleTooltip');
+        const listViewBtn = document.getElementById('listViewBtn');
+        if (listViewBtn) {
+            listViewBtn.title = translations.t('listViewTooltip');
+        }
+
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        if (gridViewBtn) {
+            gridViewBtn.title = translations.t('gridViewTooltip');
         }
 
         if (languageToggle) {
@@ -2078,14 +2083,13 @@ function isDrawerView() {
 }
 
 function setupColumnToggle() {
-    const columnToggle = document.getElementById('columnToggle');
-    if (!columnToggle) {
+    const listViewBtn = document.getElementById('listViewBtn');
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    if (!listViewBtn || !gridViewBtn) {
         return;
     }
 
     const spotsGrid = document.getElementById('spotsGrid');
-    const iconGrid = document.getElementById('iconGrid');
-    const iconList = document.getElementById('iconList');
 
     // Load saved desktop preference or default to grid
     desktopViewMode = state.getDesktopViewMode();
@@ -2101,25 +2105,24 @@ function setupColumnToggle() {
         if (currentViewMode === 'list') {
             spotsGrid.classList.remove('spots-grid', 'three-columns');
             spotsGrid.classList.add('spots-list');
-            iconGrid.style.display = 'none';
-            iconList.style.display = 'block';
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
         } else {
             spotsGrid.classList.remove('spots-list');
             spotsGrid.classList.add('spots-grid', 'three-columns');
-            iconGrid.style.display = 'block';
-            iconList.style.display = 'none';
+            listViewBtn.classList.remove('active');
+            gridViewBtn.classList.add('active');
         }
     }
 
     updateView();
 
-    columnToggle.addEventListener('click', () => {
+    function switchToView(mode) {
         if (isMapView) {
             hideMapView({ skipRender: true });
         }
 
-        // Toggle view mode
-        currentViewMode = currentViewMode === 'grid' ? 'list' : 'grid';
+        currentViewMode = mode;
 
         // Only save to desktop preference if not in drawer/mobile view
         if (!isDrawerView()) {
@@ -2131,7 +2134,10 @@ function setupColumnToggle() {
 
         // Re-render with current filter and search
         renderSpots(currentFilter, currentSearchQuery, true);
-    });
+    }
+
+    listViewBtn.addEventListener('click', () => switchToView('list'));
+    gridViewBtn.addEventListener('click', () => switchToView('grid'));
 
     // Handle viewport resize
     let resizeTimer;

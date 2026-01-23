@@ -21,7 +21,8 @@ export const translations = {
         infoButtonLabel: "Info",
         mapButtonLabel: "Map",
         kiteSizeToggleTooltip: "Kite/Board Size Calculator",
-        columnToggleTooltip: "Toggle grid/list view",
+        listViewTooltip: "List view",
+        gridViewTooltip: "Grid view",
         languageToggleTooltip: "Change language",
 
         // Weather table headers
@@ -269,7 +270,8 @@ export const translations = {
         infoButtonLabel: "Informacje",
         mapButtonLabel: "Mapa",
         kiteSizeToggleTooltip: "Kalkulator rozmiaru latawca i deski",
-        columnToggleTooltip: "Przełącz widok siatki/listy",
+        listViewTooltip: "Widok listy",
+        gridViewTooltip: "Widok siatki",
         languageToggleTooltip: "Zmień język",
 
         // Weather table headers
