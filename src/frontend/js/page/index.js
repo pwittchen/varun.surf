@@ -2132,8 +2132,12 @@ function setupColumnToggle() {
 
         updateView();
 
-        // Re-render with current filter and search
-        renderSpots(currentFilter, currentSearchQuery, true);
+        // Re-render preserving favorites filter if active
+        if (showingFavorites) {
+            renderFavorites();
+        } else {
+            renderSpots(currentFilter, currentSearchQuery, true);
+        }
     }
 
     listViewBtn.addEventListener('click', () => switchToView('list'));
@@ -2454,6 +2458,8 @@ function showMapView() {
     const spotsGrid = document.getElementById('spotsGrid');
     const mapContainer = document.getElementById('mapContainer');
     const mapToggle = document.getElementById('mapToggle');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const gridViewBtn = document.getElementById('gridViewBtn');
 
     // Hide spots grid
     spotsGrid.style.display = 'none';
@@ -2461,8 +2467,10 @@ function showMapView() {
     // Show map container
     mapContainer.style.display = 'block';
 
-    // Mark button as active
+    // Mark map button as active and deselect view buttons
     mapToggle.classList.add('active');
+    if (listViewBtn) listViewBtn.classList.remove('active');
+    if (gridViewBtn) gridViewBtn.classList.remove('active');
 
 
     // Initialize map if not already done
@@ -2496,6 +2504,8 @@ function hideMapView(options = {}) {
     const spotsGrid = document.getElementById('spotsGrid');
     const mapContainer = document.getElementById('mapContainer');
     const mapToggle = document.getElementById('mapToggle');
+    const listViewBtn = document.getElementById('listViewBtn');
+    const gridViewBtn = document.getElementById('gridViewBtn');
 
     // Show spots grid
     spotsGrid.style.display = '';
@@ -2503,8 +2513,15 @@ function hideMapView(options = {}) {
     // Hide map container
     mapContainer.style.display = 'none';
 
-    // Remove active state from button
+    // Remove active state from map button and restore view button state
     mapToggle.classList.remove('active');
+    if (currentViewMode === 'list') {
+        if (listViewBtn) listViewBtn.classList.add('active');
+        if (gridViewBtn) gridViewBtn.classList.remove('active');
+    } else {
+        if (listViewBtn) listViewBtn.classList.remove('active');
+        if (gridViewBtn) gridViewBtn.classList.add('active');
+    }
 
 
     // Restore previous URL
