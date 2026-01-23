@@ -306,8 +306,8 @@ Evaluate:
 ## Architecture Documentation Reference
 
 For detailed architecture documentation, see:
-- **ARCH.md**: Backend architecture with diagrams
-- **FRONTEND.md**: Frontend architecture
+- **docs/BACKEND.md**: Backend architecture with diagrams
+- **docs/FRONTEND.md**: Frontend architecture
 - **CLAUDE.md**: Full system context
 
 ## Analysis Workflow

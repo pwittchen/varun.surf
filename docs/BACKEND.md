@@ -1,4 +1,4 @@
-# Project Architecture
+# Backend Architecture
 
 ### High-level System Overview (ASCII)
 ```

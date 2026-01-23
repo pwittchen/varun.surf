@@ -372,14 +372,14 @@ When adding a new kite spot manually, follow this process:
 For comprehensive project documentation, refer to these additional files:
 
 - **README.md**: User-facing project description, feature list, build instructions, deployment guide, and CI/CD setup
-- **ARCH.md**: Detailed backend architecture with ASCII diagrams, system flow visualization, data model specifications, caching strategy, concurrency patterns, and API endpoint reference
-- **FRONTEND.md**: Complete frontend architecture documentation including component structure, routing strategy, state management, styling patterns, i18n implementation, performance optimizations, and build process
+- **docs/BACKEND.md**: Detailed backend architecture with ASCII diagrams, system flow visualization, data model specifications, caching strategy, concurrency patterns, and API endpoint reference
+- **docs/FRONTEND.md**: Complete frontend architecture documentation including component structure, routing strategy, state management, styling patterns, i18n implementation, performance optimizations, and build process
 - **AGENTS.md**: AI coding assistant context with detailed technical specifications, development guidelines, and implementation notes (alternative to this file for different AI tools)
 
 **When to reference each document:**
 - **README.md** - For project overview, getting started, building, running, and deploying
-- **ARCH.md** - For understanding backend system architecture, data flow, service interactions, and concurrency model
-- **FRONTEND.md** - For frontend development, UI components, JavaScript architecture, styling, and client-side features
+- **docs/BACKEND.md** - For understanding backend system architecture, data flow, service interactions, and concurrency model
+- **docs/FRONTEND.md** - For frontend development, UI components, JavaScript architecture, styling, and client-side features
 - **AGENTS.md** - For AI assistants needing structured context about the entire stack
 
 ## Contact & Contributing

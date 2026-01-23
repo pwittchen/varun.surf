@@ -771,20 +771,20 @@ When adding a new kite spot manually, follow this workflow:
 For comprehensive project documentation, refer to these additional files:
 
 - **README.md**: User-facing project description, feature list, build instructions, Docker commands, deployment guide, monitoring setup, and CI/CD workflows
-- **ARCH.md**: Detailed backend architecture with ASCII diagrams, request/update flow, data model specifications, external integrations, multi-language support, caching strategy, concurrency patterns (Java 24 StructuredTaskScope), and complete API endpoint reference
-- **FRONTEND.md**: Complete frontend architecture documentation including tech stack, project structure, component architecture (spot cards, weather tables, modals, Windguru view), routing strategy, state management (localStorage/sessionStorage), styling patterns (CSS variables, grid/flexbox), i18n implementation, data flow diagrams, performance optimizations, error handling, browser compatibility, build process, and accessibility guidelines
+- **docs/BACKEND.md**: Detailed backend architecture with ASCII diagrams, request/update flow, data model specifications, external integrations, multi-language support, caching strategy, concurrency patterns (Java 24 StructuredTaskScope), and complete API endpoint reference
+- **docs/FRONTEND.md**: Complete frontend architecture documentation including tech stack, project structure, component architecture (spot cards, weather tables, modals, Windguru view), routing strategy, state management (localStorage/sessionStorage), styling patterns (CSS variables, grid/flexbox), i18n implementation, data flow diagrams, performance optimizations, error handling, browser compatibility, build process, and accessibility guidelines
 - **CLAUDE.md**: AI assistant context specifically optimized for Claude Code, with project overview, key components, important implementation notes, and agent-specific guidelines (alternative format to this file)
 
 **When to reference each document:**
 - **README.md** - Start here for project overview, getting started, building, running, deploying, and feature list
-- **ARCH.md** - For deep understanding of backend system architecture, data flow, service interactions, Java 24 concurrency model, caching strategy, and external API integrations
-- **FRONTEND.md** - For frontend development work including UI components, JavaScript architecture, styling, client-side routing, state management, and build process
+- **docs/BACKEND.md** - For deep understanding of backend system architecture, data flow, service interactions, Java 24 concurrency model, caching strategy, and external API integrations
+- **docs/FRONTEND.md** - For frontend development work including UI components, JavaScript architecture, styling, client-side routing, state management, and build process
 - **CLAUDE.md** - For Claude AI assistant context (condensed version of this file)
 
 **Recommended reading order for new AI agents:**
 1. Start with **AGENTS.md** (this file) or **CLAUDE.md** for high-level context
-2. Reference **ARCH.md** when working on backend services, data models, or API endpoints
-3. Reference **FRONTEND.md** when working on UI, JavaScript, CSS, or client-side features
+2. Reference **docs/BACKEND.md** when working on backend services, data models, or API endpoints
+3. Reference **docs/FRONTEND.md** when working on UI, JavaScript, CSS, or client-side features
 4. Reference **README.md** for build commands, deployment, or user-facing features
 
 ## Project Maintenance

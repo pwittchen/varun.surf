@@ -166,4 +166,4 @@ Common explanations users might request:
 - Always include file:line references for code navigation
 - Focus on the specific topic, don't over-explain tangential concerns
 - If the topic is ambiguous, ask clarifying questions
-- Reference CLAUDE.md, ARCH.md, and FRONTEND.md for architectural context
+- Reference CLAUDE.md, docs/BACKEND.md, and docs/FRONTEND.md for architectural context

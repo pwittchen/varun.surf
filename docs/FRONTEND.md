@@ -1012,7 +1012,7 @@ None required (vanilla JS, modern browsers only).
 ## Related Documentation
 
 - **CLAUDE.md**: Backend architecture, API endpoints, data models
-- **ARCH.md**: System architecture diagrams, high-level overview
+- **BACKEND.md**: System architecture diagrams, high-level overview (same directory)
 - **README.md**: User guide, build instructions, deployment
 - **prompts/new-kite-spot.md**: Adding new kite spots
 
