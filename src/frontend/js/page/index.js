@@ -2341,6 +2341,7 @@ window.onbeforeunload = function () {
 
 let leafletMap = null;
 let mapMarkers = [];
+let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite' or 'osm'
@@ -2435,8 +2436,8 @@ function addMarkersToMap(spots) {
         bounds.push([lat, lng]);
     });
 
-    // Fit map to show all markers
-    if (bounds.length > 0) {
+    // Fit map to show all markers (only on first view to avoid repeated zooming)
+    if (bounds.length > 0 && !mapBoundsInitialized) {
         const isMobile = window.innerWidth <= 768;
         if (isMobile) {
             // On mobile, fit bounds then zoom in by 1 level to fill vertical space better
@@ -2446,6 +2447,7 @@ function addMarkersToMap(spots) {
         } else {
             leafletMap.fitBounds(bounds, { padding: [50, 50] });
         }
+        mapBoundsInitialized = true;
     }
 }
 
