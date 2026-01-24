@@ -128,7 +128,7 @@ We can view system status, by visiting [/status](https://varun.surf/status) page
 
 We can enable application and JVM metrics in the `application.yml` file and then use `/actuator/prometheus` endpoint to view metrics.
 
-### log monitoring with Dozzle
+### log monitoring with dozzle
 
 [Dozzle](https://dozzle.dev) is a lightweight, web-based Docker log viewer included in the docker-compose setup. It provides real-time log streaming for all containers without storing any log data on disk.
 
@@ -147,13 +147,6 @@ The `deployment.sh` script will automatically generate the bcrypt hash and creat
 Dozzle is served behind nginx at the `/logs` path:
 - Local: http://localhost:20245/logs
 - Production: https://varun.surf/logs
-
-**Features:**
-- Real-time log streaming from all containers
-- Search and filter logs
-- Multi-container log merging
-- Dark/light theme
-- No log storage (privacy-focused)
 
 **Security note:** Always use a strong password in production.
 
