@@ -112,4 +112,27 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> metricsRouter() {
+        return RouterFunctions.route(
+                GET("/metrics"),
+                _ -> {
+                    Resource metricsHtml = new ClassPathResource("static/metrics.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(metricsHtml);
+                }
+        ).andRoute(
+                GET("/metrics/"),
+                _ -> {
+                    Resource metricsHtml = new ClassPathResource("static/metrics.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(metricsHtml);
+                }
+        );
+    }
 }

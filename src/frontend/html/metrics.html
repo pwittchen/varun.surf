@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Metrics - VARUN.SURF</title>
+    <meta name="description"
+          content="Application metrics and performance data for VARUN.SURF - kitesurfing weather forecast dashboard">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cstyle%3Epath%7Bfill:%231a1a1a%7D@media(prefers-color-scheme:dark)%7Bpath%7Bfill:%23f5f5f5%7D%7D%3C/style%3E%3Cpath d='M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script
+            defer
+            data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"
+            data-domain="varun.surf"
+            src="https://datafa.st/js/script.js">
+    </script>
+</head>
+<body>
+<!-- MAIN CONTENT -->
+<div class="main-content main-content-status">
+    <div class="container">
+
+        <main class="status-page">
+            <div class="status-container">
+                <!-- METRICS PAGE HEADER -->
+                <div class="status-page-header">
+                    <div class="status-page-header-content">
+                        <h1 class="status-page-title"><span id="headerTitle">VARUN.SURF</span></h1>
+                    </div>
+                </div>
+
+                <h2>Application Metrics</h2>
+
+                <!-- Auto-refresh indicator -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-indicator">
+                            <span class="status-dot status-dot-up metrics-refresh-dot"></span>
+                            <span class="status-text" id="refresh-status">Auto-refresh: 5s</span>
+                        </div>
+                        <div class="status-time" id="last-updated">
+                            Last updated: -
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JVM Section -->
+                <div class="status-card">
+                    <h3>JVM Performance</h3>
+                    <div class="metrics-grid">
+                        <div class="metrics-item metrics-item-wide">
+                            <div class="metrics-label">Heap Memory</div>
+                            <div class="metrics-progress-container">
+                                <div class="metrics-progress-bar" id="heap-bar"></div>
+                            </div>
+                            <div class="metrics-value" id="heap-value">- / - MB</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">CPU Usage</div>
+                            <div class="metrics-chart-mini" id="cpu-chart"></div>
+                            <div class="metrics-value" id="cpu-value">-%</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Threads</div>
+                            <div class="metrics-value-large" id="threads-value">-</div>
+                            <div class="metrics-subvalue" id="threads-detail">peak: - | daemon: -</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Uptime</div>
+                            <div class="metrics-value-large" id="jvm-uptime">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">GC Pauses</div>
+                            <div class="metrics-value-large" id="gc-count">-</div>
+                            <div class="metrics-subvalue" id="gc-time">total: - ms</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Fetching Section -->
+                <div class="status-card">
+                    <h3>Data Fetching</h3>
+                    <div class="metrics-grid metrics-grid-3">
+                        <!-- Forecasts -->
+                        <div class="metrics-item">
+                            <div class="metrics-label">Forecasts</div>
+                            <div class="metrics-stat-row">
+                                <span class="metrics-stat-success" id="forecast-success">0</span>
+                                <span class="metrics-stat-separator">/</span>
+                                <span class="metrics-stat-total" id="forecast-total">0</span>
+                            </div>
+                            <div class="metrics-subvalue">
+                                <span class="metrics-stat-failure" id="forecast-failure">0 failed</span>
+                            </div>
+                            <div class="metrics-subvalue" id="forecast-duration">avg: - ms</div>
+                        </div>
+                        <!-- Conditions -->
+                        <div class="metrics-item">
+                            <div class="metrics-label">Conditions</div>
+                            <div class="metrics-stat-row">
+                                <span class="metrics-stat-success" id="conditions-success">0</span>
+                                <span class="metrics-stat-separator">/</span>
+                                <span class="metrics-stat-total" id="conditions-total">0</span>
+                            </div>
+                            <div class="metrics-subvalue">
+                                <span class="metrics-stat-failure" id="conditions-failure">0 failed</span>
+                            </div>
+                            <div class="metrics-subvalue" id="conditions-duration">avg: - ms</div>
+                        </div>
+                        <!-- AI Analysis -->
+                        <div class="metrics-item">
+                            <div class="metrics-label">AI Analysis</div>
+                            <div class="metrics-stat-row">
+                                <span class="metrics-stat-success" id="ai-success">0</span>
+                                <span class="metrics-stat-separator">/</span>
+                                <span class="metrics-stat-total" id="ai-total">0</span>
+                            </div>
+                            <div class="metrics-subvalue">
+                                <span class="metrics-stat-failure" id="ai-failure">0 failed</span>
+                            </div>
+                            <div class="metrics-subvalue" id="ai-duration">avg: - ms</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cache Status Section -->
+                <div class="status-card">
+                    <h3>Cache Status</h3>
+                    <div class="metrics-grid metrics-grid-4">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Spots</div>
+                            <div class="metrics-value-large" id="spots-total">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Countries</div>
+                            <div class="metrics-value-large" id="countries-total">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Forecasts Cached</div>
+                            <div class="metrics-value-large" id="forecasts-cached">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Conditions Cached</div>
+                            <div class="metrics-value-large" id="conditions-cached">-</div>
+                        </div>
+                    </div>
+                    <div class="metrics-timestamps">
+                        <div class="metrics-timestamp-item">
+                            <span class="metrics-timestamp-label">Last Forecast Fetch:</span>
+                            <span class="metrics-timestamp-value" id="last-forecast-fetch">-</span>
+                        </div>
+                        <div class="metrics-timestamp-item">
+                            <span class="metrics-timestamp-label">Last Conditions Fetch:</span>
+                            <span class="metrics-timestamp-value" id="last-conditions-fetch">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HTTP Server (Incoming Requests) -->
+                <div class="status-card">
+                    <h3>HTTP Server (Incoming)</h3>
+                    <div class="metrics-grid metrics-grid-4">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Total Requests</div>
+                            <div class="metrics-value-large" id="server-total">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Avg Response Time</div>
+                            <div class="metrics-value-large" id="server-avg-time">- ms</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Max Response Time</div>
+                            <div class="metrics-value-large" id="server-max-time">- ms</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Total Time</div>
+                            <div class="metrics-value-large" id="server-total-time">- s</div>
+                        </div>
+                    </div>
+                    <div class="metrics-grid metrics-grid-2" style="margin-top: 16px;">
+                        <div class="metrics-item">
+                            <div class="metrics-label">/api/v1/spots</div>
+                            <div class="metrics-value-large" id="api-spots-requests">-</div>
+                            <div class="metrics-subvalue">requests</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">/api/v1/spots/{id}</div>
+                            <div class="metrics-value-large" id="api-spot-requests">-</div>
+                            <div class="metrics-subvalue">requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HTTP Client (Outgoing Requests) -->
+                <div class="status-card">
+                    <h3>HTTP Client (Outgoing)</h3>
+                    <div class="metrics-grid metrics-grid-4">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Active Requests</div>
+                            <div class="metrics-value-large" id="http-active">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Total Requests</div>
+                            <div class="metrics-value-large" id="http-total">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Success Rate</div>
+                            <div class="metrics-value-large" id="http-success-rate">-%</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Failed Requests</div>
+                            <div class="metrics-value-large" id="http-failed">-</div>
+                        </div>
+                    </div>
+                    <div class="metrics-grid metrics-grid-4" style="margin-top: 16px;">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Avg Request Time</div>
+                            <div class="metrics-value-large" id="http-duration">- ms</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Max Request Time</div>
+                            <div class="metrics-value-large" id="http-max-duration">- ms</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Avg Connect Time</div>
+                            <div class="metrics-value-large" id="http-connect-time">- ms</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Avg DNS Time</div>
+                            <div class="metrics-value-large" id="http-dns-time">- ms</div>
+                        </div>
+                    </div>
+                    <div class="metrics-grid metrics-grid-2" style="margin-top: 16px;">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Connections Acquired</div>
+                            <div class="metrics-value-large" id="http-conn-acquired">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label">Connections Released</div>
+                            <div class="metrics-value-large" id="http-conn-released">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CPU History Chart -->
+                <div class="status-card">
+                    <h3>CPU Usage History</h3>
+                    <div class="metrics-chart-container">
+                        <canvas id="cpu-history-chart" width="760" height="120"></canvas>
+                    </div>
+                    <div class="metrics-chart-legend">
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-process"></span>
+                            Process CPU
+                        </span>
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-system"></span>
+                            System CPU
+                        </span>
+                    </div>
+                </div>
+
+                <!-- RAM History Chart -->
+                <div class="status-card">
+                    <h3>Memory Usage History</h3>
+                    <div class="metrics-chart-container">
+                        <canvas id="ram-history-chart" width="760" height="120"></canvas>
+                    </div>
+                    <div class="metrics-chart-legend">
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-heap"></span>
+                            Heap Used
+                        </span>
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-heap-max"></span>
+                            Heap Max
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Threads History Chart -->
+                <div class="status-card">
+                    <h3>Threads History</h3>
+                    <div class="metrics-chart-container">
+                        <canvas id="threads-history-chart" width="760" height="120"></canvas>
+                    </div>
+                    <div class="metrics-chart-legend">
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-threads-live"></span>
+                            Live Threads
+                        </span>
+                        <span class="metrics-legend-item">
+                            <span class="metrics-legend-color metrics-legend-threads-daemon"></span>
+                            Daemon Threads
+                        </span>
+                    </div>
+                </div>
+
+                <div class="status-actions">
+                    <button id="toggle-refresh" class="btn btn-primary">
+                        Pause Auto-Refresh
+                    </button>
+                    <a href="/status" class="btn btn-secondary">
+                        View Status
+                    </a>
+                    <a href="/" class="btn btn-secondary">
+                        View Dashboard
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <!-- Footer content rendered by JavaScript -->
+            </div>
+        </footer>
+    </div>
+</div>
+<script type="module" src="../js/page/metrics.js"></script>
+</body>
+</html>

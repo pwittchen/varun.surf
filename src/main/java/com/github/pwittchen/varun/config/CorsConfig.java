@@ -25,9 +25,11 @@ public class CorsConfig {
         allowedOrigins.add("https://www.varun.surf");
         allowedOrigins.add("http://localhost:" + serverPort);
         allowedOrigins.add("http://127.0.0.1:" + serverPort);
+        allowedOrigins.add("http://localhost:20245");
+        allowedOrigins.add("http://127.0.0.1:20245");
 
         corsConfig.setAllowedOrigins(allowedOrigins);
-        corsConfig.setAllowedMethods(List.of("GET"));
+        corsConfig.setAllowedMethods(List.of("GET", "POST"));
         corsConfig.setAllowedHeaders(List.of("*"));
         corsConfig.setAllowCredentials(false);
         corsConfig.setMaxAge(3600L);

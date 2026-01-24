@@ -11,6 +11,7 @@ const HTML_ENTRIES = [
   { name: "index", path: join(FRONTEND_DIR, "html/index.html") },
   { name: "spot", path: join(FRONTEND_DIR, "html/spot.html") },
   { name: "status", path: join(FRONTEND_DIR, "html/status.html") },
+  { name: "metrics", path: join(FRONTEND_DIR, "html/metrics.html") },
   { name: "embed", path: join(FRONTEND_DIR, "html/embed.html") },
   { name: "tv", path: join(FRONTEND_DIR, "html/tv.html") },
 ];
@@ -59,6 +60,7 @@ async function bundleJavaScript(): Promise<Map<string, string>> {
     join(FRONTEND_DIR, "js/page/index.js"),
     join(FRONTEND_DIR, "js/page/spot.js"),
     join(FRONTEND_DIR, "js/page/status.js"),
+    join(FRONTEND_DIR, "js/page/metrics.js"),
     join(FRONTEND_DIR, "js/page/tv.js"),
   ];
 
@@ -172,6 +174,10 @@ async function processHTML(jsMap: Map<string, string>, cssMap: Map<string, strin
     html = html.replace(
       /src="\.\.\/js\/page\/status\.js"/g,
       `src="${jsMap.get("status") || "/assets/status.js"}"`
+    );
+    html = html.replace(
+      /src="\.\.\/js\/page\/metrics\.js"/g,
+      `src="${jsMap.get("metrics") || "/assets/metrics.js"}"`
     );
     html = html.replace(
       /src="\.\.\/js\/page\/tv\.js"/g,
