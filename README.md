@@ -126,7 +126,27 @@ To do that, follow the instructions below.
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.
 
+### actuator metrics
+
 We can enable application and JVM metrics in the `application.yml` file and then use `/actuator/prometheus` endpoint to view metrics.
+
+### built-in metrics dashboard
+
+The app includes a custom metrics dashboard at [/metrics](https://varun.surf/metrics) that displays:
+
+- **Application gauges**: total spots, countries, active live stations, cache sizes, last fetch timestamps
+- **Fetch counters**: forecast/conditions/AI fetch totals, successes, and failures
+- **API request counters**: spots and single spot endpoint request counts
+- **Timers**: forecast, conditions, and AI fetch durations (count, total time, mean, max)
+- **JVM metrics**: heap/non-heap memory usage, thread counts, GC pause stats, CPU usage, uptime
+- **HTTP client metrics**: active/total/success/failed requests, connection stats, DNS/connect durations
+
+**Configuration:**
+
+Set your credentials in the `.env` file (plain text):
+```
+METRICS_PASSWORD=your-secure-password
+```
 
 ### log monitoring with dozzle
 
