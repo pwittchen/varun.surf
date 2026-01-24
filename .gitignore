@@ -43,6 +43,9 @@ application.log
 .env.local
 .env.prod
 
+### Dozzle credentials ###
+dozzle/users.yml
+
 ### Node.js ###
 node_modules/
 
