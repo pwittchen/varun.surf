@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.service.MetricsHistoryService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -36,11 +37,14 @@ public class MetricsControllerTest {
     private MeterRegistry meterRegistry;
 
     @Mock
+    private MetricsHistoryService metricsHistoryService;
+
+    @Mock
     private Search search;
 
     @BeforeEach
     void setUp() {
-        controller = new MetricsController(meterRegistry);
+        controller = new MetricsController(meterRegistry, metricsHistoryService);
         ReflectionTestUtils.setField(controller, "metricsPassword", "");
 
         // Setup default search behavior
@@ -203,6 +207,33 @@ public class MetricsControllerTest {
                     Map<String, Object> forecastDuration = (Map<String, Object>) timers.get("forecastsDuration");
                     assertThat(forecastDuration.get("count")).isEqualTo(0L);
                     assertThat(forecastDuration.get("meanMs")).isEqualTo(0.0);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnMetricsHistoryResponse() {
+        Map<String, Object> snapshot = Map.of(
+                "timestamp", 1234567890L,
+                "cpuProcess", 5.5,
+                "cpuSystem", 10.0,
+                "heapUsed", 100000000.0,
+                "heapMax", 500000000.0,
+                "threadsLive", 50,
+                "threadsDaemon", 30
+        );
+        when(metricsHistoryService.getHistory()).thenReturn(List.of(snapshot));
+
+        Mono<List<Map<String, Object>>> result = controller.metricsHistory(null);
+
+        StepVerifier.create(result)
+                .assertNext(history -> {
+                    assertThat(history).isNotNull();
+                    assertThat(history).hasSize(1);
+                    assertThat(history.get(0)).containsKey("timestamp");
+                    assertThat(history.get(0)).containsKey("cpuProcess");
+                    assertThat(history.get(0)).containsKey("heapUsed");
+                    assertThat(history.get(0)).containsKey("threadsLive");
                 })
                 .verifyComplete();
     }

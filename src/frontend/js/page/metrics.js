@@ -133,6 +133,45 @@ async function fetchMetrics() {
     return await response.json();
 }
 
+async function fetchMetricsHistory() {
+    const password = getStoredPassword();
+    const headers = {};
+    if (password) {
+        headers['X-Metrics-Password'] = password;
+    }
+
+    const response = await fetch('/api/v1/metrics/history', { headers });
+    if (response.status === 401) {
+        clearPassword();
+        showLoginForm();
+        throw new Error('Unauthorized');
+    }
+    if (!response.ok) {
+        throw new Error('Failed to fetch metrics history');
+    }
+    return await response.json();
+}
+
+function loadHistoryData(historyData) {
+    // Clear existing history
+    cpuHistory.process.length = 0;
+    cpuHistory.system.length = 0;
+    ramHistory.used.length = 0;
+    ramHistory.max.length = 0;
+    threadsHistory.live.length = 0;
+    threadsHistory.daemon.length = 0;
+
+    // Populate with historical data
+    for (const snapshot of historyData) {
+        cpuHistory.process.push(snapshot.cpuProcess || 0);
+        cpuHistory.system.push(snapshot.cpuSystem || 0);
+        ramHistory.used.push((snapshot.heapUsed || 0) / (1024 * 1024)); // Convert to MB
+        ramHistory.max.push((snapshot.heapMax || 0) / (1024 * 1024));
+        threadsHistory.live.push(snapshot.threadsLive || 0);
+        threadsHistory.daemon.push(snapshot.threadsDaemon || 0);
+    }
+}
+
 // ============================================================================
 // FORMATTERS
 // ============================================================================
@@ -172,6 +211,12 @@ function formatTimestamp(timestamp) {
     if (!timestamp || timestamp <= 0) return '-';
     const date = new Date(timestamp);
     return date.toLocaleTimeString();
+}
+
+function formatMsToMinutes(ms) {
+    if (ms === null || ms === undefined || isNaN(ms) || ms <= 0) return '-';
+    const minutes = ms / 60000;
+    return formatDecimal(minutes, 2);
 }
 
 // ============================================================================
@@ -232,8 +277,9 @@ function updateJvmMetrics(jvm) {
     // GC
     const gcCount = jvm.gcPauseTime?.count || 0;
     const gcTotalTime = jvm.gcPauseTime?.totalTimeMs || 0;
+    const gcAvgTime = jvm.gcPauseTime?.meanMs || 0;
     document.getElementById('gc-count').textContent = formatNumber(gcCount);
-    document.getElementById('gc-time').textContent = `total: ${formatDecimal(gcTotalTime, 0)} ms`;
+    document.getElementById('gc-time').textContent = `total: ${formatDecimal(gcTotalTime, 0)} ms | avg: ${formatDecimal(gcAvgTime, 1)} ms`;
 }
 
 function updateMiniChart(elementId, value) {
@@ -278,21 +324,21 @@ function updateFetchingMetrics(counters, timers) {
     document.getElementById('forecast-success').textContent = formatNumber(counters.forecastsSuccess);
     document.getElementById('forecast-failure').textContent = `${formatNumber(counters.forecastsFailure)} failed`;
     document.getElementById('forecast-duration').textContent =
-        `avg: ${formatDecimal(timers.forecastsDuration?.meanMs)} ms`;
+        `avg: ${formatMsToMinutes(timers.forecastsDuration?.meanMs)} min`;
 
     // Conditions
     document.getElementById('conditions-total').textContent = formatNumber(counters.conditionsTotal);
     document.getElementById('conditions-success').textContent = formatNumber(counters.conditionsSuccess);
     document.getElementById('conditions-failure').textContent = `${formatNumber(counters.conditionsFailure)} failed`;
     document.getElementById('conditions-duration').textContent =
-        `avg: ${formatDecimal(timers.conditionsDuration?.meanMs)} ms`;
+        `avg: ${formatMsToMinutes(timers.conditionsDuration?.meanMs)} min`;
 
     // AI
     document.getElementById('ai-total').textContent = formatNumber(counters.aiTotal);
     document.getElementById('ai-success').textContent = formatNumber(counters.aiSuccess);
     document.getElementById('ai-failure').textContent = `${formatNumber(counters.aiFailure)} failed`;
     document.getElementById('ai-duration').textContent =
-        `avg: ${formatDecimal(timers.aiDuration?.meanMs)} ms`;
+        `avg: ${formatMsToMinutes(timers.aiDuration?.meanMs)} min`;
 }
 
 function updateCacheMetrics(gauges) {
@@ -675,7 +721,7 @@ function stopAutoRefresh() {
 // INITIALIZATION
 // ============================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+async function initializeMetrics() {
     // Setup header title click handler
     const headerTitle = document.getElementById('headerTitle');
     if (headerTitle) {
@@ -685,7 +731,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup toggle button
     document.getElementById('toggle-refresh').addEventListener('click', toggleAutoRefresh);
 
-    // Initial load
+    try {
+        // Load historical data first
+        const historyData = await fetchMetricsHistory();
+        loadHistoryData(historyData);
+
+        // Draw charts with historical data
+        drawCpuHistoryChart();
+        drawRamHistoryChart();
+        drawThreadsHistoryChart();
+    } catch (error) {
+        console.error('Error loading metrics history:', error);
+        // If unauthorized, the fetchMetricsHistory will show login form
+        if (error.message === 'Unauthorized') {
+            return;
+        }
+    }
+
+    // Initial load of current metrics
     refreshMetrics();
 
     // Start auto-refresh
@@ -693,4 +756,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update footer
     footer.updateFooter(translations.t);
-});
+}
+
+document.addEventListener('DOMContentLoaded', initializeMetrics);

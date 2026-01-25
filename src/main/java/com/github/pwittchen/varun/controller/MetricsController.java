@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.service.MetricsHistoryService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -26,12 +27,14 @@ import java.util.concurrent.TimeUnit;
 public class MetricsController {
 
     private final MeterRegistry meterRegistry;
+    private final MetricsHistoryService metricsHistoryService;
 
     @Value("${app.metrics.password:}")
     private String metricsPassword;
 
-    public MetricsController(MeterRegistry meterRegistry) {
+    public MetricsController(MeterRegistry meterRegistry, MetricsHistoryService metricsHistoryService) {
         this.meterRegistry = meterRegistry;
+        this.metricsHistoryService = metricsHistoryService;
     }
 
     @PostMapping("metrics/auth")
@@ -41,6 +44,17 @@ public class MetricsController {
             return Mono.just(Map.of("authenticated", true));
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+    }
+
+    @GetMapping("metrics/history")
+    public Mono<List<Map<String, Object>>> metricsHistory(
+            @RequestHeader(value = "X-Metrics-Password", required = false) String password) {
+
+        if (!metricsPassword.isEmpty() && !metricsPassword.equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+        }
+
+        return Mono.just(metricsHistoryService.getHistory());
     }
 
     @GetMapping("metrics")
