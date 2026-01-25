@@ -213,10 +213,14 @@ function formatTimestamp(timestamp) {
     return date.toLocaleTimeString();
 }
 
-function formatMsToMinutes(ms) {
-    if (ms === null || ms === undefined || isNaN(ms) || ms <= 0) return '-';
-    const minutes = ms / 60000;
-    return formatDecimal(minutes, 2);
+function formatMsDuration(ms) {
+    if (ms === null || ms === undefined || isNaN(ms) || ms <= 0) return { value: '-', unit: '' };
+    const seconds = ms / 1000;
+    if (seconds >= 60) {
+        const minutes = seconds / 60;
+        return { value: formatDecimal(minutes, 2), unit: 'min' };
+    }
+    return { value: formatDecimal(seconds, 2), unit: 's' };
 }
 
 // ============================================================================
@@ -323,22 +327,25 @@ function updateFetchingMetrics(counters, timers) {
     document.getElementById('forecast-total').textContent = formatNumber(counters.forecastsTotal);
     document.getElementById('forecast-success').textContent = formatNumber(counters.forecastsSuccess);
     document.getElementById('forecast-failure').textContent = `${formatNumber(counters.forecastsFailure)} failed`;
+    const forecastDuration = formatMsDuration(timers.forecastsDuration?.meanMs);
     document.getElementById('forecast-duration').textContent =
-        `avg: ${formatMsToMinutes(timers.forecastsDuration?.meanMs)} min`;
+        `avg: ${forecastDuration.value} ${forecastDuration.unit}`;
 
     // Conditions
     document.getElementById('conditions-total').textContent = formatNumber(counters.conditionsTotal);
     document.getElementById('conditions-success').textContent = formatNumber(counters.conditionsSuccess);
     document.getElementById('conditions-failure').textContent = `${formatNumber(counters.conditionsFailure)} failed`;
+    const conditionsDuration = formatMsDuration(timers.conditionsDuration?.meanMs);
     document.getElementById('conditions-duration').textContent =
-        `avg: ${formatMsToMinutes(timers.conditionsDuration?.meanMs)} min`;
+        `avg: ${conditionsDuration.value} ${conditionsDuration.unit}`;
 
     // AI
     document.getElementById('ai-total').textContent = formatNumber(counters.aiTotal);
     document.getElementById('ai-success').textContent = formatNumber(counters.aiSuccess);
     document.getElementById('ai-failure').textContent = `${formatNumber(counters.aiFailure)} failed`;
+    const aiDuration = formatMsDuration(timers.aiDuration?.meanMs);
     document.getElementById('ai-duration').textContent =
-        `avg: ${formatMsToMinutes(timers.aiDuration?.meanMs)} min`;
+        `avg: ${aiDuration.value} ${aiDuration.unit}`;
 }
 
 function updateCacheMetrics(gauges) {
