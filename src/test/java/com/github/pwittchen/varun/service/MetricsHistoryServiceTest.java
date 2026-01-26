@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.service.metrics.MetricsHistoryService;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.search.Search;

@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.service;
+package com.github.pwittchen.varun.service.metrics;
 
 import com.google.common.collect.EvictingQueue;
 import io.micrometer.core.instrument.Gauge;
