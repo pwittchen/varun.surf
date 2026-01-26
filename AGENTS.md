@@ -13,12 +13,15 @@
 - **Backend Framework**: Spring Boot 3.5.5 (Reactive WebFlux)
 - **Language**: Java 24 with preview features enabled
 - **Build System**: Gradle
+- **Frontend Build**: Bun (replaces npm for faster builds)
 - **Key Dependencies**:
   - Spring WebFlux (reactive, non-blocking I/O)
   - Spring AI (OpenAI & Ollama integration)
+  - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client library)
   - Gson (JSON parsing and serialization)
   - JavaTuples (tuple data structures)
+  - Guava (EvictingQueue for metrics history)
 - **Containerization**: Docker, deployed to GitHub Container Registry (GHCR)
 - **Frontend**: Vanilla JavaScript, HTML, CSS (no framework)
 - **Testing Framework**: JUnit 5, Truth assertions library, MockWebServer, Playwright (E2E)
@@ -35,13 +38,16 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
     ├─→ /api/v1/sponsors (sponsors list)
+    ├─→ /api/v1/status (system status, uptime, counts)
+    ├─→ /api/v1/metrics (application metrics, password-protected)
     └─→ /api/v1/health (health check)
     ↓
 AggregatorService (orchestrates with Java 24 StructuredTaskScope)
     ├─→ ForecastService ─→ Windguru API (GFS & IFS models)
-    ├─→ CurrentConditionsService ─→ Weather Stations (strategy pattern)
-    ├─→ GoogleMapsService ─→ Google Maps (embeds)
-    └─→ AiService ─→ LLM Provider (OpenAI/Ollama via Spring AI)
+    ├─→ CurrentConditionsService ─→ Weather Stations (9 strategies)
+    ├─→ GoogleMapsService ─→ Google Maps (coordinates)
+    ├─→ AiServiceEn/AiServicePl ─→ LLM Provider (OpenAI/Ollama)
+    └─→ MetricsHistoryService ─→ Prometheus metrics with history
 ```
 
 ### Core Services
@@ -50,7 +56,7 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 **Purpose**: Central data orchestration and caching layer using Java 24 structured concurrency.
 
 **Scheduled Tasks** (run in parallel with `@Async`):
-- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all 74+ spots
+- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all 102+ spots
 - **Current Conditions**: Every 1 minute - real-time wind data
 - **AI Analysis**: Every 8 hours - LLM-powered summaries (if feature enabled)
 
@@ -66,13 +72,16 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 - `aiLimiter`: 16 concurrent LLM API calls
 - Prevents overwhelming external APIs
 
-**Six In-Memory Caches** (ConcurrentHashMap):
+**In-Memory Caches** (ConcurrentHashMap):
 1. `forecastCache: Map<Integer, ForecastData>` - daily, hourlyGfs, hourlyIfs
 2. `currentConditions: Map<Integer, CurrentConditions>` - latest wind data
-3. `aiAnalysis: Map<Integer, String>` - AI-generated summaries
-4. `embeddedMaps: Map<Integer, String>` - lazy-loaded iframe HTML
-5. `hourlyForecastCacheTimestamps: Map<Integer, Long>` - 3h TTL for IFS
-6. `spots: AtomicReference<List<Spot>>` - loaded once at startup
+3. `currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>>` - 12h history
+4. `aiAnalysisEn: Map<Integer, String>` - AI summaries (English)
+5. `aiAnalysisPl: Map<Integer, String>` - AI summaries (Polish)
+6. `hourlyForecastCacheTimestamps: Map<Integer, Long>` - 3h TTL for IFS
+7. `locationCoordinates: Map<Integer, Coordinates>` - parsed GPS coordinates
+8. `spotPhotos: Map<Integer, String>` - spot photo URLs
+9. `spots: ConcurrentMap<Integer, Spot>` - loaded at startup
 
 **On-Demand IFS Fetching**:
 - When `/api/v1/spots/{id}` is accessed, triggers async `fetchForecastsForAllModels()`
@@ -80,7 +89,7 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 - Caches for 3 hours to avoid redundant API calls
 - Uses synchronized locks per spot to prevent duplicate fetches
 
-#### 2. ForecastService (`service/ForecastService.java`)
+#### 2. ForecastService (`service/forecast/ForecastService.java`)
 **Purpose**: Fetch and parse weather forecast data from Windguru.
 
 **Multiple Forecast Models**:
@@ -99,15 +108,22 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 - Precipitation (mm)
 - Timestamps (hourly or daily)
 
-#### 3. CurrentConditionsService (`service/CurrentConditionsService.java`)
+#### 3. CurrentConditionsService (`service/live/CurrentConditionsService.java`)
 **Purpose**: Fetch real-time wind conditions from weather stations.
 
 **Strategy Pattern**:
 - `FetchCurrentConditions` interface
 - `FetchCurrentConditionsStrategyBase` abstract class
-- Strategy implementations:
-  - `FetchCurrentConditionsStrategyWiatrKadynyStations` (Polish stations)
-  - `FetchCurrentConditionsStrategyPodersdorf` (Austrian stations)
+- 9 strategy implementations for weather stations:
+  - `FetchCurrentConditionsStrategyWiatrKadynyStations` (Poland - Kadyny, Puck, Mrzeżyno)
+  - `FetchCurrentConditionsStrategyPodersdorf` (Austria - Neusiedler See)
+  - `FetchCurrentConditionsStrategyPuck` (Poland)
+  - `FetchCurrentConditionsStrategyTurawa` (Poland)
+  - `FetchCurrentConditionsStrategyMB` (Poland - Mrzeżyno)
+  - `FetchCurrentConditionsStrategyTarifaArteVida` (Spain - Tarifa)
+  - `FetchCurrentConditionsStrategyMietkow` (Poland)
+  - `FetchCurrentConditionsStrategySvencele` (Lithuania)
+  - `FetchCurrentConditionsStrategyElMedano` (Spain - Tenerife)
 
 **Process**:
 - Scrapes HTML from station websites
@@ -121,15 +137,20 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 - Temperature (Celsius)
 - Updated timestamp
 
-#### 4. AiService (`service/AiService.java`)
+#### 4. AiService (`service/ai/AiService.java`, `AiServiceEn.java`, `AiServicePl.java`)
 **Purpose**: Generate AI-powered forecast summaries (optional, experimental feature).
+
+**Language-Specific Implementations**:
+- `AiServiceEn` - English language summaries
+- `AiServicePl` - Polish language summaries
+- Both extend abstract `AiService` base class
 
 **Configuration**:
 - Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
 - Provider selection: `app.ai.provider: ollama` or `openai`
 
 **Supported Providers**:
-- **OpenAI** (gpt-4o-mini) - production-ready, costs ~$0.01 per 74 spots
+- **OpenAI** (gpt-4o-mini) - production-ready, costs ~$0.01 per 102 spots
 - **Ollama** (smollm2:135m) - free, local, may need fine-tuning
 
 **Professional Prompt Engineering**:
@@ -155,20 +176,18 @@ chatClient.prompt().user(prompt)
     .map(list -> String.join("", list))
 ```
 
-#### 5. GoogleMapsService (`service/GoogleMapsService.java`)
-**Purpose**: Convert location URLs to embeddable Google Maps iframes.
+#### 5. GoogleMapsService (`service/map/GoogleMapsService.java`)
+**Purpose**: Convert location URLs to Coordinates objects.
 
 **URL Processing**:
 - Unshortens goo.gl and maps.app.goo.gl links (max 5 redirects)
 - Extracts coordinates from @lat,lng format
 - Parses /place/ locations
-- Adds output=embed parameter
+- Returns Coordinates record with latitude/longitude
 
 **Features**:
-- Satellite view: `z=13&t=k`
-- Iframe generation: 600x450px
 - Lazy-loaded on first spot access
-- Cached indefinitely (until restart)
+- Coordinates cached in `locationCoordinates` map
 - 5-second timeout with reactive error handling
 
 **OkHttp Client**:
@@ -186,14 +205,41 @@ chatClient.prompt().user(prompt)
 - `GET /api/v1/spots/{id}/{model}` - Single spot with model selection
   - model: "gfs" or "ifs"
   - Triggers async IFS fetch if not cached
-- `GET /api/v1/health` - Health check endpoint
 
 **Response Processing**:
-- Enriches spots with cached forecasts, conditions, AI analysis, maps
+- Enriches spots with cached forecasts, conditions, AI analysis
 - Returns 404 if spot not found
 - Uses `doOnSuccess()` for async operations
+- Uses SpotsControllerMetrics for request tracking
 
-#### 7. SponsorsController (`controller/SponsorsController.java`)
+#### 7. StatusController (`controller/StatusController.java`)
+**Purpose**: REST API endpoints for system status.
+
+**Endpoints**:
+- `GET /api/v1/health` - Simple health check (returns `{"status": "UP"}`)
+- `GET /api/v1/status` - Detailed status including:
+  - Application version
+  - Uptime (formatted and in seconds)
+  - Spots count
+  - Countries count
+  - Live stations count
+
+#### 8. MetricsController (`controller/MetricsController.java`)
+**Purpose**: REST API endpoints for application metrics.
+
+**Endpoints**:
+- `GET /api/v1/metrics` - Full metrics (password-protected via `X-Metrics-Password` header)
+- `GET /api/v1/metrics/history` - Metrics history over time
+- `POST /api/v1/metrics/auth` - Authenticate with password
+
+**Metrics Exposed**:
+- Gauges: spots total, countries total, live stations, cache sizes
+- Counters: forecasts/conditions/AI fetch counts (total/success/failure)
+- Timers: fetch durations
+- JVM metrics: heap, threads, GC, CPU
+- HTTP client metrics: requests, connections, durations
+
+#### 9. SponsorsController (`controller/SponsorsController.java`)
 **Purpose**: REST API endpoints for sponsors.
 
 **Endpoints**:
@@ -208,7 +254,7 @@ chatClient.prompt().user(prompt)
 
 ### Data Models
 
-#### Spot (`model/Spot.java`)
+#### Spot (`model/spot/Spot.java`)
 Primary domain object representing a kite spot.
 ```java
 public record Spot(
@@ -224,7 +270,7 @@ public record Spot(
 ) {}
 ```
 
-#### Forecast (`model/Forecast.java`)
+#### Forecast (`model/forecast/Forecast.java`)
 Hourly weather forecast data point.
 ```java
 public record Forecast(
@@ -238,7 +284,7 @@ public record Forecast(
 ) {}
 ```
 
-#### CurrentConditions (`model/CurrentConditions.java`)
+#### CurrentConditions (`model/live/CurrentConditions.java`)
 Real-time weather station data.
 ```java
 public record CurrentConditions(
@@ -251,7 +297,7 @@ public record CurrentConditions(
 ) {}
 ```
 
-#### SpotInfo (`model/SpotInfo.java`)
+#### SpotInfo (`model/spot/SpotInfo.java`)
 Static metadata about a kite spot.
 ```java
 public record SpotInfo(
@@ -267,8 +313,8 @@ public record SpotInfo(
 
 ### Static Data: spots.json
 - **Location**: `src/main/resources/spots.json`
-- **Size**: ~74 kite spots worldwide
-- **Coverage**: Poland, Austria, Denmark, Spain, Portugal, Italy, Brazil, Germany, Netherlands, and more
+- **Size**: ~102 kite spots worldwide
+- **Coverage**: Poland, Austria, Denmark, Spain, Portugal, Italy, Brazil, Germany, Netherlands, Lithuania, and more
 - **Content**: Each spot contains:
   - Basic info (id, name, country, coordinates)
   - URLs (Windguru, Windfinder, ICM, webcam)
@@ -277,8 +323,14 @@ public record SpotInfo(
 
 ### External APIs
 - **micro.windguru.cz**: Text-based weather forecast exports (parsed via regex)
-- **wiatrkadyny.pl**: Polish weather station network (multiple locations)
-- **kiteriders.at**: Austrian weather stations (Podersdorf, Neusiedler See)
+- **Weather stations** (9 integrations):
+  - wiatrkadyny.pl (Poland - Kadyny, Puck, Mrzeżyno, etc.)
+  - kiteriders.at (Austria - Podersdorf, Neusiedler See)
+  - Turawa station (Poland)
+  - Mietków station (Poland)
+  - Svencele station (Lithuania)
+  - Tarifa Arte Vida (Spain)
+  - El Medano (Tenerife, Spain)
 
 ## Configuration
 
@@ -298,6 +350,8 @@ app:
           enabled: false           # AI analysis feature flag (default: off)
   ai:
     provider: ollama              # AI provider: "openai" or "ollama"
+  metrics:
+    password: ${METRICS_PASSWORD:}  # Optional password for /api/v1/metrics
 
 spring:
   ai:
@@ -312,11 +366,22 @@ spring:
       chat:
         options:
           model: smollm2:135m      # Model for Ollama provider
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 ```
 
 ### Environment Variables
 - `OPENAI_API_KEY`: Required if using OpenAI provider
 - `OLLAMA_BASE_URL`: Ollama server URL (default: http://localhost:11434)
+- `METRICS_PASSWORD`: Optional password for protected metrics endpoints
 
 ## Build & Run Commands
 
@@ -418,30 +483,57 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── GsonConfig.java             # Gson bean configuration
 │   ├── LLMConfig.java              # Spring AI ChatClient configuration
 │   ├── NettyConfig.java            # WebFlux Netty tuning
+│   ├── AsyncConfig.java            # Async executor configuration
+│   ├── MetricsConfig.java          # Micrometer metrics configuration
+│   ├── OkHttpClientConfig.java     # OkHttp client beans
+│   ├── CorsConfig.java             # CORS configuration
+│   ├── WebConfig.java              # WebFlux configuration
 │   └── LoggingFilter.java          # Request/response logging
 ├── controller/                      # REST controllers
-│   └── SpotsController.java        # /api/v1/spots endpoints
+│   ├── SpotsController.java        # /api/v1/spots endpoints
+│   ├── SponsorsController.java     # /api/v1/sponsors endpoints
+│   ├── StatusController.java       # /api/v1/status, /api/v1/health
+│   └── MetricsController.java      # /api/v1/metrics endpoints
+├── data/provider/                   # Data providers
+│   ├── spots/JsonSpotsDataProvider.java
+│   └── sponsors/JsonSponsorsDataProvider.java
 ├── exception/                       # Custom exceptions
-│   ├── SpotNotFoundException.java
-│   └── ExternalApiException.java
+│   ├── FetchingForecastException.java
+│   ├── FetchingCurrentConditionsException.java
+│   ├── FetchingAiForecastAnalysisException.java
+│   └── FetchingForecastModelsException.java
 ├── mapper/                          # Data transformation
 │   └── WeatherForecastMapper.java  # Degrees → cardinal directions
+├── metrics/                         # Micrometer metrics
+│   ├── AggregatorServiceMetrics.java
+│   ├── SpotsControllerMetrics.java
+│   └── HttpClientMetricsEventListener.java
 ├── model/                           # Domain models (records)
-│   ├── Spot.java
-│   ├── Forecast.java
-│   ├── CurrentConditions.java
-│   └── SpotInfo.java
-├── provider/                        # Data providers
-│   └── JsonSpotsDataProvider.java  # Loads spots.json
+│   ├── forecast/                   # Forecast, ForecastData, ForecastModel, IcmGrid
+│   ├── spot/                       # Spot, SpotInfo
+│   ├── sponsor/                    # Sponsor
+│   ├── live/                       # CurrentConditions, filter/
+│   ├── map/                        # Coordinates
+│   └── status/                     # Uptime
 └── service/                         # Business logic
     ├── AggregatorService.java       # Main orchestrator
-    ├── ForecastService.java         # Forecast fetching
-    ├── CurrentConditionsService.java # Current conditions
-    ├── AiService.java               # LLM integration
-    └── strategy/                    # Strategy pattern implementations
-        ├── CurrentConditionsStrategy.java        # Interface
-        ├── WiatrKadynyStrategy.java             # Polish stations
-        └── KiteridersPodersdorfStrategy.java    # Austrian stations
+    ├── MetricsHistoryService.java   # Metrics history tracking
+    ├── ai/                          # AI services
+    │   ├── AiService.java          # Abstract base
+    │   ├── AiServiceEn.java        # English summaries
+    │   └── AiServicePl.java        # Polish summaries
+    ├── forecast/                    # Forecast services
+    │   ├── ForecastService.java
+    │   └── IcmGridMapper.java
+    ├── live/                        # Current conditions
+    │   ├── CurrentConditionsService.java
+    │   ├── FetchCurrentConditions.java
+    │   ├── FetchCurrentConditionsStrategyBase.java
+    │   └── strategy/               # 9 weather station strategies
+    ├── map/                         # Map services
+    │   └── GoogleMapsService.java
+    └── sponsors/                    # Sponsor services
+        └── SponsorsService.java
 ```
 
 ## Deployment
@@ -465,6 +557,7 @@ src/main/java/com/github/pwittchen/varun/
 Implemented features (complete):
 - Single-page view of all kite spots with forecasts and live conditions
 - Live wind data refreshed every minute (auto-refresh in frontend)
+- Live conditions history (12h rolling window)
 - Weather forecasts updated every 3 hours
 - Detailed spot information (description, water type, hazards, best season)
 - External links (Windguru, Windfinder, ICM model, webcam)
@@ -477,16 +570,23 @@ Implemented features (complete):
 - Mobile-responsive design
 - Kite size calculator (based on weight and wind speed)
 - Board size calculator
-- AI forecast analysis (experimental, disabled by default)
+- AI forecast analysis (experimental, disabled by default, supports EN/PL)
+- Prometheus metrics export (/actuator/prometheus)
+- Custom metrics dashboard (/api/v1/metrics)
+- Status page with uptime and stats
 
 ## AI Analysis Feature Details
 
 **Status**: Experimental, disabled by default
 
+**Language Support**:
+- English summaries via `AiServiceEn`
+- Polish summaries via `AiServicePl`
+
 **Rationale for default-off**:
 1. **Limited value**: Weather data is already clear and numeric
 2. **Quality issues**: Small local LLMs (smollm) can produce inconsistent outputs
-3. **Cost consideration**: OpenAI gpt-4o-mini costs ~$0.01 per 74 spots (31k tokens)
+3. **Cost consideration**: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
 4. **Monthly cost estimate**: ~$1.20/month at 6-hour intervals (reasonable but optional)
 
 **How to enable**:
@@ -548,7 +648,10 @@ public Spot getSpot(int id) {
 **Cache Strategy**:
 - Forecasts: Refreshed every 3 hours (via `@Scheduled`)
 - Current conditions: Refreshed every 1 minute (via `@Scheduled`)
-- AI analysis: Cached indefinitely (until next forecast refresh)
+- Current conditions history: 12h rolling window (via `EvictingQueue`)
+- AI analysis: Language-specific caches (aiAnalysisEn, aiAnalysisPl)
+- Location coordinates: Cached after first access
+- Metrics history: Rolling window via `MetricsHistoryService`
 
 ### 3. Java 24 Preview Features
 Preview features are **enabled** in this project.
@@ -678,6 +781,28 @@ Use `StepVerifier` from `reactor-test` for testing reactive types.
 
 **HTTP Mocking**:
 Use `MockWebServer` from OkHttp for mocking external API calls.
+
+### 9. Metrics & Monitoring
+The application includes comprehensive metrics collection:
+
+**Prometheus Metrics**:
+- Available at `/actuator/prometheus`
+- Standard Spring Boot actuator metrics
+- Custom application metrics
+
+**Custom Metrics Classes**:
+- `AggregatorServiceMetrics` - tracks forecast/conditions/AI fetch operations
+- `SpotsControllerMetrics` - tracks API request counts
+- `HttpClientMetricsEventListener` - tracks outgoing HTTP requests
+
+**Metrics API**:
+- `GET /api/v1/metrics` - full metrics snapshot (password-protected)
+- `GET /api/v1/metrics/history` - historical metrics data
+- `MetricsHistoryService` - maintains rolling window of metrics snapshots
+
+**Password Protection**:
+- Set `METRICS_PASSWORD` environment variable
+- Pass password via `X-Metrics-Password` header
 
 ## Adding New Kite Spots
 
@@ -816,6 +941,12 @@ For comprehensive project documentation, refer to these additional files:
 3. For OpenAI: Set `OPENAI_API_KEY` environment variable
 4. For Ollama: Ensure Ollama server is running locally
 
+**Access metrics**:
+1. Set `METRICS_PASSWORD` environment variable (optional)
+2. Call `GET /api/v1/metrics` with `X-Metrics-Password` header
+3. View Prometheus metrics at `/actuator/prometheus`
+4. Check `/api/v1/metrics/history` for historical data
+
 **Modify forecast parsing**:
 1. Update regex patterns in `ForecastService.java`
 2. Test against real Windguru export data
@@ -851,6 +982,18 @@ Add debug logging in `AggregatorService.java` to inspect cache contents.
 
 **Test external API calls**:
 Use unit tests with `MockWebServer` to simulate API responses.
+
+**View metrics**:
+```bash
+# Application status
+curl http://localhost:8080/api/v1/status
+
+# Full metrics (if password set)
+curl -H "X-Metrics-Password: yourpassword" http://localhost:8080/api/v1/metrics
+
+# Prometheus metrics
+curl http://localhost:8080/actuator/prometheus
+```
 
 ---
 
