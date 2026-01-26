@@ -118,19 +118,27 @@
 ### Data Model (simplified)
 ```
 Spot
-├─ wgId : int (derived from windguruUrl, exposed via @JsonProperty)
+├─ wgId : int (derived from windguruUrl, or deterministic hash if no Windguru station)
+├─ forecastWgId : int (Windguru ID for forecasts, may use fallback URL)
 ├─ name / country / windguruUrl / windfinderUrl / icmUrl / webcamUrl / locationUrl
+├─ windguruFallbackUrl : String (optional, alternative Windguru station for forecasts)
 ├─ forecast : List<Forecast> (3-day daily forecast)
 ├─ forecastHourly : List<Forecast> (48-hour hourly forecast, GFS or IFS)
 ├─ currentConditions : CurrentConditions
+├─ currentConditionsHistory : List<CurrentConditions> (12-hour history, 1-min intervals)
 ├─ aiAnalysisEn : String (optional, AI-generated forecast summary in English)
 ├─ aiAnalysisPl : String (optional, AI-generated forecast summary in Polish)
-├─ spotPhotoUrl : String (optional, spot photo URL)
+├─ spotPhotoUrl : String (optional, spot photo from /images/spots/{wgId}.jpg)
 ├─ coordinates : Coordinates (lat, lon - lazy-loaded, used for map generation in frontend)
 ├─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType in English)
 ├─ spotInfoPL : SpotInfo (description, bestWind, hazards, season, waterType in Polish)
 ├─ sponsors : List<Sponsor> (list of sponsors associated with this spot)
 └─ lastUpdated : String (timestamp of last update, ISO format with timezone)
+
+Note on wgId generation:
+- If windguruUrl exists: extracts numeric ID from URL
+- If no windguruUrl: generates deterministic ID (9_000_000 + hash) based on name:country
+- forecastWgId() uses windguruFallbackUrl if primary URL is empty
 
 Coordinates
 ├─ lat : double (latitude)
@@ -185,10 +193,15 @@ Sponsor
    - Provides daily and hourly forecasts (wind, temp, precipitation)
 
 2. Weather Station Providers (via strategy pattern)
-   - WiatrKadyny (wiatrkadyny.pl) - Polish stations
+   - WiatrKadyny (wiatrkadyny.pl) - Polish stations (Kadyny, Jastarnia, etc.)
    - Kiteriders (kiteriders.at) - Austrian Podersdorf station
    - MB Weather (mb-wetter.com) - German/Polish stations
    - Turawa (turawa.pl) - Polish Turawa lake station
+   - Puck (Polish station)
+   - Mietkow (Polish Mietków lake station)
+   - Svencele (Lithuanian station)
+   - TarifaArteVida (Spanish Tarifa station)
+   - ElMedano (Spanish Tenerife station)
    - HTML scraping/parsing for real-time wind data
    - Strategy implementations in service/live/strategy/
 
@@ -207,6 +220,13 @@ Sponsor
      - AiServicePl: Polish prompts and analysis
      - Both services run in parallel every 8 hours
      - Separate caches for each language
+
+5. ICM Meteogram Integration (Poland & Czech Republic only)
+   - IcmGridMapper converts lat/lon to ICM grid coordinates
+   - Uses empirically fitted coefficients for UM 4km grid
+   - Validates meteogram availability via HTTP HEAD requests
+   - Caches validated grid points to avoid repeated checks
+   - Search radius of 8 grid points for finding valid meteograms
 ```
 
 ### Multi-Language Support
@@ -287,35 +307,52 @@ In-Memory Caches (ConcurrentHashMap):
      - Updated: every 1 minute (scheduled)
      - Filter: Empty conditions are not cached
 
-  3. aiAnalysisEn: Map<Integer, String>
+  3. currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>>
+     - Key: spotId (wgId)
+     - Value: EvictingQueue with 12-hour history (720 entries at 1-min intervals)
+     - Updated: every 1 minute along with currentConditions
+     - Used for: wind trend charts on single spot page
+
+  4. aiAnalysisEn: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in English
      - Updated: every 8 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
-  4. aiAnalysisPl: Map<Integer, String>
+  5. aiAnalysisPl: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in Polish
      - Updated: every 8 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
-  5. coordinates: Map<Integer, Coordinates>
+  6. locationCoordinates: Map<Integer, Coordinates>
      - Key: spotId (wgId)
      - Value: Coordinates (lat, lon)
      - Updated: lazy-loaded on first request
      - Lifetime: persists until application restart
      - Frontend uses coordinates to generate embedded map iframe
 
-  6. hourlyForecastCacheTimestamps: Map<Integer, Long>
+  7. spotPhotos: Map<Integer, String>
+     - Key: spotId (wgId)
+     - Value: URL path to spot photo (/images/spots/{id}.jpg or .png)
+     - Loaded: on first spot access, checks classpath resources
+     - Lifetime: persists until application restart
+
+  8. hourlyForecastCacheTimestamps: Map<Integer, Long>
      - Key: spotId (wgId)
      - Value: timestamp (milliseconds)
      - Purpose: prevent redundant IFS model fetches
      - TTL: 3 hours
 
-  7. spots: AtomicReference<List<Spot>>
+  9. spots: ConcurrentMap<Integer, Spot>
      - Loaded once at startup from spots.json
      - Immutable data (name, country, URLs, spotInfo)
      - Enriched on-demand with cached data
+
+  10. forecastModelsLocks: Map<Integer, Object>
+      - Key: spotId (wgId)
+      - Value: lock object for synchronizing forecast model fetches
+      - Purpose: prevent concurrent fetches for same spot
 
 Cache Invalidation:
   - No explicit invalidation (in-memory only)
@@ -364,16 +401,18 @@ Performance Characteristics:
 Spots:
   GET /api/v1/spots
     - Returns all spots with cached forecasts, conditions, AI analysis
+    - Excludes: currentConditionsHistory, forecastHourly (for bandwidth optimization)
     - Response: Flux<Spot> (streaming JSON)
 
   GET /api/v1/spots/{id}
     - Returns single spot by wgId with GFS forecast (default)
-    - Triggers async fetch for GFS model (cached for 3h)
+    - Includes: full currentConditionsHistory and forecastHourly
+    - Triggers async fetch for all forecast models (GFS + IFS)
     - Response: Mono<Spot>
 
   GET /api/v1/spots/{id}/{model}
     - Returns single spot with specified forecast model (gfs or ifs)
-    - Triggers async fetch for GFS or IFS model if not cached
+    - Triggers async fetch for all forecast models if not cached
     - Response: Mono<Spot>
 
 Sponsors:
@@ -385,10 +424,37 @@ Sponsors:
     - Returns single sponsor by id
     - Response: Mono<Sponsor>
 
-Health:
+Health & Status:
   GET /api/v1/health
     - Simple health check endpoint
     - Response: {"status": "UP"}
+
+  GET /api/v1/status
+    - Detailed system status with uptime, version, counts
+    - Response: {
+        "status": "UP",
+        "version": "x.y.z",
+        "uptime": "1d 2h 3m 4s",
+        "uptimeSeconds": 93784,
+        "startTime": "2025-01-26T10:00:00Z",
+        "spotsCount": 90,
+        "countriesCount": 25,
+        "liveStations": 15
+      }
+
+Metrics (password-protected via X-Metrics-Password header):
+  GET /api/v1/metrics
+    - Application metrics: gauges, counters, timers, JVM stats, HTTP client stats
+    - Includes: spots total, cache sizes, fetch counts, memory usage, threads
+
+  GET /api/v1/metrics/history
+    - Historical metrics data for charting (time-series)
+    - Returns list of metric snapshots with timestamps
+
+  POST /api/v1/metrics/auth
+    - Authenticate for metrics access
+    - Body: {"password": "xxx"}
+    - Response: {"authenticated": true}
 ```
 
 ### Code Organization
@@ -401,12 +467,15 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── GsonConfig.java                   # JSON serialization
 │   ├── LLMConfig.java                    # Spring AI ChatClient
 │   ├── LoggingFilter.java                # HTTP request logging
+│   ├── MetricsConfig.java                # Micrometer metrics configuration
 │   ├── NettyConfig.java                  # Netty HTTP client tuning
 │   ├── OkHttpClientConfig.java           # OkHttpClient bean configuration
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
+│   ├── MetricsController.java            # /api/v1/metrics/*
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
-│   └── SpotsController.java              # /api/v1/spots/*
+│   ├── SpotsController.java              # /api/v1/spots/*
+│   └── StatusController.java             # /api/v1/health, /api/v1/status
 ├── data/                                 # Data layer
 │   └── provider/                         # Data providers
 │       ├── sponsors/
@@ -422,12 +491,17 @@ src/main/java/com/github/pwittchen/varun/
 │   └── FetchingForecastModelsException.java
 ├── mapper/                               # Data transformation
 │   └── WeatherForecastMapper.java        # Degrees -> cardinal directions
+├── metrics/                              # Metrics instrumentation
+│   ├── AggregatorServiceMetrics.java     # Service-level metrics
+│   ├── HttpClientMetricsEventListener.java # OkHttp request metrics
+│   └── SpotsControllerMetrics.java       # API request counters
 ├── model/                                # Domain models
 │   ├── forecast/
 │   │   ├── Forecast.java
 │   │   ├── ForecastData.java
 │   │   ├── ForecastModel.java (enum: GFS, IFS)
-│   │   └── ForecastWg.java
+│   │   ├── ForecastWg.java
+│   │   └── IcmGrid.java                  # ICM meteogram grid coordinates
 │   ├── live/                             # Live conditions
 │   │   ├── CurrentConditions.java
 │   │   └── filter/CurrentConditionsEmptyFilter.java
@@ -439,24 +513,31 @@ src/main/java/com/github/pwittchen/varun/
 │   │   ├── Spot.java
 │   │   └── SpotInfo.java
 │   └── status/
-│       └── Health.java
+│       └── Uptime.java                   # Uptime record (seconds, formatted)
 └── service/                              # Business logic
     ├── AggregatorService.java            # Core orchestrator
+    ├── MetricsHistoryService.java        # Metrics history storage for charts
     ├── ai/                               # AI forecast analysis
     │   ├── AiService.java                # Base service (abstract)
     │   ├── AiServiceEn.java              # English AI analysis
     │   └── AiServicePl.java              # Polish AI analysis
     ├── forecast/
-    │   └── ForecastService.java          # Windguru API client
+    │   ├── ForecastService.java          # Windguru API client
+    │   └── IcmGridMapper.java            # Lat/lon to ICM grid conversion
     ├── live/                             # Live conditions
     │   ├── CurrentConditionsService.java # Station data aggregator
-    │   └── strategy/                     # Strategy pattern for stations
-    │       ├── FetchCurrentConditions.java (interface)
-    │       ├── FetchCurrentConditionsStrategyBase.java
-    │       ├── FetchCurrentConditionsStrategyMB.java
-    │       ├── FetchCurrentConditionsStrategyPodersdorf.java
-    │       ├── FetchCurrentConditionsStrategyTurawa.java
-    │       └── FetchCurrentConditionsStrategyWiatrKadynyStations.java
+    │   ├── FetchCurrentConditions.java   # Strategy interface
+    │   ├── FetchCurrentConditionsStrategyBase.java # Base implementation
+    │   └── strategy/                     # Strategy implementations
+    │       ├── FetchCurrentConditionsStrategyElMedano.java    # Tenerife
+    │       ├── FetchCurrentConditionsStrategyMB.java          # MB Weather
+    │       ├── FetchCurrentConditionsStrategyMietkow.java     # Mietków
+    │       ├── FetchCurrentConditionsStrategyPodersdorf.java  # Austria
+    │       ├── FetchCurrentConditionsStrategyPuck.java        # Puck
+    │       ├── FetchCurrentConditionsStrategySvencele.java    # Lithuania
+    │       ├── FetchCurrentConditionsStrategyTarifaArteVida.java # Spain
+    │       ├── FetchCurrentConditionsStrategyTurawa.java      # Turawa
+    │       └── FetchCurrentConditionsStrategyWiatrKadynyStations.java # WiatrKadyny
     ├── map/
     │   └── GoogleMapsService.java        # Maps URL converter
     └── sponsors/
@@ -536,6 +617,53 @@ Configuration:
   - Default timeout: 60s
   - Navigation timeout: 90s
   - Browser: Chromium (via Playwright)
+```
+
+### Metrics System
+```
+Micrometer-based Observability (via Spring Boot Actuator):
+
+Gauges (current values):
+  - varun.spots.total              # Total spots loaded
+  - varun.countries.total          # Unique countries
+  - varun.live_stations.active     # Stations with live data
+  - varun.cache.forecasts.size     # Forecast cache entries
+  - varun.cache.conditions.size    # Conditions cache entries
+  - varun.fetch.forecasts.last_timestamp  # Last forecast fetch
+  - varun.fetch.conditions.last_timestamp # Last conditions fetch
+
+Counters (cumulative):
+  - varun.fetch.forecasts.total/success/failure  # Forecast fetch counts
+  - varun.fetch.conditions.total/success/failure # Conditions fetch counts
+  - varun.fetch.ai.total/success/failure         # AI analysis fetch counts
+  - varun.api.spots.requests       # GET /api/v1/spots requests
+  - varun.api.spot.requests        # GET /api/v1/spots/{id} requests
+
+Timers (duration tracking):
+  - varun.fetch.forecasts.duration   # Time to fetch all forecasts
+  - varun.fetch.conditions.duration  # Time to fetch all conditions
+  - varun.fetch.ai.duration          # Time to fetch AI analysis
+
+HTTP Client Metrics:
+  - varun.http.client.active_requests      # In-flight requests
+  - varun.http.client.requests.total       # Total outgoing requests
+  - varun.http.client.requests.success     # Successful responses
+  - varun.http.client.requests.failed      # Failed requests
+  - varun.http.client.request.duration     # Request timing
+  - varun.http.client.dns.duration         # DNS resolution timing
+  - varun.http.client.connect.duration     # TCP connect timing
+
+JVM Metrics (auto-collected):
+  - jvm.memory.used/max (heap/nonheap)
+  - jvm.threads.live/peak/daemon
+  - jvm.gc.pause (count, total time)
+  - process.cpu.usage, system.cpu.usage
+  - process.uptime
+
+Metrics History:
+  - MetricsHistoryService stores periodic snapshots
+  - Used for time-series charts on /status page
+  - In-memory storage, cleared on restart
 ```
 
 ### Legend

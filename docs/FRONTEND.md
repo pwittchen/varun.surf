@@ -75,9 +75,11 @@ JavaScript Entry Points (inline <script> tags)
     ↓
 API Calls (Fetch)
     ├─→ GET /api/v1/spots (all spots)
-    ├─→ GET /api/v1/spots/{id} (single spot + IFS)
+    ├─→ GET /api/v1/spots/{id} (single spot with history)
     ├─→ GET /api/v1/spots/{id}/{model} (GFS or IFS)
-    └─→ GET /api/v1/status (health check)
+    ├─→ GET /api/v1/status (health + uptime info)
+    ├─→ GET /api/v1/metrics (application metrics)
+    └─→ GET /api/v1/metrics/history (time-series data)
     ↓
 DOM Manipulation (vanilla JS)
     ├─→ Dynamic rendering (spot cards, tables, modals)
@@ -118,8 +120,11 @@ DOM Manipulation (vanilla JS)
 **Features**:
 - Two-column layout (desktop): left sidebar (map, current conditions, spot info, AI analysis), right main content (forecast table)
 - Forecast view tabs: Table View (vertical) and Windguru View (horizontal)
-- Real-time current conditions card
+- Real-time current conditions card with live indicator
+- Current conditions history chart (12-hour wind trend)
 - Embedded Google Maps (satellite view)
+- Spot photo display (when available)
+- ICM meteogram link (for Poland/Czech Republic spots)
 - Forecast model selector (GFS/IFS)
 - Auto-refresh every 60 seconds
 - Polling mechanism for IFS forecast availability
@@ -130,21 +135,32 @@ DOM Manipulation (vanilla JS)
 - `startForecastPolling()` - Poll for IFS forecast (5s interval, 30s timeout)
 - `startBackgroundRefresh()` - Auto-refresh current conditions (60s)
 - `renderWindguruView()` - Horizontal forecast view
+- `renderConditionsChart()` - Canvas-based wind history chart
 - Model selection persistence via `sessionStorage`
 
 #### 3. Status Page (`status.html`)
 **URL Pattern**:
-- `/status` - System health dashboard
+- `/status` - System health and metrics dashboard
 
 **Features**:
 - Service uptime and version info
 - API endpoint health checks
 - System status indicators (green/red dots)
+- Spots count, countries count, live stations count
+- Application metrics dashboard (gauges, counters, timers)
+- JVM metrics (memory, threads, CPU)
+- HTTP client metrics (requests, latency)
+- Historical metrics charts (time-series visualization)
+- Password-protected metrics access
 - Auto-refresh every 30 seconds
 
 **JavaScript Logic** (`page/status.js`):
 - `fetchStatus()` - Get system status from `/api/v1/status`
+- `fetchMetrics()` - Get detailed metrics from `/api/v1/metrics`
+- `fetchMetricsHistory()` - Get historical data for charts
 - `checkEndpoint(url)` - Health check for individual endpoints
+- `renderMetricsCharts()` - Canvas-based charts for metrics history
+- Password authentication via `X-Metrics-Password` header
 - Auto-refresh with 30s interval
 
 ### Core JavaScript Modules
@@ -404,11 +420,12 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 - `showingFavorites`: Boolean flag
 
 **Single Spot** (`page/spot.js`):
-- `currentSpot`: Loaded spot object
+- `currentSpot`: Loaded spot object (includes currentConditionsHistory)
 - `currentSpotId`: Spot ID from URL
 - `selectedModel`: Forecast model (`'gfs'` or `'ifs'`)
 - `forecastPollIntervalId`: Timer for IFS polling
 - `backgroundRefreshIntervalId`: Timer for auto-refresh
+- `conditionsHistoryChart`: Canvas chart instance for wind history
 
 ## Routing Strategy
 
@@ -486,11 +503,15 @@ window.addEventListener('popstate', (event) => {
    ↓
 4. displaySpot(spot)
    ↓
-5. Render: header, map, current conditions, spot info, AI, forecast table/windguru
+5. Render: header, map, current conditions, spot photo, spot info, AI, forecast table/windguru
    ↓
-6. startBackgroundRefresh() → refresh every 60s
+6. if (currentConditionsHistory) → renderConditionsChart()
+   │  ↓
+   │  Canvas-based line chart showing 12-hour wind trend
    ↓
-7. Auto-update DOM with new data
+7. startBackgroundRefresh() → refresh every 60s
+   ↓
+8. Auto-update DOM with new data
 ```
 
 ## Styling Architecture
@@ -1025,5 +1046,5 @@ For frontend-related issues, feature requests, or contributions:
 
 ---
 
-**Last Updated**: November 2025
+**Last Updated**: January 2026
 **Maintained By**: @pwittchen
