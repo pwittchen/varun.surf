@@ -14,6 +14,7 @@ import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter
 import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.sponsor.Sponsor;
 import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.service.ai.AiService;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
@@ -62,6 +63,18 @@ public class AggregatorService {
     private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
     private static final int CURRENT_CONDITIONS_HISTORY_LIMIT_IN_MINUTES = 12 * 60;
 
+    // Scheduling intervals
+    private static final long FORECAST_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;    // 3 hours
+    private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
+    private static final long AI_FETCH_INTERVAL_MS = 8 * 60 * 60 * 1000;          // 8 hours
+    private static final long AI_INITIAL_DELAY_MS = 5 * 60 * 1000;                // 5 minutes
+    private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
+
+    // Concurrency limits
+    private static final int FORECAST_SEMAPHORE_PERMITS = 32;
+    private static final int CONDITIONS_SEMAPHORE_PERMITS = 32;
+    private static final int AI_SEMAPHORE_PERMITS = 16;
+
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
 
@@ -86,9 +99,9 @@ public class AggregatorService {
     private final AggregatorServiceMetrics metricsService;
 
     private Disposable spotsDisposable;
-    private final Semaphore forecastLimiter = new Semaphore(32);
-    private final Semaphore currentConditionsLimiter = new Semaphore(32);
-    private final Semaphore aiLimiter = new Semaphore(16);
+    private final Semaphore forecastLimiter = new Semaphore(FORECAST_SEMAPHORE_PERMITS);
+    private final Semaphore currentConditionsLimiter = new Semaphore(CONDITIONS_SEMAPHORE_PERMITS);
+    private final Semaphore aiLimiter = new Semaphore(AI_SEMAPHORE_PERMITS);
     private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
 
@@ -171,27 +184,27 @@ public class AggregatorService {
     }
 
     public int countCountries() {
-        return Long.valueOf(spots
+        return (int) spots
                 .values()
                 .stream()
                 .map(Spot::country)
                 .distinct()
-                .count()).intValue();
+                .count();
     }
 
     public int countLiveStations() {
-        return Long.valueOf(currentConditions
+        return (int) currentConditions
                 .values()
                 .stream()
-                .filter(conditions -> conditions != null && !isEmptyConditions(conditions))
-                .count()).intValue();
+                .filter(conditions -> conditions != null && hasWindData(conditions))
+                .count();
     }
 
-    private boolean isEmptyConditions(CurrentConditions conditions) {
-        boolean noWind = conditions.wind() == 0;
-        boolean noGusts = conditions.gusts() == 0;
-        boolean noWindDirection = conditions.direction() == null || conditions.direction().isEmpty();
-        return noWind && noGusts && noWindDirection;
+    private boolean hasWindData(CurrentConditions conditions) {
+        boolean hasWind = conditions.wind() > 0;
+        boolean hasGusts = conditions.gusts() > 0;
+        boolean hasDirection = conditions.direction() != null && !conditions.direction().isEmpty();
+        return hasWind || hasGusts || hasDirection;
     }
 
     public Optional<Spot> getSpotById(int id) {
@@ -257,11 +270,7 @@ public class AggregatorService {
             scheduleLocationCoordinatesFetch(spot);
         }
 
-        List<Sponsor> sponsors = sponsorsService.getSponsors()
-                .stream()
-                .filter(sponsor -> sponsor.id() == spot.wgId())
-                .toList();
-
+        List<Sponsor> sponsors = sponsorsService.getSponsorsForSpot(spot.wgId());
         if (!sponsors.isEmpty()) {
             enrichedSpot = enrichedSpot.withSponsors(sponsors);
         }
@@ -306,7 +315,7 @@ public class AggregatorService {
         return "";
     }
 
-    @Scheduled(fixedRate = 3 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = FORECAST_FETCH_INTERVAL_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 5, backoff = @Backoff(delay = 3000))
     public void fetchForecastsEveryThreeHours() throws FetchingForecastException {
         log.info("Fetching forecasts");
@@ -375,7 +384,7 @@ public class AggregatorService {
         );
     }
 
-    @Scheduled(fixedRate = 60_000)
+    @Scheduled(fixedRate = CONDITIONS_FETCH_INTERVAL_MS)
     @Retryable(retryFor = FetchingCurrentConditionsException.class, maxAttempts = 5, backoff = @Backoff(delay = 5000))
     public void fetchCurrentConditionsEveryOneMinute() throws FetchingCurrentConditionsException {
         log.info("Fetching current conditions");
@@ -507,7 +516,7 @@ public class AggregatorService {
         }
         Instant created = Instant.ofEpochMilli(timestamp);
         Instant now = Instant.now();
-        return Duration.between(created, now).toHours() < 3;
+        return Duration.between(created, now).toHours() < HOURLY_FORECAST_CACHE_TTL_HOURS;
     }
 
     private boolean areForecastsAlreadyFetched(int spotId) {
@@ -550,7 +559,7 @@ public class AggregatorService {
         forecastModelsLocks.remove(spotId);
     }
 
-    @Scheduled(fixedRate = 8 * 60 * 60 * 1000, initialDelay = 5 * 60 * 1000)
+    @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryEightHoursEn() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
@@ -561,7 +570,7 @@ public class AggregatorService {
         }
     }
 
-    @Scheduled(fixedRate = 8 * 60 * 60 * 1000, initialDelay = 5 * 60 * 1000)
+    @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryEightHoursPl() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
@@ -580,57 +589,30 @@ public class AggregatorService {
 
     @Async
     public void fetchAiForecastAnalysisEn() throws FetchingAiForecastAnalysisException {
-        metricsService.incrementAiFetchCounter();
-        var startTime = System.nanoTime();
-        try (var scope = new StructuredTaskScope<>("aiAnalysisEn", Thread.ofVirtual().factory())) {
-            var tasks = spots
-                    .values()
-                    .stream()
-                    .map(spot -> scope.fork(() -> {
-                        aiLimiter.acquire();
-                        try {
-                            var analysis = aiServiceEn.fetchAiAnalysis(spot).block();
-                            updateSpotAiAnalysisEn(spot.wgId(), analysis);
-                            return Pair.with(spot.wgId(), analysis);
-                        } finally {
-                            aiLimiter.release();
-                        }
-                    }))
-                    .toList();
-
-            try {
-                scope.join();
-            } catch (Exception e) {
-                log.error("Error while fetching AI forecast analysis (EN)", e);
-                metricsService.incrementAiFetchFailureCounter();
-            }
-
-            tasks
-                    .stream()
-                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
-                    .map(subtask -> subtask.exception().getMessage())
-                    .forEach(log::warn);
-
-            log.info("AI forecast analysis fetched (EN)");
-            metricsService.incrementAiFetchSuccessCounter();
-        } finally {
-            metricsService.recordAiFetchDuration(startTime);
-        }
+        fetchAiForecastAnalysis(aiServiceEn, aiAnalysisEn, "EN");
     }
 
     @Async
     public void fetchAiForecastAnalysisPl() throws FetchingAiForecastAnalysisException {
+        fetchAiForecastAnalysis(aiServicePl, aiAnalysisPl, "PL");
+    }
+
+    private void fetchAiForecastAnalysis(
+            AiService aiService,
+            ConcurrentMap<Integer, String> cache,
+            String languageCode
+    ) throws FetchingAiForecastAnalysisException {
         metricsService.incrementAiFetchCounter();
         var startTime = System.nanoTime();
-        try (var scope = new StructuredTaskScope<>("aiAnalysisPl", Thread.ofVirtual().factory())) {
+        try (var scope = new StructuredTaskScope<>("aiAnalysis" + languageCode, Thread.ofVirtual().factory())) {
             var tasks = spots
                     .values()
                     .stream()
                     .map(spot -> scope.fork(() -> {
                         aiLimiter.acquire();
                         try {
-                            var analysis = aiServicePl.fetchAiAnalysis(spot).block();
-                            updateSpotAiAnalysisPl(spot.wgId(), analysis);
+                            var analysis = aiService.fetchAiAnalysis(spot).block();
+                            updateAiAnalysisCache(spot.wgId(), analysis, cache);
                             return Pair.with(spot.wgId(), analysis);
                         } finally {
                             aiLimiter.release();
@@ -641,7 +623,7 @@ public class AggregatorService {
             try {
                 scope.join();
             } catch (Exception e) {
-                log.error("Error while fetching AI forecast analysis (PL)", e);
+                log.error("Error while fetching AI forecast analysis ({})", languageCode, e);
                 metricsService.incrementAiFetchFailureCounter();
             }
 
@@ -651,22 +633,16 @@ public class AggregatorService {
                     .map(subtask -> subtask.exception().getMessage())
                     .forEach(log::warn);
 
-            log.info("AI forecast analysis fetched (PL)");
+            log.info("AI forecast analysis fetched ({})", languageCode);
             metricsService.incrementAiFetchSuccessCounter();
         } finally {
             metricsService.recordAiFetchDuration(startTime);
         }
     }
 
-    private void updateSpotAiAnalysisEn(int spotId, String analysis) {
+    private void updateAiAnalysisCache(int spotId, String analysis, ConcurrentMap<Integer, String> cache) {
         if (analysis != null && !analysis.isEmpty()) {
-            aiAnalysisEn.put(spotId, analysis);
-        }
-    }
-
-    private void updateSpotAiAnalysisPl(int spotId, String analysis) {
-        if (analysis != null && !analysis.isEmpty()) {
-            aiAnalysisPl.put(spotId, analysis);
+            cache.put(spotId, analysis);
         }
     }
 }
