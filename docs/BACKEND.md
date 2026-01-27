@@ -671,3 +671,22 @@ Metrics History:
 - Rounded rectangles: external services
 - Solid arrows: synchronous calls (HTTP or method)
 - Dashed arrows: scheduled/background processes
+
+## Related Documentation
+
+- **CLAUDE.md**: Backend architecture, API endpoints, data models
+- **FRONTEND.md**: Frontend architecture high-level overview (same directory)
+- **README.md**: User guide, build instructions, deployment
+- **prompts/new-kite-spot.md**: Adding new kite spots
+
+## Contact & Contributing
+
+For backend-related issues, feature requests, or contributions:
+- **GitHub Issues**: https://github.com/pwittchen/varun.surf/issues
+- **Email**: hello@varun.surf
+- **Pull Requests**: Welcome! Follow existing code style and conventions
+
+---
+
+**Last Updated**: January 2026
+**Maintained By**: @pwittchen
