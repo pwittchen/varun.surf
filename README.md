@@ -150,28 +150,6 @@ Set your credentials in the `.env` file (plain text):
 METRICS_PASSWORD=your-secure-password
 ```
 
-### log monitoring with dozzle
-
-[Dozzle](https://dozzle.dev) is a lightweight, web-based Docker log viewer included in the docker-compose setup. It provides real-time log streaming for all containers without storing any log data on disk.
-
-**Configuration:**
-
-Set your credentials in the `.env` file (plain text):
-```
-DOZZLE_USERNAME=admin
-DOZZLE_PASSWORD=your-secure-password
-```
-
-The `deployment.sh` script will automatically generate the bcrypt hash and create `dozzle/users.yml`.
-
-**Accessing Dozzle:**
-
-Dozzle is served behind nginx at the `/logs` path:
-- Local: http://localhost:20245/logs
-- Production: https://varun.surf/logs
-
-**Security note:** Always use a strong password in production.
-
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.

@@ -64,36 +64,10 @@ fi
 
 # Check if this is the first run (no containers running)
 if ! docker ps --format '{{.Names}}' | grep -qE '^varun-app-(blue|green)-live$'; then
-  echo "==> First deployment: starting nginx, dozzle and blue environment"
-
-  # Generate Dozzle users.yml if credentials are set
-  if [[ -n "${DOZZLE_USERNAME:-}" && -n "${DOZZLE_PASSWORD:-}" ]]; then
-    echo "==> Generating Dozzle users.yml..."
-    DOZZLE_DIR="$(dirname "$COMPOSE_FILE")/dozzle"
-    mkdir -p "$DOZZLE_DIR"
-    docker run --rm amir20/dozzle:latest generate "$DOZZLE_USERNAME" --password "$DOZZLE_PASSWORD" > "$DOZZLE_DIR/users.yml"
-  fi
-
-  $COMPOSE_CMD --profile blue-live up -d --wait varun-nginx dozzle varun-app-blue-live
+  echo "==> First deployment: starting nginx and blue environment"
+  $COMPOSE_CMD --profile blue-live up -d --wait varun-nginx varun-app-blue-live
   echo "==> Blue environment is live"
   exit 0
-fi
-
-# Generate Dozzle users.yml if credentials are set
-if [[ -n "${DOZZLE_USERNAME:-}" && -n "${DOZZLE_PASSWORD:-}" ]]; then
-  echo "==> Generating Dozzle users.yml..."
-  DOZZLE_DIR="$(dirname "$COMPOSE_FILE")/dozzle"
-  mkdir -p "$DOZZLE_DIR"
-  docker run --rm amir20/dozzle:latest generate "$DOZZLE_USERNAME" --password "$DOZZLE_PASSWORD" > "$DOZZLE_DIR/users.yml"
-fi
-
-# Ensure dozzle is running
-if ! docker ps --format '{{.Names}}' | grep -q '^varun-dozzle$'; then
-  echo "==> Starting dozzle..."
-  $COMPOSE_CMD up -d dozzle
-else
-  echo "==> Restarting dozzle with new config..."
-  $COMPOSE_CMD up -d --force-recreate dozzle
 fi
 
 # Blue-green swap
