@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -21,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -45,7 +43,6 @@ public class MetricsControllerTest {
     @BeforeEach
     void setUp() {
         controller = new MetricsController(meterRegistry, metricsHistoryService);
-        ReflectionTestUtils.setField(controller, "metricsPassword", "");
 
         // Setup default search behavior
         lenient().when(meterRegistry.find(anyString())).thenReturn(search);
@@ -57,7 +54,7 @@ public class MetricsControllerTest {
 
     @Test
     void shouldReturnMetricsResponse() {
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -82,7 +79,7 @@ public class MetricsControllerTest {
         when(meterRegistry.find("varun.spots.total")).thenReturn(spotsSearch);
         when(spotsSearch.gauges()).thenReturn(List.of(spotsGauge));
 
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -104,7 +101,7 @@ public class MetricsControllerTest {
         when(meterRegistry.find("varun.fetch.forecasts.total")).thenReturn(counterSearch);
         when(counterSearch.counters()).thenReturn(List.of(forecastCounter));
 
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -128,7 +125,7 @@ public class MetricsControllerTest {
         when(meterRegistry.find("varun.fetch.forecasts.duration")).thenReturn(timerSearch);
         when(timerSearch.timers()).thenReturn(List.of(forecastTimer));
 
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -146,7 +143,7 @@ public class MetricsControllerTest {
 
     @Test
     void shouldReturnJvmSection() {
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -164,7 +161,7 @@ public class MetricsControllerTest {
 
     @Test
     void shouldReturnHttpClientSection() {
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -181,7 +178,7 @@ public class MetricsControllerTest {
 
     @Test
     void shouldReturnTimestampInIsoFormat() {
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -199,7 +196,7 @@ public class MetricsControllerTest {
         when(meterRegistry.find("varun.fetch.forecasts.duration")).thenReturn(emptyTimerSearch);
         when(emptyTimerSearch.timers()).thenReturn(Collections.emptyList());
 
-        Mono<Map<String, Object>> result = controller.metrics(null);
+        Mono<Map<String, Object>> result = controller.metrics();
 
         StepVerifier.create(result)
                 .assertNext(metrics -> {
@@ -224,7 +221,7 @@ public class MetricsControllerTest {
         );
         when(metricsHistoryService.getHistory()).thenReturn(List.of(snapshot));
 
-        Mono<List<Map<String, Object>>> result = controller.metricsHistory(null);
+        Mono<List<Map<String, Object>>> result = controller.metricsHistory();
 
         StepVerifier.create(result)
                 .assertNext(history -> {

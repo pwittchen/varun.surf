@@ -16,7 +16,8 @@ state.applyTheme(state.getTheme());
 let autoRefreshEnabled = true;
 let refreshInterval = null;
 const REFRESH_INTERVAL_MS = 5000;
-const SESSION_PASSWORD_KEY = 'metrics_password';
+const SESSION_CREDENTIALS_KEY = 'metrics_credentials';
+const METRICS_USERNAME = 'admin';
 
 // History data for charts (keep last 60 data points = 5 minutes of data)
 const MAX_HISTORY_POINTS = 60;
@@ -37,16 +38,17 @@ const threadsHistory = {
 // AUTHENTICATION
 // ============================================================================
 
-function getStoredPassword() {
-    return sessionStorage.getItem(SESSION_PASSWORD_KEY) || '';
+function getStoredCredentials() {
+    return sessionStorage.getItem(SESSION_CREDENTIALS_KEY) || '';
 }
 
-function storePassword(password) {
-    sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
+function storeCredentials(password) {
+    const credentials = btoa(`${METRICS_USERNAME}:${password}`);
+    sessionStorage.setItem(SESSION_CREDENTIALS_KEY, credentials);
 }
 
-function clearPassword() {
-    sessionStorage.removeItem(SESSION_PASSWORD_KEY);
+function clearCredentials() {
+    sessionStorage.removeItem(SESSION_CREDENTIALS_KEY);
 }
 
 function showLoginForm() {
@@ -93,17 +95,18 @@ async function handleLogin(e) {
     const errorEl = document.getElementById('login-error');
 
     try {
-        const response = await fetch('/api/v1/metrics/auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password })
+        const credentials = btoa(`${METRICS_USERNAME}:${password}`);
+        const response = await fetch('/api/v1/metrics', {
+            headers: { 'Authorization': `Basic ${credentials}` }
         });
 
         if (response.ok) {
-            storePassword(password);
+            storeCredentials(password);
             window.location.reload();
-        } else {
+        } else if (response.status === 401) {
             errorEl.textContent = 'Invalid password';
+        } else {
+            errorEl.textContent = 'Authentication failed';
         }
     } catch (error) {
         errorEl.textContent = 'Authentication failed';
@@ -115,15 +118,15 @@ async function handleLogin(e) {
 // ============================================================================
 
 async function fetchMetrics() {
-    const password = getStoredPassword();
+    const credentials = getStoredCredentials();
     const headers = {};
-    if (password) {
-        headers['X-Metrics-Password'] = password;
+    if (credentials) {
+        headers['Authorization'] = `Basic ${credentials}`;
     }
 
     const response = await fetch('/api/v1/metrics', { headers });
     if (response.status === 401) {
-        clearPassword();
+        clearCredentials();
         showLoginForm();
         throw new Error('Unauthorized');
     }
@@ -134,15 +137,15 @@ async function fetchMetrics() {
 }
 
 async function fetchMetricsHistory() {
-    const password = getStoredPassword();
+    const credentials = getStoredCredentials();
     const headers = {};
-    if (password) {
-        headers['X-Metrics-Password'] = password;
+    if (credentials) {
+        headers['Authorization'] = `Basic ${credentials}`;
     }
 
     const response = await fetch('/api/v1/metrics/history', { headers });
     if (response.status === 401) {
-        clearPassword();
+        clearCredentials();
         showLoginForm();
         throw new Error('Unauthorized');
     }

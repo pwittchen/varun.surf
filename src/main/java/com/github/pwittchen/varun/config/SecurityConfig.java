@@ -1,0 +1,69 @@
+package com.github.pwittchen.varun.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
+import reactor.core.publisher.Mono;
+
+@Configuration
+@EnableWebFluxSecurity
+public class SecurityConfig {
+
+    @Value("${app.metrics.password:}")
+    private String metricsPassword;
+
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchanges -> {
+                    if (metricsPassword != null && !metricsPassword.isBlank()) {
+                        exchanges
+                                .pathMatchers("/api/v1/metrics/**").authenticated()
+                                .anyExchange().permitAll();
+                    } else {
+                        exchanges.anyExchange().permitAll();
+                    }
+                })
+                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(noPopupAuthenticationEntryPoint()))
+                .build();
+    }
+
+    private ServerAuthenticationEntryPoint noPopupAuthenticationEntryPoint() {
+        return (exchange, _) -> {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
+        };
+    }
+
+    @Bean
+    public ReactiveUserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        if (metricsPassword == null || metricsPassword.isBlank()) {
+            return _ -> Mono.empty();
+        }
+
+        var user = User
+                .builder()
+                .username("admin")
+                .password(passwordEncoder.encode(metricsPassword))
+                .roles("ADMIN")
+                .build();
+
+        return new MapReactiveUserDetailsService(user);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}

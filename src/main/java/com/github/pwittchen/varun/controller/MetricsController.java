@@ -5,15 +5,9 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -29,42 +23,18 @@ public class MetricsController {
     private final MeterRegistry meterRegistry;
     private final MetricsHistoryService metricsHistoryService;
 
-    @Value("${app.metrics.password:}")
-    private String metricsPassword;
-
     public MetricsController(MeterRegistry meterRegistry, MetricsHistoryService metricsHistoryService) {
         this.meterRegistry = meterRegistry;
         this.metricsHistoryService = metricsHistoryService;
     }
 
-    @PostMapping("metrics/auth")
-    public Mono<Map<String, Object>> authenticate(@RequestBody Map<String, String> body) {
-        String password = body.get("password");
-        if (metricsPassword.isEmpty() || metricsPassword.equals(password)) {
-            return Mono.just(Map.of("authenticated", true));
-        }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
-    }
-
     @GetMapping("metrics/history")
-    public Mono<List<Map<String, Object>>> metricsHistory(
-            @RequestHeader(value = "X-Metrics-Password", required = false) String password) {
-
-        if (!metricsPassword.isEmpty() && !metricsPassword.equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
-        }
-
+    public Mono<List<Map<String, Object>>> metricsHistory() {
         return Mono.just(metricsHistoryService.getHistory());
     }
 
     @GetMapping("metrics")
-    public Mono<Map<String, Object>> metrics(
-            @RequestHeader(value = "X-Metrics-Password", required = false) String password) {
-
-        if (!metricsPassword.isEmpty() && !metricsPassword.equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
-        }
-
+    public Mono<Map<String, Object>> metrics() {
         Map<String, Object> result = new HashMap<>();
 
         // Application gauges
