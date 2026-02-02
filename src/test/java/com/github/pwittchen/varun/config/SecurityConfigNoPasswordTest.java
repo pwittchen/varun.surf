@@ -9,7 +9,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
-@TestPropertySource(properties = {"app.metrics.password="})
+@TestPropertySource(properties = {"app.analytics.password="})
 public class SecurityConfigNoPasswordTest {
 
     @Autowired

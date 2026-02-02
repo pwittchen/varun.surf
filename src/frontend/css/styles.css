@@ -3267,6 +3267,28 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 12px;
 }
 
+.status-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+.btn-icon {
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon svg {
+    display: block;
+}
+
 .status-indicator {
     display: flex;
     align-items: center;
@@ -4603,5 +4625,251 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         width: 144px !important;
         min-width: 144px !important;
         flex: 0 0 auto;
+    }
+}
+
+
+/* ============================================================================
+   30. LOGS PAGE
+   ============================================================================ */
+
+/* Logs Filter Controls */
+.logs-filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.logs-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logs-filter-group label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.logs-filter-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.logs-select {
+    padding: 12px 40px 12px 16px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.logs-select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.logs-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.logs-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.logs-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.logs-count {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+/* Logs Table */
+.logs-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.logs-table-container {
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+.logs-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--bg-tertiary);
+    z-index: 1;
+}
+
+.logs-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-primary);
+    white-space: nowrap;
+}
+
+.logs-table td {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border-primary);
+    vertical-align: top;
+}
+
+.logs-th-time {
+    width: 100px;
+}
+
+.logs-th-level {
+    width: 70px;
+}
+
+.logs-th-logger {
+    width: 180px;
+}
+
+.logs-th-message {
+    min-width: 300px;
+}
+
+.logs-td-time {
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.logs-td-logger {
+    color: var(--text-secondary);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logs-td-message {
+    color: var(--text-primary);
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.logs-empty {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 32px !important;
+}
+
+/* Log Level Badges */
+.logs-level-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.logs-level-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.logs-level-warn {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.logs-level-info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+
+.logs-level-debug {
+    background: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
+}
+
+.logs-level-trace {
+    background: rgba(107, 114, 128, 0.1);
+    color: #6b7280;
+}
+
+/* Log Row Highlighting */
+.logs-row.logs-level-error {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.logs-row.logs-level-warn {
+    background: rgba(245, 158, 11, 0.05);
+}
+
+.logs-row:hover {
+    background: var(--bg-tertiary);
+}
+
+/* Logs Refresh Dot */
+.logs-refresh-dot.paused {
+    background: var(--status-neutral);
+}
+
+/* Wide View Mode (for metrics and logs pages) */
+body.wide-view .status-container {
+    max-width: 100%;
+    padding: 0 40px;
+}
+
+body.wide-view .container {
+    max-width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .logs-filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .logs-filter-group {
+        width: 100%;
+    }
+
+    .logs-filter-search {
+        min-width: 0;
+    }
+
+    .logs-th-logger,
+    .logs-td-logger {
+        display: none;
+    }
+
+    .logs-table-container {
+        max-height: 400px;
     }
 }

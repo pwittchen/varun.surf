@@ -350,8 +350,8 @@ app:
           enabled: false           # AI analysis feature flag (default: off)
   ai:
     provider: ollama              # AI provider: "openai" or "ollama"
-  metrics:
-    password: ${METRICS_PASSWORD:}  # Optional password for /api/v1/metrics
+  analytics:
+    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
 
 spring:
   ai:
@@ -381,7 +381,7 @@ management:
 ### Environment Variables
 - `OPENAI_API_KEY`: Required if using OpenAI provider
 - `OLLAMA_BASE_URL`: Ollama server URL (default: http://localhost:11434)
-- `METRICS_PASSWORD`: Optional password for protected metrics endpoints
+- `ANALYTICS_PASSWORD`: Optional password for protected analytics endpoints (metrics and logs)
 
 ## Build & Run Commands
 
@@ -801,8 +801,8 @@ The application includes comprehensive metrics collection:
 - `MetricsHistoryService` - maintains rolling window of metrics snapshots
 
 **Password Protection**:
-- Set `METRICS_PASSWORD` environment variable
-- Pass password via `X-Metrics-Password` header
+- Set `ANALYTICS_PASSWORD` environment variable
+- Uses HTTP Basic Authentication (username: admin)
 
 ## Adding New Kite Spots
 
@@ -941,9 +941,9 @@ For comprehensive project documentation, refer to these additional files:
 3. For OpenAI: Set `OPENAI_API_KEY` environment variable
 4. For Ollama: Ensure Ollama server is running locally
 
-**Access metrics**:
-1. Set `METRICS_PASSWORD` environment variable (optional)
-2. Call `GET /api/v1/metrics` with `X-Metrics-Password` header
+**Access metrics and logs**:
+1. Set `ANALYTICS_PASSWORD` environment variable (optional)
+2. Call `GET /api/v1/metrics` or `GET /api/v1/logs` with Basic Auth (admin:password)
 3. View Prometheus metrics at `/actuator/prometheus`
 4. Check `/api/v1/metrics/history` for historical data
 

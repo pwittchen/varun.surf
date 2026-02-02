@@ -142,12 +142,25 @@ The app includes a custom metrics dashboard at [/metrics](https://varun.surf/met
 - **Timers**: forecast, conditions, and AI fetch durations (count, total time, mean, max)
 - **JVM metrics**: heap/non-heap memory usage, thread counts, GC pause stats, CPU usage, uptime
 - **HTTP client metrics**: active/total/success/failed requests, connection stats, DNS/connect durations
+- **Wide/narrow view toggle**: expand to full width for better readability
+
+### built-in logs dashboard
+
+The app includes a logs dashboard at [/logs](https://varun.surf/logs) that displays:
+
+- **Real-time application logs** with auto-refresh every 5 seconds
+- **Level filtering**: filter by ERROR, WARN, INFO, DEBUG, or TRACE
+- **Text search**: search through log messages, logger names, and thread names
+- **Wide/narrow view toggle**: expand to full width for better readability
+- **In-memory buffer**: stores the last 1000 log entries (oldest logs are evicted when buffer is full)
+
+Note: Logs are stored in memory only and are lost on application restart.
 
 **Configuration:**
 
-Set your credentials in the `.env` file (plain text):
+Both metrics and logs dashboards share the same credentials. Set your password in the `.env` file:
 ```
-METRICS_PASSWORD=your-secure-password
+ANALYTICS_PASSWORD=your-secure-password
 ```
 
 ## ai forecast analysis

@@ -11,7 +11,7 @@ import java.util.Base64;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
-@TestPropertySource(properties = {"app.metrics.password=testpassword123"})
+@TestPropertySource(properties = {"app.analytics.password=testpassword123"})
 public class SecurityConfigTest {
 
     @Autowired
@@ -59,7 +59,7 @@ public class SecurityConfigTest {
 
     @Test
     void shouldAllowAccessToMetricsWithValidCredentials() {
-        String credentials = Base64.getEncoder().encodeToString("metrics:testpassword123".getBytes());
+        String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
 
         webTestClient.get()
                 .uri("/api/v1/metrics")
@@ -70,7 +70,7 @@ public class SecurityConfigTest {
 
     @Test
     void shouldAllowAccessToMetricsHistoryWithValidCredentials() {
-        String credentials = Base64.getEncoder().encodeToString("metrics:testpassword123".getBytes());
+        String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
 
         webTestClient.get()
                 .uri("/api/v1/metrics/history")
@@ -92,7 +92,7 @@ public class SecurityConfigTest {
 
     @Test
     void shouldRejectMetricsAccessWithInvalidUsername() {
-        String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
+        String credentials = Base64.getEncoder().encodeToString("wronguser:testpassword123".getBytes());
 
         webTestClient.get()
                 .uri("/api/v1/metrics")

@@ -217,8 +217,8 @@ app:
           enabled: false        # AI analysis disabled by default
   ai:
     provider: ollama           # or openai
-  metrics:
-    password: ${METRICS_PASSWORD:}  # Optional password for /api/v1/metrics
+  analytics:
+    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
 
 spring:
   ai:
@@ -425,7 +425,8 @@ The AI forecast analysis is disabled by default because:
 
 13. **Metrics & Monitoring**:
     - Prometheus metrics export at `/actuator/prometheus`
-    - Custom metrics endpoint at `/api/v1/metrics` (password-protected via `METRICS_PASSWORD`)
+    - Custom metrics endpoint at `/api/v1/metrics` (password-protected via `ANALYTICS_PASSWORD`)
+    - Logs endpoint at `/api/v1/logs` (password-protected via `ANALYTICS_PASSWORD`)
     - Metrics history with rolling window via `MetricsHistoryService`
     - Custom metrics classes: `AggregatorServiceMetrics`, `SpotsControllerMetrics`, `HttpClientMetricsEventListener`
 

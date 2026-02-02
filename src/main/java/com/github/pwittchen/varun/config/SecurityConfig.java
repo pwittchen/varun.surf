@@ -19,17 +19,17 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Value("${app.metrics.password:}")
-    private String metricsPassword;
+    @Value("${app.analytics.password:}")
+    private String analyticsPassword;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> {
-                    if (metricsPassword != null && !metricsPassword.isBlank()) {
+                    if (analyticsPassword != null && !analyticsPassword.isBlank()) {
                         exchanges
-                                .pathMatchers("/api/v1/metrics/**").authenticated()
+                                .pathMatchers("/api/v1/metrics/**", "/api/v1/logs/**").authenticated()
                                 .anyExchange().permitAll();
                     } else {
                         exchanges.anyExchange().permitAll();
@@ -48,14 +48,14 @@ public class SecurityConfig {
 
     @Bean
     public ReactiveUserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        if (metricsPassword == null || metricsPassword.isBlank()) {
+        if (analyticsPassword == null || analyticsPassword.isBlank()) {
             return _ -> Mono.empty();
         }
 
         var user = User
                 .builder()
-                .username("metrics")
-                .password(passwordEncoder.encode(metricsPassword))
+                .username("admin")
+                .password(passwordEncoder.encode(analyticsPassword))
                 .roles("ADMIN")
                 .build();
 

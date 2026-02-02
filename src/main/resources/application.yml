@@ -42,5 +42,5 @@ app:
           enabled: false
   ai:
     provider: ollama
-  metrics:
-    password: "\${METRICS_PASSWORD:}"
+  analytics:
+    password: "\${ANALYTICS_PASSWORD:}"

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Logs - VARUN.SURF</title>
+    <meta name="description"
+          content="Application logs for VARUN.SURF - kitesurfing weather forecast dashboard">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cstyle%3Epath%7Bfill:%231a1a1a%7D@media(prefers-color-scheme:dark)%7Bpath%7Bfill:%23f5f5f5%7D%7D%3C/style%3E%3Cpath d='M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script
+            defer
+            data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"
+            data-domain="varun.surf"
+            src="https://datafa.st/js/script.js">
+    </script>
+</head>
+<body>
+<!-- MAIN CONTENT -->
+<div class="main-content main-content-status">
+    <div class="container">
+
+        <main class="status-page">
+            <div class="status-container">
+                <!-- LOGS PAGE HEADER -->
+                <div class="status-page-header">
+                    <div class="status-page-header-content">
+                        <h1 class="status-page-title"><span id="headerTitle">VARUN.SURF</span></h1>
+                    </div>
+                </div>
+
+                <h2>Application Logs</h2>
+
+                <!-- Auto-refresh indicator -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-indicator">
+                            <span class="status-dot status-dot-up logs-refresh-dot"></span>
+                            <span class="status-text" id="refresh-status">Auto-refresh: 5s</span>
+                        </div>
+                        <div class="status-header-actions">
+                            <span class="status-time" id="last-updated">Last updated: -</span>
+                            <button id="toggle-wide" class="btn btn-small btn-secondary btn-icon" title="Wide View">
+                                <svg id="icon-expand" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                                <svg id="icon-collapse" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="status-card">
+                    <div class="logs-filter-controls">
+                        <div class="logs-filter-group">
+                            <label for="level-filter">Level:</label>
+                            <select id="level-filter" class="logs-select">
+                                <option value="">ALL</option>
+                                <option value="ERROR">ERROR</option>
+                                <option value="WARN">WARN</option>
+                                <option value="INFO">INFO</option>
+                                <option value="DEBUG">DEBUG</option>
+                                <option value="TRACE">TRACE</option>
+                            </select>
+                        </div>
+                        <div class="logs-filter-group logs-filter-search">
+                            <label for="search-filter">Search:</label>
+                            <input type="text" id="search-filter" class="logs-input" placeholder="Filter logs...">
+                        </div>
+                        <div class="logs-filter-group">
+                            <span class="logs-count" id="logs-count">0 logs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Container -->
+                <div class="status-card logs-card">
+                    <div class="logs-table-container">
+                        <table class="logs-table">
+                            <thead>
+                                <tr>
+                                    <th class="logs-th-time">Time</th>
+                                    <th class="logs-th-level">Level</th>
+                                    <th class="logs-th-logger">Logger</th>
+                                    <th class="logs-th-message">Message</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-body">
+                                <!-- Logs will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="status-actions">
+                    <button id="toggle-refresh" class="btn btn-primary">
+                        Pause Auto-Refresh
+                    </button>
+                    <a href="/metrics/" class="btn btn-secondary">
+                        View Metrics
+                    </a>
+                    <a href="/status" class="btn btn-secondary">
+                        View Status
+                    </a>
+                    <a href="/" class="btn btn-secondary">
+                        View Dashboard
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <!-- Footer content rendered by JavaScript -->
+            </div>
+        </footer>
+    </div>
+</div>
+<script type="module" src="../js/page/logs.js"></script>
+</body>
+</html>

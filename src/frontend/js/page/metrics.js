@@ -728,6 +728,49 @@ function stopAutoRefresh() {
 }
 
 // ============================================================================
+// WIDE VIEW TOGGLE
+// ============================================================================
+
+const WIDE_VIEW_KEY = 'metrics_wide_view';
+
+function toggleWideView() {
+    const isWide = document.body.classList.toggle('wide-view');
+    const button = document.getElementById('toggle-wide');
+    const iconExpand = document.getElementById('icon-expand');
+    const iconCollapse = document.getElementById('icon-collapse');
+
+    if (isWide) {
+        button.title = 'Narrow View';
+        iconExpand.style.display = 'none';
+        iconCollapse.style.display = 'block';
+    } else {
+        button.title = 'Wide View';
+        iconExpand.style.display = 'block';
+        iconCollapse.style.display = 'none';
+    }
+    localStorage.setItem(WIDE_VIEW_KEY, isWide ? 'true' : 'false');
+}
+
+function restoreWideView() {
+    const isWide = localStorage.getItem(WIDE_VIEW_KEY) === 'true';
+    if (isWide) {
+        document.body.classList.add('wide-view');
+        const button = document.getElementById('toggle-wide');
+        const iconExpand = document.getElementById('icon-expand');
+        const iconCollapse = document.getElementById('icon-collapse');
+        if (button) {
+            button.title = 'Narrow View';
+        }
+        if (iconExpand) {
+            iconExpand.style.display = 'none';
+        }
+        if (iconCollapse) {
+            iconCollapse.style.display = 'block';
+        }
+    }
+}
+
+// ============================================================================
 // INITIALIZATION
 // ============================================================================
 
@@ -738,8 +781,12 @@ async function initializeMetrics() {
         headerTitle.addEventListener('click', routing.navigateToHome);
     }
 
-    // Setup toggle button
+    // Setup toggle buttons
     document.getElementById('toggle-refresh').addEventListener('click', toggleAutoRefresh);
+    document.getElementById('toggle-wide').addEventListener('click', toggleWideView);
+
+    // Restore wide view preference
+    restoreWideView();
 
     try {
         // Load historical data first

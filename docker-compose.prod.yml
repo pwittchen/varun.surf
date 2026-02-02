@@ -37,7 +37,7 @@ services:
     profiles: ["blue-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=blue
-      - METRICS_PASSWORD=${METRICS_PASSWORD:-}
+      - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
 
   varun-app-green-live:
     image: ghcr.io/pwittchen/varun.surf:latest
@@ -62,4 +62,4 @@ services:
     profiles: ["green-live"]
     environment:
       - SPRING_PROFILES_ACTIVE=green
-      - METRICS_PASSWORD=${METRICS_PASSWORD:-}
+      - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
