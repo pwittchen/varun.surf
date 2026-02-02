@@ -54,7 +54,7 @@ public class SecurityConfig {
 
         var user = User
                 .builder()
-                .username("admin")
+                .username("metrics")
                 .password(passwordEncoder.encode(metricsPassword))
                 .roles("ADMIN")
                 .build();
