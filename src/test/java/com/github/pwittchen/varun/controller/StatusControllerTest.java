@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.service.AggregatorService;
+import com.github.pwittchen.varun.service.health.HealthHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -23,9 +25,12 @@ public class StatusControllerTest {
     @Mock
     private AggregatorService aggregatorService;
 
+    @Mock
+    private HealthHistoryService healthHistoryService;
+
     @BeforeEach
     void setUp() {
-        controller = new StatusController(aggregatorService);
+        controller = new StatusController(aggregatorService, healthHistoryService);
         ReflectionTestUtils.setField(controller, "version", "test-version");
     }
 
@@ -77,6 +82,26 @@ public class StatusControllerTest {
                     assertThat(status).isNotNull();
                     assertThat(status).containsEntry("status", "UP");
                     assertThat(status).containsEntry("liveStations", 0);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnHealthHistory() {
+        when(healthHistoryService.getHistory()).thenReturn(List.of());
+        when(healthHistoryService.getSummary()).thenReturn(
+                new HealthHistoryService.HealthHistorySummary(0, 0, 100.0, 0, System.currentTimeMillis())
+        );
+        when(healthHistoryService.isCurrentlyHealthy()).thenReturn(true);
+
+        Mono<Map<String, Object>> result = controller.healthHistory();
+
+        StepVerifier.create(result)
+                .assertNext(history -> {
+                    assertThat(history).isNotNull();
+                    assertThat(history).containsKey("history");
+                    assertThat(history).containsKey("summary");
+                    assertThat(history).containsEntry("currentlyHealthy", true);
                 })
                 .verifyComplete();
     }

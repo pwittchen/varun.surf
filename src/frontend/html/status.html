@@ -78,6 +78,27 @@
                 </div>
 
                 <div class="status-card">
+                    <h3>Uptime History</h3>
+                    <div class="health-history-header">
+                        <span class="health-history-uptime" id="uptime-percentage">-% uptime</span>
+                        <span class="health-history-period" id="history-period">-</span>
+                    </div>
+                    <div class="health-history-container" id="health-history">
+                        <!-- Health history bars will be inserted here -->
+                    </div>
+                    <div class="health-history-legend">
+                        <span class="health-history-legend-item">
+                            <span class="health-history-legend-dot health-history-legend-up"></span>
+                            Operational
+                        </span>
+                        <span class="health-history-legend-item">
+                            <span class="health-history-legend-dot health-history-legend-down"></span>
+                            Degraded/Down
+                        </span>
+                    </div>
+                </div>
+
+                <div class="status-card">
                     <h3>API Endpoints</h3>
                     <div class="status-endpoints">
                         <div class="status-endpoint" data-endpoint="/api/v1/health">

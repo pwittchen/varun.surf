@@ -2,6 +2,8 @@ package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.status.Uptime;
 import com.github.pwittchen.varun.service.AggregatorService;
+import com.github.pwittchen.varun.service.health.HealthCheckResult;
+import com.github.pwittchen.varun.service.health.HealthHistoryService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,12 +22,14 @@ public class StatusController {
 
     private final Instant startTime = Instant.now();
     private final AggregatorService aggregatorService;
+    private final HealthHistoryService healthHistoryService;
 
     @Value("${spring.application.version:unknown}")
     private String version;
 
-    public StatusController(AggregatorService aggregatorService) {
+    public StatusController(AggregatorService aggregatorService, HealthHistoryService healthHistoryService) {
         this.aggregatorService = aggregatorService;
+        this.healthHistoryService = healthHistoryService;
     }
 
     @GetMapping("health")
@@ -47,6 +53,25 @@ public class StatusController {
                 "countriesCount", countriesCount,
                 "liveStations", liveStations
         ));
+    }
+
+    @GetMapping("status/history")
+    public Mono<Map<String, Object>> healthHistory() {
+        List<HealthCheckResult> history = healthHistoryService.getHistory();
+        HealthHistoryService.HealthHistorySummary summary = healthHistoryService.getSummary();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("history", history);
+        result.put("summary", Map.of(
+                "totalChecks", summary.totalChecks(),
+                "successfulChecks", summary.successfulChecks(),
+                "uptimePercentage", summary.uptimePercentage(),
+                "avgLatencyMs", summary.avgLatencyMs(),
+                "oldestCheckTimestamp", summary.oldestCheckTimestamp()
+        ));
+        result.put("currentlyHealthy", healthHistoryService.isCurrentlyHealthy());
+
+        return Mono.just(result);
     }
 
     private Uptime getUptime() {

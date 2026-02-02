@@ -86,9 +86,102 @@ async function checkAllEndpoints() {
     await Promise.all(endpoints.map(checkEndpoint));
 }
 
+// ============================================================================
+// HEALTH HISTORY FUNCTIONS
+// ============================================================================
+
+async function fetchHealthHistory() {
+    try {
+        const response = await fetch('/api/v1/status/history');
+        if (!response.ok) {
+            throw new Error('Failed to fetch health history');
+        }
+        const data = await response.json();
+        renderHealthHistory(data);
+    } catch (error) {
+        console.error('Error fetching health history:', error);
+    }
+}
+
+function renderHealthHistory(data) {
+    const container = document.getElementById('health-history');
+    const uptimeEl = document.getElementById('uptime-percentage');
+    const periodEl = document.getElementById('history-period');
+
+    if (!data || !data.history) {
+        container.innerHTML = '<div class="health-history-empty">No history available</div>';
+        return;
+    }
+
+    const { history, summary } = data;
+
+    // Update uptime percentage
+    const uptimePercent = summary.uptimePercentage || 100;
+    uptimeEl.textContent = `${uptimePercent.toFixed(2)}% uptime`;
+    uptimeEl.className = 'health-history-uptime' +
+        (uptimePercent < 99 ? ' degraded' : '') +
+        (uptimePercent < 95 ? ' down' : '');
+
+    // Calculate time period
+    if (summary.oldestCheckTimestamp) {
+        const oldestDate = new Date(summary.oldestCheckTimestamp);
+        const now = new Date();
+        const diffMs = now - oldestDate;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffDays > 0) {
+            periodEl.textContent = `Last ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+        } else if (diffHours > 0) {
+            periodEl.textContent = `Last ${diffHours} hour${diffHours > 1 ? 's' : ''}`;
+        } else {
+            periodEl.textContent = `Last ${diffMins} minute${diffMins > 1 ? 's' : ''}`;
+        }
+    }
+
+    // Render bars
+    const maxBars = 90;
+    const barsToShow = Math.min(history.length, maxBars);
+
+    // If we have fewer entries, pad with empty bars
+    const emptyBars = maxBars - barsToShow;
+
+    let html = '';
+
+    // Add empty bars first (oldest)
+    for (let i = 0; i < emptyBars; i++) {
+        html += '<div class="health-history-bar empty"></div>';
+    }
+
+    // Add actual history bars (oldest to newest)
+    for (let i = 0; i < barsToShow; i++) {
+        const entry = history[i];
+        const date = new Date(entry.timestamp);
+        const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        const statusClass = entry.healthy ? '' : ' down';
+        const statusText = entry.healthy ? 'Operational' : 'Down';
+        const statusTextClass = entry.healthy ? 'up' : 'down';
+        const latencyStr = entry.healthy && entry.latencyMs > 0 ? ` (${entry.latencyMs}ms)` : '';
+
+        html += `
+            <div class="health-history-bar${statusClass}">
+                <div class="health-history-tooltip">
+                    <span class="health-history-tooltip-time">${dateStr} ${timeStr}</span>
+                    <span class="health-history-tooltip-status ${statusTextClass}">${statusText}${latencyStr}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
+}
+
 async function refreshStatus() {
     await fetchStatus();
     await checkAllEndpoints();
+    await fetchHealthHistory();
 }
 
 // ============================================================================
