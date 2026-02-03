@@ -13,6 +13,7 @@ see it online at: https://varun.surf
 
 ## tech stack overview
 
+- infra: Docker, Docker Compose, Nginx, GHCR, GitHub Actions, Cloudflare, Mikrus VPS
 - backend: Java, Spring Boot, Gradle
 - frontend (bundled with the backend app): Vanilla JS, HTML, CSS, Bun
 
