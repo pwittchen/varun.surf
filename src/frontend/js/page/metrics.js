@@ -77,6 +77,7 @@ function showLoginForm() {
         </div>
         <div class="status-actions">
             <a href="/status" class="btn btn-secondary">View Status</a>
+            <a href="/logs/" class="btn btn-secondary">View Logs</a>
             <a href="/" class="btn btn-secondary">View Dashboard</a>
         </div>
     `;
