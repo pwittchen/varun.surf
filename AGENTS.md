@@ -10,21 +10,23 @@
 
 ## Tech Stack
 
-- **Backend Framework**: Spring Boot 3.5.5 (Reactive WebFlux)
+- **Backend Framework**: Spring Boot 3.5.9 (Reactive WebFlux)
 - **Language**: Java 24 with preview features enabled
 - **Build System**: Gradle
 - **Frontend Build**: Bun (replaces npm for faster builds)
 - **Key Dependencies**:
   - Spring WebFlux (reactive, non-blocking I/O)
-  - Spring AI (OpenAI & Ollama integration)
+  - Spring Security (HTTP Basic Auth for protected endpoints)
+  - Spring AI 1.0.2 (OpenAI & Ollama integration)
   - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client library)
-  - Gson (JSON parsing and serialization)
-  - JavaTuples (tuple data structures)
-  - Guava (EvictingQueue for metrics history)
+  - Gson 2.13.2 (JSON parsing and serialization)
+  - JavaTuples 1.2 (tuple data structures)
+  - Guava 33.5.0-jre (EvictingQueue for metrics/logs history)
+  - spring-dotenv 4.0.0 (environment variable loading)
 - **Containerization**: Docker, deployed to GitHub Container Registry (GHCR)
 - **Frontend**: Vanilla JavaScript, HTML, CSS (no framework)
-- **Testing Framework**: JUnit 5, Truth assertions library, MockWebServer, Playwright (E2E)
+- **Testing Framework**: JUnit 5, Truth 1.4.5, MockWebServer, Playwright 1.49.0 (E2E), Jacoco 0.8.13 (coverage)
 
 ## System Architecture
 
@@ -40,6 +42,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/sponsors (sponsors list)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
+    ├─→ /api/v1/logs (application logs, password-protected)
     └─→ /api/v1/health (health check)
     ↓
 AggregatorService (orchestrates with Java 24 StructuredTaskScope)
@@ -47,7 +50,9 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
     ├─→ CurrentConditionsService ─→ Weather Stations (9 strategies)
     ├─→ GoogleMapsService ─→ Google Maps (coordinates)
     ├─→ AiServiceEn/AiServicePl ─→ LLM Provider (OpenAI/Ollama)
-    └─→ MetricsHistoryService ─→ Prometheus metrics with history
+    ├─→ MetricsHistoryService ─→ Prometheus metrics with history
+    ├─→ LogsService ─→ In-memory log buffer (last 1000 entries)
+    └─→ HealthHistoryService ─→ Health check history (90 data points)
 ```
 
 ### Core Services
@@ -239,7 +244,25 @@ chatClient.prompt().user(prompt)
 - JVM metrics: heap, threads, GC, CPU
 - HTTP client metrics: requests, connections, durations
 
-#### 9. SponsorsController (`controller/SponsorsController.java`)
+#### 9. LogsController (`controller/LogsController.java`)
+**Purpose**: REST API endpoints for application logs.
+
+**Endpoints**:
+- `GET /api/v1/logs` - All logs from in-memory buffer (password-protected)
+- `GET /api/v1/logs?level={level}` - Filter logs by level (ERROR, WARN, INFO, DEBUG, TRACE)
+
+**Features**:
+- Returns last 1000 log entries (oldest evicted when buffer is full)
+- Level filtering via query parameter
+- Auto-refresh every 5 seconds in frontend dashboard
+- Text search through log messages, logger names, and thread names
+
+**Data Source**:
+- `LogsService` maintains in-memory buffer
+- `InMemoryLogAppender` captures application logs
+- Logs are lost on application restart (intentional)
+
+#### 10. SponsorsController (`controller/SponsorsController.java`)
 **Purpose**: REST API endpoints for sponsors.
 
 **Endpoints**:
@@ -488,12 +511,15 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── OkHttpClientConfig.java     # OkHttp client beans
 │   ├── CorsConfig.java             # CORS configuration
 │   ├── WebConfig.java              # WebFlux configuration
+│   ├── SecurityConfig.java         # Spring Security (HTTP Basic Auth)
+│   ├── LogAppenderConfig.java      # In-memory log appender configuration
 │   └── LoggingFilter.java          # Request/response logging
 ├── controller/                      # REST controllers
 │   ├── SpotsController.java        # /api/v1/spots endpoints
 │   ├── SponsorsController.java     # /api/v1/sponsors endpoints
 │   ├── StatusController.java       # /api/v1/status, /api/v1/health
-│   └── MetricsController.java      # /api/v1/metrics endpoints
+│   ├── MetricsController.java      # /api/v1/metrics endpoints
+│   └── LogsController.java         # /api/v1/logs endpoints
 ├── data/provider/                   # Data providers
 │   ├── spots/JsonSpotsDataProvider.java
 │   └── sponsors/JsonSponsorsDataProvider.java
@@ -517,7 +543,6 @@ src/main/java/com/github/pwittchen/varun/
 │   └── status/                     # Uptime
 └── service/                         # Business logic
     ├── AggregatorService.java       # Main orchestrator
-    ├── MetricsHistoryService.java   # Metrics history tracking
     ├── ai/                          # AI services
     │   ├── AiService.java          # Abstract base
     │   ├── AiServiceEn.java        # English summaries
@@ -532,8 +557,17 @@ src/main/java/com/github/pwittchen/varun/
     │   └── strategy/               # 9 weather station strategies
     ├── map/                         # Map services
     │   └── GoogleMapsService.java
-    └── sponsors/                    # Sponsor services
-        └── SponsorsService.java
+    ├── sponsors/                    # Sponsor services
+    │   └── SponsorsService.java
+    ├── metrics/                     # Metrics services
+    │   └── MetricsHistoryService.java
+    ├── logs/                        # Logs services
+    │   ├── LogsService.java        # In-memory log buffer (1000 entries)
+    │   ├── InMemoryLogAppender.java # Logback appender
+    │   └── LogEntry.java           # Log entry record
+    └── health/                      # Health services
+        ├── HealthHistoryService.java # Health check history (90 points)
+        └── HealthCheckResult.java   # Health check result record
 ```
 
 ## Deployment
@@ -573,7 +607,9 @@ Implemented features (complete):
 - AI forecast analysis (experimental, disabled by default, supports EN/PL)
 - Prometheus metrics export (/actuator/prometheus)
 - Custom metrics dashboard (/api/v1/metrics)
+- Custom logs dashboard (/api/v1/logs) with level filtering and text search
 - Status page with uptime and stats
+- Health check history (90 data points, 1-minute intervals)
 
 ## AI Analysis Feature Details
 
@@ -800,9 +836,22 @@ The application includes comprehensive metrics collection:
 - `GET /api/v1/metrics/history` - historical metrics data
 - `MetricsHistoryService` - maintains rolling window of metrics snapshots
 
+**Logs API**:
+- `GET /api/v1/logs` - application logs from in-memory buffer (password-protected)
+- `GET /api/v1/logs?level={level}` - filter by log level
+- `LogsService` - maintains last 1000 log entries
+- `InMemoryLogAppender` - captures logs from Logback
+- Logs are stored in memory only and lost on restart
+
+**Health History**:
+- `HealthHistoryService` - tracks health check results
+- 90 data points (rolling window, 1-minute intervals)
+- Provides uptime percentage and average latency statistics
+
 **Password Protection**:
 - Set `ANALYTICS_PASSWORD` environment variable
 - Uses HTTP Basic Authentication (username: admin)
+- Protects both `/api/v1/metrics/**` and `/api/v1/logs/**` endpoints
 
 ## Adding New Kite Spots
 
@@ -942,10 +991,11 @@ For comprehensive project documentation, refer to these additional files:
 4. For Ollama: Ensure Ollama server is running locally
 
 **Access metrics and logs**:
-1. Set `ANALYTICS_PASSWORD` environment variable (optional)
+1. Set `ANALYTICS_PASSWORD` environment variable (optional but recommended)
 2. Call `GET /api/v1/metrics` or `GET /api/v1/logs` with Basic Auth (admin:password)
 3. View Prometheus metrics at `/actuator/prometheus`
 4. Check `/api/v1/metrics/history` for historical data
+5. Filter logs by level: `GET /api/v1/logs?level=ERROR`
 
 **Modify forecast parsing**:
 1. Update regex patterns in `ForecastService.java`
@@ -989,10 +1039,19 @@ Use unit tests with `MockWebServer` to simulate API responses.
 curl http://localhost:8080/api/v1/status
 
 # Full metrics (if password set)
-curl -H "X-Metrics-Password: yourpassword" http://localhost:8080/api/v1/metrics
+curl -u admin:yourpassword http://localhost:8080/api/v1/metrics
 
 # Prometheus metrics
 curl http://localhost:8080/actuator/prometheus
+```
+
+**View logs**:
+```bash
+# All logs (if password set)
+curl -u admin:yourpassword http://localhost:8080/api/v1/logs
+
+# Filter by level
+curl -u admin:yourpassword "http://localhost:8080/api/v1/logs?level=ERROR"
 ```
 
 ---

@@ -8,21 +8,23 @@
 
 ## Tech Stack
 
-- **Backend**: Spring Boot 3.5.5 (Reactive WebFlux)
+- **Backend**: Spring Boot 3.5.9 (Reactive WebFlux)
 - **Java**: Version 24 with preview features enabled
 - **Build Tool**: Gradle
 - **Frontend Build**: Bun (replaces npm for faster builds)
 - **Dependencies**:
   - Spring WebFlux (reactive, non-blocking)
-  - Spring AI (OpenAI & Ollama integration for forecast analysis)
+  - Spring Security (authentication for protected endpoints)
+  - Spring AI 1.0.2 (OpenAI & Ollama integration for forecast analysis)
   - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client)
-  - Gson (JSON serialization)
-  - JavaTuples
-  - Guava (EvictingQueue for metrics history)
+  - Gson 2.13.2 (JSON serialization)
+  - JavaTuples 1.2
+  - Guava 33.5.0-jre (EvictingQueue for metrics/logs history)
+  - spring-dotenv 4.0.0 (environment variable loading)
 - **Containerization**: Docker with GHCR deployment
 - **Frontend**: Vanilla JavaScript (static/index.html)
-- **Testing**: JUnit 5, Truth assertions, MockWebServer, Playwright (E2E)
+- **Testing**: JUnit 5, Truth 1.4.5, MockWebServer, Playwright 1.49.0 (E2E), Jacoco 0.8.13 (coverage)
 
 ## Architecture Overview
 
@@ -38,6 +40,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
+    ├─→ /api/v1/logs (application logs, password-protected)
     └─→ /api/v1/health (health check)
     ↓
 AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
@@ -45,7 +48,9 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
     ├─→ CurrentConditionsService → Multiple station providers (9 strategies)
     ├─→ GoogleMapsService → Google Maps (URL resolver, coordinates)
     ├─→ AiServiceEn/AiServicePl → LLM (OpenAI/Ollama, language-specific)
-    └─→ MetricsHistoryService → Prometheus metrics with history
+    ├─→ MetricsHistoryService → Prometheus metrics with history
+    ├─→ LogsService → In-memory log buffer (last 1000 entries)
+    └─→ HealthHistoryService → Health check history (90 data points)
 ```
 
 ### Key Components
@@ -137,7 +142,14 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - `POST /api/v1/metrics/auth` - metrics authentication
    - Exposes gauges, counters, timers, JVM metrics, HTTP client metrics
 
-9. **SponsorsController** (`controller/SponsorsController.java`)
+9. **LogsController** (`controller/LogsController.java`)
+   - REST API endpoints:
+     - `GET /api/v1/logs` - application logs (password-protected)
+     - `GET /api/v1/logs?level={level}` - filter logs by level (ERROR, WARN, INFO, DEBUG, TRACE)
+   - Returns last 1000 log entries from in-memory buffer
+   - Auto-refresh every 5 seconds in frontend dashboard
+
+10. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
      - `GET /api/v1/sponsors` - main sponsors only (isMain=true)
      - `GET /api/v1/sponsors/{id}` - single sponsor
@@ -309,12 +321,15 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── OkHttpClientConfig.java
 │   ├── CorsConfig.java
 │   ├── WebConfig.java
+│   ├── SecurityConfig.java    # Spring Security (HTTP Basic Auth)
+│   ├── LogAppenderConfig.java # In-memory log appender
 │   └── LoggingFilter.java
 ├── controller/                # REST controllers
 │   ├── SpotsController.java
 │   ├── SponsorsController.java
 │   ├── StatusController.java
-│   └── MetricsController.java
+│   ├── MetricsController.java
+│   └── LogsController.java
 ├── data/provider/             # Data providers
 │   ├── spots/JsonSpotsDataProvider.java
 │   └── sponsors/JsonSponsorsDataProvider.java
@@ -334,13 +349,15 @@ src/main/java/com/github/pwittchen/varun/
 │   └── status/                # Uptime
 └── service/                   # Business logic
     ├── AggregatorService.java
-    ├── MetricsHistoryService.java
     ├── ai/                    # AiService, AiServiceEn, AiServicePl
     ├── forecast/              # ForecastService, IcmGridMapper
     ├── live/                  # CurrentConditionsService
     │   └── strategy/          # 9 weather station strategies
     ├── map/                   # GoogleMapsService
-    └── sponsors/              # SponsorsService
+    ├── sponsors/              # SponsorsService
+    ├── metrics/               # MetricsHistoryService
+    ├── logs/                  # LogsService, InMemoryLogAppender, LogEntry
+    └── health/                # HealthHistoryService, HealthCheckResult
 ```
 
 ## Deployment
@@ -369,14 +386,16 @@ src/main/java/com/github/pwittchen/varun/
 - [x] AI forecast analysis (optional, disabled by default, supports EN/PL)
 - [x] Prometheus metrics export (/actuator/prometheus)
 - [x] Custom metrics dashboard (/api/v1/metrics)
+- [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
 - [x] Status page with uptime and stats
+- [x] Health check history (90 data points, 1-minute intervals)
 
 ## AI Analysis Feature (Experimental)
 
 The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
 2. Small local LLMs (like smollm) sometimes produce invalid outputs
-3. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 74 spots (31k tokens)
+3. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
 4. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
 
 ## Important Notes for AI Assistants
@@ -429,6 +448,18 @@ The AI forecast analysis is disabled by default because:
     - Logs endpoint at `/api/v1/logs` (password-protected via `ANALYTICS_PASSWORD`)
     - Metrics history with rolling window via `MetricsHistoryService`
     - Custom metrics classes: `AggregatorServiceMetrics`, `SpotsControllerMetrics`, `HttpClientMetricsEventListener`
+
+14. **Logs System**:
+    - In-memory log buffer via `LogsService` (last 1000 entries)
+    - `InMemoryLogAppender` captures application logs
+    - Level filtering: ERROR, WARN, INFO, DEBUG, TRACE
+    - Logs are lost on application restart (intentional)
+
+15. **Health History**:
+    - `HealthHistoryService` tracks health check results
+    - 90 data points (rolling window)
+    - 1-minute check intervals
+    - Provides uptime percentage and average latency
 
 ## Adding New Kite Spots
 
