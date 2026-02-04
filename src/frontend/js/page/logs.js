@@ -64,8 +64,8 @@ function showLoginForm() {
             </form>
         </div>
         <div class="status-actions">
-            <a href="/metrics/" class="btn btn-secondary">View Metrics</a>
             <a href="/status" class="btn btn-secondary">View Status</a>
+            <a href="/metrics/" class="btn btn-secondary">View Metrics</a>
             <a href="/" class="btn btn-secondary">View Dashboard</a>
         </div>
     `;
