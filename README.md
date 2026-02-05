@@ -13,7 +13,7 @@ see it online at: https://varun.surf
 
 ## tech stack overview
 
-- **infra**: Docker, Docker Compose, Nginx (reverse proxy server), GitHub (Git repo and issues), GHCR (Docker containers registry), GitHub Actions (CI/CD), Cloudflare (DNS management), SeoHost (domain management), Mikrus (VPS)
+- **infra**: Docker, Docker Compose, Nginx, GitHub, GitHub Actions, GHCR, Cloudflare, SeoHost, Mikrus
 - **backend**: Java, Spring Boot, Gradle
 - **frontend** (bundled with the backend app): Vanilla JS, HTML, CSS, Bun
 
