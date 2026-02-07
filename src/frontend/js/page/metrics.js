@@ -729,6 +729,34 @@ function stopAutoRefresh() {
 }
 
 // ============================================================================
+// CHART RESIZING
+// ============================================================================
+
+function resizeCharts() {
+    const chartIds = ['cpu-history-chart', 'ram-history-chart', 'threads-history-chart'];
+
+    chartIds.forEach(id => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            canvas.width = Math.round(rect.width);
+            canvas.height = Math.round(rect.height);
+        }
+    });
+
+    drawCpuHistoryChart();
+    drawRamHistoryChart();
+    drawThreadsHistoryChart();
+}
+
+let resizeTimeout = null;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resizeCharts, 150);
+});
+
+// ============================================================================
 // WIDE VIEW TOGGLE
 // ============================================================================
 
@@ -750,6 +778,8 @@ function toggleWideView() {
         iconCollapse.style.display = 'none';
     }
     localStorage.setItem(WIDE_VIEW_KEY, isWide ? 'true' : 'false');
+
+    requestAnimationFrame(resizeCharts);
 }
 
 function restoreWideView() {
@@ -794,10 +824,8 @@ async function initializeMetrics() {
         const historyData = await fetchMetricsHistory();
         loadHistoryData(historyData);
 
-        // Draw charts with historical data
-        drawCpuHistoryChart();
-        drawRamHistoryChart();
-        drawThreadsHistoryChart();
+        // Size canvases to match their containers, then draw charts
+        resizeCharts();
     } catch (error) {
         console.error('Error loading metrics history:', error);
         // If unauthorized, the fetchMetricsHistory will show login form
