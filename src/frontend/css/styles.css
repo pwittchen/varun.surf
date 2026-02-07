@@ -71,16 +71,16 @@
     /* Card & Surface */
     --card-bg: #1a1a1a;
 
-    /* Gradients */
-    --gradient-button: linear-gradient(145deg, #1d1d1d, #2c2c2c);
-    --gradient-button-hover: linear-gradient(145deg, #2c2c2c, #3d3d3d);
-    --gradient-active: linear-gradient(145deg, #00397b, #1663b0);
-    --gradient-header: linear-gradient(145deg, #0854ab, #216ebb);
+    /* Button & Active Backgrounds */
+    --gradient-button: #1d1d1d;
+    --gradient-button-hover: #2c2c2c;
+    --gradient-active: #0d4f8b;
+    --gradient-header: #0d4f8b;
 
     /* Shadows */
-    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6);
-    --shadow-accent: 0 4px 12px rgba(74, 158, 255, 0.4);
-    --shadow-ghost: 0 12px 48px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-accent: none;
+    --shadow-ghost: 0 4px 12px rgba(0, 0, 0, 0.4);
 
     /* Status Colors */
     --success-color: #22c55e;
@@ -91,7 +91,7 @@
     --danger-light: #dc2626;
 
     /* Error State */
-    --error-bg: linear-gradient(145deg, #4b0404, #550303);
+    --error-bg: #4b0404;
     --error-border: #840808;
     --error-text: #fca5a5;
 
@@ -186,18 +186,18 @@
     /* Card & Surface */
     --card-bg: #ffffff;
 
-    /* Gradients */
-    --gradient-button: linear-gradient(145deg, #ffffff, #f0f3f7);
-    --gradient-button-hover: linear-gradient(145deg, #f0f3f7, #e4e8ed);
-    --gradient-active: linear-gradient(145deg, #0d6efd, #0a58ca);
-    --gradient-header: linear-gradient(145deg, #0d6efd, #0a58ca);
+    /* Button & Active Backgrounds */
+    --gradient-button: #ffffff;
+    --gradient-button-hover: #f0f3f7;
+    --gradient-active: #0d6efd;
+    --gradient-header: #0d6efd;
 
     /* Shadows */
-    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
-    --shadow-accent: 0 4px 12px rgba(13, 110, 253, 0.3);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-accent: none;
 
     /* Error State */
-    --error-bg: linear-gradient(145deg, #fee2e2, #fdd);
+    --error-bg: #fee2e2;
     --error-border: #ef4444;
     --error-text: #991b1b;
 
@@ -287,18 +287,18 @@ body {
     right: 0 !important;
     width: 100% !important;
     z-index: 9999 !important;
-    background: rgba(15, 15, 15, 0.7) !important;
-    backdrop-filter: blur(5px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(5px) saturate(180%) !important;
+    background: rgba(15, 15, 15, 0.85) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
     padding: 20px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
 [data-theme="light"] .fixed-header {
     background: rgba(255, 255, 255, 0.92) !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 4px 24px rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) !important;
 }
 
 .header-content {
@@ -442,7 +442,6 @@ body {
     outline: none;
     border-color: var(--accent-primary);
     background: var(--bg-secondary);
-    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
 }
 
 .search-clear {
@@ -553,7 +552,6 @@ body {
     transform: translateY(-10px);
     transition: all .3s ease;
     box-shadow: var(--shadow-card);
-    backdrop-filter: blur(10px);
     max-height: 300px;
     overflow-y: auto;
 }
@@ -1322,7 +1320,7 @@ body {
     max-width: 600px;
     max-height: 80vh;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     animation: modalSlideIn .3s ease;
 }
 
@@ -1654,7 +1652,6 @@ body {
     padding: 24px;
     margin: 20px 0;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .error-icon {
@@ -1845,7 +1842,6 @@ body {
 
 .calc-button:hover {
     background: var(--gradient-header);
-    box-shadow: var(--shadow-accent);
 }
 
 .calc-result {
@@ -2581,7 +2577,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .data-source-radio-container input[type="radio"]:checked + label {
     background: var(--accent-primary);
     color: var(--text-white);
-    box-shadow: 0 2px 6px rgba(74, 158, 255, 0.3);
 }
 
 .forecast-filters-right {
@@ -3296,23 +3291,24 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .status-dot {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--status-neutral);
     position: relative;
+    animation: pulse-glow 2s ease-in-out infinite;
 }
 
 .status-dot::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    opacity: .4;
+    animation: pulse-ring 2s ease-in-out infinite;
 }
 
 .status-dot-up {
@@ -3320,7 +3316,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .status-dot-up::before {
-    background: rgba(40, 167, 69, 0.3);
+    background: var(--status-up);
 }
 
 .status-dot-down {
@@ -3328,7 +3324,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .status-dot-down::before {
-    background: rgba(220, 53, 69, 0.3);
+    background: var(--status-down);
 }
 
 .status-text {
@@ -4012,7 +4008,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     height: 14px;
     border-radius: 50%;
     border: 2px solid var(--marker-border);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     background-color: var(--wind-extreme);
 }
 
@@ -4155,7 +4150,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     border: 2px solid var(--leaflet-border);
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     min-width: 120px;
 }
 
@@ -4217,6 +4211,19 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     }
 }
 
+
+@keyframes favorite-pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 @keyframes pulse-glow {
     0%, 100% {
         opacity: 1;
@@ -4240,18 +4247,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     100% {
         transform: scale(2);
         opacity: 0;
-    }
-}
-
-@keyframes favorite-pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.3);
-    }
-    100% {
-        transform: scale(1);
     }
 }
 

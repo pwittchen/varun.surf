@@ -20,7 +20,7 @@ body.tv-view {
     padding: 1.5rem 2rem;
     background: var(--tv-header-bg);
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tv-spot-title {
@@ -112,7 +112,7 @@ body.tv-view {
     background: var(--tv-card-bg);
     padding: 3rem;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tv-conditions-label {
@@ -179,7 +179,7 @@ body.tv-view {
     background: var(--tv-card-bg);
     padding: 2rem;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tv-forecast-horizontal {
