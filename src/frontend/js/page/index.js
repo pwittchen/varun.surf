@@ -243,10 +243,6 @@ function setupFavorites() {
         });
     });
 
-    // Restore favorites state on page load
-    if (state.getShowingFavorites()) {
-        renderFavorites();
-    }
 }
 
 function exitFavoritesMode(options = {}) {
@@ -2271,8 +2267,8 @@ function handleStarredURL() {
         return;
     }
 
-    // Check for /starred URL first
-    if (routing.isStarredUrl()) {
+    // Check for /starred URL or persisted favorites state
+    if (routing.isStarredUrl() || state.getShowingFavorites()) {
         // Load favorites directly
         showingFavorites = true;
         state.setShowingFavorites(true);
@@ -2280,7 +2276,11 @@ function handleStarredURL() {
         if (favoritesToggle) {
             favoritesToggle.classList.add('active');
         }
-        updatePageTitle('all'); // Will be overridden by renderFavorites if needed
+        // Ensure URL reflects starred state
+        if (!routing.isStarredUrl()) {
+            routing.pushStarredUrl();
+        }
+        document.title = `${translations.t('favoritesToggleTooltip')} - VARUN.SURF`;
         renderFavorites();
         // Start auto-refresh after an initial load
         startAutoRefresh();
