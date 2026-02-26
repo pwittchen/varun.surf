@@ -195,8 +195,17 @@ async function renderFavorites() {
 
         // Render based on the current view mode
         if (currentViewMode === 'list') {
+            // Filter live stations if checkbox is enabled
+            let spotsToShow = favoriteSpots;
+            if (showOnlyLiveStations) {
+                spotsToShow = favoriteSpots.filter(spot => {
+                    const conditions = getSpotConditions(spot);
+                    return conditions && conditions.isCurrent;
+                });
+            }
+
             // Apply sorting if a column is selected
-            const sortedSpots = listSortColumn ? sortSpots(favoriteSpots, listSortColumn, listSortDirection) : favoriteSpots;
+            const sortedSpots = listSortColumn ? sortSpots(spotsToShow, listSortColumn, listSortDirection) : spotsToShow;
 
             // Render list view
             spotsGrid.appendChild(createListHeader());
@@ -1242,7 +1251,11 @@ function createListHeader() {
             checkbox.checked = showOnlyLiveStations;
             checkbox.addEventListener('change', (e) => {
                 showOnlyLiveStations = e.target.checked;
-                renderSpots(currentFilter, currentSearchQuery, true);
+                if (showingFavorites) {
+                    renderFavorites();
+                } else {
+                    renderSpots(currentFilter, currentSearchQuery, true);
+                }
             });
             cell.appendChild(checkbox);
         } else if (col.sortable) {
