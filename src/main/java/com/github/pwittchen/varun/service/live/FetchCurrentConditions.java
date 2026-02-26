@@ -7,4 +7,8 @@ public interface FetchCurrentConditions {
     boolean canProcess(int wgId);
 
     Mono<CurrentConditions> fetchCurrentConditions(int wgId);
+
+    default boolean isFallbackStation() {
+        return false;
+    }
 }
