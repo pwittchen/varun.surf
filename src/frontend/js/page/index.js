@@ -1096,12 +1096,13 @@ function createSpotCard(spot) {
             currentWaveText = `${spot.currentConditions.wave}`;
         }
 
+        const outdated = spot.currentConditions && date.isConditionsOutdated(spot.currentConditions.date);
         currentConditionsRow = `
                     <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${translations.t('nowLabel')}</strong>
-                                <div class="live-dot"></div>
+                                <div class="live-dot${outdated ? ' outdated' : ''}"></div>
                             </div>
                         </td>
                         <td class="${windTextClass}">${baseWind} kts</td>
@@ -1311,7 +1312,8 @@ function createListRow(spot) {
     indicatorCell.className = 'list-indicator-cell';
     if (isCurrent) {
         const indicator = document.createElement('div');
-        indicator.className = 'list-indicator';
+        const isOutdated = spot.currentConditions && date.isConditionsOutdated(spot.currentConditions.date);
+        indicator.className = `list-indicator${isOutdated ? ' outdated' : ''}`;
         indicatorCell.appendChild(indicator);
     }
     row.appendChild(indicatorCell);
