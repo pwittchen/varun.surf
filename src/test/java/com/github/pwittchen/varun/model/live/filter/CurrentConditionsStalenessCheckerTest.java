@@ -65,6 +65,20 @@ class CurrentConditionsStalenessCheckerTest {
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 
+    // --- Format: dd/MM/yy HH:mm:ss (Kadyny stations) ---
+
+    @Test
+    void shouldReturnFalseForFreshReadingWithSlashFormat() {
+        String date = NOW.minusMinutes(30).format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss"));
+        assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isFalse();
+    }
+
+    @Test
+    void shouldReturnTrueForStaleReadingWithSlashFormat() {
+        String date = NOW.minusHours(2).format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss"));
+        assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
+    }
+
     // --- Boundary tests ---
 
     @Test

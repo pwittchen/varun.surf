@@ -13,7 +13,8 @@ public final class CurrentConditionsStalenessChecker {
     private static final List<DateTimeFormatter> FORMATTERS = List.of(
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
-            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"),
+            DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss")
     );
 
     private CurrentConditionsStalenessChecker() {

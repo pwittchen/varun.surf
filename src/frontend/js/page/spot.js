@@ -715,6 +715,51 @@ function formatLiveDataTime(dateStr) {
     return dateStr.replace(/(\d{2}:\d{2}):\d{2}/, '$1');
 }
 
+// Check if current conditions date is stale (>= 60 minutes old)
+function isConditionsOutdated(dateStr) {
+    if (!dateStr) return true;
+    const trimmed = dateStr.trim();
+    let parsed = null;
+
+    // Try yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm
+    const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})(?::(\d{2}))?$/);
+    if (isoMatch) {
+        parsed = new Date(
+            parseInt(isoMatch[1]), parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3]),
+            parseInt(isoMatch[4]), parseInt(isoMatch[5]), parseInt(isoMatch[6] || '0')
+        );
+    }
+
+    // Try dd.MM.yyyy HH:mm
+    if (!parsed) {
+        const dotMatch = trimmed.match(/^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})$/);
+        if (dotMatch) {
+            parsed = new Date(
+                parseInt(dotMatch[3]), parseInt(dotMatch[2]) - 1, parseInt(dotMatch[1]),
+                parseInt(dotMatch[4]), parseInt(dotMatch[5])
+            );
+        }
+    }
+
+    // Try dd/MM/yy HH:mm:ss (Kadyny stations format)
+    if (!parsed) {
+        const slashMatch = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2}):(\d{2})$/);
+        if (slashMatch) {
+            const year = 2000 + parseInt(slashMatch[3]);
+            parsed = new Date(
+                year, parseInt(slashMatch[2]) - 1, parseInt(slashMatch[1]),
+                parseInt(slashMatch[4]), parseInt(slashMatch[5]), parseInt(slashMatch[6])
+            );
+        }
+    }
+
+    if (!parsed || isNaN(parsed.getTime())) return true;
+
+    const now = new Date();
+    const diffMinutes = (now - parsed) / (1000 * 60);
+    return diffMinutes >= 60;
+}
+
 // Convert currentConditionsHistory to forecast-like format for views
 function convertHistoryToForecastFormat(history) {
     if (!history || !Array.isArray(history)) return [];
@@ -1559,11 +1604,13 @@ function createSpotCard(spot) {
             }
         }
 
+        const outdated = isConditionsOutdated(spot.currentConditions.date);
         currentConditionsRow = `
                     <tr class="${windClass}" style="border-bottom: 2px solid #404040;">
                         <td>
                             <div class="live-indicator">
                                 <strong class="live-text">${translations.t('nowLabel')}</strong>
+                                ${outdated ? `<span class="outdated-chip">${translations.t('outdatedLabel')}</span>` : ''}
                                 <div class="live-dot"></div>
                             </div>
                         </td>
@@ -1724,7 +1771,8 @@ function createSpotCard(spot) {
             direction: spot.currentConditions.direction,
             temp: spot.currentConditions.temp,
             precipitation: 0, // Current conditions don't have precipitation
-            isCurrent: true
+            isCurrent: true,
+            isOutdated: isConditionsOutdated(spot.currentConditions.date)
         };
         conditionsLabel = translations.t('nowLabel');
     } else if (forecastData && forecastData.length > 0) {
@@ -1763,6 +1811,7 @@ function createSpotCard(spot) {
                 <div class="current-conditions-card">
                     <div class="conditions-header">
                         <div class="conditions-label">${conditionsLabel}</div>
+                        ${conditionsData.isCurrent && conditionsData.isOutdated ? `<span class="outdated-chip">${translations.t('outdatedLabel')}</span>` : ''}
                         ${conditionsData.isCurrent ? '<div class="live-dot"></div>' : ''}
                     </div>
                     <div class="conditions-main">

@@ -1236,7 +1236,7 @@ body {
 
 /* Live Indicator */
 .live-indicator {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
 }
@@ -1252,7 +1252,7 @@ body {
     border-radius: 50%;
     position: relative;
     animation: pulse-glow 2s ease-in-out infinite;
-    margin-left: 8px;
+    margin-left: auto;
 }
 
 .live-dot::before {
@@ -1266,6 +1266,26 @@ body {
     border-radius: 50%;
     opacity: .4;
     animation: pulse-ring 2s ease-in-out infinite;
+}
+
+.outdated-chip + .live-dot {
+    margin-left: 6px;
+}
+
+/* Outdated Chip */
+.outdated-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #f59e0b;
+    color: #592305;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 5px 5px;
+    border-radius: 4px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-left: auto;
 }
 
 /* Forecast Indicator */
@@ -2278,8 +2298,8 @@ body.spot-page .error-description {
 
 .conditions-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
     margin-bottom: 24px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border-primary);
@@ -4484,6 +4504,18 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
     .live-indicator {
         justify-content: center;
+    }
+
+    .outdated-chip {
+        display: none;
+    }
+
+    .outdated-chip + .live-dot {
+        background: #f59e0b;
+    }
+
+    .outdated-chip + .live-dot::before {
+        background: #f59e0b;
     }
 
     .theme-toggle-single-spot {

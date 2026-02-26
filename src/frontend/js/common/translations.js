@@ -37,6 +37,7 @@ export const translations = {
         waveHeader: "Wave",
         countryHeader: "Country",
         nowLabel: "NOW",
+        outdatedLabel: "outdated",
         forecastEstimateLabel: "Forecast",
         liveStationsOnly: "Live stations only",
 
@@ -286,6 +287,7 @@ export const translations = {
         waveHeader: "Fala",
         countryHeader: "Kraj",
         nowLabel: "TERAZ",
+        outdatedLabel: "nieaktualne",
         forecastEstimateLabel: "Prognoza",
         liveStationsOnly: "Tylko stacje live",
 
