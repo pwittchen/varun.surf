@@ -17,7 +17,7 @@
 - **Key Dependencies**:
   - Spring WebFlux (reactive, non-blocking I/O)
   - Spring Security (HTTP Basic Auth for protected endpoints)
-  - Spring AI 1.0.2 (OpenAI & Ollama integration)
+  - Spring AI 1.0.2 (OpenAI integration)
   - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client library)
   - Gson 2.13.2 (JSON parsing and serialization)
@@ -49,7 +49,7 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
     ├─→ ForecastService ─→ Windguru API (GFS & IFS models)
     ├─→ CurrentConditionsService ─→ Weather Stations (9 strategies)
     ├─→ GoogleMapsService ─→ Google Maps (coordinates)
-    ├─→ AiServiceEn/AiServicePl ─→ LLM Provider (OpenAI/Ollama)
+    ├─→ AiServiceEn/AiServicePl ─→ LLM Provider (OpenAI)
     ├─→ MetricsHistoryService ─→ Prometheus metrics with history
     ├─→ LogsService ─→ In-memory log buffer (last 1000 entries)
     └─→ HealthHistoryService ─→ Health check history (90 data points)
@@ -152,11 +152,7 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 
 **Configuration**:
 - Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
-- Provider selection: `app.ai.provider: ollama` or `openai`
-
-**Supported Providers**:
-- **OpenAI** (gpt-4o-mini) - production-ready, costs ~$0.01 per 102 spots
-- **Ollama** (smollm2:135m) - free, local, may need fine-tuning
+- Provider: OpenAI (gpt-4o-mini) - costs ~$0.01 per 102 spots
 
 **Professional Prompt Engineering**:
 - System role: Professional kitesurfing weather analyst
@@ -371,8 +367,6 @@ app:
       forecast:
         analysis:
           enabled: false           # AI analysis feature flag (default: off)
-  ai:
-    provider: ollama              # AI provider: "openai" or "ollama"
   analytics:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
 
@@ -384,11 +378,6 @@ spring:
         options:
           model: gpt-4o-mini       # Model for OpenAI provider
           temperature: 0.7
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: smollm2:135m      # Model for Ollama provider
 
 management:
   endpoints:
@@ -402,8 +391,7 @@ management:
 ```
 
 ### Environment Variables
-- `OPENAI_API_KEY`: Required if using OpenAI provider
-- `OLLAMA_BASE_URL`: Ollama server URL (default: http://localhost:11434)
+- `OPENAI_API_KEY`: Required when AI analysis feature is enabled
 - `ANALYTICS_PASSWORD`: Optional password for protected analytics endpoints (metrics and logs)
 
 ## Build & Run Commands
@@ -621,9 +609,8 @@ Implemented features (complete):
 
 **Rationale for default-off**:
 1. **Limited value**: Weather data is already clear and numeric
-2. **Quality issues**: Small local LLMs (smollm) can produce inconsistent outputs
-3. **Cost consideration**: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
-4. **Monthly cost estimate**: ~$1.20/month at 6-hour intervals (reasonable but optional)
+2. **Cost consideration**: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
+3. **Monthly cost estimate**: ~$1.20/month at 6-hour intervals (reasonable but optional)
 
 **How to enable**:
 ```yaml
@@ -635,9 +622,7 @@ app:
           enabled: true
 ```
 
-**Providers**:
-- **OpenAI**: Production-ready, consistent output, costs money
-- **Ollama**: Free, runs locally, may require fine-tuning for best results
+**Provider**: OpenAI (gpt-4o-mini) - production-ready, consistent output
 
 ## Critical Implementation Notes for AI Agents
 
@@ -986,9 +971,7 @@ For comprehensive project documentation, refer to these additional files:
 
 **Enable AI analysis**:
 1. Set `app.feature.ai.forecast.analysis.enabled: true` in `application.yml`
-2. Choose provider: `app.ai.provider: openai` or `ollama`
-3. For OpenAI: Set `OPENAI_API_KEY` environment variable
-4. For Ollama: Ensure Ollama server is running locally
+2. Set `OPENAI_API_KEY` environment variable
 
 **Access metrics and logs**:
 1. Set `ANALYTICS_PASSWORD` environment variable (optional but recommended)

@@ -15,7 +15,7 @@ You are an expert security auditor specializing in identifying vulnerabilities a
 - **Framework**: Spring Boot 3.x with WebFlux (reactive)
 - **Runtime**: Java 24
 - **Data**: Weather forecasts, kite spot information (no user accounts/PII)
-- **External APIs**: Windguru, weather stations, Google Maps, OpenAI/Ollama
+- **External APIs**: Windguru, weather stations, Google Maps, OpenAI
 - **Authentication**: None (public read-only API)
 - **Data Storage**: In-memory caching only (no database)
 
@@ -50,7 +50,7 @@ You are an expert security auditor specializing in identifying vulnerabilities a
 │  - Windguru API                                             │
 │  - Weather station APIs                                     │
 │  - Google Maps URL resolver                                 │
-│  - LLM APIs (OpenAI/Ollama)                                │
+│  - LLM APIs (OpenAI)                                       │
 └─────────────────────────────────────────────────────────────┘
 ```
 

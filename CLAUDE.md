@@ -15,7 +15,7 @@
 - **Dependencies**:
   - Spring WebFlux (reactive, non-blocking)
   - Spring Security (authentication for protected endpoints)
-  - Spring AI 1.0.2 (OpenAI & Ollama integration for forecast analysis)
+  - Spring AI 1.0.2 (OpenAI integration for forecast analysis)
   - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client)
   - Gson 2.13.2 (JSON serialization)
@@ -47,7 +47,7 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
     ├─→ ForecastService → Windguru micro API (GFS & IFS models)
     ├─→ CurrentConditionsService → Multiple station providers (9 strategies)
     ├─→ GoogleMapsService → Google Maps (URL resolver, coordinates)
-    ├─→ AiServiceEn/AiServicePl → LLM (OpenAI/Ollama, language-specific)
+    ├─→ AiServiceEn/AiServicePl → LLM (OpenAI, language-specific)
     ├─→ MetricsHistoryService → Prometheus metrics with history
     ├─→ LogsService → In-memory log buffer (last 1000 entries)
     └─→ HealthHistoryService → Health check history (90 data points)
@@ -102,7 +102,7 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
    - Optional feature (disabled by default via feature flag)
    - Language-specific implementations (English and Polish)
    - Generates AI-powered forecast summaries using Spring AI ChatClient
-   - Supports two providers: OpenAI (gpt-4o-mini) or Ollama (smollm2:135m)
+   - Uses OpenAI (gpt-4o-mini) as the LLM provider
    - Professional kitesurfing analyst prompt with kite size recommendations:
      - Below 8 kts: not rideable
      - 8-11 kts: foil only
@@ -227,8 +227,6 @@ app:
       forecast:
         analysis:
           enabled: false        # AI analysis disabled by default
-  ai:
-    provider: ollama           # or openai
   analytics:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
 
@@ -239,11 +237,6 @@ spring:
       chat:
         options:
           model: gpt-4o-mini
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: smollm2:135m
 
 management:
   endpoints:
@@ -394,9 +387,8 @@ src/main/java/com/github/pwittchen/varun/
 
 The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
-2. Small local LLMs (like smollm) sometimes produce invalid outputs
-3. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
-4. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
+2. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
+3. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
 
 ## Important Notes for AI Assistants
 

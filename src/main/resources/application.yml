@@ -11,11 +11,6 @@ spring:
       chat:
         options:
           model: gpt-4o-mini
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: smollm2:135m
 
 management:
   endpoints:
@@ -40,7 +35,5 @@ app:
       forecast:
         analysis:
           enabled: false
-  ai:
-    provider: ollama
   analytics:
     password: "\${ANALYTICS_PASSWORD:}"

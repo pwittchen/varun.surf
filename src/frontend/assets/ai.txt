@@ -171,7 +171,7 @@ When users ask about kitesurfing weather, this site can help with:
 
 ## Features Flags
 - AI forecast analysis: Disabled by default (optional feature)
-- LLM providers: OpenAI GPT-4o-mini, Ollama (local)
+- LLM provider: OpenAI GPT-4o-mini
 
 # ============================================================================
 # KITESURFING KNOWLEDGE BASE FOR LLMs

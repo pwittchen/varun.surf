@@ -167,25 +167,18 @@ ANALYTICS_PASSWORD=your-secure-password
 ## ai forecast analysis
 
 It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
-If you want to use AI in the app, configure ollama or openai in the `application.properties`.
-In case of using ollama, start it as a separate service as follows:
+If you want to use AI in the app, configure OpenAI API key in the `application.yml`.
 
-```
-ollama serve
-```
-
-An exemplary docker command to run the app with enabled AI analysis and OpenAI provider:
+An exemplary docker command to run the app with enabled AI analysis:
 
 ```
 docker run -p 8080:8080 varun-surf \
     --app.feature.ai.forecast.analysis.enabled=true \
-    --app.ai.provider=openai \
     --spring.ai.openai.api-key=your-api-key-here
 ```
 
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
-so I disabled it by default. Moreover, small local LLMs like smollm where returning strange, invalid outputs
-and during local tests sometimes it got stuck, so not all the spots received analysis.
+so I disabled it by default.
 Another interesting thing is the fact that performing 74 calls to OpenAI with gpt-4o-mini model
 used around 31k tokens and costs $0.01, so If I would like to trigger AI analysis
 for my current configuration with this AI provider every six hours

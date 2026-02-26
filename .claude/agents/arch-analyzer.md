@@ -49,8 +49,8 @@ The application follows a **Layered Architecture** with reactive patterns:
 │         ▼          ▼           ▼           ▼               │
 │              External Integration Layer                     │
 │  ┌──────────┐ ┌───────────────┐ ┌───────┐ ┌─────────────┐ │
-│  │ Windguru │ │Weather Station│ │Google │ │ OpenAI/     │ │
-│  │ Micro API│ │  Strategies   │ │ Maps  │ │ Ollama      │ │
+│  │ Windguru │ │Weather Station│ │Google │ │             │ │
+│  │ Micro API│ │  Strategies   │ │ Maps  │ │ OpenAI      │ │
 │  └──────────┘ └───────────────┘ └───────┘ └─────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```

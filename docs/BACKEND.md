@@ -35,7 +35,7 @@
                                                     +-------------+--------------+
                                                                   |
                                         +-------------------------v-----------------------+
-                                        |  LLM provider via Spring AI (OpenAI or Ollama) |
+                                        |       LLM provider via Spring AI (OpenAI)      |
                                         +-------------------------------------------------+
 
                     +-------------------+
@@ -74,7 +74,7 @@
                  -> uses StructuredTaskScope with virtual threads (separate scopes for EN and PL)
                  -> semaphore limits to 16 concurrent requests
                  -> for each Spot -> AiServiceEn.fetchAiAnalysis(spot) + AiServicePl.fetchAiAnalysis(spot)
-                 -> Spring AI ChatClient -> OpenAI or Ollama
+                 -> Spring AI ChatClient -> OpenAI
                  -> updates aiAnalysisEn{spotId -> String} and aiAnalysisPl{spotId -> String}
 
 [Client Request Flow]
@@ -212,7 +212,7 @@ Sponsor
    - Frontend generates embedded iframe from coordinates
 
 4. Spring AI (optional, feature-flagged)
-   - OpenAI API (gpt-4o-mini) OR Ollama (smollm2:135m)
+   - OpenAI API (gpt-4o-mini)
    - ChatClient for AI-powered forecast analysis
    - Configured via application.yml (app.ai.provider)
    - Multi-language support:
@@ -276,7 +276,7 @@ Configuration:
   - application.yml (NOT .properties)
   - Feature flags:
       app.feature.ai.forecast.analysis.enabled: false (default)
-      app.ai.provider: ollama (or openai)
+      app.feature.ai.forecast.analysis.enabled: false (default)
 
 Containerization:
   - Dockerfile -> multi-stage build
