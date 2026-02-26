@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Clock;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CurrentConditionsService {
@@ -31,52 +31,48 @@ public class CurrentConditionsService {
     }
 
     public Mono<CurrentConditions> fetchCurrentConditions(int wgId) {
-        List<FetchCurrentConditions> matching = strategies.stream()
-                .filter(s -> s.canProcess(wgId))
-                .toList();
+        return Flux.fromIterable(strategies)
+                .filter(strategy -> strategy.canProcess(wgId))
+                .collectMultimap(FetchCurrentConditions::isFallbackStation)
+                .flatMap(grouped -> {
+                    var fallbackMono = Mono.defer(() ->
+                            grouped.getOrDefault(true, List.of())
+                                    .stream()
+                                    .findFirst()
+                                    .map(s -> s.fetchCurrentConditions(wgId))
+                                    .orElse(Mono.empty())
+                    );
 
-        Optional<FetchCurrentConditions> primary = matching.stream()
-                .filter(s -> !s.isFallbackStation())
-                .findFirst();
-
-        Optional<FetchCurrentConditions> fallback = matching.stream()
-                .filter(FetchCurrentConditions::isFallbackStation)
-                .findFirst();
-
-        if (primary.isEmpty()) {
-            return Mono.empty();
-        }
-
-        Mono<CurrentConditions> primaryMono = primary.get().fetchCurrentConditions(wgId);
-
-        if (fallback.isEmpty()) {
-            return primaryMono;
-        }
-
-        Mono<CurrentConditions> fallbackMono = fallback.get().fetchCurrentConditions(wgId);
-
-        return primaryMono
-                .flatMap(conditions -> {
-                    if (CurrentConditionsStalenessChecker.isStale(conditions, clock)) {
-                        LOG.info("Primary station for wgId {} returned stale data ({}), trying fallback",
-                                wgId, conditions.date());
-                        return fallbackMono
-                                .defaultIfEmpty(conditions)
-                                .onErrorResume(e -> {
-                                    LOG.warn("Fallback station for wgId {} failed: {}, returning stale primary data",
-                                            wgId, e.getMessage());
-                                    return Mono.just(conditions);
-                                });
-                    }
-                    return Mono.just(conditions);
-                })
-                .switchIfEmpty(Mono.defer(() -> {
-                    LOG.info("Primary station for wgId {} returned empty, trying fallback", wgId);
-                    return fallbackMono;
-                }))
-                .onErrorResume(e -> {
-                    LOG.info("Primary station for wgId {} errored: {}, trying fallback", wgId, e.getMessage());
-                    return fallbackMono;
+                    return Mono.justOrEmpty(
+                                    grouped.getOrDefault(false, List.of())
+                                            .stream()
+                                            .findFirst()
+                            )
+                            .flatMap(primary -> primary.fetchCurrentConditions(wgId)
+                                    .flatMap(conditions -> {
+                                        if (CurrentConditionsStalenessChecker.isStale(conditions, clock)) {
+                                            LOG.info("Primary station for wgId {} returned stale data ({}), " +
+                                                    "trying fallback", wgId, conditions.date());
+                                            return fallbackMono
+                                                    .defaultIfEmpty(conditions)
+                                                    .onErrorResume(e -> {
+                                                        LOG.warn("Fallback station for wgId {} failed: {}, " +
+                                                                "returning stale primary data", wgId, e.getMessage());
+                                                        return Mono.just(conditions);
+                                                    });
+                                        }
+                                        return Mono.just(conditions);
+                                    })
+                                    .switchIfEmpty(Mono.defer(() -> {
+                                        LOG.info("Primary station for wgId {} returned empty, trying fallback", wgId);
+                                        return fallbackMono;
+                                    }))
+                                    .onErrorResume(e -> {
+                                        LOG.info("Primary station for wgId {} errored: {}, trying fallback",
+                                                wgId, e.getMessage());
+                                        return fallbackMono;
+                                    })
+                            );
                 });
     }
 }
