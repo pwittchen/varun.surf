@@ -239,7 +239,6 @@ function initLanguage() {
 
     function updateLanguageUI(lang) {
         currentLanguage = lang;
-        state.setLanguage(lang, true); // isTvMode = true
 
         if (langCode) {
             langCode.textContent = lang.toUpperCase();
@@ -258,6 +257,7 @@ function initLanguage() {
     if (languageToggle) {
         languageToggle.addEventListener('click', () => {
             const newLang = currentLanguage === 'en' ? 'pl' : 'en';
+            state.setLanguage(newLang, true); // isTvMode = true
             updateLanguageUI(newLang);
         });
     }

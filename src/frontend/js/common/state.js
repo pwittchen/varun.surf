@@ -69,7 +69,10 @@ export function toggleTheme(isTvMode = false) {
 
 export function getLanguage(isTvMode = false) {
     const key = isTvMode ? STORAGE_KEYS.TV_LANGUAGE : STORAGE_KEYS.LANGUAGE;
-    return localStorage.getItem(key) || 'en';
+    const stored = localStorage.getItem(key);
+    if (stored) return stored;
+    const browserLang = (navigator.language || '').toLowerCase();
+    return browserLang.startsWith('pl') ? 'pl' : 'en';
 }
 
 export function setLanguage(lang, isTvMode = false) {

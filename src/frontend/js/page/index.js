@@ -335,7 +335,6 @@ function initLanguage() {
     const languageToggle = document.getElementById('languageToggle');
 
     function updateLanguageUI(lang) {
-        state.setLanguage(lang);
         // Update all UI elements with translations
         updateUITranslations();
     }
@@ -562,6 +561,7 @@ function initLanguage() {
     languageToggle.addEventListener('click', () => {
         const currentLang = state.getLanguage();
         const newLang = currentLang === 'en' ? 'pl' : 'en';
+        state.setLanguage(newLang);
         updateLanguageUI(newLang);
     });
 }
