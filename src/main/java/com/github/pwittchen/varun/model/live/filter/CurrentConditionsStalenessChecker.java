@@ -31,8 +31,8 @@ public final class CurrentConditionsStalenessChecker {
         }
 
         LocalDateTime now = LocalDateTime.now(clock);
-        long minutesAge = ChronoUnit.MINUTES.between(readingTime, now);
-        return minutesAge >= 60;
+        long hoursAge = ChronoUnit.HOURS.between(readingTime, now);
+        return hoursAge >= 24;
     }
 
     private static LocalDateTime parse(String date) {

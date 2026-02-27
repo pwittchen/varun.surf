@@ -33,7 +33,7 @@ class CurrentConditionsStalenessCheckerTest {
 
     @Test
     void shouldReturnTrueForStaleReadingWithSecondsFormat() {
-        String date = NOW.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String date = NOW.minusHours(25).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 
@@ -47,7 +47,7 @@ class CurrentConditionsStalenessCheckerTest {
 
     @Test
     void shouldReturnTrueForStaleReadingWithMinutesFormat() {
-        String date = NOW.minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String date = NOW.minusHours(26).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 
@@ -61,7 +61,7 @@ class CurrentConditionsStalenessCheckerTest {
 
     @Test
     void shouldReturnTrueForStaleReadingWithDottedFormat() {
-        String date = NOW.minusHours(2).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+        String date = NOW.minusHours(25).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 
@@ -75,15 +75,15 @@ class CurrentConditionsStalenessCheckerTest {
 
     @Test
     void shouldReturnTrueForStaleReadingWithSlashFormat() {
-        String date = NOW.minusHours(2).format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss"));
+        String date = NOW.minusHours(25).format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss"));
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 
     // --- Boundary tests ---
 
     @Test
-    void shouldReturnTrueForExactlyOneHourOld() {
-        String date = NOW.minusMinutes(60).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    void shouldReturnTrueForExactly24Hours() {
+        String date = NOW.minusHours(24).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         assertThat(CurrentConditionsStalenessChecker.isStale(conditions(date), FIXED_CLOCK)).isTrue();
     }
 

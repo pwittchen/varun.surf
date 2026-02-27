@@ -27,7 +27,7 @@ class CurrentConditionsServiceTest {
     }
 
     private static CurrentConditions staleConditions() {
-        String date = NOW.minusHours(2).format(FMT);
+        String date = NOW.minusHours(25).format(FMT);
         return new CurrentConditions(date, 10, 14, "SW", 18);
     }
 
