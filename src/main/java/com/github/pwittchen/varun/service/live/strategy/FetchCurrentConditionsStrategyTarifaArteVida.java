@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -184,8 +186,8 @@ public class FetchCurrentConditionsStrategyTarifaArteVida extends FetchCurrentCo
     }
 
     private String formatTimestamp() {
-        LocalDateTime now = LocalDateTime.now();
-        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ZonedDateTime.now(ZoneId.of("Europe/Madrid"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     @Override

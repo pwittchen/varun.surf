@@ -13,6 +13,8 @@ import reactor.test.StepVerifier;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -72,7 +74,8 @@ class FetchCurrentConditionsStrategyTarifaArteVidaTest {
         String url = mockWebServer.url("/update/").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
-        String expectedDatePrefix = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String expectedDatePrefix = ZonedDateTime.now(ZoneId.of("Europe/Madrid"))
+                .toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {

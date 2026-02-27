@@ -12,6 +12,9 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -85,7 +88,11 @@ class FetchCurrentConditionsStrategyElMedanoTest {
         String url = mockWebServer.url("/wetterstation/").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
-        String expectedDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + " 15:45:00";
+        String expectedDate = LocalDate.now(ZoneId.of("Atlantic/Canary"))
+                .atTime(LocalTime.of(15, 45))
+                .atZone(ZoneId.of("Atlantic/Canary"))
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {
@@ -405,7 +412,11 @@ class FetchCurrentConditionsStrategyElMedanoTest {
         String url = mockWebServer.url("/wetterstation/").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
-        String expectedDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + " 09:15:00";
+        String expectedDate = LocalDate.now(ZoneId.of("Atlantic/Canary"))
+                .atTime(LocalTime.of(9, 15))
+                .atZone(ZoneId.of("Atlantic/Canary"))
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {
@@ -569,7 +580,11 @@ class FetchCurrentConditionsStrategyElMedanoTest {
         String url = mockWebServer.url("/wetterstation/").toString();
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url);
 
-        String expectedDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + " 17:20:00";
+        String expectedDate = LocalDate.now(ZoneId.of("Atlantic/Canary"))
+                .atTime(LocalTime.of(17, 20))
+                .atZone(ZoneId.of("Atlantic/Canary"))
+                .withZoneSameInstant(ZoneId.of("Europe/Madrid"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         StepVerifier.create(result)
                 .assertNext(conditions -> {

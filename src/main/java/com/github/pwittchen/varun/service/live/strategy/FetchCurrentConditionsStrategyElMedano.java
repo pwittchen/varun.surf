@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -162,13 +164,14 @@ public class FetchCurrentConditionsStrategyElMedano extends FetchCurrentConditio
     }
 
     private String formatTimestamp(String time) {
-        // Convert time to full timestamp with today's date
-        // Format: "YYYY-MM-DD HH:MM:SS"
-        LocalDate today = LocalDate.now();
-        LocalTime localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
-        return String.format("%s %s:00",
-                today.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                localTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        // The station displays time in Canary Islands timezone (Atlantic/Canary).
+        // Convert to Europe/Madrid (CET/CEST) to match the browser timezone of most users.
+        LocalTime stationTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
+        ZonedDateTime stationDateTime = LocalDate.now(ZoneId.of("Atlantic/Canary"))
+                .atTime(stationTime)
+                .atZone(ZoneId.of("Atlantic/Canary"));
+        ZonedDateTime madridTime = stationDateTime.withZoneSameInstant(ZoneId.of("Europe/Madrid"));
+        return madridTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     @Override
