@@ -5,10 +5,12 @@ on:
     branches: [ "master" ]
     paths-ignore:
       - '**.md'
+      - '**.jpg'
   pull_request:
     branches: [ "master" ]
     paths-ignore:
       - '**.md'
+      - '**.jpg'
   workflow_dispatch:
 
 jobs:
