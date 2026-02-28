@@ -26,6 +26,38 @@ let currentFilter = 'all';
 // Track previous URL for favorite toggle
 let previousUrl = state.getPreviousUrl();
 
+// Hero section slogans
+const HERO_SLOGANS = {
+    en: [
+        "Chase the wind. Ride the wave.",
+        "Your next session starts here.",
+        "Find your wind. Ride your spot.",
+        "Wind forecast for every kite spot.",
+        "All spots. One dashboard.",
+        "Where will the wind take you?",
+        "Check the wind. Hit the water.",
+        "No progress? Let go the bar.",
+        "Respect the locals.",
+        "Keep the spot clean.",
+        "The worst day on the water is better than the best day in the office.",
+        "Plan the epic kite trip."
+    ],
+    pl: [
+        "Goń wiatr. Jedź na fali.",
+        "Twoja sesja zaczyna się tutaj.",
+        "Znajdź wiatr i pływaj na swoim spocie.",
+        "Prognoza wiatru dla każdego spotu.",
+        "Wszystkie spoty. Jeden dashboard.",
+        "Dokąd zabierze Cię wiatr?",
+        "Sprawdź wiatr i wskakuj na wodę.",
+        "Progres stoi w miejscu? Odpuść bar.",
+        "Respektuj lokalesów.",
+        "Zachowaj czystość na spocie.",
+        "Najgorszy dzień na wodzie jest lepszy, niż najlepszy dzień w biurze.",
+        "Zaplanuj epicki kite trip.",
+    ]
+};
+
 // ============================================================================
 // URL ROUTING HELPERS
 // ============================================================================
@@ -380,6 +412,11 @@ function initLanguage() {
             kiteSizeToggle.title = translations.t('kiteSizeToggleTooltip');
         }
 
+        const heroToggle = document.getElementById('heroToggle');
+        if (heroToggle) {
+            heroToggle.title = translations.t('heroToggleTooltip');
+        }
+
         const listViewBtn = document.getElementById('listViewBtn');
         if (listViewBtn) {
             listViewBtn.title = translations.t('listViewTooltip');
@@ -550,6 +587,22 @@ function initLanguage() {
                 renderFavorites();
             } else {
                 renderSpots(currentFilter, currentSearchQuery, true);
+            }
+        }
+
+        // Update hero section slogan and label for new language
+        const heroSection = document.getElementById('heroSection');
+        if (heroSection && heroSection.style.display !== 'none') {
+            const heroSlogan = document.getElementById('heroSlogan');
+            if (heroSlogan) {
+                const lang = state.getLanguage();
+                const slogans = HERO_SLOGANS[lang] || HERO_SLOGANS.en;
+                heroSlogan.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+            }
+            const heroSpotLabel = document.getElementById('heroSpotLabel');
+            if (heroSpotLabel && heroSpotLabel.dataset.country) {
+                const spotName = heroSpotLabel.dataset.spotName;
+                heroSpotLabel.textContent = `${spotName}, ${translations.t(heroSpotLabel.dataset.country)}`;
             }
         }
     }
@@ -1209,6 +1262,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
 
         const filteredSpots = filterSpots(data, filter, searchQuery);
         displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
+        renderHeroSection();
     } catch (error) {
         console.error('Failed to load weather:', error.message);
         showErrorMessage(error);
@@ -2550,6 +2604,107 @@ function hideMapView(options = {}) {
     }
 }
 
+// ============================================================================
+// HERO SECTION
+// ============================================================================
+
+function initHeroSection() {
+    const heroSection = document.getElementById('heroSection');
+    const heroToggle = document.getElementById('heroToggle');
+    if (!heroSection || !heroToggle) return;
+
+    const isVisible = state.getHeroVisible();
+
+    function updateHeroToggleUI(visible) {
+        if (visible) {
+            heroToggle.classList.add('active');
+        } else {
+            heroToggle.classList.remove('active');
+        }
+    }
+
+    updateHeroToggleUI(isVisible);
+
+    heroToggle.addEventListener('click', () => {
+        const current = state.getHeroVisible();
+        const newState = !current;
+        state.setHeroVisible(newState);
+        updateHeroToggleUI(newState);
+
+        if (newState && globalWeatherData.length > 0) {
+            renderHeroSection();
+            heroSection.style.display = '';
+        } else {
+            heroSection.style.display = 'none';
+        }
+    });
+
+    const heroRefresh = document.getElementById('heroRefresh');
+    if (heroRefresh) {
+        heroRefresh.addEventListener('click', () => {
+            if (globalWeatherData.length > 0) {
+                renderHeroSection();
+            }
+        });
+    }
+}
+
+let heroInitialized = false;
+
+function updateHeroVisibility() {
+    const heroSection = document.getElementById('heroSection');
+    if (!heroSection) return;
+
+    if (!state.getHeroVisible() || window.innerWidth <= 1430) {
+        heroSection.style.display = 'none';
+    } else if (heroInitialized) {
+        heroSection.style.display = '';
+    }
+}
+
+function renderHeroSection() {
+    const heroSection = document.getElementById('heroSection');
+    if (!heroSection || !state.getHeroVisible()) return;
+
+    if (window.innerWidth <= 1430) {
+        heroSection.style.display = 'none';
+        return;
+    }
+
+    const spotsWithPhotos = globalWeatherData.filter(spot => {
+        const url = typeof spot.spotPhotoUrl === 'string' ? spot.spotPhotoUrl.trim() : '';
+        return url.length > 0;
+    });
+
+    if (spotsWithPhotos.length === 0) {
+        heroSection.style.display = 'none';
+        return;
+    }
+
+    const randomSpot = spotsWithPhotos[Math.floor(Math.random() * spotsWithPhotos.length)];
+
+    const heroImage = document.getElementById('heroImage');
+    heroImage.src = randomSpot.spotPhotoUrl;
+    heroImage.alt = randomSpot.name;
+
+    const heroSpotLabel = document.getElementById('heroSpotLabel');
+    const countryKey = randomSpot.country.replace(/\s+/g, '');
+    heroSpotLabel.textContent = `${randomSpot.name}, ${translations.t(countryKey)}`;
+    heroSpotLabel.href = routing.buildSpotUrl(randomSpot.wgId);
+    heroSpotLabel.dataset.country = countryKey;
+    heroSpotLabel.dataset.spotName = randomSpot.name;
+
+    const lang = state.getLanguage();
+    const slogans = HERO_SLOGANS[lang] || HERO_SLOGANS.en;
+    const slogan = slogans[Math.floor(Math.random() * slogans.length)];
+    document.getElementById('heroSlogan').textContent = slogan;
+
+    heroSection.style.display = '';
+    heroInitialized = true;
+}
+
+window.addEventListener('resize', updateHeroVisibility);
+
 function setupMapToggle() {
     const mapToggle = document.getElementById('mapToggle');
     if (!mapToggle) return;
@@ -2606,5 +2761,6 @@ document.addEventListener('DOMContentLoaded', () => {
     handlePopState();
     setupInfoToggle();
     renderMainSponsors();
+    initHeroSection();
     handleStarredURL();
 });

@@ -30,7 +30,10 @@ export const STORAGE_KEYS = {
     // Forecast preferences (spot page)
     FORECAST_VIEW_PREFERENCE: 'forecastViewPreference',
     FILTER_WINDY_DAYS: 'filterWindyDays',
-    FORECAST_MODEL: 'forecastModel' // sessionStorage
+    FORECAST_MODEL: 'forecastModel', // sessionStorage
+
+    // Hero section
+    HERO_VISIBLE: 'heroVisible'
 };
 
 // ============================================================================
@@ -241,4 +244,17 @@ export function getSelectedModel() {
 
 export function setSelectedModel(model) {
     sessionStorage.setItem(STORAGE_KEYS.FORECAST_MODEL, model);
+}
+
+// ============================================================================
+// HERO SECTION VISIBILITY
+// ============================================================================
+
+export function getHeroVisible() {
+    const stored = localStorage.getItem(STORAGE_KEYS.HERO_VISIBLE);
+    return stored === null ? true : stored === 'true';
+}
+
+export function setHeroVisible(visible) {
+    localStorage.setItem(STORAGE_KEYS.HERO_VISIBLE, visible ? 'true' : 'false');
 }

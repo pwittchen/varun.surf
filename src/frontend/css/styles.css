@@ -4215,7 +4215,106 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   28. ANIMATIONS
+   28. HERO SECTION
+   ============================================================================ */
+
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-card);
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0) 40%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+    pointer-events: none;
+}
+
+.hero-slogan {
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    max-width: 60%;
+    line-height: 1.4;
+}
+
+.hero-spot-label {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 0.2s ease;
+    z-index: 2;
+}
+
+.hero-spot-label:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.hero-toggle.active svg {
+    fill: var(--accent-primary);
+}
+
+.hero-refresh {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(0, 0, 0, 0.55);
+    border: none;
+    color: #ffffff;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 0.2s ease;
+    z-index: 2;
+}
+
+.hero-refresh svg {
+    fill: #ffffff;
+}
+
+.hero-refresh:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+
+/* ============================================================================
+   29. ANIMATIONS
    ============================================================================ */
 
 @keyframes spin {
@@ -4304,6 +4403,14 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 /* Tablet & Small Desktop (max-width: 1430px) */
 @media (max-width: 1430px) {
+    .hero-section {
+        display: none !important;
+    }
+
+    .hero-toggle {
+        display: none !important;
+    }
+
     .spots-grid {
         grid-template-columns: 1fr !important;
     }
@@ -4577,6 +4684,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         font-size: 0.85rem;
     }
 }
+
 
 /* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
