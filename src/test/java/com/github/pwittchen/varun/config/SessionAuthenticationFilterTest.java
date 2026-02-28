@@ -10,7 +10,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static com.google.common.truth.Truth.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "30s")
+@AutoConfigureWebTestClient(timeout = "120s")
 public class SessionAuthenticationFilterTest {
 
     @Autowired

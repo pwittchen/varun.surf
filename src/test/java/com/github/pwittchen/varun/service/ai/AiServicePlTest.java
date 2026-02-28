@@ -12,6 +12,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,11 +178,9 @@ class AiServicePlTest {
         when(requestSpec.stream()).thenReturn(streamSpec);
         when(streamSpec.content()).thenReturn(Flux.just("Część1", "Część2", "Część3"));
 
-        // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
-
-        // then
-        StepVerifier.create(result)
+        // when & then
+        StepVerifier.withVirtualTime(() -> aiServicePl.fetchAiAnalysis(spot))
+                .thenAwait(Duration.ofSeconds(20))
                 .expectNext("Część1Część2Część3")
                 .verifyComplete();
     }
