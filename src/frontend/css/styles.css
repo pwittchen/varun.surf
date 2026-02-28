@@ -4232,6 +4232,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 35%;
     display: block;
 }
 
