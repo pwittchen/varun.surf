@@ -16,7 +16,7 @@
 - **Frontend Build**: Bun (replaces npm for faster builds)
 - **Key Dependencies**:
   - Spring WebFlux (reactive, non-blocking I/O)
-  - Spring Security (HTTP Basic Auth for protected endpoints)
+  - Spring Security (HTTP Basic Auth for protected endpoints, session cookie for API access)
   - Spring AI 1.0.2 (OpenAI integration)
   - Spring Actuator with Micrometer/Prometheus metrics
   - OkHttp 4.12.0 (HTTP client library)
@@ -39,6 +39,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
+    ├─→ /api/v1/session (session initialization, returns SESSION cookie)
     ├─→ /api/v1/sponsors (sponsors list)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -369,6 +370,8 @@ app:
           enabled: false           # AI analysis feature flag (default: off)
   analytics:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
+  session:
+    max-age-seconds: 86400           # SESSION cookie max age (24 hours)
 
 spring:
   ai:
@@ -499,12 +502,15 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── OkHttpClientConfig.java     # OkHttp client beans
 │   ├── CorsConfig.java             # CORS configuration
 │   ├── WebConfig.java              # WebFlux configuration
-│   ├── SecurityConfig.java         # Spring Security (HTTP Basic Auth)
+│   ├── SecurityConfig.java         # Spring Security (HTTP Basic Auth + session filter)
+│   ├── SessionConfig.java          # SESSION cookie configuration (24h, httpOnly, Lax)
+│   ├── SessionAuthenticationFilter.java # Session-based API access gating (WebFilter)
 │   ├── LogAppenderConfig.java      # In-memory log appender configuration
 │   └── LoggingFilter.java          # Request/response logging
 ├── controller/                      # REST controllers
 │   ├── SpotsController.java        # /api/v1/spots endpoints
 │   ├── SponsorsController.java     # /api/v1/sponsors endpoints
+│   ├── SessionController.java      # /api/v1/session (session initialization)
 │   ├── StatusController.java       # /api/v1/status, /api/v1/health
 │   ├── MetricsController.java      # /api/v1/metrics endpoints
 │   └── LogsController.java         # /api/v1/logs endpoints
@@ -598,6 +604,7 @@ Implemented features (complete):
 - Custom logs dashboard (/api/v1/logs) with level filtering and text search
 - Status page with uptime and stats
 - Health check history (90 data points, 1-minute intervals)
+- Session cookie authentication (API access gated behind SESSION cookie)
 
 ## AI Analysis Feature Details
 
@@ -838,6 +845,33 @@ The application includes comprehensive metrics collection:
 - Uses HTTP Basic Authentication (username: admin)
 - Protects both `/api/v1/metrics/**` and `/api/v1/logs/**` endpoints
 
+### 10. Session Cookie Authentication
+All `/api/v1/**` endpoints (except health and session) require a valid `SESSION` cookie.
+
+**How It Works**:
+- `SessionAuthenticationFilter` (a `WebFilter`) runs before Spring Security authentication
+- Page visits (non-API paths) automatically create and initialize a session → browser gets `SESSION` cookie
+- API requests check for valid initialized session → 401 if missing
+- `GET /api/v1/session` endpoint allows programmatic session creation
+
+**Exempt Paths** (no session required):
+- `/api/v1/health` - monitoring/uptime checks
+- `/api/v1/session` - session creation endpoint
+- `/actuator/**` - Prometheus scraping
+- Static assets (`.js`, `.css`, `.png`, `.ico`, `.svg`, `.webp`, `.woff2`, `.txt`, `.xml`, `.webmanifest`, `.html`, `.json`, `/assets/`, `/images/`)
+
+**Cookie Configuration** (`SessionConfig`):
+- Name: `SESSION`
+- Max age: 24 hours (configurable via `app.session.max-age-seconds`)
+- httpOnly: true
+- sameSite: Lax
+- path: /
+
+**Layered Security**:
+- Session cookie is required first (enforced by `SessionAuthenticationFilter`)
+- Metrics/logs endpoints additionally require HTTP Basic Auth (enforced by Spring Security)
+- Both layers must pass for authenticated endpoints
+
 ## Adding New Kite Spots
 
 **Automated Method (Recommended)**:
@@ -1001,13 +1035,22 @@ For comprehensive project documentation, refer to these additional files:
 docker logs <container_id>
 ```
 
-**Test API endpoints**:
+**Test API endpoints** (session cookie required):
 ```bash
-# Get all spots
+# Get session cookie first
+curl -c cookies.txt http://localhost:8080/api/v1/session
+
+# Get all spots (with session)
+curl -b cookies.txt http://localhost:8080/api/v1/spots
+
+# Get single spot (with session)
+curl -b cookies.txt http://localhost:8080/api/v1/spots/1
+
+# Without session → 401
 curl http://localhost:8080/api/v1/spots
 
-# Get single spot
-curl http://localhost:8080/api/v1/spots/1
+# Health check (no session needed)
+curl http://localhost:8080/api/v1/health
 ```
 
 **Check cache state**:
@@ -1016,25 +1059,28 @@ Add debug logging in `AggregatorService.java` to inspect cache contents.
 **Test external API calls**:
 Use unit tests with `MockWebServer` to simulate API responses.
 
-**View metrics**:
+**View metrics** (session cookie + Basic Auth required):
 ```bash
-# Application status
-curl http://localhost:8080/api/v1/status
+# Get session cookie first
+curl -c cookies.txt http://localhost:8080/api/v1/session
 
-# Full metrics (if password set)
-curl -u admin:yourpassword http://localhost:8080/api/v1/metrics
+# Application status (with session)
+curl -b cookies.txt http://localhost:8080/api/v1/status
 
-# Prometheus metrics
+# Full metrics (session + password)
+curl -b cookies.txt -u admin:yourpassword http://localhost:8080/api/v1/metrics
+
+# Prometheus metrics (no session needed - actuator exempt)
 curl http://localhost:8080/actuator/prometheus
 ```
 
-**View logs**:
+**View logs** (session cookie + Basic Auth required):
 ```bash
-# All logs (if password set)
-curl -u admin:yourpassword http://localhost:8080/api/v1/logs
+# All logs (session + password)
+curl -b cookies.txt -u admin:yourpassword http://localhost:8080/api/v1/logs
 
 # Filter by level
-curl -u admin:yourpassword "http://localhost:8080/api/v1/logs?level=ERROR"
+curl -b cookies.txt -u admin:yourpassword "http://localhost:8080/api/v1/logs?level=ERROR"
 ```
 
 ---

@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.config;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -27,8 +28,9 @@ public class SessionAuthenticationFilter implements WebFilter {
             "/assets/", "/images/"
     );
 
+    @NonNull
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
         if (isExempt(path)) {

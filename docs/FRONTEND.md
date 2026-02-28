@@ -73,8 +73,8 @@ JavaScript Entry Points (inline <script> tags)
     ├─→ page/spot.js (spot detail logic)
     └─→ page/status.js (status page logic)
     ↓
-API Calls (Fetch)
-    ├─→ GET /api/v1/spots (all spots)
+API Calls (Fetch with credentials: 'same-origin')
+    ├─→ GET /api/v1/spots (all spots, requires SESSION cookie)
     ├─→ GET /api/v1/spots/{id} (single spot with history)
     ├─→ GET /api/v1/spots/{id}/{model} (GFS or IFS)
     ├─→ GET /api/v1/status (health + uptime info)
@@ -949,6 +949,13 @@ None required (vanilla JS, modern browsers only).
 - Modal titles and content properly structured
 
 ## Security Considerations
+
+### Session Cookie Authentication
+- All API calls (`/api/v1/**`) require a valid `SESSION` cookie
+- Session is automatically created when the frontend page loads (browser visit initializes the session)
+- All `fetch()` calls include `credentials: 'same-origin'` to send the session cookie
+- Direct API access without a session returns HTTP 401
+- Exempt paths: `/api/v1/health`, `/api/v1/session`, `/actuator/**`, static assets
 
 ### XSS Prevention
 - All user input sanitized before rendering

@@ -286,3 +286,4 @@ Skill definitions are located in `.claude/skills/`.
 - displaying a photo of the spot (if available)
 - possibility to switch a weather forecast model for the spot (currently available models: GFS, IFS)
 - embeddable HTML widget with current conditions and forecast for the spot
+- session cookie authentication for API access (prevents direct API scraping without visiting the site)
