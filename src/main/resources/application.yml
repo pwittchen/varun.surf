@@ -37,3 +37,5 @@ app:
           enabled: false
   analytics:
     password: "\${ANALYTICS_PASSWORD:}"
+  session:
+    max-age-seconds: 86400

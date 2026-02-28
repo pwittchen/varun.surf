@@ -86,7 +86,8 @@ async function handleLogin(e) {
     try {
         const credentials = btoa(`${LOGS_USERNAME}:${password}`);
         const response = await fetch('/api/v1/logs', {
-            headers: { 'Authorization': `Basic ${credentials}` }
+            headers: { 'Authorization': `Basic ${credentials}` },
+            credentials: 'same-origin'
         });
 
         if (response.ok) {
@@ -113,7 +114,7 @@ async function fetchLogs() {
         headers['Authorization'] = `Basic ${credentials}`;
     }
 
-    const response = await fetch('/api/v1/logs', { headers });
+    const response = await fetch('/api/v1/logs', { headers, credentials: 'same-origin' });
     if (response.status === 401) {
         clearCredentials();
         showLoginForm();

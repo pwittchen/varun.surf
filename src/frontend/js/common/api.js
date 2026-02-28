@@ -17,7 +17,7 @@ const API_ENDPOINT_STATUS = '/api/v1/status';
  */
 export async function fetchAllSpots() {
     try {
-        const response = await fetch(API_ENDPOINT_SPOTS, { cache: 'no-store' });
+        const response = await fetch(API_ENDPOINT_SPOTS, { cache: 'no-store', credentials: 'same-origin' });
 
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
@@ -45,7 +45,7 @@ export async function fetchAllSpots() {
 export async function fetchSpot(spotId, model = null) {
     try {
         const url = `${API_ENDPOINT_SPOTS}/${spotId}${model ? '/' + model : ''}`;
-        const response = await fetch(url);
+        const response = await fetch(url, { credentials: 'same-origin' });
 
         if (!response.ok) {
             const error = new Error(`HTTP error! status: ${response.status}`);
@@ -70,7 +70,7 @@ export async function fetchSpot(spotId, model = null) {
  */
 export async function fetchSponsors() {
     try {
-        const response = await fetch(API_ENDPOINT_SPONSORS);
+        const response = await fetch(API_ENDPOINT_SPONSORS, { credentials: 'same-origin' });
 
         if (!response.ok) {
             return [];
@@ -93,7 +93,7 @@ export async function fetchSponsors() {
  * @returns {Promise<Object>} Status object
  */
 export async function fetchStatus() {
-    const response = await fetch(API_ENDPOINT_STATUS);
+    const response = await fetch(API_ENDPOINT_STATUS, { credentials: 'same-origin' });
 
     if (!response.ok) {
         throw new Error('Failed to fetch status');
@@ -110,7 +110,7 @@ export async function fetchStatus() {
 export async function checkEndpointHealth(endpoint) {
     try {
         const startTime = performance.now();
-        const response = await fetch(endpoint);
+        const response = await fetch(endpoint, { credentials: 'same-origin' });
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
 

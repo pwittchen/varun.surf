@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -32,6 +33,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .headers(headers -> headers.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
                 .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll())
+                .addFilterBefore(new SessionAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
 
@@ -43,6 +45,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> {
                     if (analyticsPassword != null && !analyticsPassword.isBlank()) {
                         exchanges
+                                .pathMatchers("/api/v1/session").permitAll()
                                 .pathMatchers("/api/v1/metrics/**", "/api/v1/logs/**").authenticated()
                                 .anyExchange().permitAll();
                     } else {
@@ -50,6 +53,7 @@ public class SecurityConfig {
                     }
                 })
                 .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(noPopupAuthenticationEntryPoint()))
+                .addFilterBefore(new SessionAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
     }
 

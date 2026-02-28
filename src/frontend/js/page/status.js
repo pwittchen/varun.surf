@@ -92,7 +92,7 @@ async function checkAllEndpoints() {
 
 async function fetchHealthHistory() {
     try {
-        const response = await fetch('/api/v1/status/history');
+        const response = await fetch('/api/v1/status/history', { credentials: 'same-origin' });
         if (!response.ok) {
             throw new Error('Failed to fetch health history');
         }
