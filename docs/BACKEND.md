@@ -709,5 +709,5 @@ For backend-related issues, feature requests, or contributions:
 
 ---
 
-**Last Updated**: January 2026
+**Last Updated**: February 2026
 **Maintained By**: @pwittchen
