@@ -955,7 +955,7 @@ None required (vanilla JS, modern browsers only).
 - Session is automatically created when the frontend page loads (browser visit initializes the session)
 - All `fetch()` calls include `credentials: 'same-origin'` to send the session cookie
 - Direct API access without a session returns HTTP 401
-- Exempt paths: `/api/v1/health`, `/api/v1/session`, `/actuator/**`, static assets
+- Exempt paths: `/api/v1/health`, `/actuator/**`, static assets
 
 ### XSS Prevention
 - All user input sanitized before rendering

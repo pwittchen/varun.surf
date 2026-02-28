@@ -39,7 +39,6 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
-    ├─→ /api/v1/session (session initialization, returns SESSION cookie)
     ├─→ /api/v1/sponsors (sponsors list)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -510,7 +509,6 @@ src/main/java/com/github/pwittchen/varun/
 ├── controller/                      # REST controllers
 │   ├── SpotsController.java        # /api/v1/spots endpoints
 │   ├── SponsorsController.java     # /api/v1/sponsors endpoints
-│   ├── SessionController.java      # /api/v1/session (session initialization)
 │   ├── StatusController.java       # /api/v1/status, /api/v1/health
 │   ├── MetricsController.java      # /api/v1/metrics endpoints
 │   └── LogsController.java         # /api/v1/logs endpoints
@@ -852,11 +850,9 @@ All `/api/v1/**` endpoints (except health and session) require a valid `SESSION`
 - `SessionAuthenticationFilter` (a `WebFilter`) runs before Spring Security authentication
 - Page visits (non-API paths) automatically create and initialize a session → browser gets `SESSION` cookie
 - API requests check for valid initialized session → 401 if missing
-- `GET /api/v1/session` endpoint allows programmatic session creation
 
 **Exempt Paths** (no session required):
 - `/api/v1/health` - monitoring/uptime checks
-- `/api/v1/session` - session creation endpoint
 - `/actuator/**` - Prometheus scraping
 - Static assets (`.js`, `.css`, `.png`, `.ico`, `.svg`, `.webp`, `.woff2`, `.txt`, `.xml`, `.webmanifest`, `.html`, `.json`, `/assets/`, `/images/`)
 
@@ -1037,8 +1033,8 @@ docker logs <container_id>
 
 **Test API endpoints** (session cookie required):
 ```bash
-# Get session cookie first
-curl -c cookies.txt http://localhost:8080/api/v1/session
+# Get session cookie first (visit any page)
+curl -c cookies.txt http://localhost:8080/
 
 # Get all spots (with session)
 curl -b cookies.txt http://localhost:8080/api/v1/spots
@@ -1061,8 +1057,8 @@ Use unit tests with `MockWebServer` to simulate API responses.
 
 **View metrics** (session cookie + Basic Auth required):
 ```bash
-# Get session cookie first
-curl -c cookies.txt http://localhost:8080/api/v1/session
+# Get session cookie first (visit any page)
+curl -c cookies.txt http://localhost:8080/
 
 # Application status (with session)
 curl -b cookies.txt http://localhost:8080/api/v1/status

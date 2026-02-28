@@ -45,7 +45,6 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> {
                     if (analyticsPassword != null && !analyticsPassword.isBlank()) {
                         exchanges
-                                .pathMatchers("/api/v1/session").permitAll()
                                 .pathMatchers("/api/v1/metrics/**", "/api/v1/logs/**").authenticated()
                                 .anyExchange().permitAll();
                     } else {

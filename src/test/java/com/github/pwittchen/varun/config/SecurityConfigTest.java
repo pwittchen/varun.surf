@@ -133,24 +133,6 @@ public class SecurityConfigTest {
     }
 
     @Test
-    void shouldInitializeSessionViaEndpoint() {
-        var result = webTestClient.get()
-                .uri("/api/v1/session")
-                .exchange()
-                .expectStatus().isOk()
-                .returnResult(String.class);
-
-        ResponseCookie cookie = result.getResponseCookies().getFirst("SESSION");
-        assertThat(cookie).isNotNull();
-
-        webTestClient.get()
-                .uri("/api/v1/spots")
-                .cookie("SESSION", cookie.getValue())
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
     void shouldRejectMetricsWithoutSession() {
         webTestClient.get()
                 .uri("/api/v1/metrics")
@@ -160,7 +142,7 @@ public class SecurityConfigTest {
 
     private String getSessionCookie() {
         var result = webTestClient.get()
-                .uri("/api/v1/session")
+                .uri("/")
                 .exchange()
                 .expectStatus().isOk()
                 .returnResult(String.class);

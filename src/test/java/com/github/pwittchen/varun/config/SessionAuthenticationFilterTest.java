@@ -49,23 +49,6 @@ public class SessionAuthenticationFilterTest {
     }
 
     @Test
-    void shouldAllowSessionEndpointWithoutSession() {
-        webTestClient.get()
-                .uri("/api/v1/session")
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
-    void shouldSetSessionCookieOnSessionEndpoint() {
-        webTestClient.get()
-                .uri("/api/v1/session")
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().exists("Set-Cookie");
-    }
-
-    @Test
     void shouldAllowApiAccessWithValidSession() {
         String sessionCookie = getSessionCookie();
 
@@ -107,7 +90,7 @@ public class SessionAuthenticationFilterTest {
 
     private String getSessionCookie() {
         var result = webTestClient.get()
-                .uri("/api/v1/session")
+                .uri("/")
                 .exchange()
                 .expectStatus().isOk()
                 .returnResult(String.class);

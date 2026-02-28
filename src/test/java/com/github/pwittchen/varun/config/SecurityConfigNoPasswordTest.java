@@ -61,7 +61,7 @@ public class SecurityConfigNoPasswordTest {
 
     private String getSessionCookie() {
         var result = webTestClient.get()
-                .uri("/api/v1/session")
+                .uri("/")
                 .exchange()
                 .expectStatus().isOk()
                 .returnResult(String.class);

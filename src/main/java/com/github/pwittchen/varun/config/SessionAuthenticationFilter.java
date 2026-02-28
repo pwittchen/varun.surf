@@ -15,7 +15,6 @@ public class SessionAuthenticationFilter implements WebFilter {
 
     private static final List<String> EXEMPT_PATHS = List.of(
             "/api/v1/health",
-            "/api/v1/session",
             "/actuator"
     );
 

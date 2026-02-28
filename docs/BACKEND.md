@@ -82,10 +82,9 @@
   Browser: GET /api/v1/spots (Cookie: SESSION=abc)  →  SessionFilter validates  →  OK  →  Controller
   curl: GET /api/v1/spots (no cookie)  →  SessionFilter  →  401 empty body
   curl: GET /api/v1/health (no cookie)  →  SessionFilter exempts  →  200
-  curl: GET /api/v1/session  →  SessionFilter exempts  →  Set-Cookie: SESSION=abc
 
   Exempt paths (no session required):
-    /api/v1/health, /api/v1/session, /actuator/**, static assets (.js, .css, .png, etc.)
+    /api/v1/health, /actuator/**, static assets (.js, .css, .png, etc.)
 
 [Client Request Flow]
 
@@ -434,13 +433,6 @@ Sponsors:
     - Returns single sponsor by id
     - Response: Mono<Sponsor>
 
-Session:
-  GET /api/v1/session
-    - Creates/initializes session, returns SESSION cookie
-    - Response: {"status": "OK"}
-    - No session required (exempt from session filter)
-    - Useful for programmatic API access (curl, scripts)
-
 Health & Status:
   GET /api/v1/health
     - Simple health check endpoint
@@ -493,7 +485,6 @@ src/main/java/com/github/pwittchen/varun/
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
 │   ├── MetricsController.java            # /api/v1/metrics/*
-│   ├── SessionController.java            # /api/v1/session (session init)
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
 │   ├── SpotsController.java              # /api/v1/spots/*
 │   └── StatusController.java             # /api/v1/health, /api/v1/status

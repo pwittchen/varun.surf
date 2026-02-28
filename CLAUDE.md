@@ -37,7 +37,6 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (single spot with GFS or IFS forecast)
-    ├─→ /api/v1/session (session initialization, returns SESSION cookie)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -150,26 +149,20 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
    - Returns last 1000 log entries from in-memory buffer
    - Auto-refresh every 5 seconds in frontend dashboard
 
-10. **SessionController** (`controller/SessionController.java`)
-    - REST API endpoint:
-      - `GET /api/v1/session` - creates/initializes session, returns `{"status": "OK"}`
-    - Sets `SESSION` cookie for programmatic session creation
-    - Exempt from session authentication (accessible without existing session)
-
-11. **SessionAuthenticationFilter** (`config/SessionAuthenticationFilter.java`)
+10. **SessionAuthenticationFilter** (`config/SessionAuthenticationFilter.java`)
     - `WebFilter` registered in Spring Security filter chain (before authentication)
     - Gates API access behind a session cookie:
-      - **Exempt paths** (no session required): `/api/v1/health`, `/api/v1/session`, `/actuator/**`, static assets
+      - **Exempt paths** (no session required): `/api/v1/health`, `/actuator/**`, static assets
       - **API paths** (`/api/v1/**`): requires valid initialized session, returns 401 without
       - **Page visits** (all other paths): automatically creates and initializes session
     - Works with `SessionConfig` for cookie configuration
 
-12. **SessionConfig** (`config/SessionConfig.java`)
+11. **SessionConfig** (`config/SessionConfig.java`)
     - Configures `CookieWebSessionIdResolver` bean
     - Cookie settings: name=`SESSION`, maxAge=24h, httpOnly=true, sameSite=Lax, path=/
     - Max age configurable via `app.session.max-age-seconds` (default: 86400)
 
-13. **SponsorsController** (`controller/SponsorsController.java`)
+12. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
      - `GET /api/v1/sponsors` - main sponsors only (isMain=true)
      - `GET /api/v1/sponsors/{id}` - single sponsor
@@ -344,7 +337,6 @@ src/main/java/com/github/pwittchen/varun/
 ├── controller/                # REST controllers
 │   ├── SpotsController.java
 │   ├── SponsorsController.java
-│   ├── SessionController.java # /api/v1/session (session initialization)
 │   ├── StatusController.java
 │   ├── MetricsController.java
 │   └── LogsController.java
@@ -480,11 +472,10 @@ The AI forecast analysis is disabled by default because:
     - Provides uptime percentage and average latency
 
 16. **Session Cookie Authentication**:
-    - All `/api/v1/**` endpoints (except `/api/v1/health` and `/api/v1/session`) require a valid `SESSION` cookie
+    - All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie
     - Visitors who load the frontend get a session cookie automatically (page visits initialize the session)
-    - Programmatic access: call `GET /api/v1/session` to obtain a cookie, then include it in subsequent API calls
     - Requests without a valid session receive HTTP 401 with an empty body
-    - Exempt paths: `/api/v1/health`, `/api/v1/session`, `/actuator/**`, static assets
+    - Exempt paths: `/api/v1/health`, `/actuator/**`, static assets
     - Cookie config: httpOnly, sameSite=Lax, 24h maxAge (configurable via `app.session.max-age-seconds`)
     - Runs as a `WebFilter` before Spring Security authentication (metrics/logs still require HTTP Basic on top)
 
