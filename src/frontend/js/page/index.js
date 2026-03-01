@@ -2637,6 +2637,8 @@ function initHeroSection() {
         state.setHeroVisible(newState);
         updateHeroToggleUI(newState);
 
+        if (isMapView) return;
+
         if (newState && globalWeatherData.length > 0) {
             renderHeroSection();
             heroSection.style.display = '';
