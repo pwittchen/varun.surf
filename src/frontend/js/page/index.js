@@ -2534,8 +2534,10 @@ function showMapView() {
     const mapToggle = document.getElementById('mapToggle');
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
+    const heroSection = document.getElementById('heroSection');
 
-    // Hide spots grid
+    // Hide hero section and spots grid
+    if (heroSection) heroSection.style.display = 'none';
     spotsGrid.style.display = 'none';
 
     // Show map container
@@ -2581,8 +2583,9 @@ function hideMapView(options = {}) {
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
 
-    // Show spots grid
+    // Show spots grid and restore hero section
     spotsGrid.style.display = '';
+    updateHeroVisibility();
 
     // Hide map container
     mapContainer.style.display = 'none';
@@ -2658,7 +2661,7 @@ function updateHeroVisibility() {
     const heroSection = document.getElementById('heroSection');
     if (!heroSection) return;
 
-    if (!state.getHeroVisible() || window.innerWidth <= 1430) {
+    if (!state.getHeroVisible() || window.innerWidth <= 1430 || isMapView) {
         heroSection.style.display = 'none';
     } else if (heroInitialized) {
         heroSection.style.display = '';
@@ -2667,7 +2670,7 @@ function updateHeroVisibility() {
 
 function renderHeroSection() {
     const heroSection = document.getElementById('heroSection');
-    if (!heroSection || !state.getHeroVisible()) return;
+    if (!heroSection || !state.getHeroVisible() || isMapView) return;
 
     if (window.innerWidth <= 1430) {
         heroSection.style.display = 'none';
