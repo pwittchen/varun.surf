@@ -251,6 +251,8 @@ async function renderFavorites() {
             });
             loadCardOrder();
         }
+
+        renderHeroSection();
     } catch (error) {
         console.error('Failed to load favorites:', error.message);
         showErrorMessage(error);
@@ -1246,6 +1248,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     if (globalWeatherData.length > 0 && !forceRefresh) {
         const filteredSpots = filterSpots(globalWeatherData, filter, searchQuery);
         displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
+        renderHeroSection();
         return;
     }
 
