@@ -103,7 +103,7 @@ public class ForecastService {
         // Example line:
         // " Mon 29. 02h      15      20     257      20       -"
         Pattern row = Pattern.compile(
-                "^\\s*" +                              // leading spaces
+                "^\\s*" +                                      // leading spaces
                         "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +      // weekday
                         "\\s+(\\d{1,2})\\.\\s+(\\d{2})h\\s+" + // day of month + hour
                         "(-?\\d+)\\s+" +                       // WSPD
@@ -123,11 +123,11 @@ public class ForecastService {
     private Optional<ForecastWg> parseLineToForecast(String line, Pattern row) {
         line = line.trim().replace('\u00A0', ' '); // non-breaking spaces → space
         Matcher m = row.matcher(line);
-        if (m.find()) return Optional.of(createForecast(line, m));
+        if (m.find()) return Optional.of(createForecast(m));
         return Optional.empty();
     }
 
-    private ForecastWg createForecast(String line, Matcher m) {
+    private ForecastWg createForecast(Matcher m) {
         String label = String.format("%s %s. %sh", m.group(1), m.group(2), m.group(3));
         return new ForecastWg(
                 label,
