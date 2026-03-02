@@ -9,7 +9,7 @@ import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
-import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
+import com.github.pwittchen.varun.data.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
@@ -27,7 +27,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package com.github.pwittchen.varun.service;
 
-import com.github.pwittchen.varun.data.provider.spots.SpotsDataProvider;
+import com.github.pwittchen.varun.data.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;

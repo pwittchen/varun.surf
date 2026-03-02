@@ -1,4 +1,4 @@
-package com.github.pwittchen.varun.data.provider.spots;
+package com.github.pwittchen.varun.data.spots;
 
 import com.github.pwittchen.varun.model.spot.Spot;
 import reactor.core.publisher.Flux;
