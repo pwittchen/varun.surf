@@ -3,7 +3,6 @@ package com.github.pwittchen.varun.controller;
 import com.github.pwittchen.varun.metrics.SpotsControllerMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
-import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -193,7 +192,7 @@ class SpotsControllerTest {
     @Test
     void shouldReturnSpotByIdAndModelWhenSpotExists() {
         Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
-        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+        when(aggregatorService.getSpotById(eq(500760), eq("gfs"))).thenReturn(Optional.of(mockSpot));
 
         Mono<ResponseEntity<Spot>> result = controller.spot(500760, "gfs");
 
@@ -213,7 +212,7 @@ class SpotsControllerTest {
     @Test
     void shouldReturnSpotWithIfsModel() {
         Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
-        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.IFS))).thenReturn(Optional.of(mockSpot));
+        when(aggregatorService.getSpotById(eq(500760), eq("ifs"))).thenReturn(Optional.of(mockSpot));
 
         Mono<ResponseEntity<Spot>> result = controller.spot(500760, "ifs");
 
@@ -229,7 +228,7 @@ class SpotsControllerTest {
 
     @Test
     void shouldReturn404WhenSpotNotFoundWithModel() {
-        when(aggregatorService.getSpotById(eq(999999), eq(ForecastModel.GFS))).thenReturn(Optional.empty());
+        when(aggregatorService.getSpotById(eq(999999), eq("gfs"))).thenReturn(Optional.empty());
 
         Mono<ResponseEntity<Spot>> result = controller.spot(999999, "gfs");
 
@@ -246,7 +245,7 @@ class SpotsControllerTest {
     @Test
     void shouldHandleUpperCaseModelParameter() {
         Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
-        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+        when(aggregatorService.getSpotById(eq(500760), eq("GFS"))).thenReturn(Optional.of(mockSpot));
 
         Mono<ResponseEntity<Spot>> result = controller.spot(500760, "GFS");
 
@@ -260,7 +259,7 @@ class SpotsControllerTest {
     @Test
     void shouldFallbackToGfsForInvalidModelParameter() {
         Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
-        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+        when(aggregatorService.getSpotById(eq(500760), eq("invalid"))).thenReturn(Optional.of(mockSpot));
 
         Mono<ResponseEntity<Spot>> result = controller.spot(500760, "invalid");
 
@@ -270,17 +269,36 @@ class SpotsControllerTest {
                 })
                 .verifyComplete();
 
-        verify(aggregatorService).getSpotById(eq(500760), eq(ForecastModel.GFS));
+        verify(aggregatorService).getSpotById(eq(500760), eq("invalid"));
     }
 
     @Test
     void shouldTriggerBackgroundFetchForAllModels() {
         Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
-        when(aggregatorService.getSpotById(eq(500760), eq(ForecastModel.GFS))).thenReturn(Optional.of(mockSpot));
+        when(aggregatorService.getSpotById(eq(500760), eq("gfs"))).thenReturn(Optional.of(mockSpot));
 
         controller.spot(500760, "gfs").block();
 
         verify(aggregatorService, times(1)).fetchForecastsForAllModels(500760);
+    }
+
+    @Test
+    void shouldReturnSpotWithAverageModel() {
+        Spot mockSpot = createSingleMockSpot("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(eq(500760), eq("average"))).thenReturn(Optional.of(mockSpot));
+
+        Mono<ResponseEntity<Spot>> result = controller.spot(500760, "average");
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody()).isNotNull();
+                    assertThat(response.getBody().name()).isEqualTo("Jastarnia");
+                })
+                .verifyComplete();
+
+        verify(aggregatorService).getSpotById(eq(500760), eq("average"));
+        verify(aggregatorService).fetchForecastsForAllModels(500760);
     }
 
     private List<Spot> createMockSpots() {

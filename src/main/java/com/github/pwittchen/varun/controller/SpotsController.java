@@ -1,7 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.metrics.SpotsControllerMetrics;
-import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class SpotsController {
     public Mono<ResponseEntity<Spot>> spot(@PathVariable int id, @PathVariable String model) {
         metrics.incrementSpotByIdRequestCounter();
         return Mono
-                .justOrEmpty(aggregatorService.getSpotById(id, ForecastModel.valueOfGracefully(model)))
+                .justOrEmpty(aggregatorService.getSpotById(id, model))
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build())
                 .doOnSuccess(_ -> aggregatorService.fetchForecastsForAllModels(id));

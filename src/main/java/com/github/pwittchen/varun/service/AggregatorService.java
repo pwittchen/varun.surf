@@ -18,6 +18,7 @@ import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.ai.AiService;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
+import com.github.pwittchen.varun.service.forecast.ForecastAverageCalculator;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
@@ -223,6 +224,25 @@ public class AggregatorService {
                 .map(spot -> enrichSpotWithCachedData(spot, forecastModel));
     }
 
+    public Optional<Spot> getSpotById(int id, String modelKey) {
+        if (ForecastAverageCalculator.AVERAGE_MODEL_KEY.equals(modelKey)) {
+            return Optional
+                    .ofNullable(spots.get(id))
+                    .map(spot -> {
+                        var enriched = enrichSpotWithCachedData(spot, ForecastModel.GFS);
+                        var data = forecastCache.get(spot.wgId());
+                        if (data != null) {
+                            var averaged = ForecastAverageCalculator.computeAverage(data);
+                            if (!averaged.isEmpty()) {
+                                enriched = enriched.withForecastHourly(averaged);
+                            }
+                        }
+                        return enriched;
+                    });
+        }
+        return getSpotById(id, ForecastModel.fromModelKey(modelKey));
+    }
+
     private Spot enrichSpotWithCachedData(Spot spot) {
         return enrichSpotWithCachedData(spot, ForecastModel.GFS);
     }
@@ -239,11 +259,17 @@ public class AggregatorService {
                 enrichedSpot = enrichedSpot.withForecastHourly(data.hourly(ForecastModel.GFS));
             }
 
-            List<AvailableModel> available = data.hourly().keySet().stream()
+            List<AvailableModel> available = new ArrayList<>(data.hourly().keySet().stream()
                     .filter(m -> !data.hourly(m).isEmpty())
                     .sorted(Comparator.comparingInt(ForecastModel::ordinal))
                     .map(m -> new AvailableModel(m.modelKey(), m.displayName()))
-                    .toList();
+                    .toList());
+            if (available.size() >= 2) {
+                available.add(new AvailableModel(
+                        ForecastAverageCalculator.AVERAGE_MODEL_KEY,
+                        ForecastAverageCalculator.AVERAGE_DISPLAY_NAME
+                ));
+            }
             if (!available.isEmpty()) {
                 enrichedSpot = enrichedSpot.withAvailableModels(available);
             }

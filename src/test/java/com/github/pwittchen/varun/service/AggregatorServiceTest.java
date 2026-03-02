@@ -664,6 +664,114 @@ class AggregatorServiceTest {
         assertThat(liveStationsCount).isEqualTo(0);
     }
 
+    @Test
+    void shouldReturnAverageForecastWhenModelKeyIsAverage() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfsHourly,
+                ForecastModel.IFS, ifsHourly
+        )));
+
+        // when
+        var result = aggregatorService.getSpotById(123, "average");
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get().forecastHourly()).hasSize(1);
+        assertThat(result.get().forecastHourly().get(0).wind()).isEqualTo(12.0);
+        assertThat(result.get().forecastHourly().get(0).gusts()).isEqualTo(17.5);
+    }
+
+    @Test
+    void shouldDelegateToForecastModelWhenModelKeyIsNotAverage() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(ForecastModel.GFS, gfsHourly)));
+
+        // when
+        var result = aggregatorService.getSpotById(123, "gfs");
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get().forecastHourly()).containsExactlyElementsOf(gfsHourly);
+    }
+
+    @Test
+    void shouldIncludeAverageInAvailableModelsWhenTwoOrMoreModelsExist() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfsHourly,
+                ForecastModel.IFS, ifsHourly
+        )));
+
+        // when
+        var result = aggregatorService.getSpotById(123);
+
+        // then
+        assertThat(result).isPresent();
+        var modelKeys = result.get().availableModels().stream()
+                .map(m -> m.key())
+                .toList();
+        assertThat(modelKeys).contains("average");
+    }
+
+    @Test
+    void shouldNotIncludeAverageInAvailableModelsWhenOnlyOneModelExists() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(ForecastModel.GFS, gfsHourly)));
+
+        // when
+        var result = aggregatorService.getSpotById(123);
+
+        // then
+        assertThat(result).isPresent();
+        var modelKeys = result.get().availableModels().stream()
+                .map(m -> m.key())
+                .toList();
+        assertThat(modelKeys).doesNotContain("average");
+    }
+
     private Spot createTestSpot(int wgId, String name) {
         var forecast = new ArrayList<Forecast>();
         var hourlyForecast = new ArrayList<Forecast>();
