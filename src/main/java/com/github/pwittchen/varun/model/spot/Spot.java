@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.model.spot;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.pwittchen.varun.model.forecast.AvailableModel;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.forecast.Forecast;
@@ -40,6 +41,8 @@ public record Spot(
         SpotInfo spotInfoPL,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         List<Sponsor> sponsors,
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        List<AvailableModel> availableModels,
         String lastUpdated
 ) {
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
@@ -48,6 +51,7 @@ public record Spot(
         forecast = forecast == null ? new LinkedList<>() : new LinkedList<>(forecast);
         forecastHourly = forecastHourly == null ? new LinkedList<>() : new LinkedList<>(forecastHourly);
         sponsors = sponsors == null ? new LinkedList<>() : new LinkedList<>(sponsors);
+        availableModels = availableModels == null ? List.of() : List.copyOf(availableModels);
     }
 
     @JsonProperty("wgId")
@@ -115,6 +119,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 currentTimestamp()
         );
     }
@@ -140,6 +145,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 CurrentConditionsEmptyFilter.isEmpty(currentConditions)
                         ? this.lastUpdated
                         : currentTimestamp()
@@ -167,6 +173,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 aiAnalysisEn != null && aiAnalysisEn.isEmpty()
                         ? this.lastUpdated
                         : currentTimestamp()
@@ -194,6 +201,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 aiAnalysisPl != null && aiAnalysisPl.isEmpty()
                         ? this.lastUpdated
                         : currentTimestamp()
@@ -221,6 +229,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 currentTimestamp()
         );
     }
@@ -246,10 +255,14 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
 
+    /**
+     * Secondary constructor for backward compatibility (without spotPhotoUrl, coordinates, availableModels).
+     */
     public Spot(
             String name,
             String country,
@@ -291,6 +304,7 @@ public record Spot(
                 spotInfo,
                 spotInfoPL,
                 sponsors,
+                null,
                 lastUpdated
         );
     }
@@ -316,6 +330,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
@@ -341,6 +356,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
@@ -366,6 +382,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
@@ -391,6 +408,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
@@ -416,6 +434,7 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
                 this.lastUpdated
         );
     }
@@ -441,6 +460,33 @@ public record Spot(
                 this.spotInfo,
                 this.spotInfoPL,
                 this.sponsors,
+                this.availableModels,
+                this.lastUpdated
+        );
+    }
+
+    public Spot withAvailableModels(List<AvailableModel> availableModels) {
+        return new Spot(
+                this.name,
+                this.country,
+                this.windguruUrl,
+                this.windguruFallbackUrl,
+                this.windfinderUrl,
+                this.icmUrl,
+                this.webcamUrl,
+                this.locationUrl,
+                this.currentConditions,
+                this.currentConditionsHistory,
+                this.forecast,
+                this.forecastHourly,
+                this.aiAnalysisEn,
+                this.aiAnalysisPl,
+                this.spotPhotoUrl,
+                this.coordinates,
+                this.spotInfo,
+                this.spotInfoPL,
+                this.sponsors,
+                availableModels,
                 this.lastUpdated
         );
     }

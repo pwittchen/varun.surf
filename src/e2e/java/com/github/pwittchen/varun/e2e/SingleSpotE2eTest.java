@@ -103,9 +103,10 @@ class SingleSpotE2eTest extends BaseE2eTest {
 
         assertThat(dropdownMenu.isVisible()).isTrue();
 
-        Locator ifsOption = dropdownMenu.locator("[data-value='ifs']");
-        if (ifsOption.isVisible()) {
-            ifsOption.click();
+        // Select any non-GFS option if available (models are populated dynamically)
+        Locator options = dropdownMenu.locator(".dropdown-option");
+        if (options.count() > 1) {
+            options.nth(1).click();
             page.waitForTimeout(2000);
         }
     }

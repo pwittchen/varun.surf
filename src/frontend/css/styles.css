@@ -477,12 +477,17 @@ body {
 }
 
 #modelDropdownContainer {
-    width: 100px;
+    min-width: 100px;
 }
 
 #modelDropdownContainer .dropdown-button {
-    width: 100px;
+    min-width: 100px;
     padding: 11px 24px 11px 12px;
+    white-space: nowrap;
+}
+
+#modelDropdownContainer .dropdown-menu {
+    min-width: 200px;
 }
 
 .dropdown-button {

@@ -31,11 +31,12 @@ let currentLoadingKey = 'loadingSpotData';
 let forecastPollIntervalId = null;
 let forecastTimeoutId = null;
 let backgroundRefreshIntervalId = null;
+let modelDiscoveryIntervalId = null;
 
 // Current spot ID from URL
 let currentSpotId = null;
 
-// Selected forecast model (gfs or ifs)
+// Selected forecast model
 let selectedModel = 'gfs';
 
 // Embed widget configuration
@@ -191,6 +192,47 @@ function startBackgroundRefresh(spotId) {
             }
         }
     }, constants.BACKGROUND_REFRESH_INTERVAL);
+}
+
+// Poll for available models shortly after page load
+function startModelDiscoveryPolling(spotId) {
+    clearModelDiscoveryPolling();
+
+    if (!spotId) {
+        return;
+    }
+
+    let attempts = 0;
+    const maxAttempts = 6;
+    const interval = 5000; // 5 seconds
+
+    modelDiscoveryIntervalId = setInterval(async () => {
+        attempts++;
+        try {
+            const latestSpot = await fetchSpotData(spotId);
+            if (latestSpot && latestSpot.availableModels && latestSpot.availableModels.length > 1) {
+                clearModelDiscoveryPolling();
+                updateModelDropdownOptions(latestSpot.availableModels);
+                // Also update current spot data silently
+                if (hasForecastData(latestSpot)) {
+                    currentSpot = latestSpot;
+                }
+            } else if (attempts >= maxAttempts) {
+                clearModelDiscoveryPolling();
+            }
+        } catch (_) {
+            if (attempts >= maxAttempts) {
+                clearModelDiscoveryPolling();
+            }
+        }
+    }, interval);
+}
+
+function clearModelDiscoveryPolling() {
+    if (modelDiscoveryIntervalId) {
+        clearInterval(modelDiscoveryIntervalId);
+        modelDiscoveryIntervalId = null;
+    }
 }
 
 // ============================================================================
@@ -2175,10 +2217,22 @@ function displaySpot(spot) {
         setupSpotMediaTabs();
     }
 
+    // Update model dropdown with available models from backend
+    if (spot && spot.availableModels && spot.availableModels.length > 0) {
+        updateModelDropdownOptions(spot.availableModels);
+    }
+
     currentSpot = spot;
 
     if (currentSpotId) {
         startBackgroundRefresh(currentSpotId);
+
+        // If models haven't been discovered yet, poll for them
+        if (!spot || !spot.availableModels || spot.availableModels.length <= 1) {
+            startModelDiscoveryPolling(currentSpotId);
+        } else {
+            clearModelDiscoveryPolling();
+        }
     }
 }
 
@@ -2570,10 +2624,10 @@ function setupResizeHandler() {
 }
 
 // ============================================================================
-// MODEL DROPDOWN (GFS vs IFS)
+// MODEL DROPDOWN (dynamic multi-model)
 // ============================================================================
 
-// Setup forecast model dropdown
+// Setup forecast model dropdown (toggle/close behavior only)
 function setupModelDropdown() {
     const modelDropdown = document.getElementById('modelDropdown');
     const modelDropdownMenu = document.getElementById('modelDropdownMenu');
@@ -2587,29 +2641,78 @@ function setupModelDropdown() {
     const currentModel = getSelectedModel();
     modelDropdownText.textContent = currentModel.toUpperCase();
 
-    // Set up dropdown options
-    const options = document.querySelectorAll('#modelDropdownMenu .dropdown-option');
-    options.forEach(option => {
-        // Mark the current option as selected
-        if (option.dataset.value === currentModel) {
+    // Toggle dropdown on the button click
+    modelDropdown.addEventListener('click', () => {
+        modelDropdownMenu.classList.toggle('open');
+        modelDropdown.classList.toggle('open');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!modelDropdown.contains(e.target) && !modelDropdownMenu.contains(e.target)) {
+            modelDropdownMenu.classList.remove('open');
+            modelDropdown.classList.remove('open');
+        }
+    });
+}
+
+// Update model dropdown options dynamically from availableModels
+function updateModelDropdownOptions(availableModels) {
+    const modelDropdown = document.getElementById('modelDropdown');
+    const modelDropdownMenu = document.getElementById('modelDropdownMenu');
+    const modelDropdownText = document.getElementById('modelDropdownText');
+
+    if (!modelDropdown || !modelDropdownMenu || !modelDropdownText) {
+        return;
+    }
+
+    if (!availableModels || availableModels.length === 0) {
+        return;
+    }
+
+    // Clear existing options
+    modelDropdownMenu.innerHTML = '';
+
+    const currentModel = getSelectedModel();
+
+    // Check if current model is still in available list
+    const currentInList = availableModels.some(m => m.key === currentModel);
+    if (!currentInList) {
+        setSelectedModel('gfs');
+    }
+
+    const activeModel = currentInList ? currentModel : 'gfs';
+
+    // Update button text to show display name
+    const activeEntry = availableModels.find(m => m.key === activeModel);
+    if (activeEntry) {
+        modelDropdownText.textContent = activeEntry.name;
+    }
+
+    // Create new options
+    availableModels.forEach(model => {
+        const option = document.createElement('div');
+        option.className = 'dropdown-option';
+        option.dataset.value = model.key;
+        option.textContent = model.name;
+
+        if (model.key === activeModel) {
             option.classList.add('selected');
         }
 
-        // Add click handler
         option.addEventListener('click', () => {
-            const newModel = option.dataset.value;
-            setSelectedModel(newModel);
-            modelDropdownText.textContent = newModel.toUpperCase();
+            setSelectedModel(model.key);
+            modelDropdownText.textContent = model.name;
 
-            // Update the selected state
-            options.forEach(opt => opt.classList.remove('selected'));
+            // Update selected state
+            modelDropdownMenu.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
             option.classList.add('selected');
 
             // Close dropdown
             modelDropdownMenu.classList.remove('open');
             modelDropdown.classList.remove('open');
 
-            // Reload data with a new model
+            // Reload data with the new model
             if (currentSpotId) {
                 setLoadingMessage('loadingSpotData');
                 fetchSpotData(currentSpotId)
@@ -2630,20 +2733,8 @@ function setupModelDropdown() {
                     });
             }
         });
-    });
 
-    // Toggle dropdown on the button click
-    modelDropdown.addEventListener('click', () => {
-        modelDropdownMenu.classList.toggle('open');
-        modelDropdown.classList.toggle('open');
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!modelDropdown.contains(e.target) && !modelDropdownMenu.contains(e.target)) {
-            modelDropdownMenu.classList.remove('open');
-            modelDropdown.classList.remove('open');
-        }
+        modelDropdownMenu.appendChild(option);
     });
 }
 

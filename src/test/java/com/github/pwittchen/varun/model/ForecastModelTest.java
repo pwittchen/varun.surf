@@ -3,6 +3,10 @@ package com.github.pwittchen.varun.model;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.google.common.truth.Truth.assertThat;
 
 class ForecastModelTest {
@@ -38,13 +42,9 @@ class ForecastModelTest {
     }
 
     @Test
-    void shouldThrowExceptionForNullModel() {
-        try {
-            ForecastModel.valueOfGracefully(null);
-        } catch (NullPointerException e) {
-            // Expected - null pointer when calling toUpperCase() on null
-            assertThat(e).isInstanceOf(NullPointerException.class);
-        }
+    void shouldReturnGfsForNullModel() {
+        ForecastModel result = ForecastModel.fromApiKey(null);
+        assertThat(result).isEqualTo(ForecastModel.GFS);
     }
 
     @Test
@@ -54,14 +54,43 @@ class ForecastModelTest {
     }
 
     @Test
-    void shouldHaveTwoModels() {
-        assertThat(ForecastModel.values()).hasLength(2);
-    }
-
-    @Test
     void shouldContainGfsAndIfs() {
         ForecastModel[] models = ForecastModel.values();
         assertThat(models).asList().contains(ForecastModel.GFS);
         assertThat(models).asList().contains(ForecastModel.IFS);
+    }
+
+    @Test
+    void shouldHaveMoreThanTwoModels() {
+        assertThat(ForecastModel.values().length).isGreaterThan(2);
+    }
+
+    @Test
+    void shouldResolveFromApiKey() {
+        assertThat(ForecastModel.fromApiKey("icon")).isEqualTo(ForecastModel.ICON);
+        assertThat(ForecastModel.fromApiKey("harmeu")).isEqualTo(ForecastModel.HARM_EU);
+        assertThat(ForecastModel.fromApiKey("hrrr")).isEqualTo(ForecastModel.HRRR);
+    }
+
+    @Test
+    void shouldResolveFromApiKeyCaseInsensitive() {
+        assertThat(ForecastModel.fromApiKey("ICON")).isEqualTo(ForecastModel.ICON);
+        assertThat(ForecastModel.fromApiKey("Hrrr")).isEqualTo(ForecastModel.HRRR);
+    }
+
+    @Test
+    void shouldHaveUniqueApiKeys() {
+        Set<String> apiKeys = Arrays.stream(ForecastModel.values())
+                .map(ForecastModel::apiKey)
+                .collect(Collectors.toSet());
+        assertThat(apiKeys).hasSize(ForecastModel.values().length);
+    }
+
+    @Test
+    void shouldHaveApiKeyAndDisplayName() {
+        for (ForecastModel model : ForecastModel.values()) {
+            assertThat(model.apiKey()).isNotEmpty();
+            assertThat(model.displayName()).isNotEmpty();
+        }
     }
 }

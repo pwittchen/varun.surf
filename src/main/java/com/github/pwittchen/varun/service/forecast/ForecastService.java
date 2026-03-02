@@ -53,7 +53,7 @@ public class ForecastService {
                 .url(httpUrl
                         .newBuilder()
                         .addQueryParameter("s", String.valueOf(wgSpotId))
-                        .addQueryParameter("m", forecastModel.name().toLowerCase())
+                        .addQueryParameter("m", forecastModel.apiKey())
                         .addQueryParameter("v", FORECAST_PARAMS)
                         .build()
                         .toString())

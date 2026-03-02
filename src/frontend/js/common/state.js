@@ -236,7 +236,7 @@ export function setFilterWindyDays(enabled) {
 
 export function getSelectedModel() {
     const model = sessionStorage.getItem(STORAGE_KEYS.FORECAST_MODEL);
-    if (model && (model === 'gfs' || model === 'ifs')) {
+    if (model && model.length > 0) {
         return model;
     }
     return 'gfs';

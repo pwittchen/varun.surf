@@ -687,6 +687,7 @@ class AggregatorServiceTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }
