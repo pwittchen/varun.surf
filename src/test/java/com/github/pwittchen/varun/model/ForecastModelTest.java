@@ -43,7 +43,7 @@ class ForecastModelTest {
 
     @Test
     void shouldReturnGfsForNullModel() {
-        ForecastModel result = ForecastModel.fromApiKey(null);
+        ForecastModel result = ForecastModel.fromModelKey(null);
         assertThat(result).isEqualTo(ForecastModel.GFS);
     }
 
@@ -66,30 +66,30 @@ class ForecastModelTest {
     }
 
     @Test
-    void shouldResolveFromApiKey() {
-        assertThat(ForecastModel.fromApiKey("icon")).isEqualTo(ForecastModel.ICON);
-        assertThat(ForecastModel.fromApiKey("harmeu")).isEqualTo(ForecastModel.HARM_EU);
-        assertThat(ForecastModel.fromApiKey("hrrr")).isEqualTo(ForecastModel.HRRR);
+    void shouldResolveFromModelKey() {
+        assertThat(ForecastModel.fromModelKey("icon")).isEqualTo(ForecastModel.ICON);
+        assertThat(ForecastModel.fromModelKey("harmeu")).isEqualTo(ForecastModel.HARM_EU);
+        assertThat(ForecastModel.fromModelKey("hrrr")).isEqualTo(ForecastModel.HRRR);
     }
 
     @Test
-    void shouldResolveFromApiKeyCaseInsensitive() {
-        assertThat(ForecastModel.fromApiKey("ICON")).isEqualTo(ForecastModel.ICON);
-        assertThat(ForecastModel.fromApiKey("Hrrr")).isEqualTo(ForecastModel.HRRR);
+    void shouldResolveFromModelKeyCaseInsensitive() {
+        assertThat(ForecastModel.fromModelKey("ICON")).isEqualTo(ForecastModel.ICON);
+        assertThat(ForecastModel.fromModelKey("Hrrr")).isEqualTo(ForecastModel.HRRR);
     }
 
     @Test
-    void shouldHaveUniqueApiKeys() {
-        Set<String> apiKeys = Arrays.stream(ForecastModel.values())
-                .map(ForecastModel::apiKey)
+    void shouldHaveUniqueModelKeys() {
+        Set<String> modelKeys = Arrays.stream(ForecastModel.values())
+                .map(ForecastModel::modelKey)
                 .collect(Collectors.toSet());
-        assertThat(apiKeys).hasSize(ForecastModel.values().length);
+        assertThat(modelKeys).hasSize(ForecastModel.values().length);
     }
 
     @Test
-    void shouldHaveApiKeyAndDisplayName() {
+    void shouldHaveModelKeyAndDisplayName() {
         for (ForecastModel model : ForecastModel.values()) {
-            assertThat(model.apiKey()).isNotEmpty();
+            assertThat(model.modelKey()).isNotEmpty();
             assertThat(model.displayName()).isNotEmpty();
         }
     }

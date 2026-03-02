@@ -240,7 +240,7 @@ public class AggregatorService {
             List<AvailableModel> available = data.hourly().keySet().stream()
                     .filter(m -> !data.hourly(m).isEmpty())
                     .sorted(Comparator.comparingInt(ForecastModel::ordinal))
-                    .map(m -> new AvailableModel(m.apiKey(), m.displayName()))
+                    .map(m -> new AvailableModel(m.modelKey(), m.displayName()))
                     .toList();
             if (!available.isEmpty()) {
                 enrichedSpot = enrichedSpot.withAvailableModels(available);

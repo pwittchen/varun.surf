@@ -81,39 +81,39 @@ public enum ForecastModel {
 
     private static final Logger log = LoggerFactory.getLogger(ForecastModel.class);
 
-    private static final Map<String, ForecastModel> BY_API_KEY = Stream.of(values())
-            .collect(Collectors.toUnmodifiableMap(ForecastModel::apiKey, m -> m));
+    private static final Map<String, ForecastModel> BY_MODEL_KEY = Stream.of(values())
+            .collect(Collectors.toUnmodifiableMap(ForecastModel::modelKey, m -> m));
 
-    private final String apiKey;
+    private final String modelKey;
     private final String displayName;
 
-    ForecastModel(String apiKey, String displayName) {
-        this.apiKey = apiKey;
+    ForecastModel(String modelKey, String displayName) {
+        this.modelKey = modelKey;
         this.displayName = displayName;
     }
 
-    public String apiKey() {
-        return apiKey;
+    public String modelKey() {
+        return modelKey;
     }
 
     public String displayName() {
         return displayName;
     }
 
-    public static ForecastModel fromApiKey(String key) {
+    public static ForecastModel fromModelKey(String key) {
         if (key == null || key.isEmpty()) {
             return GFS;
         }
-        ForecastModel model = BY_API_KEY.get(key.toLowerCase());
+        ForecastModel model = BY_MODEL_KEY.get(key.toLowerCase());
         if (model != null) {
             return model;
         }
-        log.error("Unknown forecast model apiKey: {}", key);
+        log.error("Unknown forecast model modelKey: {}", key);
         log.error("Fallback to default model: {}", GFS);
         return GFS;
     }
 
     public static ForecastModel valueOfGracefully(String model) {
-        return fromApiKey(model);
+        return fromModelKey(model);
     }
 }
