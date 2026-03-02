@@ -75,10 +75,11 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 - `forecastLimiter`: 32 concurrent Windguru API calls
 - `currentConditionsLimiter`: 32 concurrent weather station calls
 - `aiLimiter`: 16 concurrent LLM API calls
+- `discoveryLimiter`: 16 concurrent model discovery calls
 - Prevents overwhelming external APIs
 
 **In-Memory Caches** (ConcurrentHashMap):
-1. `forecastCache: Map<Integer, ForecastData>` - daily, hourlyGfs, hourlyIfs
+1. `forecastCache: Map<Integer, ForecastData>` - daily, Map<ForecastModel, List<Forecast>> hourly
 2. `currentConditions: Map<Integer, CurrentConditions>` - latest wind data
 3. `currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>>` - 12h history
 4. `aiAnalysisEn: Map<Integer, String>` - AI summaries (English)
@@ -88,23 +89,26 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
 8. `spotPhotos: Map<Integer, String>` - spot photo URLs
 9. `spots: ConcurrentMap<Integer, Spot>` - loaded at startup
 
-**On-Demand IFS Fetching**:
+**On-Demand Multi-Model Discovery**:
 - When `/api/v1/spots/{id}` is accessed, triggers async `fetchForecastsForAllModels()`
-- Fetches both GFS and IFS hourly forecasts
+- Discovers and fetches all 40+ Windguru forecast models concurrently
+- `discoveryLimiter` semaphore (16 permits) controls concurrency
 - Caches for 3 hours to avoid redundant API calls
 - Uses synchronized locks per spot to prevent duplicate fetches
+- `AvailableModel` records expose discovered models (key + displayName) to the frontend
 
 #### 2. ForecastService (`service/forecast/ForecastService.java`)
 **Purpose**: Fetch and parse weather forecast data from Windguru.
 
-**Multiple Forecast Models**:
-- **GFS** (Global Forecast System - NOAA) - default model
-- **IFS** (Integrated Forecast System - ECMWF) - higher resolution
+**Dynamic Multi-Model Support**:
+- 40+ forecast models defined in `ForecastModel` enum (GFS, IFS, ICON, NAM, HRRR, AROME, etc.)
+- Each model has a `modelKey` (Windguru API key) and `displayName` (human-readable)
+- GFS is the default model; all others are discovered on-demand per spot
 
 **Data Format**:
 - Fetches text-based exports from Windguru micro API
-- Parses using regex patterns (model-specific URLs)
-- Returns `ForecastData(daily, hourlyGfs, hourlyIfs)`
+- Parses using regex patterns (model-specific URLs via `modelKey`)
+- Returns `ForecastData(daily, Map<ForecastModel, List<Forecast>> hourly)`
 
 **Data Included**:
 - Wind speed/gust (knots)
@@ -204,8 +208,8 @@ chatClient.prompt().user(prompt)
 - `GET /api/v1/spots/{id}` - Single spot with GFS forecast (Mono<Spot>)
   - Triggers async fetchForecastsForAllModels() for IFS
 - `GET /api/v1/spots/{id}/{model}` - Single spot with model selection
-  - model: "gfs" or "ifs"
-  - Triggers async IFS fetch if not cached
+  - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
+  - Triggers async model discovery if not cached
 
 **Response Processing**:
 - Enriches spots with cached forecasts, conditions, AI analysis
@@ -282,10 +286,20 @@ public record Spot(
     String name,
     String country,
     String windguruUrl,
+    String windguruFallbackUrl,     // optional fallback for forecasts
     List<Forecast> forecast,
+    List<Forecast> forecastHourly,
     CurrentConditions currentConditions,
-    String aiAnalysis,
-    SpotInfo spotInfo
+    List<CurrentConditions> currentConditionsHistory,
+    String aiAnalysisEn,
+    String aiAnalysisPl,
+    String spotPhotoUrl,
+    Coordinates coordinates,
+    SpotInfo spotInfo,
+    SpotInfo spotInfoPL,
+    List<Sponsor> sponsors,
+    List<AvailableModel> availableModels, // dynamically discovered forecast models
+    String lastUpdated
 ) {}
 ```
 
@@ -512,9 +526,13 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── StatusController.java       # /api/v1/status, /api/v1/health
 │   ├── MetricsController.java      # /api/v1/metrics endpoints
 │   └── LogsController.java         # /api/v1/logs endpoints
-├── data/provider/                   # Data providers
-│   ├── spots/JsonSpotsDataProvider.java
-│   └── sponsors/JsonSponsorsDataProvider.java
+├── data/                            # Data providers
+│   ├── spots/
+│   │   ├── JsonSpotsDataProvider.java
+│   │   └── SpotsDataProvider.java (interface)
+│   └── sponsors/
+│       ├── JsonSponsorsDataProvider.java
+│       └── SponsorsDataProvider.java (interface)
 ├── exception/                       # Custom exceptions
 │   ├── FetchingForecastException.java
 │   ├── FetchingCurrentConditionsException.java
@@ -527,7 +545,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SpotsControllerMetrics.java
 │   └── HttpClientMetricsEventListener.java
 ├── model/                           # Domain models (records)
-│   ├── forecast/                   # Forecast, ForecastData, ForecastModel, IcmGrid
+│   ├── forecast/                   # Forecast, ForecastData, ForecastModel (40+ models), AvailableModel, IcmGrid
 │   ├── spot/                       # Spot, SpotInfo
 │   ├── sponsor/                    # Sponsor
 │   ├── live/                       # CurrentConditions, filter/
@@ -603,6 +621,11 @@ Implemented features (complete):
 - Status page with uptime and stats
 - Health check history (90 data points, 1-minute intervals)
 - Session cookie authentication (API access gated behind SESSION cookie)
+- Hero section with random spot photo, name/location, and slogan (EN/PL)
+- Dynamic multi-model forecast support (40+ Windguru models)
+- Automatic language detection from browser settings
+- Stale live conditions indicators (yellow for outdated data, >=1 hour old)
+- Fallback weather station mechanism (automatic switch when primary returns stale data)
 
 ## AI Analysis Feature Details
 
@@ -844,7 +867,7 @@ The application includes comprehensive metrics collection:
 - Protects both `/api/v1/metrics/**` and `/api/v1/logs/**` endpoints
 
 ### 10. Session Cookie Authentication
-All `/api/v1/**` endpoints (except health and session) require a valid `SESSION` cookie.
+All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie.
 
 **How It Works**:
 - `SessionAuthenticationFilter` (a `WebFilter`) runs before Spring Security authentication

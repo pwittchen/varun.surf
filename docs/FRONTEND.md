@@ -27,6 +27,7 @@ varun.surf/
 ├── src/frontend/                  # Source files (NOT deployed)
 │   ├── js/                        # JavaScript files
 │   │   ├── common/
+│   │   │   ├── state.js           # Centralized state management (localStorage/sessionStorage)
 │   │   │   ├── translations.js    # i18n configuration
 │   │   │   └── flags.js           # Shared emoji flags helper
 │   │   └── page/
@@ -39,6 +40,8 @@ varun.surf/
 │   │   └── status.html            # Status page template
 │   ├── css/                       # Stylesheets
 │   │   └── styles.css             # Global styles
+│   ├── images/                    # Spot photos
+│   │   └── spots/                 # Spot photos by wgId (e.g., 48776.jpg)
 │   └── assets/                    # Static assets
 │       ├── logo.png               # Brand logo
 │       ├── ai.txt                 # AI crawler instructions
@@ -68,6 +71,7 @@ Browser
 HTML Pages (index.html, spot.html, status.html)
     ↓
 JavaScript Entry Points (inline <script> tags)
+    ├─→ common/state.js (centralized state management)
     ├─→ common/translations.js (i18n)
     ├─→ page/index.js (dashboard logic)
     ├─→ page/spot.js (spot detail logic)
@@ -96,12 +100,14 @@ DOM Manipulation (vanilla JS)
 - `/starred` - Favorites view
 
 **Features**:
+- Hero section with random spot photo, name/location, and slogan (EN/PL, toggleable)
 - Grid layout with spot cards (2 or 3 columns)
 - Country dropdown filter
 - Search functionality
 - Favorites system (star icons)
 - Drag-and-drop spot reordering
 - Auto-refresh every 60 seconds
+- Stale live conditions indicators (yellow pulsing dot for outdated data)
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator)
 
 **JavaScript Logic** (`page/index.js`):
@@ -125,7 +131,7 @@ DOM Manipulation (vanilla JS)
 - Embedded Google Maps (satellite view)
 - Spot photo display (when available)
 - ICM meteogram link (for Poland/Czech Republic spots)
-- Forecast model selector (GFS/IFS)
+- Dynamic forecast model selector (40+ Windguru models, populated from `availableModels`)
 - Auto-refresh every 60 seconds
 - Polling mechanism for IFS forecast availability
 
@@ -165,6 +171,21 @@ DOM Manipulation (vanilla JS)
 
 ### Core JavaScript Modules
 
+#### `state.js` - Centralized State Management
+Exports functions for all localStorage/sessionStorage operations.
+
+**Storage Keys**: `THEME`, `LANGUAGE`, `FAVORITE_SPOTS`, `SHOWING_FAVORITES`, `SELECTED_COUNTRY`, `DESKTOP_VIEW_MODE`, `PREVIOUS_URL`, `FORECAST_VIEW_PREFERENCE`, `FILTER_WINDY_DAYS`, `FORECAST_MODEL` (sessionStorage), `HERO_VISIBLE`
+
+**Exported Functions**:
+- Theme: `getTheme()`, `setTheme()`, `applyTheme()`, `getCurrentTheme()`, `toggleTheme()`
+- Language: `getLanguage()` (auto-detects from browser), `setLanguage()`, `toggleLanguage()`
+- Favorites: `getFavorites()`, `saveFavorites()`, `isFavorite()`, `toggleFavorite()`
+- Country: `getSelectedCountry()`, `setSelectedCountry()`
+- View: `getDesktopViewMode()`, `setDesktopViewMode()`
+- Ordering: `getSpotOrder()`, `saveSpotOrder()`, `getListOrder()`, `saveListOrder()`
+- Forecast: `getForecastViewPreference()`, `setForecastViewPreference()`, `getSelectedModel()`, `setSelectedModel()`
+- Hero: `getHeroVisible()`, `setHeroVisible()`
+
 #### `translations.js` - Internationalization
 ```javascript
 const translations = {
@@ -173,7 +194,7 @@ const translations = {
 };
 
 function t(key) {
-    const lang = localStorage.getItem('language') || 'en';
+    const lang = getLanguage(); // auto-detects from browser if not stored
     return translations[lang][key] || translations.en[key] || key;
 }
 ```
@@ -403,13 +424,17 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 | `spotOrder` | JSON array | Custom spot ordering (spot IDs) |
 | `selectedCountry` | string | Last selected country filter |
 | `previousUrl` | string | URL before entering `/starred` view |
-| `gridLayout` | string | `'2-column'` or `'3-column'` |
+| `desktopViewMode` | string | `'grid'` (default), view mode preference |
+| `forecastViewPreference` | string | `'table'` or `'windguru'` |
+| `filterWindyDays` | string | `'true'` or `'false'` |
+| `heroVisible` | string | `'true'` or `'false'` (hero section visibility) |
+| `showingFavorites` | string | `'true'` or `'false'` |
 
 ### SessionStorage Keys
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `forecastModel` | string | `'gfs'` or `'ifs'` (per spot) |
+| `forecastModel` | string | Any Windguru model key, e.g. `'gfs'`, `'ifs'`, `'icon'` |
 
 ### In-Memory State
 
@@ -670,7 +695,7 @@ body {
 **Translation Function**:
 ```javascript
 function t(key) {
-    const lang = localStorage.getItem('language') || 'en';
+    const lang = getLanguage(); // auto-detects from browser if not stored
     return translations[lang][key] || translations.en[key] || key;
 }
 ```
@@ -898,6 +923,7 @@ None required (vanilla JS, modern browsers only).
 
 ### Compilation Pipeline
 1. **Source Files** (`src/frontend/`):
+   - `js/common/state.js` - Centralized state management
    - `js/common/translations.js` - i18n translations
    - `js/page/index.js` - Dashboard logic
    - `js/page/spot.js` - Single spot logic
@@ -1042,7 +1068,6 @@ None required (vanilla JS, modern browsers only).
 - **CLAUDE.md**: Backend architecture, API endpoints, data models
 - **BACKEND.md**: System architecture diagrams, high-level overview (same directory)
 - **README.md**: User guide, build instructions, deployment
-- **prompts/new-kite-spot.md**: Adding new kite spots
 
 ## Contact & Contributing
 
@@ -1053,5 +1078,5 @@ For frontend-related issues, feature requests, or contributions:
 
 ---
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 **Maintained By**: @pwittchen

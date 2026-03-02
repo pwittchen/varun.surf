@@ -61,9 +61,9 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - Current conditions: every 1 minute
      - AI analysis: every 8 hours (if enabled)
    - Uses Java 24 StructuredTaskScope with virtual threads for concurrent execution
-   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI)
+   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI, 16 model discovery)
    - Maintains multiple in-memory caches (ConcurrentHashMap):
-     - forecastCache: Map<Integer, ForecastData(daily, hourlyGfs, hourlyIfs)>
+     - forecastCache: Map<Integer, ForecastData(daily, Map<ForecastModel, List<Forecast>>)>
      - currentConditions: Map<Integer, CurrentConditions>
      - currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>> (12h history)
      - aiAnalysisEn/aiAnalysisPl: Map<Integer, String> (language-specific)
@@ -75,11 +75,10 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 
 2. **ForecastService** (`service/forecast/ForecastService.java`)
    - Fetches weather forecasts from Windguru micro API
-   - Supports multiple forecast models:
-     - GFS (Global Forecast System - NOAA)
-     - IFS (Integrated Forecast System - ECMWF)
+   - Supports 40+ forecast models dynamically (GFS, IFS, ICON, NAM, HRRR, AROME, etc.)
+   - All available Windguru models defined in `ForecastModel` enum with `modelKey` and `displayName`
    - Parses text-based exports using regex patterns
-   - Returns ForecastData with daily and hourly forecasts
+   - Returns ForecastData with daily and per-model hourly forecasts
    - Data includes: wind speed/gust, direction (deg + cardinal), temperature, precipitation
 
 3. **CurrentConditionsService** (`service/live/CurrentConditionsService.java`)
@@ -178,10 +177,20 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
   name: String,
   country: String,
   windguruUrl: String,
+  windguruFallbackUrl: String,  // optional fallback for forecasts
   forecast: List<Forecast>,
+  forecastHourly: List<Forecast>,
   currentConditions: CurrentConditions,
-  aiAnalysis: String,
-  spotInfo: SpotInfo
+  currentConditionsHistory: List<CurrentConditions>,
+  aiAnalysisEn: String,
+  aiAnalysisPl: String,
+  spotPhotoUrl: String,
+  coordinates: Coordinates,
+  spotInfo: SpotInfo,
+  spotInfoPL: SpotInfo,
+  sponsors: List<Sponsor>,
+  availableModels: List<AvailableModel>,  // dynamically discovered forecast models
+  lastUpdated: String
 }
 ```
 
@@ -340,7 +349,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── StatusController.java
 │   ├── MetricsController.java
 │   └── LogsController.java
-├── data/provider/             # Data providers
+├── data/                      # Data providers
 │   ├── spots/JsonSpotsDataProvider.java
 │   └── sponsors/JsonSponsorsDataProvider.java
 ├── exception/                 # Custom exceptions
@@ -351,7 +360,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SpotsControllerMetrics.java
 │   └── HttpClientMetricsEventListener.java
 ├── model/                     # Domain models (records)
-│   ├── forecast/              # Forecast, ForecastData, ForecastModel, IcmGrid
+│   ├── forecast/              # Forecast, ForecastData, ForecastModel (40+ models), AvailableModel, IcmGrid
 │   ├── spot/                  # Spot, SpotInfo
 │   ├── sponsor/               # Sponsor
 │   ├── live/                  # CurrentConditions, filter/
@@ -400,6 +409,11 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Status page with uptime and stats
 - [x] Health check history (90 data points, 1-minute intervals)
 - [x] Session cookie authentication (API access gated behind SESSION cookie)
+- [x] Hero section with random spot photo, name/location, and slogan (EN/PL)
+- [x] Dynamic multi-model forecast support (40+ Windguru models)
+- [x] Automatic language detection from browser settings
+- [x] Stale live conditions indicators (yellow for outdated data)
+- [x] Fallback weather station mechanism
 
 ## AI Analysis Feature (Experimental)
 
@@ -420,17 +434,21 @@ The AI forecast analysis is disabled by default because:
 
 3. **No Database**: All data is cached in-memory using ConcurrentHashMap. State is not persisted between restarts. This is intentional for simplicity and performance.
 
-4. **Multiple Forecast Models**:
+4. **Dynamic Multi-Model Forecast Support**:
    - GFS (default): Fetched every 3h for all spots
-   - IFS: Lazy-loaded when single spot is accessed (cached for 3h)
-   - ForecastData structure holds both models + daily forecasts
+   - 40+ models supported (GFS, IFS, ICON, NAM, HRRR, AROME, etc.) - defined in `ForecastModel` enum
+   - On-demand: When single spot is accessed, all Windguru models are discovered concurrently
+   - `ForecastData` uses `Map<ForecastModel, List<Forecast>>` for per-model hourly data
+   - `AvailableModel` record exposes discovered models to the frontend (key + displayName)
+   - `Spot.availableModels` populated dynamically based on non-empty model data
+   - Frontend model selector dropdown populated from `availableModels` field
 
 5. **Caching Strategy**:
    - Forecasts: 3-hour refresh cycle (scheduled)
    - Current conditions: 1-minute refresh cycle (scheduled)
    - AI analysis: 8-hour refresh cycle (if enabled)
    - Embedded maps: Lazy-loaded once, cached forever
-   - IFS model: On-demand, 3-hour TTL per spot
+   - Forecast models: On-demand discovery when single spot accessed, 3-hour TTL per spot
 
 6. **Immutable Data**: All models use Java records (immutable). To update, create new instances using `.withX()` methods or record constructors.
 

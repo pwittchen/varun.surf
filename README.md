@@ -284,6 +284,10 @@ Skill definitions are located in `.claude/skills/`.
 - map of the spot (provided by Open Street Maps and Windy)
 - link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)
-- possibility to switch a weather forecast model for the spot (currently available models: GFS, IFS)
+- dynamic weather forecast model selector (40+ Windguru models, auto-discovered per spot)
 - embeddable HTML widget with current conditions and forecast for the spot
 - session cookie authentication for API access (prevents direct API scraping without visiting the site)
+- hero section with random spot photo, name/location, and slogan in PL and EN
+- automatic language detection from browser settings
+- stale live conditions indicators (yellow for outdated data)
+- fallback weather station mechanism (automatic switch when primary returns stale data)

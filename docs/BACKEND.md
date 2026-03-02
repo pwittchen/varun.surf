@@ -12,7 +12,7 @@
                                        +-----------------------------------v-----------------------------------+
                                        |             AggregatorService (core orchestrator)                     |
                          +-------------+  - schedules: forecasts (3h), conditions (1m), AI (8h)                |
-                         |             |  - caches: spots, forecasts (GFS/IFS), conditions, AI, maps           |
+                         |             |  - caches: spots, forecasts (40+ models), conditions, AI, maps        |
                          |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI) |
                          |             |  - uses Java 24 StructuredTaskScope for concurrent execution          |
                          |             +------------+--------------------+-----------------+-------------------+
@@ -61,7 +61,7 @@
                  -> semaphore limits to 32 concurrent requests
                  -> for each Spot.wgId -> ForecastService.getForecastData(id)
                  -> Windguru micro API (text format, regex-parsed)
-                 -> updates forecastCache{spotId -> ForecastData(daily, hourlyGfs, hourlyIfs)}
+                 -> updates forecastCache{spotId -> ForecastData(daily, Map<ForecastModel, List<Forecast>>)}
 
   every 1m  -> fetchCurrentConditions()
                  -> uses StructuredTaskScope with virtual threads
@@ -99,13 +99,13 @@
     -> SpotsController.spot(id)
     -> AggregatorService.getSpotById(id) [default: GFS model]
     -> enriches spot with cached data
-    -> triggers async fetchForecastsForAllModels(id) [GFS + IFS hourly forecasts]
+    -> triggers async fetchForecastsForAllModels(id) [discovers all 40+ Windguru models]
     -> returns Mono<Spot>
 
   GET /api/v1/spots/{id}/{model}
-    -> SpotsController.spot(id, model) [model: "gfs" or "ifs"]
+    -> SpotsController.spot(id, model) [model: any valid ForecastModel key]
     -> AggregatorService.getSpotById(id, ForecastModel)
-    -> enriches spot with model-specific hourly forecast
+    -> enriches spot with model-specific hourly forecast + availableModels list
     -> triggers async fetchForecastsForAllModels(id)
     -> returns Mono<Spot>
 
@@ -153,14 +153,22 @@ Coordinates
 ├─ lat : double (latitude)
 └─ lon : double (longitude)
 
+AvailableModel
+├─ key : String (model key, e.g. "gfs", "ifs", "icon")
+└─ name : String (display name, e.g. "GFS 13 km", "IFS 9 km")
+
 ForecastData (internal cache structure)
 ├─ daily : List<Forecast> (GFS daily forecasts)
-├─ hourlyGfs : List<Forecast> (GFS hourly forecasts)
-└─ hourlyIfs : List<Forecast> (IFS hourly forecasts)
+└─ hourly : Map<ForecastModel, List<Forecast>> (per-model hourly forecasts)
 
-ForecastModel (enum)
-├─ GFS (Global Forecast System - NOAA)
-└─ IFS (Integrated Forecast System - ECMWF)
+ForecastModel (enum - 40+ models with modelKey and displayName)
+├─ GFS ("gfs", "GFS 13 km") - default
+├─ IFS ("ifs", "IFS 9 km")
+├─ ICON ("icon", "ICON 13 km")
+├─ HRRR ("hrrr", "HRRR 3 km")
+├─ AROME ("arome", "AROME 1 km")
+├─ NAM ("nam", "NAM 12 km")
+└─ ... (40+ total: global, European, Asia-Pacific, Americas, wave models)
 
 Forecast
 ├─ time : String (hourly timestamp or daily date)
@@ -295,7 +303,7 @@ Containerization:
   - VPS deployment via deployment.sh script
 
 Runtime:
-  - Spring Boot 3.5.5 (Reactive WebFlux)
+  - Spring Boot 3.5.9 (Reactive WebFlux)
   - Port 8080 (default)
   - In-memory caching (no database)
   - Java 24 virtual threads via StructuredTaskScope
@@ -306,7 +314,7 @@ Runtime:
 In-Memory Caches (ConcurrentHashMap):
   1. forecastCache: Map<Integer, ForecastData>
      - Key: spotId (wgId)
-     - Value: ForecastData(daily, hourlyGfs, hourlyIfs)
+     - Value: ForecastData(daily, Map<ForecastModel, List<Forecast>> hourly)
      - Updated: every 3 hours (scheduled)
      - Lifetime: until next scheduled update
 
@@ -350,7 +358,7 @@ In-Memory Caches (ConcurrentHashMap):
   8. hourlyForecastCacheTimestamps: Map<Integer, Long>
      - Key: spotId (wgId)
      - Value: timestamp (milliseconds)
-     - Purpose: prevent redundant IFS model fetches
+     - Purpose: prevent redundant multi-model fetches
      - TTL: 3 hours
 
   9. spots: ConcurrentMap<Integer, Spot>
@@ -381,6 +389,7 @@ Semaphore-based Rate Limiting:
   - forecastLimiter: 32 permits (max 32 concurrent Windguru API calls)
   - currentConditionsLimiter: 32 permits (max 32 concurrent station calls)
   - aiLimiter: 16 permits (max 16 concurrent LLM API calls)
+  - discoveryLimiter: 16 permits (max 16 concurrent model discovery calls)
   - Prevents overwhelming external APIs
   - Ensures fair resource distribution
 
@@ -420,8 +429,9 @@ Spots:
     - Response: Mono<Spot>
 
   GET /api/v1/spots/{id}/{model}
-    - Returns single spot with specified forecast model (gfs or ifs)
-    - Triggers async fetch for all forecast models if not cached
+    - Returns single spot with specified forecast model (any valid modelKey)
+    - Includes availableModels list for frontend model selector
+    - Triggers async discovery of all forecast models if not cached
     - Response: Mono<Spot>
 
 Sponsors:
@@ -484,18 +494,18 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SessionAuthenticationFilter.java  # Session-based API access gating
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
+│   ├── LogsController.java               # /api/v1/logs/*
 │   ├── MetricsController.java            # /api/v1/metrics/*
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
 │   ├── SpotsController.java              # /api/v1/spots/*
 │   └── StatusController.java             # /api/v1/health, /api/v1/status
-├── data/                                 # Data layer
-│   └── provider/                         # Data providers
-│       ├── sponsors/
-│       │   ├── JsonSponsorsDataProvider.java
-│       │   └── SponsorsDataProvider.java (interface)
-│       └── spots/
-│           ├── JsonSpotsDataProvider.java
-│           └── SpotsDataProvider.java (interface)
+├── data/                                 # Data providers
+│   ├── sponsors/
+│   │   ├── JsonSponsorsDataProvider.java
+│   │   └── SponsorsDataProvider.java (interface)
+│   └── spots/
+│       ├── JsonSpotsDataProvider.java
+│       └── SpotsDataProvider.java (interface)
 ├── exception/                            # Custom exceptions
 │   ├── FetchingAiForecastAnalysisException.java
 │   ├── FetchingCurrentConditionsException.java
@@ -509,9 +519,10 @@ src/main/java/com/github/pwittchen/varun/
 │   └── SpotsControllerMetrics.java       # API request counters
 ├── model/                                # Domain models
 │   ├── forecast/
+│   │   ├── AvailableModel.java            # Model key + displayName for frontend
 │   │   ├── Forecast.java
-│   │   ├── ForecastData.java
-│   │   ├── ForecastModel.java (enum: GFS, IFS)
+│   │   ├── ForecastData.java              # daily + Map<ForecastModel, List<Forecast>> hourly
+│   │   ├── ForecastModel.java (enum: 40+ models - GFS, IFS, ICON, etc.)
 │   │   ├── ForecastWg.java
 │   │   └── IcmGrid.java                  # ICM meteogram grid coordinates
 │   ├── live/                             # Live conditions
@@ -689,7 +700,6 @@ Metrics History:
 - **CLAUDE.md**: Backend architecture, API endpoints, data models
 - **FRONTEND.md**: Frontend architecture high-level overview (same directory)
 - **README.md**: User guide, build instructions, deployment
-- **prompts/new-kite-spot.md**: Adding new kite spots
 
 ## Contact & Contributing
 
@@ -700,5 +710,5 @@ For backend-related issues, feature requests, or contributions:
 
 ---
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 **Maintained By**: @pwittchen
