@@ -540,6 +540,7 @@ public class AggregatorService {
 
         ForecastData existing = forecastCache.get(spotId);
         final ForecastData data = getForecastData(existing, forecasts);
+        logFetchedModels(spotId, data);
 
         forecastCache.put(spotId, data);
         hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
@@ -562,6 +563,15 @@ public class AggregatorService {
 
         List<Forecast> daily = existing != null ? existing.daily() : List.of();
         return new ForecastData(daily, hourlyMap);
+    }
+
+    private static void logFetchedModels(int spotId, ForecastData data) {
+        List<String> fetchedModelKeys = data.hourly().entrySet().stream()
+                .filter(e -> !e.getValue().isEmpty())
+                .sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
+                .map(e -> e.getKey().modelKey())
+                .toList();
+        log.info("Spot {} - fetched {} models: {}", spotId, fetchedModelKeys.size(), fetchedModelKeys);
     }
 
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
