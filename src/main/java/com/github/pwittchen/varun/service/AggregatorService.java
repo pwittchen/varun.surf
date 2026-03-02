@@ -27,6 +27,7 @@ import com.google.common.collect.EvictingQueue;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.javatuples.Pair;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -537,9 +539,17 @@ public class AggregatorService {
                 .forEach(t -> log.debug("Failed to fetch model for spot: {}", t.exception().getMessage()));
 
         ForecastData existing = forecastCache.get(spotId);
+        final ForecastData data = getForecastData(existing, forecasts);
+
+        forecastCache.put(spotId, data);
+        hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
+        forecastModelsLocks.remove(spotId);
+    }
+
+    private static @NonNull ForecastData getForecastData(ForecastData existing, List<Pair<ForecastModel, ForecastData>> forecasts) {
         Map<ForecastModel, List<Forecast>> hourlyMap = existing != null
-                ? new java.util.HashMap<>(existing.hourly())
-                : new java.util.HashMap<>();
+                ? new HashMap<>(existing.hourly())
+                : new HashMap<>();
 
         for (Pair<ForecastModel, ForecastData> pair : forecasts) {
             ForecastModel model = pair.getValue0();
@@ -551,11 +561,7 @@ public class AggregatorService {
         }
 
         List<Forecast> daily = existing != null ? existing.daily() : List.of();
-        final ForecastData data = new ForecastData(daily, hourlyMap);
-
-        forecastCache.put(spotId, data);
-        hourlyForecastCacheTimestamps.put(spotId, System.currentTimeMillis());
-        forecastModelsLocks.remove(spotId);
+        return new ForecastData(daily, hourlyMap);
     }
 
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
