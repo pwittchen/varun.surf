@@ -80,7 +80,7 @@ public enum ForecastModel {
     IFSENS("ifsens", "IFS Ens 18 km"),
 
     // ── ICM (Poland/Czech Republic) ──────────────────────────────────────
-    ICM_METEO("icm", "ICM UM 4 km");
+    ICM_METEO("icm", "ICM UM 4 km (BETA)");
 
     private static final Logger log = LoggerFactory.getLogger(ForecastModel.class);
 
