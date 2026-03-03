@@ -577,6 +577,13 @@ public class AggregatorService {
     private Optional<String> resolveIcmUrl(int spotId, Spot spot) {
         Coordinates coords = locationCoordinates.get(spotId);
         if (coords == null) {
+            log.info("Coordinates not cached for spot {}, loading synchronously for ICM resolution", spotId);
+            coords = loadCoordinates(spot).block();
+            if (coords != null) {
+                locationCoordinates.put(spotId, coords);
+            }
+        }
+        if (coords == null) {
             return Optional.empty();
         }
         return icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
