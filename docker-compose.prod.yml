@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
-      --app.feature.icm.vision.enabled=true
+      --app.feature.icm.vision.enabled=false
       --app.ai.provider=openai
       --spring.ai.openai.api-key=${OPEN_AI_API_KEY}
     expose:
