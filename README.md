@@ -235,15 +235,15 @@ Remember that you can also trigger agents by natural language according to Claud
 The project includes Claude Code skills that can be invoked as slash commands. Skills are lightweight, focused tasks that run directly in the conversation.
 
 **How to use:**
-1. Type the run + slash command in Claude Code (e.g., `run /check-spots`)
-2. For skills with arguments, add them after the command (e.g., `run /explain caching flow`)
+1. Type the run + slash command in Claude Code (e.g., `/check-spots`)
+2. For skills with arguments, add them after the command (e.g., `/explain caching flow`)
 3. Skills run immediately and return a structured report
 
 **Examples:**
 
 ```
-run /check-spots
-run /explain caching flow
+/check-spots
+/explain caching flow
 ```
 
 | Command | Purpose |
