@@ -202,6 +202,8 @@ function startModelDiscoveryPolling(spotId) {
         return;
     }
 
+    setModelDropdownLoading();
+
     let attempts = 0;
     const maxAttempts = 6;
     const interval = 5000; // 5 seconds
@@ -212,6 +214,7 @@ function startModelDiscoveryPolling(spotId) {
             const latestSpot = await fetchSpotData(spotId);
             if (latestSpot && latestSpot.availableModels && latestSpot.availableModels.length > 1) {
                 clearModelDiscoveryPolling();
+                clearModelDropdownLoading();
                 updateModelDropdownOptions(latestSpot.availableModels);
                 // Also update current spot data silently
                 if (hasForecastData(latestSpot)) {
@@ -219,10 +222,12 @@ function startModelDiscoveryPolling(spotId) {
                 }
             } else if (attempts >= maxAttempts) {
                 clearModelDiscoveryPolling();
+                clearModelDropdownLoading();
             }
         } catch (_) {
             if (attempts >= maxAttempts) {
                 clearModelDiscoveryPolling();
+                clearModelDropdownLoading();
             }
         }
     }, interval);
@@ -2627,6 +2632,34 @@ function setupResizeHandler() {
 // MODEL DROPDOWN (dynamic multi-model)
 // ============================================================================
 
+function setModelDropdownLoading() {
+    const modelDropdown = document.getElementById('modelDropdown');
+    const container = document.getElementById('modelDropdownContainer');
+    if (!modelDropdown || !container) return;
+
+    modelDropdown.classList.add('disabled');
+
+    if (!container.querySelector('.model-loading-indicator')) {
+        const indicator = document.createElement('div');
+        indicator.className = 'model-loading-indicator';
+        indicator.innerHTML = `<span class="mini-spinner"></span>${translations.t('loadingModels')}`;
+        container.appendChild(indicator);
+    }
+}
+
+function clearModelDropdownLoading() {
+    const modelDropdown = document.getElementById('modelDropdown');
+    const container = document.getElementById('modelDropdownContainer');
+    if (!modelDropdown || !container) return;
+
+    modelDropdown.classList.remove('disabled');
+
+    const indicator = container.querySelector('.model-loading-indicator');
+    if (indicator) {
+        indicator.remove();
+    }
+}
+
 // Setup forecast model dropdown (toggle/close behavior only)
 function setupModelDropdown() {
     const modelDropdown = document.getElementById('modelDropdown');
@@ -2643,6 +2676,7 @@ function setupModelDropdown() {
 
     // Toggle dropdown on the button click
     modelDropdown.addEventListener('click', () => {
+        if (modelDropdown.classList.contains('disabled')) return;
         modelDropdownMenu.classList.toggle('open');
         modelDropdown.classList.toggle('open');
     });
@@ -2665,6 +2699,8 @@ function updateModelDropdownOptions(availableModels) {
     if (!modelDropdown || !modelDropdownMenu || !modelDropdownText) {
         return;
     }
+
+    clearModelDropdownLoading();
 
     if (!availableModels || availableModels.length === 0) {
         return;

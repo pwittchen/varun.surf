@@ -121,6 +121,7 @@ export const translations = {
         loadingSpotData: "Checking conditions on the spot...",
         loadingForecast: "Chasing the wind on the spot...",
         forecastTimeout: "Connection timed out while waiting for forecast data. Please try again later.",
+        loadingModels: "Loading forecast models...",
 
         // Favorites
         noFavoritesTitle: "No Favorites Yet",
@@ -373,6 +374,7 @@ export const translations = {
         loadingSpotData: "Sprawdzam warunki na spocie...",
         loadingForecast: "Trwa pogoń za wiatrem na spocie...",
         forecastTimeout: "Przekroczono czas oczekiwania na dane prognozy. Spróbuj ponownie później.",
+        loadingModels: "Wczytywanie modeli prognozy...",
 
         // Favorites
         noFavoritesTitle: "Brak ulubionych",
