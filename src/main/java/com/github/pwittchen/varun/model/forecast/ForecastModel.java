@@ -77,7 +77,10 @@ public enum ForecastModel {
     GFS_WAVE("gfswave", "GFS Wave 28 km"),
     GFSENS("gfsens", "GFS Ens 25 km"),
     CMCENS("cmcens", "CMC Ens 25 km"),
-    IFSENS("ifsens", "IFS Ens 18 km");
+    IFSENS("ifsens", "IFS Ens 18 km"),
+
+    // ── ICM (Poland/Czech Republic) ──────────────────────────────────────
+    ICM_METEO("icm", "ICM UM 4 km");
 
     private static final Logger log = LoggerFactory.getLogger(ForecastModel.class);
 

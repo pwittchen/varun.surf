@@ -35,6 +35,9 @@ app:
       forecast:
         analysis:
           enabled: false
+    icm:
+      vision:
+        enabled: false
   analytics:
     password: "\${ANALYTICS_PASSWORD:}"
   session:

@@ -20,6 +20,7 @@ import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.forecast.ForecastAverageCalculator;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
+import com.github.pwittchen.varun.service.forecast.IcmForecastVisionService;
 import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
@@ -84,6 +85,9 @@ public class AggregatorService {
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
 
+    @Value("${app.feature.icm.vision.enabled}")
+    private boolean icmVisionEnabled;
+
     private final ConcurrentMap<Integer, Spot> spots;
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
@@ -101,6 +105,7 @@ public class AggregatorService {
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
     private final IcmGridMapper icmGridMapper;
+    private final IcmForecastVisionService icmForecastVisionService;
     private final SponsorsService sponsorsService;
     private final AggregatorServiceMetrics metricsService;
 
@@ -120,6 +125,7 @@ public class AggregatorService {
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
             IcmGridMapper icmGridMapper,
+            IcmForecastVisionService icmForecastVisionService,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
         this.spots = new ConcurrentHashMap<>();
@@ -140,6 +146,7 @@ public class AggregatorService {
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
         this.icmGridMapper = icmGridMapper;
+        this.icmForecastVisionService = icmForecastVisionService;
         this.sponsorsService = sponsorsService;
         this.metricsService = metricsService;
     }
@@ -505,17 +512,23 @@ public class AggregatorService {
                 return;
             }
 
+            Spot spot = spots.get(spotId);
+
             // Find the spot to get the forecastWgId (which may differ from spotId for fallback URLs)
             int forecastId = Optional
-                    .ofNullable(spots.get(spotId))
+                    .ofNullable(spot)
                     .map(Spot::forecastWgId)
                     .orElse(spotId);
 
             log.info("Fetching forecast models for the spot {} (forecastId: {})", spotId, forecastId);
-            final List<ForecastModel> models = Arrays.stream(ForecastModel.values()).toList();
+
+            // Filter out ICM_METEO from Windguru models (it doesn't use Windguru API)
+            final List<ForecastModel> windguruModels = Arrays.stream(ForecastModel.values())
+                    .filter(m -> m != ForecastModel.ICM_METEO)
+                    .toList();
 
             try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
-                var tasks = models
+                var tasks = new ArrayList<>(windguruModels
                         .stream()
                         .map(forecastModel -> scope.fork(() -> {
                             discoveryLimiter.acquire();
@@ -525,7 +538,28 @@ public class AggregatorService {
                                 discoveryLimiter.release();
                             }
                         }))
-                        .toList();
+                        .toList());
+
+                // Fork ICM vision task for Polish/Czech spots when enabled
+                if (icmVisionEnabled && spot != null) {
+                    Optional<String> icmUrl = resolveIcmUrl(spotId, spot);
+                    if (icmUrl.isPresent()) {
+                        log.info("Forking ICM vision task for spot {} with URL {}", spotId, icmUrl.get());
+                        tasks.add(scope.fork(() -> {
+                            discoveryLimiter.acquire();
+                            try {
+                                var forecasts = icmForecastVisionService.extractForecastFromMeteogram(icmUrl.get());
+                                if (forecasts.isPresent()) {
+                                    Map<ForecastModel, List<Forecast>> hourlyMap = Map.of(ForecastModel.ICM_METEO, forecasts.get());
+                                    return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), hourlyMap));
+                                }
+                                return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), Map.of()));
+                            } finally {
+                                discoveryLimiter.release();
+                            }
+                        }));
+                    }
+                }
 
                 try {
                     scope.join();
@@ -538,6 +572,14 @@ public class AggregatorService {
                 updateSpotAndForecastModels(spotId, tasks);
             }
         }
+    }
+
+    private Optional<String> resolveIcmUrl(int spotId, Spot spot) {
+        Coordinates coords = locationCoordinates.get(spotId);
+        if (coords == null) {
+            return Optional.empty();
+        }
+        return icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
     }
 
     private boolean isHourlyForecastCacheTimestampNotExpired(int spotId) {
