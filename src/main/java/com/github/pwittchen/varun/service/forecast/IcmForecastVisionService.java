@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import java.time.Duration;
 
 @Service
 public class IcmForecastVisionService {
@@ -72,8 +73,12 @@ public class IcmForecastVisionService {
                     .user(u -> u
                             .text(VISION_PROMPT)
                             .media(MimeTypeUtils.IMAGE_PNG, new ByteArrayResource(imageBytes)))
-                    .call()
-                    .content();
+                    .stream()
+                    .content()
+                    .timeout(Duration.ofSeconds(60))
+                    .collectList()
+                    .map(chunks -> String.join("", chunks))
+                    .block();
 
             if (response == null || response.isBlank()) {
                 log.warn("Empty response from vision API for ICM meteogram");

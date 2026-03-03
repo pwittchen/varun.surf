@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,7 +27,7 @@ class IcmForecastVisionServiceTest {
     private IcmForecastVisionService service;
     private ChatClient chatClient;
     private ChatClient.ChatClientRequestSpec requestSpec;
-    private ChatClient.CallResponseSpec callResponseSpec;
+    private ChatClient.StreamResponseSpec streamResponseSpec;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -35,7 +36,7 @@ class IcmForecastVisionServiceTest {
 
         chatClient = mock(ChatClient.class);
         requestSpec = mock(ChatClient.ChatClientRequestSpec.class);
-        callResponseSpec = mock(ChatClient.CallResponseSpec.class);
+        streamResponseSpec = mock(ChatClient.StreamResponseSpec.class);
 
         OkHttpClient httpClient = new OkHttpClient();
         Gson gson = new GsonBuilder().create();
@@ -62,8 +63,8 @@ class IcmForecastVisionServiceTest {
 
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(any(java.util.function.Consumer.class))).thenReturn(requestSpec);
-        when(requestSpec.call()).thenReturn(callResponseSpec);
-        when(callResponseSpec.content()).thenReturn(jsonResponse);
+        when(requestSpec.stream()).thenReturn(streamResponseSpec);
+        when(streamResponseSpec.content()).thenReturn(Flux.just(jsonResponse));
 
         String url = mockWebServer.url("/meteogram.png").toString();
         Optional<List<Forecast>> result = service.extractForecastFromMeteogram(url);
@@ -97,8 +98,8 @@ class IcmForecastVisionServiceTest {
 
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(any(java.util.function.Consumer.class))).thenReturn(requestSpec);
-        when(requestSpec.call()).thenReturn(callResponseSpec);
-        when(callResponseSpec.content()).thenReturn("not valid json at all");
+        when(requestSpec.stream()).thenReturn(streamResponseSpec);
+        when(streamResponseSpec.content()).thenReturn(Flux.just("not valid json at all"));
 
         String url = mockWebServer.url("/meteogram.png").toString();
         Optional<List<Forecast>> result = service.extractForecastFromMeteogram(url);
@@ -124,8 +125,8 @@ class IcmForecastVisionServiceTest {
 
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(any(java.util.function.Consumer.class))).thenReturn(requestSpec);
-        when(requestSpec.call()).thenReturn(callResponseSpec);
-        when(callResponseSpec.content()).thenReturn(null);
+        when(requestSpec.stream()).thenReturn(streamResponseSpec);
+        when(streamResponseSpec.content()).thenReturn(Flux.empty());
 
         String url = mockWebServer.url("/meteogram.png").toString();
         Optional<List<Forecast>> result = service.extractForecastFromMeteogram(url);
@@ -141,8 +142,8 @@ class IcmForecastVisionServiceTest {
 
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(any(java.util.function.Consumer.class))).thenReturn(requestSpec);
-        when(requestSpec.call()).thenReturn(callResponseSpec);
-        when(callResponseSpec.content()).thenReturn("[]");
+        when(requestSpec.stream()).thenReturn(streamResponseSpec);
+        when(streamResponseSpec.content()).thenReturn(Flux.just("[]"));
 
         String url = mockWebServer.url("/meteogram.png").toString();
         Optional<List<Forecast>> result = service.extractForecastFromMeteogram(url);
