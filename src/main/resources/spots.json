@@ -2863,5 +2863,33 @@
       "season": "Maj-Wrzesień",
       "description": "Naturalne jezioro o powierzchni 130 hektarów w regionie morawsko-śląskim, oferujące czystą wodę i doskonałe zaplecze rekreacyjne. Popularne letnie miejsce z windsurfingiem, kitesurfingiem, wakeboardem i nartami wodnymi. Kompleks sportowy z plażami i wypożyczalnią sprzętu."
     }
+  },
+  {
+    "name": "Maszoperia",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/500758",
+    "windfinderUrl": "https://www.windfinder.com/forecast/jastarnia",
+    "webcamUrl": "https://www.worldcam.pl/kamery/polska/jastarnia/4492-kemping-maszoperiaa",
+    "locationUrl": "https://maps.app.goo.gl/CqHcbkRhsTwVA5M57",
+    "spotInfo": {
+      "type": "Lagoon and open sea, flat water to small chop",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Small sandy beach",
+      "hazards": "Bunker, camping, shallow areas, swimmers in summer",
+      "season": "May-October",
+      "description": "Popular camping and kite spot on Hel Peninsula with dual water access. Located between calm Puck Bay lagoon and open Baltic Sea. There is a kite school with equipment rentals and storage. Known for consistent winds and excellent beginner-friendly conditions in the lagoon."
+    },
+    "spotInfoPL": {
+      "type": "Laguna i otwarte morze, płaska woda do niewielkiego zafalowania",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Mała piaszczysta plaża",
+      "hazards": "Bunkier, kemping, płytkie obszary, pływacy latem",
+      "season": "Maj-Październik",
+      "description": "Popularny camping i spot kitesurfingowy na Półwyspie Helskim z podwójnym dostępem do wody. Położony między spokojną laguną Zatoki Puckiej a otwartym Morzem Bałtyckim. Jest dostępna szkoła kite z wypożyczalnią sprzętu i przechowalnią. Znany ze stabilnych wiatrów i doskonałych warunków dla początkujących w lagunie."
+    }
   }
 ]
