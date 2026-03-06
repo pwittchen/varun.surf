@@ -38,7 +38,7 @@ class JsonSpotsDataProviderTest {
     void shouldLoadAllSpotsFromJsonFile() {
         StepVerifier
                 .create(provider.getSpots())
-                .expectNextCount(102)
+                .expectNextCount(103)
                 .verifyComplete();
     }
 
