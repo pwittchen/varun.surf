@@ -4043,6 +4043,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: flex !important;
 }
 
+.disabled-in-map {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+}
+
 /* Map container styles */
 #mapContainer {
     width: 100%;

@@ -2536,8 +2536,13 @@ function showMapView() {
     const gridViewBtn = document.getElementById('gridViewBtn');
     const heroSection = document.getElementById('heroSection');
 
-    // Hide hero section and spots grid
+    // Hide hero section and spots grid, disable hero toggle button
     if (heroSection) heroSection.style.display = 'none';
+    const heroToggle = document.getElementById('heroToggle');
+    if (heroToggle) {
+        heroToggle.classList.add('disabled-in-map');
+        heroToggle.classList.remove('active');
+    }
     spotsGrid.style.display = 'none';
 
     // Show map container
@@ -2583,8 +2588,13 @@ function hideMapView(options = {}) {
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
 
-    // Show spots grid and restore hero section
+    // Show spots grid, restore hero section, and re-enable hero toggle button
     spotsGrid.style.display = '';
+    const heroToggle = document.getElementById('heroToggle');
+    if (heroToggle) {
+        heroToggle.classList.remove('disabled-in-map');
+        if (state.getHeroVisible()) heroToggle.classList.add('active');
+    }
     updateHeroVisibility();
 
     // Hide map container
