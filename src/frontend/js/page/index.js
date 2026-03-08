@@ -273,6 +273,15 @@ function setupFavorites() {
             // Enter favorites mode
             state.setShowingFavorites(true);
 
+            // Reset country filter to "all"
+            currentFilter = 'all';
+            state.setSelectedCountry('all');
+            updateSelectedCountryLabel('all');
+            const dropdownOptions = document.querySelectorAll('.dropdown-option');
+            dropdownOptions.forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.country === 'all');
+            });
+
             // Update URL to /starred
             updateUrlForStarred();
 
