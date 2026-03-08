@@ -285,6 +285,11 @@ function setupFavorites() {
             // Update URL to /starred
             updateUrlForStarred();
 
+            // Clear previous URL since country was reset to "all"
+            // Must be after updateUrlForStarred() which saves current path as previousUrl
+            previousUrl = '/';
+            state.setPreviousUrl('/');
+
             renderFavorites();
         }
 
