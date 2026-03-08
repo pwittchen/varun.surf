@@ -1248,7 +1248,9 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     if (globalWeatherData.length > 0 && !forceRefresh) {
         const filteredSpots = filterSpots(globalWeatherData, filter, searchQuery);
         displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
-        renderHeroSection();
+        if (!heroInitialized) {
+            renderHeroSection();
+        }
         return;
     }
 
@@ -1265,7 +1267,9 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
 
         const filteredSpots = filterSpots(data, filter, searchQuery);
         displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
-        renderHeroSection();
+        if (!heroInitialized) {
+            renderHeroSection();
+        }
     } catch (error) {
         console.error('Failed to load weather:', error.message);
         showErrorMessage(error);
