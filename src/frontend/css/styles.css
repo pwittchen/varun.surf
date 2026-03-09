@@ -4777,6 +4777,36 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: none;
     }
 
+    .status-card {
+        padding: 16px;
+    }
+
+    .health-history-container {
+        gap: 1px;
+        overflow-x: auto;
+    }
+
+    .health-history-bar {
+        min-width: 1px;
+    }
+
+    .health-history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .health-history-tooltip {
+        left: 0;
+        transform: none;
+    }
+
+    .health-history-bar:nth-last-child(-n+10) .health-history-tooltip {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+
     .status-actions {
         flex-direction: column;
         width: 100%;
