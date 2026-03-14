@@ -165,6 +165,7 @@ export const translations = {
         windyMapTabLabel: "Windy Map",
         mapLayerOsm: "Map",
         mapLayerSatellite: "Satellite",
+        mapResetView: "Navigate to spot",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -418,6 +419,7 @@ export const translations = {
         windyMapTabLabel: "Mapa Wiatru",
         mapLayerOsm: "Mapa",
         mapLayerSatellite: "Satelita",
+        mapResetView: "Nawiguj do spotu",
 
         // Spot info labels
         overviewLabel: "Przegląd",

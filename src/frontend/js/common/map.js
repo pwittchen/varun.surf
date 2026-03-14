@@ -167,6 +167,57 @@ export function createLayerSwitcher(options) {
     return new LayerSwitcher();
 }
 
+// ============================================================================
+// RESET VIEW CONTROL
+// ============================================================================
+
+// SVG crosshair icon for the reset view button
+const RESET_VIEW_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/**
+ * Create a Leaflet control that recenters the map on the spot location
+ * @param {object} options - Configuration options
+ * @param {number} options.lat - Spot latitude
+ * @param {number} options.lon - Spot longitude
+ * @param {number} [options.zoom=13] - Zoom level to reset to
+ * @param {string} [options.position='bottomright'] - Control position
+ * @returns {L.Control} Leaflet control instance
+ */
+export function createResetViewControl(options) {
+    const {
+        lat,
+        lon,
+        zoom = 13,
+        position = 'bottomright'
+    } = options;
+
+    const ResetViewControl = L.Control.extend({
+        options: {
+            position: position
+        },
+
+        onAdd: function(map) {
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-reset-view');
+
+            const button = L.DomUtil.create('button', 'reset-view-button', container);
+            button.type = 'button';
+            button.title = translations.t('mapResetView');
+            button.innerHTML = RESET_VIEW_ICON;
+
+            L.DomEvent.on(button, 'click', function(e) {
+                L.DomEvent.stopPropagation(e);
+                map.setView([lat, lon], zoom);
+            });
+
+            L.DomEvent.disableClickPropagation(container);
+
+            return container;
+        }
+    });
+
+    return new ResetViewControl();
+}
+
 /**
  * Update layer switcher labels when language changes
  * Finds all layer switcher dropdowns and updates their option labels

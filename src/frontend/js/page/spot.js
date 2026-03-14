@@ -1471,6 +1471,13 @@ function initOsmSatelliteMap() {
     });
     layerSwitcher.addTo(osmSatelliteMap);
 
+    // Add reset view control to recenter on spot
+    const resetViewControl = map.createResetViewControl({
+        lat: currentSpot.coordinates.lat,
+        lon: currentSpot.coordinates.lon
+    });
+    resetViewControl.addTo(osmSatelliteMap);
+
     // Create a custom red marker icon using common module
     const markerIcon = map.createMarkerIcon('custom-marker-red');
 

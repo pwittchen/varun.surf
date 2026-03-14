@@ -4253,6 +4253,37 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--text-white);
 }
 
+/* Leaflet reset view control */
+.leaflet-control-reset-view {
+    background: var(--leaflet-bg);
+    border: 2px solid var(--leaflet-border);
+    border-radius: 4px;
+}
+
+.reset-view-button {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    background: var(--leaflet-bg);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--leaflet-text);
+    transition: background-color 0.2s ease;
+}
+
+.reset-view-button:hover {
+    background: var(--leaflet-hover);
+}
+
+.reset-view-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
 
 /* ============================================================================
    28. HERO SECTION
