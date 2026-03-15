@@ -359,8 +359,8 @@ class SpotsControllerTest {
     private List<Spot> createMockSpotsWithForecasts() {
         SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
         List<Forecast> forecasts = List.of(
-                new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5),
-                new Forecast("Tomorrow", 10.0, 15.0, "W", 14.0, 1.0)
+                new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5, 0, 0),
+                new Forecast("Tomorrow", 10.0, 15.0, "W", 14.0, 1.0, 0, 0)
         );
 
         Spot spot = new Spot(
@@ -459,8 +459,8 @@ class SpotsControllerTest {
         SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
 
         List<Forecast> forecasts = List.of(
-                new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5),
-                new Forecast("Tomorrow", 10.0, 15.0, "W", 14.0, 1.0)
+                new Forecast("Today", 12.5, 18.3, "SW", 15.0, 0.5, 0, 0),
+                new Forecast("Tomorrow", 10.0, 15.0, "W", 14.0, 1.0, 0, 0)
         );
 
         CurrentConditions currentConditions = new CurrentConditions(

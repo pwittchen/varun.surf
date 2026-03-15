@@ -6,6 +6,8 @@ public record ForecastWg(
         int gust,
         int windDirectionDegrees,
         int temperature,
-        int apcpMm1h
+        int apcpMm1h,
+        int cloudCoverPercent,
+        int pressureHpa
 ) {
 }

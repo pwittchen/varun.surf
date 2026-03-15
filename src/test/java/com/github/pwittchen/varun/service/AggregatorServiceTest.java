@@ -165,7 +165,7 @@ class AggregatorServiceTest {
     void shouldFetchForecastsSuccessfully() throws FetchingForecastException, InterruptedException {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0);
+        var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0, 0, 0);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
         when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), Map.of())));
@@ -184,8 +184,8 @@ class AggregatorServiceTest {
     void shouldReturnHourlyForecastForSingleSpot() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var hourlyForecast = List.of(new Forecast("Mon 01 Jan 2025 01:00", 9.0, 11.0, "N", 14.0, 0.1));
-        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5));
+        var hourlyForecast = List.of(new Forecast("Mon 01 Jan 2025 01:00", 9.0, 11.0, "N", 14.0, 0.1, 0, 0));
+        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
 
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
@@ -673,8 +673,8 @@ class AggregatorServiceTest {
     void shouldReturnAverageForecastWhenModelKeyIsAverage() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
-        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0));
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0));
 
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
@@ -702,7 +702,7 @@ class AggregatorServiceTest {
     void shouldDelegateToForecastModelWhenModelKeyIsNotAverage() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
 
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
@@ -725,8 +725,8 @@ class AggregatorServiceTest {
     void shouldIncludeAverageInAvailableModelsWhenTwoOrMoreModelsExist() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
-        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0));
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var ifsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0));
 
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
@@ -755,7 +755,7 @@ class AggregatorServiceTest {
     void shouldNotIncludeAverageInAvailableModelsWhenOnlyOneModelExists() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
 
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);

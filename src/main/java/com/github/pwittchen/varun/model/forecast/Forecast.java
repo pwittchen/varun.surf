@@ -6,6 +6,8 @@ public record Forecast(
         double gusts,
         String direction,
         double temp,
-        double precipitation
+        double precipitation,
+        double cloudCoverPercent,
+        double pressureHpa
 ) {
 }

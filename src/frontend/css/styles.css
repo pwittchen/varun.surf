@@ -114,6 +114,14 @@
     --precipitation: #3b82f6;
     --precipitation-none: #6b7280;
 
+    /* Cloud Cover Colors */
+    --cloud-low: #6b7280;
+    --cloud-medium: #94a3b8;
+    --cloud-heavy: #cbd5e1;
+
+    /* Pressure Color */
+    --pressure: #a78bfa;
+
     /* Wave Colors */
     --wave-small: #22c55e;
     --wave-moderate: #f59e0b;
@@ -227,6 +235,14 @@
     /* Precipitation Color */
     --precipitation: #2563eb;
     --precipitation-none: #9ca3af;
+
+    /* Cloud Cover Colors */
+    --cloud-low: #9ca3af;
+    --cloud-medium: #64748b;
+    --cloud-heavy: #475569;
+
+    /* Pressure Color */
+    --pressure: #7c3aed;
 
     /* Wave Colors */
     --wave-small: #059669;
@@ -1133,6 +1149,25 @@ body {
     color: var(--precipitation-none) !important;
 }
 
+/* Cloud Cover Cell Classes */
+.weather-table tbody td.cloud-low {
+    color: var(--cloud-low) !important;
+}
+
+.weather-table tbody td.cloud-medium {
+    color: var(--cloud-medium) !important;
+}
+
+.weather-table tbody td.cloud-heavy {
+    color: var(--cloud-heavy) !important;
+    font-weight: 600;
+}
+
+/* Pressure Cell Classes */
+.weather-table tbody td.pressure {
+    color: var(--pressure) !important;
+}
+
 /* Wave Cell Classes */
 .weather-table tbody td.wave-small {
     color: var(--wave-small) !important;
@@ -1233,6 +1268,23 @@ body {
 
 [data-theme="light"] .weather-table tbody td.precipitation-none {
     color: var(--precipitation-none) !important;
+}
+
+[data-theme="light"] .weather-table tbody td.cloud-low {
+    color: var(--cloud-low) !important;
+}
+
+[data-theme="light"] .weather-table tbody td.cloud-medium {
+    color: var(--cloud-medium) !important;
+}
+
+[data-theme="light"] .weather-table tbody td.cloud-heavy {
+    color: var(--cloud-heavy) !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .weather-table tbody td.pressure {
+    color: var(--pressure) !important;
 }
 
 [data-theme="light"] .weather-table tbody td.wave-small {
@@ -2836,6 +2888,23 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--precipitation-none);
 }
 
+.windguru-cell.cloud-low {
+    color: var(--cloud-low);
+}
+
+.windguru-cell.cloud-medium {
+    color: var(--cloud-medium);
+}
+
+.windguru-cell.cloud-heavy {
+    color: var(--cloud-heavy);
+    font-weight: 600;
+}
+
+.windguru-cell.pressure {
+    color: var(--pressure);
+}
+
 .windguru-cell.wave-low {
     color: var(--wave-small);
 }
@@ -2856,6 +2925,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 [data-theme="light"] .windguru-cell.temp-positive,
 [data-theme="light"] .windguru-cell.temp-negative,
 [data-theme="light"] .windguru-cell.precipitation,
+[data-theme="light"] .windguru-cell.cloud-heavy,
 [data-theme="light"] .windguru-cell.wave-high {
     font-weight: 700;
 }

@@ -52,8 +52,10 @@ public final class ForecastAverageCalculator {
             double avgTemp = round1(forecasts.stream().mapToDouble(Forecast::temp).average().orElse(0));
             double avgPrecip = round1(forecasts.stream().mapToDouble(Forecast::precipitation).average().orElse(0));
             String avgDirection = circularMeanDirection(forecasts.stream().map(Forecast::direction).toList());
+            double avgCloudCover = round1(forecasts.stream().mapToDouble(Forecast::cloudCoverPercent).average().orElse(0));
+            double avgPressure = round1(forecasts.stream().mapToDouble(Forecast::pressureHpa).average().orElse(0));
 
-            averaged.add(new Forecast(entry.getKey(), avgWind, avgGusts, avgDirection, avgTemp, avgPrecip));
+            averaged.add(new Forecast(entry.getKey(), avgWind, avgGusts, avgDirection, avgTemp, avgPrecip, avgCloudCover, avgPressure));
         }
 
         return averaged;

@@ -53,7 +53,9 @@ public class WeatherForecastMapper {
                         forecast.gust(),
                         estimateWindDirection(forecast.windDirectionDegrees()),
                         forecast.temperature(),
-                        forecast.apcpMm1h()
+                        forecast.apcpMm1h(),
+                        forecast.cloudCoverPercent(),
+                        forecast.pressureHpa()
                 ));
                 continue;
             }
@@ -72,7 +74,9 @@ public class WeatherForecastMapper {
                     forecast.gust(),
                     estimateWindDirection(forecast.windDirectionDegrees()),
                     forecast.temperature(),
-                    forecast.apcpMm1h()
+                    forecast.apcpMm1h(),
+                    forecast.cloudCoverPercent(),
+                    forecast.pressureHpa()
             ));
 
             previousDate = forecastDate;
@@ -160,7 +164,9 @@ public class WeatherForecastMapper {
                 calculateAvgGusts(wgForecastsByDay, dayIndex),
                 calculateAvgWindDirection(wgForecastsByDay, dayIndex),
                 calculateAvgTemperature(wgForecastsByDay, dayIndex),
-                calculateAvgPrecipitation(wgForecastsByDay, dayIndex)
+                calculateAvgPrecipitation(wgForecastsByDay, dayIndex),
+                calculateAvgCloudCover(wgForecastsByDay, dayIndex),
+                calculateAvgPressure(wgForecastsByDay, dayIndex)
         );
     }
 
@@ -216,6 +222,26 @@ public class WeatherForecastMapper {
                 .stream()
                 .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
                 .mapToInt(entry -> entry.getValue().apcpMm1h() * 10)
+                .average()
+                .orElse(0);
+    }
+
+    private double calculateAvgCloudCover(Map<String, ForecastWg> map, int dayIndex) {
+        return map
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
+                .mapToInt(entry -> entry.getValue().cloudCoverPercent())
+                .average()
+                .orElse(0);
+    }
+
+    private double calculateAvgPressure(Map<String, ForecastWg> map, int dayIndex) {
+        return map
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
+                .mapToInt(entry -> entry.getValue().pressureHpa())
                 .average()
                 .orElse(0);
     }

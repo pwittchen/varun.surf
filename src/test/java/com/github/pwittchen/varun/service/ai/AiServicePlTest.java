@@ -210,9 +210,9 @@ class AiServicePlTest {
     @Test
     void shouldHandleMultipleForecastItems() {
         // given
-        var forecast1 = new Forecast("Pon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
-        var forecast2 = new Forecast("Pon 15:00", 12.0, 18.0, "NE", 15.0, 0.0);
-        var forecast3 = new Forecast("Pon 18:00", 8.0, 12.0, "E", 10.0, 1.0);
+        var forecast1 = new Forecast("Pon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
+        var forecast2 = new Forecast("Pon 15:00", 12.0, 18.0, "NE", 15.0, 0.0, 0, 0);
+        var forecast3 = new Forecast("Pon 18:00", 8.0, 12.0, "E", 10.0, 1.0, 0, 0);
         var spot = createSpot("Hel", "Polska", List.of(forecast1, forecast2, forecast3));
 
         when(chatClient.prompt()).thenReturn(requestSpec);
@@ -348,6 +348,6 @@ class AiServicePlTest {
     }
 
     private Forecast createForecast() {
-        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
+        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
     }
 }

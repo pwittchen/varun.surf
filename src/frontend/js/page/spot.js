@@ -773,6 +773,8 @@ function convertHistoryToForecastFormat(history) {
         direction: condition.direction || '',
         temp: condition.temp || 0,
         precipitation: 0, // Live data doesn't have precipitation
+        cloudCoverPercent: 0, // Live data doesn't have cloud cover
+        pressureHpa: 0,       // Live data doesn't have pressure
         wave: undefined,  // Live data doesn't have wave data
         isLiveData: true  // Flag to identify live data entries
     }));
@@ -891,6 +893,25 @@ function createWindguruView(forecastData, hasWaveData) {
         });
         dayColumnsHtml += `</div>`;
 
+        // Cloud cover row
+        dayColumnsHtml += `<div class="windguru-data-row">`;
+        daytimeForecasts.forEach(forecast => {
+            const clouds = forecast.cloudCoverPercent || 0;
+            let cloudClass = 'cloud-low';
+            if (clouds > 75) cloudClass = 'cloud-heavy';
+            else if (clouds >= 25) cloudClass = 'cloud-medium';
+            dayColumnsHtml += `<div class="windguru-cell ${cloudClass}">${clouds}%</div>`;
+        });
+        dayColumnsHtml += `</div>`;
+
+        // Pressure row
+        dayColumnsHtml += `<div class="windguru-data-row">`;
+        daytimeForecasts.forEach(forecast => {
+            const pressure = forecast.pressureHpa || 0;
+            dayColumnsHtml += `<div class="windguru-cell pressure">${pressure}</div>`;
+        });
+        dayColumnsHtml += `</div>`;
+
         // Wave row (if applicable)
         if (hasWaveData) {
             dayColumnsHtml += `<div class="windguru-data-row">`;
@@ -938,6 +959,8 @@ function createWindguruView(forecastData, hasWaveData) {
         windguruHtml += `<div class="windguru-label">${translations.t('directionHeader')}</div>`;
         windguruHtml += `<div class="windguru-label">${translations.t('tempHeader')}</div>`;
         windguruHtml += `<div class="windguru-label">${translations.t('rainHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('cloudsHeader')}</div>`;
+        windguruHtml += `<div class="windguru-label">${translations.t('pressureHeader')}</div>`;
         if (hasWaveData) {
             windguruHtml += `<div class="windguru-label">${translations.t('waveHeader')}</div>`;
         }
@@ -1707,6 +1730,15 @@ function createSpotCard(spot) {
             const windArrow = weather.getWindArrow(day.direction);
             const precipClass = day.precipitation === 0 ? 'precipitation-none' : 'precipitation';
 
+            // Cloud cover classes
+            const clouds = day.cloudCoverPercent || 0;
+            let cloudClass = 'cloud-low';
+            if (clouds > 75) cloudClass = 'cloud-heavy';
+            else if (clouds >= 25) cloudClass = 'cloud-medium';
+
+            // Pressure
+            const pressure = day.pressureHpa || 0;
+
             // Wave classes
             let waveClass = '';
             let waveText = '-';
@@ -1758,6 +1790,8 @@ function createSpotCard(spot) {
                             </td>
                             <td class="${tempClass}">${day.temp}°C</td>
                             <td class="${precipClass}">${day.precipitation} mm</td>
+                            <td class="${cloudClass}">${clouds}%</td>
+                            <td class="pressure">${pressure} hPa</td>
                             ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
                         </tr>
                     `;
@@ -1780,6 +1814,8 @@ function createSpotCard(spot) {
             direction: spot.currentConditions.direction,
             temp: spot.currentConditions.temp,
             precipitation: 0, // Current conditions don't have precipitation
+            cloudCoverPercent: 0,
+            pressureHpa: 0,
             isCurrent: true,
             isOutdated: date.isConditionsOutdated(spot.currentConditions.date)
         };
@@ -1794,6 +1830,8 @@ function createSpotCard(spot) {
                 direction: nearestForecast.direction,
                 temp: nearestForecast.temp,
                 precipitation: nearestForecast.precipitation || 0,
+                cloudCoverPercent: nearestForecast.cloudCoverPercent || 0,
+                pressureHpa: nearestForecast.pressureHpa || 0,
                 isCurrent: false
             };
             conditionsLabel = formatForecastDateLabel(nearestForecast.date);
@@ -2143,6 +2181,8 @@ function createSpotCard(spot) {
                                                 <th>${translations.t('directionHeader')}</th>
                                                 <th>${translations.t('tempHeader')}</th>
                                                 <th>${translations.t('rainHeader')}</th>
+                                                <th>${translations.t('cloudsHeader')}</th>
+                                                <th>${translations.t('pressureHeader')}</th>
                                                 ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
                                             </tr>
                                         </thead>

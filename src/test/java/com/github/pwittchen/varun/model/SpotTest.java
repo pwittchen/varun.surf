@@ -158,7 +158,7 @@ class SpotTest {
     void shouldPreserveAllFieldsWhenUpdatingTimestamp() {
         // given
         var currentConditions = new CurrentConditions("2025-01-01", 15, 20, "N", 25);
-        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0)));
+        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0)));
         var spot = new Spot(
                 "Hel",
                 "Poland",
@@ -329,7 +329,7 @@ class SpotTest {
     void shouldPreserveAllFieldsWhenUpdatingAiAnalysis() {
         // given
         var currentConditions = new CurrentConditions("2025-01-01", 15, 20, "N", 25);
-        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0)));
+        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0)));
         var spot = new Spot(
                 "Hel",
                 "Poland",
@@ -368,8 +368,8 @@ class SpotTest {
     @Test
     void shouldPreserveAllFieldsWhenUpdatingCurrentConditions() {
         // given
-        var originalForecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0)));
-        var originalHourly = List.of(new Forecast("Mon 12:00", 10.0, 15.0,  "N", 12.5, 0.0));
+        var originalForecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0)));
+        var originalHourly = List.of(new Forecast("Mon 12:00", 10.0, 15.0,  "N", 12.5, 0.0, 0, 0));
         var spot = new Spot(
                 "Hel",
                 "Poland",
@@ -411,8 +411,8 @@ class SpotTest {
     void shouldUpdateForecastsAndHourlyData() {
         // given
         var spot = createSpot("https://windguru.cz/123");
-        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5));
-        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0, "N", 14.0, 0.1));
+        var dailyForecast = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0, "N", 14.0, 0.1, 0, 0));
 
         // when
         var updatedSpot = spot.withForecasts(dailyForecast, hourlyForecast);
@@ -475,7 +475,7 @@ class SpotTest {
     void shouldPreserveAllFieldsWhenUpdatingAiAnalysisPl() {
         // given
         var currentConditions = new CurrentConditions("2025-01-01", 15, 20, "N", 25);
-        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0)));
+        var forecast = new ArrayList<>(List.of(new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0)));
         var spot = new Spot(
                 "Hel",
                 "Poland",
@@ -551,7 +551,7 @@ class SpotTest {
                 null,
                 originalTimestamp
         );
-        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0,  "N", 14.0, 0.1));
+        var hourlyForecast = List.of(new Forecast("Mon 01h", 9.0, 11.0,  "N", 14.0, 0.1, 0, 0));
 
         // when
         var updatedSpot = spot.withForecastHourly(hourlyForecast);

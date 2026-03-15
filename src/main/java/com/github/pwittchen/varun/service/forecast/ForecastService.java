@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1";
+    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP";
 
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
@@ -101,7 +101,7 @@ public class ForecastService {
         String[] lines = microText.split("\\r?\\n");
 
         // Example line:
-        // " Mon 29. 02h      15      20     257      20       -"
+        // " Mon 29. 02h      15      20     257      20       -      80      60      40    1013"
         Pattern row = Pattern.compile(
                 "^\\s*" +                                      // leading spaces
                         "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +      // weekday
@@ -110,7 +110,11 @@ public class ForecastService {
                         "(-?\\d+)\\s+" +                       // GUST
                         "(-?\\d+)\\s+" +                       // WDEG  (degrees)
                         "(-?\\d+)\\s+" +                       // TMP   (C)
-                        "(-|\\d+(?:\\.\\d+)?)\\s*$"            // APCP1 (mm/1h or '-')
+                        "(-|\\d+(?:\\.\\d+)?)\\s+" +           // APCP1 (mm/1h or '-')
+                        "(-|\\d+)\\s+" +                       // HCLD  (high clouds %)
+                        "(-|\\d+)\\s+" +                       // MCLD  (mid clouds %)
+                        "(-|\\d+)\\s+" +                       // LCLD  (low clouds %)
+                        "(-|\\d+(?:\\.\\d+)?)\\s*$"            // SLP   (sea-level pressure hPa)
         );
 
         return Arrays.stream(lines)
@@ -129,13 +133,19 @@ public class ForecastService {
 
     private ForecastWg createForecast(Matcher m) {
         String label = String.format("%s %s. %sh", m.group(1), m.group(2), m.group(3));
+        int hcld = parseNumber(m.group(9)).intValue();
+        int mcld = parseNumber(m.group(10)).intValue();
+        int lcld = parseNumber(m.group(11)).intValue();
+        int cloudCover = Math.max(hcld, Math.max(mcld, lcld));
         return new ForecastWg(
                 label,
                 parseNumber(m.group(4)).intValue(),
                 parseNumber(m.group(5)).intValue(),
                 parseNumber(m.group(6)).intValue(),
                 parseNumber(m.group(7)).intValue(),
-                parseNumber(m.group(8)).intValue()
+                parseNumber(m.group(8)).intValue(),
+                cloudCover,
+                parseNumber(m.group(12)).intValue()
         );
     }
 

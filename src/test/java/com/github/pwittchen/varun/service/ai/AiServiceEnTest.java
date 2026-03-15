@@ -209,9 +209,9 @@ class AiServiceEnTest {
     @Test
     void shouldHandleMultipleForecastItems() {
         // given
-        var forecast1 = new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
-        var forecast2 = new Forecast("Mon 15:00", 12.0, 18.0, "NE", 15.0, 0.0);
-        var forecast3 = new Forecast("Mon 18:00", 8.0, 12.0, "E", 10.0, 1.0);
+        var forecast1 = new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
+        var forecast2 = new Forecast("Mon 15:00", 12.0, 18.0, "NE", 15.0, 0.0, 0, 0);
+        var forecast3 = new Forecast("Mon 18:00", 8.0, 12.0, "E", 10.0, 1.0, 0, 0);
         var spot = createSpot("Hel", "Poland", List.of(forecast1, forecast2, forecast3));
 
         when(chatClient.prompt()).thenReturn(requestSpec);
@@ -274,9 +274,9 @@ class AiServiceEnTest {
     @Test
     void shouldFormatMultipleForecastsInToonFormat() {
         // given
-        var forecast1 = new Forecast("Mon 12:00", 10.5, 15.2, "N", 12.5, 0.0);
-        var forecast2 = new Forecast("Mon 15:00", 12.3, 18.7, "NE", 15.0, 0.5);
-        var forecast3 = new Forecast("Mon 18:00", 8.1, 12.9, "E", 10.2, 1.2);
+        var forecast1 = new Forecast("Mon 12:00", 10.5, 15.2, "N", 12.5, 0.0, 0, 0);
+        var forecast2 = new Forecast("Mon 15:00", 12.3, 18.7, "NE", 15.0, 0.5, 0, 0);
+        var forecast3 = new Forecast("Mon 18:00", 8.1, 12.9, "E", 10.2, 1.2, 0, 0);
         var spot = createSpot("Hel", "Poland", List.of(forecast1, forecast2, forecast3));
 
         when(chatClient.prompt()).thenReturn(requestSpec);
@@ -349,6 +349,6 @@ class AiServiceEnTest {
     }
 
     private Forecast createForecast() {
-        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0);
+        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
     }
 }

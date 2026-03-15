@@ -23,7 +23,7 @@ class ForecastAverageCalculatorTest {
 
     @Test
     void shouldReturnEmptyListForSingleModel() {
-        var forecasts = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.5));
+        var forecasts = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.5, 0, 0));
         var data = new ForecastData(List.of(), Map.of(ForecastModel.GFS, forecasts));
 
         var result = ForecastAverageCalculator.computeAverage(data);
@@ -34,10 +34,10 @@ class ForecastAverageCalculatorTest {
     @Test
     void shouldComputeAverageForTwoModelsWithSameTimeSlots() {
         var gfsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 10.0, 16.0, "N", 20.0, 0.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 10.0, 16.0, "N", 20.0, 0.0, 0, 0)
         );
         var ifsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0)
         );
         var data = new ForecastData(List.of(), Map.of(
                 ForecastModel.GFS, gfsForecasts,
@@ -59,11 +59,11 @@ class ForecastAverageCalculatorTest {
     @Test
     void shouldOnlyIncludeTimeSlotsPresentInTwoOrMoreModels() {
         var gfsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0),
-                new Forecast("Mon 01 Jan 2025 15:00", 12.0, 18.0, "NE", 21.0, 0.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0),
+                new Forecast("Mon 01 Jan 2025 15:00", 12.0, 18.0, "NE", 21.0, 0.0, 0, 0)
         );
         var ifsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0)
                 // Note: no 15:00 slot in IFS
         );
         var data = new ForecastData(List.of(), Map.of(
@@ -113,13 +113,13 @@ class ForecastAverageCalculatorTest {
         // (10.0 + 10.3) / 2 = 10.15 -> rounds to 10.2 (or 10.1 depending on float repr)
         // Use (10.0 + 11.0) / 2 = 10.5 -> rounds to 10.5 (exact)
         var gfsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0, 0, 0)
         );
         var ifsForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0, 0, 0)
         );
         var iconForecasts = List.of(
-                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0)
+                new Forecast("Mon 01 Jan 2025 12:00", 10.33, 15.0, "N", 20.0, 0.0, 0, 0)
         );
         var data = new ForecastData(List.of(), Map.of(
                 ForecastModel.GFS, gfsForecasts,
@@ -136,9 +136,9 @@ class ForecastAverageCalculatorTest {
 
     @Test
     void shouldComputeAverageWithThreeModels() {
-        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
-        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 13.0, 18.0, "NE", 22.0, 1.0));
-        var icon = List.of(new Forecast("Mon 01 Jan 2025 12:00", 16.0, 21.0, "E", 24.0, 2.0));
+        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 13.0, 18.0, "NE", 22.0, 1.0, 0, 0));
+        var icon = List.of(new Forecast("Mon 01 Jan 2025 12:00", 16.0, 21.0, "E", 24.0, 2.0, 0, 0));
 
         var data = new ForecastData(List.of(), Map.of(
                 ForecastModel.GFS, gfs,
@@ -159,8 +159,8 @@ class ForecastAverageCalculatorTest {
 
     @Test
     void shouldSkipEmptyModels() {
-        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0));
-        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0));
+        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0));
         List<Forecast> emptyIcon = List.of();
 
         var data = new ForecastData(List.of(), Map.of(
