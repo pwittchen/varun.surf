@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Parse command line argument
-ENV="${1:-prod}"
+# Parse command line argument (supports DEPLOY_ENV variable to avoid shell pattern blocks)
+ENV="${1:-${DEPLOY_ENV:-prod}}"
 
 if [[ "$ENV" != "dev" && "$ENV" != "prod" ]]; then
   echo "Usage: $0 [dev|prod]"
