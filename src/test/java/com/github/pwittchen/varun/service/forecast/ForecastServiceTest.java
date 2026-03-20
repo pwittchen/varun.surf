@@ -291,29 +291,28 @@ class ForecastServiceTest {
     }
 
     @Test
-    void shouldReturnForecastsWithWaveFieldsAccessible() {
-        // Verify wave fields exist on Forecast records (may be null for non-wave models)
+    void shouldReturnWaveDataFromEwamForCoastalSpot() {
+        // Spot 500760 (Jastarnia) is coastal - EWAM should provide wave data
         Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.GFS);
 
         StepVerifier.create(result)
                 .assertNext(data -> {
                     assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
-                    Forecast first = data.hourly(ForecastModel.GFS).get(0);
-                    // Wave fields should be accessible (null or non-null depending on model/spot)
-                    // Just verify no exceptions when accessing wave accessors
-                    Double wave = first.wave();
-                    Double period = first.wavePeriod();
-                    String dir = first.waveDirection();
-                    // If wave data is present, it should be valid
-                    if (wave != null) {
-                        assertThat(wave).isAtLeast(0.0);
-                    }
-                    if (period != null) {
-                        assertThat(period).isAtLeast(0.0);
-                    }
-                    if (dir != null) {
-                        assertThat(dir).matches("^(N|NE|E|SE|S|SW|W|NW)$");
-                    }
+                    // EWAM wave data should be merged into the GFS forecasts
+                    boolean hasAnyWaveData = data.hourly(ForecastModel.GFS).stream()
+                            .anyMatch(f -> f.wave() != null);
+                    assertThat(hasAnyWaveData).isTrue();
+
+                    // Verify wave data is valid where present
+                    data.hourly(ForecastModel.GFS).stream()
+                            .filter(f -> f.wave() != null)
+                            .forEach(f -> {
+                                assertThat(f.wave()).isAtLeast(0.0);
+                                assertThat(f.wavePeriod()).isNotNull();
+                                assertThat(f.wavePeriod()).isAtLeast(0.0);
+                                assertThat(f.waveDirection()).isNotNull();
+                                assertThat(f.waveDirection()).matches("^(N|NE|E|SE|S|SW|W|NW)$");
+                            });
                 })
                 .verifyComplete();
     }

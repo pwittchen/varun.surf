@@ -304,6 +304,7 @@ docker run -p 8080:8080 varun-surf
 - In-memory caching (no database)
 - Scheduled data fetching (every 3 hours for forecasts, every 1 minute for current conditions)
 - Strategy pattern for extensible weather station providers
+- Commit messages must NOT include "Co-Authored-By" or any AI attribution lines
 
 ### Testing
 - Unit tests use JUnit 5 + Truth assertions

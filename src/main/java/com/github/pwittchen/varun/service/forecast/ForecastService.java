@@ -31,7 +31,9 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP,HTSGW,PERPW,WADEG";
+    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP";
+    private static final String WAVE_PARAMS = "HTSGW,PERPW,WADEG";
+    private static final String WAVE_MODEL = "ewam";
 
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
@@ -48,7 +50,8 @@ public class ForecastService {
     public Mono<ForecastData> getForecastData(int wgSpotId, ForecastModel forecastModel) {
         final HttpUrl httpUrl = HttpUrl.parse(URL);
         if (httpUrl == null) return Mono.just(new ForecastData(List.of(), Map.of()));
-        return executeHttpRequest(new Request
+
+        Mono<List<ForecastWg>> forecastMono = executeHttpRequest(new Request
                 .Builder()
                 .url(httpUrl
                         .newBuilder()
@@ -59,15 +62,94 @@ public class ForecastService {
                         .toString())
                 .get()
                 .build())
-                .map(this::retrieveWgForecasts)
-                .map(forecasts -> new ForecastData(
+                .map(this::retrieveWgForecasts);
+
+        Mono<Map<String, WaveData>> waveMono = fetchWaveData(wgSpotId);
+
+        return Mono.zip(forecastMono, waveMono)
+                .map(tuple -> {
+                    List<ForecastWg> forecasts = tuple.getT1();
+                    Map<String, WaveData> waveByLabel = tuple.getT2();
+                    List<ForecastWg> merged = mergeWaveData(forecasts, waveByLabel);
+                    return new ForecastData(
+                            mapper.toWeatherForecasts(merged),
+                            Map.of(forecastModel, mapper.toHourlyForecasts(merged))
+                    );
+                })
+                .onErrorResume(_ -> forecastMono.map(forecasts -> new ForecastData(
                         mapper.toWeatherForecasts(forecasts),
                         Map.of(forecastModel, mapper.toHourlyForecasts(forecasts))
-                ));
+                )));
     }
 
     public Mono<List<Forecast>> getForecast(int wgSpotId) {
         return getForecastData(wgSpotId).map(ForecastData::daily);
+    }
+
+    private record WaveData(Double height, Double period, Integer directionDeg) {}
+
+    private Mono<Map<String, WaveData>> fetchWaveData(int wgSpotId) {
+        final HttpUrl httpUrl = HttpUrl.parse(URL);
+        if (httpUrl == null) return Mono.just(Map.of());
+        return executeHttpRequest(new Request
+                .Builder()
+                .url(httpUrl
+                        .newBuilder()
+                        .addQueryParameter("s", String.valueOf(wgSpotId))
+                        .addQueryParameter("m", WAVE_MODEL)
+                        .addQueryParameter("v", WAVE_PARAMS)
+                        .build()
+                        .toString())
+                .get()
+                .build())
+                .map(this::retrieveWaveData)
+                .onErrorResume(_ -> Mono.just(Map.of()));
+    }
+
+    private Map<String, WaveData> retrieveWaveData(String microText) {
+        String[] lines = microText.split("\\r?\\n");
+
+        // Wave-only format: " Fri 20. 13h     0.1       2      42"
+        Pattern row = Pattern.compile(
+                "^\\s*" +
+                        "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)" +
+                        "\\s+(\\d{1,2})\\.\\s+(\\d{2})h\\s+" +
+                        "(-|\\d+(?:\\.\\d+)?)\\s+" +       // HTSGW
+                        "(-|\\d+(?:\\.\\d+)?)\\s+" +       // PERPW
+                        "(-|\\d+(?:\\.\\d+)?)\\s*$"        // WADEG
+        );
+
+        Map<String, WaveData> result = new java.util.LinkedHashMap<>();
+        for (String line : lines) {
+            line = line.trim().replace('\u00A0', ' ');
+            Matcher m = row.matcher(line);
+            if (m.find()) {
+                String label = String.format("%s %s. %sh", m.group(1), m.group(2), m.group(3));
+                result.put(label, new WaveData(
+                        parseNullableDouble(m.group(4)),
+                        parseNullableDouble(m.group(5)),
+                        parseNullableInt(m.group(6))
+                ));
+            }
+        }
+        return result;
+    }
+
+    private List<ForecastWg> mergeWaveData(List<ForecastWg> forecasts, Map<String, WaveData> waveByLabel) {
+        if (waveByLabel.isEmpty()) return forecasts;
+        return forecasts.stream()
+                .map(f -> {
+                    WaveData wave = waveByLabel.get(f.label());
+                    if (wave != null) {
+                        return new ForecastWg(
+                                f.label(), f.windSpeed(), f.gust(), f.windDirectionDegrees(),
+                                f.temperature(), f.apcpMm1h(), f.cloudCoverPercent(), f.pressureHpa(),
+                                wave.height(), wave.period(), wave.directionDeg()
+                        );
+                    }
+                    return f;
+                })
+                .collect(Collectors.toList());
     }
 
     private Mono<String> executeHttpRequest(final Request request) {
@@ -114,11 +196,7 @@ public class ForecastService {
                         "(-|\\d+)\\s+" +                       // HCLD  (high clouds %)
                         "(-|\\d+)\\s+" +                       // MCLD  (mid clouds %)
                         "(-|\\d+)\\s+" +                       // LCLD  (low clouds %)
-                        "(-|\\d+(?:\\.\\d+)?)" +               // SLP   (sea-level pressure hPa)
-                        "(?:\\s+(-|\\d+(?:\\.\\d+)?)" +        // HTSGW (wave height, optional)
-                        "\\s+(-|\\d+(?:\\.\\d+)?)" +           // PERPW (wave period, optional)
-                        "\\s+(-|\\d+(?:\\.\\d+)?))?" +         // WADEG (wave direction, optional)
-                        "\\s*$"
+                        "(-|\\d+(?:\\.\\d+)?)\\s*$"            // SLP   (sea-level pressure hPa)
         );
 
         return Arrays.stream(lines)
@@ -149,10 +227,7 @@ public class ForecastService {
                 parseNumber(m.group(7)).intValue(),
                 parseNumber(m.group(8)).intValue(),
                 cloudCover,
-                parseNumber(m.group(12)).intValue(),
-                parseNullableDouble(m.group(13)),
-                parseNullableDouble(m.group(14)),
-                parseNullableInt(m.group(15))
+                parseNumber(m.group(12)).intValue()
         );
     }
 
