@@ -18,7 +18,7 @@ jobs:
     steps:
       # Checkout the full history so git tag sorting works
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -60,12 +60,9 @@ jobs:
 
       # Create a GitHub Release
       - name: Create Release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tags.outputs.current_tag }}
-          release_name: ${{ steps.tags.outputs.current_tag }}
-          body_path: release_notes.md
-          draft: false
-          prerelease: false
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.tags.outputs.current_tag }} \
+            --title "${{ steps.tags.outputs.current_tag }}" \
+            --notes-file release_notes.md
