@@ -1677,9 +1677,9 @@ function createSpotCard(spot) {
                         </td>
                         <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
                         <td>-</td>
-                        ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
-                        ${hasWaveData ? `<td>-</td>` : ''}
-                        ${hasWaveData ? `<td>-</td>` : ''}
+                        ${hasWaveData ? `<td class="${currentWaveClass} wave-col">${currentWaveText}</td>` : ''}
+                        ${hasWaveData ? `<td class="wave-col">-</td>` : ''}
+                        ${hasWaveData ? `<td class="wave-col">-</td>` : ''}
                     </tr>
                 `;
     }
@@ -1831,10 +1831,10 @@ function createSpotCard(spot) {
                             <td class="${tempClass}">${day.temp}°C</td>
                             <td class="${precipClass}">${day.precipitation} mm</td>
                             <td class="${cloudClass}">${clouds}%</td>
-                            <td class="pressure">${pressure} hPa</td>
-                            ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
-                            ${hasWaveData ? `<td class="wave-period">${wavePeriodText}</td>` : ''}
-                            ${hasWaveData ? `<td class="wave-direction">${waveDirArrow ? `<span class="wind-arrow">${waveDirArrow}</span> ` : ''}${waveDirText}</td>` : ''}
+                            <td class="pressure pressure-col">${pressure} hPa</td>
+                            ${hasWaveData ? `<td class="${waveClass} wave-col">${waveText}</td>` : ''}
+                            ${hasWaveData ? `<td class="wave-period wave-col">${wavePeriodText}</td>` : ''}
+                            ${hasWaveData ? `<td class="wave-direction wave-col">${waveDirArrow ? `<span class="wind-arrow">${waveDirArrow}</span> ` : ''}${waveDirText}</td>` : ''}
                         </tr>
                     `;
         });
@@ -2224,10 +2224,10 @@ function createSpotCard(spot) {
                                                 <th>${translations.t('tempHeader')}</th>
                                                 <th>${translations.t('rainHeader')}</th>
                                                 <th>${translations.t('cloudsHeader')}</th>
-                                                <th>${translations.t('pressureHeader')}</th>
-                                                ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
-                                                ${hasWaveData ? `<th>${translations.t('wavePeriodHeader')}</th>` : ''}
-                                                ${hasWaveData ? `<th>${translations.t('waveDirectionHeader')}</th>` : ''}
+                                                <th class="pressure-col">${translations.t('pressureHeader')}</th>
+                                                ${hasWaveData ? `<th class="wave-col">${translations.t('waveHeader')}</th>` : ''}
+                                                ${hasWaveData ? `<th class="wave-col">${translations.t('wavePeriodHeader')}</th>` : ''}
+                                                ${hasWaveData ? `<th class="wave-col">${translations.t('waveDirectionHeader')}</th>` : ''}
                                             </tr>
                                         </thead>
                                         <tbody>

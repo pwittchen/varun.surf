@@ -1126,7 +1126,7 @@ function createSpotCard(spot) {
                             </td>
                             <td class="${tempClass}">${day.temp}°C</td>
                             <td class="${precipClass}">${day.precipitation}%</td>
-                            ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
+                            ${hasWaveData ? `<td class="${waveClass} wave-col">${waveText}</td>` : ''}
                         </tr>
                     `;
         });
@@ -1181,7 +1181,7 @@ function createSpotCard(spot) {
                         </td>
                         <td class="${tempClass}">${tempValue}</td>
                         <td>-</td>
-                        ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
+                        ${hasWaveData ? `<td class="${currentWaveClass} wave-col">${currentWaveText}</td>` : ''}
                     </tr>
                 `;
     }
@@ -1226,7 +1226,7 @@ function createSpotCard(spot) {
                             <th>${translations.t('directionHeader')}</th>
                             <th>${translations.t('tempHeader')}</th>
                             <th>${translations.t('rainHeader')}</th>
-                            ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
+                            ${hasWaveData ? `<th class="wave-col">${translations.t('waveHeader')}</th>` : ''}
                         </tr>
                     </thead>
                     <tbody>

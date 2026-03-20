@@ -5057,6 +5057,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         font-size: 0.85rem;
     }
 
+    /* Hide wave and pressure columns on mobile - not essential for kitesurfing */
+    .weather-table .pressure-col,
+    .weather-table .wave-col {
+        display: none !important;
+    }
+
     /* Mobile view - hide tabs */
     .forecast-tabs {
         display: none;
