@@ -1078,8 +1078,8 @@ function createSpotCard(spot) {
     card.dataset.country = translations.t(spot.country.replace(/\s+/g, ''));
 
     // Check if a spot has wave data
-    const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave !== undefined) ||
-        (spot.currentConditions && spot.currentConditions.wave !== undefined);
+    const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave != null) ||
+        (spot.currentConditions && spot.currentConditions.wave != null);
 
     const spotConditions = getSpotConditions(spot);
 
@@ -1105,7 +1105,7 @@ function createSpotCard(spot) {
             // Wave classes
             let waveClass = '';
             let waveText = '-';
-            if (day.wave !== undefined) {
+            if (day.wave != null) {
                 if (day.wave < 1.0) {
                     waveClass = 'wave-small';
                 } else if (day.wave >= 1.0 && day.wave < 2.0) {
@@ -1154,7 +1154,7 @@ function createSpotCard(spot) {
 
         let currentWaveClass = '';
         let currentWaveText = '-';
-        if (spot.currentConditions && spot.currentConditions.wave !== undefined) {
+        if (spot.currentConditions && spot.currentConditions.wave != null) {
             if (spot.currentConditions.wave < 1.0) {
                 currentWaveClass = 'wave-small';
             } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {

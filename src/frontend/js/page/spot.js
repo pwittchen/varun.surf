@@ -775,7 +775,9 @@ function convertHistoryToForecastFormat(history) {
         precipitation: 0, // Live data doesn't have precipitation
         cloudCoverPercent: 0, // Live data doesn't have cloud cover
         pressureHpa: 0,       // Live data doesn't have pressure
-        wave: undefined,  // Live data doesn't have wave data
+        wave: null,       // Live data doesn't have wave data
+        wavePeriod: null, // Live data doesn't have wave period
+        waveDirection: null, // Live data doesn't have wave direction
         isLiveData: true  // Flag to identify live data entries
     }));
 }
@@ -918,7 +920,7 @@ function createWindguruView(forecastData, hasWaveData) {
             daytimeForecasts.forEach(forecast => {
                 let waveClass = '';
                 let waveText = '-';
-                if (forecast.wave !== undefined) {
+                if (forecast.wave != null) {
                     if (forecast.wave === 0) {
                         waveClass = 'wave-none';
                         waveText = '0m';
@@ -928,6 +930,26 @@ function createWindguruView(forecastData, hasWaveData) {
                     }
                 }
                 dayColumnsHtml += `<div class="windguru-cell ${waveClass}">${waveText}</div>`;
+            });
+            dayColumnsHtml += `</div>`;
+
+            // Wave period row
+            dayColumnsHtml += `<div class="windguru-data-row">`;
+            daytimeForecasts.forEach(forecast => {
+                const periodText = forecast.wavePeriod != null ? `${forecast.wavePeriod}s` : '-';
+                dayColumnsHtml += `<div class="windguru-cell wave-period">${periodText}</div>`;
+            });
+            dayColumnsHtml += `</div>`;
+
+            // Wave direction row
+            dayColumnsHtml += `<div class="windguru-data-row">`;
+            daytimeForecasts.forEach(forecast => {
+                if (forecast.waveDirection != null) {
+                    const waveArrow = weather.getWindArrow(forecast.waveDirection);
+                    dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${waveArrow}</span><span style="font-size: 0.7rem;">${forecast.waveDirection}</span></div>`;
+                } else {
+                    dayColumnsHtml += `<div class="windguru-cell">-</div>`;
+                }
             });
             dayColumnsHtml += `</div>`;
         }
@@ -963,6 +985,8 @@ function createWindguruView(forecastData, hasWaveData) {
         windguruHtml += `<div class="windguru-label">${translations.t('pressureHeader')}</div>`;
         if (hasWaveData) {
             windguruHtml += `<div class="windguru-label">${translations.t('waveHeader')}</div>`;
+            windguruHtml += `<div class="windguru-label">${translations.t('wavePeriodHeader')}</div>`;
+            windguruHtml += `<div class="windguru-label">${translations.t('waveDirectionHeader')}</div>`;
         }
         windguruHtml += '</div>';
 
@@ -1590,7 +1614,7 @@ function createSpotCard(spot) {
     }
 
     // Check if any forecast has wave data (live data doesn't have wave data)
-    const hasWaveData = !isLiveDataMode && forecastData && forecastData.some(day => day.wave !== undefined);
+    const hasWaveData = !isLiveDataMode && forecastData && forecastData.some(day => day.wave != null);
 
     // Determine layout (desktop vs mobile)
     const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
@@ -1626,7 +1650,7 @@ function createSpotCard(spot) {
         // Current wave conditions
         let currentWaveClass = '';
         let currentWaveText = '-';
-        if (spot.currentConditions.wave !== undefined) {
+        if (spot.currentConditions.wave != null) {
             if (spot.currentConditions.wave === 0) {
                 currentWaveClass = 'wave-none';
                 currentWaveText = '0m';
@@ -1654,6 +1678,8 @@ function createSpotCard(spot) {
                         <td class="${tempClass}">${spot.currentConditions.temp}°C</td>
                         <td>-</td>
                         ${hasWaveData ? `<td class="${currentWaveClass}">${currentWaveText}</td>` : ''}
+                        ${hasWaveData ? `<td>-</td>` : ''}
+                        ${hasWaveData ? `<td>-</td>` : ''}
                     </tr>
                 `;
     }
@@ -1742,7 +1768,7 @@ function createSpotCard(spot) {
             // Wave classes
             let waveClass = '';
             let waveText = '-';
-            if (day.wave !== undefined) {
+            if (day.wave != null) {
                 if (day.wave === 0) {
                     waveClass = 'wave-none';
                     waveText = '0m';
@@ -1750,6 +1776,20 @@ function createSpotCard(spot) {
                     waveClass = day.wave > 1.5 ? 'wave-high' : 'wave-low';
                     waveText = `${day.wave}m`;
                 }
+            }
+
+            // Wave period
+            let wavePeriodText = '-';
+            if (day.wavePeriod != null) {
+                wavePeriodText = `${day.wavePeriod}s`;
+            }
+
+            // Wave direction
+            let waveDirText = '-';
+            let waveDirArrow = '';
+            if (day.waveDirection != null) {
+                waveDirArrow = weather.getWindArrow(day.waveDirection);
+                waveDirText = day.waveDirection;
             }
 
             // Detect day changes for alternating border colors
@@ -1793,6 +1833,8 @@ function createSpotCard(spot) {
                             <td class="${cloudClass}">${clouds}%</td>
                             <td class="pressure">${pressure} hPa</td>
                             ${hasWaveData ? `<td class="${waveClass}">${waveText}</td>` : ''}
+                            ${hasWaveData ? `<td class="wave-period">${wavePeriodText}</td>` : ''}
+                            ${hasWaveData ? `<td class="wave-direction">${waveDirArrow ? `<span class="wind-arrow">${waveDirArrow}</span> ` : ''}${waveDirText}</td>` : ''}
                         </tr>
                     `;
         });
@@ -2184,6 +2226,8 @@ function createSpotCard(spot) {
                                                 <th>${translations.t('cloudsHeader')}</th>
                                                 <th>${translations.t('pressureHeader')}</th>
                                                 ${hasWaveData ? `<th>${translations.t('waveHeader')}</th>` : ''}
+                                                ${hasWaveData ? `<th>${translations.t('wavePeriodHeader')}</th>` : ''}
+                                                ${hasWaveData ? `<th>${translations.t('waveDirectionHeader')}</th>` : ''}
                                             </tr>
                                         </thead>
                                         <tbody>

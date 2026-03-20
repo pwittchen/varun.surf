@@ -1183,6 +1183,14 @@ body {
     font-weight: 600;
 }
 
+.weather-table tbody td.wave-period {
+    color: var(--pressure) !important;
+}
+
+.weather-table tbody td.wave-direction {
+    color: var(--text-secondary) !important;
+}
+
 /* Wind Row Background Colors */
 .weather-table tr.weak-wind {
     background: transparent;
@@ -2916,6 +2924,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .windguru-cell.wave-none {
     color: var(--precipitation-none);
+}
+
+.windguru-cell.wave-period {
+    color: var(--pressure);
 }
 
 /* Light theme Windguru view - already using CSS variables */

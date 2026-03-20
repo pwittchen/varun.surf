@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class ForecastService {
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
-    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP";
+    private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP,HTSGW,PERPW,WADEG";
 
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
@@ -114,7 +114,11 @@ public class ForecastService {
                         "(-|\\d+)\\s+" +                       // HCLD  (high clouds %)
                         "(-|\\d+)\\s+" +                       // MCLD  (mid clouds %)
                         "(-|\\d+)\\s+" +                       // LCLD  (low clouds %)
-                        "(-|\\d+(?:\\.\\d+)?)\\s*$"            // SLP   (sea-level pressure hPa)
+                        "(-|\\d+(?:\\.\\d+)?)" +               // SLP   (sea-level pressure hPa)
+                        "(?:\\s+(-|\\d+(?:\\.\\d+)?)" +        // HTSGW (wave height, optional)
+                        "\\s+(-|\\d+(?:\\.\\d+)?)" +           // PERPW (wave period, optional)
+                        "\\s+(-|\\d+(?:\\.\\d+)?))?" +         // WADEG (wave direction, optional)
+                        "\\s*$"
         );
 
         return Arrays.stream(lines)
@@ -145,7 +149,10 @@ public class ForecastService {
                 parseNumber(m.group(7)).intValue(),
                 parseNumber(m.group(8)).intValue(),
                 cloudCover,
-                parseNumber(m.group(12)).intValue()
+                parseNumber(m.group(12)).intValue(),
+                parseNullableDouble(m.group(13)),
+                parseNullableDouble(m.group(14)),
+                parseNullableInt(m.group(15))
         );
     }
 
@@ -156,6 +163,24 @@ public class ForecastService {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
             return 0;
+        }
+    }
+
+    private Double parseNullableDouble(String s) {
+        if (s == null || s.equals("-")) return null;
+        try {
+            return Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Integer parseNullableInt(String s) {
+        if (s == null || s.equals("-")) return null;
+        try {
+            return (int) Math.round(Double.parseDouble(s));
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

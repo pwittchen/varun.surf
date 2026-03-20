@@ -291,6 +291,34 @@ class ForecastServiceTest {
     }
 
     @Test
+    void shouldReturnForecastsWithWaveFieldsAccessible() {
+        // Verify wave fields exist on Forecast records (may be null for non-wave models)
+        Mono<ForecastData> result = service.getForecastData(500760, ForecastModel.GFS);
+
+        StepVerifier.create(result)
+                .assertNext(data -> {
+                    assertThat(data.hourly(ForecastModel.GFS)).isNotEmpty();
+                    Forecast first = data.hourly(ForecastModel.GFS).get(0);
+                    // Wave fields should be accessible (null or non-null depending on model/spot)
+                    // Just verify no exceptions when accessing wave accessors
+                    Double wave = first.wave();
+                    Double period = first.wavePeriod();
+                    String dir = first.waveDirection();
+                    // If wave data is present, it should be valid
+                    if (wave != null) {
+                        assertThat(wave).isAtLeast(0.0);
+                    }
+                    if (period != null) {
+                        assertThat(period).isAtLeast(0.0);
+                    }
+                    if (dir != null) {
+                        assertThat(dir).matches("^(N|NE|E|SE|S|SW|W|NW)$");
+                    }
+                })
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDefaultToGfsWhenNoModelSpecified() {
         Mono<ForecastData> resultDefault = service.getForecastData(500760);
         Mono<ForecastData> resultGfs = service.getForecastData(500760, ForecastModel.GFS);

@@ -185,4 +185,55 @@ class ForecastAverageCalculatorTest {
         // we just verify it returns a valid cardinal direction
         assertThat(result).isAnyOf("N", "NE", "E", "SE", "S", "SW", "W", "NW");
     }
+
+    @Test
+    void shouldAverageWaveFieldsAcrossModels() {
+        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0, 1.0, 6.0, "W"));
+        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0, 2.0, 10.0, "W"));
+        var data = new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfs,
+                ForecastModel.IFS, ifs
+        ));
+
+        var result = ForecastAverageCalculator.computeAverage(data);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).wave()).isEqualTo(1.5);
+        assertThat(result.get(0).wavePeriod()).isEqualTo(8.0);
+        assertThat(result.get(0).waveDirection()).isEqualTo("W");
+    }
+
+    @Test
+    void shouldHandleNullWaveFieldsInAverage() {
+        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0, null, null, null));
+        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0, null, null, null));
+        var data = new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfs,
+                ForecastModel.IFS, ifs
+        ));
+
+        var result = ForecastAverageCalculator.computeAverage(data);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).wave()).isNull();
+        assertThat(result.get(0).wavePeriod()).isNull();
+        assertThat(result.get(0).waveDirection()).isNull();
+    }
+
+    @Test
+    void shouldAverageWaveFieldsWhenOnlyOneModelHasWaveData() {
+        var gfs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0, 2.0, 8.0, "SW"));
+        var ifs = List.of(new Forecast("Mon 01 Jan 2025 12:00", 14.0, 20.0, "N", 22.0, 1.0, 0, 0, null, null, null));
+        var data = new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfs,
+                ForecastModel.IFS, ifs
+        ));
+
+        var result = ForecastAverageCalculator.computeAverage(data);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).wave()).isEqualTo(2.0);
+        assertThat(result.get(0).wavePeriod()).isEqualTo(8.0);
+        assertThat(result.get(0).waveDirection()).isEqualTo("SW");
+    }
 }

@@ -55,7 +55,10 @@ public class WeatherForecastMapper {
                         forecast.temperature(),
                         forecast.apcpMm1h(),
                         forecast.cloudCoverPercent(),
-                        forecast.pressureHpa()
+                        forecast.pressureHpa(),
+                        forecast.waveHeight(),
+                        forecast.wavePeriod(),
+                        forecast.waveDirectionDeg() != null ? estimateWindDirection(forecast.waveDirectionDeg()) : null
                 ));
                 continue;
             }
@@ -76,7 +79,10 @@ public class WeatherForecastMapper {
                     forecast.temperature(),
                     forecast.apcpMm1h(),
                     forecast.cloudCoverPercent(),
-                    forecast.pressureHpa()
+                    forecast.pressureHpa(),
+                    forecast.waveHeight(),
+                    forecast.wavePeriod(),
+                    forecast.waveDirectionDeg() != null ? estimateWindDirection(forecast.waveDirectionDeg()) : null
             ));
 
             previousDate = forecastDate;
@@ -166,7 +172,10 @@ public class WeatherForecastMapper {
                 calculateAvgTemperature(wgForecastsByDay, dayIndex),
                 calculateAvgPrecipitation(wgForecastsByDay, dayIndex),
                 calculateAvgCloudCover(wgForecastsByDay, dayIndex),
-                calculateAvgPressure(wgForecastsByDay, dayIndex)
+                calculateAvgPressure(wgForecastsByDay, dayIndex),
+                calculateAvgWaveHeight(wgForecastsByDay, dayIndex),
+                calculateAvgWavePeriod(wgForecastsByDay, dayIndex),
+                calculateAvgWaveDirection(wgForecastsByDay, dayIndex)
         );
     }
 
@@ -244,5 +253,35 @@ public class WeatherForecastMapper {
                 .mapToInt(entry -> entry.getValue().pressureHpa())
                 .average()
                 .orElse(0);
+    }
+
+    private Double calculateAvgWaveHeight(Map<String, ForecastWg> map, int dayIndex) {
+        var avg = map.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
+                .map(entry -> entry.getValue().waveHeight())
+                .filter(java.util.Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average();
+        return avg.isPresent() ? Math.round(avg.getAsDouble() * 10.0) / 10.0 : null;
+    }
+
+    private Double calculateAvgWavePeriod(Map<String, ForecastWg> map, int dayIndex) {
+        var avg = map.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
+                .map(entry -> entry.getValue().wavePeriod())
+                .filter(java.util.Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average();
+        return avg.isPresent() ? Math.round(avg.getAsDouble() * 10.0) / 10.0 : null;
+    }
+
+    private String calculateAvgWaveDirection(Map<String, ForecastWg> map, int dayIndex) {
+        var avg = map.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(DAYS.get(dayIndex)))
+                .map(entry -> entry.getValue().waveDirectionDeg())
+                .filter(java.util.Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .average();
+        return avg.isPresent() ? estimateWindDirection(avg.getAsDouble()) : null;
     }
 }

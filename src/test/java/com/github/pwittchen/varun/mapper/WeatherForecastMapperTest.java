@@ -167,4 +167,60 @@ class WeatherForecastMapperTest {
         assertThat(result.getFirst().cloudCoverPercent()).isEqualTo(45.0);
         assertThat(result.getFirst().pressureHpa()).isEqualTo(1018.0);
     }
+
+    @Test
+    void shouldMapWaveFieldsInHourlyForecasts() {
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Mon 01. 02h", 10, 15, 180, 20, 0, 45, 1018, 1.5, 8.0, 270)
+        );
+
+        List<Forecast> result = mapper.toHourlyForecasts(forecasts);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().wave()).isEqualTo(1.5);
+        assertThat(result.getFirst().wavePeriod()).isEqualTo(8.0);
+        assertThat(result.getFirst().waveDirection()).isEqualTo("W");
+    }
+
+    @Test
+    void shouldMapNullWaveFieldsInHourlyForecasts() {
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Mon 01. 02h", 10, 15, 180, 20, 0, 45, 1018, null, null, null)
+        );
+
+        List<Forecast> result = mapper.toHourlyForecasts(forecasts);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst().wave()).isNull();
+        assertThat(result.getFirst().wavePeriod()).isNull();
+        assertThat(result.getFirst().waveDirection()).isNull();
+    }
+
+    @Test
+    void shouldMapWaveFieldsInDailyForecasts() {
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Mon 01. 00h", 10, 15, 180, 20, 0, 30, 1013, 1.2, 7.0, 180),
+                new ForecastWg("Mon 01. 03h", 12, 18, 190, 22, 1, 50, 1015, 1.8, 9.0, 180)
+        );
+
+        List<Forecast> result = mapper.toWeatherForecasts(forecasts);
+
+        assertThat(result.get(0).wave()).isEqualTo(1.8);
+        assertThat(result.get(0).wavePeriod()).isEqualTo(9.0);
+        assertThat(result.get(0).waveDirection()).isEqualTo("S");
+    }
+
+    @Test
+    void shouldReturnNullWaveFieldsForInlandSpots() {
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Mon 01. 00h", 10, 15, 180, 20, 0, 30, 1013),
+                new ForecastWg("Mon 01. 03h", 12, 18, 190, 22, 1, 50, 1015)
+        );
+
+        List<Forecast> result = mapper.toWeatherForecasts(forecasts);
+
+        assertThat(result.get(0).wave()).isNull();
+        assertThat(result.get(0).wavePeriod()).isNull();
+        assertThat(result.get(0).waveDirection()).isNull();
+    }
 }

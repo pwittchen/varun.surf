@@ -55,7 +55,18 @@ public final class ForecastAverageCalculator {
             double avgCloudCover = round1(forecasts.stream().mapToDouble(Forecast::cloudCoverPercent).average().orElse(0));
             double avgPressure = round1(forecasts.stream().mapToDouble(Forecast::pressureHpa).average().orElse(0));
 
-            averaged.add(new Forecast(entry.getKey(), avgWind, avgGusts, avgDirection, avgTemp, avgPrecip, avgCloudCover, avgPressure));
+            // Wave fields: average only non-null values, return null when none present
+            var waveHeights = forecasts.stream().map(Forecast::wave).filter(java.util.Objects::nonNull).mapToDouble(Double::doubleValue);
+            var wavePeriods = forecasts.stream().map(Forecast::wavePeriod).filter(java.util.Objects::nonNull).mapToDouble(Double::doubleValue);
+            var waveDirections = forecasts.stream().map(Forecast::waveDirection).filter(java.util.Objects::nonNull).toList();
+
+            var avgWaveHeight = waveHeights.average();
+            var avgWavePeriod = wavePeriods.average();
+            Double waveH = avgWaveHeight.isPresent() ? round1(avgWaveHeight.getAsDouble()) : null;
+            Double waveP = avgWavePeriod.isPresent() ? round1(avgWavePeriod.getAsDouble()) : null;
+            String waveDir = !waveDirections.isEmpty() ? circularMeanDirection(waveDirections) : null;
+
+            averaged.add(new Forecast(entry.getKey(), avgWind, avgGusts, avgDirection, avgTemp, avgPrecip, avgCloudCover, avgPressure, waveH, waveP, waveDir));
         }
 
         return averaged;
