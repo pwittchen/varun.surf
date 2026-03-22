@@ -3698,6 +3698,16 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-size: 0.875rem;
 }
 
+.source-link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-family: 'Courier New', monospace;
+}
+
+.source-link:hover {
+    text-decoration: underline;
+}
+
 .status-actions {
     display: flex;
     gap: 12px;

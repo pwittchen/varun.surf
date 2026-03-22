@@ -2,6 +2,7 @@ package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.service.AggregatorService;
 import com.github.pwittchen.varun.service.health.HealthHistoryService;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,7 @@ public class StatusControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new StatusController(aggregatorService, healthHistoryService);
+        controller = new StatusController(aggregatorService, healthHistoryService, new OkHttpClient());
         ReflectionTestUtils.setField(controller, "version", "test-version");
     }
 
