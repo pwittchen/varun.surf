@@ -89,3 +89,4 @@ $COMPOSE_CMD stop "$CURRENT_CONTAINER"
 $COMPOSE_CMD rm -f "$CURRENT_CONTAINER"
 
 echo "==> Deployment complete: $NEXT is now live"
+exit 0
