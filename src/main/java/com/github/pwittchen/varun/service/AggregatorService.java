@@ -59,10 +59,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.StructuredTaskScope.Joiner;
+import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings({"preview", "Since15"})
+@SuppressWarnings({"preview"})
 public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
@@ -380,7 +382,7 @@ public class AggregatorService {
         metricsService.incrementForecastFetchCounter();
         var startTime = System.nanoTime();
 
-        try (var scope = new StructuredTaskScope.ShutdownOnFailure("forecast", Thread.ofVirtual().factory())) {
+        try (var scope = openFailFastScopeForecast()) {
             var tasks = spots
                     .values()
                     .stream()
@@ -399,7 +401,7 @@ public class AggregatorService {
                     .toList();
 
             try {
-                scope.join().throwIfFailed();
+                scope.join();
             } catch (Exception e) {
                 log.error("Error while fetching forecasts", e);
                 metricsService.incrementForecastFetchFailureCounter();
@@ -416,10 +418,10 @@ public class AggregatorService {
         }
     }
 
-    private void updateSpotsAndForecasts(List<StructuredTaskScope.Subtask<Pair<Integer, ForecastData>>> tasks) {
+    private void updateSpotsAndForecasts(List<Subtask<Pair<Integer, ForecastData>>> tasks) {
         Map<Integer, ForecastData> newForecasts = tasks
                 .stream()
-                .map(StructuredTaskScope.Subtask::get)
+                .map(Subtask::get)
                 .filter(pair -> pair.getValue1() != null && !pair.getValue1().daily().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
@@ -449,7 +451,7 @@ public class AggregatorService {
         metricsService.incrementConditionsFetchCounter();
         var startTime = System.nanoTime();
 
-        try (var scope = new StructuredTaskScope<>("currentConditions", Thread.ofVirtual().factory())) {
+        try (var scope = openScope("currentConditions")) {
             var tasks = spots
                     .keySet()
                     .stream()
@@ -475,7 +477,7 @@ public class AggregatorService {
 
             tasks
                     .stream()
-                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
+                    .filter(subtask -> subtask.state() == Subtask.State.FAILED)
                     .map(subtask -> subtask.exception().getMessage())
                     .forEach(log::warn);
 
@@ -527,7 +529,7 @@ public class AggregatorService {
                     .filter(m -> m != ForecastModel.ICM_METEO)
                     .toList();
 
-            try (var scope = new StructuredTaskScope<>("singleSpotForecastModels", Thread.ofVirtual().factory())) {
+            try (var scope = openScope("singleSpotForecastModels")) {
                 var tasks = new ArrayList<>(windguruModels
                         .stream()
                         .map(forecastModel -> scope.fork(() -> {
@@ -601,16 +603,16 @@ public class AggregatorService {
 
     private void updateSpotAndForecastModels(
             int spotId,
-            List<StructuredTaskScope.Subtask<Pair<ForecastModel, ForecastData>>> tasks
+            List<Subtask<Pair<ForecastModel, ForecastData>>> tasks
     ) {
         List<Pair<ForecastModel, ForecastData>> forecasts = tasks
                 .stream()
-                .filter(t -> t.state() == StructuredTaskScope.Subtask.State.SUCCESS)
-                .map(StructuredTaskScope.Subtask::get)
+                .filter(t -> t.state() == Subtask.State.SUCCESS)
+                .map(Subtask::get)
                 .toList();
 
         tasks.stream()
-                .filter(t -> t.state() == StructuredTaskScope.Subtask.State.FAILED)
+                .filter(t -> t.state() == Subtask.State.FAILED)
                 .forEach(t -> log.debug("Failed to fetch model for spot: {}", t.exception().getMessage()));
 
         ForecastData existing = forecastCache.get(spotId);
@@ -694,7 +696,7 @@ public class AggregatorService {
     ) throws FetchingAiForecastAnalysisException {
         metricsService.incrementAiFetchCounter();
         var startTime = System.nanoTime();
-        try (var scope = new StructuredTaskScope<>("aiAnalysis" + languageCode, Thread.ofVirtual().factory())) {
+        try (var scope = openScope("aiAnalysis" + languageCode)) {
             var tasks = spots
                     .values()
                     .stream()
@@ -719,7 +721,7 @@ public class AggregatorService {
 
             tasks
                     .stream()
-                    .filter(subtask -> subtask.state() == StructuredTaskScope.Subtask.State.FAILED)
+                    .filter(subtask -> subtask.state() == Subtask.State.FAILED)
                     .map(subtask -> subtask.exception().getMessage())
                     .forEach(log::warn);
 
@@ -728,6 +730,24 @@ public class AggregatorService {
         } finally {
             metricsService.recordAiFetchDuration(startTime);
         }
+    }
+
+    private static <T> StructuredTaskScope<T, Void> openFailFastScopeForecast() {
+        return StructuredTaskScope.open(
+                Joiner.awaitAllSuccessfulOrThrow(),
+                configuration -> configuration
+                        .withName("forecast")
+                        .withThreadFactory(Thread.ofVirtual().factory())
+        );
+    }
+
+    private static <T> StructuredTaskScope<T, Void> openScope(String name) {
+        return StructuredTaskScope.open(
+                Joiner.awaitAll(),
+                configuration -> configuration
+                        .withName(name)
+                        .withThreadFactory(Thread.ofVirtual().factory())
+        );
     }
 
     private void updateAiAnalysisCache(int spotId, String analysis, ConcurrentMap<Integer, String> cache) {

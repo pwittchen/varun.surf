@@ -1,5 +1,5 @@
 # Build stage
-FROM gradle:8.14.3-jdk24-alpine AS build
+FROM gradle:9-jdk25-alpine AS build
 ARG VERSION=0.0.1-SNAPSHOT
 WORKDIR /app
 RUN apk add --no-cache curl bash unzip && \
@@ -13,8 +13,9 @@ COPY package.json bun.lock build.ts ./
 RUN gradle clean bootJar -Pversion=${VERSION} --no-daemon
 
 # Runtime stage
-FROM eclipse-temurin:24-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
+
 EXPOSE 8080
 ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
