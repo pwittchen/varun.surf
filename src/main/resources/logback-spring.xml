@@ -19,7 +19,12 @@
         <appender-ref ref="IN_MEMORY"/>
     </root>
 
-    <logger name="com.github.pwittchen.varun" level="DEBUG"/>
+    <springProfile name="blue, green">
+        <logger name="com.github.pwittchen.varun" level="INFO"/>
+    </springProfile>
+    <springProfile name="default">
+        <logger name="com.github.pwittchen.varun" level="DEBUG"/>
+    </springProfile>
 
     <logger name="io.netty" level="WARN"/>
     <logger name="reactor.netty" level="WARN"/>
