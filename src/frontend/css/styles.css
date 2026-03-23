@@ -4858,6 +4858,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         margin-top: 380px;
     }
 
+    .compact-view-container {
+        display: none !important;
+    }
+
     .info-grid {
         grid-template-columns: 1fr !important;
     }
