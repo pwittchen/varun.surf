@@ -32,6 +32,9 @@ export const STORAGE_KEYS = {
     FILTER_WINDY_DAYS: 'filterWindyDays',
     FORECAST_MODEL: 'forecastModel', // sessionStorage
 
+    // Compact windguru view
+    COMPACT_WINDGURU: 'compactWindguru',
+
     // Hero section
     HERO_VISIBLE: 'heroVisible'
 };
@@ -228,6 +231,18 @@ export function getFilterWindyDays() {
 
 export function setFilterWindyDays(enabled) {
     localStorage.setItem(STORAGE_KEYS.FILTER_WINDY_DAYS, enabled ? 'true' : 'false');
+}
+
+// ============================================================================
+// COMPACT WINDGURU VIEW (spot page)
+// ============================================================================
+
+export function getCompactWindguru() {
+    return localStorage.getItem(STORAGE_KEYS.COMPACT_WINDGURU) === 'true';
+}
+
+export function setCompactWindguru(enabled) {
+    localStorage.setItem(STORAGE_KEYS.COMPACT_WINDGURU, enabled ? 'true' : 'false');
 }
 
 // ============================================================================

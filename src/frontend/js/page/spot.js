@@ -841,7 +841,8 @@ function createWindguruView(forecastData, hasWaveData) {
         dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const time = forecast.date ? forecast.date.split(' ')[4] : '';
-            dayColumnsHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
+            const hour = time ? time.split(':')[0] : '';
+            dayColumnsHtml += `<div class="windguru-cell windguru-time-cell"><span class="full-value">${time}</span><span class="compact-value">${hour}</span></div>`;
         });
         dayColumnsHtml += `</div>`;
 
@@ -875,7 +876,7 @@ function createWindguruView(forecastData, hasWaveData) {
         dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const windArrow = weather.getWindArrow(forecast.direction);
-            dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
+            dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span class="direction-text" style="font-size: 0.7rem;">${forecast.direction}</span></div>`;
         });
         dayColumnsHtml += `</div>`;
 
@@ -902,7 +903,8 @@ function createWindguruView(forecastData, hasWaveData) {
             let cloudClass = 'cloud-low';
             if (clouds > 75) cloudClass = 'cloud-heavy';
             else if (clouds >= 25) cloudClass = 'cloud-medium';
-            dayColumnsHtml += `<div class="windguru-cell ${cloudClass}">${clouds}%</div>`;
+            const compactClouds = clouds === 100 ? '.1' : String(clouds);
+            dayColumnsHtml += `<div class="windguru-cell ${cloudClass}"><span class="full-value">${clouds}%</span><span class="compact-value">${compactClouds}</span></div>`;
         });
         dayColumnsHtml += `</div>`;
 
@@ -910,7 +912,8 @@ function createWindguruView(forecastData, hasWaveData) {
         dayColumnsHtml += `<div class="windguru-data-row">`;
         daytimeForecasts.forEach(forecast => {
             const pressure = forecast.pressureHpa || 0;
-            dayColumnsHtml += `<div class="windguru-cell pressure">${pressure}</div>`;
+            const compactPressure = pressure > 0 ? String(pressure).slice(-2) : '0';
+            dayColumnsHtml += `<div class="windguru-cell pressure"><span class="full-value">${pressure}</span><span class="compact-value">${compactPressure}</span></div>`;
         });
         dayColumnsHtml += `</div>`;
 
@@ -946,7 +949,7 @@ function createWindguruView(forecastData, hasWaveData) {
             daytimeForecasts.forEach(forecast => {
                 if (forecast.waveDirection != null) {
                     const waveArrow = weather.getWindArrow(forecast.waveDirection);
-                    dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${waveArrow}</span><span style="font-size: 0.7rem;">${forecast.waveDirection}</span></div>`;
+                    dayColumnsHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${waveArrow}</span><span class="direction-text" style="font-size: 0.7rem;">${forecast.waveDirection}</span></div>`;
                 } else {
                     dayColumnsHtml += `<div class="windguru-cell">-</div>`;
                 }
@@ -1035,7 +1038,8 @@ function createWindguruViewForLiveData(liveData) {
     liveData.forEach(entry => {
         // For live data, date format is simpler (e.g., "2025-01-15 14:30")
         const time = entry.date ? entry.date.split(' ')[1] || entry.date : '';
-        windguruHtml += `<div class="windguru-cell windguru-time-cell">${time}</div>`;
+        const hour = time ? time.split(':')[0] : '';
+        windguruHtml += `<div class="windguru-cell windguru-time-cell"><span class="full-value">${time}</span><span class="compact-value">${hour}</span></div>`;
     });
     windguruHtml += `</div>`;
 
@@ -1067,7 +1071,7 @@ function createWindguruViewForLiveData(liveData) {
     windguruHtml += `<div class="windguru-data-row">`;
     liveData.forEach(entry => {
         const windArrow = weather.getWindArrow(entry.direction);
-        windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span style="font-size: 0.7rem;">${entry.direction}</span></div>`;
+        windguruHtml += `<div class="windguru-cell"><span class="wind-arrow" style="display: block;">${windArrow}</span><span class="direction-text" style="font-size: 0.7rem;">${entry.direction}</span></div>`;
     });
     windguruHtml += `</div>`;
 
@@ -1396,11 +1400,27 @@ function setupForecastTabs() {
     const windguruView = document.querySelector('.windguru-view');
     const chartView = document.querySelector('.chart-view');
 
+    const compactContainer = document.querySelector('.compact-view-container');
+
+    // Helper function to update compact checkbox visibility
+    function updateCompactVisibility(targetView) {
+        if (compactContainer) {
+            compactContainer.style.display = targetView === 'windguru' ? '' : 'none';
+        }
+    }
+
+    // Apply saved compact preference on load
+    if (windguruView && state.getCompactWindguru()) {
+        windguruView.classList.add('compact');
+    }
+
     // Helper function to update view visibility
     function updateViewVisibility(targetView) {
         if (tableView) tableView.classList.toggle('active', targetView === 'table');
         if (windguruView) windguruView.classList.toggle('active', targetView === 'windguru');
         if (chartView) chartView.classList.toggle('active', targetView === 'chart');
+
+        updateCompactVisibility(targetView);
 
         // Render chart when chart view becomes active
         if (targetView === 'chart') {
@@ -2189,6 +2209,12 @@ function createSpotCard(spot) {
                                 </button>
                             </div>
                             <div class="forecast-filters-right">
+                                <div class="compact-view-container" style="display: none;">
+                                    <label class="compact-view-label">
+                                        <input type="checkbox" id="compactViewCheckbox" ${state.getCompactWindguru() ? 'checked' : ''} />
+                                        <span class="filter-text">${translations.t('compactViewLabel')}</span>
+                                    </label>
+                                </div>
                                 <div class="filter-windy-days-container" ${isLiveDataMode ? 'style="display: none;"' : ''}>
                                     <label class="filter-windy-days-label">
                                         <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
@@ -2306,6 +2332,9 @@ function displaySpot(spot) {
         // Setup filter windy days checkbox
         setupFilterWindyDaysCheckbox();
 
+        // Setup compact view checkbox
+        setupCompactViewCheckbox();
+
         // Setup data source dropdown
         setupDataSourceDropdown();
 
@@ -2344,6 +2373,22 @@ function setupFilterWindyDaysCheckbox() {
         // Re-render the spot to apply the filter
         if (currentSpot) {
             displaySpot(currentSpot);
+        }
+    });
+}
+
+// Setup compact view checkbox
+function setupCompactViewCheckbox() {
+    const checkbox = document.getElementById('compactViewCheckbox');
+    if (!checkbox) return;
+
+    checkbox.addEventListener('change', (e) => {
+        const enabled = e.target.checked;
+        state.setCompactWindguru(enabled);
+
+        const windguruView = document.querySelector('.windguru-view');
+        if (windguruView) {
+            windguruView.classList.toggle('compact', enabled);
         }
     });
 }

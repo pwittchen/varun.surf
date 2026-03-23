@@ -2605,6 +2605,41 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--accent-primary);
 }
 
+/* Compact View Toggle */
+.compact-view-container {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    padding-right: 16px;
+    margin-right: 4px;
+}
+
+.compact-view-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.compact-view-label:hover {
+    color: var(--text-primary);
+}
+
+.compact-view-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent-primary);
+}
+
+.compact-view-label .filter-text {
+    font-weight: 500;
+}
+
 /* Filter Windy Days */
 .filter-windy-days-container {
     display: flex;
@@ -2942,6 +2977,56 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-weight: 700;
 }
 
+
+/* Compact Windguru View - full/compact value toggling */
+.windguru-cell .compact-value {
+    display: none;
+}
+
+.windguru-view.compact .windguru-cell .full-value {
+    display: none;
+}
+
+.windguru-view.compact .windguru-cell .compact-value {
+    display: inline;
+}
+
+.windguru-view.compact .windguru-cell .direction-text {
+    display: none;
+}
+
+.windguru-view.compact .windguru-cell {
+    flex: 0 0 32px;
+    padding: 10px 2px;
+    font-size: 0.75rem;
+}
+
+.windguru-view.compact .windguru-time-cell {
+    font-size: 0.65rem;
+}
+
+.windguru-view.compact .windguru-data-row {
+    height: 34px;
+}
+
+.windguru-view.compact .windguru-day-header {
+    height: 38px;
+    font-size: 0.75rem;
+    padding: 0 4px;
+}
+
+.windguru-view.compact .windguru-label-header {
+    height: 38px;
+}
+
+.windguru-view.compact .windguru-label {
+    height: 34px;
+    font-size: 0.65rem;
+}
+
+.windguru-view.compact .wind-arrow {
+    font-size: 0.8rem;
+}
 
 /* ============================================================================
    23. CHART VIEW
