@@ -32,15 +32,21 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Update Gradle wrapper
+        id: gradle-wrapper
         run: |
+          CURRENT_GRADLE=$(grep distributionUrl gradle/wrapper/gradle-wrapper.properties | sed 's/.*gradle-\(.*\)-bin.zip/\1/')
           LATEST_GRADLE=$(curl -s https://services.gradle.org/versions/current | jq -r '.version')
-          echo "Updating Gradle wrapper to $LATEST_GRADLE"
-          ./gradlew wrapper --gradle-version="$LATEST_GRADLE"
+          if [ "$CURRENT_GRADLE" != "$LATEST_GRADLE" ]; then
+            ./gradlew wrapper --gradle-version="$LATEST_GRADLE"
+            echo "updated=- gradle wrapper: $CURRENT_GRADLE -> $LATEST_GRADLE" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Update Gradle dependencies
+        id: gradle-deps
         run: |
           ./gradlew dependencyUpdates
 
+          UPDATES=""
           jq -c '.outdated.dependencies[]' build/dependencyUpdates/report.json | while read -r dep; do
             group=$(echo "$dep" | jq -r '.group')
             name=$(echo "$dep" | jq -r '.name')
@@ -51,24 +57,39 @@ jobs:
               echo "Updating $group:$name from $current to $new"
 
               if [[ "$name" == *.gradle.plugin ]]; then
-                # Gradle plugins: id 'pluginId' version 'X.Y.Z'
                 sed -i "s|id '${group}' version '${current}'|id '${group}' version '${new}'|g" build.gradle
+                echo "- ${group} plugin: ${current} -> ${new}" >> /tmp/gradle-updates.txt
               else
-                # Regular dependencies: 'group:name:version'
                 sed -i "s|${group}:${name}:${current}|${group}:${name}:${new}|g" build.gradle
 
-                # Ext property for Spring AI BOM
                 if [ "$name" = "spring-ai-bom" ]; then
                   sed -i "s|set('springAiVersion', \"${current}\")|set('springAiVersion', \"${new}\")|g" build.gradle
                 fi
+
+                echo "- ${group}:${name}: ${current} -> ${new}" >> /tmp/gradle-updates.txt
               fi
             fi
           done
 
+          if [ -f /tmp/gradle-updates.txt ]; then
+            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+            echo "updated<<$EOF" >> "$GITHUB_OUTPUT"
+            cat /tmp/gradle-updates.txt >> "$GITHUB_OUTPUT"
+            echo "$EOF" >> "$GITHUB_OUTPUT"
+          fi
+
           ./gradlew --stop
 
       - name: Update frontend dependencies
-        run: bun update
+        id: frontend-deps
+        run: |
+          BEFORE=$(jq -r '.devDependencies | to_entries[] | "\(.key):\(.value)"' package.json)
+          bun update
+          AFTER=$(jq -r '.devDependencies | to_entries[] | "\(.key):\(.value)"' package.json)
+          if [ "$BEFORE" != "$AFTER" ]; then
+            DIFF=$(diff <(echo "$BEFORE") <(echo "$AFTER") | grep '^[<>]' | sed 's/^< /old: /;s/^> /new: /' || true)
+            echo "updated=- frontend dependencies" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check for changes
         id: changes
@@ -112,8 +133,19 @@ jobs:
       - name: Commit and push
         if: steps.changes.outputs.has_changes == 'true'
         run: |
+          BODY=""
+          if [ -n "${{ steps.gradle-wrapper.outputs.updated }}" ]; then
+            BODY="${BODY}${{ steps.gradle-wrapper.outputs.updated }}"$'\n'
+          fi
+          if [ -n "${{ steps.gradle-deps.outputs.updated }}" ]; then
+            BODY="${BODY}${{ steps.gradle-deps.outputs.updated }}"$'\n'
+          fi
+          if [ -n "${{ steps.frontend-deps.outputs.updated }}" ]; then
+            BODY="${BODY}${{ steps.frontend-deps.outputs.updated }}"$'\n'
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "update dependencies"
+          git commit -m "update dependencies" -m "$BODY"
           git push
