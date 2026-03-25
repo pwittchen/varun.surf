@@ -1,4 +1,4 @@
-name: Update Dependencies
+name: DEPS # update dependencies
 
 on:
   schedule:
