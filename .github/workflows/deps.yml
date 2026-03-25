@@ -39,7 +39,30 @@ jobs:
 
       - name: Update Gradle dependencies
         run: |
-          ./gradlew useLatestVersions
+          ./gradlew dependencyUpdates
+
+          jq -c '.outdated.dependencies[]' build/dependencyUpdates/report.json | while read -r dep; do
+            group=$(echo "$dep" | jq -r '.group')
+            name=$(echo "$dep" | jq -r '.name')
+            current=$(echo "$dep" | jq -r '.version')
+            new=$(echo "$dep" | jq -r '.available.release // .available.milestone // empty')
+
+            if [ -n "$new" ]; then
+              echo "Updating $group:$name from $current to $new"
+
+              # Regular dependencies: 'group:name:version'
+              sed -i "s|${group}:${name}:${current}|${group}:${name}:${new}|g" build.gradle
+
+              # Gradle plugins: id 'pluginId' version 'X.Y.Z'
+              sed -i "s|id '${group}' version '${current}'|id '${group}' version '${new}'|g" build.gradle
+
+              # Ext property for Spring AI BOM
+              if [ "$name" = "spring-ai-bom" ]; then
+                sed -i "s|set('springAiVersion', \"${current}\")|set('springAiVersion', \"${new}\")|g" build.gradle
+              fi
+            fi
+          done
+
           ./gradlew --stop
 
       - name: Update frontend dependencies
