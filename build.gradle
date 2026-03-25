@@ -171,9 +171,18 @@ def isNonStable = { String version ->
     return !stableKeyword && !(version ==~ regex)
 }
 
+def isMajorUpdate = { String candidate, String current ->
+    try {
+        return candidate.tokenize('.')[0].toInteger() > current.tokenize('.')[0].toInteger()
+    } catch (Exception ignored) {
+        return false
+    }
+}
+
 tasks.named("dependencyUpdates").configure {
     rejectVersionIf {
-        isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+        (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) ||
+            isMajorUpdate(it.candidate.version, it.currentVersion)
     }
     outputFormatter = 'json,plain'
 }

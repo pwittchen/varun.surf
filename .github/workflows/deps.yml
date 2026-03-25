@@ -50,15 +50,17 @@ jobs:
             if [ -n "$new" ]; then
               echo "Updating $group:$name from $current to $new"
 
-              # Regular dependencies: 'group:name:version'
-              sed -i "s|${group}:${name}:${current}|${group}:${name}:${new}|g" build.gradle
+              if [[ "$name" == *.gradle.plugin ]]; then
+                # Gradle plugins: id 'pluginId' version 'X.Y.Z'
+                sed -i "s|id '${group}' version '${current}'|id '${group}' version '${new}'|g" build.gradle
+              else
+                # Regular dependencies: 'group:name:version'
+                sed -i "s|${group}:${name}:${current}|${group}:${name}:${new}|g" build.gradle
 
-              # Gradle plugins: id 'pluginId' version 'X.Y.Z'
-              sed -i "s|id '${group}' version '${current}'|id '${group}' version '${new}'|g" build.gradle
-
-              # Ext property for Spring AI BOM
-              if [ "$name" = "spring-ai-bom" ]; then
-                sed -i "s|set('springAiVersion', \"${current}\")|set('springAiVersion', \"${new}\")|g" build.gradle
+                # Ext property for Spring AI BOM
+                if [ "$name" = "spring-ai-bom" ]; then
+                  sed -i "s|set('springAiVersion', \"${current}\")|set('springAiVersion', \"${new}\")|g" build.gradle
+                fi
               fi
             fi
           done
