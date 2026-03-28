@@ -28,11 +28,38 @@ If there are no changes to commit, inform the user and stop.
 
 ### 3. Draft Commit Message
 
-Follow the project's commit message conventions observed from `git log`:
-- Use lowercase, concise messages
+Scale the commit message to match the scope of changes:
+
+**Small changes** (1-2 files, single concern, minor edits):
+- Single-line message, e.g.: `fix typo in spot name` or `update dependencies`
+
+**Medium changes** (3-5 files, one feature or fix):
+- Subject line + short body with key details:
+  ```
+  add Le Barcarès kite spot (France)
+
+  - spot data with EN/PL translations
+  - remove hardcoded spot count test
+  ```
+
+**Large changes** (6+ files, multiple concerns, new feature with tests):
+- Subject line + detailed body listing all significant changes:
+  ```
+  add dynamic multi-model forecast support
+
+  - add ForecastModel enum with 40+ Windguru models
+  - implement on-demand model discovery in AggregatorService
+  - extend ForecastData with per-model hourly maps
+  - add AvailableModel record for frontend model selector
+  - update SpotsController to accept model path parameter
+  - add unit tests for model discovery and selection
+  ```
+
+General rules:
+- Use lowercase, imperative mood (e.g., "add feature" not "added feature")
+- Keep the subject line under 72 characters
 - Focus on the "what" and "why", not the "how"
-- Use imperative mood (e.g., "add feature" not "added feature")
-- Keep the first line under 72 characters
+- Body items should start with a dash and describe meaningful changes (skip trivial ones like import changes)
 - **IMPORTANT**: Do NOT include "Co-Authored-By" or any AI attribution lines (project rule from CLAUDE.md)
 
 ### 4. Stage and Commit
