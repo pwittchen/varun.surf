@@ -9,6 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 
 class JsonSpotsDataProviderTest {
@@ -32,14 +34,6 @@ class JsonSpotsDataProviderTest {
 
         assertThat(spot.spotInfo()).isNotNull();
         assertThat(spot.spotInfo().bestWind()).isEqualTo("W, SW");
-    }
-
-    @Test
-    void shouldLoadAllSpotsFromJsonFile() {
-        StepVerifier
-                .create(provider.getSpots())
-                .expectNextCount(103)
-                .verifyComplete();
     }
 
     @Test

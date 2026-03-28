@@ -2891,5 +2891,35 @@
       "season": "Maj-Październik",
       "description": "Popularny camping i spot kitesurfingowy na Półwyspie Helskim z podwójnym dostępem do wody. Położony między spokojną laguną Zatoki Puckiej a otwartym Morzem Bałtyckim. Jest dostępna szkoła kite z wypożyczalnią sprzętu i przechowalnią. Znany ze stabilnych wiatrów i doskonałych warunków dla początkujących w lagunie."
     }
+  },
+  {
+    "name": "Le Barcarès",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/1146458",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_barcares_occitanie_france",
+    "webcamUrl": "https://www.skaping.com/le-barcares/dosses",
+    "locationUrl": "https://maps.app.goo.gl/qracoyEuMxK1mUPJA",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "NW, N (Tramontane)",
+      "waterTemp": "13-21°C",
+      "experience": "Advanced",
+      "launch": "Designated area at Parc des Dosses",
+      "hazards": "Offshore winds, water ski lift cables, strong gusts, turbulence on shore",
+      "season": "March-October",
+      "description": "World-renowned freestyle and big air spot with flat water lagoon. Famous for strong Tramontane winds (300+ windy days/year) and hosting World Kitesurfing Championships. Natura 2000 protected area. Not suitable for beginners due to powerful offshore conditions and nearby obstacles.",
+      "llmComment": "Peak winds in May-June. Offshore wind requires strong upwind ability and self-rescue skills. Water ski lift nearby requires caution. Lords of Tram competition venue."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda",
+      "bestWind": "NW, N (Tramontana)",
+      "waterTemp": "13-21°C",
+      "experience": "Zaawansowany",
+      "launch": "Wyznaczona strefa w Parc des Dosses",
+      "hazards": "Wiatry odlądowe, liny wyciągu narciarskiego wodnego, silne podmuchy, turbulencje na brzegu",
+      "season": "Marzec-Październik",
+      "description": "Światowej sławy spot freestyle i big air z płaską wodą w lagunie. Słynny z silnych wiatrów Tramontany (300+ wietrznych dni w roku) i goszczący Mistrzostwa Świata w Kitesurfingu. Obszar chroniony Natura 2000. Nieodpowiedni dla początkujących ze względu na silne wiatry odlądowe i przeszkody w okolicy.",
+      "llmComment": "Szczyt wiatrów w maju-czerwcu. Wiatr odlądowy wymaga silnej umiejętności pływania pod wiatr i samodzielnego ratowania. Wyciąg narciarski wodny w pobliżu wymaga ostrożności. Miejsce zawodów Lords of Tram."
+    }
   }
 ]
