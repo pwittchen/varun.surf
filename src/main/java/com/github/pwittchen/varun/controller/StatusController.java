@@ -48,7 +48,8 @@ public class StatusController {
             new SourceDefinition("Turawa Airmax", "https://airmax.pl/kamery/turawa", "airmax.pl/kamery/turawa"),
             new SourceDefinition("Mietkow WeeWX", "https://frog01-21064.wykr.es/weewx/inx.html", "frog01-21064.wykr.es"),
             new SourceDefinition("Tarifa Spotfav", "https://www.spotfav.com/public/meteo/weatherflow-4eee927b185476763900001b/update/", "spotfav.com"),
-            new SourceDefinition("El Medano Bergfex", "https://cabezo.bergfex.at/wetterstation/", "cabezo.bergfex.at")
+            new SourceDefinition("El Medano Bergfex", "https://cabezo.bergfex.at/wetterstation/", "cabezo.bergfex.at"),
+            new SourceDefinition("Le Barcarès Winds-Up", "https://m.winds-up.com/spot/58", "winds-up.com/spot/58")
     );
 
     private final Instant startTime = Instant.now();
@@ -115,11 +116,10 @@ public class StatusController {
     public Mono<Map<String, Object>> sources() {
         return Mono.fromCallable(() -> {
             List<SourceHealthResult> forecastResults = pingSources(FORECAST_SOURCES);
-            List<SourceHealthResult> liveStationResults = pingSources(LIVE_STATION_SOURCES);
 
             Map<String, Object> result = new HashMap<>();
             result.put("forecastSources", forecastResults);
-            result.put("liveStationSources", liveStationResults);
+            result.put("liveStationSources", LIVE_STATION_SOURCES);
             return result;
         }).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
     }

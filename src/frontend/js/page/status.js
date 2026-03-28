@@ -190,7 +190,7 @@ async function checkSources() {
         }
         const data = await response.json();
         renderSources('forecast-sources', data.forecastSources);
-        renderSources('live-station-sources', data.liveStationSources);
+        renderStationLinks('live-station-sources', data.liveStationSources);
     } catch (error) {
         console.error('Error checking sources:', error);
     }
@@ -219,6 +219,22 @@ function renderSources(containerId, sources) {
             </div>
         `;
     }).join('');
+}
+
+function renderStationLinks(containerId, sources) {
+    const container = document.getElementById(containerId);
+    if (!sources || sources.length === 0) {
+        container.innerHTML = '<div class="status-endpoint"><span>No sources available</span></div>';
+        return;
+    }
+
+    container.innerHTML = sources.map(source => `
+        <div class="status-endpoint">
+            <div class="status-endpoint-info">
+                <span class="status-endpoint-name">${source.name} <a href="${source.url}" target="_blank" rel="noopener noreferrer" class="source-link">${source.displayUrl}</a></span>
+            </div>
+        </div>
+    `).join('');
 }
 
 async function refreshStatus() {
