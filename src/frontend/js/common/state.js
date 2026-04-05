@@ -218,7 +218,7 @@ export function removeListOrder(filter, searchQuery) {
 // ============================================================================
 
 export function getForecastViewPreference() {
-    return localStorage.getItem(STORAGE_KEYS.FORECAST_VIEW_PREFERENCE) || 'table';
+    return localStorage.getItem(STORAGE_KEYS.FORECAST_VIEW_PREFERENCE) || 'windguru';
 }
 
 export function setForecastViewPreference(view) {
@@ -238,7 +238,8 @@ export function setFilterWindyDays(enabled) {
 // ============================================================================
 
 export function getCompactWindguru() {
-    return localStorage.getItem(STORAGE_KEYS.COMPACT_WINDGURU) === 'true';
+    const value = localStorage.getItem(STORAGE_KEYS.COMPACT_WINDGURU);
+    return value === null ? true : value === 'true';
 }
 
 export function setCompactWindguru(enabled) {
