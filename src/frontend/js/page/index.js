@@ -900,6 +900,10 @@ function setupDropdownEvents() {
 
             renderSpots(country, searchInput.value, true);
 
+            if (globalWeatherData.length > 0) {
+                renderHeroSection();
+            }
+
             // Update map markers if map view is visible
             if (isMapView) {
                 updateMapMarkers();
@@ -2707,15 +2711,22 @@ function renderHeroSection() {
         return;
     }
 
-    const spotsWithPhotos = globalWeatherData.filter(spot => {
+    const hasPhoto = spot => {
         const url = typeof spot.spotPhotoUrl === 'string' ? spot.spotPhotoUrl.trim() : '';
         return url.length > 0;
-    });
+    };
 
-    if (spotsWithPhotos.length === 0) {
+    const allSpotsWithPhotos = globalWeatherData.filter(hasPhoto);
+
+    if (allSpotsWithPhotos.length === 0) {
         heroSection.style.display = 'none';
         return;
     }
+
+    const countrySpotsWithPhotos = currentFilter && currentFilter !== 'all'
+        ? allSpotsWithPhotos.filter(spot => spot.country === currentFilter)
+        : [];
+    const spotsWithPhotos = countrySpotsWithPhotos.length > 0 ? countrySpotsWithPhotos : allSpotsWithPhotos;
 
     const randomSpot = spotsWithPhotos[Math.floor(Math.random() * spotsWithPhotos.length)];
 
