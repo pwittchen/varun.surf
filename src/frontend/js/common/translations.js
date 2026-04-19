@@ -61,6 +61,7 @@ export const translations = {
         footerOpenSource: "open-source",
         footerChangelog: "changelog",
         footerStatus: "status",
+        footerLlms: "llms.txt",
 
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Today",
@@ -320,6 +321,7 @@ export const translations = {
         footerOpenSource: "open-source",
         footerChangelog: "historia zmian",
         footerStatus: "status",
+        footerLlms: "llms.txt",
 
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Dzisiaj",

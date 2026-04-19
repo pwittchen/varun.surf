@@ -33,8 +33,19 @@ VARUN.SURF is an open-source kitesurfing weather dashboard that aggregates real-
 **Endpoint**: https://varun.surf/api/v1/spots
 **Method**: GET
 **Format**: JSON (reactive stream)
-**Auth**: None (public API)
+**Auth**: Session cookie required (initialized automatically on page visit)
 **Updates**: Forecasts every 3 hours, current conditions every minute
+
+## LLM-Friendly Markdown Endpoints
+The following public endpoints return pre-rendered Markdown documents optimized for LLM consumption.
+They do not require a session cookie and are free to crawl, index, or fetch directly.
+
+- **All spots index**: https://varun.surf/llms/spots.md (names, countries, links to per-spot documents)
+- **Single spot**: https://varun.surf/llms/spots/{wgId}.md (spot details, forecast, live conditions)
+- **All countries index**: https://varun.surf/llms/countries.md (list of countries with spot counts)
+- **Country detail**: https://varun.surf/llms/countries/{slug}.md (list of spots in that country)
+
+Country slug is the lowercased country name with spaces replaced by hyphens (e.g. "poland", "czech-republic").
 
 ## Wind Speed Guide for Kitesurfing
 - **0-6 knots**: Too light for kitesurfing
@@ -107,7 +118,7 @@ A: Yes! Form available at: https://pwittchen.notion.site/28a649d2871780368191c6c
 A: No native app, but website is fully responsive and works great on mobile.
 
 **Q: Can I use the API?**
-A: Yes, public API at https://varun.surf/api/v1/spots - please respect rate limits.
+A: Yes. JSON API at https://varun.surf/api/v1/spots (requires session cookie from a page visit) and LLM-friendly Markdown endpoints at https://varun.surf/llms/spots.md, https://varun.surf/llms/countries.md, and per-spot /llms/spots/{wgId}.md (no session required). Please respect rate limits.
 
 **Q: Why use this instead of just Windguru?**
 A: VARUN.SURF aggregates Windguru forecasts with real-time wind data, shows multiple spots in one view, adds kite size calculator, and is ad-free. It enhances Windguru data rather than replacing it.

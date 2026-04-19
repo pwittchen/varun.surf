@@ -49,6 +49,38 @@ public class SessionAuthenticationFilterTest {
     }
 
     @Test
+    void shouldAllowLlmsIndexWithoutSession() {
+        webTestClient.get()
+                .uri("/llms/spots.md")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void shouldAllowLlmsCountriesWithoutSession() {
+        webTestClient.get()
+                .uri("/llms/countries.md")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void shouldReturn404ForUnknownSpotIdInLlmsWithoutSession() {
+        webTestClient.get()
+                .uri("/llms/spots/1.md")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void shouldReturn404ForUnknownCountrySlugInLlmsWithoutSession() {
+        webTestClient.get()
+                .uri("/llms/countries/atlantis.md")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     void shouldAllowApiAccessWithValidSession() {
         String sessionCookie = getSessionCookie();
 

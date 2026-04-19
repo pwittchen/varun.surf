@@ -82,9 +82,10 @@
   Browser: GET /api/v1/spots (Cookie: SESSION=abc)  →  SessionFilter validates  →  OK  →  Controller
   curl: GET /api/v1/spots (no cookie)  →  SessionFilter  →  401 empty body
   curl: GET /api/v1/health (no cookie)  →  SessionFilter exempts  →  200
+  curl: GET /llms/spots.md (no cookie)  →  SessionFilter exempts  →  200 (text/markdown)
 
   Exempt paths (no session required):
-    /api/v1/health, /actuator/**, static assets (.js, .css, .png, etc.)
+    /api/v1/health, /actuator/**, /llms/**, static assets (.js, .css, .png, etc.)
 
 [Client Request Flow]
 
@@ -113,6 +114,11 @@
     -> SponsorsController.sponsors()
     -> SponsorsController.mainSponsors()
     -> returns Flux<Sponsor>
+
+  GET /llms/spots.md | /llms/spots/{id}.md | /llms/countries.md | /llms/countries/{slug}.md
+    -> LlmController renders Markdown from AggregatorService caches
+    -> no SESSION cookie required (path is exempt in SessionAuthenticationFilter)
+    -> returns text/markdown; charset=UTF-8
 
 [Coordinates Extraction (Lazy Loading)]
   -> On spot enrichment, if coordinates not in cache
@@ -461,6 +467,30 @@ Health & Status:
         "liveStations": 15
       }
 
+LLM-Friendly Markdown (PUBLIC, no SESSION cookie required):
+  GET /llms/spots.md
+    - Index of all kite spots (name, country) with links to per-spot markdown documents
+    - Also lists all countries with per-country markdown links
+    - Content-Type: text/markdown; charset=UTF-8
+
+  GET /llms/spots/{wgId}.md
+    - Full spot markdown: overview, current conditions (when available),
+      daily forecast table, hourly forecast table (next 24 entries), links
+    - Returns 404 if spot id is unknown
+    - Content-Type: text/markdown; charset=UTF-8
+
+  GET /llms/countries.md
+    - Index of all countries with spot counts and links to per-country markdown
+
+  GET /llms/countries/{slug}.md
+    - List of spots in a given country (links to per-spot markdown)
+    - {slug}: lowercased country name, spaces replaced by hyphens ("poland", "czech-republic")
+    - Returns 404 if slug does not match any known country
+    - Matched case-insensitively against spot country names
+
+  All /llms/** endpoints are exempted from the SESSION filter and referenced from /llms.txt,
+  so they can be crawled or fetched by LLM tooling without going through the frontend.
+
 Metrics (password-protected via X-Metrics-Password header):
   GET /api/v1/metrics
     - Application metrics: gauges, counters, timers, JVM stats, HTTP client stats
@@ -494,6 +524,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SessionAuthenticationFilter.java  # Session-based API access gating
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
+│   ├── LlmController.java                # /llms/*.md (public Markdown for LLMs)
 │   ├── LogsController.java               # /api/v1/logs/*
 │   ├── MetricsController.java            # /api/v1/metrics/*
 │   ├── SponsorsController.java           # /api/v1/sponsors/*

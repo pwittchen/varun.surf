@@ -278,3 +278,19 @@ Skill definitions are located in `.claude/skills/`.
 - automatic language detection from browser settings
 - stale live conditions indicators (yellow for outdated data)
 - fallback weather station mechanism (automatic switch when primary returns stale data)
+- LLM-friendly Markdown endpoints at `/llms/*.md` (public, no session cookie) for AI crawlers and agents
+
+## llm-friendly markdown endpoints
+
+The app exposes a set of public Markdown documents under `/llms/*.md` for LLMs, AI crawlers and agents.
+These endpoints are **not** gated by the session cookie (unlike `/api/v1/**`) and are linked from `/llms.txt`.
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /llms/spots.md` | Index of all kite spots with links to per-spot documents and a list of countries |
+| `GET /llms/spots/{wgId}.md` | Full spot document: overview, current conditions (when available), daily/hourly forecast, links |
+| `GET /llms/countries.md` | Index of all countries with spot counts |
+| `GET /llms/countries/{slug}.md` | Spots available in the given country |
+
+The country `{slug}` is the lowercased country name with spaces replaced by hyphens (e.g. `poland`, `czech-republic`).
+All responses are served as `text/markdown; charset=UTF-8` and use the same in-memory caches as the JSON API.

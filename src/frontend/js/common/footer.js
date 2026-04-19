@@ -16,6 +16,6 @@ export function updateFooter(t) {
 
     footerContent.innerHTML = `
         <p class="footer-disclaimer">${t('footerDisclaimer')}</p>
-        <p class="footer-link">&copy; <span class="footer-year">${currentYear} </span><a href="https://varun.surf">varun.surf</a> • <a href="https://github.com/pwittchen/varun.surf">${t('footerOpenSource')}</a> • <span class="footer-made-in">${t('footerMadeInLabel')}</span> <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • <a href="https://github.com/pwittchen/varun.surf/releases">${t('footerChangelog')}</a> • <a href="/status">${t('footerStatus')}</a></p>
+        <p class="footer-link">&copy; <span class="footer-year">${currentYear} </span><a href="https://varun.surf">varun.surf</a> • <a href="https://github.com/pwittchen/varun.surf">${t('footerOpenSource')}</a> • <span class="footer-made-in">${t('footerMadeInLabel')}</span> <a href="https://wittchen.io" target="_blank" class="footer-external-link">Piotr Wittchen</a> • <a href="https://github.com/pwittchen/varun.surf/releases">${t('footerChangelog')}</a> • <a href="/status">${t('footerStatus')}</a> • <a href="/llms.txt">${t('footerLlms')}</a></p>
     `;
 }
