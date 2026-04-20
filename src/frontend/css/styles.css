@@ -1871,7 +1871,6 @@ body {
 .footer-link {
     font-size: .75rem;
     margin-top: 12px;
-    white-space: nowrap;
 }
 
 .footer-disclaimer a,
