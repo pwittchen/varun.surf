@@ -1896,6 +1896,30 @@ body {
     color: var(--text-black);
 }
 
+@media (max-width: 768px) {
+    .footer-link {
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .footer-link a,
+    .footer-link .footer-year,
+    .footer-link .footer-made-in {
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 769px) {
+    .footer-content {
+        max-width: none;
+    }
+
+    .footer-link {
+        white-space: nowrap;
+    }
+}
+
 
 /* ============================================================================
    17. KITE SIZE CALCULATOR
