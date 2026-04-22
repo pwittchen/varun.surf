@@ -23,7 +23,6 @@ services:
       --app.feature.ai.forecast.analysis.enabled=true
       --app.feature.icm.vision.enabled=false
       --app.ai.provider=openai
-      --spring.ai.openai.api-key=${OPEN_AI_API_KEY}
     expose:
       - "8080"
     healthcheck:
@@ -39,6 +38,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=blue
       - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
+      - SPRING_AI_OPENAI_API_KEY=${OPEN_AI_API_KEY}
 
   varun-app-green-live:
     image: ghcr.io/pwittchen/varun.surf:latest
@@ -48,7 +48,6 @@ services:
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
       --app.ai.provider=openai
-      --spring.ai.openai.api-key=${OPEN_AI_API_KEY}
     expose:
       - "8080"
     healthcheck:
@@ -64,3 +63,4 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=green
       - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
+      - SPRING_AI_OPENAI_API_KEY=${OPEN_AI_API_KEY}
