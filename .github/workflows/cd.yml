@@ -103,7 +103,7 @@ jobs:
       - run: docker push ghcr.io/${{ github.repository }}:latest
 
   deploy:
-    name: CD
+    name: DEPLOY
     runs-on: ubuntu-latest
     needs: docker
 
