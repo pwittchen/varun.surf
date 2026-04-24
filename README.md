@@ -3,8 +3,6 @@
 [![CI](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml)
 [![CD](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml)
 [![DEPS](https://github.com/pwittchen/varun.surf/actions/workflows/deps.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/deps.yml)
-[![DOCKER](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/docker.yml)
-[![RELEASE](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml/badge.svg)](https://github.com/pwittchen/varun.surf/actions/workflows/release.yml)
 
 kite spots database and weather forecast for kitesurfers on the web
 

@@ -1,17 +1,112 @@
-name: CD # deploys the latest version of the application to the server
+name: CD # runs CI, builds and pushes docker image, deploys to production, creates a GitHub release
 
 on:
-  workflow_run:
-    workflows: ["DOCKER"]
-    types:
-      - completed
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
-
 jobs:
-  deploy:
+  ci:
+    name: CI
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v5
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v5
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-wrapper-
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Cache Gradle build
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches/build-cache-1
+          key: ${{ runner.os }}-gradle-build-cache-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-build-cache-
+
+      - name: Assemble
+        run: ./gradlew assemble --stacktrace --build-cache
+
+      - name: Test
+        run: ./gradlew test --stacktrace --build-cache
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: ./gradlew --stop && bunx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install-deps chromium
+
+      - name: E2E Test
+        run: ./gradlew testE2e --stacktrace --build-cache
+
+  docker:
+    name: DOCKER
+    runs-on: ubuntu-latest
+    needs: ci
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Get version from git tag
+        id: version
+        run: echo "VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.1-SNAPSHOT')" >> $GITHUB_OUTPUT
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker build --build-arg VERSION=${{ steps.version.outputs.VERSION }} -t ghcr.io/${{ github.repository }}:latest .
+
+      - run: docker push ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    name: CD
+    runs-on: ubuntu-latest
+    needs: docker
+
     steps:
       - name: Run Mikrus deployment command
         env:
@@ -23,3 +118,62 @@ jobs:
             -d "srv=${MIKRUS_SRV}&key=${MIKRUS_API_KEY}" \
             -d "cmd=DEPLOY_ENV=prod ${MIKRUS_SCRIPT_PATH}/deployment.sh" \
             https://api.mikr.us/exec
+
+  release:
+    name: RELEASE
+    runs-on: ubuntu-latest
+    needs: deploy
+    permissions:
+      contents: write
+
+    steps:
+      # Checkout the full history so git tag sorting works
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Detect newest and previous tags
+      - name: Detect tags
+        id: tags
+        run: |
+          # Get the latest tag starting with 'v'
+          CURRENT_TAG=$(git tag --sort=-version:refname | grep '^v' | head -n 1)
+
+          if [ -z "$CURRENT_TAG" ]; then
+            echo "No tags found. Exiting."
+            exit 1
+          fi
+
+          # Get the tag just before CURRENT_TAG
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep '^v' | grep -A1 "^$CURRENT_TAG$" | tail -1)
+
+          # If no previous tag, use initial commit
+          if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" = "$CURRENT_TAG" ]; then
+            PREVIOUS_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+
+      # Generate changelog between PREVIOUS_TAG and CURRENT_TAG
+      - name: Generate release notes
+        run: |
+          CURRENT_TAG=${{ steps.tags.outputs.current_tag }}
+          PREVIOUS_TAG=${{ steps.tags.outputs.previous_tag }}
+
+          echo "Generating release notes from $PREVIOUS_TAG to $CURRENT_TAG"
+
+          COMMITS=$(git log $PREVIOUS_TAG..$CURRENT_TAG --pretty=format:"- %s (%h)" --no-merges)
+
+          echo "$COMMITS" > release_notes.md
+          cat release_notes.md
+
+      # Create a GitHub Release
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.tags.outputs.current_tag }} \
+            --title "${{ steps.tags.outputs.current_tag }}" \
+            --notes-file release_notes.md
