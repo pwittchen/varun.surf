@@ -245,6 +245,7 @@ The project includes Claude Code skills that can be invoked as slash commands. S
 | `/check-concurrency` | Find race conditions, deadlocks, unsafe shared state, and synchronization issues |
 | `/arch-check` | Verify architecture health: layer violations, circular deps, design patterns |
 | `/check-errors` | Find error handling gaps: swallowed exceptions, missing handlers, resource leaks |
+| `/varun [question]` | Answer questions about kite spots, forecasts, and live wind conditions via varun.surf's public `llms.txt` endpoints |
 
 Skill definitions are located in `.claude/skills/`.
 
