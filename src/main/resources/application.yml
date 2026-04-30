@@ -11,6 +11,18 @@ spring:
       chat:
         options:
           model: gpt-4o-mini
+    mcp:
+      server:
+        enabled: true
+        name: varun-surf
+        version: ${version}
+        type: ASYNC
+        sse-endpoint: /mcp/sse
+        sse-message-endpoint: /mcp/message
+        instructions: >-
+          MCP server for varun.surf - kitesurfing weather forecasts and live wind conditions.
+          Use the provided tools to look up kite spots, check current wind, and read
+          daily/hourly forecasts. Spot identifiers are integer Windguru IDs (wgId).
 
 management:
   endpoints:

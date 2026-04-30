@@ -278,6 +278,74 @@ Skill definitions are located in `.claude/skills/`.
 - stale live conditions indicators (yellow for outdated data)
 - fallback weather station mechanism (automatic switch when primary returns stale data)
 - LLM-friendly Markdown endpoints at `/llms/*.md` (public, no session cookie) for AI crawlers and agents
+- Built-in MCP (Model Context Protocol) server at `/mcp/sse` exposing spots, forecasts, and live conditions as tools for Claude Code and other AI assistants
+
+## mcp server
+
+The app exposes a [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants can query kite spots, forecasts, and live wind conditions as tools.
+
+The server is built into the Spring Boot app (Spring AI 1.0.x `spring-ai-starter-mcp-server-webflux`) and runs over Server-Sent Events at:
+
+| Path | Description |
+|------|-------------|
+| `GET /mcp/sse` | SSE stream — clients connect here to receive server events |
+| `POST /mcp/message` | Message endpoint — clients send JSON-RPC requests here |
+
+Both paths are public (no session cookie required), same as `/llms/*.md`.
+
+### available tools
+
+| Tool | Description |
+|------|-------------|
+| `list_spots` | Markdown index of all kite spots, grouped by country |
+| `get_spot` | Full spot details (overview, current conditions, daily/hourly forecast, links) by Windguru spot ID (`wgId`) |
+| `find_spot_by_name` | Search spots by case-insensitive substring match |
+| `list_countries` | List all countries with spot counts |
+| `get_spots_by_country` | List spots in a country by slug (e.g. `poland`, `czech-republic`) |
+| `get_status` | Quick summary of spots / countries / live stations counts |
+
+### claude code installation
+
+Add the production server:
+
+```
+claude mcp add --transport sse varun-surf https://varun.surf/mcp/sse
+```
+
+Or for a local development server:
+
+```
+claude mcp add --transport sse varun-surf-local http://localhost:8080/mcp/sse
+```
+
+Verify it's connected:
+
+```
+claude mcp list
+```
+
+You can now ask Claude things like *"what's the wind forecast for Jastarnia tomorrow?"* or *"list all kite spots in Spain"*, and it will call the relevant tool on the varun.surf MCP server.
+
+The status page at [/status](https://varun.surf/status) also displays the live MCP endpoint URL and a one-click copy of the install command.
+
+### configuration
+
+MCP-related configuration in `application.yml`:
+
+```yaml
+spring:
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: varun-surf
+        version: ${version}
+        type: ASYNC               # WebFlux uses async transport
+        sse-endpoint: /mcp/sse
+        sse-message-endpoint: /mcp/message
+```
+
+To disable the MCP server entirely set `spring.ai.mcp.server.enabled=false`.
 
 ## llm-friendly markdown endpoints
 

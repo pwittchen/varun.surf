@@ -3840,6 +3840,109 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     }
 }
 
+/* MCP Server Card */
+.mcp-description {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+}
+
+.mcp-description a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.mcp-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mcp-info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mcp-info-label {
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mcp-code {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    font-size: 0.875rem;
+}
+
+.mcp-code code {
+    flex: 1;
+    color: var(--text-primary);
+    word-break: break-all;
+    background: transparent;
+    padding: 0;
+    align-self: center;
+}
+
+.mcp-copy-btn {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.mcp-copy-btn:hover {
+    border-color: var(--text-secondary);
+}
+
+.mcp-copy-btn.copied {
+    color: var(--status-up);
+    border-color: var(--status-up);
+}
+
+.mcp-tools-hint {
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    margin: 16px 0 0 0;
+    line-height: 1.6;
+}
+
+.mcp-tools-hint code {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+}
+
+@media (max-width: 480px) {
+    .mcp-code {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mcp-copy-btn {
+        align-self: flex-end;
+    }
+}
+
 /* ============================================================================
    25b. METRICS PAGE STYLES
    ============================================================================ */

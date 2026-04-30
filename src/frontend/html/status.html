@@ -99,6 +99,39 @@
                 </div>
 
                 <div class="status-card">
+                    <h3>MCP Server</h3>
+                    <p class="mcp-description">
+                        VARUN.SURF exposes a
+                        <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">
+                            Model Context Protocol
+                        </a>
+                        server so AI assistants can look up kite spots, forecasts,
+                        and live wind conditions as tools.
+                    </p>
+                    <div class="mcp-info-grid">
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label">Endpoint (SSE)</div>
+                            <div class="mcp-code">
+                                <code id="mcp-endpoint-url">-</code>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-endpoint-url" type="button">Copy</button>
+                            </div>
+                        </div>
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label">Add to Claude Code</div>
+                            <div class="mcp-code">
+                                <code id="mcp-install-cmd">-</code>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-install-cmd" type="button">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mcp-tools-hint">
+                        Available tools: <code>list_spots</code>, <code>get_spot</code>,
+                        <code>find_spot_by_name</code>, <code>list_countries</code>,
+                        <code>get_spots_by_country</code>, <code>get_status</code>.
+                    </p>
+                </div>
+
+                <div class="status-card">
                     <h3>API Endpoints</h3>
                     <div class="status-endpoints">
                         <div class="status-endpoint" data-endpoint="/api/v1/health">

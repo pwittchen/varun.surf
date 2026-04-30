@@ -245,6 +245,41 @@ async function refreshStatus() {
 }
 
 // ============================================================================
+// MCP SERVER CARD
+// ============================================================================
+
+function initMcpCard() {
+    const origin = window.location.origin;
+    const sseUrl = `${origin}/mcp/sse`;
+    const installCmd = `claude mcp add --transport sse varun-surf ${sseUrl}`;
+
+    const endpointEl = document.getElementById('mcp-endpoint-url');
+    const installEl = document.getElementById('mcp-install-cmd');
+    if (endpointEl) endpointEl.textContent = sseUrl;
+    if (installEl) installEl.textContent = installCmd;
+
+    document.querySelectorAll('.mcp-copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const targetId = btn.getAttribute('data-copy-target');
+            const target = document.getElementById(targetId);
+            if (!target) return;
+            try {
+                await navigator.clipboard.writeText(target.textContent);
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('copied');
+                }, 1500);
+            } catch (err) {
+                console.error('Failed to copy', err);
+            }
+        });
+    });
+}
+
+// ============================================================================
 // INITIALIZATION
 // ============================================================================
 
@@ -254,6 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerTitle) {
         headerTitle.addEventListener('click', routing.navigateToHome);
     }
+
+    // MCP card setup
+    initMcpCard();
 
     // Initial load
     refreshStatus();

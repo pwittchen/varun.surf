@@ -74,7 +74,7 @@ public class LlmController {
                 .orElseGet(() -> Mono.just(ResponseEntity.notFound().build()));
     }
 
-    static String renderSpotsIndex(List<Spot> spots) {
+    public static String renderSpotsIndex(List<Spot> spots) {
         StringBuilder sb = new StringBuilder();
         sb.append("# Kite spots on VARUN.SURF\n\n");
         sb.append("Complete list of kite spots with live conditions and forecasts.\n");
@@ -97,7 +97,7 @@ public class LlmController {
         return sb.toString();
     }
 
-    static String renderCountriesIndex(List<Spot> spots) {
+    public static String renderCountriesIndex(List<Spot> spots) {
         StringBuilder sb = new StringBuilder();
         sb.append("# Countries on VARUN.SURF\n\n");
         sb.append("Kite spots grouped by country. Each country has a dedicated markdown document.\n\n");
@@ -110,7 +110,7 @@ public class LlmController {
         return sb.toString();
     }
 
-    static String renderCountry(String country, List<Spot> allSpots) {
+    public static String renderCountry(String country, List<Spot> allSpots) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("# Kite spots in %s%n%n", country));
         List<Spot> countrySpots = allSpots
@@ -132,7 +132,7 @@ public class LlmController {
         return sb.toString();
     }
 
-    static String renderSpot(Spot spot) {
+    public static String renderSpot(Spot spot) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("# %s, %s%n%n", spot.name(), spot.country()));
 
@@ -269,7 +269,7 @@ public class LlmController {
         return counts;
     }
 
-    static String toSlug(String country) {
+    public static String toSlug(String country) {
         if (country == null) {
             return "";
         }

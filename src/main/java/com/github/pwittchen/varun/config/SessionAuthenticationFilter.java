@@ -16,7 +16,8 @@ public class SessionAuthenticationFilter implements WebFilter {
     private static final List<String> EXEMPT_PATHS = List.of(
             "/api/v1/health",
             "/actuator",
-            "/llms"
+            "/llms",
+            "/mcp"
     );
 
     private static final List<String> STATIC_ASSET_EXTENSIONS = List.of(
