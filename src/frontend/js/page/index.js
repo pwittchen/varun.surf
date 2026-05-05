@@ -1243,14 +1243,35 @@ function createSpotCard(spot) {
     return card;
 }
 
+const SEARCH_CHAR_MAP = {
+    'ł': 'l', 'Ł': 'l',
+    'ø': 'o', 'Ø': 'o',
+    'æ': 'ae', 'Æ': 'ae',
+    'œ': 'oe', 'Œ': 'oe',
+    'ß': 'ss', 'ẞ': 'ss',
+    'đ': 'd', 'Đ': 'd',
+    'ð': 'd', 'Ð': 'd',
+    'þ': 'th', 'Þ': 'th',
+    'ı': 'i', 'İ': 'i'
+};
+
+function normalizeForSearch(text) {
+    if (!text) return '';
+    let result = '';
+    for (const ch of text.toLowerCase()) {
+        result += SEARCH_CHAR_MAP[ch] ?? ch;
+    }
+    return result.normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
 function filterSpots(data, countryFilter, searchQuery) {
     let filtered = countryFilter === 'all' ? data : data.filter(spot => spot.country === countryFilter);
 
     if (searchQuery && searchQuery.trim() !== '') {
-        const query = searchQuery.toLowerCase().trim();
+        const query = normalizeForSearch(searchQuery.trim());
         filtered = filtered.filter(spot => {
-            return spot.name.toLowerCase().includes(query) ||
-                (spot.country && spot.country.toLowerCase().includes(query));
+            return normalizeForSearch(spot.name).includes(query) ||
+                (spot.country && normalizeForSearch(spot.country).includes(query));
         });
     }
 
