@@ -349,6 +349,79 @@ body {
     align-items: center;
 }
 
+/* Inline wrapper for the icons sitting left of the language toggle */
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Overflow ("...") control - shown only when the icons would cover the logo */
+.header-overflow {
+    position: relative;
+    display: none;
+}
+
+.header-controls.icons-overflowing .header-overflow {
+    display: flex;
+}
+
+.header-overflow-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 210px;
+    padding: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 10002;
+}
+
+.header-overflow.open .header-overflow-menu {
+    display: flex;
+}
+
+/* Icon buttons rendered as full-width rows inside the overflow menu */
+.header-overflow-menu .theme-toggle {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.header-overflow-menu .theme-toggle:hover {
+    background: var(--gradient-button-hover);
+    border-color: var(--border-hover);
+}
+
+.header-overflow-menu .theme-toggle.active {
+    background: var(--gradient-active);
+    border-color: var(--accent-primary);
+    color: var(--text-white);
+}
+
+.header-overflow-menu .theme-toggle::after {
+    content: attr(title);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* The inline labels are redundant in the menu (we use the title via ::after) */
+.header-overflow-menu .info-label,
+.header-overflow-menu .map-label {
+    display: none !important;
+}
+
 .header-title {
     font-size: 2.8rem;
     font-weight: 100;
@@ -861,7 +934,9 @@ body {
 
 .spots-grid.three-columns .spot-card {
     padding: 14px;
-    width: 452px;
+    width: 100%;
+    max-width: 452px;
+    min-width: 0;
 }
 
 .spot-card:hover {
@@ -2125,7 +2200,7 @@ body {
 /* Spot detail page two-column layout */
 .spot-detail-container {
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 400px minmax(0, 1fr);
     gap: 24px;
     margin-top: 20px;
 }
@@ -2770,7 +2845,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .forecast-view-container {
     position: relative;
     min-height: 300px;
-    width: 930px;
+    width: 100%;
+    max-width: 930px;
 }
 
 .forecast-view {
@@ -2779,6 +2855,211 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .forecast-view.active {
     display: block;
+}
+
+/* Narrow desktop (1005-1300px): keep the spot forecast/live table inside its
+   frame instead of forcing horizontal overflow. Scoped to the spot page so the
+   index grid cards are untouched. */
+@media (min-width: 1005px) and (max-width: 1300px) {
+    body.spot-page .weather-table {
+        table-layout: fixed;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body.spot-page .weather-table th {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    body.spot-page .weather-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        min-width: 0;
+    }
+
+    body.spot-page .weather-table td:first-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Below 1240px the spot view hides the compact / windy-days checkboxes
+   (not enough room next to the forecast tabs). */
+@media (max-width: 1239px) {
+    body.spot-page .compact-view-container,
+    body.spot-page .filter-windy-days-container {
+        display: none !important;
+    }
+}
+
+/* The single spot view switches to its mobile layout below 1005px. This mirrors
+   the <=768px mobile rules but is scoped to body.spot-page and limited to the
+   769-1004px range, so only the spot page is affected (the index/list/status
+   pages keep their own <=768px mobile behaviour). */
+@media (min-width: 769px) and (max-width: 1004px) {
+    /* Single column: hide the detail sidebar, give the forecast the full width */
+    body.spot-page .spot-detail-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    body.spot-page .spot-detail-left {
+        display: none;
+    }
+
+    body.spot-page .spot-detail-right {
+        width: 100%;
+    }
+
+    body.spot-page .spot-embedded-map {
+        display: none;
+    }
+
+    body.spot-page .spot-card {
+        border: none !important;
+        padding: 16px !important;
+    }
+
+    /* Show info/AI shortcuts, hide TV/embed shortcuts (as on mobile) */
+    body.spot-page .external-link.info-link,
+    body.spot-page .external-link.ai-link {
+        display: inline-flex;
+    }
+
+    body.spot-page .external-link.tv-link,
+    body.spot-page .external-link.embed-link {
+        display: none;
+    }
+
+    body.spot-page .spot-header {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+
+    body.spot-page .external-links {
+        margin-top: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Forecast table: fit within the frame and drop non-essential columns */
+    body.spot-page .weather-table {
+        font-size: .85rem;
+        table-layout: fixed;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 0;
+    }
+
+    body.spot-page .weather-table th {
+        padding: 8px 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    body.spot-page .weather-table td {
+        padding: 8px 4px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        min-width: 0;
+    }
+
+    body.spot-page .weather-table td:first-child {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    body.spot-page .weather-table .pressure-col,
+    body.spot-page .weather-table .wave-col {
+        display: none !important;
+    }
+
+    body.spot-page .forecast-view-container {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Show the live conditions inside the table and the mobile data switcher */
+    body.spot-page .current-conditions-card {
+        display: none;
+    }
+
+    body.spot-page .weather-table tbody tr:has(.live-indicator) {
+        display: table-row;
+    }
+
+    body.spot-page .mobile-data-source-container {
+        display: flex;
+        justify-content: center;
+        padding: 12px 16px;
+        margin: 0 -16px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    body.spot-page .mobile-data-source-container .data-source-radio-container {
+        margin: 0;
+        flex: 1;
+        width: 100%;
+        max-width: none;
+        justify-content: center;
+    }
+
+    body.spot-page .mobile-data-source-container .data-source-radio-container label {
+        flex: 1;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    /* Spot info card collapses to a single column */
+    body.spot-page .spot-info-card .info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    body.spot-page .spot-info-card .info-item {
+        border-radius: 0 !important;
+        border: none !important;
+        border-bottom: 1px solid var(--border-primary) !important;
+        background: transparent !important;
+        padding: 12px 0 !important;
+    }
+
+    body.spot-page .spot-info-card .info-item:last-child {
+        border-bottom: none !important;
+    }
+
+    body.spot-page .spot-info-card .info-item[style*="grid-column"] {
+        grid-column: 1 / -1 !important;
+    }
+
+    body.spot-page .compact-view-container {
+        display: none !important;
+    }
+
+    body.spot-page .live-text {
+        display: none;
+    }
+
+    body.spot-page .live-indicator {
+        justify-content: center;
+    }
+
+    body.spot-page .outdated-chip {
+        display: none;
+    }
 }
 
 
@@ -4777,8 +5058,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    29. MEDIA QUERIES / RESPONSIVE
    ============================================================================ */
 
-/* Tablet & Small Desktop (max-width: 1430px) */
-@media (max-width: 1430px) {
+/* Mobile drawer layout (max-width: 768px) */
+@media (max-width: 768px) {
     .hero-section {
         display: none !important;
     }
@@ -4870,6 +5151,16 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     .hamburger-menu {
         display: block;
         margin-top: 10px;
+    }
+
+    /* Drawer takes over on mobile: dissolve the icons wrapper so its buttons
+       become direct flex items of .header-controls again, and hide the "..." menu */
+    .header-icons {
+        display: contents;
+    }
+
+    .header-overflow {
+        display: none !important;
     }
 
     .header-controls {

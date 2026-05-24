@@ -305,8 +305,8 @@ function formatForecastDateLabel(rawDate) {
     const translatedDay = translateDayName(dayToken);
     const formattedDayOfMonth = dayOfMonthToken.padStart(2, '0');
 
-    // Check if mobile view (screen width <= 768px)
-    const isMobile = window.innerWidth <= 768;
+    // Check if mobile view (single spot view switches to mobile below 1005px)
+    const isMobile = window.innerWidth <= 1004;
 
     if (isMobile) {
         // Mobile: Show only first two letters of day and hour (without minutes)
@@ -1637,7 +1637,7 @@ function createSpotCard(spot) {
     const hasWaveData = !isLiveDataMode && forecastData && forecastData.some(day => day.wave != null);
 
     // Determine layout (desktop vs mobile)
-    const isDesktopView = window.matchMedia('(min-width: 769px)').matches;
+    const isDesktopView = window.matchMedia('(min-width: 1005px)').matches;
     const spotPhotoUrl = typeof spot.spotPhotoUrl === 'string' ? spot.spotPhotoUrl.trim() : '';
     const hasSpotPhoto = isDesktopView && spotPhotoUrl.length > 0;
 
@@ -1715,7 +1715,7 @@ function createSpotCard(spot) {
 
         // For live data, show all entries; for forecast, filter to daytime hours (06:00 to 21:00)
         let daytimeForecasts;
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= 1004;
         if (isLiveDataMode) {
             // Live data: show all entries, no filtering
             // On mobile, reverse order to show most recent first
@@ -1828,7 +1828,7 @@ function createSpotCard(spot) {
             // Format date label: use raw date for live data (hour only on mobile), formatted date for forecast
             let dateLabel;
             if (day.isLiveData) {
-                const isMobile = window.innerWidth <= 768;
+                const isMobile = window.innerWidth <= 1004;
                 if (isMobile) {
                     // Mobile: show only hour (HH:MM) for live data
                     const timeParts = day.date.split(' ');
@@ -2738,19 +2738,19 @@ function setupHeaderNavigation() {
 // Re-render spot when crossing a mobile/desktop threshold
 function setupResizeHandler() {
     let resizeTimeout;
-    let wasMobile = window.innerWidth <= 768;
-    let wasNarrow = window.innerWidth <= 1430;
+    let wasMobile = window.innerWidth <= 1004;
+    let wasNarrow = window.innerWidth <= 1004;
 
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            const isMobile = window.innerWidth <= 768;
-            const isNarrow = window.innerWidth <= 1430;
+            const isMobile = window.innerWidth <= 1004;
+            const isNarrow = window.innerWidth <= 1004;
 
             // Check if we crossed the mobile/desktop threshold
             const crossedMobileThreshold = isMobile !== wasMobile;
 
-            // Check if we crossed the 1430px threshold (for forecast tabs visibility)
+            // Check if we crossed the 1005px threshold (for forecast tabs visibility)
             const crossedNarrowThreshold = isNarrow !== wasNarrow;
 
             if (crossedMobileThreshold || crossedNarrowThreshold) {

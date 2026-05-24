@@ -418,6 +418,11 @@ function initLanguage() {
             infoToggleLabel.textContent = translations.t('infoButtonLabel');
         }
 
+        const mapToggle = document.getElementById('mapToggle');
+        if (mapToggle) {
+            mapToggle.title = translations.t('mapToggleTooltip');
+        }
+
         const mapToggleLabel = document.getElementById('mapToggleLabel');
         if (mapToggleLabel) {
             mapToggleLabel.textContent = translations.t('mapButtonLabel');
@@ -2175,6 +2180,95 @@ function setupHamburgerMenu() {
 }
 
 // ============================================================================
+// HEADER OVERFLOW ("...") MENU
+// Collapses the icons left of the language toggle into a single "..." menu
+// once they would start covering the logo (desktop only; the hamburger menu
+// handles everything at mobile widths).
+// ============================================================================
+
+// Width below which the header icons collapse into the "..." menu.
+const HEADER_OVERFLOW_BREAKPOINT = 1305;
+
+function setupHeaderOverflow() {
+    const headerControls = document.getElementById('headerControls');
+    const headerIcons = document.getElementById('headerIcons');
+    const overflow = document.getElementById('headerOverflow');
+    const overflowToggle = document.getElementById('overflowToggle');
+    const overflowMenu = document.getElementById('headerOverflowMenu');
+
+    if (!headerControls || !headerIcons || !overflow || !overflowToggle || !overflowMenu) {
+        return;
+    }
+
+    // Capture the icon buttons in their original order so we can move them back.
+    const iconButtons = Array.from(headerIcons.children);
+
+    function closeMenu() {
+        overflow.classList.remove('open');
+        overflowToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    function openMenu() {
+        overflow.classList.add('open');
+        overflowToggle.setAttribute('aria-expanded', 'true');
+    }
+
+    function expand() {
+        iconButtons.forEach(btn => headerIcons.appendChild(btn));
+        headerControls.classList.remove('icons-overflowing');
+        closeMenu();
+    }
+
+    function collapse() {
+        iconButtons.forEach(btn => overflowMenu.appendChild(btn));
+        headerControls.classList.add('icons-overflowing');
+    }
+
+    function update() {
+        const width = window.innerWidth;
+        // Below 768px the hamburger drawer owns the controls (icons stay inline);
+        // between 769px and 1305px the icons collapse into the "..." menu so they
+        // never cover the logo / title; at 1305px and above they sit inline.
+        if (width > 768 && width < HEADER_OVERFLOW_BREAKPOINT) {
+            collapse();
+        } else {
+            expand();
+        }
+    }
+
+    overflowToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (overflow.classList.contains('open')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    // Close the menu after picking an option or clicking outside / pressing Escape.
+    overflowMenu.addEventListener('click', () => closeMenu());
+    document.addEventListener('click', (e) => {
+        if (!overflow.contains(e.target)) {
+            closeMenu();
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMenu();
+        }
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(update, 150);
+    });
+    window.addEventListener('load', update);
+
+    update();
+}
+
+// ============================================================================
 // COLUMN LAYOUT TOGGLE (2 vs 3 columns)
 // ============================================================================
 
@@ -2189,8 +2283,9 @@ function isMobileView() {
     return window.innerWidth <= 768;
 }
 
-function isDrawerView() {
-    return window.innerWidth <= 1430;
+// Below this width the spots are shown as a list; at or above it, as a grid.
+function isListBreakpoint() {
+    return window.innerWidth <= 1260;
 }
 
 function setupColumnToggle() {
@@ -2206,8 +2301,8 @@ function setupColumnToggle() {
     desktopViewMode = state.getDesktopViewMode();
 
     // Set initial view based on viewport width
-    if (isDrawerView()) {
-        currentViewMode = 'list'; // Always list when drawer menu is active
+    if (isListBreakpoint()) {
+        currentViewMode = 'list'; // Always list below the grid breakpoint
     } else {
         currentViewMode = desktopViewMode; // Use saved preference on full desktop
     }
@@ -2235,8 +2330,8 @@ function setupColumnToggle() {
 
         currentViewMode = mode;
 
-        // Only save to desktop preference if not in drawer/mobile view
-        if (!isDrawerView()) {
+        // Only save to desktop preference when above the grid breakpoint
+        if (!isListBreakpoint()) {
             desktopViewMode = currentViewMode;
             state.setDesktopViewMode(desktopViewMode);
         }
@@ -2256,31 +2351,31 @@ function setupColumnToggle() {
 
     // Handle viewport resize
     let resizeTimer;
-    let wasDrawerView = isDrawerView();
+    let wasListView = isListBreakpoint();
 
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            const isNowDrawerView = isDrawerView();
+            const isNowListView = isListBreakpoint();
             const wasMobile = currentViewMode === 'list' && isMobileView();
 
-            // Drawer menu appears at <= 1430px, same as in CSS
-            if (isNowDrawerView && !wasDrawerView) {
-                // Just entered drawer view - switch to list view
+            // List view is forced at <= 1260px, same threshold as the grid layout
+            if (isNowListView && !wasListView) {
+                // Just dropped below the grid breakpoint - switch to list view
                 if (currentViewMode === 'grid') {
                     currentViewMode = 'list';
                     updateView();
                     renderSpots(currentFilter, currentSearchQuery, true);
                 }
-                wasDrawerView = true;
-            } else if (!isNowDrawerView && wasDrawerView) {
-                // Just exited drawer view - restore original desktop view
+                wasListView = true;
+            } else if (!isNowListView && wasListView) {
+                // Just rose above the grid breakpoint - restore desktop view
                 if (currentViewMode !== desktopViewMode) {
                     currentViewMode = desktopViewMode;
                     updateView();
                     renderSpots(currentFilter, currentSearchQuery, true);
                 }
-                wasDrawerView = false;
+                wasListView = false;
             } else if (isMobileView()) {
                 // Mobile view (<=768px) - always use list view
                 if (currentViewMode !== 'list') {
@@ -2716,7 +2811,7 @@ function updateHeroVisibility() {
     const heroSection = document.getElementById('heroSection');
     if (!heroSection) return;
 
-    if (!state.getHeroVisible() || window.innerWidth <= 1430 || isMapView) {
+    if (!state.getHeroVisible() || window.innerWidth <= 768 || isMapView) {
         heroSection.style.display = 'none';
     } else if (heroInitialized) {
         heroSection.style.display = '';
@@ -2727,7 +2822,7 @@ function renderHeroSection() {
     const heroSection = document.getElementById('heroSection');
     if (!heroSection || !state.getHeroVisible() || isMapView) return;
 
-    if (window.innerWidth <= 1430) {
+    if (window.innerWidth <= 768) {
         heroSection.style.display = 'none';
         return;
     }
@@ -2823,6 +2918,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupListDragAndDrop();
     setupFavorites();
     setupHamburgerMenu();
+    setupHeaderOverflow();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupMapToggle();
