@@ -762,11 +762,14 @@ function formatLiveDataTime(dateStr) {
     return dateStr.replace(/(\d{2}:\d{2}):\d{2}/, '$1');
 }
 
-// Convert currentConditionsHistory to forecast-like format for views
+// Convert currentConditionsHistory to forecast-like format for views.
+// History arrives oldest-first; reverse it so the most recent reading comes
+// first (left in the horizontal table view, top in the vertical table view).
+// The chart view reverses this back to chronological order (see createChartView).
 function convertHistoryToForecastFormat(history) {
     if (!history || !Array.isArray(history)) return [];
 
-    return history.map(condition => ({
+    return history.slice().reverse().map(condition => ({
         date: formatLiveDataTime(condition.date),
         wind: condition.wind || 0,
         gusts: condition.gusts || 0,
@@ -1103,8 +1106,11 @@ function createChartView(forecastData) {
 
     let filteredData;
     if (isLiveData) {
-        // Live data: show all entries, no filtering
-        filteredData = [...forecastData];
+        // Live data: show all entries, no filtering.
+        // forecastData is most-recent-first (see convertHistoryToForecastFormat);
+        // reverse back to chronological order so the chart keeps a conventional
+        // oldest -> newest x-axis.
+        filteredData = [...forecastData].reverse();
     } else {
         const filterWindyDays = getFilterWindyDaysPreference();
 
@@ -1715,11 +1721,11 @@ function createSpotCard(spot) {
 
         // For live data, show all entries; for forecast, filter to daytime hours (06:00 to 21:00)
         let daytimeForecasts;
-        const isMobile = window.innerWidth <= 1004;
         if (isLiveDataMode) {
-            // Live data: show all entries, no filtering
-            // On mobile, reverse order to show most recent first
-            daytimeForecasts = isMobile ? [...forecastData].reverse() : [...forecastData];
+            // Live data: show all entries, no filtering.
+            // Data is already most-recent-first (see convertHistoryToForecastFormat),
+            // so the most recent reading appears on top.
+            daytimeForecasts = [...forecastData];
         } else {
             // Forecast: filter to only show daytime hours (06:00 to 21:00)
             daytimeForecasts = forecastData.filter(day => {
