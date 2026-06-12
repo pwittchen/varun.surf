@@ -29,7 +29,8 @@ export async function fetchAllSpots() {
             throw new Error('Invalid data format: Expected array of spots');
         }
 
-        return data;
+        // Default ordering: alphabetical by spot name
+        return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     } catch (error) {
         console.error('Error fetching weather data:', error);
         throw error;
