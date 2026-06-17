@@ -49,7 +49,8 @@ public class StatusController {
             new SourceDefinition("Mietkow WeeWX", "https://frog01-21064.wykr.es/weewx/inx.html", "frog01-21064.wykr.es"),
             new SourceDefinition("Tarifa Spotfav", "https://www.spotfav.com/public/meteo/weatherflow-4eee927b185476763900001b/update/", "spotfav.com"),
             new SourceDefinition("El Medano Bergfex", "https://cabezo.bergfex.at/wetterstation/", "cabezo.bergfex.at"),
-            new SourceDefinition("Le Barcarès Winds-Up", "https://m.winds-up.com/spot/58", "winds-up.com/spot/58")
+            new SourceDefinition("Le Barcarès Winds-Up", "https://m.winds-up.com/spot/58", "winds-up.com/spot/58"),
+            new SourceDefinition("Prasonisi ProCenter", "https://www.prasonisi.com/index.php/wind.html", "prasonisi.com")
     );
 
     private final Instant startTime = Instant.now();
