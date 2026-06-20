@@ -3515,5 +3515,121 @@
       "season": "Kwiecień-Październik",
       "description": "Capo Feto to chroniony rezerwat przyrody na południowo-zachodnim cyplu Sycylii, tuż na południe od Mazara del Vallo. Płytka zatoka za piaszczystymi wydmami oferuje krystalicznie czystą, niemal zawsze płaską wodę idealną do freestyleu i foilingu, podczas gdy po zewnętrznej stronie plaży łamią się fale przy wiatach z SW i NW. Wiatr wieje niezawodnie przy Maestrale (NW) i Ponente (W); Scirocco (SW/SE) jest również możliwy, ale przed wejściem do wody warto skonsultować kąt odchylenia wiatru z lokalsami."
     }
+  },
+  {
+    "name": "IJsselmeer - Workum",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48267",
+    "windguruFallbackUrl": "https://www.windguru.cz/2997",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ijsselmeer_workum",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.9694,5.4144",
+    "spotInfo": {
+      "type": "Lake, flat to light chop (freshwater)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at It Soal campsite",
+      "hazards": "Shallow water (200m from shore, extra shallow in winter when lake level drops 30cm); mandatory water launch June–August; designated swimmer zones; crowded in peak season; easterly wind is offshore",
+      "season": "April-October",
+      "description": "Workum on the Frisian IJsselmeer coast is one of the Netherlands' most celebrated kite destinations, boasting roughly 244 windy days per year. The flat, sandy shallows at It Soal extend 200 metres from the beach, providing a perfect learning and freestyle arena before giving way to short, choppy open-lake swells. Westerly wind directions deliver fully powered, onshore conditions straight off the lake; seasonal rules apply in summer including mandatory water launches and a sign-in requirement with the on-site kite school."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płaska woda do lekkiego zafalowania (słodka woda)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy campingu It Soal",
+      "hazards": "Płytka woda (200m od brzegu, wyjątkowo płytko zimą gdy poziom jeziora spada o 30cm); obowiązkowy start z wody od czerwca do sierpnia; wyznaczone strefy dla pływaków; tłoczno w szczycie sezonu; wiatr wschodni jest odlądowy",
+      "season": "Kwiecień-Październik",
+      "description": "Workum na fryzyjskim wybrzeżu IJsselmeer to jedno z najbardziej cenionych miejsc kitesurfingowych w Holandii, z około 244 wietrznymi dniami w roku. Płytkie, piaszczyste mielizny przy It Soal rozciągają się 200 metrów od brzegu, tworząc idealne warunki do nauki i freestyleu, za którymi otwiera się krótkie, falujące otwarte jezioro. Kierunki zachodnie dostarczają pełnych, przybrzeżnych warunków prosto z jeziora; latem obowiązują przepisy sezonowe, w tym obowiązkowy start z wody i rejestracja w miejscowej szkole kitesurfingu."
+    }
+  },
+  {
+    "name": "IJmuiden",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48299",
+    "windguruFallbackUrl": "https://www.windguru.cz/549",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ijmuiden",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.4471,4.5714",
+    "spotInfo": {
+      "type": "North Sea, choppy waves",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "6-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach (steep access from car park)",
+      "hazards": "Shipping channel and harbour piers, strong tidal currents, enforced kite zones with 40m walker strip, crowded in summer",
+      "season": "Year-round, best October-March",
+      "description": "IJmuiderslag (Kennemerstrand) is the main kite zone south of the IJmuiden South Pier on the Dutch North Sea coast. Zone 3 is the designated kite area, open year-round with consistent onshore winds, though cold water and tidal currents demand experience. The harbour piers create wave shadow and currents that vary strongly with the tide."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, falujące fale",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "6-19°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża (strome zejście z parkingu)",
+      "hazards": "Szlak żeglugowy i falochrony portu, silne prądy pływowe, wyznaczone strefy latania ze ścieżką dla pieszych (40 m), tłoczno latem",
+      "season": "Przez cały rok, najlepiej październik-marzec",
+      "description": "IJmuiderslag (Kennemerstrand) to główna strefa kitesurfingowa na południe od falochronu portu w IJmuiden, na holenderskim wybrzeżu Morza Północnego. Strefa 3 jest wyznaczonym obszarem dla kitesurferów, czynnym przez cały rok ze stałymi wiatrami z lądu. Zimna woda i silne prądy pływowe wymagają doświadczenia. Falochrony portowe tworzą osłonę od fal i prądy silnie zależne od pływu."
+    }
+  },
+  {
+    "name": "Slufterstrand (Maasvlakte)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48309",
+    "windguruFallbackUrl": "https://www.windguru.cz/4879",
+    "windfinderUrl": "https://www.windfinder.com/forecast/maasvlakte",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.9244989,4.0029642",
+    "spotInfo": {
+      "type": "North Sea, waves and flat water bay",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "6-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Strong seaward currents, open sea waves, shipping traffic, Natura 2000 protected zone boundary (fines for violations)",
+      "season": "Year-round, best May-October",
+      "description": "Slufterstrand on the Maasvlakte peninsula near Rotterdam is one of the Netherlands' premier kite spots, offering a sheltered flat-water bay for freestyle and open North Sea swell for wave riding. The spot benefits from consistent SW-W winds with full Atlantic fetch. Not suitable for beginners due to powerful offshore currents; riders must stay clear of the marked Natura 2000 nature reserve on the left side of the beach."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale i płaska zatoka",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "6-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Silne prądy odpływowe, fale otwartego morza, ruch statków, strefa Natura 2000 (kary za naruszenie granic)",
+      "season": "Cały rok, najlepiej maj-październik",
+      "description": "Slufterstrand na półwyspie Maasvlakte koło Rotterdamu to jeden z najlepszych spotów kitesurfingowych w Holandii, oferujący zarówno płaską zatokę do freestyle'u, jak i fale Morza Północnego. Spot korzysta z regularnych wiatrów z sektora SW-W z pełnym fetchem atlantyckim. Nieodpowiedni dla początkujących ze względu na silne prądy odpływowe; należy bezwzględnie omijać oznakowany obszar chroniony Natura 2000 po lewej stronie plaży."
+    }
+  },
+  {
+    "name": "Brouwersdam",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/97",
+    "windguruFallbackUrl": "https://www.windguru.cz/48319",
+    "windfinderUrl": "https://www.windfinder.com/forecast/brouwersdam",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.760158,3.847107",
+    "spotInfo": {
+      "type": "Sea (wave side) and Grevelingen lake (flat water side)",
+      "bestWind": "SW, W, NW, N, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach (North Sea side); grass and concrete ramp (Grevelingen side)",
+      "hazards": "Dam structure and rocks, strong tidal currents, shore break at high tide, very busy in summer, offshore winds from S-SE",
+      "season": "April-October (rideable year-round)",
+      "description": "Brouwersdam is the most iconic kite spot in the Netherlands — a 6.5 km Delta Works dam in Zeeland separating the North Sea from the flat Grevelingenmeer lake. The North Sea (west) side offers a wide sandy beach with chop and occasional waves up to 1 m, ideal for wave riding and freestyle; the sheltered Grevelingen (east) side delivers flat, shallow water perfect for beginners and freeride. Official kite zones are marked by yellow buoys on the sea side (passages 14–17). Winds are reliably strong across all seasons."
+    },
+    "spotInfoPL": {
+      "type": "Morze (strona falowa) i jezioro Grevelingen (płaska woda)",
+      "bestWind": "SW, W, NW, N, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża (strona Morza Północnego); trawa i betonowa rampa (strona Grevelingen)",
+      "hazards": "Konstrukcja tamy i kamienie, silne prądy pływowe, przybój przy wysokiej wodzie, bardzo tłoczno latem, wiatr odbijający od lądu przy kierunkach S-SE",
+      "season": "Kwiecień-Październik (możliwe latanie przez cały rok)",
+      "description": "Brouwersdam to najbardziej ikoniczny spot kitesurfingowy w Holandii — zapora Delta Works o długości 6,5 km w Zelandii, oddzielająca Morze Północne od płaskiego jeziora Grevelingenmeer. Strona Morza Północnego (zachodnia) oferuje szeroką piaszczystą plażę z falowaniem do ok. 1 m, idealną do wave ridingu i freestyle; osłonięta strona Grevelingen (wschodnia) zapewnia płytką, spokojną wodę doskonałą dla początkujących. Oficjalne strefy kite oznaczone są żółtymi bojami (przejścia 14–17). Wiatry są niezawodnie silne przez cały rok."
+    }
   }
 ]

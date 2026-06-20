@@ -6,14 +6,14 @@ shallow/flat options. Tide matters on the North Sea / delta spots.
 
 ## Spots
 
-- [ ] **IJsselmeer** — large inland lake (resolve a specific launch, e.g.
+- [x] **IJsselmeer** — large inland lake (resolve a specific launch, e.g.
       Workum / Makkum / Hindeloopen). Flat-to-choppy, freshwater, shallow areas.
-      Best wind SW/W. Name the chosen launch precisely.
-- [ ] **IJmuiden** — North Sea beach near Amsterdam. Sea, wave/chop.
+      Best wind SW/W. Name the chosen launch precisely. → **IJsselmeer - Workum**
+- [x] **IJmuiden** — North Sea beach near Amsterdam. Sea, wave/chop.
       Best wind SW/W/NW. Hazards: shipping channel/piers, busy beach.
-- [ ] **Slufter** — Maasvlakte / Rotterdam (Slufterstrand). Big open North Sea
-      beach, popular freeride/freestyle. Best wind SW/W. Verify station.
-- [ ] **Brouwersdam** — Zeeland delta dam. Sea side (wave) + Grevelingen lake
+- [x] **Slufter** — Maasvlakte / Rotterdam (Slufterstrand). Big open North Sea
+      beach, popular freeride/freestyle. Best wind SW/W. Verify station. → **Slufterstrand (Maasvlakte)**
+- [x] **Brouwersdam** — Zeeland delta dam. Sea side (wave) + Grevelingen lake
       side (flat). Best wind SW/W/NW. Iconic NL spot — webcam likely exists.
 
 ## Research hints
@@ -25,5 +25,5 @@ shallow/flat options. Tide matters on the North Sea / delta spots.
 
 ## Done when
 
-- [ ] 4 entries appended, JSON parses, `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] 4 entries appended, JSON parses, `./gradlew test` green.
+- [x] Checkboxes ticked here and in issue #141.
