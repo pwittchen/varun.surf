@@ -3061,5 +3061,159 @@
       "season": "Październik-Maj",
       "description": "Zatoka Ġnejna to zwarta, piaszczysta zatoka skierowana na NW/W na zachodnim wybrzeżu Malty, jedno z miejsc kiteboardingowych odwiedzanych przez lokalnych kitesurferów w sezonie zimowym (Majjistral). Zatoka przyjmuje bezpośrednie fale z NW i W, osiągające do 1m+, co sprzyja jeździe na falach, lecz wymaga solidnych umiejętności startu z wody. Układ wiatru onshore na wszystkich maltańskich plażach oznacza, że w razie problemów kiter jest spychany w kierunku brzegu; porywisty wiatr i kamieniste zejście do wody wymagają szybkiego i pewnego waterstartu."
     }
+  },
+  {
+    "name": "Hyères – Almanarre",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/14",
+    "windguruFallbackUrl": "https://www.windguru.cz/501010",
+    "windfinderUrl": "https://www.windfinder.com/forecast/l_almanarre",
+    "webcamUrl": "https://en.addicted-sports.com/webcam/hyeres/almanarre/",
+    "locationUrl": "https://www.google.com/maps?q=43.062471,6.131498",
+    "spotInfo": {
+      "type": "Sea / Lagoon, flat to choppy depending on wind direction",
+      "bestWind": "W, NW (Mistral, onshore), E (offshore, experts only)",
+      "waterTemp": "13-25°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Narrow sandy beach, designated zone between access posts 16-21 on Route du Sel",
+      "hazards": "Offshore east wind with no rescue service — drift risk is very high; narrow 5-15 m beach with wooden stakes at dune boundary; road directly behind launch; heavy summer crowding; FFVL beach marshal enforces rules June 15–September 15",
+      "season": "March-October",
+      "description": "L'Almanarre on the Giens tombolo is one of the French Mediterranean's most iconic kite and windsurf venues, drawing riders to its 4 km of open beach flanked by flamingo-inhabited salt ponds. The Mistral (W–NW) delivers powerful onshore wind and waves across the bay, while the easterly Levant transforms the surface into flat glass — but is strictly for experts comfortable sailing well offshore with no rescue cover. The official FFVL launch zone between stakes 16 and 21 on the Route du Sel is tightly managed in summer and keeps the compact beach organised under high traffic.",
+      "llmComment": "Mistral sessions regularly run 20-35 kts and can build quickly — oversize a kite here at your peril. In easterly conditions the water is mirror-flat but any gear failure sends you offshore fast; self-rescue skills and a buddy on the beach are non-negotiable. The beach narrows significantly in summer so launching and landing with a large kite demands focused technique. Lords of the Var and other regional freestyle events are hosted here. Toulon-Hyères airport is 10 minutes away, making this an easy destination trip."
+    },
+    "spotInfoPL": {
+      "type": "Morze / Laguna, woda płaska do falującej w zależności od kierunku wiatru",
+      "bestWind": "W, NW (Mistral, wiatr przybrzeżny), E (odlądowy, tylko dla ekspertów)",
+      "waterTemp": "13-25°C",
+      "experience": "Średnio zaawansowany do zaawansowanego",
+      "launch": "Wąska piaszczysta plaża, wyznaczona strefa między słupkami dostępu 16-21 na Route du Sel",
+      "hazards": "Wiatr odlądowy ze wschodu bez służb ratowniczych — bardzo wysokie ryzyko zniesienia daleko od brzegu; wąska plaża (5-15 m) z drewnianymi palami przy wydmach; droga bezpośrednio za strefą startu; duże zatłoczenie latem; strażnik plaży FFVL pilnuje przepisów od 15 czerwca do 15 września",
+      "season": "Marzec-Październik",
+      "description": "L'Almanarre na tombolo Giens to jedno z najbardziej kultowych miejsc do kitesurfingu i windsurfingu na francuskim wybrzeżu Morza Śródziemnego, przyciągające zawodników na 4 km otwartej plaży sąsiadującej z solanymi stawami zamieszkałymi przez flamingi. Mistral (W–NW) niesie silny wiatr przybrzeżny i fale przez całą zatokę, podczas gdy wschodni Levant zamienia powierzchnię wody w lustro — jednak jest zarezerwowany wyłącznie dla ekspertów potrafiących płynąć daleko od brzegu bez wsparcia ratowników. Oficjalna strefa startu FFVL między słupkami 16 a 21 na Route du Sel jest ściśle zarządzana latem i organizuje ruch na tej popularnej, wąskiej plaży.",
+      "llmComment": "Sesje w Mistralu regularnie osiągają 20-35 węzłów i mogą narastać błyskawicznie — latanie zbyt dużą latawcem jest tu poważnym błędem. Przy wietrze wschodnim woda jest jak lustro, ale każda awaria sprzętu szybko znosi zawodnika daleko od brzegu; umiejętność samodzielnego ratowania i kolega obserwujący z plaży są absolutnie konieczne. Latem plaża jest bardzo wąska, więc start i lądowanie z dużą latawcem wymagają precyzyjnej techniki. Organizowane są tu regionalne zawody freestyle, w tym Lords of the Var. Lotnisko Toulon-Hyères jest oddalone o 10 minut, co czyni to miejsce łatwo dostępną destynacją podróży."
+    }
+  },
+  {
+    "name": "Gruissan",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/88023",
+    "windguruFallbackUrl": "https://www.windguru.cz/500975",
+    "windfinderUrl": "https://www.windfinder.com/forecast/gruissan-plage_narbonne",
+    "webcamUrl": "https://www.skaping.com/gruissan/plagedeschalets",
+    "locationUrl": "https://www.google.com/maps?q=43.09716,3.11308",
+    "spotInfo": {
+      "type": "Sea and lagoon — flat water offshore, light chop with Marin",
+      "bestWind": "NW (Tramontane), SE (Marin)",
+      "waterTemp": "13-25°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach at Plage des Chalets; also Étang du Grazel lagoon access via dirt track",
+      "hazards": "Tramontane is fully offshore — strong upwind ability and self-rescue skills mandatory; wind accelerates 10+ knots toward Port-la-Nouvelle, overpowering riders; sandbanks at Ayrolle outlet; weever fish in summer (water shoes recommended); no rescue service at La Vieille Nouvelle natural reserve",
+      "season": "April-October",
+      "description": "Gruissan is the Tramontane capital of the Occitanie coast — a 10 km stretch of sandy beach running from Plage des Chalets to La Vieille Nouvelle, with a venturi effect between the dunes that can push gusts well past 30 knots. The offshore NW wind delivers laser-flat water ideal for speed runs and freestyle, while the flat-water Étang du Grazel lagoon offers a gentler alternative for foiling or lighter days. Home to the annual Défi Wind and Défi Kite events, the spot draws thousands of riders every May.",
+      "llmComment": "Tramontane blows in 3–6 day periods April–October; peak intensity in May–June. The wind accelerates as you move south along the beach toward Port-la-Nouvelle — size down before launching, not after. The Étang du Grazel lagoon (water 30–80 cm deep, muddy bottom) is the go-to for foilers and lighter conditions. La Vieille Nouvelle is a Natura 2000 protected reserve with zero rescue coverage; always ride with the Pôle Nautique Akila group or a buddy."
+    },
+    "spotInfoPL": {
+      "type": "Morze i laguna — płaska woda przy wietrze odlądowym, lekkie zafalowanie przy Marin",
+      "bestWind": "NW (Tramontana), SE (Marin)",
+      "waterTemp": "13-25°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża przy Plage des Chalets; dostęp do laguny Étang du Grazel drogą szutrową",
+      "hazards": "Tramontana jest wiatrem całkowicie odlądowym — wymagana silna umiejętność płynięcia pod wiatr i samodzielnego ratowania; wiatr przyspiesza o 10+ węzłów w kierunku Port-la-Nouvelle, grożąc nagłym przepowietrzeniem; łachy piasku przy ujściu Ayrolle; ryby-żmije latem (zalecane buty do wody); brak służb ratowniczych w rezerwacie La Vieille Nouvelle",
+      "season": "Kwiecień-Październik",
+      "description": "Gruissan to stolica Tramontany na wybrzeżu Oksytanii — 10 km piaszczystej plaży od Plage des Chalets do La Vieille Nouvelle, gdzie efekt venturi między wydmami potrafi wypchnąć podmuchy powyżej 30 węzłów. Odlądowy wiatr z NW zapewnia idealnie płaską wodę do speed-runów i freestyle'u, a laguna Étang du Grazel oferuje spokojniejszą alternatywę do foilingu w słabszy dzień. Co roku w maju spot gości Défi Wind i Défi Kite — największe imprezy ślizgowe świata.",
+      "llmComment": "Tramontana wieje w cyklach 3–6 dni od kwietnia do października; szczyt intensywności w maju–czerwcu. Wiatr przyspiesza w kierunku południowym wzdłuż plaży — lepiej zredukować rozmiar latawca przed wodą niż po wyjściu na wodę. Laguna Étang du Grazel (głębokość 30–80 cm, muliste dno) to idealne miejsce dla foilerów i dni z lekkim wiatrem. La Vieille Nouvelle to rezerwat Natura 2000 bez służb ratowniczych — zawsze wychodź na wodę z grupą Pôle Nautique Akila lub z partnerem."
+    }
+  },
+  {
+    "name": "Port Camargue / Espiguette",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48604",
+    "windfinderUrl": "https://www.windfinder.com/forecast/l_espiguette",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.4872,4.1304",
+    "spotInfo": {
+      "type": "Sea, open coast, flat to light chop",
+      "bestWind": "SW, NW, SE",
+      "waterTemp": "13-25°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach (500 m walk from car park)",
+      "hazards": "Offshore wind shifts when Tramontane or Mistral rotate, strong currents when Rhône is in flood, swimmers and jet-skis in summer, paid parking with 2 m height barrier April–November",
+      "season": "May-September",
+      "description": "L'Espiguette is a vast 10 km wild sandy beach on the Golfe du Lion, south of Port Camargue, offering one of the region's only official summer kite zones. Reliable SW thermal afternoons from May to September produce 12-18 knots, while periodic NW Tramontane episodes deliver 25+ knots of side-shore power. Shallow water extends 200 m from shore, making it forgiving for beginners, though advanced riders enjoy the sea chop and stronger gusts when the Tramontane fills in.",
+      "llmComment": "SW thermal kicks in most afternoons from noon in summer — typically 12-18 kts, side-on from the right. Tramontane (NW) blows 2-4 times a month and can top 30 kts; it is side-offshore on the main beach so self-rescue skills are essential. Avoid going out in any pure N or NE wind — fully offshore here. After heavy Cévennes rain events the Rhône pushes strong southward currents; check before riding."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarte wybrzeże, płaska do lekko falowanej wody",
+      "bestWind": "SW, NW, SE",
+      "waterTemp": "13-25°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta (500 m spaceru od parkingu)",
+      "hazards": "Odlądowe skoki wiatru przy Tramontanie i Mistrale, silne prądy podczas wezbrania Rodanu, pływacy i skutery wodne latem, płatny parking z ograniczeniem wysokości 2 m od kwietnia do listopada",
+      "season": "Maj-Wrzesień",
+      "description": "L'Espiguette to rozległa, 10-kilometrowa dzika plaża piaszczysta nad Zatoką Lwią, na południe od Port Camargue — jedna z nielicznych oficjalnych stref kitesurf w regionie czynnych latem. Od maja do września popołudniowy wiatr termiczny z południowego zachodu daje niezawodnie 12-18 węzłów, a periodyczne epizody północno-zachodniej Tramontany przynoszą powyżej 25 węzłów bocznego wiatru. Płytka woda sięgająca 200 m od brzegu sprzyja początkującym, choć zaawansowani docenią falowanie i silniejsze podmuchy podczas Tramontany.",
+      "llmComment": "Termik SW rozkręca się zazwyczaj od południa i daje 12-18 węzłów bocznego wiatru z prawej. Tramontana (NW) wieje 2-4 razy w miesiącu i może przekroczyć 30 węzłów; na głównej plaży jest lekko odlądowa, więc konieczna jest umiejętność samodzielnego ratowania. Należy unikać wyjazdu przy czystym wietrze N lub NE — jest w pełni odlądowy. Po intensywnych opadach w masywie Cévennes Rodan wytwarza silne prądy w kierunku południowym — sprawdź warunki przed wejściem do wody."
+    }
+  },
+  {
+    "name": "Beauduc",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48606",
+    "windguruFallbackUrl": "https://www.windguru.cz/230",
+    "windfinderUrl": "https://www.windfinder.com/forecast/beauduc",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.4046,4.5921",
+    "spotInfo": {
+      "type": "Sea, flat water lagoon and open beach",
+      "bestWind": "NW, N (Mistral), SE",
+      "waterTemp": "13-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach",
+      "hazards": "Very remote location (8 km unpaved track, 4x4 recommended); no phone signal, no rescue services nearby; strong Mistral gusts (40 kts common from N/NW); E wind is fully offshore; beach floods in strong SW wind; weever fish in shallow water; car break-ins reported in summer",
+      "season": "April-October",
+      "description": "Plage de Beauduc is one of France's last truly wild beaches, tucked at the southeastern tip of the Camargue delta. A sweeping 20 km bay of flat, shallow water makes it exceptional for freeriding and freestyle in Mistral conditions — when the NW wind fires, the water goes glassy and the gusts can exceed 40 knots. The remoteness that makes Beauduc magical also demands serious self-sufficiency: bring water, food, spare gear, and a charged GPS, because emergency services can take hours to arrive.",
+      "llmComment": "Easterly wind is pure offshore here — avoid riding downwind without a solid upwind reserve. The Mistral typically delivers the cleanest conditions: strong, steady, and flat. Spring and early summer (May–June) are the sweet spot for consistent wind without peak-season crowds. Weever fish stings are treated with hot water immersion. No facilities on the beach at all — the nearest town is over an hour away."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płaska woda w lagunie i otwarta plaża",
+      "bestWind": "NW, N (Mistral), SE",
+      "waterTemp": "13-22°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Bardzo odległa lokalizacja (8 km nieutwardzonej drogi, zalecane 4x4); brak zasięgu telefonu i służb ratunkowych w pobliżu; silne podmuchy Mistralu (40 węzłów z N/NW to norma); wiatr wschodni jest całkowicie odlądowy; plaża zalewana przy silnym wietrze SW; ryby Trachinus (babka piaskowa) na płyciznach; kradzieże z samochodów latem",
+      "season": "Kwiecień-Październik",
+      "description": "Plage de Beauduc to jedna z ostatnich prawdziwie dzikich plaż Francji, ukryta na południowo-wschodnim krańcu delty Camargue. Rozległa zatoka o płytkiej, płaskiej wodzie tworzy wyjątkowe warunki do freeridingu i freestyle'u podczas Mistralu — gdy wieje z NW, woda staje się lustrzana, a podmuchy mogą przekraczać 40 węzłów. Odizolowanie, które czyni Beauduc magicznym miejscem, wymaga jednocześnie pełnej samowystarczalności: woda, jedzenie, zapasowy sprzęt i naładowany GPS są niezbędne, bo służby ratunkowe mogą potrzebować kilku godzin na dotarcie.",
+      "llmComment": "Wiatr wschodni jest tu całkowicie odlądowy — nie płyń z wiatrem bez pewnego zapasu kąta do wiatru. Mistral zapewnia zazwyczaj najczystsze warunki: silny, stabilny i płaski. Wiosna i wczesne lato (maj–czerwiec) to optymalny czas — stabilny wiatr bez tłumów wysokiego sezonu. Ukłucia ryb Trachinus leczy się zanurzeniem w gorącej wodzie. Na plaży nie ma żadnych udogodnień — najbliższe miasto jest ponad godzinę drogi."
+    }
+  },
+  {
+    "name": "Serre-Ponçon",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/277",
+    "windguruFallbackUrl": "https://www.windguru.cz/102447",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lac_de_serre_poncon",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=44.5309,6.4285",
+    "spotInfo": {
+      "type": "Alpine reservoir lake, flat to light chop",
+      "bestWind": "W, NW",
+      "waterTemp": "10-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide grass strip (~300 m), Plage des Eaux Douces, Crots",
+      "hazards": "Cold water (wetsuit required), sudden mountain storms, gusty and shifty thermals, exposed rocks when lake level is low, boat and motorised traffic, altitude 780 m",
+      "season": "May-September",
+      "description": "Lac de Serre-Ponçon is one of the largest reservoirs in Western Europe, set at 780 m altitude in the Hautes-Alpes beneath dramatic alpine peaks. A reliable afternoon thermal builds daily from around 10:30, reaching force 4-5 by early afternoon and holding until sunset — conditions so consistent riders say you can set your watch by them. The main kite area is Plage des Eaux Douces near Crots, with a long grass launch strip and a home base for kite school Altitude Kite.",
+      "llmComment": "Mornings are typically flat and calm — ideal for SUP or foiling. The W/NW thermal kicks in around 10:30–11:00 and peaks in early afternoon. Water stays cold early in the season (wetsuit essential in May-June); July and August are the warmest months (~20-22°C). Thunderstorms can develop rapidly over the surrounding mountains — monitor forecasts carefully and get off the water at the first sign of anvil clouds."
+    },
+    "spotInfoPL": {
+      "type": "Alpejski zbiornik zaporowy, płaska do lekkiej zafalowanej wody",
+      "bestWind": "W, NW",
+      "waterTemp": "10-22°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Szeroki pas trawy (~300 m), Plage des Eaux Douces, Crots",
+      "hazards": "Zimna woda (wymagany piankostrój), nagłe burze górskie, porywiste i zmienne termiki, odsłonięte skały przy niskim poziomie jeziora, ruch łodzi motorowych, wysokość 780 m n.p.m.",
+      "season": "Maj-Wrzesień",
+      "description": "Lac de Serre-Ponçon to jeden z największych sztucznych zbiorników wodnych w Europie Zachodniej, położony na wysokości 780 m n.p.m. w Górnych Alpach. Niezawodny termik narasta codziennie od około 10:30, osiągając siłę 4-5 Beauforta wczesnym popołudniem i utrzymując się do zachodu słońca — warunki tak regularne, że kitesurferzy mówią, że można według nich nastawiać zegarek. Główny obszar do kitesurfingu to Plage des Eaux Douces koło Crots, z długim trawiastym pasem startowym i siedzibą szkoły kite Altitude Kite.",
+      "llmComment": "Poranki są zwykle spokojne i płaskie — idealne na SUP lub foiling. Termik W/NW uruchamia się około 10:30–11:00 i osiąga szczyt wczesnym popołudniem. Woda pozostaje zimna na początku sezonu (piankostrój niezbędny w maju-czerwcu); lipiec i sierpień to najcieplejsze miesiące (~20-22°C). Burze mogą rozwijać się błyskawicznie nad otaczającymi górami — śledź prognozy uważnie i zejdź z wody przy pierwszych oznakach chmur burzowych."
+    }
   }
 ]

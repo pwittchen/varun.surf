@@ -6,16 +6,16 @@ existing `Le Barcarès` entry's tone (offshore-wind warnings where relevant).
 
 ## Spots
 
-- [ ] **Hyères – Almanarre** — La Capte / Almanarre beach, Giens peninsula.
+- [x] **Hyères – Almanarre** — La Capte / Almanarre beach, Giens peninsula.
       Flat-to-choppy sea, both sides of the tombolo. Best wind E (Levant) &
       W (Mistral). Major French spot — webcam likely exists.
-- [ ] **Gruissan** — Occitanie, near Narbonne. Beach + nearby flat-water étangs.
+- [x] **Gruissan** — Occitanie, near Narbonne. Beach + nearby flat-water étangs.
       Best wind NW (Tramontane), strong. Verify Windguru station.
-- [ ] **Port Camargue / Espiguette** — L'Espiguette beach, Le Grau-du-Roi.
+- [x] **Port Camargue / Espiguette** — L'Espiguette beach, Le Grau-du-Roi.
       Large sandy beach, sea. Best wind W/SE. Big, popular spot.
-- [ ] **Beauduc** — Camargue, remote flat-water lagoon/beach. Best wind W/NW
+- [x] **Beauduc** — Camargue, remote flat-water lagoon/beach. Best wind W/NW
       (Mistral) & SE. Hazards: very remote (4x4 access), shallow. Verify station.
-- [ ] **Serre-Ponçon** — Alpine reservoir lake (Hautes-Alpes). Flat/choppy lake,
+- [x] **Serre-Ponçon** — Alpine reservoir lake (Hautes-Alpes). Flat/choppy lake,
       thermal + valley winds. Best wind variable (thermal). Cold mountain water.
 
 ## Research hints
@@ -28,5 +28,5 @@ existing `Le Barcarès` entry's tone (offshore-wind warnings where relevant).
 
 ## Done when
 
-- [ ] 5 entries appended, JSON parses, `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] 5 entries appended, JSON parses, `./gradlew test` green.
+- [x] Checkboxes ticked here and in issue #141.
