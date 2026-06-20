@@ -13,11 +13,23 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class GoogleMapsService {
     private static final Logger log = LoggerFactory.getLogger(GoogleMapsService.class);
     private static final int MAX_REDIRECTS = 5;
+
+    // matches the "@lat,lng" form used in the map path, e.g. /maps/@54.82750,18.08778,14z
+    private static final Pattern AT_COORDINATES = Pattern.compile(
+            "@(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)");
+    // matches coordinates passed as a query parameter, e.g. ?q=-33.093,18.028 or ?query=37.083,-8.321
+    // also handles URL-encoded comma (%2C)
+    private static final Pattern QUERY_COORDINATES = Pattern.compile(
+            "[?&](?:q|query|ll|sll|center|destination)=(-?\\d+(?:\\.\\d+)?)(?:,|%2C)(-?\\d+(?:\\.\\d+)?)",
+            Pattern.CASE_INSENSITIVE);
+
     private final OkHttpClient httpClient;
 
     GoogleMapsService(OkHttpClient httpClient) {
@@ -55,25 +67,47 @@ public class GoogleMapsService {
     }
 
     private Mono<Coordinates> parseCoordinatesFromExpandedUrl(String expandedUrl) {
-        if (expandedUrl.contains("@")) {
-            String[] parts = expandedUrl.split("@");
-            if (parts.length > 1) {
-                String[] coordParts = parts[1].split(",");
-                if (coordParts.length >= 2) {
-                    try {
-                        double lat = Double.parseDouble(coordParts[0].trim());
-                        double lon = Double.parseDouble(coordParts[1].trim());
-                        log.debug("Extracted coordinates from URL: lat={}, lon={}", lat, lon);
-                        return Mono.just(new Coordinates(lat, lon));
-                    } catch (NumberFormatException e) {
-                        log.warn("Failed to parse coordinates from URL: {}", expandedUrl, e);
-                    }
-                }
-            }
+        Coordinates coordinates = parseCoordinates(expandedUrl);
+        if (coordinates != null) {
+            log.debug("Extracted coordinates from URL: lat={}, lon={}", coordinates.lat(), coordinates.lon());
+            return Mono.just(coordinates);
         }
 
-        log.debug("No coordinates found in URL format @lat,lon: {}", expandedUrl);
+        log.debug("No coordinates found in URL: {}", expandedUrl);
         return Mono.empty();
+    }
+
+    /**
+     * Extracts coordinates from a resolved Google Maps URL, supporting both the
+     * "@lat,lng" path form (e.g. /maps/@54.82,18.08,14z) and the query-parameter
+     * forms (e.g. ?q=lat,lng, ?query=lat,lng, ?ll=lat,lng). Returns null when no
+     * coordinates can be parsed.
+     */
+    static Coordinates parseCoordinates(String url) {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+
+        Coordinates fromQuery = matchCoordinates(QUERY_COORDINATES, url);
+        if (fromQuery != null) {
+            return fromQuery;
+        }
+
+        return matchCoordinates(AT_COORDINATES, url);
+    }
+
+    private static Coordinates matchCoordinates(Pattern pattern, String url) {
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            try {
+                double lat = Double.parseDouble(matcher.group(1));
+                double lon = Double.parseDouble(matcher.group(2));
+                return new Coordinates(lat, lon);
+            } catch (NumberFormatException e) {
+                log.warn("Failed to parse coordinates from URL: {}", url, e);
+            }
+        }
+        return null;
     }
 
     private Mono<String> unshortenUrl(String shortenedUrl) {
