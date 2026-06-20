@@ -32,7 +32,7 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500757",
     "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
-    "webcamUrl": "https://surfpeople.pl/pogoda-chalupy-hel/",
+    "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/Yv8AH8nHJ2keBa338",
     "spotInfo": {
       "type": "Lagoon, flat water, small chop",
@@ -53,6 +53,34 @@
       "hazards": "Tłoczno latem",
       "season": "Maj-Wrzesień",
       "description": "Znana wioska ze silną społecznością kitesurfingową i szkołami."
+    }
+  },
+  {
+    "name": "Chałupy 3",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1109734",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
+    "webcamUrl": "https://surfpeople.pl/pogoda-chalupy-hel/",
+    "locationUrl": "https://maps.app.goo.gl/EcM6mTHgAq1WE5B77",
+    "spotInfo": {
+      "type": "Lagoon, flat water, small chop",
+      "bestWind": "W, SW",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass or sandy beach",
+      "hazards": "Crowded in summer",
+      "season": "May-September",
+      "description": "Camping Chałupy 3 spot on the Hel Peninsula with shallow lagoon and active kitesurfing community."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda, niewielkie zafalowanie",
+      "bestWind": "W, SW",
+      "waterTemp": "10-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawiasty lub piaszczysty brzeg",
+      "hazards": "Tłoczno latem",
+      "season": "Maj-Wrzesień",
+      "description": "Spot przy kempingu Chałupy 3 na Półwyspie Helskim z płytką laguną i aktywną społecznością kitesurfingową."
     }
   },
   {
