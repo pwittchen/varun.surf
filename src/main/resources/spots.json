@@ -3747,5 +3747,149 @@
       "season": "Kwiecień-Październik",
       "description": "Klintholm Strand to najlepszy spot kitesurfingowy na wyspie Møn, położony na południu Bałtyku. Łagodnie opadająca piaszczysta plaża umożliwia łatwe wejście do wody po obu stronach falochronu portowego. Wiatry z zachodniego i południowo-zachodniego sektora generują chop oraz małe i średnie fale na piaszczystych ławicach. Na miejscu działa lokalna szkoła surfingu z kawiarnią, co czyni ten spot przyjaznym dla początkujących, choć zaleca się przybycie z pomocnikiem ze względu na brak stałej asysty na plaży."
     }
+  },
+  {
+    "name": "Praia da Bordeira",
+    "country": "Portugal",
+    "windguruUrl": "https://www.windguru.cz/112689",
+    "windguruFallbackUrl": "https://www.windguru.cz/48964",
+    "windfinderUrl": "https://www.windfinder.com/forecast/carrapateira",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps/search/?api=1&query=37.198012,-8.901136",
+    "spotInfo": {
+      "type": "Atlantic beach, waves",
+      "bestWind": "N, NW (Nortada)",
+      "waterTemp": "15-20°C",
+      "experience": "Advanced",
+      "launch": "Wide sandy beach with dunes",
+      "hazards": "Strong shorebreak, powerful shore dump, rip currents, river mouth at southern end",
+      "season": "May-October",
+      "description": "Vast exposed Atlantic beach on Portugal's wild west coast, sheltered within the Costa Vicentina Natural Park near Carrapateira. Powered by the Nortada — a strong northerly thermal wind peaking in summer afternoons — it offers powerful wave riding conditions. Cool Atlantic upwelling keeps water temperatures below 20°C even at peak summer, so a wetsuit is essential."
+    },
+    "spotInfoPL": {
+      "type": "Atlantycka plaża, fale",
+      "bestWind": "N, NW (Nortada)",
+      "waterTemp": "15-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża z wydmami",
+      "hazards": "Silny przybój, gwałtowna fala przy brzegu, prądy wsteczne, ujście rzeki od południa",
+      "season": "Maj-Październik",
+      "description": "Rozległa, odsłonięta atlantycka plaża na dzikim zachodnim wybrzeżu Portugalii, w parku przyrody Costa Vicentina niedaleko Carrapateira. Nortada — silny północny wiatr termiczny wiejący najintensywniej w letnie popołudnia — zapewnia doskonałe warunki do jazdy na falach. Atlantyckie prądy wznoszące utrzymują temperaturę wody poniżej 20°C nawet latem, dlatego pianka jest niezbędna."
+    }
+  },
+  {
+    "name": "Albufeira / Salgados",
+    "country": "Portugal",
+    "windguruUrl": "https://www.windguru.cz/501160",
+    "windfinderUrl": "https://www.windfinder.com/forecast/albufeira_faro_portugal",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps/search/?api=1&query=37.0839,-8.3213",
+    "spotInfo": {
+      "type": "Atlantic beach, chop and small waves",
+      "bestWind": "SW, W",
+      "waterTemp": "15-21°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach, long and clean",
+      "hazards": "Other beach users (busy June-August), Atlantic currents, occasional swell",
+      "season": "April-September",
+      "description": "Praia dos Salgados is a long, open Atlantic beach on the western edge of Albufeira, backed by the Salgados Lagoon nature reserve. Southwest winds provide around 50% of good kiting days, making it a reliable spot on the central Algarve coast. The beach is uncrowded outside summer but sees significant tourist traffic from June to August — stay clear of swimmers and consult locals before riding."
+    },
+    "spotInfoPL": {
+      "type": "Plaża atlantycka, lekkie fale i chop",
+      "bestWind": "SW, W",
+      "waterTemp": "15-21°C",
+      "experience": "Początkujący do Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża, długa i czysta",
+      "hazards": "Inni plażowicze (tłoczno od czerwca do sierpnia), atlantyckie prądy, okazjonalne falowanie",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Praia dos Salgados to długa, otwarta plaża atlantycka na zachodnim skraju Albufejry, granicząca z rezerwatem przyrody Lagoa dos Salgados. Wiatry z kierunku południowo-zachodniego zapewniają dobre warunki do kitesurfingu przez około 50% dni, co czyni to miejsce jednym z bardziej wiarygodnych spotów na środkowym wybrzeżu Algarve. Poza sezonem plaża jest spokojna, jednak od czerwca do sierpnia ruch turystyczny znacznie wzrasta — należy omijać kąpiących się i zasięgać opinii lokalnych kitesurferów przed wejściem do wody."
+    }
+  },
+  {
+    "name": "Fuseta",
+    "country": "Portugal",
+    "windguruUrl": "https://www.windguru.cz/501165",
+    "windguruFallbackUrl": "https://www.windguru.cz/39280",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fuzeta_faro_portugal",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=37.050895691,-7.743207932",
+    "spotInfo": {
+      "type": "Lagoon, flat water (tide-dependent)",
+      "bestWind": "SW, W, E",
+      "waterTemp": "16-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at lagoon edge",
+      "hazards": "Boat traffic in main Ria Formosa channel, bathing season zoning restrictions, tide-dependent water depth, crowded launch in peak season",
+      "season": "March-October",
+      "description": "Fuseta lagoon sits within the Ria Formosa Natural Park in the eastern Algarve and offers some of the most reliable flat-water kitesurfing in Portugal. The afternoon Nortada thermal kicks in around 1 PM from the SW and frequently delivers 16-25 knots, while morning Levante from the east suits hydrofoil riders. Riding is restricted to the corridor between the barrier island and the coast during bathing season; never cross into the main channel used by ferries and fishing boats."
+    },
+    "spotInfoPL": {
+      "type": "Lagona, płaska woda (zależna od pływów)",
+      "bestWind": "SW, W, E",
+      "waterTemp": "16-22°C",
+      "experience": "Początkujący do zaawansowanego",
+      "launch": "Piaszczysta plaża na brzegu laguny",
+      "hazards": "Ruch łodzi w głównym kanale Ria Formosa, ograniczenia strefowe w sezonie kąpielowym, głębokość wody zależna od pływów, zatłoczony start w szczycie sezonu",
+      "season": "Marzec-Październik",
+      "description": "Laguna Fuseta leży na terenie Parku Przyrody Ria Formosa we wschodnim Algarve i oferuje jedne z najbardziej niezawodnych warunków do kitesurfingu na płaskiej wodzie w Portugalii. Popołudniowy termalny wiatr Nortada pojawia się około 13:00 z kierunku SW i regularnie osiąga 16-25 węzłów, natomiast poranny Levante z wschodu idealnie nadaje się dla desek foilowych. W sezonie kąpielowym jazda ograniczona jest do pasa między wyspą a brzegiem; zabrania się przekraczania głównego kanału używanego przez promy i łodzie rybackie."
+    }
+  },
+  {
+    "name": "Retamar",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/19081",
+    "windguruFallbackUrl": "https://www.windguru.cz/3197",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=36.833122,-2.317122",
+    "spotInfo": {
+      "type": "Sea, sandy and pebble beach, small shore break",
+      "bestWind": "W, SW (Poniente)",
+      "waterTemp": "17-25°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy and pebble beach (shoes recommended)",
+      "hazards": "Pebbles and stones on beach, shore break in strong winds, kitesurfing banned by local authorities in summer high season",
+      "season": "February-June, September-October",
+      "description": "Retamar is the go-to Poniente (westerly) spot on the Almería coast, located 13 km east of the city at the border of the Cabo de Gata-Níjar Natural Park. The beach offers consistent and strong Poniente winds ranging from 18 to 35 knots in spring and autumn, while remaining uncrowded outside the summer months. A mix of sand and pebbles means flat-soled shoes are advisable at the water's edge."
+    },
+    "spotInfoPL": {
+      "type": "Morze, plaża piaszczysto-kamienista, lekki przybój",
+      "bestWind": "W, SW (Poniente)",
+      "waterTemp": "17-25°C",
+      "experience": "Początkujący do średniozaawansowanego",
+      "launch": "Plaża piaszczysto-kamienista (zalecane buty)",
+      "hazards": "Kamyki i otoczaki na plaży, przybój przy silnym wietrze, kitesurfing zakazany przez lokalne władze w szczycie sezonu letniego",
+      "season": "Luty-Czerwiec, Wrzesień-Październik",
+      "description": "Retamar to podstawowy spot na wiatr Poniente (zachodni) na wybrzeżu Almerii, położony 13 km na wschód od miasta, przy granicy Parku Przyrody Cabo de Gata-Níjar. Wiosną i jesienią plaża oferuje silny i konsekwentny wiatr Poniente w zakresie 18-35 węzłów, przy minimalnym tłoku poza sezonem letnim. Mieszanka piasku i otoczaków sprawia, że przy linii wody zaleca się używanie płaskich butów."
+    }
+  },
+  {
+    "name": "Conil de la Frontera",
+    "country": "Spain",
+    "windguruUrl": "https://www.windguru.cz/122532",
+    "windguruFallbackUrl": "https://www.windguru.cz/58346",
+    "windfinderUrl": "https://www.windfinder.com/forecast/conil_de_la_frontera",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=36.268,-6.083",
+    "spotInfo": {
+      "type": "Atlantic beach, flat water at river mouth, small to medium waves",
+      "bestWind": "W, NW (Poniente), E (Levante — experienced only)",
+      "waterTemp": "15-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach at Playa Castilnovo, river mouth of Río Salado",
+      "hazards": "Levante (E) is side-offshore — dangerous for beginners; summer beach restrictions (kite zone left of Río Salado only); crowded beach in July-August",
+      "season": "April-October",
+      "description": "Conil de la Frontera sits on the Costa de la Luz between Cádiz and Tarifa, offering wide Atlantic beaches powered by two distinct winds. The thermal Poniente (W/NW) arrives each afternoon, light and steady — ideal for beginners. The stronger Levante (E) blows from the east and is side-offshore here, best left to experienced riders. The shallow river mouth of the Río Salado provides flat water for learning, while open beach sections offer chop and small waves."
+    },
+    "spotInfoPL": {
+      "type": "Plaża atlantycka, płaska woda przy ujściu rzeki, małe do średnich fale",
+      "bestWind": "W, NW (Poniente), E (Levante — tylko doświadczeni)",
+      "waterTemp": "15-22°C",
+      "experience": "Początkujący do zaawansowanych",
+      "launch": "Szeroka piaszczysta plaża Playa Castilnovo, ujście rzeki Río Salado",
+      "hazards": "Levante (E) wieje z boku-od lądu — niebezpieczny dla początkujących; letnie ograniczenia strefowe (kitesurfing tylko na lewo od Río Salado); zatłoczona plaża w lipcu i sierpniu",
+      "season": "Kwiecień-Październik",
+      "description": "Conil de la Frontera leży na Costa de la Luz pomiędzy Kadyksem a Tarifą, oferując szerokie atlantyckie plaże z dwoma charakterystycznymi wiatrami. Termiczny Poniente (W/NW) pojawia się każdego popołudnia — lekki i stały, idealny dla początkujących. Silniejszy Levante (E) wieje ze wschodu i jest tutaj boczno-odlądowy, zalecany wyłącznie dla doświadczonych kitesurferów. Płytkie ujście rzeki Río Salado zapewnia płaską wodę do nauki, natomiast otwarte odcinki plaży oferują krótką falę i chop."
+    }
   }
 ]
