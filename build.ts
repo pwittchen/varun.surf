@@ -23,7 +23,7 @@ const STATIC_ASSETS = [
   { src: "assets/ai.txt", dest: "ai.txt" },
   { src: "assets/llms.txt", dest: "llms.txt" },
   { src: "assets/robots.txt", dest: "robots.txt" },
-  { src: "assets/sitemap.xml", dest: "sitemap.xml" },
+  // sitemap.xml is served dynamically by SeoController (covers all spot/country pages)
 ];
 
 // HTML minification options (matching Vite config)

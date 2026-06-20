@@ -15,19 +15,8 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class WebConfig implements WebFluxConfigurer {
 
-    @Bean
-    public RouterFunction<ServerResponse> spotRouter() {
-        return RouterFunctions.route(
-                GET("/spot/{id}"),
-                _ -> {
-                    Resource spotHtml = new ClassPathResource("static/spot.html");
-                    return ServerResponse
-                            .ok()
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(spotHtml);
-                }
-        );
-    }
+    // NOTE: GET /spot/{id} is handled by SeoController, which injects per-spot
+    // SEO metadata into the spot.html template before serving it.
 
     @Bean
     public RouterFunction<ServerResponse> tvRouter() {
@@ -43,19 +32,8 @@ public class WebConfig implements WebFluxConfigurer {
         );
     }
 
-    @Bean
-    public RouterFunction<ServerResponse> countryRouter() {
-        return RouterFunctions.route(
-                GET("/country/{countryName}"),
-                _ -> {
-                    Resource indexHtml = new ClassPathResource("static/index.html");
-                    return ServerResponse
-                            .ok()
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(indexHtml);
-                }
-        );
-    }
+    // NOTE: GET /country/{countryName} is handled by SeoController, which injects
+    // per-country SEO metadata into the index.html template before serving it.
 
     @Bean
     public RouterFunction<ServerResponse> starredRouter() {
