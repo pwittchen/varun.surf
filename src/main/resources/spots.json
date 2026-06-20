@@ -3631,5 +3631,121 @@
       "season": "Kwiecień-Październik (możliwe latanie przez cały rok)",
       "description": "Brouwersdam to najbardziej ikoniczny spot kitesurfingowy w Holandii — zapora Delta Works o długości 6,5 km w Zelandii, oddzielająca Morze Północne od płaskiego jeziora Grevelingenmeer. Strona Morza Północnego (zachodnia) oferuje szeroką piaszczystą plażę z falowaniem do ok. 1 m, idealną do wave ridingu i freestyle; osłonięta strona Grevelingen (wschodnia) zapewnia płytką, spokojną wodę doskonałą dla początkujących. Oficjalne strefy kite oznaczone są żółtymi bojami (przejścia 14–17). Wiatry są niezawodnie silne przez cały rok."
     }
+  },
+  {
+    "name": "Tatort Hawaii",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/500808",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/stein",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4177601,10.2667962",
+    "spotInfo": {
+      "type": "Sea / Shallow bay, flat water with small chop",
+      "bestWind": "W, NW, NE, E",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach with grass rigging area",
+      "hazards": "Submerged rocks near shore, bathing zones marked with buoys, strong gusts during easterly wind due to nearby bird sanctuary island",
+      "season": "May-September",
+      "description": "Tatort Hawaii is a well-known kite and windsurf school on the eastern shore of the Kiel Fjord in Stein, Schleswig-Holstein. The long sandy beach fronts a large shallow wading area ideal for beginners, while further out the Baltic offers chop for more advanced riding. West and east winds blow sideshore, making conditions manageable for all levels."
+    },
+    "spotInfoPL": {
+      "type": "Morze / Płytka zatoka, płaska woda z małym falowaniem",
+      "bestWind": "W, NW, NE, E",
+      "waterTemp": "8-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża z trawiastym miejscem do rozstawiania sprzętu",
+      "hazards": "Kamienie pod powierzchnią wody przy brzegu, strefy kąpielowe oznaczone bojami, silne porywy przy wietrze wschodnim z powodu pobliskiej wyspy – rezerwatu ptaków",
+      "season": "Maj-Wrzesień",
+      "description": "Tatort Hawaii to znana szkoła kitesurfingu i windsurfingu na wschodnim brzegu Fiordu Kilońskiego w miejscowości Stein w Szlezwiku-Holsztynie. Długa piaszczysta plaża przylega do rozległego, płytkiego obszaru idealnego dla początkujących, a dalej na wodzie Bałtyk oferuje falowanie dla bardziej zaawansowanych. Wiatry zachodnie i wschodnie wieją bocznikiem, co zapewnia komfortowe warunki dla wszystkich poziomów."
+    }
+  },
+  {
+    "name": "Ummanz (Suhrendorf)",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/665105",
+    "windguruFallbackUrl": "https://www.windguru.cz/48115",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ruegen_suhrendorf",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.46416,13.13777",
+    "spotInfo": {
+      "type": "Bodden, flat water lagoon",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass/sandy beach at Ostseecamp campsite (day pass required)",
+      "hazards": "Submerged boulders near shore (partially unmarked), designated kite zone only — no launching outside the approved area within the national park",
+      "season": "May-October",
+      "description": "Suhrendorf on Ummanz island is Germany's largest shallow flat-water kite area, sheltered between Ummanz and Hiddensee island so only small wind waves form. The Schaproder Bodden lagoon offers ideal conditions for beginners and freestyle riders. Kitesurfing is permitted only in the designated zone accessed through the Ostseecamp campsite."
+    },
+    "spotInfoPL": {
+      "type": "Bodden, płaska woda lagunowa",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawiasty/piaszczysty brzeg na kempingu Ostseecamp (wymagany dzienny bilet wstępu)",
+      "hazards": "Głazy pod powierzchnią wody przy brzegu (częściowo nieoznakowane), dozwolone tylko w wyznaczonej strefie kitesurfingowej — zakaz startowania poza zatwierdzonym obszarem w obrębie parku narodowego",
+      "season": "Maj-Październik",
+      "description": "Suhrendorf na wyspie Ummanz to największy w Niemczech płaskowodny obszar do kitesurfingu, osłonięty między wyspą Ummanz a wyspą Hiddensee, dzięki czemu tworzą się jedynie niewielkie fale wiatrowe. Laguna Schaproder Bodden zapewnia idealne warunki dla początkujących i zawodników freestyle. Kitesurfing dozwolony wyłącznie w wyznaczonej strefie, dostępnej przez kemping Ostseecamp."
+    }
+  },
+  {
+    "name": "Kitespot Farø",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/137343",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.9496,12.0005",
+    "spotInfo": {
+      "type": "Strait, flat shallow water over sandbanks",
+      "bestWind": "W, SW, E, NE",
+      "waterTemp": "4-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass causeway (dæmning) with access ramps on both sides",
+      "hazards": "Stones in water especially between bays, fishing nets, Storstrøm Bridge drift risk on offshore side, tidal current in main channel, EU bird protection area restricts north side June–August",
+      "season": "April–May, September–November",
+      "description": "Farø is one of Denmark's premier flat-water kite spots, set on the causeway between Farø island and Bogø in the Storstrømmen strait, about one hour from Copenhagen Airport. Wide shallow sandbanks on both sides of the dæmning deliver consistently flat water ideal for freestyle. The Venturi effect between the Farø Bridges often produces stronger winds here than at surrounding spots."
+    },
+    "spotInfoPL": {
+      "type": "Cieśnina, płaska płytka woda nad ławicami piaskowymi",
+      "bestWind": "W, SW, E, NE",
+      "waterTemp": "4-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Trawiasta grobla (dæmning) z rampami wejściowymi po obu stronach",
+      "hazards": "Kamienie w wodzie zwłaszcza między zatokami, sieci rybackie, ryzyko zniesienia przez prąd w kierunku mostu Storstrøm po prawej stronie, prąd pływowy w głównym nurcie, strefa ochrony ptaków UE ogranicza kitesurfing po północnej stronie od czerwca do sierpnia",
+      "season": "Kwiecień–Maj, Wrzesień–Listopad",
+      "description": "Farø to jedno z najlepszych duńskich miejsc do kitesurfingu na płaskiej wodzie, usytuowane na grobli między wyspą Farø a Bogø w cieśninie Storstrømmen, około godziny jazdy od lotniska w Kopenhadze. Rozległe płycizny po obu stronach grobli zapewniają konsekwentnie płaską wodę idealną do freestyleu. Efekt tunelu wiatrowego między mostami Farø często powoduje silniejszy wiatr niż w okolicznych miejscach."
+    }
+  },
+  {
+    "name": "Møn / Klintholm Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48088",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/klintholm_havn_zealand_denmark",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps/search/?api=1&query=54.954513,12.472556",
+    "spotInfo": {
+      "type": "Sea, Baltic bay, chop and small waves",
+      "bestWind": "W, SW, S",
+      "waterTemp": "4-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Harbour moles and wave breakers on both sides of the port; avoid chalk cliff beaches (Møns Klint direction) — steep terrain, narrow shore, unsuitable for kiting; no permanent rescue service on site",
+      "season": "April-October",
+      "description": "Klintholm Strand is Møn island's premier kite spot on the south Baltic coast, offering a gently sloping sandy beach with easy water entry on both sides of the harbour breakwater. Winds from the western and south-western quadrant produce rideable chop and small to medium waves over the sandbanks. A local surf school and café are based here, making it a good choice for beginners, though riders should arrive with a helper as no dedicated launch assistance is available on the beach."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, zatoka, fala i chop",
+      "bestWind": "W, SW, S",
+      "waterTemp": "4-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Falochrony i mola portowe po obu stronach wejścia do portu; unikać plaż przy kredowych klifach (kierunek Møns Klint) — strome zbocza, wąska plaża, niebezpieczna przy wietrze onshore; brak stałej pomocy na plaży",
+      "season": "Kwiecień-Październik",
+      "description": "Klintholm Strand to najlepszy spot kitesurfingowy na wyspie Møn, położony na południu Bałtyku. Łagodnie opadająca piaszczysta plaża umożliwia łatwe wejście do wody po obu stronach falochronu portowego. Wiatry z zachodniego i południowo-zachodniego sektora generują chop oraz małe i średnie fale na piaszczystych ławicach. Na miejscu działa lokalna szkoła surfingu z kawiarnią, co czyni ten spot przyjaznym dla początkujących, choć zaleca się przybycie z pomocnikiem ze względu na brak stałej asysty na plaży."
+    }
   }
 ]

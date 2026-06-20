@@ -6,21 +6,19 @@ name needs disambiguation (see notes).
 
 ## Germany (`country` = "Germany")
 
-- [ ] **Tatort Hawaii** — kite spot near Heiligenhafen / Großenbrode, Baltic
-      coast (a named local kite beach / school). Sea, flat-ish bay.
-      Best wind SW/W. Resolve exact beach + Windguru station.
-- [ ] **Berzdorfer See** — lake near Görlitz (Saxony), former open-cast mine.
-      Flat freshwater lake, thermal/gradient wind. Best wind SW/W. Inland.
-- [ ] **Ummaii** ⚠️ — likely a **misspelling**. Probably *Ummanz* (island west
-      of Rügen, Baltic — well-known flat-water kite area). **Resolve to Ummanz**
-      (or correct name) before creating; if unresolvable, flag and skip.
+- [x] **Tatort Hawaii** — resolved to Stein (Kiel Fjord), Schleswig-Holstein.
+      Windguru 500808. Best wind found W/NW/NE/E (fjord orientation; SW/S poor).
+- [ ] ~~**Berzdorfer See**~~ — **SKIPPED**: kitesurfing is legally banned there
+      (Saxon water law, fines up to €50,000); windsurf/wing/SUP only.
+- [x] **Ummaii** → resolved to **Ummanz (Suhrendorf)**, island west of Rügen.
+      Windguru 665105 (Suhrendorf, Ummaii), fallback 48115. Flat Bodden water.
 
 ## Denmark (`country` = "Denmark")
 
-- [ ] **Kitespot Farø** — Farø islands area (by the Farø bridges, Storstrømmen),
-      Zealand. Flat shallow water. Best wind W/SW. Verify launch + station.
-- [ ] **Møn / Klintholm Strand** — Møn island, near Klintholm Havn. Sea/bay.
-      Best wind W/SW/S. Note Møns Klint cliffs nearby (scenery, not launch).
+- [x] **Kitespot Farø** — causeway between Farø and Bogø, Storstrømmen, Zealand.
+      Windguru 137343. Flat shallow water over sandbanks.
+- [x] **Møn / Klintholm Strand** — Klintholm Havn, Møn island. Windguru 48088.
+      Baltic bay, chop/small waves. Møns Klint cliffs flagged as no-go in hazards.
 
 ## Research hints
 
@@ -31,6 +29,6 @@ name needs disambiguation (see notes).
 
 ## Done when
 
-- [ ] 4–5 entries appended (Ummaii only if resolved), JSON parses,
-      `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] 4 entries appended (Tatort Hawaii, Ummanz, Kitespot Farø, Møn/Klintholm);
+      Berzdorfer See skipped (kite ban). JSON parses, `./gradlew test` green.
+- [x] Checkboxes ticked here and in issue #141.
