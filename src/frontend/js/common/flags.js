@@ -18,6 +18,7 @@ export const COUNTRY_FLAGS = {
     'Spain': '🇪🇸',
     'Portugal': '🇵🇹',
     'Italy': '🇮🇹',
+    'Malta': '🇲🇹',
     'Greece': '🇬🇷',
     'France': '🇫🇷',
     'Germany': '🇩🇪',
