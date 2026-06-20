@@ -6,20 +6,28 @@ southern/Sicilian wave spots. Two names need disambiguation (see notes).
 
 ## Spots
 
-- [ ] **Reschensee (Lago di Resia)** — South Tyrol Alpine lake (the famous
+- [x] **Reschensee (Lago di Resia)** — South Tyrol Alpine lake (the famous
       submerged bell tower). Flat/choppy cold lake, thermal winds. Best wind
       N/S valley thermals. Inland — cold water, summer season.
-- [ ] **Grado – Pineta** — Friuli, northern Adriatic. Shallow flat lagoon/beach.
+      → added as `Reschensee (Lago di Resia)`, WG 274295 (fallback 71178).
+- [x] **Grado – Pineta** — Friuli, northern Adriatic. Shallow flat lagoon/beach.
       Best wind E (Bora-influenced) / SW. Beginner-friendly shallows.
-- [ ] **Lecce** — Puglia (likely San Cataldo / Frigole beaches near Lecce on the
+      → added as `Grado Pineta`, WG 49154.
+- [x] **Lecce** — Puglia (likely San Cataldo / Frigole beaches near Lecce on the
       Adriatic). Sea, chop/wave. Best wind N/NW. Resolve exact launch beach.
-- [ ] **Puzziteddu** — Sicily south coast (Mazara del Vallo area). Wave spot.
+      → added as `Frigole (Lecce)`, WG 196766 (fallback 120159).
+- [x] **Puzziteddu** — Sicily south coast (Mazara del Vallo area). Wave spot.
       Best wind SW/W/S. Hazards: shore break, rocks. Verify Windguru station.
-- [ ] **Capo Feto** — Sicily south coast (near Mazara del Vallo, by Puzziteddu).
+      → added as `Puzziteddu`, WG 49081 (fallback 889235).
+- [x] **Capo Feto** — Sicily south coast (near Mazara del Vallo, by Puzziteddu).
       Flat-water lagoon behind the beach + wave outside. Best wind SW/W.
-- [ ] **Tranquinia** ⚠️ — likely a **misspelling**. Probably *Tonnara di
+      → added as `Capo Feto`, WG 331569.
+- [x] **Tranquinia** ⚠️ — likely a **misspelling**. Probably *Tonnara di
       Bonagia* or *Marsala / Stagnone (Tranquillo?)* in Sicily — **resolve the
       real spot name first**, then create. If unresolvable, flag and skip.
+      → **SKIPPED**: unresolvable misspelling, zero matches in any kite source;
+      no verifiable Windguru station. (Stagnone/Marsala already covered by
+      existing `Lo Stagnone`.)
 
 ## Research hints
 
@@ -32,6 +40,6 @@ southern/Sicilian wave spots. Two names need disambiguation (see notes).
 
 ## Done when
 
-- [ ] 5–6 entries appended (Tranquinia only if resolved), JSON parses,
-      `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] 5–6 entries appended (Tranquinia only if resolved), JSON parses,
+      `./gradlew test` green. → 5 added (Tranquinia skipped).
+- [x] Checkboxes ticked here and in issue #141.

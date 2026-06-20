@@ -3370,5 +3370,150 @@
       "description": "Wissant to jeden z pięciu najwietrzniejszych spotów we Francji — rozległa, 12-kilometrowa piaszczysta zatoka między Przylądkiem Gris-Nez a Przylądkiem Blanc-Nez na Côte d'Opale. Efekt tunelu między dwoma kredowymi przylądkami może wzmocnić wiatr o 5-15 węzłów ponad prognozę, generując potężne fale atlantyckie i krótką falę. Najlepsze sesje przypadają na niski lub średni poziom morza przy wietrze SW lub W; opadający poziom morza przy wietrze SW to klasyczna kombinacja wissantowa. Kitesurferzy startują po prawej stronie strefy kąpielowej, a popularny zjazd z wiatrem na dystansie 8 km do Sangatte jest możliwy przy silnym W lub SW.",
       "llmComment": "Amplituda pływów jest tu ekstremalna — planuj sesję z uwzględnieniem pływów. Podczas pełni morza plaża może prawie całkowicie zniknąć wzdłuż promenady, co sprawia, że start lub lądowanie z latawcem jest niezwykle niebezpieczne. Prąd zmienia kierunek wraz z pływem: przy opadającym morzu i wietrze SW płynie od prawej do lewej (pomagając utrzymać kąt do wiatru), a przy rosnącym — od lewej do prawej. Przy wietrze NE rosnący prąd równoważy znoszenie w lewo. Zawsze sprawdzaj lokalne tabele pływów i planuj drogę ucieczki. Efekt venturi między przylądkami sprawia, że rzeczywisty wiatr na wodzie jest często o 5-15 węzłów silniejszy niż prognozy GFS — dobieraj latawiec konserwatywnie. Wiatr SE jest całkowicie odlądowy, bez służb ratowniczych; nigdy nie wypływaj przy SE."
     }
+  },
+  {
+    "name": "Reschensee (Lago di Resia)",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/274295",
+    "windguruFallbackUrl": "https://www.windguru.cz/71178",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lago_di_resia",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.8056,10.5375",
+    "spotInfo": {
+      "type": "Alpine lake, flat to light chop",
+      "bestWind": "S, N",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass (Kitewiese — designated club meadow, only permitted launch area)",
+      "hazards": "International kitesurfing license and private liability insurance mandatory; call rescue services (118) before entering water; rocky embankment at water entry; boat docks and buoys on lake; keep clear of dam outflow at eastern end; tube kites require a 5th-line restart system; paid daily or season ticket required",
+      "season": "May-October",
+      "description": "Reschensee (Lago di Resia) is a high-altitude Alpine lake at 1,500 m above sea level in South Tyrol, Italy, famous for the submerged medieval bell tower rising from the water. The lake sits in a narrow mountain valley that acts as a natural wind funnel — southerly thermals are very consistent and strong (3–6 Bft), while northerlies are gustier and colder. Due to its strict access rules, license requirements, and cold water year-round, it is best suited for experienced riders."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro alpejskie, płaska woda do lekkiego zafalowania",
+      "bestWind": "S, N",
+      "waterTemp": "8-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Trawa (Kitewiese — wyznaczona łąka klubowa, jedyne dozwolone miejsce startu)",
+      "hazards": "Wymagana międzynarodowa licencja kitesurfingowa i ubezpieczenie OC; obowiązek powiadomienia służb ratowniczych (118) przed wejściem na wodę; skalista skarpa przy wejściu do wody; przystanie i boje na jeziorze; omijać odpływ przy zaporze od strony wschodniej; kite tubowe wymagają systemu restartu 5-linowego; wymagany płatny bilet dzienny lub sezonowy",
+      "season": "Maj-Październik",
+      "description": "Reschensee (Lago di Resia) to wysokogórskie jezioro alpejskie na wysokości 1500 m n.p.m. w Południowym Tyrolu we Włoszech, słynące z zanurzonej średniowiecznej dzwonnicy wyłaniającej się z tafli wody. Jezioro leży w wąskiej górskiej dolinie działającej jak naturalny tunel wiatrowy — termiki południowe są bardzo stałe i silne (3–6 Bf), natomiast wiatry północne są bardziej porywiste i zimne. Ze względu na rygorystyczne przepisy dostępu, wymogi licencyjne i zimną wodę przez cały rok, jest to spot przeznaczony przede wszystkim dla doświadczonych kitesurferów."
+    }
+  },
+  {
+    "name": "Grado Pineta",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/49154",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/grado_pineta",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=45.6767,13.4313",
+    "spotInfo": {
+      "type": "Lagoon, shallow flat water",
+      "bestWind": "NE, SW",
+      "waterTemp": "13-26°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach with grass area at Punta Barbacale",
+      "hazards": "Tidal variations (60-80cm) can make shallows unrideable at low tide, crowded with swimmers and boats in summer, seaweed, kitesurfing restricted during bathing season",
+      "season": "April-October",
+      "description": "Grado Pineta is a northern Adriatic lagoon spot on the eastern tip of Pineta beach at Punta Barbacale. The NE Bora wind creates butter-flat water in the lee of the small harbour, ideal for freestyle and airstyle, while SW thermals drive summer sessions. Beginners benefit from extensive shallow lagoon shallows; advanced riders seek out the flat water pocket for unhooked tricks."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płytka płaska woda",
+      "bestWind": "NE, SW",
+      "waterTemp": "13-26°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża z trawiastym obszarem przy Punta Barbacale",
+      "hazards": "Wahania pływów (60-80 cm) mogą uniemożliwić pływanie przy niskim stanie wody, tłoczno z pływakami i łodziami latem, wodorosty, kitesurfing zabroniony w sezonie kąpielowym",
+      "season": "Kwiecień-Październik",
+      "description": "Grado Pineta to spot lagunowy na północnym Adriatyku, położony na wschodnim krańcu plaży Pineta przy Punta Barbacale. Wiatr Bora z NE tworzy idealnie płaską wodę w osłonie małego portu, doskonałą do freestyle'u i airstyle'u, podczas gdy termiczne wiatry SW napędzają letnie sesje. Początkujący korzystają z rozległych płytkich obszarów laguny, a zaawansowani poszukują kieszeni płaskiej wody do jazdy bez haka."
+    }
+  },
+  {
+    "name": "Frigole (Lecce)",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/196766",
+    "windguruFallbackUrl": "https://www.windguru.cz/120159",
+    "windfinderUrl": "https://www.windfinder.com/forecast/san_cataldo",
+    "webcamUrl": "https://www.skylinewebcams.com/en/webcam/italia/puglia/lecce/marina-san-cataldo.html",
+    "locationUrl": "https://www.google.com/maps?q=40.4249,18.2584",
+    "spotInfo": {
+      "type": "Sea, Adriatic, flat to choppy",
+      "bestWind": "NW, N",
+      "waterTemp": "15-26°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach with authorized kite corridor (Molo 13 lido)",
+      "hazards": "Lagoon bottom not clean — water shoes recommended; Venturi effect in Otranto Channel adds 3-5 kts above forecast; occasional crowding",
+      "season": "May-September",
+      "description": "Wild Adriatic beach near Lecce, midway between Casalabate and San Cataldo, with a dedicated kite launch corridor at Molo 13. The NW Mistral (Tramontana) blows on roughly 25 days per month from May to September at 13-22 knots, running parallel to the coast and keeping seas surprisingly flat even in stronger winds. A secondary SE thermal also activates in summer at 14-20 knots on starboard tack."
+    },
+    "spotInfoPL": {
+      "type": "Morze, Adriatyk, płaska do umiarkowanej wody",
+      "bestWind": "NW, N",
+      "waterTemp": "15-26°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta z autoryzowanym korytarzem kite (lido Molo 13)",
+      "hazards": "Dno laguny jest zanieczyszczone — zalecane buty do wody; efekt Venturiego w Kanale Otranto dodaje 3-5 węzłów ponad prognozę; sporadyczne zatłoczenie",
+      "season": "Maj-Wrzesień",
+      "description": "Dzika plaża adriatycka koło Lecce, w połowie drogi między Casalabate a San Cataldo, z dedykowanym korytarzem startowym dla kitesurferów przy lido Molo 13. Mistral z NW (Tramontana) wieje przez około 25 dni w miesiącu od maja do września z prędkością 13-22 węzłów, wiejąc równolegle do brzegu i utrzymując relatywnie płaskie warunki na wodzie nawet przy silnym wietrze. Latem pojawia się też termiczny wiatr z SE o sile 14-20 węzłów na prawym halsie."
+    }
+  },
+  {
+    "name": "Puzziteddu",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/49081",
+    "windguruFallbackUrl": "https://www.windguru.cz/889235",
+    "windfinderUrl": "https://www.windfinder.com/forecast/mazara_del_vallo_sicily_italy",
+    "webcamUrl": "https://www.puzziteddu.it/general-4",
+    "locationUrl": "https://www.google.com/maps?q=37.5610,12.6768",
+    "spotInfo": {
+      "type": "Sea, waves",
+      "bestWind": "SW, W, S, NW",
+      "waterTemp": "16-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Shore break, rocks (Reef Point to the east, Granito Point to the west), strong currents, sea gets deep 30m from shore",
+      "season": "October-May",
+      "description": "Puzziteddu is one of the best wave kite spots in Sicily, set on a 200-300 m sandy bay flanked by two offshore reefs that shape the break depending on wind direction. The Maestrale (NW) and Ponente (W) winds produce powerful, rideable waves up to 4 m in autumn and winter. Summer brings lighter thermals and more relaxed conditions for freestyle."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale",
+      "bestWind": "SW, W, S, NW",
+      "waterTemp": "16-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Przybój przy brzegu, skały (Reef Point na wschodzie, Granito Point na zachodzie), silne prądy, głęboka woda już 30 m od brzegu",
+      "season": "Październik-Maj",
+      "description": "Puzziteddu to jeden z najlepszych spotów falowych na Sycylii – zatoka o długości 200–300 m z piaszczystym brzegiem, flankowana przez dwie podmorskie rafy kształtujące falę zależnie od kierunku wiatru. Wiatry Maestrale (NW) i Ponente (W) generują fale do 4 m jesienią i zimą. Latem lżejsze bryzy termiczne sprzyjają bardziej spokojnym warunkom."
+    }
+  },
+  {
+    "name": "Capo Feto",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/331569",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sicily_capo_feto",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=37.6598895,12.5277185",
+    "spotInfo": {
+      "type": "Lagoon, flat water; open sea waves outside",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "14-27°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, no facilities",
+      "hazards": "Two rocks near the lighthouse (buoy-marked); wind slightly offshore with Maestrale; Tramontana gusty and not recommended",
+      "season": "April-October",
+      "description": "Capo Feto is a protected natural reserve on the south-western tip of Sicily, just south of Mazara del Vallo. The shallow bay behind the sandy dunes offers crystal-clear, almost always flat water ideal for freestyle and foiling, while the outside beach breaks with SW and NW winds. Wind blows reliably with Maestrale (NW) and Ponente (W); Scirocco (SW/SE) is also possible but check offshore angle with locals before launching."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda; fale na otwartym morzu",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "14-27°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta, brak infrastruktury",
+      "hazards": "Dwie skały przy latarni (oznaczone boją); wiatr lekko z lądu przy Maestrale; Tramontana porywista i niezalecana",
+      "season": "Kwiecień-Październik",
+      "description": "Capo Feto to chroniony rezerwat przyrody na południowo-zachodnim cyplu Sycylii, tuż na południe od Mazara del Vallo. Płytka zatoka za piaszczystymi wydmami oferuje krystalicznie czystą, niemal zawsze płaską wodę idealną do freestyleu i foilingu, podczas gdy po zewnętrznej stronie plaży łamią się fale przy wiatach z SW i NW. Wiatr wieje niezawodnie przy Maestrale (NW) i Ponente (W); Scirocco (SW/SE) jest również możliwy, ale przed wejściem do wody warto skonsultować kąt odchylenia wiatru z lokalsami."
+    }
   }
 ]
