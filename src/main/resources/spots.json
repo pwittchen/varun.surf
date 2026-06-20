@@ -3891,5 +3891,150 @@
       "season": "Kwiecień-Październik",
       "description": "Conil de la Frontera leży na Costa de la Luz pomiędzy Kadyksem a Tarifą, oferując szerokie atlantyckie plaże z dwoma charakterystycznymi wiatrami. Termiczny Poniente (W/NW) pojawia się każdego popołudnia — lekki i stały, idealny dla początkujących. Silniejszy Levante (E) wieje ze wschodu i jest tutaj boczno-odlądowy, zalecany wyłącznie dla doświadczonych kitesurferów. Płytkie ujście rzeki Río Salado zapewnia płaską wodę do nauki, natomiast otwarte odcinki plaży oferują krótką falę i chop."
     }
+  },
+  {
+    "name": "Bloubergstrand (Big Bay)",
+    "country": "South Africa",
+    "windguruUrl": "https://www.windguru.cz/104110",
+    "windguruFallbackUrl": "https://www.windguru.cz/568677",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bloubergstrand_big_bay",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-33.7914,18.4584",
+    "spotInfo": {
+      "type": "Sea, open beach, waves and chop, strong Cape Doctor wind",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, Big Bay, Table View",
+      "hazards": "Strong gusty Cape Doctor wind (25+ knots), cold Atlantic water (wetsuit required), wave shore break, theft from parked cars",
+      "season": "November-March",
+      "description": "Big Bay at Bloubergstrand is Cape Town's most iconic kitesurfing location, framed by a direct view of Table Mountain and Robben Island. The Cape Doctor — a fierce SE trade wind — powers the bay from November through March, averaging 25+ knots on peak afternoons with riders commonly flying 7–9 m kites. Kite Beach and Dolphin Beach, roughly 750 m south, share this same Windguru forecast point; Big Bay is the northernmost and most exposed of the three Table View launches."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarta plaża, fale i chop, silny wiatr Cape Doctor",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża, Big Bay, Table View",
+      "hazards": "Silny i porywisty wiatr Cape Doctor (25+ węzłów), zimna woda Atlantyku (wymagany pianka), przybój przy brzegu, kradzieże z samochodów",
+      "season": "Listopad-Marzec",
+      "description": "Big Bay w Bloubergstrand to najbardziej ikoniczne miejsce do kitesurfingu w Kapsztadzie, z widokiem na Górę Stołową i Wyspę Robben. Cape Doctor — gwałtowny wiatr południowo-wschodni — zasilał zatokę od listopada do marca, osiągając średnio 25+ węzłów po południu, gdzie kiterzy najczęściej latają na latawcach 7–9 m. Kite Beach i Dolphin Beach, około 750 m na południe, dzielą ten sam punkt prognozy Windguru; Big Bay to najbardziej wysunięty na północ i najbardziej wystawiony z trzech startowisk w Table View."
+    }
+  },
+  {
+    "name": "Kite Beach (Table View)",
+    "country": "South Africa",
+    "windguruUrl": "https://www.windguru.cz/568677",
+    "windguruFallbackUrl": "https://www.windguru.cz/104110",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kitebeach",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-33.8241,18.4803",
+    "spotInfo": {
+      "type": "Sea, open beach, waves and chop",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach with kite school infrastructure, Coral Road, Table View",
+      "hazards": "Strong gusty Cape Doctor wind, cold Atlantic water (4/3 mm wetsuit required), wave shore break, crowded in peak season, theft from parked cars",
+      "season": "November-March",
+      "description": "Kite Beach is the dedicated kite hub of Table View, sitting between Dolphin Beach to the north and the southern end of the Table View beachfront. It hosts kite schools, gear rental, a rescue boat, and beach assistance, making it the best-equipped launch on the Cape Town strip. The wind and swell forecast is effectively identical to Big Bay 750 m to the north — all three Table View beaches share the same Cape Doctor SE/S wind pattern, and both Windguru forecast points cover this stretch."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarta plaża, fale i chop",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża z infrastrukturą szkoły kitesurfingu, Coral Road, Table View",
+      "hazards": "Silny i porywisty wiatr Cape Doctor, zimna woda Atlantyku (wymagana pianka 4/3 mm), przybój przy brzegu, tłok w szczycie sezonu, kradzieże z samochodów",
+      "season": "Listopad-Marzec",
+      "description": "Kite Beach to dedykowane centrum kitesurfingu w Table View, położone między Dolphin Beach na północy a południowym krańcem nabrzeża Table View. Oferuje szkoły kitesurfingu, wypożyczalnię sprzętu, łódź ratowniczą i pomoc na plaży — jest to najlepiej wyposażone startowisko na przybrzeżnym paśmie Kapsztadu. Prognoza wiatru i falowania jest praktycznie identyczna jak na Big Bay, 750 m na północ — wszystkie trzy plaże Table View korzystają z tego samego wzorca wiatru SE/S Cape Doctor, a oba punkty Windguru obejmują ten odcinek."
+    }
+  },
+  {
+    "name": "Dolphin Beach",
+    "country": "South Africa",
+    "windguruUrl": "https://www.windguru.cz/206959",
+    "windguruFallbackUrl": "https://www.windguru.cz/568677",
+    "windfinderUrl": "https://www.windfinder.com/forecast/dolphin_beach",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-33.8296,18.4799",
+    "spotInfo": {
+      "type": "Sea, open beach, waves and chop",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, Table View, between Kite Beach and Sunset Beach",
+      "hazards": "Strong gusty Cape Doctor wind, cold Atlantic water (wetsuit required), wave shore break, theft from parked cars",
+      "season": "November-March",
+      "description": "Dolphin Beach is the southernmost of the three principal Table View kite launches, located between Kite Beach to the north and Sunset Beach beyond. It offers slightly more open water than Kite Beach and is popular with riders who prefer a quieter entry point with fewer kite schools on the sand. The wind and forecast are shared with the adjacent Table View and Bloubergstrand Windguru stations — all three beaches ride the same powerful Cape Doctor SE trades."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarta plaża, fale i chop",
+      "bestWind": "SE, S",
+      "waterTemp": "12-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża, Table View, między Kite Beach a Sunset Beach",
+      "hazards": "Silny i porywisty wiatr Cape Doctor, zimna woda Atlantyku (wymagana pianka), przybój przy brzegu, kradzieże z samochodów",
+      "season": "Listopad-Marzec",
+      "description": "Dolphin Beach to najbardziej wysunięte na południe z trzech głównych startowisk kitesurfingowych w Table View, położone między Kite Beach na północy a Sunset Beach dalej na południe. Oferuje nieco więcej otwartej wody niż Kite Beach i jest popularne wśród kiterów preferujących spokojniejsze wejście z mniejszą liczbą szkół kitesurfingu na plaży. Prognoza wiatru jest wspólna z sąsiednimi stacjami Windguru Table View i Bloubergstrand — wszystkie trzy plaże korzystają z tych samych silnych wiatrów SE Cape Doctor."
+    }
+  },
+  {
+    "name": "Langebaan",
+    "country": "South Africa",
+    "windguruUrl": "https://www.windguru.cz/21691",
+    "windguruFallbackUrl": "https://www.windguru.cz/598547",
+    "windfinderUrl": "https://www.windfinder.com/forecast/langebaan",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-33.093,18.028",
+    "spotInfo": {
+      "type": "Lagoon, flat to light chop, sheltered shallow water",
+      "bestWind": "S, SE, SW",
+      "waterTemp": "17-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at Main Beach (central Langebaan) or Shark Bay (shallow flats, north of town)",
+      "hazards": "Tidal currents up to 8 knots — boards can be swept away; space at Shark Bay limited at high tide; crowded kite zones in peak season",
+      "season": "November-March",
+      "description": "Langebaan Lagoon, roughly 100 km north of Cape Town on the West Coast, is South Africa's premier flat-water kite destination and widely regarded as one of the best beginner spots in Africa. The vast shallow lagoon — protected from Atlantic swells — delivers side-onshore S/SE wind of 10–36 knots throughout the summer season, with a Venturi effect between the western peninsula and the mainland amplifying the breeze. Main Beach in the village centre offers a rescue boat and more room to kite, while Shark Bay to the north provides knee-deep water perfect for learning and freestyle."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska do lekkiego chopu, płytka i osłonięta woda",
+      "bestWind": "S, SE, SW",
+      "waterTemp": "17-24°C",
+      "experience": "Początkujący do zaawansowanych",
+      "launch": "Piaszczysta plaża przy Main Beach (centrum Langebaan) lub Shark Bay (płytkie wody, na północ od miasta)",
+      "hazards": "Prądy pływowe do 8 węzłów — deski mogą zostać porwane przez prąd; przestrzeń na Shark Bay ograniczona podczas przypływu; tłok w strefach kitesurfingu w szczycie sezonu",
+      "season": "Listopad-Marzec",
+      "description": "Laguna Langebaan, położona około 100 km na północ od Kapsztadu na Zachodnim Wybrzeżu, to najlepsze płaskowodne miejsce do kitesurfingu w Południowej Afryce, powszechnie uznawane za jeden z najlepszych spotów dla początkujących w Afryce. Rozległa, płytka laguna — chroniona przed falami Atlantyku — dostarcza boczno-nadbrzeżny wiatr S/SE o prędkości 10–36 węzłów przez całe lato, z efektem Venturiego między zachodnią półwyspem a lądem stałym wzmacniającym bryzę. Main Beach w centrum wsi dysponuje łodzią ratowniczą i większą przestrzenią do jazdy, natomiast Shark Bay na północy oferuje wodę sięgającą do kolan — idealna do nauki i freestylu."
+    }
+  },
+  {
+    "name": "Misty Cliffs",
+    "country": "South Africa",
+    "windguruUrl": "https://www.windguru.cz/208280",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/misty_cliffs",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-34.1817,18.3777",
+    "spotInfo": {
+      "type": "Sea, Atlantic wave spot, powerful open-ocean swell",
+      "bestWind": "SE, S, SW",
+      "waterTemp": "12-16°C",
+      "experience": "Advanced to Expert",
+      "launch": "Whitsands beach (sandy launch just north of the rocky Misty Cliffs headland, near Scarborough)",
+      "hazards": "Rocky cliffs on both sides of the bay, massive swell up to 6 m in strong SE, powerful rip currents, great white shark presence, kite relaunch extremely difficult in big surf — do not ride alone",
+      "season": "November-March",
+      "description": "Misty Cliffs on the Atlantic side of the Cape Peninsula, near Scarborough, is one of the most powerful and dangerous kite wave spots in South Africa. Riders launch from the adjacent sandy Whitsands beach and ride into the Misty Cliffs bay, where the Cape Doctor SE wind generates clean but massive hollow waves against a backdrop of rocky headlands. This is strictly an advanced-to-expert spot: failed relaunches near the cliffs or in rip currents can have life-threatening consequences, and great white sharks have been sighted in the area."
+    },
+    "spotInfoPL": {
+      "type": "Morze, atlantycki spot falowy, potężna fala oceaniczna",
+      "bestWind": "SE, S, SW",
+      "waterTemp": "12-16°C",
+      "experience": "Zaawansowany do ekspertów",
+      "launch": "Plaża Whitsands (piaszczyste startowisko tuż na północ od skalistego przylądka Misty Cliffs, koło Scarborough)",
+      "hazards": "Skaliste klify po obu stronach zatoki, ogromna fala do 6 m przy silnym SE, silne prądy odśrodkowe, obecność rekinów białych, ponowne odpalenie latawca bardzo trudne przy dużej fali — nie jeździć samotnie",
+      "season": "Listopad-Marzec",
+      "description": "Misty Cliffs na atlantyckiej stronie Półwyspu Przylądkowego, koło Scarborough, to jedno z najpotężniejszych i najbardziej niebezpiecznych miejsc do kitesurfingu falowego w Południowej Afryce. Kiterzy startują z sąsiedniej piaszczystej plaży Whitsands i wpływają do zatoki Misty Cliffs, gdzie wiatr SE Cape Doctor generuje czyste, ale ogromne puste fale na tle skalistych przylądków. To spot wyłącznie dla zaawansowanych i ekspertów: nieudane odpalenie latawca przy klifach lub w prądach może mieć zagrażające życiu konsekwencje, a w okolicy odnotowano obecność rekinów białych."
+    }
   }
 ]

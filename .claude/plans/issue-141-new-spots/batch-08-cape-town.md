@@ -6,15 +6,15 @@ wind (summer Nov–Mar). **Overlap risk** — see note before creating.
 
 ## Spots
 
-- [ ] **Bloubergstrand (Big Bay)** — Table View shoreline, Table Mountain view.
+- [x] **Bloubergstrand (Big Bay)** — Table View shoreline, Table Mountain view.
       Sea, wave/chop. Best wind SE/S. Iconic launch.
-- [ ] **Kite Beach** — Table View, the dedicated kite launch just south of
+- [x] **Kite Beach** — Table View, the dedicated kite launch just south of
       Dolphin Beach. Sea. Best wind SE/S.
-- [ ] **Dolphin Beach** — Table View, between Big Bay and Kite Beach. Sea.
+- [x] **Dolphin Beach** — Table View, between Big Bay and Kite Beach. Sea.
       Best wind SE/S.
-- [ ] **Langebaan** — West Coast lagoon (~1h north). Large flat shallow lagoon —
+- [x] **Langebaan** — West Coast lagoon (~1h north). Large flat shallow lagoon —
       beginner paradise. Best wind S/SW/SE. Distinct from Table View spots.
-- [ ] **Misty Cliffs** — Cape Peninsula (near Scarborough/Kommetjie). Wave spot,
+- [x] **Misty Cliffs** — Cape Peninsula (near Scarborough/Kommetjie). Wave spot,
       rocky, advanced. Best wind SE/S. Hazards: rocks, currents, sharks.
 
 ## ⚠️ Overlap check (do this first)
@@ -36,6 +36,6 @@ Document the decision in the entries; differentiate by exact launch coords.
 
 ## Done when
 
-- [ ] Entries appended (3–5 depending on overlap decision), JSON parses,
-      `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] Entries appended (5 spots — all three Table View launches kept distinct
+      with their own Windguru stations), JSON parses, `./gradlew test` green.
+- [x] Checkboxes ticked here and in issue #141.
