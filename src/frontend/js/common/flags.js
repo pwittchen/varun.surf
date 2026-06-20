@@ -36,8 +36,13 @@ export const COUNTRY_FLAGS = {
     'Chile': '🇨🇱',
     'USA': '🇺🇸',
     'Namibia': '🇳🇦',
+    'South Africa': '🇿🇦',
+    'Tanzania': '🇹🇿',
     'Mexico': '🇲🇽',
-    'Costa Rica': '🇨🇷'
+    'Costa Rica': '🇨🇷',
+    'Turks and Caicos': '🇹🇨',
+    'Sri Lanka': '🇱🇰',
+    'Vietnam': '🇻🇳'
 };
 
 export function getCountryFlag(country) {
