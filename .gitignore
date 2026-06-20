@@ -51,3 +51,6 @@ src/main/resources/static/*
 
 ### Claude Code config
 .claude/settings.local.json
+
+### Playwright
+.playwright-mcp/
