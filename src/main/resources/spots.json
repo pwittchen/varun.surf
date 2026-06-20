@@ -3215,5 +3215,160 @@
       "description": "Lac de Serre-Ponçon to jeden z największych sztucznych zbiorników wodnych w Europie Zachodniej, położony na wysokości 780 m n.p.m. w Górnych Alpach. Niezawodny termik narasta codziennie od około 10:30, osiągając siłę 4-5 Beauforta wczesnym popołudniem i utrzymując się do zachodu słońca — warunki tak regularne, że kitesurferzy mówią, że można według nich nastawiać zegarek. Główny obszar do kitesurfingu to Plage des Eaux Douces koło Crots, z długim trawiastym pasem startowym i siedzibą szkoły kite Altitude Kite.",
       "llmComment": "Poranki są zwykle spokojne i płaskie — idealne na SUP lub foiling. Termik W/NW uruchamia się około 10:30–11:00 i osiąga szczyt wczesnym popołudniem. Woda pozostaje zimna na początku sezonu (piankostrój niezbędny w maju-czerwcu); lipiec i sierpień to najcieplejsze miesiące (~20-22°C). Burze mogą rozwijać się błyskawicznie nad otaczającymi górami — śledź prognozy uważnie i zejdź z wody przy pierwszych oznakach chmur burzowych."
     }
+  },
+  {
+    "name": "Île de Noirmoutier",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48514",
+    "windguruFallbackUrl": "https://www.windguru.cz/48515",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ile_de_noirmoutier_la_gueriniere",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.9033,-2.1574",
+    "spotInfo": {
+      "type": "Sea, tidal lagoon and sandflats, flat water at low tide",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "10-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach (Barbâtre / Les Boucholeurs); separate zone at La Guérinière on east coast",
+      "hazards": "Strong Atlantic tidal range (4-5 m coefficient); exposed mussel-farming stakes (bouchots) at low tide; Fromentine passage has fast tidal currents and commercial ferry traffic; kiting restricted to designated zones May 15–Sep 15; cold water requires full wetsuit most of the year",
+      "season": "April-October",
+      "description": "Île de Noirmoutier is a Vendée tidal island accessible by bridge or the famous submersible Passage du Gois causeway. The south end (Barbâtre / Boucholeurs) is the island's main kite zone: a broad sweep of fine sand backed by shallow lagoon that turns glassy and chest-deep at mid-tide — perfect for beginners and foilers. The west coast (La Luzéronde, Les Sableaux) offers a more open Atlantic fetch for freeriders in W/NW wind, while the sheltered east side near La Guérinière delivers flat water in N/NE. All sessions must be planned around the 4–5 m tidal range; a local tide table is essential, and the best windows are roughly 2 hours either side of mid-tide.",
+      "llmComment": "The island has four distinct kite zones with completely different characters depending on wind direction and tide: Barbâtre/Boucholeurs (south, beginners, any wind), La Guérinière (east, flat water in N-NE), Les Sableaux (east lagoon, N-SE), and La Luzéronde (west, NW-W sea). In summer (Jun 15–Sep 15), kiting is only permitted at Boucholeurs — check current bylaws each year as restrictions evolve. Atlantic water temperature stays cool even in August (~19°C); a 3/2 mm wetsuit is the minimum from June to September. Tidal coefficients above 90 bring strong rip currents through the Fromentine channel — stay well clear of that passage."
+    },
+    "spotInfoPL": {
+      "type": "Morze, pływowa laguna i piaszczyste ławice, płaska woda przy odpływie",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "10-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża (Barbâtre / Les Boucholeurs); osobna strefa przy La Guérinière na wschodnim wybrzeżu",
+      "hazards": "Duże pływy atlantyckie (współczynnik 4-5 m); tyczki hodowli małż (bouchots) odsłaniane podczas odpływu; przez Przejście Fromentine przepływają silne prądy pływowe i statki promowe; kitesurfing ograniczony do wyznaczonych stref 15 maja–15 września; zimna woda przez większość roku — wymagany kombinezon z pianki",
+      "season": "Kwiecień-Październik",
+      "description": "Île de Noirmoutier to pływowa wyspa w Wandei, dostępna mostem lub słynną zatapiającą się groblą Passage du Gois. Południowa część (Barbâtre / Boucholeurs) to główna strefa kitesurfingowa wyspy: rozległa plaża z płytką laguną, która przy połowie przypływu staje się lustrzana i sięga do piersi — idealna dla początkujących i foilerów. Zachodnie wybrzeże (La Luzéronde, Les Sableaux) oferuje otwarty atlantycki fetch dla freeriderów przy wietrze W/NW, natomiast osłonięta wschodnia strona koło La Guérinière daje płaską wodę przy wietrze N/NE. Każdą sesję należy zaplanować z uwzględnieniem pływów sięgających 4-5 m; lokalny kalendarz pływów jest niezbędny, a najlepsze okna to około 2 godziny przed i po połowie przypływu.",
+      "llmComment": "Wyspa posiada cztery różne strefy kitesurfingowe o zupełnie odmiennym charakterze w zależności od kierunku wiatru i pływu: Barbâtre/Boucholeurs (południe, dla początkujących, każdy wiatr), La Guérinière (wschód, płaska woda przy N-NE), Les Sableaux (wschodnia laguna, N-SE) i La Luzéronde (zachód, morze przy NW-W). Latem (15 czerwca – 15 września) kitesurfing jest dozwolony wyłącznie na Boucholeurs — sprawdzaj aktualne przepisy co roku, gdyż ograniczenia się zmieniają. Temperatura wody atlantyckiej pozostaje chłodna nawet w sierpniu (~19°C); kombinezon 3/2 mm to minimum od czerwca do września. Przy współczynnikach pływu powyżej 90 przez kanał Fromentine płyną silne prądy — trzymaj się z dala od tego przejścia."
+    }
+  },
+  {
+    "name": "Quiberon – Penthièvre",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/18",
+    "windguruFallbackUrl": "https://www.windguru.cz/904310",
+    "windfinderUrl": "https://www.windfinder.com/forecast/quiberon",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.554359,-3.131618",
+    "spotInfo": {
+      "type": "Ocean / Bay — waves on ocean side, flat water on bay side",
+      "bestWind": "W, SW (ocean side); E (bay side)",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Advanced (depends on side)",
+      "launch": "Sandy beach on both sides of isthmus; bay-side launch south of Penthièvre campsite",
+      "hazards": "Bay-side beach disappears entirely at high tide — tide window essential; oyster beds on bay side (water shoes recommended); bay-side kiting prohibited 29 May–11 September in south sector; ocean-side access restricted to technical launch zones in summer (not suitable for beginners/schools); Côte Sauvage beaches reserved for experts only due to strong currents and cliff-disturbed wind; strong tidal currents on both sides",
+      "season": "April-October",
+      "description": "Penthièvre is the narrowest point of the Quiberon Peninsula — a few hundred metres of sand separating two completely different kitesurf experiences. The ocean (west) side catches full Atlantic swell on W/SW winds and suits intermediate to advanced wave riders, while the bay (east) side delivers mirror-flat water in easterly conditions and is home to several kite schools for beginners. Tide planning is non-negotiable: on the bay side the launch beach can vanish completely at high water, and sessions on both sides must account for strong tidal currents that amplify quickly.",
+      "llmComment": "Penthièvre is one of Brittany's most practical kite destinations precisely because it offers two contrasting sessions within walking distance of each other. SW winds running 15-25 kts are the sweet spot on the ocean side — enough to generate proper swell without making the launch chaotic. On the bay side an E wind at 12-18 kts produces the flattest water on the entire peninsula, ideal for beginners and foilers. Always check the tide table before the session: on a large (coefficient 90+) tide the bay-side beach is completely submerged — head 500 m north to Plage des Sables Blancs instead. Penthièvre Campsite sits directly behind the bay beach and makes a convenient base. The FFVL beach zones are enforced in summer; riding outside them brings fines and risks losing access for everyone."
+    },
+    "spotInfoPL": {
+      "type": "Ocean / Zatoka — fale od strony oceanu, płaska woda od strony zatoki",
+      "bestWind": "W, SW (strona oceanu); E (strona zatoki)",
+      "waterTemp": "10-18°C",
+      "experience": "Od początkującego do zaawansowanego (zależnie od strony)",
+      "launch": "Plaża piaszczysta po obu stronach przesmyku; start od strony zatoki na południe od kempingu Penthièvre",
+      "hazards": "Plaża od strony zatoki całkowicie znika podczas wysokich wód — okno pływowe jest kluczowe; ostrygarnie od strony zatoki (zalecane buty do wody); kitesurfing po stronie zatoki zakazany od 29 maja do 11 września w sektorze południowym; dostęp do strefy od strony oceanu latem ograniczony do technicznych stref startu (nieodpowiednie dla początkujących i szkół); plaże Côte Sauvage zarezerwowane wyłącznie dla ekspertów ze względu na silne prądy i wiatr zaburzony przez klify; silne prądy pływowe po obu stronach",
+      "season": "Kwiecień-Październik",
+      "description": "Penthièvre to najwęższe miejsce Półwyspu Quiberon — kilkaset metrów piasku dzielące dwa zupełnie odmienne doświadczenia kitesurfingowe. Strona oceaniczna (zachodnia) łapie pełny atlantycki swell przy wiatrach W/SW i jest przeznaczona dla średniozaawansowanych i zaawansowanych, natomiast strona zatoki (wschodnia) przy wietrze wschodnim oferuje lustrzanie płaską wodę i jest domem dla kilku szkół kite dla początkujących. Planowanie sesji w oparciu o pływy jest absolutnie konieczne: od strony zatoki plaża startowa może całkowicie zniknąć podczas wysokiej wody, a silne prądy pływowe nasilają się szybko po obu stronach przesmyku.",
+      "llmComment": "Penthièvre to jedno z najbardziej praktycznych miejsc kitesurfingowych w Bretanii właśnie dlatego, że w zasięgu spaceru oferuje dwie kontrastowe sesje. Wiatry SW w zakresie 15-25 węzłów to złoty środek po stronie oceanu — wystarczające do generowania prawdziwego swellu bez chaosu w strefie startu. Po stronie zatoki wiatr E o sile 12-18 węzłów daje najgładszą wodę na całym półwyspie — idealną dla początkujących i foilerów. Zawsze sprawdzaj tablicę pływów przed sesją: przy dużym wspólczynniku (90+) plaża po stronie zatoki jest całkowicie zalana — kieruj się 500 m na północ na Plage des Sables Blancs. Kemping Penthièvre stoi bezpośrednio za plażą zatokową i stanowi wygodną bazę. Strefy FFVL są egzekwowane latem — jazda poza nimi grozi mandatem i ryzykiem utraty dostępu dla wszystkich."
+    }
+  },
+  {
+    "name": "La Baule / Pornichet",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/579",
+    "windguruFallbackUrl": "https://www.windguru.cz/48506",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_baule",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.27639,-2.41937",
+    "spotInfo": {
+      "type": "Sea, tidal bay — flat bassines at low tide, chop/waves at high tide",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-21°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach (Plage Benoît, Casino area; also Pornichet east end)",
+      "hazards": "Seawall and road dangerously close at high tide (50 m or less) — beginners should avoid high-tide sessions; submerged rocks and a jetty at the Pornichet (east) end of the bay; shells on beach (neoprene booties recommended); kitesurfing banned June 15–September 15 except in designated K13 summer channel before 10:00 and after 19:00; also banned on weekends during May bank holidays; high-coefficient tides create strong currents; shared water with catamarans, windsurfers, and swimmers",
+      "season": "April-October",
+      "description": "La Baule / Pornichet occupies a sweeping 9 km sandy bay on the Atlantic coast south of the Loire estuary, one of the longest beaches in Europe. At Plage Benoît (near the casino), low and mid-tide conditions expose famous tidal pools called bassines — mirror-flat water perfect for freestyle, foil, and learning. The Pornichet end of the bay is more exposed, serving up waves and shore break suited to experienced riders. Tidal range here is significant, so session timing around the tide is essential: mid-rising tide in a W or SW breeze is the sweet spot.",
+      "llmComment": "The Baie de La Baule is a tidal-planning spot first and foremost — the difference between low and high tide changes everything about the launch, water depth, and hazard profile. Best sessions are mid-rising tide in a W–SW breeze, which fills in reliably from afternoon through early evening during spring and autumn low-pressure systems. Summer thermal afternoons (June–September) deliver SW 12–18 kts most days around 16:00–19:00, but the official K13 kite channel is the only legal riding area between mid-June and mid-September. GlissEvolution and KiteCenter44 run schools from this beach; their seasonal knowledge of conditions and rule enforcement is worth engaging before your first session."
+    },
+    "spotInfoPL": {
+      "type": "Morze, zatoka pływowa — płaskie bassines przy odpływie, zafalowanie przy przypływie",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-21°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża (Plage Benoît, rejon kasyna; wschodni koniec Pornichet)",
+      "hazards": "Przy pełnym przypływie mur oporowy i droga niebezpiecznie blisko plaży (50 m lub mniej) — początkujący powinni unikać sesji podczas wysokiego stanu wody; zatopione skały i molo przy wschodnim końcu zatoki (Pornichet); muszelki na plaży (zalecane buty neoprenowe); kitesurfing zakazany 15 czerwca–15 września z wyjątkiem wyznaczonego kanału K13 (godziny: przed 10:00 i po 19:00); zakaz obowiązuje też w weekendy majowych długich weekendów; wysokie amplitudy pływowe powodują silne prądy; wspólna woda z katamaranami, windsurferami i pływakami",
+      "season": "Kwiecień-Październik",
+      "description": "La Baule / Pornichet zajmuje 9-kilometrową piaszczystą zatokę na atlantyckim wybrzeżu na południe od estuarium Loary — jedną z najdłuższych plaż w Europie. Przy Plage Benoît (okolice kasyna) odpływ i połowa przypływu odsłaniają słynne pływowe baseniki zwane bassines — lustrzanie płaska woda idealna do freestyle'u, foilingu i nauki kite. Wschodni koniec zatoki przy Pornichet jest bardziej eksponowany, oferując fale i shore break odpowiednie dla doświadczonych zawodników. Amplituda pływów jest tu znaczna, więc planowanie sesji pod pływy jest kluczowe: połowa przypływu przy wietrze W lub SW to złoty moment.",
+      "llmComment": "Baie de La Baule to przede wszystkim spot wymagający planowania pod pływy — różnica między odpływem a pełnym przypływem diametralnie zmienia charakter startu, głębokość wody i profil zagrożeń. Najlepsze sesje przypadają na połowę rosnącego przypływu przy wietrze W–SW, który niezawodnie wypełnia się od południa do wczesnego wieczoru w czasie jesienno-wiosennych niżów. Letnie termiki (czerwiec–wrzesień) przynoszą SW 12–18 węzłów zazwyczaj między 16:00 a 19:00, lecz jedynym legalnym miejscem jazdy między połową czerwca a połową września jest oficjalny kanał kite K13. Szkoły GlissEvolution i KiteCenter44 działają na tej plaży; ich sezonowa wiedza o warunkach i przepisach jest nieoceniona przed pierwszą sesją."
+    }
+  },
+  {
+    "name": "Saint-Malo – Le Sillon",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/489912",
+    "windguruFallbackUrl": "https://www.windguru.cz/112",
+    "windfinderUrl": "https://www.windfinder.com/forecast/saint_malo",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=48.6579,-2.0060",
+    "spotInfo": {
+      "type": "Sea, Atlantic / Channel coast, choppy to wave",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "7-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, Plage du Sillon (3 km beach below the walled city); designated kite zone in summer near the thermal baths",
+      "hazards": "Extreme tidal range up to 14 m — one of Europe's largest; rocks and reef submerged at high tide but exposed at low tide; dangerous shorebreak and surging water against the sea wall at high tide; powerful tidal currents near headlands and the channel; kite access restricted July–August when swimmers dominate; historic breakwaters and Fort National groyne create collision risk",
+      "season": "April-October (strongest wind October-March, but coldest water and highest risk)",
+      "description": "Plage du Sillon is the 3 km city beach of Saint-Malo, sweeping below the granite ramparts of the walled Intramuros. The spot sits on the English Channel where the tidal range reaches up to 14 m — among the highest in Europe — dramatically reshaping the beach between sessions: at low tide, vast flats open for freeride; at high tide, the sea pushes against the concrete promenade wall, compressing the launch space and amplifying shorebreak. Best conditions arrive with W to SW winds producing side-shore chop and small waves, while NW storms and Atlantic depressions can fire serious bump-and-jump. Riding here requires a confident self-rescue, solid upwind ability, and always checking the tide table before launching.",
+      "llmComment": "The tidal range at Saint-Malo is the defining variable — it can reach 13–14 m during equinox spring tides (coefficient 120+), leaving the beach unrecognisable between morning and afternoon sessions. Launch timing is everything: the two to three hours either side of low tide give the widest, flattest beach and the safest exit. At high tide, the beach may vanish entirely and the sea wall becomes a dangerous lee shore. NE winds produce the classic Breton thermal bump-and-jump session; W and SW winds are side-shore and the go-to for freeriding. Avoid N and NNW unless you are a strong wave rider — heavy Atlantic swell combines with tidal rip off the Ile du Grand Bé headland. Water temperature drops to 7–9°C in winter; a 5/4 mm wetsuit with hood, gloves, and boots is essential October through April."
+    },
+    "spotInfoPL": {
+      "type": "Morze, wybrzeże Atlantyku / Kanału La Manche, krótka fala do falowania",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "7-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża, Plage du Sillon (3 km plaży poniżej murowanego miasta); wyznaczona strefa kite latem w pobliżu term morskich",
+      "hazards": "Ekstremalny zasięg pływów do 14 m — jeden z największych w Europie; skały i rafy przykryte wodą podczas przypływu, odsłonięte podczas odpływu; niebezpieczny shorebreak i uderzenia fal o nadmorski mur podczas wysokiego stanu wody; silne prądy pływowe przy cyplu i kanale; dostęp dla kitesurferów ograniczony w lipcu–sierpniu gdy plażę zajmują pływacy; historyczne falochrony i ostróga fortu Grand Bé stwarzają ryzyko kolizji",
+      "season": "Kwiecień-Październik (najsilniejszy wiatr październik–marzec, ale najzimniejsza woda i największe ryzyko)",
+      "description": "Plage du Sillon to 3-kilometrowa miejska plaża Saint-Malo, rozciągająca się pod granitowymi murami obronnego centrum Intramuros. Spot leży na Kanale La Manche, gdzie zasięg pływów sięga do 14 m — jednych z największych w Europie — radykalnie zmieniając plażę między sesjami: podczas odpływu rozległe płaskie obszary otwierają się dla freeridu, podczas przypływu morze napiera na betonową promenadę, ściskając przestrzeń startową i potęgując shorebreak. Najlepsze warunki przynoszą wiatry z W do SW, generujące bok-szorowe zafalowanie i małe fale, natomiast sztormy z NW i atlantyckie niże potrafią wygenerować poważne warunki bump-and-jump. Jazda tutaj wymaga pewnego self-rescue, mocnej umiejętności żeglowania pod wiatr oraz bezwzględnego sprawdzenia tablicy pływów przed wyjściem na wodę.",
+      "llmComment": "Zasięg pływów w Saint-Malo to kluczowa zmienna — może sięgać 13–14 m podczas wiosennych syzygii (współczynnik pływowy 120+), sprawiając że plaża między poranną a popołudniową sesją wygląda zupełnie inaczej. Timing startu jest wszystkim: dwie do trzech godzin po obu stronach odpływu dają najszerszą, najgładszą plażę i najbezpieczniejsze wyjście. Przy wysokim stanie wody plaża może całkowicie zniknąć, a mur promenady staje się niebezpiecznym brzegiem zawietrznym. Wiatr NE daje klasyczną bretońską sesję termiczną bump-and-jump; W i SW to wiatry boczne i ulubione do freeridu. Unikaj N i NNW jeśli nie jesteś zaawansowanym riderem fal — ciężki atlantycki swell łączy się z prądem pływowym przy cyplu Île du Grand Bé. Temperatura wody spada do 7–9°C zimą; niezbędny piankostrój 5/4 mm z kapturem, rękawicami i butami od października do kwietnia."
+    }
+  },
+  {
+    "name": "Wissant",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/110",
+    "windguruFallbackUrl": "https://www.windguru.cz/21572",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wissant",
+    "webcamUrl": "https://www.skylinewebcams.com/en/webcam/france/hauts-de-france/wissant/plage.html",
+    "locationUrl": "https://www.google.com/maps?q=50.8887,1.6613",
+    "spotInfo": {
+      "type": "Sea, waves and chop (English Channel)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach, kite zone to the right of the bathing area (~200 m walk from car park on Boulevard Alfred Thiriez)",
+      "hazards": "Strong tidal currents (up to 11 kts drift) forcing a long upwind walk-back; beach narrows or disappears at high tide making launch very difficult; submerged shipwreck protruding from sandbank at mid-tide; powerful shorebreak at high tide; SE wind is offshore and gusty — avoid; kite zone restricted by buoys and flags during lifeguard hours (July–August); FFVL licence required",
+      "season": "September-April",
+      "description": "Wissant is one of France's top five high-wind spots, a sweeping 12 km sandy bay between Cap Gris-Nez and Cap Blanc-Nez on the Côte d'Opale. The funnelling effect between the two limestone capes can amplify wind by 5-15 knots above the forecast, generating powerful Atlantic-style waves and strong chop. Low to mid tide with a SW or W wind delivers the best sessions; the falling tide on a SW is the classic Wissant combination. Kiters launch to the right of the bathing zone and a popular 8 km downwind run to Sangatte is possible in strong W or SW conditions.",
+      "llmComment": "Tidal range is extreme here — plan your session around it. At high tide the beach can almost completely disappear along the promenade, making launching or landing with a kite extremely hazardous. The current reverses direction with the tide: it runs right-to-left on a falling tide in SW winds (helping keep you upwind) and left-to-right on a rising tide. In NE winds the rising tide balances the leftward drift. Always check local tide tables and plan an escape route. The venturi amplification between the two caps means the actual wind on the water is often 5-15 kts stronger than GFS forecasts — size your kite conservatively. SE winds are fully offshore with no rescue service; never launch in SE."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale i krótka fala (kanał La Manche)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "8-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża, strefa kite po prawej stronie strefy kąpielowej (~200 m spaceru od parkingu na Boulevard Alfred Thiriez)",
+      "hazards": "Silne prądy pływowe (do 11 węzłów znoszenia) wymuszające długi powrót pod wiatr; plaża zwęża się lub znika podczas pełni morza, poważnie utrudniając start; wrak statku wystający z ławicy piasku podczas średniego pływu; silny przybój podczas wysokiej wody; wiatr SE jest odlądowy i porywisty — nie wypływać; strefa kite ograniczona bojami i flagami w godzinach dyżuru ratowników (lipiec–sierpień); wymagana licencja FFVL",
+      "season": "Wrzesień-Kwiecień",
+      "description": "Wissant to jeden z pięciu najwietrzniejszych spotów we Francji — rozległa, 12-kilometrowa piaszczysta zatoka między Przylądkiem Gris-Nez a Przylądkiem Blanc-Nez na Côte d'Opale. Efekt tunelu między dwoma kredowymi przylądkami może wzmocnić wiatr o 5-15 węzłów ponad prognozę, generując potężne fale atlantyckie i krótką falę. Najlepsze sesje przypadają na niski lub średni poziom morza przy wietrze SW lub W; opadający poziom morza przy wietrze SW to klasyczna kombinacja wissantowa. Kitesurferzy startują po prawej stronie strefy kąpielowej, a popularny zjazd z wiatrem na dystansie 8 km do Sangatte jest możliwy przy silnym W lub SW.",
+      "llmComment": "Amplituda pływów jest tu ekstremalna — planuj sesję z uwzględnieniem pływów. Podczas pełni morza plaża może prawie całkowicie zniknąć wzdłuż promenady, co sprawia, że start lub lądowanie z latawcem jest niezwykle niebezpieczne. Prąd zmienia kierunek wraz z pływem: przy opadającym morzu i wietrze SW płynie od prawej do lewej (pomagając utrzymać kąt do wiatru), a przy rosnącym — od lewej do prawej. Przy wietrze NE rosnący prąd równoważy znoszenie w lewo. Zawsze sprawdzaj lokalne tabele pływów i planuj drogę ucieczki. Efekt venturi między przylądkami sprawia, że rzeczywisty wiatr na wodzie jest często o 5-15 węzłów silniejszy niż prognozy GFS — dobieraj latawiec konserwatywnie. Wiatr SE jest całkowicie odlądowy, bez służb ratowniczych; nigdy nie wypływaj przy SE."
+    }
   }
 ]
