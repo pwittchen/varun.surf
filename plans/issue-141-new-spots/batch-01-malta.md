@@ -6,12 +6,12 @@ then append the validated JSON to `src/main/resources/spots.json`.
 
 ## Spots
 
-- [ ] **Ramla Bay** — Gozo, Malta. NW-facing red-sand bay (Ramla l-Ħamra).
+- [x] **Ramla Bay** — Gozo, Malta. NW-facing red-sand bay (Ramla l-Ħamra).
       Sea, can be wavy. Best wind likely NW/W. Verify Windguru station for
       Gozo / Ramla; if none, nearest Gozo station as fallback.
-- [ ] **Għajn Tuffieħa** — NW Malta, near Golden Bay. Sea, wave/chop.
+- [x] **Għajn Tuffieħa** — NW Malta, near Golden Bay. Sea, wave/chop.
       Best wind likely NW. Note: bay shared with Golden Bay — pick exact launch.
-- [ ] **Gnejna Bay** — NW Malta, next bay south of Għajn Tuffieħa. Sea.
+- [x] **Gnejna Bay** — NW Malta, next bay south of Għajn Tuffieħa. Sea.
       Best wind likely NW/W. Verify it is actually kited (cliffs/rocks hazard).
 
 ## Research hints
@@ -24,5 +24,5 @@ then append the validated JSON to `src/main/resources/spots.json`.
 
 ## Done when
 
-- [ ] 3 entries appended, JSON parses, `./gradlew test` green.
-- [ ] Checkboxes ticked here and in issue #141.
+- [x] 3 entries appended, JSON parses, `./gradlew test` green.
+- [x] Checkboxes ticked here and in issue #141.

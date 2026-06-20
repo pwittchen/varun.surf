@@ -2977,5 +2977,89 @@
       "description": "Światowej sławy spot freestyle i big air z płaską wodą w lagunie. Słynny z silnych wiatrów Tramontany (300+ wietrznych dni w roku) i goszczący Mistrzostwa Świata w Kitesurfingu. Obszar chroniony Natura 2000. Nieodpowiedni dla początkujących ze względu na silne wiatry odlądowe i przeszkody w okolicy.",
       "llmComment": "Szczyt wiatrów w maju-czerwcu. Wiatr odlądowy wymaga silnej umiejętności pływania pod wiatr i samodzielnego ratowania. Wyciąg narciarski wodny w pobliżu wymaga ostrożności. Miejsce zawodów Lords of Tram."
     }
+  },
+  {
+    "name": "Ramla Bay",
+    "country": "Malta",
+    "windguruUrl": "https://www.windguru.cz/136946",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ramla_bay",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=36.0620,14.2830",
+    "spotInfo": {
+      "type": "Sea, open bay, light to moderate chop",
+      "bestWind": "NW, N, NE",
+      "waterTemp": "16-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Red sandy beach",
+      "hazards": "Rocky shoreline on both sides of bay, rips and undertow, swimmers — beach closed to kiting when swim zone buoys are up (roughly June–September), jellyfish with SW winds",
+      "season": "October-May",
+      "description": "Ramla l-Ħamra is Gozo's most iconic beach, known for its distinctive red sand. The bay opens to the north-northeast, making it work best under the Maltese Majjistral (NW) or Gregale (NE) winds. Kiting is restricted in summer when the beach fills with swimmers; the active window runs from autumn through spring with autumn Gregale events delivering the strongest sessions."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarta zatoka, lekkie do umiarkowanego zafalowanie",
+      "bestWind": "NW, N, NE",
+      "waterTemp": "16-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Czerwona plaża piaszczysta",
+      "hazards": "Skaliste brzegi po obu stronach zatoki, prądy i odbicia fal, pływacy — plaża zamknięta dla kitesurferów gdy wystawione są boje strefy kąpielowej (około czerwca–września), meduzy przy wiatrach z SW",
+      "season": "Październik-Maj",
+      "description": "Ramla l-Ħamra to najbardziej ikoniczna plaża na Gozo, znana z charakterystycznego czerwonego piasku. Zatoka otwarta jest na północny wschód, co sprawia, że najlepiej sprawdza się przy maltańskich wiatrach Majjistral (NW) lub Gregale (NE). Kitesurfing jest zabroniony latem, gdy plażę wypełniają pływacy; aktywny sezon trwa od jesieni do wiosny, a jesienne porywy Gregale przynoszą najmocniejsze sesje."
+    }
+  },
+  {
+    "name": "Għajn Tuffieħa",
+    "country": "Malta",
+    "windguruUrl": "https://www.windguru.cz/429085",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ghajn_tuffieha_bay",
+    "webcamUrl": "https://www.skylinewebcams.com/en/webcam/malta/malta/mellieha/golden-bay.html",
+    "locationUrl": "https://www.google.com/maps/search/?api=1&query=35.9292,14.3428",
+    "spotInfo": {
+      "type": "Sea, wave and chop",
+      "bestWind": "NW, WNW, W",
+      "waterTemp": "16-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, reached via 200 steps down a hillside staircase",
+      "hazards": "Rocky shoreline, rip currents and undertow, steep staircase access, jellyfish with SW winds, swimmers in summer, limited launch space",
+      "season": "October-May",
+      "description": "Għajn Tuffieħa is a sheltered red-sand bay on the northwest coast of Malta, 345 m south of Golden Bay. The Majjistral (NW) wind is the dominant force here, generating short choppy waves and occasional swell. Kitesurfing is prohibited during the summer bathing season; the viable window runs from October through May when conditions can be powerful and the beach quiet."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale i krótka fala",
+      "bestWind": "NW, WNW, W",
+      "waterTemp": "16-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plaża piaszczysta, dostęp schodami liczącymi ok. 200 stopni",
+      "hazards": "Skaliste wybrzeże, prądy wsteczne i podwodne, strome schody prowadzące na plażę, meduzy przy wietrze z SW, pływacy latem, ograniczone miejsce do startu",
+      "season": "Październik-Maj",
+      "description": "Għajn Tuffieħa to osłonięta zatoka z czerwoną piaszczystą plażą na północno-zachodnim wybrzeżu Malty, położona 345 m na południe od Golden Bay. Dominującym wiatrem jest Majjistral (NW), który generuje krótką falę i sporadyczny swell. Kitesurfing jest zabroniony w letnim sezonie kąpielowym; optymalny okres do jazdy to październik–maj, kiedy warunki mogą być wymagające, a plaża jest spokojna."
+    }
+  },
+  {
+    "name": "Gnejna Bay",
+    "country": "Malta",
+    "windguruUrl": "https://www.windguru.cz/587758",
+    "windfinderUrl": "https://www.windfinder.com/forecast/gnejna_bay",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=35.9242,14.3406",
+    "spotInfo": {
+      "type": "Sea, open bay with waves",
+      "bestWind": "NW, W",
+      "waterTemp": "16-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach (~100m), rocky/stony entry at waterline",
+      "hazards": "Steep limestone cliffs on northern flank, clay slopes on southern flank, rocks and stones underfoot at shoreline, onshore wind setup pushes riders toward shore, gusty conditions, waves up to 1m+ in strong NW/W wind",
+      "season": "October-May",
+      "description": "Ġnejna Bay is a compact NW/W-facing sandy bay on Malta's western coast, one of the recognized kite spots used by local riders during the winter Majjistral season. The bay receives direct NW and W swell, producing waves up to 1m+ that suit wave riding but demand solid water re-entry skills. The onshore wind setup means all beaches in Malta push riders toward shore if something goes wrong, and gusty conditions require precise kite control; the rocky underfoot entry makes quick waterstarting essential."
+    },
+    "spotInfoPL": {
+      "type": "Morze, otwarta zatoka z falami",
+      "bestWind": "NW, W",
+      "waterTemp": "16-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża (~100m), kamieniste/skaliste zejście do wody",
+      "hazards": "Strome wapienne klify od strony północnej, gliniaste zbocza od strony południowej, kamienie i skały przy linii wody, wiatr onshore spycha kitesurferów w kierunku brzegu, porywisty wiatr, fale do 1m+ przy silnym wietrze NW/W",
+      "season": "Październik-Maj",
+      "description": "Zatoka Ġnejna to zwarta, piaszczysta zatoka skierowana na NW/W na zachodnim wybrzeżu Malty, jedno z miejsc kiteboardingowych odwiedzanych przez lokalnych kitesurferów w sezonie zimowym (Majjistral). Zatoka przyjmuje bezpośrednie fale z NW i W, osiągające do 1m+, co sprzyja jeździe na falach, lecz wymaga solidnych umiejętności startu z wody. Układ wiatru onshore na wszystkich maltańskich plażach oznacza, że w razie problemów kiter jest spychany w kierunku brzegu; porywisty wiatr i kamieniste zejście do wody wymagają szybkiego i pewnego waterstartu."
+    }
   }
 ]
