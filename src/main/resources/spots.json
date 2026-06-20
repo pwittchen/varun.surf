@@ -309,6 +309,34 @@
     }
   },
   {
+    "name": "Dębki",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/48012",
+    "windfinderUrl": "https://www.windfinder.com/forecast/debki",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps/@54.82750,18.08778,14z",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": "W, NW",
+      "waterTemp": "10-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach",
+      "hazards": "Strong waves, groynes in the water, tourists in summer, offshore westerly winds possible",
+      "season": "May-September",
+      "description": "Baltic Sea wave spot in Pomerania with a wide fine sandy beach backed by forest. Strong westerly winds generate logo-high waves with manageable currents and less shorebreak than nearby Karwia."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale",
+      "bestWind": "W, NW",
+      "waterTemp": "10-18°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża",
+      "hazards": "Silne fale, ostrogi w wodzie, turyści latem, możliwy wiatr z lądu od zachodu",
+      "season": "Maj-Wrzesień",
+      "description": "Spot wave na Morzu Bałtyckim w Pomorskiem z szeroką piaszczystą plażą i lasem w tle. Silny wiatr zachodni generuje fale sięgające logo z zarządzalnymi prądami i mniejszym przybójem niż w pobliskiej Karwii."
+    }
+  },
+  {
     "name": "Jastrzębia Góra",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/1299485",
