@@ -4036,5 +4036,179 @@
       "season": "Listopad-Marzec",
       "description": "Misty Cliffs na atlantyckiej stronie Półwyspu Przylądkowego, koło Scarborough, to jedno z najpotężniejszych i najbardziej niebezpiecznych miejsc do kitesurfingu falowego w Południowej Afryce. Kiterzy startują z sąsiedniej piaszczystej plaży Whitsands i wpływają do zatoki Misty Cliffs, gdzie wiatr SE Cape Doctor generuje czyste, ale ogromne puste fale na tle skalistych przylądków. To spot wyłącznie dla zaawansowanych i ekspertów: nieudane odpalenie latawca przy klifach lub w prądach może mieć zagrażające życiu konsekwencje, a w okolicy odnotowano obecność rekinów białych."
     }
+  },
+  {
+    "name": "Essaouira",
+    "country": "Morocco",
+    "windguruUrl": "https://www.windguru.cz/26",
+    "windguruFallbackUrl": "https://www.windguru.cz/1170861",
+    "windfinderUrl": "https://www.windfinder.com/forecast/essaouira",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=31.498510,-9.763970",
+    "spotInfo": {
+      "type": "Sea, Atlantic coast, choppy to wave conditions",
+      "bestWind": "N, NE",
+      "waterTemp": "16-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach (Tagharte Beach, south of the medina)",
+      "hazards": "Strong gusty thermal wind above 30 knots common in summer, sea fog, rocky areas near medina walls, crowded in peak season, rip currents",
+      "season": "April-September",
+      "description": "Essaouira, dubbed the 'Wind City of Africa', sits on Morocco's Atlantic coast and delivers some of the most reliable and powerful thermal trade winds in the world. The wide, crescent-shaped Tagharte Beach offers a 4 km kite zone with consistent N/NE wind of 15–35 knots from spring through summer, attracting riders of all disciplines from freeride to waves. Water is surprisingly cool year-round due to the cold Canary Current upwelling along the coast."
+    },
+    "spotInfoPL": {
+      "type": "Morze, wybrzeże atlantyckie, chop do warunków falowych",
+      "bestWind": "N, NE",
+      "waterTemp": "16-21°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Piaszczysta plaża (Plaża Tagharte, na południe od mediny)",
+      "hazards": "Silny, porywisty wiatr termiczny powyżej 30 węzłów częsty latem, mgła morska, skaliste obszary przy murach mediny, tłok w szczycie sezonu, prądy odśrodkowe",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Essaouira, zwana 'Wietrznym Miastem Afryki', leży na atlantyckim wybrzeżu Maroka i oferuje jeden z najbardziej regularnych i silnych wiatrów termicznych na świecie. Szeroka, sierpowata Plaża Tagharte zapewnia 4 km strefy kitesurfingowej z konsekwentnym wiatrem N/NE o prędkości 15–35 węzłów od wiosny do lata, przyciągając jeźdźców wszystkich dyscyplin od freeride'u po jazdę na falach. Woda jest zaskakująco chłodna przez cały rok z powodu zimnego prądu kanaryjskiego płynącego wzdłuż wybrzeża."
+    }
+  },
+  {
+    "name": "Kalpitiya",
+    "country": "Sri Lanka",
+    "windguruUrl": "https://www.windguru.cz/115722",
+    "windguruFallbackUrl": "https://www.windguru.cz/579409",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kalpitiya",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=8.2425,79.7437",
+    "spotInfo": {
+      "type": "Lagoon, flat water + open sea",
+      "bestWind": "SW, W",
+      "waterTemp": "27-30°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach on the west shore of the lagoon",
+      "hazards": "Fishing boats and nets, strong gusts during peak monsoon, shallow areas near sandbanks",
+      "season": "May-September (SW monsoon), December-February (NE monsoon)",
+      "description": "Kalpitiya Lagoon on Sri Lanka's northwest coast is the country's premier kitesurfing destination, offering a vast shallow flat-water lagoon with consistent winds. The SW monsoon delivers 20–30 knots from May to September, while a calmer winter season runs December to February. Multiple kite schools operate from the lagoon's west shore."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda + otwarte morze",
+      "bestWind": "SW, W",
+      "waterTemp": "27-30°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża na zachodnim brzegu laguny",
+      "hazards": "Łodzie i sieci rybackie, silne szkwały w szczycie monsunu, płytkie obszary przy łachach piaskowych",
+      "season": "Maj-Wrzesień (monsun SW), Grudzień-Luty (monsun NE)",
+      "description": "Laguna Kalpitiya na północno-zachodnim wybrzeżu Sri Lanki to najważniejsze miejsce do kitesurfingu w kraju, oferujące rozległą, płytką lagunę z płaską wodą i stałymi wiatrami. Monsun SW dostarcza 20–30 węzłów od maja do września, natomiast spokojniejszy sezon zimowy trwa od grudnia do lutego. Na zachodnim brzegu laguny działa wiele szkół kitesurfingu."
+    }
+  },
+  {
+    "name": "Paje",
+    "country": "Tanzania",
+    "windguruUrl": "https://www.windguru.cz/537164",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/paje_zanzibar",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-6.2690547,39.5363777",
+    "spotInfo": {
+      "type": "Reef lagoon, flat water at low tide",
+      "bestWind": "NE, SE",
+      "waterTemp": "25-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Reef, sea urchins, tide-dependent access — no beach at high tide, busy lagoon with kite schools at low tide, seaweed farms, no safety boat",
+      "season": "December-March (Kaskazi, NE wind), June-September (Kusi, SE wind)",
+      "description": "Paje on Zanzibar's east coast is one of East Africa's top kite destinations, protected by an offshore reef that creates a wide turquoise lagoon with flat, shallow water at low tide. Two reliable wind seasons deliver consistent conditions: the Kaskazi (NE trade, 10–20 kts) from December to March and the stronger Kusi (SE trade, 15–25 kts) from June to September."
+    },
+    "spotInfoPL": {
+      "type": "Laguna rafowa, płaska woda podczas odpływu",
+      "bestWind": "NE, SE",
+      "waterTemp": "25-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Rafa koralowa, jeżowce morskie, dostęp zależny od pływów — brak plaży podczas przypływu, zatłoczona laguna ze szkołami kitesurfingu podczas odpływu, farmy wodorostów, brak łodzi ratowniczej",
+      "season": "Grudzień-Marzec (Kaskazi, wiatr NE), Czerwiec-Wrzesień (Kusi, wiatr SE)",
+      "description": "Paje na wschodnim wybrzeżu Zanzibaru to jeden z najlepszych spotów kitesurfingowych we wschodniej Afryce, chroniony przez rafę przybrzeżną, która tworzy rozległą turkusową lagunę z płaską i płytką wodą podczas odpływu. Dwa niezawodne sezony wietrzne zapewniają regularne warunki: Kaskazi (wiatr NE 10–20 węzłów) od grudnia do marca i silniejszy Kusi (wiatr SE 15–25 węzłów) od czerwca do września."
+    }
+  },
+  {
+    "name": "Mui Ne",
+    "country": "Vietnam",
+    "windguruUrl": "https://www.windguru.cz/208504",
+    "windguruFallbackUrl": "https://www.windguru.cz/47147",
+    "windfinderUrl": "https://www.windfinder.com/forecast/mui_ne_bay",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=10.9375,108.2458",
+    "spotInfo": {
+      "type": "Sea, waves and chop; flat water near harbor wall",
+      "bestWind": "NE, E",
+      "waterTemp": "25-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach (Rang Beach / Ham Tien)",
+      "hazards": "Strong shorebreak and currents at shoreline, fishing lines at south end of beach, busy lessons area near shore, beach erosion has reduced usable launch space",
+      "season": "November-April (peak December-February)",
+      "description": "One of Asia's most renowned kitesurfing destinations, Mui Ne offers consistent NE monsoon winds of 18-25 knots from November through April. The main launch is on Rang Beach in Ham Tien, with wave riding on the open sea and a sheltered flat-water zone near the harbor wall. Thermal acceleration from the red and white sand dunes amplifies wind strength through the afternoon."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale i chop; płaska woda w pobliżu falochronu",
+      "bestWind": "NE, E",
+      "waterTemp": "25-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta (Rang Beach / Ham Tien)",
+      "hazards": "Silny przybój i prądy przy brzegu, żyłki rybackie na południowym krańcu plaży, tłok w strefie lekcji przy brzegu, erozja plaży ograniczyła dostępną przestrzeń do startu",
+      "season": "Listopad-Kwiecień (szczyt Grudzień-Luty)",
+      "description": "Jedno z najbardziej znanych miejsc do kitesurfingu w Azji – Mui Ne oferuje stałe wiatry monsunu NE o sile 18-25 węzłów od listopada do kwietnia. Główne miejsce startu to Rang Beach w Ham Tien, z jazdą na falach na otwartym morzu i strefą płaskiej wody w pobliżu falochronu. Termiczne przyspieszenie wiatru przez czerwone i białe wydmy piaskowe wzmacnia jego siłę w ciągu popołudnia."
+    }
+  },
+  {
+    "name": "Cape Hatteras",
+    "country": "USA",
+    "windguruUrl": "https://www.windguru.cz/62",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hatteras_kite_point",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=35.2931,-75.5165",
+    "spotInfo": {
+      "type": "Sound, flat water (Pamlico Sound) and ocean waves (Atlantic)",
+      "bestWind": "SW, NE, N",
+      "waterTemp": "18-27°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy soundside beach (Kite Point / Haulover Day Use Area, Cape Hatteras National Seashore)",
+      "hazards": "Shifting sandbars, strong currents on ocean side, power lines near Kite Point, fishermen casting lines, sharks present in ocean, hurricane season risks (June-November)",
+      "season": "April-November",
+      "description": "Cape Hatteras on the Outer Banks of North Carolina is one of the premier kitesurfing destinations on the US East Coast. The Pamlico Sound offers vast, shallow flat water ideal for downwinders and freestyle in SW winds, while the Atlantic ocean side delivers wave riding in NE conditions. Kite Point and Canadian Hole, both managed by the National Park Service, are the main soundside launches between Avon and Buxton."
+    },
+    "spotInfoPL": {
+      "type": "Zalew, płaska woda (Pamlico Sound) i fale oceaniczne (Atlantyk)",
+      "bestWind": "SW, NE, N",
+      "waterTemp": "18-27°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża po stronie zalewu (Kite Point / Haulover Day Use Area, Cape Hatteras National Seashore)",
+      "hazards": "Przemieszczające się łachy piasku, silne prądy po stronie oceanicznej, linie energetyczne w pobliżu Kite Point, wędkarze, obecność rekinów w oceanie, sezon huraganów (czerwiec-listopad)",
+      "season": "Kwiecień-Listopad",
+      "description": "Cape Hatteras na Outer Banks w Karolinie Północnej to jedno z najlepszych miejsc do kitesurfingu na wschodnim wybrzeżu USA. Pamlico Sound oferuje rozległą, płytką wodę idealną do downwinderów i freestyle'u przy wietrze SW, natomiast strona atlantycka umożliwia jazdę na falach przy wietrze NE. Kite Point i Canadian Hole, zarządzane przez Służbę Parków Narodowych, to główne startowiska po stronie zalewu, zlokalizowane między Avon a Buxton."
+    }
+  },
+  {
+    "name": "Long Bay Beach",
+    "country": "Turks and Caicos",
+    "windguruUrl": "https://www.windguru.cz/586004",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/providenciales_long_bay",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=21.770841,-72.163927",
+    "spotInfo": {
+      "type": "Lagoon, flat water, shallow sandbar",
+      "bestWind": "E, SE",
+      "waterTemp": "24-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, main kite launch at the mid-section curve of Long Bay",
+      "hazards": "Conch shells on some beach sections away from the main launch; manta rays present but not dangerous; very shallow at low tide",
+      "season": "November-August",
+      "description": "Long Bay Beach on the southeast coast of Providenciales is one of the Caribbean's top kiteboarding destinations, offering a 5 km stretch of white sand with a massive shallow sandbar extending nearly a mile offshore at waist depth. Consistent E/SE trade winds of 15-25 knots blow side-onshore, eliminating the risk of being pushed out to sea, while the flat turquoise water makes it an ideal playground for beginners and freestyle riders alike. The 10-month wind season, warm water, and absence of shore break make this a true kite paradise."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda, płytka ławica piaskowa",
+      "bestWind": "E, SE",
+      "waterTemp": "24-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, główne startowisko przy zakręcie w środkowej części Long Bay",
+      "hazards": "Muszle konchy na niektórych odcinkach plaży z dala od głównego startowiska; obecność mant (nieszkodliwe); bardzo płytko podczas odpływu",
+      "season": "Listopad-Sierpień",
+      "description": "Long Bay Beach na południowo-wschodnim wybrzeżu Providenciales to jedno z najlepszych miejsc do kitesurfingu na Karaibach, oferujące 5 km białego piasku z ogromną płytką ławicą piaskową rozciągającą się na ponad milę od brzegu na głębokości do pasa. Stały wiatr handlowy E/SE o sile 15-25 węzłów wieje boczno-nabrzeżnie, eliminując ryzyko zniesienia na otwarte morze, a płaska turkusowa woda tworzy idealne warunki zarówno dla początkujących, jak i miłośników freestylu. Dziesięciomiesięczny sezon wiatrowy, ciepła woda i brak przyboju czynią to miejsce prawdziwym kite-rajem."
+    }
   }
 ]
