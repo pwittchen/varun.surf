@@ -12,7 +12,19 @@ import static com.google.common.truth.Truth.assertThat;
 class SingleSpotE2eTest extends BaseE2eTest {
 
     private void navigateToSpotPage() {
-        page.navigate(BASE_URL + "/spot/500760");
+        // navigate via the first available spot card instead of a hardcoded spot id,
+        // so the test stays independent of changes to spots.json
+        page.navigate(BASE_URL + "/");
+        waitForPageLoad();
+
+        Locator firstSpotName = page.locator("#spotsGrid .spot-card .spot-name").first();
+        firstSpotName.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        firstSpotName.click();
+
+        page.waitForURL(url -> url.contains("/spot/"),
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
         waitForPageLoad();
     }
 

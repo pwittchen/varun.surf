@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.data.spots;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -18,8 +19,13 @@ public class JsonSpotsDataProvider implements SpotsDataProvider {
     public static final String RESOURCE_FILE = "spots.json";
     private final List<Spot> spots = new LinkedList<>();
 
+    @Autowired
     public JsonSpotsDataProvider(Gson gson) throws Exception {
-        try (Reader reader = new InputStreamReader(new ClassPathResource(RESOURCE_FILE).getInputStream())) {
+        this(gson, RESOURCE_FILE);
+    }
+
+    public JsonSpotsDataProvider(Gson gson, String resourceFile) throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource(resourceFile).getInputStream())) {
             Type listType = new TypeToken<List<Spot>>() {
             }.getType();
             this.spots.addAll(gson.fromJson(reader, listType));

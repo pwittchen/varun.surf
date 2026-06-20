@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Test Spot One",
+    "country": "Testland",
+    "windguruUrl": "https://www.windguru.cz/100001",
+    "windfinderUrl": "https://www.windfinder.com/forecast/test-spot-one",
+    "webcamUrl": "https://example.com/webcam-one",
+    "locationUrl": "https://maps.app.goo.gl/testone",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "W, SW",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy Beach",
+      "hazards": "Shallow areas",
+      "season": "May-October",
+      "description": "First test spot used by unit tests."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda",
+      "bestWind": "W, SW",
+      "waterTemp": "10-18°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Płytkie obszary",
+      "season": "Maj-Październik",
+      "description": "Pierwszy testowy spot używany przez testy jednostkowe."
+    }
+  },
+  {
+    "name": "Test Spot Two",
+    "country": "Testland",
+    "windguruUrl": "https://www.windguru.cz/100002",
+    "windfinderUrl": "https://www.windfinder.com/forecast/test-spot-two",
+    "webcamUrl": "https://example.com/webcam-two",
+    "locationUrl": "https://maps.app.goo.gl/testtwo",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": "N, NE",
+      "waterTemp": "12-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Rocky Beach",
+      "hazards": "Strong currents",
+      "season": "June-September",
+      "description": "Second test spot used by unit tests."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale",
+      "bestWind": "N, NE",
+      "waterTemp": "12-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Plaża kamienista",
+      "hazards": "Silne prądy",
+      "season": "Czerwiec-Wrzesień",
+      "description": "Drugi testowy spot używany przez testy jednostkowe."
+    }
+  },
+  {
+    "name": "Test Spot Three",
+    "country": "Otherland",
+    "windguruUrl": "https://www.windguru.cz/100003",
+    "windfinderUrl": "https://www.windfinder.com/forecast/test-spot-three",
+    "webcamUrl": "https://example.com/webcam-three",
+    "locationUrl": "https://maps.app.goo.gl/testthree",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "E, SE",
+      "waterTemp": "20-26°C",
+      "experience": "Beginner",
+      "launch": "Sandy Beach",
+      "hazards": "Crowds in summer",
+      "season": "All year",
+      "description": "Third test spot used by unit tests."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda",
+      "bestWind": "E, SE",
+      "waterTemp": "20-26°C",
+      "experience": "Początkujący",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Tłumy latem",
+      "season": "Cały rok",
+      "description": "Trzeci testowy spot używany przez testy jednostkowe."
+    }
+  }
+]
