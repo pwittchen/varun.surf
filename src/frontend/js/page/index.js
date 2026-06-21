@@ -728,7 +728,7 @@ function formatForecastDateLabel(rawDate) {
     const [dayToken, dayOfMonthToken, , , timeToken] = tokens;
     const translatedDay = translateDayName(dayToken);
     const formattedDay = dayOfMonthToken.padStart(2, '0');
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = window.innerWidth <= 929;
 
     if (isMobile) {
         const hour = timeToken.split(':')[0];
@@ -2226,10 +2226,10 @@ function setupHeaderOverflow() {
 
     function update() {
         const width = window.innerWidth;
-        // Below 768px the hamburger drawer owns the controls (icons stay inline);
-        // between 769px and 1305px the icons collapse into the "..." menu so they
+        // Below 930px the hamburger drawer owns the controls (icons stay inline);
+        // between 930px and 1305px the icons collapse into the "..." menu so they
         // never cover the logo / title; at 1305px and above they sit inline.
-        if (width > 768 && width < HEADER_OVERFLOW_BREAKPOINT) {
+        if (width > 929 && width < HEADER_OVERFLOW_BREAKPOINT) {
             collapse();
         } else {
             expand();
@@ -2280,7 +2280,7 @@ let listSortDirection = 'asc';
 let showOnlyLiveStations = false; // Filter for live stations in list view
 
 function isMobileView() {
-    return window.innerWidth <= 768;
+    return window.innerWidth <= 929;
 }
 
 // Below this width the spots are shown as a list; at or above it, as a grid.
@@ -2377,7 +2377,7 @@ function setupColumnToggle() {
                 }
                 wasListView = false;
             } else if (isMobileView()) {
-                // Mobile view (<=768px) - always use list view
+                // Mobile view (<=929px) - always use list view
                 if (currentViewMode !== 'list') {
                     currentViewMode = 'list';
                     updateView();
@@ -2648,7 +2648,7 @@ function addMarkersToMap(spots) {
 
     // Fit map to show all markers (only on first view to avoid repeated zooming)
     if (bounds.length > 0 && !mapBoundsInitialized) {
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= 929;
         if (isMobile) {
             // On mobile, fit bounds then zoom in by 1 level to fill vertical space better
             leafletMap.fitBounds(bounds, { padding: [0, 0] });
@@ -2811,7 +2811,7 @@ function updateHeroVisibility() {
     const heroSection = document.getElementById('heroSection');
     if (!heroSection) return;
 
-    if (!state.getHeroVisible() || window.innerWidth <= 768 || isMapView) {
+    if (!state.getHeroVisible() || window.innerWidth <= 929 || isMapView) {
         heroSection.style.display = 'none';
     } else if (heroInitialized) {
         heroSection.style.display = '';
@@ -2822,7 +2822,7 @@ function renderHeroSection() {
     const heroSection = document.getElementById('heroSection');
     if (!heroSection || !state.getHeroVisible() || isMapView) return;
 
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 929) {
         heroSection.style.display = 'none';
         return;
     }

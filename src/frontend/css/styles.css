@@ -2898,10 +2898,11 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* The single spot view switches to its mobile layout below 1005px. This mirrors
-   the <=768px mobile rules but is scoped to body.spot-page and limited to the
-   769-1004px range, so only the spot page is affected (the index/list/status
-   pages keep their own <=768px mobile behaviour). */
-@media (min-width: 769px) and (max-width: 1004px) {
+   the <=929px mobile rules but is scoped to body.spot-page and limited to the
+   930-1004px range (the <=929px rules already cover narrower widths), so the
+   spot page goes mobile earlier than the index/list/status pages, which switch
+   at <=929px. */
+@media (min-width: 930px) and (max-width: 1004px) {
     /* Single column: hide the detail sidebar, give the forecast the full width */
     body.spot-page .spot-detail-container {
         grid-template-columns: 1fr;
@@ -5058,8 +5059,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    29. MEDIA QUERIES / RESPONSIVE
    ============================================================================ */
 
-/* Mobile drawer layout (max-width: 768px) */
-@media (max-width: 768px) {
+/* Mobile drawer layout (max-width: 929px) */
+@media (max-width: 929px) {
     .hero-section {
         display: none !important;
     }
@@ -5357,8 +5358,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 
-/* Mobile (max-width: 768px) */
-@media (max-width: 768px) {
+/* Mobile (max-width: 929px) */
+@media (max-width: 929px) {
     /* Desktop only elements */
     .desktop-only {
         display: none !important;
