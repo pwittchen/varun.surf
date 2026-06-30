@@ -79,7 +79,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'com.google.truth:truth:1.4.5'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
-    testImplementation 'com.microsoft.playwright:playwright:1.60.0'
+    testImplementation 'com.microsoft.playwright:playwright:1.61.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
