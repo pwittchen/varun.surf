@@ -265,7 +265,8 @@ export const translations = {
         USA: "USA",
         Namibia: "Namibia",
         Mexico: "Mexico",
-        CostaRica: "Costa Rica"
+        CostaRica: "Costa Rica",
+        TurksandCaicos: "Turks and Caicos"
     },
     pl: {
         // Page title
@@ -527,7 +528,8 @@ export const translations = {
         USA: "USA",
         Namibia: "Namibia",
         Mexico: "Meksyk",
-        CostaRica: "Kostaryka"
+        CostaRica: "Kostaryka",
+        TurksandCaicos: "Turks and Caicos"
     }
 };
 
