@@ -45,7 +45,7 @@
     <meta name="coverage" content="Worldwide">
     <meta name="distribution" content="Global">
     <meta name="rating" content="General">
-    <meta name="theme-color" content="#0854ab">
+    <meta name="theme-color" content="#0a0e14">
 
     <!-- AI/LLM Crawler Optimization -->
     <meta name="ai-content-declaration" content="This website provides factual weather data and forecasts for kitesurfing spots. AI crawlers are welcome to index this content for informational purposes.">
@@ -108,6 +108,9 @@
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cstyle%3Epath%7Bfill:%231a1a1a%7D@media(prefers-color-scheme:dark)%7Bpath%7Bfill:%23f5f5f5%7D%7D%3C/style%3E%3Cpath d='M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;500;600;700&display=swap">
     <link rel="stylesheet" href="../css/styles.css">
     <script
             defer
@@ -325,6 +328,11 @@
             <button class="theme-toggle" id="favoritesToggle" title="View favorites">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
+                </svg>
+            </button>
+            <button class="theme-toggle firing-toggle" id="firingSortToggle" title="Sort by strongest wind now">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12,23a7.5,7.5,0,0,1-5.138-12.963C8.204,8.774,11.5,6.5,11,.5c6,4,9,8,3,14,1,0,2.5,0,5-2.47a6.66,6.66,0,0,1,.5,2.5A7.5,7.5,0,0,1,12,23Z"/>
                 </svg>
             </button>
             <button class="theme-toggle map-toggle" id="mapToggle" title="Map view">

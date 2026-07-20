@@ -26,6 +26,7 @@ export const translations = {
         heroToggleLabel: "Hero",
         listViewTooltip: "List view",
         gridViewTooltip: "Grid view",
+        firingSortTooltip: "Sort by strongest wind now",
         languageToggleTooltip: "Change language",
 
         // Weather table headers
@@ -287,6 +288,7 @@ export const translations = {
         heroToggleLabel: "Baner",
         listViewTooltip: "Widok listy",
         gridViewTooltip: "Widok siatki",
+        firingSortTooltip: "Sortuj wg najsilniejszego wiatru teraz",
         languageToggleTooltip: "Zmień język",
 
         // Weather table headers

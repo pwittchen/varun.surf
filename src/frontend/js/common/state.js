@@ -36,7 +36,10 @@ export const STORAGE_KEYS = {
     COMPACT_WINDGURU: 'compactWindguru',
 
     // Hero section
-    HERO_VISIBLE: 'heroVisible'
+    HERO_VISIBLE: 'heroVisible',
+
+    // Firing-now sort (main page default ordering by live wind strength)
+    FIRING_SORT: 'firingSort'
 };
 
 // ============================================================================
@@ -155,6 +158,15 @@ export function getDesktopViewMode() {
 
 export function setDesktopViewMode(mode) {
     localStorage.setItem(STORAGE_KEYS.DESKTOP_VIEW_MODE, mode);
+}
+
+// Firing-now sort defaults to ON (undefined => enabled)
+export function getFiringSort() {
+    return localStorage.getItem(STORAGE_KEYS.FIRING_SORT) !== 'false';
+}
+
+export function setFiringSort(enabled) {
+    localStorage.setItem(STORAGE_KEYS.FIRING_SORT, enabled ? 'true' : 'false');
 }
 
 // ============================================================================

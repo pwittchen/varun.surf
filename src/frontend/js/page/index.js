@@ -236,8 +236,10 @@ async function renderFavorites() {
                 });
             }
 
-            // Apply sorting if a column is selected
-            const sortedSpots = listSortColumn ? sortSpots(spotsToShow, listSortColumn, listSortDirection) : spotsToShow;
+            // Explicit column sort wins; otherwise default to "firing now" when enabled
+            const sortedSpots = listSortColumn
+                ? sortSpots(spotsToShow, listSortColumn, listSortDirection)
+                : (firingSortEnabled ? sortByFiringNow(spotsToShow) : spotsToShow);
 
             // Render list view
             spotsGrid.appendChild(createListHeader());
@@ -245,11 +247,14 @@ async function renderFavorites() {
                 spotsGrid.appendChild(createListRow(spot));
             });
         } else {
-            // Render grid view
-            favoriteSpots.forEach(spot => {
+            // Render grid view; "firing now" default ordering unless disabled
+            const gridSpots = firingSortEnabled ? sortByFiringNow(favoriteSpots) : favoriteSpots;
+            gridSpots.forEach(spot => {
                 spotsGrid.appendChild(createSpotCard(spot));
             });
-            loadCardOrder();
+            if (!firingSortEnabled) {
+                loadCardOrder();
+            }
         }
 
         renderHeroSection();
@@ -446,6 +451,11 @@ function initLanguage() {
         const gridViewBtn = document.getElementById('gridViewBtn');
         if (gridViewBtn) {
             gridViewBtn.title = translations.t('gridViewTooltip');
+        }
+
+        const firingSortToggle = document.getElementById('firingSortToggle');
+        if (firingSortToggle) {
+            firingSortToggle.title = translations.t('firingSortTooltip');
         }
 
         if (languageToggle) {
@@ -1141,63 +1151,56 @@ function createSpotCard(spot) {
         });
     }
 
-    let currentConditionsRow = '';
-    if (spotConditions && spotConditions.isCurrent) {
+    // Prominent "now" readout (live conditions if available, otherwise forecast-for-now).
+    // Promoted above the forecast table so the current wind is the primary, glanceable read.
+    let nowReadout = '';
+    let statusClass = '';
+    if (spotConditions) {
         const baseWind = spotConditions.wind;
         const gustWind = spotConditions.gusts;
-        const windTextClass = weather.getWindClass(baseWind);
-        const gustTextClass = weather.getWindClass(gustWind);
+        const windColorClass = weather.getWindClass(baseWind);
 
         const averageWind = (baseWind + gustWind) / 2;
-        const averageWindClass = weather.getWindClass(averageWind);
-        const rowWindClass = averageWindClass === 'wind-weak' ? 'weak-wind' :
-            averageWindClass === 'wind-moderate' ? 'moderate-wind' :
-                averageWindClass === 'wind-strong' ? 'strong-wind' : 'extreme-wind';
+        statusClass = {
+            'wind-weak': 'weak',
+            'wind-moderate': 'moderate',
+            'wind-strong': 'strong',
+            'wind-extreme': 'extreme'
+        }[weather.getWindClass(averageWind)];
 
         const hasTemperature = Number.isFinite(spotConditions.temp);
-        const tempClass = hasTemperature
-            ? (spotConditions.temp >= 20 ? 'temp-positive' : 'temp-negative')
-            : '';
-        const tempValue = hasTemperature ? `${spotConditions.temp}°C` : '-';
+        const tempValue = hasTemperature ? `${spotConditions.temp}°C` : '';
         const windArrow = weather.getWindArrow(spotConditions.direction);
+        const isLive = spotConditions.isCurrent;
+        const outdated = isLive && spot.currentConditions && date.isConditionsOutdated(spot.currentConditions.date);
 
-        let currentWaveClass = '';
-        let currentWaveText = '-';
-        if (spot.currentConditions && spot.currentConditions.wave != null) {
-            if (spot.currentConditions.wave < 1.0) {
-                currentWaveClass = 'wave-small';
-            } else if (spot.currentConditions.wave >= 1.0 && spot.currentConditions.wave < 2.0) {
-                currentWaveClass = 'wave-moderate';
-            } else {
-                currentWaveClass = 'wave-large';
-            }
-            currentWaveText = `${spot.currentConditions.wave}`;
-        }
+        const badge = isLive
+            ? `<span class="live-indicator"><span class="live-dot${outdated ? ' outdated' : ''}"></span><strong class="live-text">${translations.t('nowLabel')}</strong></span>`
+            : `<span class="now-forecast-badge">${spotConditions.label || ''}</span>`;
 
-        const outdated = spot.currentConditions && date.isConditionsOutdated(spot.currentConditions.date);
-        currentConditionsRow = `
-                    <tr class="${rowWindClass}" style="border-bottom: 2px solid #404040;">
-                        <td>
-                            <div class="live-indicator">
-                                <strong class="live-text">${translations.t('nowLabel')}</strong>
-                                <div class="live-dot${outdated ? ' outdated' : ''}"></div>
-                            </div>
-                        </td>
-                        <td class="${windTextClass}">${baseWind} kts</td>
-                        <td class="${gustTextClass}">${gustWind} kts</td>
-                        <td class="${windTextClass}">
-                            <span class="wind-arrow">${windArrow}</span> ${spotConditions.direction || '-'}
-                        </td>
-                        <td class="${tempClass}">${tempValue}</td>
-                        <td>-</td>
-                        ${hasWaveData ? `<td class="${currentWaveClass} wave-col">${currentWaveText}</td>` : ''}
-                    </tr>
-                `;
+        nowReadout = `
+                <div class="spot-now status-${statusClass}">
+                    <div class="now-main">
+                        <span class="now-wind ${windColorClass}">${baseWind}-${gustWind}</span>
+                        <span class="now-unit">kts</span>
+                    </div>
+                    <div class="now-dir">
+                        <span class="wind-arrow now-arrow ${windColorClass}">${windArrow}</span>
+                        <span class="now-dir-label">${spotConditions.direction || '-'}</span>
+                    </div>
+                    ${tempValue ? `<span class="now-temp">${tempValue}</span>` : ''}
+                    <div class="now-badge">${badge}</div>
+                </div>
+            `;
     }
 
     // Check if a spot is favorited
     const isFavorited = isFavorite(spot.name);
     const favoriteClass = isFavorited ? 'favorited' : '';
+
+    if (statusClass) {
+        card.classList.add(`status-${statusClass}`);
+    }
 
     card.innerHTML = `
                 <div class="drag-handle" draggable="true"><svg class="drag-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg></div>
@@ -1226,6 +1229,7 @@ function createSpotCard(spot) {
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
                     ${(spot.aiAnalysisEn || spot.aiAnalysisPl) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
                 </div>
+                ${nowReadout}
                 <table class="weather-table">
                     <thead>
                         <tr>
@@ -1239,7 +1243,6 @@ function createSpotCard(spot) {
                         </tr>
                     </thead>
                     <tbody>
-                        ${currentConditionsRow}
                         ${forecastRows}
                     </tbody>
                 </table>
@@ -1594,6 +1597,20 @@ function sortSpots(spots, sortColumn, sortDirection) {
     return sorted;
 }
 
+// "Firing now" score: average of current/live wind and gusts. Spots without usable
+// conditions sink to the bottom. Used for the default main-page ordering.
+function firingScore(spot) {
+    const conditions = getSpotConditions(spot);
+    if (!conditions || !Number.isFinite(conditions.wind) || !Number.isFinite(conditions.gusts)) {
+        return -Infinity;
+    }
+    return (conditions.wind + conditions.gusts) / 2;
+}
+
+function sortByFiringNow(spots) {
+    return [...spots].sort((a, b) => firingScore(b) - firingScore(a));
+}
+
 function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
@@ -1639,21 +1656,30 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                     });
                 }
 
-                // Apply sorting if a column is selected
-                const sortedSpots = listSortColumn ? sortSpots(spotsToShow, listSortColumn, listSortDirection) : spotsToShow;
+                // Explicit column sort wins; otherwise default to "firing now" when enabled
+                const sortedSpots = listSortColumn
+                    ? sortSpots(spotsToShow, listSortColumn, listSortDirection)
+                    : (firingSortEnabled ? sortByFiringNow(spotsToShow) : spotsToShow);
 
                 // Render list view
                 spotsGrid.appendChild(createListHeader());
                 sortedSpots.forEach(spot => {
                     spotsGrid.appendChild(createListRow(spot));
                 });
-                loadListOrderFn();
+                // Saved manual order only applies when not sorting by firing/column
+                if (!listSortColumn && !firingSortEnabled) {
+                    loadListOrderFn();
+                }
             } else {
-                // Render grid view
-                filteredSpots.forEach(spot => {
+                // Render grid view; "firing now" default ordering unless disabled
+                const gridSpots = firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots;
+                gridSpots.forEach(spot => {
                     spotsGrid.appendChild(createSpotCard(spot));
                 });
-                loadCardOrder();
+                // Saved manual card order only applies when firing sort is off
+                if (!firingSortEnabled) {
+                    loadCardOrder();
+                }
             }
         }
     }
@@ -2187,7 +2213,8 @@ function setupHamburgerMenu() {
 // ============================================================================
 
 // Width below which the header icons collapse into the "..." menu.
-const HEADER_OVERFLOW_BREAKPOINT = 1305;
+// Raised by one icon's width (~52px) to account for the firing-sort button.
+const HEADER_OVERFLOW_BREAKPOINT = 1357;
 
 function setupHeaderOverflow() {
     const headerControls = document.getElementById('headerControls');
@@ -2227,8 +2254,8 @@ function setupHeaderOverflow() {
     function update() {
         const width = window.innerWidth;
         // Below 930px the hamburger drawer owns the controls (icons stay inline);
-        // between 930px and 1305px the icons collapse into the "..." menu so they
-        // never cover the logo / title; at 1305px and above they sit inline.
+        // between 930px and HEADER_OVERFLOW_BREAKPOINT the icons collapse into the
+        // "..." menu so they never cover the logo / title; above it they sit inline.
         if (width > 929 && width < HEADER_OVERFLOW_BREAKPOINT) {
             collapse();
         } else {
@@ -2278,6 +2305,7 @@ let desktopViewMode = 'grid'; // Store desktop preference separately
 let listSortColumn = null;
 let listSortDirection = 'asc';
 let showOnlyLiveStations = false; // Filter for live stations in list view
+let firingSortEnabled = state.getFiringSort(); // Default main-page ordering by live wind strength
 
 function isMobileView() {
     return window.innerWidth <= 929;
@@ -2286,6 +2314,31 @@ function isMobileView() {
 // Below this width the spots are shown as a list; at or above it, as a grid.
 function isListBreakpoint() {
     return window.innerWidth <= 1260;
+}
+
+function setupFiringSortToggle() {
+    const btn = document.getElementById('firingSortToggle');
+    if (!btn) {
+        return;
+    }
+
+    btn.classList.toggle('active', firingSortEnabled);
+
+    btn.addEventListener('click', () => {
+        firingSortEnabled = !firingSortEnabled;
+        state.setFiringSort(firingSortEnabled);
+        btn.classList.toggle('active', firingSortEnabled);
+
+        if (isMapView) {
+            hideMapView({ skipRender: true });
+        }
+
+        if (showingFavorites) {
+            renderFavorites();
+        } else {
+            renderSpots(currentFilter, currentSearchQuery, true);
+        }
+    });
 }
 
 function setupColumnToggle() {
@@ -2681,6 +2734,12 @@ function showMapView() {
         heroToggle.classList.add('disabled-in-map');
         heroToggle.classList.remove('active');
     }
+    // Disable the firing-sort toggle while the map is shown (deselect + disable)
+    const firingSortToggle = document.getElementById('firingSortToggle');
+    if (firingSortToggle) {
+        firingSortToggle.classList.add('disabled-in-map');
+        firingSortToggle.classList.remove('active');
+    }
     spotsGrid.style.display = 'none';
 
     // Show map container
@@ -2732,6 +2791,12 @@ function hideMapView(options = {}) {
     if (heroToggle) {
         heroToggle.classList.remove('disabled-in-map');
         if (state.getHeroVisible()) heroToggle.classList.add('active');
+    }
+    // Re-enable the firing-sort toggle and restore its previous selected state
+    const firingSortToggle = document.getElementById('firingSortToggle');
+    if (firingSortToggle) {
+        firingSortToggle.classList.remove('disabled-in-map');
+        firingSortToggle.classList.toggle('active', firingSortEnabled);
     }
     updateHeroVisibility();
 
@@ -2921,6 +2986,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupHeaderOverflow();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
+    setupFiringSortToggle();
     setupMapToggle();
     handlePopState();
     setupInfoToggle();

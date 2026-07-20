@@ -45,40 +45,54 @@
        Dark Theme Colors (Default)
        ------------------------------------------------------------------------- */
 
-    /* Background Colors */
-    --bg-primary: #0f0f0f;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #262626;
+    /* Background Colors (cool "ocean night" neutrals) */
+    --bg-primary: #0a0e14;
+    --bg-secondary: #121821;
+    --bg-tertiary: #1c2530;
 
     /* Text Colors */
     --text-primary: #e8e8e8;
-    --text-secondary: #9ca3af;
+    --text-secondary: #8b97a8;
     --text-tertiary: #5e6165;
     --text-white: #ffffff;
     --text-black: #000000;
 
     /* Border Colors */
-    --border-primary: #262626;
-    --border-secondary: #333333;
-    --border-hover: #404040;
+    --border-primary: #1e2733;
+    --border-secondary: #2b3949;
+    --border-hover: #3a4c60;
 
-    /* Accent Colors */
-    --accent-primary: #4a9eff;
-    --accent-secondary: #216ebb;
-    --accent-hover: #3a8eef;
-    --accent-color: #4a9eff;
+    /* Accent Colors (wind/water cyan — distinct from green "firing" status) */
+    --accent-primary: #22c3e6;
+    --accent-secondary: #0e8aa8;
+    --accent-hover: #1aa9c9;
+    --accent-color: #22c3e6;
 
     /* Card & Surface */
-    --card-bg: #1a1a1a;
+    --card-bg: #121821;
+
+    /* Radius Scale */
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-pill: 999px;
+
+    /* Spacing Scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
 
     /* Button & Active Backgrounds */
     --gradient-button: #1d1d1d;
     --gradient-button-hover: #2c2c2c;
-    --gradient-active: #0d4f8b;
-    --gradient-header: #0d4f8b;
+    --gradient-active: #0e5d70;
+    --gradient-header: #0e5d70;
 
     /* Shadows */
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.35);
     --shadow-accent: none;
     --shadow-ghost: 0 4px 12px rgba(0, 0, 0, 0.4);
 
@@ -96,15 +110,15 @@
     --error-text: #fca5a5;
 
     /* Wind Strength Colors (Dark Theme) */
-    --wind-weak: #6b7280;
-    --wind-weak-bg: rgba(107, 114, 128, 0.15);
-    --wind-moderate: #22c55e;
-    --wind-moderate-bg: rgba(34, 197, 94, 0.15);
+    --wind-weak: #64748b;
+    --wind-weak-bg: rgba(100, 116, 139, 0.15);
+    --wind-moderate: #2ee66d;
+    --wind-moderate-bg: rgba(46, 230, 109, 0.14);
     --wind-strong: #f59e0b;
     --wind-strong-alt: #f9b116;
     --wind-strong-bg: rgba(245, 158, 11, 0.15);
-    --wind-extreme: #ef4444;
-    --wind-extreme-bg: rgba(239, 68, 68, 0.15);
+    --wind-extreme: #f5484a;
+    --wind-extreme-bg: rgba(245, 72, 74, 0.15);
 
     /* Temperature Colors */
     --temp-positive: #f97316;
@@ -156,7 +170,7 @@
     /* Overlay Colors */
     --overlay-dark: rgba(0, 0, 0, 0.8);
     --overlay-light: rgba(255, 255, 255, 0.1);
-    --overlay-accent: rgba(74, 158, 255, 0.1);
+    --overlay-accent: rgba(34, 195, 230, 0.1);
 
     /* Disclaimer */
     --disclaimer-bg: rgba(245, 158, 11, 0.1);
@@ -170,7 +184,7 @@
 
     /* Background Colors */
     --bg-primary: #ffffff;
-    --bg-secondary: #f5f7fa;
+    --bg-secondary: #f2f6f9;
     --bg-tertiary: #e8ecf1;
 
     /* Text Colors */
@@ -185,11 +199,11 @@
     --border-secondary: #b8bfc7;
     --border-hover: #6b7280;
 
-    /* Accent Colors */
-    --accent-primary: #0d6efd;
-    --accent-secondary: #0a58ca;
-    --accent-hover: #0a58ca;
-    --accent-color: #0d6efd;
+    /* Accent Colors (cyan matching the dark theme identity, darkened for contrast on white) */
+    --accent-primary: #0891b2;
+    --accent-secondary: #0e7490;
+    --accent-hover: #0e7490;
+    --accent-color: #0891b2;
 
     /* Card & Surface */
     --card-bg: #ffffff;
@@ -197,11 +211,12 @@
     /* Button & Active Backgrounds */
     --gradient-button: #ffffff;
     --gradient-button-hover: #f0f3f7;
-    --gradient-active: #0d6efd;
-    --gradient-header: #0d6efd;
+    --gradient-active: #0891b2;
+    --gradient-header: #0891b2;
 
     /* Shadows */
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
     --shadow-accent: none;
 
     /* Error State */
@@ -923,12 +938,12 @@ body {
 
 /* Spot Card */
 .spot-card {
-    background: var(--bg-secondary);
-    border-radius: 12px;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
     padding: 24px;
-    box-shadow: none;
+    box-shadow: var(--shadow-card);
     border: 1px solid var(--border-primary);
-    transition: border-color .2s ease;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
     position: relative;
 }
 
@@ -940,9 +955,116 @@ body {
 }
 
 .spot-card:hover {
-    transform: none;
-    box-shadow: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
     border-color: var(--border-secondary);
+}
+
+/* Single spot view: the card is static — no hover movement/elevation */
+#spotContainer .spot-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-card);
+    border-color: var(--border-primary);
+}
+
+/* Faint tint at the top of the card, colored by current wind strength */
+.spot-card.status-weak {
+    background: linear-gradient(180deg, var(--wind-weak-bg) 0%, var(--card-bg) 90px);
+}
+
+.spot-card.status-moderate {
+    background: linear-gradient(180deg, var(--wind-moderate-bg) 0%, var(--card-bg) 90px);
+}
+
+.spot-card.status-strong {
+    background: linear-gradient(180deg, var(--wind-strong-bg) 0%, var(--card-bg) 90px);
+}
+
+.spot-card.status-extreme {
+    background: linear-gradient(180deg, var(--wind-extreme-bg) 0%, var(--card-bg) 90px);
+}
+
+/* "Now" readout — promoted current/live conditions above the forecast table.
+   Everything sits on a single line at one uniform font size. */
+.spot-now {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 12px 14px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+/* All children inherit the single .spot-now font size */
+.spot-now .now-main {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.now-wind {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.now-unit,
+.now-dir,
+.now-dir-label,
+.now-temp {
+    color: var(--text-secondary);
+}
+
+.now-unit {
+    font-weight: 500;
+}
+
+.now-dir {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+/* Match the arrow glyph to the uniform size (overrides base .wind-arrow) */
+.now-arrow {
+    font-size: inherit;
+    line-height: 1;
+}
+
+.now-badge {
+    margin-left: auto;
+}
+
+.now-badge .live-dot {
+    margin-left: 0;
+}
+
+.now-forecast-badge {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+/* Wind number / arrow colored by strength */
+.now-wind.wind-weak, .now-arrow.wind-weak { color: var(--wind-weak); }
+.now-wind.wind-moderate, .now-arrow.wind-moderate { color: var(--wind-moderate); }
+.now-wind.wind-strong, .now-arrow.wind-strong { color: var(--wind-strong); }
+.now-wind.wind-extreme, .now-arrow.wind-extreme { color: var(--wind-extreme); }
+
+/* Compact readout in dense three-column grid (still one uniform size) */
+.spots-grid.three-columns .spot-now {
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
 }
 
 .spot-card.dragging {
