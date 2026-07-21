@@ -849,13 +849,13 @@ function populateCountryDropdown(data) {
 
     // Build dropdown HTML
     const allLabel = translations.t('allCountries');
-    let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 ${allLabel}</div>`;
+    let dropdownHTML = `<div class="dropdown-option ${savedCountry === 'all' ? 'selected' : ''}" data-country="all">🌎 <span class="dropdown-option-name">${allLabel}</span></div>`;
 
     sortedCountries.forEach(country => {
         const countryFlag = flags.getCountryFlag(country);
         const isSelected = savedCountry === country ? 'selected' : '';
         const countryName = translations.t(country.replace(/\s+/g, ''));
-        dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} ${countryName.toUpperCase()}</div>`;
+        dropdownHTML += `<div class="dropdown-option ${isSelected}" data-country="${country}">${countryFlag} <span class="dropdown-option-name">${countryName.toUpperCase()}</span></div>`;
     });
 
     dropdownMenu.innerHTML = dropdownHTML;
@@ -1105,6 +1105,11 @@ function createSpotCard(spot) {
     let forecastRows = '';
     if (spot.forecast && Array.isArray(spot.forecast)) {
         spot.forecast.forEach(day => {
+            // Skip the "Today" row - it duplicates the "now" readout above the table
+            if (typeof day.date === 'string' && day.date.toLowerCase() === 'today') {
+                return;
+            }
+
             const windTextClass = weather.getWindClass(day.wind);
             const gustTextClass = weather.getWindClass(day.gusts);
 
@@ -1158,7 +1163,8 @@ function createSpotCard(spot) {
     if (spotConditions) {
         const baseWind = spotConditions.wind;
         const gustWind = spotConditions.gusts;
-        const windColorClass = weather.getWindClass(baseWind);
+        // Color the "now" readings according to the gust wind
+        const windColorClass = weather.getWindClass(gustWind);
 
         const averageWind = (baseWind + gustWind) / 2;
         statusClass = {

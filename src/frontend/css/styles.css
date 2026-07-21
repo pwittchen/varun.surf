@@ -657,10 +657,20 @@ body {
     box-shadow: var(--shadow-accent);
 }
 
+/* Keep the selected country on a single line, truncating with an ellipsis */
+#selectedCountry {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+}
+
 .dropdown-arrow {
     font-size: .8rem;
     transition: transform .3s ease;
     color: var(--text-secondary);
+    flex: 0 0 auto;
 }
 
 [data-theme="light"] .dropdown-arrow {
@@ -710,6 +720,15 @@ body {
     align-items: center;
     gap: 10px;
     color: var(--text-primary);
+    white-space: nowrap;
+}
+
+/* Keep long country names on a single line, truncating with an ellipsis */
+.dropdown-option-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 [data-theme="light"] .dropdown-option {
@@ -5295,7 +5314,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         gap: 12px;
         margin: 0 auto 15px auto;
         width: 100%;
-        max-width: 400px;
+        max-width: 300px;
         justify-content: center;
         max-height: 0;
         overflow: visible;
@@ -5320,34 +5339,40 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         opacity: 1;
     }
 
-    /* Theme toggle, favorites, and kite calculator in a single row */
+    /* Two rows of three icons in the mobile drawer:
+       row 1: language, theme, favorites; row 2: firing sort, map, calculator */
+    #languageToggle,
     #themeToggle,
     #favoritesToggle,
+    .firing-toggle,
+    .map-toggle,
     #kiteSizeToggle {
-        width: 62px;
-        flex: 0 0 auto;
-        order: 1;
-    }
-
-    .map-toggle {
-        width: 100%;
-        max-width: 300px;
-        flex: 0 0 100%;
-        order: 2;
+        flex: 0 0 calc((100% - 24px) / 3);
+        width: auto;
+        min-width: 0;
+        max-width: none;
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
         padding: 10px 14px;
     }
 
+    #languageToggle  { order: 1; }
+    #themeToggle     { order: 2; }
+    #favoritesToggle { order: 3; }
+    .firing-toggle   { order: 4; }
+    .map-toggle      { order: 5; }
+    #kiteSizeToggle  { order: 6; }
+
+    /* Map button shows only its icon inside the grid */
     .map-toggle .map-label {
-        display: inline;
+        display: none;
     }
 
     .info-toggle {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 3;
+        order: 7;
         display: flex;
         justify-content: flex-start;
         padding: 10px 14px;
@@ -5361,14 +5386,14 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 4;
+        order: 8;
     }
 
     .dropdown-container {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 5;
+        order: 9;
     }
 
     #modelDropdownContainer {

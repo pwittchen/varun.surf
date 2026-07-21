@@ -266,6 +266,8 @@ export const translations = {
         Namibia: "Namibia",
         Mexico: "Mexico",
         CostaRica: "Costa Rica",
+        SouthAfrica: "South Africa",
+        SriLanka: "Sri Lanka",
         TurksandCaicos: "Turks and Caicos"
     },
     pl: {
@@ -529,6 +531,8 @@ export const translations = {
         Namibia: "Namibia",
         Mexico: "Meksyk",
         CostaRica: "Kostaryka",
+        SouthAfrica: "Republika Południowej Afryki",
+        SriLanka: "Sri Lanka",
         TurksandCaicos: "Turks and Caicos"
     }
 };
