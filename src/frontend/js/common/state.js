@@ -39,7 +39,10 @@ export const STORAGE_KEYS = {
     HERO_VISIBLE: 'heroVisible',
 
     // Firing-now sort (main page default ordering by live wind strength)
-    FIRING_SORT: 'firingSort'
+    FIRING_SORT: 'firingSort',
+
+    // Map wind overlay mode ('off' | 'arrows' | 'heatmap')
+    WIND_OVERLAY_MODE: 'windOverlayMode'
 };
 
 // ============================================================================
@@ -167,6 +170,22 @@ export function getFiringSort() {
 
 export function setFiringSort(enabled) {
     localStorage.setItem(STORAGE_KEYS.FIRING_SORT, enabled ? 'true' : 'false');
+}
+
+// ============================================================================
+// MAP WIND OVERLAY MODE
+// ============================================================================
+
+const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap'];
+
+export function getWindOverlayMode() {
+    const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
+    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'off';
+}
+
+export function setWindOverlayMode(mode) {
+    const value = WIND_OVERLAY_MODES.includes(mode) ? mode : 'off';
+    localStorage.setItem(STORAGE_KEYS.WIND_OVERLAY_MODE, value);
 }
 
 // ============================================================================

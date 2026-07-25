@@ -611,6 +611,10 @@ function initLanguage() {
 
         // Update map layer switcher labels
         map.updateLayerSwitcherLabels();
+        map.updateWindOverlayLabels();
+        if (windHeatmapDisclaimerEl) {
+            windHeatmapDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+        }
 
         // Re-render spots to update table headers and content
         if (globalWeatherData.length > 0) {
@@ -2614,6 +2618,9 @@ let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite' or 'osm'
+let windOverlayLayer = null; // active wind overlay layer (arrows group or heat layer)
+let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap'
+let windHeatmapDisclaimerEl = null;
 
 function initMap() {
     if (leafletMap) return; // Already initialized
@@ -2636,6 +2643,63 @@ function initMap() {
         }
     });
     leafletMap.addControl(layerSwitcher);
+
+    // Add wind overlay control (off -> arrows -> heatmap)
+    const windOverlayControl = map.createWindOverlayControl({
+        getMode: () => windOverlayMode,
+        onModeChange: (newMode) => {
+            windOverlayMode = newMode;
+            state.setWindOverlayMode(newMode);
+            // Rebuild markers (dots hidden in arrows mode) and the overlay together.
+            updateMapMarkers();
+        }
+    });
+    leafletMap.addControl(windOverlayControl);
+}
+
+function ensureWindHeatmapDisclaimer(visible) {
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) return;
+
+    if (visible) {
+        if (!windHeatmapDisclaimerEl) {
+            windHeatmapDisclaimerEl = document.createElement('div');
+            windHeatmapDisclaimerEl.className = 'wind-heatmap-disclaimer';
+            mapContainer.appendChild(windHeatmapDisclaimerEl);
+        }
+        windHeatmapDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+    } else if (windHeatmapDisclaimerEl) {
+        windHeatmapDisclaimerEl.remove();
+        windHeatmapDisclaimerEl = null;
+    }
+}
+
+function renderWindOverlay(spots) {
+    if (!leafletMap) return;
+
+    // Remove any existing overlay layer
+    if (windOverlayLayer) {
+        leafletMap.removeLayer(windOverlayLayer);
+        windOverlayLayer = null;
+    }
+
+    if (windOverlayMode === 'arrows') {
+        // Arrows double as spot markers with the same clickable popup as the dots.
+        windOverlayLayer = map.createWindArrowLayer(spots, getSpotConditions, buildSpotMarkerPopup);
+        windOverlayLayer.addTo(leafletMap);
+        ensureWindHeatmapDisclaimer(false);
+    } else if (windOverlayMode === 'heatmap') {
+        const heatLayer = map.createWindHeatLayer(spots, getSpotConditions);
+        if (heatLayer) {
+            windOverlayLayer = heatLayer;
+            windOverlayLayer.addTo(leafletMap);
+            ensureWindHeatmapDisclaimer(true);
+        } else {
+            ensureWindHeatmapDisclaimer(false);
+        }
+    } else {
+        ensureWindHeatmapDisclaimer(false);
+    }
 }
 
 function buildMapPopupWindDetails(spotConditions) {
@@ -2661,12 +2725,27 @@ function buildMapPopupWindDetails(spotConditions) {
     `;
 }
 
+// Shared popup markup for a spot (clickable name + wind summary). Used by both
+// the dot markers and the wind-arrow markers.
+function buildSpotMarkerPopup(spot) {
+    const popupWindDetails = buildMapPopupWindDetails(getSpotConditions(spot));
+    return `
+        <div class="map-popup">
+            <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
+            ${popupWindDetails}
+        </div>
+    `;
+}
+
 function addMarkersToMap(spots) {
     // Clear existing markers
     mapMarkers.forEach(marker => marker.remove());
     mapMarkers = [];
 
     if (!leafletMap || !spots || spots.length === 0) return;
+
+    // In arrows mode the wind arrows act as the spot markers, so hide the dots.
+    const showDots = windOverlayMode !== 'arrows';
 
     const bounds = [];
 
@@ -2689,17 +2768,14 @@ function addMarkersToMap(spots) {
         });
 
         // Create marker
-        const marker = L.marker([lat, lng], { icon: markerIcon }).addTo(leafletMap);
-
-        const popupWindDetails = buildMapPopupWindDetails(spotConditions);
+        const marker = L.marker([lat, lng], { icon: markerIcon });
 
         // Add popup with clickable spot name and wind summary
-        marker.bindPopup(`
-            <div class="map-popup">
-                <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
-                ${popupWindDetails}
-            </div>
-        `);
+        marker.bindPopup(buildSpotMarkerPopup(spot));
+
+        if (showDots) {
+            marker.addTo(leafletMap);
+        }
 
         mapMarkers.push(marker);
         bounds.push([lat, lng]);
@@ -2764,6 +2840,9 @@ function showMapView() {
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     addMarkersToMap(filteredSpots);
 
+    // Render the active wind overlay (arrows/heatmap) on top of markers
+    renderWindOverlay(filteredSpots);
+
     // Invalidate map size (needed for proper rendering)
     if (leafletMap) leafletMap.invalidateSize();
 
@@ -2805,6 +2884,13 @@ function hideMapView(options = {}) {
         firingSortToggle.classList.toggle('active', firingSortEnabled);
     }
     updateHeroVisibility();
+
+    // Tear down the wind overlay layer (rebuilt on next showMapView)
+    if (windOverlayLayer && leafletMap) {
+        leafletMap.removeLayer(windOverlayLayer);
+        windOverlayLayer = null;
+    }
+    ensureWindHeatmapDisclaimer(false);
 
     // Hide map container
     mapContainer.style.display = 'none';
@@ -2957,6 +3043,7 @@ function updateMapMarkers() {
 
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     addMarkersToMap(filteredSpots);
+    renderWindOverlay(filteredSpots);
 }
 
 // ============================================================================

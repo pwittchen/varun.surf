@@ -173,6 +173,11 @@ export const translations = {
         mapLayerOsm: "Map",
         mapLayerSatellite: "Satellite",
         mapResetView: "Navigate to spot",
+        windOverlayTooltip: "Wind overlay",
+        windOverlayOff: "No wind overlay",
+        windOverlayArrows: "Wind arrows",
+        windOverlayHeatmap: "Wind heatmap",
+        windHeatmapDisclaimer: "Interpolated from spot data",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -438,6 +443,11 @@ export const translations = {
         mapLayerOsm: "Mapa",
         mapLayerSatellite: "Satelita",
         mapResetView: "Nawiguj do spotu",
+        windOverlayTooltip: "Nakładka wiatru",
+        windOverlayOff: "Bez nakładki wiatru",
+        windOverlayArrows: "Strzałki wiatru",
+        windOverlayHeatmap: "Mapa ciepła wiatru",
+        windHeatmapDisclaimer: "Interpolacja z danych spotów",
 
         // Spot info labels
         overviewLabel: "Przegląd",

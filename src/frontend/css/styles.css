@@ -4778,6 +4778,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 /* Map container styles */
 #mapContainer {
+    position: relative;
     width: 100%;
     height: calc(100vh - 180px);
     margin: 20px 0;
@@ -4836,6 +4837,65 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .custom-marker.custom-marker-red .marker-dot {
     background-color: var(--wind-extreme);
+}
+
+/* Wind overlay: arrows. Non-interactive by default (visual only); when they
+   double as spot markers (dots hidden) they become clickable. */
+.wind-arrow-icon {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+
+.wind-arrow-icon.wind-arrow-interactive {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.wind-arrow-marker {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wind-extreme);
+    transform-origin: 50% 50%;
+    filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, 0.55));
+}
+
+.wind-arrow-marker svg {
+    display: block;
+}
+
+.wind-arrow-marker.wind-weak { color: var(--wind-weak); }
+.wind-arrow-marker.wind-moderate { color: var(--wind-moderate); }
+.wind-arrow-marker.wind-strong { color: var(--wind-strong); }
+.wind-arrow-marker.wind-extreme { color: var(--wind-extreme); }
+
+/* Wind field (interpolated) layer: blur the composited tiles together for a
+   smooth field without per-tile seams. */
+.wind-field-layer {
+    filter: blur(8px);
+}
+
+/* Wind heatmap disclaimer badge */
+.wind-heatmap-disclaimer {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--leaflet-bg);
+    border: 1px solid var(--leaflet-border);
+    color: var(--leaflet-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    box-shadow: var(--shadow-card);
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 /* Map Popup Styles */
