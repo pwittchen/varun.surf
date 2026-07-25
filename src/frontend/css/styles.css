@@ -375,6 +375,13 @@ body {
     opacity: 0.8;
 }
 
+/* Single spot page has no sticky left menu, so align the logo's left edge with
+   the left edge of the spot card below (container: max-width 1400px, centered,
+   with 20px .main-content padding → left edge at max(20px, 50% - 700px)). */
+body.spot-page .header-logo {
+    left: max(20px, calc(50% - 700px));
+}
+
 .header-controls {
     position: absolute;
     top: 5px;
@@ -501,6 +508,14 @@ body {
 
 [data-theme="light"] .header-title {
     color: var(--text-black);
+}
+
+/* On the spot page the logo is nudged right to align with the card (50% - 700px),
+   so shift the title to match: logo left + 32px logo width + 11px gap = +43px.
+   Both clamp at the same viewport width (1440px), keeping the gap constant while
+   resizing so the 32px logo never overlaps the title. */
+body.spot-page .header-title {
+    left: max(63px, calc(50% - 657px));
 }
 
 /* Spot Counter */
