@@ -180,7 +180,7 @@ const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap'];
 
 export function getWindOverlayMode() {
     const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
-    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'off';
+    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'heatmap';
 }
 
 export function setWindOverlayMode(mode) {
