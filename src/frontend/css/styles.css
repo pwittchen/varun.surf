@@ -445,6 +445,44 @@ body {
     }
 }
 
+/* Custom hint bubble for the sticky left menu, styled like the map popups.
+   Positioned via JS (setupSideMenuHints) to the right of the hovered icon and
+   appended to <body> so it escapes the rail's overflow clipping. */
+.side-menu-hint {
+    position: fixed;
+    z-index: 10000;
+    padding: 7px 12px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.side-menu-hint.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Tip pointing left toward the icon (mirrors the leaflet-popup-tip). */
+.side-menu-hint::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -6px;
+    transform: translateY(-50%);
+    border-width: 6px 6px 6px 0;
+    border-style: solid;
+    border-color: transparent var(--bg-secondary) transparent transparent;
+}
+
 /* Title sits right of the fixed logo, viewport-anchored so the logo + wordmark
    stay together and aligned with the side menu at every width. */
 .header-title {

@@ -462,6 +462,20 @@ function initLanguage() {
             languageToggle.title = translations.t('languageToggleTooltip');
         }
 
+        // Convert the sticky left menu's native tooltips into custom hint
+        // bubbles (styled like the map popups). The text is moved off `title`
+        // (so the browser's default tooltip no longer duplicates the bubble)
+        // into `data-hint` for setupSideMenuHints() and kept as aria-label for
+        // accessibility / the mobile drawer.
+        SIDE_MENU_HINT_IDS.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn && btn.title) {
+                btn.dataset.hint = btn.title;
+                btn.setAttribute('aria-label', btn.title);
+                btn.removeAttribute('title');
+            }
+        });
+
         // Update language code text
         const langCode = document.getElementById('langCode');
         if (langCode) {
@@ -2225,6 +2239,70 @@ function setupHamburgerMenu() {
 
 const SIDE_MENU_BREAKPOINT = 929;
 
+// Buttons that live in the sticky left menu on desktop / tablet. Their tooltips
+// are rendered as custom hint bubbles (see setupSideMenuHints).
+const SIDE_MENU_HINT_IDS = [
+    'infoToggle', 'themeToggle', 'favoritesToggle', 'firingSortToggle',
+    'mapToggle', 'heroToggle', 'kiteSizeToggle', 'listViewBtn', 'gridViewBtn'
+];
+
+// Custom tooltips for the sticky left menu, styled like the map popups. A single
+// bubble element is reused and positioned to the right of the hovered icon.
+// It is appended to <body> and positioned with fixed coordinates so it escapes
+// the side menu's overflow clipping (overflow-y: auto also clips horizontally).
+function setupSideMenuHints() {
+    const sideMenu = document.getElementById('sideMenu');
+    if (!sideMenu) {
+        return;
+    }
+
+    let hint = document.getElementById('sideMenuHint');
+    if (!hint) {
+        hint = document.createElement('div');
+        hint.id = 'sideMenuHint';
+        hint.className = 'side-menu-hint';
+        hint.setAttribute('role', 'tooltip');
+        document.body.appendChild(hint);
+    }
+
+    let activeBtn = null;
+
+    function hide() {
+        activeBtn = null;
+        hint.classList.remove('visible');
+    }
+
+    function show(btn) {
+        // Only pop out from the vertical rail; in the mobile drawer the buttons
+        // move into #headerIcons and the bubble would be misplaced.
+        if (btn.parentElement !== sideMenu) {
+            return;
+        }
+        const text = btn.dataset.hint || btn.getAttribute('aria-label');
+        if (!text) {
+            return;
+        }
+        activeBtn = btn;
+        hint.textContent = text;
+        // Measure before revealing so vertical centering is exact.
+        const btnRect = btn.getBoundingClientRect();
+        const hintRect = hint.getBoundingClientRect();
+        hint.style.left = `${btnRect.right + 12}px`;
+        hint.style.top = `${btnRect.top + (btnRect.height - hintRect.height) / 2}px`;
+        hint.classList.add('visible');
+    }
+
+    sideMenu.querySelectorAll('.theme-toggle').forEach(btn => {
+        btn.addEventListener('mouseenter', () => show(btn));
+        btn.addEventListener('mouseleave', hide);
+    });
+
+    // Keep the bubble anchored if the rail scrolls, and dismiss on scroll/resize
+    // to avoid a stale position.
+    window.addEventListener('scroll', hide, true);
+    window.addEventListener('resize', hide);
+}
+
 function setupSideMenu() {
     const sideMenu = document.getElementById('sideMenu');
     const headerIcons = document.getElementById('headerIcons');
@@ -3035,6 +3113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFavorites();
     setupHamburgerMenu();
     setupSideMenu();
+    setupSideMenuHints();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupFiringSortToggle();
