@@ -104,7 +104,7 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should cycle wind overlay off -> arrows -> heatmap -> off")
+    @DisplayName("Should cycle wind overlay heatmap -> off -> arrows -> heatmap")
     void shouldCycleWindOverlayModes() {
         navigateToMainPage();
         waitForSpotsToLoad();
@@ -124,11 +124,19 @@ class MainPageE2eTest extends BaseE2eTest {
         Locator heatDisclaimer = page.locator(".wind-heatmap-disclaimer");
         Locator activeOption = page.locator(".leaflet-control-wind-overlay .layer-switcher-option.active");
 
-        // Initially off: button not active, no heatmap disclaimer.
+        // Default mode is heatmap: button active, disclaimer visible.
         // (Marker/arrow rendering depends on network-resolved coordinates, which are
         // not available in the sandboxed E2E run, so we assert the control mechanics.)
-        String buttonClass = overlayButton.getAttribute("class");
-        assertThat(buttonClass == null || !buttonClass.contains("active")).isTrue();
+        assertThat(activeOption.getAttribute("data-value")).isEqualTo("heatmap");
+        assertThat(overlayButton.getAttribute("class")).contains("active");
+        assertThat(heatDisclaimer.isVisible()).isTrue();
+
+        // Switch to off: button not active, disclaimer removed
+        overlayButton.click();
+        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='off']").click();
+        page.waitForTimeout(300);
+        assertThat(activeOption.getAttribute("data-value")).isEqualTo("off");
+        assertThat(overlayButton.getAttribute("class")).doesNotContain("active");
         assertThat(heatDisclaimer.count()).isEqualTo(0);
 
         // Switch to arrows: option active, button active, no heatmap disclaimer
@@ -139,20 +147,13 @@ class MainPageE2eTest extends BaseE2eTest {
         assertThat(overlayButton.getAttribute("class")).contains("active");
         assertThat(heatDisclaimer.count()).isEqualTo(0);
 
-        // Switch to heatmap: disclaimer visible, option active
+        // Switch back to heatmap: disclaimer visible, option active
         overlayButton.click();
         page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='heatmap']").click();
         page.waitForTimeout(300);
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("heatmap");
+        assertThat(overlayButton.getAttribute("class")).contains("active");
         assertThat(heatDisclaimer.isVisible()).isTrue();
-
-        // Switch back to off: button not active, disclaimer removed
-        overlayButton.click();
-        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='off']").click();
-        page.waitForTimeout(300);
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("off");
-        assertThat(overlayButton.getAttribute("class")).doesNotContain("active");
-        assertThat(heatDisclaimer.count()).isEqualTo(0);
     }
 
     @Test
