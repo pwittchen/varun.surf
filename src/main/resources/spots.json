@@ -4210,5 +4210,34 @@
       "season": "Listopad-Sierpień",
       "description": "Long Bay Beach na południowo-wschodnim wybrzeżu Providenciales to jedno z najlepszych miejsc do kitesurfingu na Karaibach, oferujące 5 km białego piasku z ogromną płytką ławicą piaskową rozciągającą się na ponad milę od brzegu na głębokości do pasa. Stały wiatr handlowy E/SE o sile 15-25 węzłów wieje boczno-nabrzeżnie, eliminując ryzyko zniesienia na otwarte morze, a płaska turkusowa woda tworzy idealne warunki zarówno dla początkujących, jak i miłośników freestylu. Dziesięciomiesięczny sezon wiatrowy, ciepła woda i brak przyboju czynią to miejsce prawdziwym kite-rajem."
     }
+  },
+  {
+    "name": "Lago di Santa Croce",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/501230",
+    "windguruFallbackUrl": "https://www.windguru.cz/1538",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lago_santa_croce",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.118847,12.348289",
+    "spotInfo": {
+      "type": "Alpine freshwater lake, flat water",
+      "bestWind": "S, SE",
+      "waterTemp": "14-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy/pebble beach at Farra d'Alpago (lifeguard, showers, toilets in season)",
+      "hazards": "Gusty on-shore thermal can push riders toward the swimmer area or the wooded/rocky shoreline; lake is fairly compact so watch for drifting into obstacles; cold water in spring (wetsuit needed); afternoon thunderstorms possible in summer; other lake users (sailing, SUP, swimmers) near the launch",
+      "season": "April-September",
+      "description": "A scenic alpine lake in the Belluno Pre-Alps (Veneto), renowned for the 'Ora', a remarkably reliable thermal wind driven by the temperature difference between the Alpago mountains and the Venetian plain, amplified by a Venturi effect through the Lapisina valley. The thermal typically fills in around midday from the S/SE and holds 12-25+ knots into the early evening, with flat water and a mountain backdrop that make it one of Italy's best spots to learn kitesurfing. The main public launch and kite schools are at Farra d'Alpago on the north shore; Poiatte, mid-lake on the east shore, is another popular launch."
+    },
+    "spotInfoPL": {
+      "type": "Górskie jezioro ze słodką wodą, płaska woda",
+      "bestWind": "S, SE",
+      "waterTemp": "14-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysto-kamienista plaża we Farra d'Alpago (ratownik, prysznice, toalety w sezonie)",
+      "hazards": "Porywisty, boczno-nabrzeżny wiatr termiczny może znosić w stronę kąpieliska lub zalesionego/skalistego brzegu; jezioro jest dość niewielkie, więc trzeba uważać na zniesienie na przeszkody; zimna woda wiosną (potrzebna pianka); możliwe letnie burze popołudniowe; inni użytkownicy jeziora (żeglarze, SUP, pływacy) w pobliżu startowiska",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Malownicze górskie jezioro w Prealpach Belluńskich (Wenecja Euganejska), znane z wiatru zwanego 'Ora' - niezwykle regularnego wiatru termicznego powstającego dzięki różnicy temperatur między górami Alpago a równiną wenecką, wzmacnianego efektem Venturiego w dolinie Lapisina. Termika zwykle pojawia się około południa z kierunku S/SE i utrzymuje się na poziomie 12-25+ węzłów do wczesnego wieczora, a płaska woda i górska sceneria czynią to miejsce jednym z najlepszych we Włoszech do nauki kitesurfingu. Główne publiczne startowisko i szkoły kite znajdują się we Farra d'Alpago na północnym brzegu; Poiatte, w połowie jeziora na wschodnim brzegu, to kolejne popularne miejsce startu."
+    }
   }
 ]
