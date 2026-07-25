@@ -45,6 +45,7 @@ public class StatusController {
             new SourceDefinition("SC Podo Podersdorf", "https://scpodo.at/wind.php", "scpodo.at"),
             new SourceDefinition("Holfuy Góra Żar", "https://holfuy.com/en/weather/1612", "holfuy.com/en/weather/1612"),
             new SourceDefinition("Holfuy Svencele", "https://holfuy.com/en/weather/1515", "holfuy.com/en/weather/1515"),
+            new SourceDefinition("Turawa Wunderground", "https://www.wunderground.com/dashboard/pws/ISZCZE187", "wunderground.com/pws/ISZCZE187"),
             new SourceDefinition("Turawa Airmax", "https://airmax.pl/kamery/turawa", "airmax.pl/kamery/turawa"),
             new SourceDefinition("Mietkow WeeWX", "https://frog01-21064.wykr.es/weewx/inx.html", "frog01-21064.wykr.es"),
             new SourceDefinition("Tarifa Spotfav", "https://www.spotfav.com/public/meteo/weatherflow-4eee927b185476763900001b/update/", "spotfav.com"),

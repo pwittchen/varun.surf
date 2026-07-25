@@ -43,6 +43,11 @@ class FetchCurrentConditionsStrategyTurawaTest {
     }
 
     @Test
+    void shouldReturnTrueForIsFallbackStation() {
+        assertThat(strategy.isFallbackStation()).isTrue();
+    }
+
+    @Test
     void shouldParseValidTurawaResponse() {
         String mockResponse = """
                 <html>
