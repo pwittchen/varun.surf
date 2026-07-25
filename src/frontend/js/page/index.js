@@ -2216,91 +2216,46 @@ function setupHamburgerMenu() {
 }
 
 // ============================================================================
-// HEADER OVERFLOW ("...") MENU
-// Collapses the icons left of the language toggle into a single "..." menu
-// once they would start covering the logo (desktop only; the hamburger menu
-// handles everything at mobile widths).
+// STICKY LEFT MENU
+// The action buttons live in the vertical #sideMenu on desktop / tablet. At
+// mobile widths (<=929px) the hamburger drawer takes over, so the buttons are
+// moved into #headerIcons (inside .header-controls) where the drawer styles
+// lay them out. This mirrors the old overflow-menu shuffle.
 // ============================================================================
 
-// Width below which the header icons collapse into the "..." menu.
-// Raised by one icon's width (~52px) to account for the firing-sort button.
-const HEADER_OVERFLOW_BREAKPOINT = 1357;
+const SIDE_MENU_BREAKPOINT = 929;
 
-function setupHeaderOverflow() {
-    const headerControls = document.getElementById('headerControls');
+function setupSideMenu() {
+    const sideMenu = document.getElementById('sideMenu');
     const headerIcons = document.getElementById('headerIcons');
-    const overflow = document.getElementById('headerOverflow');
-    const overflowToggle = document.getElementById('overflowToggle');
-    const overflowMenu = document.getElementById('headerOverflowMenu');
 
-    if (!headerControls || !headerIcons || !overflow || !overflowToggle || !overflowMenu) {
+    if (!sideMenu || !headerIcons) {
         return;
     }
 
-    // Capture the icon buttons in their original order so we can move them back.
-    const iconButtons = Array.from(headerIcons.children);
+    // Capture the buttons in their authored order so they always go back the
+    // same way regardless of which container currently holds them.
+    const iconButtons = Array.from(sideMenu.children);
 
-    function closeMenu() {
-        overflow.classList.remove('open');
-        overflowToggle.setAttribute('aria-expanded', 'false');
-    }
-
-    function openMenu() {
-        overflow.classList.add('open');
-        overflowToggle.setAttribute('aria-expanded', 'true');
-    }
-
-    function expand() {
-        iconButtons.forEach(btn => headerIcons.appendChild(btn));
-        headerControls.classList.remove('icons-overflowing');
-        closeMenu();
-    }
-
-    function collapse() {
-        iconButtons.forEach(btn => overflowMenu.appendChild(btn));
-        headerControls.classList.add('icons-overflowing');
+    function moveTo(container) {
+        iconButtons.forEach(btn => container.appendChild(btn));
     }
 
     function update() {
-        const width = window.innerWidth;
-        // Below 930px the hamburger drawer owns the controls (icons stay inline);
-        // between 930px and HEADER_OVERFLOW_BREAKPOINT the icons collapse into the
-        // "..." menu so they never cover the logo / title; above it they sit inline.
-        if (width > 929 && width < HEADER_OVERFLOW_BREAKPOINT) {
-            collapse();
-        } else {
-            expand();
+        if (window.innerWidth <= SIDE_MENU_BREAKPOINT) {
+            if (iconButtons[0] && iconButtons[0].parentElement !== headerIcons) {
+                moveTo(headerIcons);
+            }
+        } else if (iconButtons[0] && iconButtons[0].parentElement !== sideMenu) {
+            moveTo(sideMenu);
         }
     }
-
-    overflowToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (overflow.classList.contains('open')) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    });
-
-    // Close the menu after picking an option or clicking outside / pressing Escape.
-    overflowMenu.addEventListener('click', () => closeMenu());
-    document.addEventListener('click', (e) => {
-        if (!overflow.contains(e.target)) {
-            closeMenu();
-        }
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeMenu();
-        }
-    });
 
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(update, 150);
     });
-    window.addEventListener('load', update);
 
     update();
 }
@@ -2321,9 +2276,12 @@ function isMobileView() {
     return window.innerWidth <= 929;
 }
 
-// Below this width the spots are shown as a list; at or above it, as a grid.
+// Below this width two grid tiles can no longer fit their content on a single
+// line (each cell drops under the ~452px the card is designed for), so the
+// spots switch to the list view. Above it they render as a grid (three columns
+// >=1355px, two columns below).
 function isListBreakpoint() {
-    return window.innerWidth <= 1260;
+    return window.innerWidth <= 1024;
 }
 
 function setupFiringSortToggle() {
@@ -2422,7 +2380,7 @@ function setupColumnToggle() {
             const isNowListView = isListBreakpoint();
             const wasMobile = currentViewMode === 'list' && isMobileView();
 
-            // List view is forced at <= 1260px, same threshold as the grid layout
+            // List view is forced at <= 1024px, where two grid tiles no longer fit
             if (isNowListView && !wasListView) {
                 // Just dropped below the grid breakpoint - switch to list view
                 if (currentViewMode === 'grid') {
@@ -3076,7 +3034,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupListDragAndDrop();
     setupFavorites();
     setupHamburgerMenu();
-    setupHeaderOverflow();
+    setupSideMenu();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupFiringSortToggle();

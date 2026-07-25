@@ -306,6 +306,21 @@ body {
     padding: 20px;
 }
 
+/* Reserve room for the sticky left menu on the main page (desktop / tablet).
+   Scoped to .index-page so other pages (spot/status) keep their full width.
+   The header gets the same left inset so its centered content column matches
+   the main content column exactly — this keeps the right edge of the header
+   controls (country dropdown) flush with the content/banner below it. */
+@media (min-width: 930px) {
+    .index-page .main-content {
+        padding-left: 84px;
+    }
+
+    .index-page .fixed-header {
+        padding-left: 84px !important;
+    }
+}
+
 
 /* ============================================================================
    4. HEADER & NAVIGATION
@@ -339,12 +354,17 @@ body {
     display: flex;
     flex-direction: column;
     text-align: left;
+    /* Keeps the header height while the logo + title are pulled out of flow
+       (position: fixed) so they can line up with the viewport-fixed side menu */
+    min-height: 54px;
 }
 
+/* Logo stays centered over the sticky left menu axis and tracks the centered
+   layout with it (same 50% anchor, offset so its center matches the rail). */
 .header-logo {
-    position: absolute;
-    left: 0;
-    top: 14px;
+    position: fixed;
+    left: max(31px, calc(50% - 721px));
+    top: 30px;
     height: auto;
     width: auto;
     cursor: pointer;
@@ -364,85 +384,78 @@ body {
     align-items: center;
 }
 
-/* Inline wrapper for the icons sitting left of the language toggle */
+/* Empty mount point inside the header; the action buttons live in #sideMenu on
+   desktop and are moved here (into the drawer) at <=929px by setupSideMenu(). */
 .header-icons {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Overflow ("...") control - shown only when the icons would cover the logo */
-.header-overflow {
-    position: relative;
-    display: none;
-}
-
-.header-controls.icons-overflowing .header-overflow {
+/* Sticky vertical menu on the left, holding the action icons that used to sit
+   in the top header. It lives outside .fixed-header in the DOM so position:
+   fixed is resolved against the viewport (the header's backdrop-filter would
+   otherwise become the containing block). Hidden at <=929px, where its buttons
+   move into the hamburger drawer. */
+.side-menu {
+    position: fixed;
+    /* Track the centered layout: pinned at 16px until the content column starts
+       centering (~1504px), then drift right with it (container left edge is
+       calc(50% - 668px); the rail sits 8px into its left gutter). */
+    left: max(16px, calc(50% - 736px));
+    top: 140px;
+    z-index: 9998;
     display: flex;
-}
-
-.header-overflow-menu {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
     flex-direction: column;
-    gap: 4px;
-    min-width: 210px;
-    padding: 8px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 10px;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 10px;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    z-index: 10002;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
 }
 
-.header-overflow.open .header-overflow-menu {
-    display: flex;
+[data-theme="light"] .side-menu {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-/* Icon buttons rendered as full-width rows inside the overflow menu */
-.header-overflow-menu .theme-toggle {
-    width: 100%;
-    min-width: 0;
-    height: auto;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 10px 12px;
-    border: 1px solid transparent;
-    background: transparent;
+/* Keep every button a uniform icon square in the vertical bar */
+.side-menu .theme-toggle {
+    width: 40px;
+    flex: 0 0 auto;
 }
 
-.header-overflow-menu .theme-toggle:hover {
-    background: var(--gradient-button-hover);
-    border-color: var(--border-hover);
-}
-
-.header-overflow-menu .theme-toggle.active {
-    background: var(--gradient-active);
-    border-color: var(--accent-primary);
-    color: var(--text-white);
-}
-
-.header-overflow-menu .theme-toggle::after {
-    content: attr(title);
-    font-size: 0.9rem;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-/* The inline labels are redundant in the menu (we use the title via ::after) */
-.header-overflow-menu .info-label,
-.header-overflow-menu .map-label {
+/* Text labels are redundant in the icon-only vertical bar */
+.side-menu .info-label,
+.side-menu .map-label {
     display: none !important;
 }
 
+/* The drawer owns the buttons at mobile widths; hide the desktop bar */
+@media (max-width: 929px) {
+    .side-menu {
+        display: none !important;
+    }
+}
+
+/* Title sits right of the fixed logo, viewport-anchored so the logo + wordmark
+   stay together and aligned with the side menu at every width. */
 .header-title {
+    position: fixed;
+    left: max(74px, calc(50% - 678px));
+    top: 18px;
     font-size: 2.8rem;
     font-weight: 100;
     color: var(--text-white);
     margin-bottom: 8px;
-    margin-left: 50px;
+    margin-left: 0;
     letter-spacing: -.02em;
     text-align: left;
     cursor: pointer;
@@ -913,6 +926,16 @@ body {
     gap: 20px;
 }
 
+/* Below 1355px the grid drops from three to two columns. Once two tiles can no
+   longer hold their content on a single line (<=1024px) the JS switches to the
+   list view instead. The card stretch override lives after the base .spot-card
+   rule below so it wins the cascade. */
+@media (max-width: 1354px) {
+    .spots-grid.three-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .spots-grid.three-columns .spot-title {
     max-width: 50%;
     padding-top: 10px;
@@ -971,6 +994,13 @@ body {
     width: 100%;
     max-width: 452px;
     min-width: 0;
+}
+
+/* Two-column layout: drop the 452px cap so cards fill the wider cells */
+@media (max-width: 1354px) {
+    .spots-grid.three-columns .spot-card {
+        max-width: none;
+    }
 }
 
 .spot-card:hover {
@@ -5340,9 +5370,13 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
     .header-content {
         text-align: center;
+        min-height: 0;
     }
 
     .header-title {
+        position: static;
+        left: auto;
+        top: auto;
         text-align: center;
         margin-top: 0;
         margin-left: 0;
@@ -5355,14 +5389,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         margin-top: 10px;
     }
 
-    /* Drawer takes over on mobile: dissolve the icons wrapper so its buttons
-       become direct flex items of .header-controls again, and hide the "..." menu */
+    /* Drawer takes over on mobile: dissolve the sticky left menu wrapper so its
+       buttons become direct flex items of .header-controls again */
     .header-icons {
         display: contents;
-    }
-
-    .header-overflow {
-        display: none !important;
     }
 
     .header-controls {
