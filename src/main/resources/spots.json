@@ -4239,5 +4239,295 @@
       "season": "Kwiecień-Wrzesień",
       "description": "Malownicze górskie jezioro w Prealpach Belluńskich (Wenecja Euganejska), znane z wiatru zwanego 'Ora' - niezwykle regularnego wiatru termicznego powstającego dzięki różnicy temperatur między górami Alpago a równiną wenecką, wzmacnianego efektem Venturiego w dolinie Lapisina. Termika zwykle pojawia się około południa z kierunku S/SE i utrzymuje się na poziomie 12-25+ węzłów do wczesnego wieczora, a płaska woda i górska sceneria czynią to miejsce jednym z najlepszych we Włoszech do nauki kitesurfingu. Główne publiczne startowisko i szkoły kite znajdują się we Farra d'Alpago na północnym brzegu; Poiatte, w połowie jeziora na wschodnim brzegu, to kolejne popularne miejsce startu."
     }
+  },
+  {
+    "name": "Achensee",
+    "country": "Austria",
+    "windguruUrl": "https://www.windguru.cz/59416",
+    "windguruFallbackUrl": "https://www.windguru.cz/274284",
+    "windfinderUrl": "https://www.windfinder.com/forecast/achensee_maurach",
+    "webcamUrl": "https://www.achensee.com/webcams/",
+    "locationUrl": "https://www.google.com/maps?q=47.454500,11.713970",
+    "spotInfo": {
+      "type": "Alpine freshwater lake (930 m a.s.l.), choppy to flat water",
+      "bestWind": "N, NW (thermal), S (foehn)",
+      "waterTemp": "8-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Designated kite zones on the Uferstrasse near Pertisau/Buchau bay and at Maurach on the southern shore; grass and gravel shore",
+      "hazards": "Licence required (weekly/monthly/season pennant from the Achensee tourist board in Maurach, worn visibly on the harness) plus third-party sport liability insurance; foehn from the south is an extremely gusty katabatic wind that can jump from under 10 to 50+ knots within seconds - the local kite club advises not to ride on foehn days; kiting is banned within 200 m of the passenger-boat piers and of the boats themselves, and within 100 m of the shore outside the launch/land zones; only one kite may be launched or landed at a time; flying kites over the public bathing area is forbidden; cold, deep water and no standing area",
+      "season": "April-November",
+      "description": "Tyrol's largest lake, 9 km long between Achenkirch in the north and Maurach in the south, sitting at around 930 m in a deep trench between the Karwendel and Rofan ranges. The topography works like a funnel: northerly and westerly flow is deflected by the Karwendel rock faces and spat out into Buchau bay near Pertisau, where gusts of up to 35 knots have been recorded, while the rest of the lake stays much calmer. It is a licensed spot - riders must carry the Achensee pennant - and is strictly organised into marked kite zones shared with a busy passenger-boat service and swimmers. The turquoise, glacier-cold water and the wall of mountains on both sides make it one of the most spectacular alpine spots in Austria, but the foehn makes it a place that punishes bad judgement."
+    },
+    "spotInfoPL": {
+      "type": "Alpejskie jezioro słodkowodne (930 m n.p.m.), woda od pofalowanej do płaskiej",
+      "bestWind": "N, NW (termika), S (fen)",
+      "waterTemp": "8-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Wyznaczone strefy kite przy Uferstrasse koło Pertisau/zatoki Buchau oraz w Maurach na południowym brzegu; brzeg trawiasty i żwirowy",
+      "hazards": "Wymagana licencja (tygodniowa/miesięczna/sezonowa proporczyk odbierany w biurze turystycznym Achensee w Maurach, noszony widocznie na trapezie) oraz sportowe ubezpieczenie OC; fen z południa to skrajnie porywisty wiatr opadający, który w kilka sekund potrafi wzrosnąć z poniżej 10 do ponad 50 węzłów - lokalny klub kite odradza pływanie w dni fenowe; zakaz pływania w promieniu 200 m od przystani statków pasażerskich i od samych statków oraz w odległości 100 m od brzegu poza strefami startu i lądowania; jednocześnie startować lub lądować może tylko jeden latawiec; zakaz latania latawcem nad kąpieliskiem; zimna, głęboka woda bez miejsca do stania",
+      "season": "Kwiecień-Listopad",
+      "description": "Największe jezioro Tyrolu, długie na 9 km, rozciągnięte między Achenkirch na północy a Maurach na południu, położone na wysokości około 930 m w głębokim rowie między masywami Karwendel i Rofan. Ukształtowanie terenu działa jak lejek: napływ północny i zachodni odbija się od ścian Karwendelu i zostaje wyrzucony do zatoki Buchau koło Pertisau, gdzie notowano porywy do 35 węzłów, podczas gdy reszta jeziora pozostaje znacznie spokojniejsza. To spot licencjonowany - trzeba mieć proporczyk Achensee - i ściśle podzielony na oznaczone strefy kite, dzielone z ruchliwą żeglugą pasażerską i kąpiącymi się. Turkusowa, lodowato zimna woda i ściany gór po obu stronach czynią go jednym z najbardziej widowiskowych spotów alpejskich w Austrii, ale fen bezlitośnie karze brak rozwagi."
+    }
+  },
+  {
+    "name": "Chiemsee (Chieming)",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/316429",
+    "windguruFallbackUrl": "https://www.windguru.cz/242063",
+    "windfinderUrl": "https://www.windfinder.com/forecast/chiemsee_chieming",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.896489,12.526864",
+    "spotInfo": {
+      "type": "Large pre-alpine lake, chop to small wind swell",
+      "bestWind": "W, SW",
+      "waterTemp": "10-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Northern part of the Chieming lido (Chiemseering, in front of the clinic) - wide gravel beach with a shallow entry, plus a small meadow above the shore when the water level is high",
+      "hazards": "Onshore westerly means riding upwind is mandatory - the shore is lined with trees; kiting is only tolerated, a kite licence and third-party liability insurance must be shown on request; riding is not allowed during bathing operations and only inside the marked kite zone, keeping at least two line lengths off the shore; swimming lines and buoys must not be crossed or jumped; scheduled passenger ships have right of way and the windsurfers' entry lane must be kept clear; gusty wind, sharp stones and mussels in the water, fast weather changes and no rescue service",
+      "season": "April-October",
+      "description": "The 'Bavarian Sea' is the biggest lake in Bavaria and Chieming, on the flat eastern shore, is its main kite spot: westerly winds can build across the entire open lake, and a strong south-westerly rolls in a proper wind swell from the direction of Feldwies and Bernau. The launch is a broad gravel beach with about 30 m of standing depth, run under spot rules by Kiteboarding Chiemsee e.V., which marks the officially agreed kite areas with signs. It is not a beginner spot - the wind is gusty and mostly onshore, the shoreline is full of obstacles, and the lake is busy with sailing boats, windsurfers and passenger ships."
+    },
+    "spotInfoPL": {
+      "type": "Duże jezioro przedalpejskie, fala od chopu po niewielką falę wiatrową",
+      "bestWind": "W, SW",
+      "waterTemp": "10-23°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Północna część kąpieliska w Chieming (Chiemseering, naprzeciw kliniki) - szeroka żwirowa plaża z płytkim wejściem, a przy wysokim stanie wody także niewielka łąka powyżej brzegu",
+      "hazards": "Zachodni wiatr wieje od wody, więc umiejętność pływania pod wiatr jest obowiązkowa - brzeg porastają drzewa; kitesurfing jest jedynie tolerowany, na żądanie trzeba okazać licencję kite i ubezpieczenie OC; zakaz pływania w godzinach funkcjonowania kąpieliska i wyłącznie w oznaczonej strefie kite, z zachowaniem co najmniej dwóch długości linek od brzegu; nie wolno przecinać ani przeskakiwać lin i boi kąpieliska; statki pasażerskie mają pierwszeństwo, a tor wejścia windsurferów musi pozostać wolny; porywisty wiatr, ostre kamienie i muszle w wodzie, szybkie zmiany pogody i brak ratownictwa wodnego",
+      "season": "Kwiecień-Październik",
+      "description": "'Bawarskie morze' to największe jezioro Bawarii, a Chieming na płaskim wschodnim brzegu jest jego głównym spotem kite: wiatry zachodnie mogą się rozpędzić nad całym otwartym akwenem, a silny południowo-zachodni przynosi solidną falę wiatrową od strony Feldwies i Bernau. Startowisko to szeroka żwirowa plaża z około 30 m strefy, w której da się stanąć, prowadzona według regulaminu przez Kiteboarding Chiemsee e.V., który oznacza oficjalnie uzgodnione strefy kite tablicami. To nie jest miejsce dla początkujących - wiatr jest porywisty i najczęściej dowiewa od wody, brzeg pełen przeszkód, a jezioro tłoczne od żaglówek, windsurferów i statków pasażerskich."
+    }
+  },
+  {
+    "name": "Walchensee",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/67484",
+    "windguruFallbackUrl": "https://www.windguru.cz/157695",
+    "windfinderUrl": "https://www.windfinder.com/forecast/walchensee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.584397,11.323947",
+    "spotInfo": {
+      "type": "Alpine freshwater lake (800 m a.s.l.), flat to choppy",
+      "bestWind": "N, NNE, NE, NW (thermal)",
+      "waterTemp": "8-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Zwergerlinsel - park in the forest past the Walchensee campsite (the continuation is a forestry road for residents only) and walk in; open shore with enough room for kites, unlike the tree-lined spots with direct parking",
+      "hazards": "Almost pure thermal spot - no thermal, no session; strong gusts must always be expected and even on good days lighter riders need at least a 10 m kite; difficult launch area and a longer walk from the car; do not drift too far south-west, the wind dies there and the swim back is long; the direct-access spots are firmly in windsurfers' hands; cold, deep water; the shore is protected nature, take all rubbish back with you and check locally whether kiting is currently permitted",
+      "season": "May-September",
+      "description": "Often called the German answer to Lake Garda: warm air rising along the northern rim of the Alps is funnelled between the Jochberg and the Herzogstand onto the lake and accelerated by the venturi effect, producing a remarkably reliable northerly thermal from roughly 11:00 to 16:00, sometimes until 18:00. The classic recipe is a north to north-easterly gradient, a clear cold night and a warm day. The wind fills in at the northern end first and dies there first too - the difference can be two hours - and is strongest between the road gallery and the Schweinebucht. For kiters the Zwergerlinsel on the northern shore is the spot to go for, because it is one of the few places with enough open space to rig and launch."
+    },
+    "spotInfoPL": {
+      "type": "Alpejskie jezioro słodkowodne (800 m n.p.m.), woda płaska do pofalowanej",
+      "bestWind": "N, NNE, NE, NW (termika)",
+      "waterTemp": "8-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Zwergerlinsel - parking w lesie za kempingiem Walchensee (dalej droga leśna tylko dla mieszkańców), potem dojście pieszo; otwarty brzeg z wystarczającą przestrzenią na latawce, w przeciwieństwie do zadrzewionych spotów z parkingiem przy samej wodzie",
+      "hazards": "Spot niemal wyłącznie termiczny - bez termiki nie ma pływania; zawsze trzeba liczyć się z silnymi porywami, a nawet w dobre dni lżejsi kiterzy potrzebują co najmniej latawca 10 m; trudne warunki startu i dłuższe dojście od samochodu; nie należy odpływać zbyt daleko na południowy zachód, bo wiatr tam zamiera i powrót wpław jest długi; miejsca z bezpośrednim dojazdem są zajęte przez windsurferów; zimna, głęboka woda; brzeg objęty ochroną przyrody - trzeba zabierać śmieci i sprawdzać lokalnie, czy kitesurfing jest aktualnie dozwolony",
+      "season": "Maj-Wrzesień",
+      "description": "Nazywany często niemiecką odpowiedzią na Gardę: ciepłe powietrze unoszące się wzdłuż północnej krawędzi Alp jest wtłaczane między Jochberg i Herzogstand nad jezioro i przyspieszane efektem Venturiego, dając wyjątkowo regularną północną termikę mniej więcej od 11:00 do 16:00, czasem do 18:00. Klasyczny przepis to napływ z północy lub północnego wschodu, bezchmurna zimna noc i ciepły dzień. Wiatr pojawia się najpierw w północnej części jeziora i tam też najwcześniej zamiera - różnica potrafi wynieść dwie godziny - a najsilniej wieje między galerią drogową a Schweinebucht. Dla kiterów kluczowa jest Zwergerlinsel na północnym brzegu, bo to jedno z niewielu miejsc z wystarczającą przestrzenią do rozłożenia sprzętu i startu."
+    }
+  },
+  {
+    "name": "Zell am See",
+    "country": "Austria",
+    "windguruUrl": "https://www.windguru.cz/238749",
+    "windguruFallbackUrl": "https://www.windguru.cz/104673",
+    "windfinderUrl": "https://www.windfinder.com/forecast/zell_am_see",
+    "webcamUrl": "https://www.zellamsee-kaprun.com/de/webcams",
+    "locationUrl": "https://www.google.com/maps?q=47.311461,12.817303",
+    "spotInfo": {
+      "type": "Alpine freshwater lake (750 m a.s.l.), flat water",
+      "bestWind": "NW, S (thermal off the Schmittenhöhe)",
+      "waterTemp": "8-23°C",
+      "experience": "Intermediate to Advanced (foil recommended)",
+      "launch": "Strandbad Erlberg on the eastern shore, next to Restaurant Haus Gabi - week tickets and season passes are sold on the spot; it is the only usable kite launch on the lake",
+      "hazards": "Membership rules of Kiteverein Zell am See apply: a numbered lycra jersey must be worn while riding (20 EUR deposit) so that riders can be identified; entering or riding into the nature reserve is strictly forbidden; kiting is only allowed for riders who can reliably ride upwind, and kite and board size must be matched to the wind so that upwind riding is guaranteed; during bathing operations kites may only be launched from the water, not from the meadow; the thermal is usually very light and the north-westerly comes with bad weather and is very gusty; the legal status of kiting on the lake is tolerated rather than formally permitted, so correct behaviour matters",
+      "season": "May-September",
+      "description": "The Zeller See sits at 750 m in a broad valley between the Schmittenhöhe and the Steinernes Meer, ringed by the Kitzsteinhorn glacier and a nature reserve at its southern end. It is a small, quiet lake with genuinely spectacular scenery but modest wind: the best conditions come with a north-westerly or with the thermal that spills off the Schmittenhöhe, and because the thermal is usually weak this is above all a foil spot. Everything is organised around the single kite beach at Erlberg and the local kite club, whose jersey scheme keeps the sport tolerated alongside swimmers, fishermen and the protected area."
+    },
+    "spotInfoPL": {
+      "type": "Alpejskie jezioro słodkowodne (750 m n.p.m.), płaska woda",
+      "bestWind": "NW, S (termika ze Schmittenhöhe)",
+      "waterTemp": "8-23°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego (zalecany foil)",
+      "launch": "Strandbad Erlberg na wschodnim brzegu, obok Restaurant Haus Gabi - bilety tygodniowe i karnety sezonowe kupuje się na miejscu; to jedyne używalne startowisko kite na jeziorze",
+      "hazards": "Obowiązują zasady Kiteverein Zell am See: podczas pływania trzeba nosić lycrę z numerem (kaucja 20 EUR), żeby można było zidentyfikować pływających; wchodzenie i wpływanie w rezerwat przyrody jest surowo zabronione; kitesurfing dozwolony tylko dla osób pewnie pływających pod wiatr, a rozmiar latawca i deski musi być dobrany tak, by pływanie pod wiatr było zapewnione; w godzinach kąpieliska latawce można startować wyłącznie z wody, nie z łąki; termika jest zwykle bardzo słaba, a wiatr północno-zachodni przychodzi z załamaniem pogody i jest mocno porywisty; status prawny kitesurfingu na jeziorze opiera się raczej na tolerancji niż formalnym zezwoleniu, więc poprawne zachowanie ma znaczenie",
+      "season": "Maj-Wrzesień",
+      "description": "Zeller See leży na wysokości 750 m w szerokiej dolinie między Schmittenhöhe a Steinernes Meer, w otoczeniu lodowca Kitzsteinhorn i rezerwatu przyrody w południowej części. To małe, spokojne jezioro o naprawdę widowiskowej scenerii, ale skromnym wietrze: najlepsze warunki daje napływ północno-zachodni albo termika spływająca ze Schmittenhöhe, a ponieważ termika jest zwykle słaba, to przede wszystkim spot foilowy. Wszystko kręci się wokół jedynej plaży kite w Erlbergu i lokalnego klubu, którego system numerowanych lycr sprawia, że sport pozostaje tolerowany obok kąpiących się, wędkarzy i obszaru chronionego."
+    }
+  },
+  {
+    "name": "Traunsee (Ebensee)",
+    "country": "Austria",
+    "windguruUrl": "https://www.windguru.cz/99327",
+    "windguruFallbackUrl": "https://www.windguru.cz/98819",
+    "windfinderUrl": "https://www.windfinder.com/forecast/gmunden_traunsee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.804861,13.792689",
+    "spotInfo": {
+      "type": "Deep alpine lake (420 m a.s.l.), flat water",
+      "bestWind": "N to E, sometimes SE (thermal)",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced (foil-friendly)",
+      "launch": "Fenced launch and landing meadow at Rindbach on the southern shore near Ebensee, right next to the public lido; paid car park, beach bar, restaurant and toilets, some pitches for campervans",
+      "hazards": "The kite area borders directly on the public lido - the marked swimming zone and bathers must be respected and the posted spot rules read before rigging; onshore conditions with no standing area mean you must ride upwind from the very first metres, so it is not a beginner spot; thermal is light (typically 10-15 knots, 2-5 Bft) and dies in the afternoon; cold, very deep water; passenger boats operate on the lake",
+      "season": "April-October",
+      "description": "The Traunsee is Austria's deepest lake, squeezed between the Traunstein and the Höllengebirge in the Salzkammergut. Rindbach near Ebensee at the southern end is the established kite beach: on stable high-pressure days with a light north-to-east gradient, the slopes of the narrow valley south of Ebensee suck cold air off the lake and generate a well-defined fair-weather thermal of 2 to 5 Beaufort. It fills in around 11:00 in spring and about 13:00 in summer and usually dies again between 15:00 and 16:00, so spring and autumn - when the day/night temperature difference is largest - are the best times. Light riders and foilers get the most out of it; the counter-current at the mouth of the Traun adds a few knots and offers shallow flat water."
+    },
+    "spotInfoPL": {
+      "type": "Głębokie jezioro alpejskie (420 m n.p.m.), płaska woda",
+      "bestWind": "N do E, czasem SE (termika)",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego (przyjazny foilowi)",
+      "launch": "Ogrodzona łąka do startu i lądowania w Rindbach na południowym brzegu koło Ebensee, tuż obok publicznego kąpieliska; płatny parking, bar plażowy, restauracja i toalety, kilka miejsc dla kamperów",
+      "hazards": "Strefa kite graniczy bezpośrednio z publicznym kąpieliskiem - trzeba respektować oznaczoną strefę pływania i kąpiących się oraz przeczytać regulamin spotu przed rozłożeniem sprzętu; wiatr dowiewa od wody i nie ma miejsca do stania, więc pływanie pod wiatr jest konieczne od pierwszych metrów, to nie jest spot dla początkujących; termika jest słaba (zwykle 10-15 węzłów, 2-5 B) i zamiera po południu; zimna, bardzo głęboka woda; po jeziorze kursują statki pasażerskie",
+      "season": "Kwiecień-Październik",
+      "description": "Traunsee to najgłębsze jezioro Austrii, wciśnięte między Traunstein a Höllengebirge w Salzkammergut. Rindbach koło Ebensee na południowym krańcu to ugruntowana plaża kite: w stabilnej sytuacji wyżowej ze słabym napływem z północy lub wschodu zbocza wąskiej doliny na południe od Ebensee zasysają chłodne powietrze znad jeziora i generują dobrze wykształconą termikę pięknej pogody o sile 2-5 B. Pojawia się około 11:00 wiosną i około 13:00 latem, a zwykle zamiera między 15:00 a 16:00, więc najlepsze są wiosna i jesień, gdy różnica temperatur dzień/noc jest największa. Najwięcej wyciągną z niej lżejsi zawodnicy i foilerzy; przeciwprąd przy ujściu Traun dokłada kilka węzłów i daje płytką, płaską wodę."
+    }
+  },
+  {
+    "name": "Tegernsee",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/44708",
+    "windguruFallbackUrl": "https://www.windguru.cz/97390",
+    "windfinderUrl": "https://www.windfinder.com/forecast/tegernsee_bad_wiessee",
+    "webcamUrl": "https://www.tegernsee.com/webcams",
+    "locationUrl": "https://www.google.com/maps?q=47.712811,11.725486",
+    "spotInfo": {
+      "type": "Pre-alpine lake (725 m a.s.l.), flat water",
+      "bestWind": "S (early-morning thermal), NE, SSE, N; S foehn",
+      "waterTemp": "9-22°C",
+      "experience": "Advanced, foil strongly recommended",
+      "launch": "Lido at the northern edge of Bad Wiessee on the western shore (showers, toilets, changing rooms); Sankt Quirin on the opposite shore is the better choice when the southerly comes in too westerly",
+      "hazards": "A light-wind foil spot rather than a twin-tip spot - the summer thermal usually stops between 08:00 and 09:00; the other wind is the foehn, which can reach storm force and is extremely gusty; pure easterly has little room because of the hills on the opposite shore; kiting is not explicitly regulated here, so check with the municipality of Bad Wiessee and the lido management before riding and stay clear of bathing operations; busy lake with sailing boats and passenger ships",
+      "season": "May-September",
+      "description": "A deep, dark-blue lake in the Bavarian pre-Alps surrounded by wooded ridges and best known among kiters as a hydrofoil playground - kitewetter.at lists it simply as a foilkite spot. Two winds shape it: the early-morning thermal southerly of high summer, which starts between roughly 05:00 in spring and 06:00 in autumn and reaches full strength (3-4 Bft, exceptionally 5) as soon as the sun climbs over the Neureuth onto the water, and the foehn, which can blow at storm strength. Bad Wiessee sits roughly halfway along the western shore opposite Sankt Quirin; north-easterly, south-south-easterly and the rare northerly all come in unobstructed across the lake."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro przedalpejskie (725 m n.p.m.), płaska woda",
+      "bestWind": "S (termika wczesnoporanna), NE, SSE, N; fen z S",
+      "waterTemp": "9-22°C",
+      "experience": "Zaawansowany, foil zdecydowanie zalecany",
+      "launch": "Kąpielisko na północnym skraju Bad Wiessee na zachodnim brzegu (prysznice, toalety, przebieralnie); Sankt Quirin na przeciwległym brzegu jest lepszym wyborem, gdy południowy wiatr wchodzi zbyt zachodnio",
+      "hazards": "To spot foilowy na słaby wiatr, a nie miejsce na twin-tipa - letnia termika zwykle zanika między 08:00 a 09:00; drugim wiatrem jest fen, który potrafi osiągnąć siłę sztormu i jest skrajnie porywisty; czysty wschodni wiatr ma mało miejsca przez wzgórza na przeciwległym brzegu; kitesurfing nie jest tu wyraźnie uregulowany, więc przed pływaniem warto potwierdzić zasady w gminie Bad Wiessee i u zarządcy kąpieliska oraz trzymać się z dala od strefy kąpielowej; ruchliwe jezioro z żaglówkami i statkami pasażerskimi",
+      "season": "Maj-Wrzesień",
+      "description": "Głębokie, ciemnoniebieskie jezioro w bawarskich Przedalpejach, otoczone zalesionymi grzbietami, znane wśród kiterów przede wszystkim jako plac zabaw dla hydrofoila - kitewetter.at opisuje je wprost jako foilkite spot. Kształtują je dwa wiatry: wczesnoporanna letnia termika z południa, która zaczyna się między około 05:00 wiosną a 06:00 jesienią i osiąga pełną siłę (3-4 B, wyjątkowo 5), gdy tylko słońce wyjdzie zza Neureuth nad wodę, oraz fen, potrafiący wiać z siłą sztormu. Bad Wiessee leży mniej więcej w połowie zachodniego brzegu, naprzeciw Sankt Quirin; wiatry z NE, SSE i rzadki północny wchodzą nad jezioro bez przeszkód."
+    }
+  },
+  {
+    "name": "Mattsee",
+    "country": "Austria",
+    "windguruUrl": "https://www.windguru.cz/39502",
+    "windguruFallbackUrl": "https://www.windguru.cz/42151",
+    "windfinderUrl": "https://www.windfinder.com/forecast/mattsee",
+    "webcamUrl": "https://www.mattsee.at/webcam",
+    "locationUrl": "https://www.google.com/maps?q=47.975153,13.107524",
+    "spotInfo": {
+      "type": "Small lowland lake (500 m a.s.l.), flat water",
+      "bestWind": "E",
+      "waterTemp": "12-25°C",
+      "experience": "Advanced",
+      "launch": "The lido is the only free launch and landing area on the lake - most of the shoreline is private and heavily overgrown",
+      "hazards": "There is no officially agreed kite spot - a community initiative failed to reach an agreement with the municipality, so kiting is only possible outside the bathing season and only in easterly wind; the wooded hill directly behind the lido weakens and swirls the wind, which makes launching very hard - often you have to body-drag out a few metres before the wind becomes clean; riding upwind is mandatory and this is not a beginner spot; watch out for the stone wall around the swimming area in front of the lido",
+      "season": "April-May and September-October (outside the bathing season)",
+      "description": "One of the prettiest of the Salzburg lakes, about 25 minutes north of Salzburg, with turquoise-green water in summer and views to the Alpine foothills. For kiters it is a spot with an asterisk: the shoreline is almost entirely in private hands, no official kite area exists, and the only free launch is the lido - which means easterly wind and outside the swimming season. Once you have fought through the turbulent air behind the wooded hill and dragged out a few metres, the conditions on the water are excellent and consistently flat."
+    },
+    "spotInfoPL": {
+      "type": "Małe jezioro nizinne (500 m n.p.m.), płaska woda",
+      "bestWind": "E",
+      "waterTemp": "12-25°C",
+      "experience": "Zaawansowany",
+      "launch": "Kąpielisko to jedyna wolna powierzchnia do startu i lądowania nad jeziorem - większość brzegu jest prywatna i mocno zarośnięta",
+      "hazards": "Nie ma oficjalnie uzgodnionego spotu kite - inicjatywa lokalnej społeczności nie doprowadziła do porozumienia z gminą, więc pływanie jest możliwe tylko poza sezonem kąpielowym i wyłącznie przy wietrze wschodnim; zalesione wzgórze tuż za kąpieliskiem osłabia i zawirowuje wiatr, co bardzo utrudnia start - często trzeba przeholować się kilka metrów w wodzie, zanim wiatr się wyczyści; pływanie pod wiatr jest obowiązkowe i nie jest to spot dla początkujących; uwaga na kamienne obmurowanie strefy pływania przed kąpieliskiem",
+      "season": "Kwiecień-Maj i Wrzesień-Październik (poza sezonem kąpielowym)",
+      "description": "Jedno z najładniejszych jezior Salzburskiego Pojezierza, około 25 minut na północ od Salzburga, z turkusowozieloną wodą latem i widokiem na przedgórze Alp. Dla kiterów to spot z gwiazdką: brzeg jest niemal w całości prywatny, nie istnieje oficjalna strefa kite, a jedynym wolnym startowiskiem jest kąpielisko - co oznacza wiatr wschodni i porę poza sezonem kąpielowym. Gdy już przebrniesz przez turbulentne powietrze za zalesionym wzgórzem i przeholujesz się kilka metrów od brzegu, warunki na wodzie są znakomite i niezmiennie płaskie."
+    }
+  },
+  {
+    "name": "Attersee",
+    "country": "Austria",
+    "windguruUrl": "https://www.windguru.cz/120",
+    "windguruFallbackUrl": "https://www.windguru.cz/192124",
+    "windfinderUrl": "https://www.windfinder.com/forecast/attersee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.885296,13.550379",
+    "spotInfo": {
+      "type": "Large alpine lake (470 m a.s.l.), flat to choppy",
+      "bestWind": "S (Rosenwind, thermal)",
+      "waterTemp": "10-23°C",
+      "experience": "Intermediate to Advanced (foil-friendly)",
+      "launch": "No officially promoted kite launch exists - windsurfers and sailors have plenty of options, but kiters generally need a boat in summer; the water-ski launch at Unterach at the southern end is the usual workaround",
+      "hazards": "Access is the main problem: there is no dedicated kite beach and in the bathing season a boat is often the only legal way onto the water, so always check the current local situation before travelling; the Rosenwind is a thermal and mostly light, which favours foils; very deep, cold and clear water with no standing area; busy with sailing regattas and diving boats",
+      "season": "May-September",
+      "description": "The largest lake lying entirely within Austria, 20 km long and famously clear, running north-south through the Salzkammergut. Its signature wind is the Rosenwind, a thermal southerly that blows along the full length of the lake in the afternoon - the name comes from Schloss Kammer at the northern end, which used to be surrounded by rose gardens whose scent the wind carried across the water. Conditions for kiting and wingfoiling are genuinely good, but the Attersee is first and foremost a sailing and windsurfing lake and there is no officially sanctioned kite launch, so it is worth arranging access locally in advance."
+    },
+    "spotInfoPL": {
+      "type": "Duże jezioro alpejskie (470 m n.p.m.), woda płaska do pofalowanej",
+      "bestWind": "S (Rosenwind, termika)",
+      "waterTemp": "10-23°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego (przyjazny foilowi)",
+      "launch": "Nie ma oficjalnie promowanego startowiska kite - windsurferzy i żeglarze mają dużo możliwości, ale kiterzy latem zwykle potrzebują łodzi; typowym obejściem jest slip narciarstwa wodnego w Unterach na południowym krańcu",
+      "hazards": "Głównym problemem jest dostęp: nie ma dedykowanej plaży kite, a w sezonie kąpielowym łódź bywa jedyną legalną drogą na wodę, więc przed wyjazdem trzeba sprawdzić aktualną sytuację na miejscu; Rosenwind jest wiatrem termicznym i przeważnie słabym, co sprzyja foilom; bardzo głęboka, zimna i przejrzysta woda bez miejsca do stania; ruch regat żeglarskich i łodzi nurkowych",
+      "season": "Maj-Wrzesień",
+      "description": "Największe jezioro leżące w całości w Austrii, długie na 20 km i słynące z przejrzystości wody, rozciągnięte południkowo przez Salzkammergut. Jego znakiem firmowym jest Rosenwind - termiczny wiatr południowy, który po południu wieje wzdłuż całej długości jeziora. Nazwa pochodzi od zamku Kammer na północnym krańcu, otoczonego niegdyś ogrodami różanymi, których zapach wiatr niósł nad wodę. Warunki do kitesurfingu i wingfoilingu są naprawdę dobre, ale Attersee to przede wszystkim jezioro żeglarsko-windsurfingowe i nie ma tu oficjalnie usankcjonowanego startowiska kite, więc dostęp warto zorganizować lokalnie z wyprzedzeniem."
+    }
+  },
+  {
+    "name": "Campione del Garda",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/68399",
+    "windguruFallbackUrl": "https://www.windguru.cz/374922",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lake_garda_campione",
+    "webcamUrl": "https://www.kitecampione.it/en/webcam/",
+    "locationUrl": "https://www.google.com/maps?q=45.752823,10.748778",
+    "spotInfo": {
+      "type": "Large alpine lake, flat to choppy, sideshore both ways",
+      "bestWind": "N (Peler, morning), S (Ora, afternoon)",
+      "waterTemp": "10-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Pebble beach in the small bay of Campione (municipality of Tremosine) on the western shore, with kite school, rental and rescue boats; assisted launching is mandatory",
+      "hazards": "Club membership, a kite licence and third-party liability insurance are required, plus a yearly beach fee that covers the rescue boat; a flotation vest is compulsory; the morning Peler can reach 25-35 knots in summer and turns gusty, so it is for confident riders on small kites; the bay is small and hemmed in by steep cliffs; camping is no longer allowed in Campione; global models often underestimate or miss Garda's thermals entirely - cross-check with local readings",
+      "season": "February-October, best June-September",
+      "description": "A tiny bay at the foot of vertical cliffs on Lake Garda's western shore, in the narrowest stretch of the lake between Campione and Malcesine - widely regarded as the windiest spot on the lake. Two thermals rule the day: the Peler, a northerly that builds overnight and blows 16-25 knots (up to 25-35 in summer) from around 06:00-07:00 until roughly 10:30-11:00, and the Ora, a very steady southerly that fills in around midday and holds 12-20 knots until sunset. Both arrive sideshore, and the fetch down the middle of the lake is close to perfect for long gliding runs."
+    },
+    "spotInfoPL": {
+      "type": "Duże jezioro alpejskie, woda płaska do pofalowanej, wiatr boczny z obu stron",
+      "bestWind": "N (Peler, rano), S (Ora, po południu)",
+      "waterTemp": "10-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Kamienista plaża w małej zatoce Campione (gmina Tremosine) na zachodnim brzegu, ze szkołą kite, wypożyczalnią i łodziami ratunkowymi; asysta przy starcie jest obowiązkowa",
+      "hazards": "Wymagane członkostwo w klubie, licencja kite i ubezpieczenie OC oraz roczna opłata plażowa obejmująca łódź ratunkową; obowiązkowa kamizelka wypornościowa; poranny Peler latem osiąga 25-35 węzłów i robi się porywisty, więc jest dla pewnych siebie kiterów na małych latawcach; zatoka jest niewielka i ściśnięta stromymi klifami; w Campione nie wolno już biwakować; modele globalne często nie doszacowują termiki Gardy albo w ogóle jej nie widzą - warto porównać z lokalnymi pomiarami",
+      "season": "Luty-Październik, najlepiej Czerwiec-Wrzesień",
+      "description": "Maleńka zatoka u stóp pionowych klifów na zachodnim brzegu jeziora Garda, w najwęższym odcinku akwenu między Campione a Malcesine - powszechnie uważana za najbardziej wietrzne miejsce na jeziorze. Dzień dzielą dwie termiki: Peler, wiatr północny narastający w nocy i wiejący 16-25 węzłów (latem nawet 25-35) mniej więcej od 06:00-07:00 do 10:30-11:00, oraz Ora, bardzo stabilny wiatr południowy, który wkracza koło południa i utrzymuje 12-20 węzłów aż do zachodu słońca. Oba wieją bocznie, a rozbieg wzdłuż środka jeziora jest niemal idealny na długie przeloty."
+    }
+  },
+  {
+    "name": "Lago d'Idro",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/1020493",
+    "windguruFallbackUrl": "https://www.windguru.cz/61976",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lago_di_idro",
+    "webcamUrl": "https://www.surfpoint.it/webcam.htm",
+    "locationUrl": "https://www.google.com/maps?q=45.822677,10.529105",
+    "spotInfo": {
+      "type": "Alpine lake (370 m a.s.l.), flat water",
+      "bestWind": "S (thermal Ora), N",
+      "waterTemp": "10-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Designated kite beach at Ponte Caffaro on the northern shore - large meadow for launching and landing, shallow area by the river mouth and a kite school on site",
+      "hazards": "Kiting is allowed only on the designated kite beach; local kite club membership (around 25 EUR/year) plus a nationally valid annual membership with insurance (FIV or UISP) is required, with day tickets around 5 EUR; the afternoon thermal is onshore at Ponte Caffaro, so confident upwind riding is essential; the shallow river-mouth area needs care with a foil; the lake is choppy in strong wind and cold outside summer",
+      "season": "April-October, best in spring and autumn",
+      "description": "A narrow alpine lake in the Valle Sabbia, west of Lake Garda and often described as its quieter little brother. The daily thermal southerly - the local 'Ora' - usually fills in around midday on sunny days at roughly 10-15 knots, sometimes more, over generally very calm water with plenty of space downwind. For kiters the beach at Ponte Caffaro on the northern shore is the place to go; the windsurf and wing crowd tends to use Anfo and Vantone further south, where the rock formations accelerate the wind and a northerly produces small, steep waves. Spring and autumn are the best seasons - the wind is lighter in high summer and the lake is cold and windless in winter."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro alpejskie (370 m n.p.m.), płaska woda",
+      "bestWind": "S (termiczna Ora), N",
+      "waterTemp": "10-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Wyznaczona plaża kite w Ponte Caffaro na północnym brzegu - duża łąka do startu i lądowania, płycizna przy ujściu rzeki i szkoła kite na miejscu",
+      "hazards": "Kitesurfing dozwolony wyłącznie na wyznaczonej plaży kite; wymagane członkostwo w lokalnym klubie (około 25 EUR/rok) oraz ważne w całych Włoszech roczne członkostwo z ubezpieczeniem (FIV lub UISP), bilety dzienne około 5 EUR; popołudniowa termika w Ponte Caffaro dowiewa od wody, więc pewne pływanie pod wiatr jest niezbędne; przy ujściu rzeki płycizna wymaga ostrożności na foilu; przy silnym wietrze jezioro robi się pofalowane, a poza latem woda jest zimna",
+      "season": "Kwiecień-Październik, najlepiej wiosną i jesienią",
+      "description": "Wąskie jezioro alpejskie w Valle Sabbia, na zachód od jeziora Garda, często nazywane jego spokojniejszym młodszym bratem. Codzienna termika z południa - lokalna 'Ora' - w słoneczne dni pojawia się zwykle koło południa z siłą około 10-15 węzłów, czasem więcej, nad przeważnie bardzo spokojną wodą z dużą przestrzenią z wiatrem. Dla kiterów właściwym miejscem jest plaża w Ponte Caffaro na północnym brzegu; windsurferzy i wingfoilerzy korzystają raczej z Anfo i Vantone dalej na południe, gdzie formacje skalne przyspieszają wiatr, a napływ północny daje małe, strome fale. Najlepsze są wiosna i jesień - w pełni lata wiatr jest słabszy, a zimą jezioro jest zimne i bezwietrzne."
+    }
   }
 ]
