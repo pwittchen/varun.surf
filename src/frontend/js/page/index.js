@@ -221,26 +221,35 @@ async function renderFavorites() {
             globalWeatherData = await api.fetchAllSpots();
         }
 
-        const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+        let favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
+        if (showOnlyLiveStations) {
+            favoriteSpots = favoriteSpots.filter(hasLiveConditions);
+        }
 
         cancelLazyRendering();
         spotsGrid.innerHTML = '';
 
+        if (favoriteSpots.length === 0) {
+            spotsGrid.innerHTML = `
+                <div class="error-message">
+                    <span class="error-icon">🔍</span>
+                    <div class="error-title">${translations.t('errorNoSpotsTitle')}</div>
+                    <div class="error-description">
+                        ${translations.t('errorNoSpotsDescription')}<br/>
+                        ${translations.t('errorTryAdjusting')}
+                    </div>
+                </div>
+            `;
+            renderHeroSection();
+            return;
+        }
+
         // Render based on the current view mode
         if (currentViewMode === 'list') {
-            // Filter live stations if checkbox is enabled
-            let spotsToShow = favoriteSpots;
-            if (showOnlyLiveStations) {
-                spotsToShow = favoriteSpots.filter(spot => {
-                    const conditions = getSpotConditions(spot);
-                    return conditions && conditions.isCurrent;
-                });
-            }
-
             // Explicit column sort wins; otherwise default to "firing now" when enabled
             const sortedSpots = listSortColumn
-                ? sortSpots(spotsToShow, listSortColumn, listSortDirection)
-                : (firingSortEnabled ? sortByFiringNow(spotsToShow) : spotsToShow);
+                ? sortSpots(favoriteSpots, listSortColumn, listSortDirection)
+                : (firingSortEnabled ? sortByFiringNow(favoriteSpots) : favoriteSpots);
 
             // Render list view
             spotsGrid.appendChild(createListHeader());
@@ -457,6 +466,16 @@ function initLanguage() {
         const firingSortToggle = document.getElementById('firingSortToggle');
         if (firingSortToggle) {
             firingSortToggle.title = translations.t('firingSortTooltip');
+        }
+
+        const liveStationsToggle = document.getElementById('liveStationsToggle');
+        if (liveStationsToggle) {
+            liveStationsToggle.title = translations.t('liveStationsTooltip');
+        }
+
+        const liveStationsFilter = document.getElementById('liveStationsFilter');
+        if (liveStationsFilter) {
+            liveStationsFilter.title = translations.t('liveStationsOnly');
         }
 
         if (languageToggle) {
@@ -1352,6 +1371,13 @@ function normalizeForSearch(text) {
     return result.normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
+// A spot counts as "live" when its readout comes from a weather station rather
+// than the forecast fallback.
+function hasLiveConditions(spot) {
+    const conditions = getSpotConditions(spot);
+    return !!(conditions && conditions.isCurrent);
+}
+
 function filterSpots(data, countryFilter, searchQuery) {
     let filtered = countryFilter === 'all' ? data : data.filter(spot => spot.country === countryFilter);
 
@@ -1361,6 +1387,11 @@ function filterSpots(data, countryFilter, searchQuery) {
             return normalizeForSearch(spot.name).includes(query) ||
                 (spot.country && normalizeForSearch(spot.country).includes(query));
         });
+    }
+
+    // Applied here so grid, list and map views share the same filter
+    if (showOnlyLiveStations) {
+        filtered = filtered.filter(hasLiveConditions);
     }
 
     return filtered;
@@ -1438,13 +1469,9 @@ function createListHeader() {
             checkbox.id = 'liveStationsFilter';
             checkbox.className = 'live-stations-checkbox';
             checkbox.checked = showOnlyLiveStations;
+            checkbox.title = translations.t('liveStationsOnly');
             checkbox.addEventListener('change', (e) => {
-                showOnlyLiveStations = e.target.checked;
-                if (showingFavorites) {
-                    renderFavorites();
-                } else {
-                    renderSpots(currentFilter, currentSearchQuery, true);
-                }
+                setLiveStationsFilter(e.target.checked);
             });
             cell.appendChild(checkbox);
         } else if (col.sortable) {
@@ -1836,19 +1863,10 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
         } else {
             // Check current view mode and render accordingly
             if (currentViewMode === 'list') {
-                // Filter live stations if checkbox is enabled
-                let spotsToShow = filteredSpots;
-                if (showOnlyLiveStations) {
-                    spotsToShow = filteredSpots.filter(spot => {
-                        const conditions = getSpotConditions(spot);
-                        return conditions && conditions.isCurrent;
-                    });
-                }
-
                 // Explicit column sort wins; otherwise default to "firing now" when enabled
                 let sortedSpots = listSortColumn
-                    ? sortSpots(spotsToShow, listSortColumn, listSortDirection)
-                    : (firingSortEnabled ? sortByFiringNow(spotsToShow) : spotsToShow);
+                    ? sortSpots(filteredSpots, listSortColumn, listSortDirection)
+                    : (firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots);
 
                 // Saved manual order only applies when not sorting by firing/column
                 if (!listSortColumn && !firingSortEnabled) {
@@ -2364,7 +2382,8 @@ const SIDE_MENU_BREAKPOINT = 929;
 // are rendered as custom hint bubbles (see setupSideMenuHints).
 const SIDE_MENU_HINT_IDS = [
     'infoToggle', 'themeToggle', 'favoritesToggle', 'firingSortToggle',
-    'mapToggle', 'heroToggle', 'kiteSizeToggle', 'listViewBtn', 'gridViewBtn'
+    'liveStationsToggle', 'mapToggle', 'heroToggle', 'kiteSizeToggle',
+    'listViewBtn', 'gridViewBtn'
 ];
 
 // Custom tooltips for the sticky left menu, styled like the map popups. A single
@@ -2468,7 +2487,7 @@ let currentViewMode = 'grid'; // 'grid' or 'list'
 let desktopViewMode = 'grid'; // Store desktop preference separately
 let listSortColumn = null;
 let listSortDirection = 'asc';
-let showOnlyLiveStations = false; // Filter for live stations in list view
+let showOnlyLiveStations = false; // Keep only spots backed by a live weather station
 let firingSortEnabled = state.getFiringSort(); // Default main-page ordering by live wind strength
 
 function isMobileView() {
@@ -2505,6 +2524,43 @@ function setupFiringSortToggle() {
         } else {
             renderSpots(currentFilter, currentSearchQuery, true);
         }
+    });
+}
+
+// Single entry point for the live-stations filter so the sticky-menu button and
+// the list-header checkbox stay in sync whichever one flipped it.
+function setLiveStationsFilter(enabled) {
+    showOnlyLiveStations = enabled;
+
+    const btn = document.getElementById('liveStationsToggle');
+    if (btn) {
+        btn.classList.toggle('active', enabled);
+    }
+
+    const checkbox = document.getElementById('liveStationsFilter');
+    if (checkbox) {
+        checkbox.checked = enabled;
+    }
+
+    if (isMapView) {
+        updateMapMarkers();
+    } else if (showingFavorites) {
+        renderFavorites();
+    } else {
+        renderSpots(currentFilter, currentSearchQuery, true);
+    }
+}
+
+function setupLiveStationsToggle() {
+    const btn = document.getElementById('liveStationsToggle');
+    if (!btn) {
+        return;
+    }
+
+    btn.classList.toggle('active', showOnlyLiveStations);
+
+    btn.addEventListener('click', () => {
+        setLiveStationsFilter(!showOnlyLiveStations);
     });
 }
 
@@ -3238,6 +3294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupFiringSortToggle();
+    setupLiveStationsToggle();
     setupMapToggle();
     handlePopState();
     setupInfoToggle();

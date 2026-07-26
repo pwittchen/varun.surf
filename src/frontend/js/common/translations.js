@@ -31,6 +31,7 @@ export const translations = {
         listViewTooltip: "List view",
         gridViewTooltip: "Grid view",
         firingSortTooltip: "Sort by strongest wind now",
+        liveStationsTooltip: "Show only spots with live stations",
         languageToggleTooltip: "Change language",
 
         // Weather table headers
@@ -310,6 +311,7 @@ export const translations = {
         listViewTooltip: "Widok listy",
         gridViewTooltip: "Widok siatki",
         firingSortTooltip: "Sortuj wg najsilniejszego wiatru teraz",
+        liveStationsTooltip: "Pokaż tylko spoty ze stacjami live",
         languageToggleTooltip: "Zmień język",
 
         // Weather table headers
