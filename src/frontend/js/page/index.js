@@ -1780,6 +1780,16 @@ function renderSpotsIncrementally(container, spots, createElementFn) {
     observeLastChild(container);
 }
 
+// Re-points the observer whenever something moved or replaced rendered nodes: the
+// background refresh swaps every card, drag-and-drop reorders them. An element that
+// was detached, or that is no longer last, never triggers the next batch again,
+// which silently stops lazy rendering until a full page reload.
+function ensureLazySentinel(container) {
+    if (!lazyObserver || !lazyObservedElement) return;
+    if (lazyObservedElement === container.lastElementChild) return;
+    observeLastChild(container);
+}
+
 function observeLastChild(container) {
     if (!lazyObserver) return;
 
@@ -2012,6 +2022,8 @@ function setupDragAndDrop() {
             draggedCard.classList.remove('dragging');
             draggedCard = null;
             saveCardOrder();
+            // Dragging can move the observed card away from the end of the grid.
+            ensureLazySentinel(spotsGrid);
         }
 
         // Remove the ghost element
@@ -2179,6 +2191,8 @@ function setupListDragAndDrop() {
             draggedRow.classList.remove('dragging');
             saveListOrderFn();
             draggedRow = null;
+            // Dragging can move the observed row away from the end of the list.
+            ensureLazySentinel(spotsGrid);
         }
 
         if (dragGhost) {
@@ -2242,6 +2256,10 @@ function replaceRenderedCards(spotsGrid, freshSpots) {
     });
 
     lazyPendingSpots = lazyPendingSpots.map(spot => freshByName.get(spot.name) || spot);
+
+    // The card the observer was watching was just replaced by a fresh node, so the
+    // observer has to be moved onto the new last child or no further batch loads.
+    ensureLazySentinel(spotsGrid);
 }
 
 async function refreshDataInBackground() {
