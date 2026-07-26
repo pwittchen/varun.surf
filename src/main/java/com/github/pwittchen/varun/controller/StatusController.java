@@ -54,6 +54,10 @@ public class StatusController {
             new SourceDefinition("Prasonisi ProCenter", "https://www.prasonisi.com/index.php/wind.html", "prasonisi.com")
     );
 
+    private static final List<SourceDefinition> SPOTS_DATA_SOURCES = List.of(
+            new SourceDefinition("Kitewetter", "https://www.kitewetter.at/", "kitewetter.at")
+    );
+
     private final Instant startTime = Instant.now();
     private final AggregatorService aggregatorService;
     private final HealthHistoryService healthHistoryService;
@@ -122,6 +126,7 @@ public class StatusController {
             Map<String, Object> result = new HashMap<>();
             result.put("forecastSources", forecastResults);
             result.put("liveStationSources", LIVE_STATION_SOURCES);
+            result.put("spotsDataSources", SPOTS_DATA_SOURCES);
             return result;
         }).subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic());
     }

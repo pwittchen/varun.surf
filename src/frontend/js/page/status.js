@@ -191,6 +191,7 @@ async function checkSources() {
         const data = await response.json();
         renderSources('forecast-sources', data.forecastSources);
         renderStationLinks('live-station-sources', data.liveStationSources);
+        renderStationLinks('spots-data-sources', data.spotsDataSources);
     } catch (error) {
         console.error('Error checking sources:', error);
     }
