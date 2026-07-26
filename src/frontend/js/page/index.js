@@ -223,6 +223,7 @@ async function renderFavorites() {
 
         const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
 
+        cancelLazyRendering();
         spotsGrid.innerHTML = '';
 
         // Render based on the current view mode
@@ -243,18 +244,18 @@ async function renderFavorites() {
 
             // Render list view
             spotsGrid.appendChild(createListHeader());
-            sortedSpots.forEach(spot => {
-                spotsGrid.appendChild(createListRow(spot));
-            });
+            renderSpotsIncrementally(spotsGrid, sortedSpots, createListRow);
         } else {
             // Render grid view; "firing now" default ordering unless disabled
-            const gridSpots = firingSortEnabled ? sortByFiringNow(favoriteSpots) : favoriteSpots;
-            gridSpots.forEach(spot => {
-                spotsGrid.appendChild(createSpotCard(spot));
-            });
+            let gridSpots = firingSortEnabled ? sortByFiringNow(favoriteSpots) : favoriteSpots;
             if (!firingSortEnabled) {
-                loadCardOrder();
+                gridSpots = applySavedOrder(
+                    gridSpots,
+                    state.getSpotOrder(gridColumnMode(spotsGrid), currentFilter, currentSearchQuery),
+                    spot => spot.name
+                );
             }
+            renderSpotsIncrementally(spotsGrid, gridSpots, createSpotCard);
         }
 
         renderHeroSection();
@@ -1635,7 +1636,116 @@ function sortByFiringNow(spots) {
     return [...spots].sort((a, b) => firingScore(b) - firingScore(a));
 }
 
+// ============================================================================
+// INCREMENTAL (LAZY) RENDERING
+// ============================================================================
+
+// Rendering every spot up front costs a full layout pass over hundreds of cards,
+// each carrying a multi-day forecast table. Instead the first batch is rendered
+// eagerly (enough to fill any viewport) and the rest follow as the user scrolls
+// towards them.
+const LAZY_INITIAL_BATCH_SIZE = 24;
+const LAZY_BATCH_SIZE = 12;
+// Render the next batch well before it scrolls into view so cards are already
+// in place by the time they would become visible.
+const LAZY_ROOT_MARGIN = '1200px';
+
+let lazyObserver = null;
+let lazyObservedElement = null;
+// Spots that have been ordered and filtered but not yet turned into DOM nodes.
+// Order-saving and background refresh both need to know about these.
+let lazyPendingSpots = [];
+
+function cancelLazyRendering() {
+    if (lazyObserver) {
+        lazyObserver.disconnect();
+        lazyObserver = null;
+    }
+    lazyObservedElement = null;
+    lazyPendingSpots = [];
+}
+
+// Renders `spots` into `container` in batches. `createElementFn` turns a single
+// spot into its DOM node. The last rendered node is observed; when it approaches
+// the viewport the next batch is appended and the new last node is observed.
+function renderSpotsIncrementally(container, spots, createElementFn) {
+    cancelLazyRendering();
+
+    const appendBatch = (batch) => {
+        const fragment = document.createDocumentFragment();
+        batch.forEach(spot => fragment.appendChild(createElementFn(spot)));
+        container.appendChild(fragment);
+    };
+
+    // Without IntersectionObserver support there is nothing to drive the batches,
+    // so fall back to rendering everything at once.
+    if (typeof IntersectionObserver === 'undefined') {
+        appendBatch(spots);
+        return;
+    }
+
+    lazyPendingSpots = [...spots];
+    appendBatch(lazyPendingSpots.splice(0, LAZY_INITIAL_BATCH_SIZE));
+
+    if (lazyPendingSpots.length === 0) return;
+
+    lazyObserver = new IntersectionObserver((entries) => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        appendBatch(lazyPendingSpots.splice(0, LAZY_BATCH_SIZE));
+        observeLastChild(container);
+    }, { rootMargin: LAZY_ROOT_MARGIN });
+
+    observeLastChild(container);
+}
+
+function observeLastChild(container) {
+    if (!lazyObserver) return;
+
+    if (lazyObservedElement) {
+        lazyObserver.unobserve(lazyObservedElement);
+        lazyObservedElement = null;
+    }
+
+    if (lazyPendingSpots.length === 0) {
+        cancelLazyRendering();
+        return;
+    }
+
+    const lastChild = container.lastElementChild;
+    if (!lastChild) return;
+
+    lazyObservedElement = lastChild;
+    lazyObserver.observe(lastChild);
+}
+
+// Reproduces the ordering the DOM-based reordering used to produce: spots present
+// in the saved order are placed last in that order, and anything unknown to it
+// (a newly added spot, say) keeps its position ahead of them. Applying the order
+// to the data rather than the rendered nodes is what makes lazy rendering safe.
+function applySavedOrder(spots, savedOrder, keyOf) {
+    if (!savedOrder || savedOrder.length === 0) return spots;
+
+    const remaining = new Map();
+    spots.forEach(spot => {
+        const key = keyOf(spot);
+        if (!remaining.has(key)) remaining.set(key, []);
+        remaining.get(key).push(spot);
+    });
+
+    const ordered = [];
+    savedOrder.forEach(key => {
+        const bucket = remaining.get(key);
+        if (bucket && bucket.length > 0) {
+            ordered.push(bucket.shift());
+        }
+    });
+
+    const orderedSet = new Set(ordered);
+    return [...spots.filter(spot => !orderedSet.has(spot)), ...ordered];
+}
+
 function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
+    cancelLazyRendering();
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
         const message = searchQuery ?
@@ -1681,29 +1791,36 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                 }
 
                 // Explicit column sort wins; otherwise default to "firing now" when enabled
-                const sortedSpots = listSortColumn
+                let sortedSpots = listSortColumn
                     ? sortSpots(spotsToShow, listSortColumn, listSortDirection)
                     : (firingSortEnabled ? sortByFiringNow(spotsToShow) : spotsToShow);
 
-                // Render list view
-                spotsGrid.appendChild(createListHeader());
-                sortedSpots.forEach(spot => {
-                    spotsGrid.appendChild(createListRow(spot));
-                });
                 // Saved manual order only applies when not sorting by firing/column
                 if (!listSortColumn && !firingSortEnabled) {
-                    loadListOrderFn();
+                    sortedSpots = applySavedOrder(
+                        sortedSpots,
+                        state.getListOrder(currentFilter, currentSearchQuery),
+                        spot => String(spot.wgId)
+                    );
                 }
+
+                // Render list view
+                spotsGrid.appendChild(createListHeader());
+                renderSpotsIncrementally(spotsGrid, sortedSpots, createListRow);
             } else {
                 // Render grid view; "firing now" default ordering unless disabled
-                const gridSpots = firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots;
-                gridSpots.forEach(spot => {
-                    spotsGrid.appendChild(createSpotCard(spot));
-                });
+                let gridSpots = firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots;
+
                 // Saved manual card order only applies when firing sort is off
                 if (!firingSortEnabled) {
-                    loadCardOrder();
+                    gridSpots = applySavedOrder(
+                        gridSpots,
+                        state.getSpotOrder(gridColumnMode(spotsGrid), currentFilter, currentSearchQuery),
+                        spot => spot.name
+                    );
                 }
+
+                renderSpotsIncrementally(spotsGrid, gridSpots, createSpotCard);
             }
         }
     }
@@ -1882,6 +1999,10 @@ function setupDragAndDrop() {
     }
 }
 
+function gridColumnMode(spotsGrid) {
+    return spotsGrid.classList.contains('three-columns') ? '3col' : '2col';
+}
+
 function saveCardOrder() {
     const spotsGrid = document.getElementById('spotsGrid');
     const cards = spotsGrid.querySelectorAll('.spot-card');
@@ -1889,31 +2010,11 @@ function saveCardOrder() {
         return card.querySelector('.spot-name').textContent;
     });
 
-    const isThreeColumns = spotsGrid.classList.contains('three-columns');
-    const columnMode = isThreeColumns ? '3col' : '2col';
-    state.saveSpotOrder(columnMode, currentFilter, currentSearchQuery, order);
-}
+    // Spots still queued for lazy rendering sit after everything on screen, so
+    // append them to keep the saved order complete rather than truncating it.
+    lazyPendingSpots.forEach(spot => order.push(spot.name));
 
-function loadCardOrder() {
-    const spotsGrid = document.getElementById('spotsGrid');
-    const isThreeColumns = spotsGrid.classList.contains('three-columns');
-    const columnMode = isThreeColumns ? '3col' : '2col';
-    const order = state.getSpotOrder(columnMode, currentFilter, currentSearchQuery);
-
-    if (!order) return;
-
-    try {
-        const cards = Array.from(spotsGrid.querySelectorAll('.spot-card'));
-
-        order.forEach(spotName => {
-            const card = cards.find(c => c.querySelector('.spot-name').textContent === spotName);
-            if (card) {
-                spotsGrid.appendChild(card);
-            }
-        });
-    } catch (e) {
-        console.error('Failed to load card order:', e);
-    }
+    state.saveSpotOrder(gridColumnMode(spotsGrid), currentFilter, currentSearchQuery, order);
 }
 
 // ============================================================================
@@ -2042,41 +2143,33 @@ function saveListOrderFn() {
     const spotsGrid = document.getElementById('spotsGrid');
     const rows = spotsGrid.querySelectorAll('.list-row');
     const order = Array.from(rows).map(row => row.dataset.spotId);
+
+    // Rows still queued for lazy rendering follow the ones already on screen.
+    lazyPendingSpots.forEach(spot => order.push(String(spot.wgId)));
+
     state.saveListOrder(currentFilter, currentSearchQuery, order);
-}
-
-function loadListOrderFn() {
-    // Don't apply custom order when sorting is active
-    if (listSortColumn) return;
-
-    const spotsGrid = document.getElementById('spotsGrid');
-    const order = state.getListOrder(currentFilter, currentSearchQuery);
-
-    if (!order) return;
-
-    try {
-        const rows = Array.from(spotsGrid.querySelectorAll('.list-row'));
-        const header = spotsGrid.querySelector('.spots-list-header');
-
-        order.forEach(spotId => {
-            const row = rows.find(r => r.dataset.spotId === spotId);
-            if (row) {
-                spotsGrid.appendChild(row);
-            }
-        });
-
-        // Ensure header stays at top
-        if (header) {
-            spotsGrid.insertBefore(header, spotsGrid.firstChild);
-        }
-    } catch (e) {
-        console.error('Failed to load list order:', e);
-    }
 }
 
 // ============================================================================
 // BACKGROUND AUTO-REFRESH FUNCTIONALITY
 // ============================================================================
+
+// Swaps already-rendered cards for ones built from fresh data, and re-points the
+// lazy-render queue at the fresh spot objects so batches rendered later do not
+// show data from before the refresh.
+function replaceRenderedCards(spotsGrid, freshSpots) {
+    const freshByName = new Map(freshSpots.map(spot => [spot.name, spot]));
+
+    spotsGrid.querySelectorAll('.spot-card').forEach(card => {
+        const spotName = card.querySelector('.spot-name');
+        const updatedSpot = spotName && freshByName.get(spotName.textContent);
+        if (updatedSpot) {
+            card.replaceWith(createSpotCard(updatedSpot));
+        }
+    });
+
+    lazyPendingSpots = lazyPendingSpots.map(spot => freshByName.get(spot.name) || spot);
+}
 
 async function refreshDataInBackground() {
     try {
@@ -2090,41 +2183,14 @@ async function refreshDataInBackground() {
         populateCountryDropdown(freshData);
 
         // Silently update the current view
+        const spotsGrid = document.getElementById('spotsGrid');
         if (showingFavorites) {
             // Update favorites without re-rendering (to avoid disruption)
-            const spotsGrid = document.getElementById('spotsGrid');
             const favorites = state.getFavorites();
-            const favoriteSpots = globalWeatherData.filter(spot => favorites.includes(spot.name));
-
-            // Update existing cards instead of recreating them
-            favoriteSpots.forEach(updatedSpot => {
-                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
-                    const spotName = card.querySelector('.spot-name');
-                    return spotName && spotName.textContent === updatedSpot.name;
-                });
-
-                if (existingCard) {
-                    const newCard = createSpotCard(updatedSpot);
-                    existingCard.replaceWith(newCard);
-                }
-            });
+            replaceRenderedCards(spotsGrid, globalWeatherData.filter(spot => favorites.includes(spot.name)));
         } else {
             // Update regular filtered view
-            const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
-            const spotsGrid = document.getElementById('spotsGrid');
-
-            // Update existing cards instead of recreating them
-            filteredSpots.forEach(updatedSpot => {
-                const existingCard = Array.from(spotsGrid.querySelectorAll('.spot-card')).find(card => {
-                    const spotName = card.querySelector('.spot-name');
-                    return spotName && spotName.textContent === updatedSpot.name;
-                });
-
-                if (existingCard) {
-                    const newCard = createSpotCard(updatedSpot);
-                    existingCard.replaceWith(newCard);
-                }
-            });
+            replaceRenderedCards(spotsGrid, filterSpots(globalWeatherData, currentFilter, currentSearchQuery));
         }
 
         console.log('Data refreshed in background at', new Date().toLocaleTimeString());
