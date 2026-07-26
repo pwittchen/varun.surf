@@ -196,10 +196,31 @@ class JsonSpotsStructureValidationTest {
             Type listType = new TypeToken<List<Spot>>() {}.getType();
             List<Spot> spots = gson.fromJson(reader, listType);
 
-            List<String> urls = spots.stream().map(Spot::windguruUrl).toList();
+            // an empty windguruUrl is not a URL — those spots share a forecast point with a
+            // neighbour and carry it in windguruFallbackUrl instead (see shouldValidateNoDuplicateWgIds)
+            List<String> urls = spots.stream()
+                    .map(Spot::windguruUrl)
+                    .filter(url -> url != null && !url.isEmpty())
+                    .toList();
             List<String> uniqueUrls = urls.stream().distinct().toList();
 
             assertThat(urls.size()).isEqualTo(uniqueUrls.size());
+        }
+    }
+
+    @Test
+    void shouldValidateNoDuplicateWgIds() throws Exception {
+        try (Reader reader = new InputStreamReader(new ClassPathResource("spots.json").getInputStream())) {
+            Type listType = new TypeToken<List<Spot>>() {}.getType();
+            List<Spot> spots = gson.fromJson(reader, listType);
+
+            // wgId is the public identifier: it routes /api/v1/spots/{id}, /llms/spots/{wgId}.md
+            // and every in-memory cache, so it has to be unique even when two spots share a
+            // Windguru forecast point
+            List<Integer> ids = spots.stream().map(Spot::wgId).toList();
+            List<Integer> uniqueIds = ids.stream().distinct().toList();
+
+            assertThat(ids.size()).isEqualTo(uniqueIds.size());
         }
     }
 

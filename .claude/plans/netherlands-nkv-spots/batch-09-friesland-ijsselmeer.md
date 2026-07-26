@@ -7,28 +7,28 @@ Freshwater IJsselmeer launches south and east of the Afsluitdijk. Complements th
 
 ## Spots
 
-- [ ] **Makkum** **[RESTRICTED]**
+- [x] **Makkum** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/makkum/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Hindeloopen**
+- [x] **Hindeloopen**
       source: https://kitesurfvereniging.nl/kitespot/hindeloopen/
-- [ ] **Stavoren – it Suderstrand**
+- [x] **Stavoren – it Suderstrand**
       source: https://kitesurfvereniging.nl/kitespot/stavoren/
-- [ ] **Mirns**
+- [x] **Mirns**
       source: https://kitesurfvereniging.nl/kitespot/mirns/
-- [ ] **Lemmer** **[RESTRICTED]**
+- [x] **Lemmer** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/lemmer/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Kornwerderzand** **[RESTRICTED]**
+- [x] **Kornwerderzand** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/kornwerderzand/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

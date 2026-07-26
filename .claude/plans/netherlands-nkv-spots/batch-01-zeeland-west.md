@@ -7,26 +7,26 @@ North Sea beaches and delta flats on the Zeeland coast. Tide matters everywhere 
 
 ## Spots
 
-- [ ] **Domburg**
+- [x] **Domburg**
       source: https://kitesurfvereniging.nl/kitespot/domburg/
-- [ ] **Vrouwenpolder**
+- [x] **Vrouwenpolder**
       source: https://kitesurfvereniging.nl/kitespot/vrouwenpolder/
-- [ ] **Neeltje Jans**
+- [x] **Neeltje Jans**
       source: https://kitesurfvereniging.nl/kitespot/neeltje-jans/
-- [ ] **Kamperland – Roompot XBeach**
+- [x] **Kamperland – Roompot XBeach**
       source: https://kitesurfvereniging.nl/kitespot/kamperland/
-- [ ] **Cadzand-bad – Vlamingpolder**
+- [x] **Cadzand-bad – Vlamingpolder**
       source: https://kitesurfvereniging.nl/kitespot/cadzand-bad-vlamingpolder/
       merge in: Cadzand-bad – West — https://kitesurfvereniging.nl/kitespot/cadzand-bad-west/
       (same forecast point; describe both launches in one entry)
-- [ ] **Breskens Oost**
+- [x] **Breskens Oost**
       source: https://kitesurfvereniging.nl/kitespot/breskens-oost/
-- [ ] **Paulinapolder**
+- [x] **Paulinapolder**
       source: https://kitesurfvereniging.nl/kitespot/paulinapolder/
 
 ## Done when
 
-- [ ] 7 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 7 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

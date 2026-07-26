@@ -361,3 +361,19 @@ These endpoints are **not** gated by the session cookie (unlike `/api/v1/**`) an
 
 The country `{slug}` is the lowercased country name with spaces replaced by hyphens (e.g. `poland`, `czech-republic`).
 All responses are served as `text/markdown; charset=UTF-8` and use the same in-memory caches as the JSON API.
+
+## data sources
+
+Forecasts come from [Windguru](https://www.windguru.cz), [Windfinder](https://www.windfinder.com)
+and [ICM Meteo](https://www.meteo.pl). Live wind comes from the weather stations listed on the
+[status page](https://varun.surf/status), which also lists the sources behind the spot
+database itself:
+
+| Source | Contribution |
+|--------|--------------|
+| [Kitewetter](https://www.kitewetter.at/) | Alpine kite spots in Austria |
+| [Nederlandse Kitesurf Vereniging](https://kitesurfvereniging.nl/spotkaart/) | Dutch kite spots, their access rules and local restrictions |
+
+The NKV spotkaart is maintained by a network of volunteer spot managers who keep Dutch kite spots
+open and safe — the local knowledge in the Netherlands entries comes from their work. Spots the
+NKV lists as *verboden* (forbidden) are deliberately not included here.

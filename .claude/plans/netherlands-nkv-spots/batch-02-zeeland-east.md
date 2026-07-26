@@ -7,26 +7,26 @@ Sheltered delta water behind the storm barriers. Mostly flat, strong tidal curre
 
 ## Spots
 
-- [ ] **Grevelingendam – Zuid**
+- [x] **Grevelingendam – Zuid**
       source: https://kitesurfvereniging.nl/kitespot/grevelingendam-zuid/
       merge in: Grevelingendam – Noord — https://kitesurfvereniging.nl/kitespot/grevelingendam-noord/
       (same forecast point; describe both launches in one entry)
-- [ ] **Ouwerkerk** **[RESTRICTED]**
+- [x] **Ouwerkerk** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/ouwerkerk/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Tholen Oesterdam**
+- [x] **Tholen Oesterdam**
       source: https://kitesurfvereniging.nl/kitespot/tholen-oesterdam/
-- [ ] **Baarland**
+- [x] **Baarland**
       source: https://kitesurfvereniging.nl/kitespot/baarland/
-- [ ] **Borssele (de Kaloot)**
+- [x] **Borssele (de Kaloot)**
       source: https://kitesurfvereniging.nl/kitespot/borssele-de-kaloot/
-- [ ] **Terneuzen (put van)**
+- [x] **Terneuzen (put van)**
       source: https://kitesurfvereniging.nl/kitespot/terneuzen/
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

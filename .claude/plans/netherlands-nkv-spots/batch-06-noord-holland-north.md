@@ -7,22 +7,22 @@ Northern North Sea coast plus the Amstelmeer inland lake.
 
 ## Spots
 
-- [ ] **Camperduin**
+- [x] **Camperduin**
       source: https://kitesurfvereniging.nl/kitespot/camperduin/
-- [ ] **Petten (Pettemer Zeewering)**
+- [x] **Petten (Pettemer Zeewering)**
       source: https://kitesurfvereniging.nl/kitespot/petten/
-- [ ] **Callantsoog**
+- [x] **Callantsoog**
       source: https://kitesurfvereniging.nl/kitespot/callantsoog/
-- [ ] **Julianadorp**
+- [x] **Julianadorp**
       source: https://kitesurfvereniging.nl/kitespot/julianadorp/
-- [ ] **Den Helder – Huisduinen**
+- [x] **Den Helder – Huisduinen**
       source: https://kitesurfvereniging.nl/kitespot/den-helder-huisduinen/
-- [ ] **Amstelmeer Lutjestrand zuid**
+- [x] **Amstelmeer Lutjestrand zuid**
       source: https://kitesurfvereniging.nl/kitespot/amstelmeer-lutje-strand-zuid/
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

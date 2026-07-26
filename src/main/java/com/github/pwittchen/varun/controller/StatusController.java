@@ -55,7 +55,8 @@ public class StatusController {
     );
 
     private static final List<SourceDefinition> SPOTS_DATA_SOURCES = List.of(
-            new SourceDefinition("Kitewetter", "https://www.kitewetter.at/", "kitewetter.at")
+            new SourceDefinition("Kitewetter", "https://www.kitewetter.at/", "kitewetter.at"),
+            new SourceDefinition("Nederlandse Kitesurf Vereniging", "https://kitesurfvereniging.nl/spotkaart/", "kitesurfvereniging.nl/spotkaart")
     );
 
     private final Instant startTime = Instant.now();

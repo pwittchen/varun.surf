@@ -7,26 +7,26 @@ Mainland Waddenzee launches plus Groningen inland lakes.
 
 ## Spots
 
-- [ ] **Harlingen – Waddenzee**
+- [x] **Harlingen – Waddenzee**
       source: https://kitesurfvereniging.nl/kitespot/harlingen-waddenzee/
-- [ ] **Lauwersoog Waddenzee**
+- [x] **Lauwersoog Waddenzee**
       source: https://kitesurfvereniging.nl/kitespot/lauwersoog-waddenzee/
-- [ ] **Lauwersmeer** **[RESTRICTED]**
+- [x] **Lauwersmeer** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/lauwersmeer/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Delfzijl**
+- [x] **Delfzijl**
       source: https://kitesurfvereniging.nl/kitespot/delfzijl/
-- [ ] **Zuidlaardermeer**
+- [x] **Zuidlaardermeer**
       source: https://kitesurfvereniging.nl/kitespot/zuidlaardermeer/
-- [ ] **Midwolda Oldambtmeer** **[RESTRICTED]**
+- [x] **Midwolda Oldambtmeer** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/midwolda-oldambtmeer/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

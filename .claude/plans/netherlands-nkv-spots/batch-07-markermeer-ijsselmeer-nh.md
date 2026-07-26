@@ -7,28 +7,28 @@ Freshwater, flat-to-choppy, shallow. Distinct forecast from the coastal spots.
 
 ## Spots
 
-- [ ] **Muiderberg**
+- [x] **Muiderberg**
       source: https://kitesurfvereniging.nl/kitespot/muiderberg/
-- [ ] **Edam Noord – Galgenveld**
+- [x] **Edam Noord – Galgenveld**
       source: https://kitesurfvereniging.nl/kitespot/edam-noord-galgenveld/
-- [ ] **Warder** **[RESTRICTED]**
+- [x] **Warder** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/warder/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Schellinkhout**
+- [x] **Schellinkhout**
       source: https://kitesurfvereniging.nl/kitespot/schellinkhout/
-- [ ] **Enkhuizen** **[RESTRICTED]**
+- [x] **Enkhuizen** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/enkhuizen/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Medemblik** **[RESTRICTED]**
+- [x] **Medemblik** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/medemblik/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

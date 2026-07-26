@@ -7,22 +7,22 @@ Straight North Sea beach between Hoek van Holland and Katwijk. All share a near-
 
 ## Spots
 
-- [ ] **Den Haag – Zuiderstrand**
+- [x] **Den Haag – Zuiderstrand**
       source: https://kitesurfvereniging.nl/kitespot/den-haag-zuiderstrand/
-- [ ] **Kijkduin**
+- [x] **Kijkduin**
       source: https://kitesurfvereniging.nl/kitespot/kijkduin/
-- [ ] **Kijkduin – Zandmotor**
+- [x] **Kijkduin – Zandmotor**
       source: https://kitesurfvereniging.nl/kitespot/zandmotor/
-- [ ] **s-Gravenzande (slag Beukel)**
+- [x] **s-Gravenzande (slag Beukel)**
       source: https://kitesurfvereniging.nl/kitespot/s-gravenzande-slag-beukel/
-- [ ] **Wassenaarse slag**
+- [x] **Wassenaarse slag**
       source: https://kitesurfvereniging.nl/kitespot/wassenaarse-slag/
-- [ ] **Katwijk**
+- [x] **Katwijk**
       source: https://kitesurfvereniging.nl/kitespot/katwijk/
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

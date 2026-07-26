@@ -7,24 +7,24 @@ North Sea beaches north of IJmuiden. Same caveat as batch 03: forecasts are near
 
 ## Spots
 
-- [ ] **Zandvoort**
+- [x] **Zandvoort**
       source: https://kitesurfvereniging.nl/kitespot/zandvoort/
-- [ ] **Bloemendaal aan Zee**
+- [x] **Bloemendaal aan Zee**
       source: https://kitesurfvereniging.nl/kitespot/bloemendaal-aan-zee/
-- [ ] **Wijk aan Zee – Pier (Strand Noordpier Velsen-Noord)**
+- [x] **Wijk aan Zee – Pier (Strand Noordpier Velsen-Noord)**
       source: https://kitesurfvereniging.nl/kitespot/wijk-aan-zee-pier/
       merge in: Wijk aan Zee – de HangOut (Strand Noordpier Velsen-Noord) — https://kitesurfvereniging.nl/kitespot/wijk-aan-zee-hangout/
       (same forecast point; describe both launches in one entry)
-- [ ] **Castricum aan Zee**
+- [x] **Castricum aan Zee**
       source: https://kitesurfvereniging.nl/kitespot/castricum-aan-zee/
-- [ ] **Egmond Binnen/aan Zee**
+- [x] **Egmond Binnen/aan Zee**
       source: https://kitesurfvereniging.nl/kitespot/egmond-binnen-en-aan-zee/
-- [ ] **Bergen aan Zee**
+- [x] **Bergen aan Zee**
       source: https://kitesurfvereniging.nl/kitespot/bergen-aan-zee/
 
 ## Done when
 
-- [ ] 6 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 6 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

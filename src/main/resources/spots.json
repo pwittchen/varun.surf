@@ -4529,5 +4529,1964 @@
       "season": "Kwiecień-Październik, najlepiej wiosną i jesienią",
       "description": "Wąskie jezioro alpejskie w Valle Sabbia, na zachód od jeziora Garda, często nazywane jego spokojniejszym młodszym bratem. Codzienna termika z południa - lokalna 'Ora' - w słoneczne dni pojawia się zwykle koło południa z siłą około 10-15 węzłów, czasem więcej, nad przeważnie bardzo spokojną wodą z dużą przestrzenią z wiatrem. Dla kiterów właściwym miejscem jest plaża w Ponte Caffaro na północnym brzegu; windsurferzy i wingfoilerzy korzystają raczej z Anfo i Vantone dalej na południe, gdzie formacje skalne przyspieszają wiatr, a napływ północny daje małe, strome fale. Najlepsze są wiosna i jesień - w pełni lata wiatr jest słabszy, a zimą jezioro jest zimne i bezwietrzne."
     }
+  },
+  {
+    "name": "Domburg",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48324",
+    "windguruFallbackUrl": "https://www.windguru.cz/48325",
+    "windfinderUrl": "https://www.windfinder.com/forecast/domburg",
+    "webcamUrl": "https://www.oasedomburg.nl/webcam/",
+    "locationUrl": "https://www.google.com/maps?q=51.552254,3.461647",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach at Westkapelse Zeedijk, plenty of space, paid parking, food/drink/toilet nearby",
+      "hazards": "Expert-only wave spot; strong tidal current; submerged pole rows (palenrijen) become invisible at high tide; shared with wave surfers and windsurfers — give each other space",
+      "season": "Year-round",
+      "description": "Domburg sits below the highest dune line in Zeeland, funnelling the biggest, cleanest waves the province has to offer straight onto a deep, open beach. Combined with a strong tidal current and rows of half-submerged poles running out from shore, it's a spot built for wave riders who already know what they're doing, not a place to learn. Wave surfers and windsurfers share the same stretch, so give each other room. Best on N-NW-W, with swell and wind year-round."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża przy Westkapelse Zeedijk, dużo miejsca, płatny parking, w pobliżu jedzenie/picie/toaleta",
+      "hazards": "Spot wyłącznie dla bardzo doświadczonych; silny prąd pływowy; rzędy na wpół zanurzonych pali (palenrijen) niewidoczne przy przypływie; dzielona plaża z surferami falowymi i windsurferami — zachowajcie odstęp",
+      "season": "Cały rok",
+      "description": "Domburg leży u podnóża najwyższych wydm w Zelandii, gdzie rozbijają się największe i najczystsze fale w całej prowincji, prosto na głęboką, otwartą plażę. W połączeniu z silnym prądem pływowym i rzędami na wpół zanurzonych pali wystających w morze, to miejsce stworzone dla doświadczonych riderów fal, a nie do nauki. Surferzy falowi i windsurferzy dzielą tę samą plażę, więc ustępujcie sobie miejsca. Najlepiej przy wietrze z N-NW-W, z falą i wiatrem przez cały rok."
+    }
+  },
+  {
+    "name": "Vrouwenpolder",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48323",
+    "windfinderUrl": "https://www.windfinder.com/forecast/vrouwenpolder",
+    "webcamUrl": "https://www.strandweer.nu/livestreams/vrouwenpolder",
+    "locationUrl": "https://www.google.com/maps?q=51.591873,3.632949",
+    "spotInfo": {
+      "type": "North Sea, tidal lagoon (flat water at high/spring tide)",
+      "bestWind": "N, NE, E, W",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach, plenty of space, paid parking, food/drink/toilet/shower/pump on site",
+      "hazards": "Only rideable at high tide or spring tide; marked kite zone from May (signs plus yellow buoys near the first bridge by Vertigo kite school) — stay on the beach side of the buoys; NKV spot manager and info point at Vertigo",
+      "season": "Year-round (kite zone marked May-September)",
+      "description": "A shallow tidal lagoon tucked behind the dunes near the Oosterschelde mouth, Vrouwenpolder only comes alive around high tide or spring tide, when the sandbanks flood and open up a flat, easy playground. From May onward the kite zone is clearly marked with beach signs and a line of yellow buoys off the first bridge — stay on the beach side of them. Outside the marked season the rules relax, making this one of the friendlier spots in Zeeland for beginners building confidence in a delta setting."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, pływowa laguna (płaska woda przy przypływie/syzygii)",
+      "bestWind": "N, NE, E, W",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, płatny parking, na miejscu jedzenie/picie/toaleta/prysznic/pompka",
+      "hazards": "Da się kitować tylko przy przypływie lub syzygii; wyznaczona strefa kite od maja (oznaczenia plus żółte boje przy pierwszym mostku, koło szkoły Vertigo) — pływaj po stronie plaży względem boi; punkt informacyjny NKV znajduje się przy Vertigo",
+      "season": "Cały rok (strefa kite wyznaczona maj-wrzesień)",
+      "description": "Płytka, pływowa laguna schowana za wydmami niedaleko ujścia Oosterschelde — Vrouwenpolder ożywa dopiero przy przypływie lub syzygii, gdy woda zalewa mielizny i tworzy płaski, łatwy teren do jazdy. Od maja strefa kite jest wyraźnie oznaczona tablicami na plaży i linią żółtych boi przy pierwszym mostku — trzymaj się strony plażowej względem nich. Poza wyznaczonym sezonem zasady są mniej restrykcyjne, co czyni to miejsce jednym z bardziej przyjaznych początkującym spotów w delcie Zelandii."
+    }
+  },
+  {
+    "name": "Neeltje Jans",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48321",
+    "windfinderUrl": "https://www.windfinder.com/forecast/neeltje_jans",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.624242,3.680559",
+    "spotInfo": {
+      "type": "Oosterschelde storm surge barrier, flat to light chop",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, plenty of space; park at Roompotsluis and walk north to the southern end of the beach",
+      "hazards": "Wind turbines along the dike create gusty, unstable wind in S/SW directions — stay well clear of them; some current near the pier",
+      "season": "Year-round",
+      "description": "Perched on the Oosterscheldekering storm surge barrier, Neeltje Jans offers a quieter alternative to the open coast: flat water near the pier at low tide, short wind-chop at high tide, and comparatively little current. The row of wind turbines along the dike disturbs the airflow badly in southerly and southwesterly winds, so stay well clear of them for cleaner, steadier wind further along the barrier. Park at the Roompotsluis lot and walk north to the southern end of the beach, the section open to kiting."
+    },
+    "spotInfoPL": {
+      "type": "Bariera przeciwsztormowa Oosterschelde, płaska woda do lekkiego zafalowania",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; parking przy Roompotsluis, dalej pieszo na północ do południowego krańca plaży",
+      "hazards": "Turbiny wiatrowe wzdłuż grobli powodują niestabilny, porywisty wiatr przy kierunkach S/SW — trzymaj się od nich z daleka; miejscami prąd przy falochronie",
+      "season": "Cały rok",
+      "description": "Neeltje Jans, położone na barierze przeciwsztormowej Oosterscheldekering, oferuje spokojniejszą alternatywę dla otwartego wybrzeża: płaską wodę przy falochronie podczas odpływu, krótkie, poszarpane fale przy przypływie i stosunkowo niewielki prąd. Rząd turbin wiatrowych wzdłuż grobli mocno zaburza przepływ powietrza przy wietrze południowym i południowo-zachodnim, więc trzymaj się od nich z daleka, by złapać czystszy i stabilniejszy wiatr dalej wzdłuż bariery. Zaparkuj przy Roompotsluis i idź pieszo na północ do południowego krańca plaży, otwartego do kitowania."
+    }
+  },
+  {
+    "name": "Kamperland - Roompot XBeach",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48321",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.592909,3.731378",
+    "spotInfo": {
+      "type": "Oosterschelde, shallow flat water",
+      "bestWind": "N, E",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach (width tide-dependent), plenty of space; parking at the end of the dead-end Longroomweg",
+      "hazards": "Stay inside the marked kite zone and out of the shipping channel (vaargeul); sharp oysters in the sand/mud — water shoes recommended",
+      "season": "Year-round",
+      "description": "Roompot XBeach is the delta's answer to onshore easterlies and northerlies — directions that leave few other Zeeland spots rideable. Long, shallow sandbanks keep the water flat with only the occasional short chop, and at low tide a wide beach opens up in front of the dead-end road at Longroomweg. Stay inside the marked kite zone and well clear of the shipping channel, and wear boots — sharp oysters are common in the sand and mud closer to the waterline."
+    },
+    "spotInfoPL": {
+      "type": "Oosterschelde, płytka płaska woda",
+      "bestWind": "N, E",
+      "waterTemp": "6-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża (szerokość zależna od pływu), dużo miejsca; parking na końcu ślepej drogi Longroomweg",
+      "hazards": "Trzymaj się w wyznaczonej strefie kite i z dala od toru wodnego (vaargeul); ostre ostrygi w piasku/mule — zalecane buty do wody",
+      "season": "Cały rok",
+      "description": "Roompot XBeach to odpowiedź delty na wiatr wschodni i północny — kierunki, przy których niewiele innych spotów w Zelandii nadaje się do jazdy. Długie, płytkie mielizny utrzymują wodę płaską, z jedynie sporadycznym krótkim falowaniem, a przy odpływie przed ślepą drogą przy Longroomweg odsłania się szeroka plaża. Trzymaj się w wyznaczonej strefie kite i z dala od toru wodnego, a bliżej wody załóż buty — w piasku i mule często trafiają się ostre ostrygi."
+    }
+  },
+  {
+    "name": "Cadzand-bad - Vlamingpolder",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48328",
+    "windguruFallbackUrl": "https://www.windguru.cz/676007",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cadzand",
+    "webcamUrl": "https://www.strandweer.nu/livestreams/cadzand-bad",
+    "locationUrl": "https://www.google.com/maps?q=51.385365,3.404863",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space; two access points — Vlamingpolderweg (Vlamingpolder, north of Moio Beach) and near the 't Zwin visitor centre (West)",
+      "hazards": "Rows of poles in the water at both launches, hard to see at high tide; Vlamingpolder has deeper water and a faster crowd than the West launch",
+      "season": "Year-round",
+      "description": "Two adjoining launches on Cadzand-bad's open North Sea beach: Vlamingpolder to the east, just north of Moio Beach, and a second access point further west by the 't Zwin visitor centre, both looking out over deep, rideable water on anything from N through SW. Vlamingpolder is the more committing of the two thanks to deeper water and a faster crowd, while the western launch near 't Zwin sees a gentler, more beginner-friendly scene. Both stretches have rows of poles standing in the water that all but disappear at high tide, so plan your line before the water comes up."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; dwa wejścia — Vlamingpolderweg (Vlamingpolder, na północ od Moio Beach) i okolice centrum dla zwiedzających 't Zwin (West)",
+      "hazards": "Rzędy pali w wodzie przy obu wejściach, słabo widoczne przy przypływie; Vlamingpolder ma głębszą wodę i szybszą, bardziej zaawansowaną grupę riderów niż wejście West",
+      "season": "Cały rok",
+      "description": "Dwa sąsiadujące wejścia na otwartej plaży Cadzand-bad nad Morzem Północnym: Vlamingpolder na wschodzie, tuż na północ od Moio Beach, oraz drugie wejście dalej na zachodzie przy centrum dla zwiedzających 't Zwin — oba wychodzą na głęboką, dobrze nawietrzną wodę przy każdym kierunku od N po SW. Vlamingpolder jest bardziej wymagający dzięki głębszej wodzie i szybszemu tłumowi, podczas gdy zachodnie wejście bliżej 't Zwin ma łagodniejszą, bardziej przyjazną początkującym atmosferę. Na obu odcinkach w wodzie stoją rzędy pali, które niemal znikają przy przypływie, więc zaplanuj trasę, zanim woda się podniesie."
+    }
+  },
+  {
+    "name": "Breskens Oost",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48326",
+    "windguruFallbackUrl": "https://www.windguru.cz/48327",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.400622,3.5593",
+    "spotInfo": {
+      "type": "Westerschelde estuary, shallow flat water",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach (wide at low tide, narrow at high tide), plenty of space, free parking",
+      "hazards": "Stay out of the shipping channel (vaargeul) — heavy boat traffic and current make it genuinely dangerous; pole rows in the water, hard to see once covered by the tide",
+      "season": "Year-round",
+      "description": "A classic Westerschelde flat-water beach that flips personality with the tide — a wide sandy beach at low water shrinks to a narrow strip at high water, with the shallow banks in between staying mostly flat. The shipping channel running past Breskens carries heavy commercial traffic and strong current, and venturing into it is genuinely dangerous, so keep well inside the marked zone. Rows of poles in the water are easy to miss once the tide covers them — know where they are before you launch."
+    },
+    "spotInfoPL": {
+      "type": "Ujście Westerschelde, płytka płaska woda",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża (szeroka przy odpływie, wąska przy przypływie), dużo miejsca, bezpłatny parking",
+      "hazards": "Trzymaj się z dala od toru wodnego (vaargeul) — duży ruch statków i prąd czynią go naprawdę niebezpiecznym; rzędy pali w wodzie, trudno widoczne po zakryciu przez przypływ",
+      "season": "Cały rok",
+      "description": "Klasyczna płaskowodna plaża nad Westerschelde, która zmienia charakter wraz z pływem — szeroka piaszczysta plaża przy odpływie kurczy się do wąskiego paska przy przypływie, a płytkie mielizny pomiędzy nimi pozostają w większości płaskie. Tor wodny przebiegający obok Breskens obsługuje ciężki ruch komercyjny i silny prąd, a wpłynięcie w niego jest naprawdę niebezpieczne, więc trzymaj się wyraźnie w wyznaczonej strefie. Rzędy pali w wodzie łatwo przeoczyć, gdy zakryje je przypływ — sprawdź ich położenie, zanim wystartujesz."
+    }
+  },
+  {
+    "name": "Paulinapolder",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48327",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.350422,3.731831",
+    "spotInfo": {
+      "type": "Westerschelde estuary, shallow flat water (high tide window)",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass, limited space",
+      "hazards": "Rideable only around high tide (a few hours before/after) — mudflats otherwise; the shipping channel is dangerous and kiting in it is prohibited; no dedicated Windguru station — nearest is Borssele, roughly 7 km up the estuary",
+      "season": "Year-round (rideable window limited to hours around high tide)",
+      "description": "A grassy, tide-locked corner of the Westerschelde where the water only becomes rideable for a few hours around high tide, when the mudflats fill in enough to kite. Launch space is tight, and the shipping channel just offshore is both dangerous and off-limits to kiters, so this is a spot for riders who already read tides and currents well. With no dedicated Windguru station nearby, forecasts here are best taken from Borssele, about 7 km up the estuary."
+    },
+    "spotInfoPL": {
+      "type": "Ujście Westerschelde, płytka płaska woda (okno przypływu)",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "Da się kitować tylko w okolicach przypływu (kilka godzin przed/po) — poza tym odsłaniają się muliste płycizny; tor wodny jest niebezpieczny i kitowanie w nim jest zabronione; brak własnej stacji Windguru — najbliższa to Borssele, ok. 7 km w głąb ujścia",
+      "season": "Cały rok (okno do jazdy ograniczone do godzin wokół przypływu)",
+      "description": "Trawiasty, uzależniony od pływu zakątek nad Westerschelde, gdzie woda nadaje się do jazdy tylko przez kilka godzin wokół przypływu, gdy muliste płycizny wypełniają się na tyle, by można było kitować. Miejsce do startu jest ciasne, a tor wodny tuż przy brzegu jest zarówno niebezpieczny, jak i zakazany dla kiterów, więc to spot dla riderów, którzy dobrze czytają pływy i prądy. Ponieważ w pobliżu nie ma własnej stacji Windguru, najlepszą prognozę daje Borssele, około 7 km w głąb ujścia."
+    }
+  },
+  {
+    "name": "Grevelingendam - Zuid",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/147",
+    "windguruFallbackUrl": "https://www.windguru.cz/500881",
+    "windfinderUrl": "https://www.windfinder.com/forecast/grevelingenmeer_grevelingendam",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.674713,4.13996",
+    "spotInfo": {
+      "type": "Salt lake (Grevelingenmeer), flat water",
+      "bestWind": "S, SW, W, N, NW, E",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at the Zuid launch, grass bank at the Noord launch (500m north across the dam); both have limited space",
+      "hazards": "Two separate launches on either side of the dam, each with its own marked kite zone — stay inside it. Sharp boulders line the shoreline at the water's edge (reef shoes strongly advised), and the Noord side has mussel and oyster beds plus trees close to the launch, so keep clear when rigging. A protected nature reserve borders both zones (west of Zuid, and the wider Grevelingenmeer shoreline at Noord) — do not cross into it. The Noord launch is closed 1 November-15 March for bird protection. South wind at Zuid can be gusty off the dyke.",
+      "season": "Year-round at Zuid; Noord open 15 March-1 November only",
+      "description": "Grevelingendam sits on the causeway between the tideless, saline Grevelingenmeer and the island of Schouwen-Duiveland, with two distinct kite launches facing opposite shores of the lake. The Zuid side works with southerly and westerly wind and turns into a shallow, flat lagoon at high tide that suits beginners and freestylers; the Noord side, reachable only in the March-November window, catches easterly wind — a rare offering on this coast — over choppier, deeper water better suited to confident riders. Boots are essential on both sides for the rocky entry, and the lake's long fetch rewards riders who like flat-water freeride and downwinders along its length."
+    },
+    "spotInfoPL": {
+      "type": "Słone jezioro (Grevelingenmeer), płaska woda",
+      "bestWind": "S, SW, W, N, NW, E",
+      "waterTemp": "6-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża na starcie Zuid, trawiasty brzeg na starcie Noord (500m na północ, po drugiej stronie grobli); w obu miejscach mało przestrzeni",
+      "hazards": "Dwa oddzielne starty po obu stronach grobli, każdy z wyznaczoną strefą kitową — nie wychodź poza nią. Brzeg usiany jest ostrymi głazami (zdecydowanie zalecane buty do wody), a przy starcie Noord dodatkowo są hodowle małży i ostryg oraz drzewa blisko startu, więc zachowaj odstęp przy rozkładaniu sprzętu. Obie strefy graniczą z rezerwatem przyrody (na zachód od Zuid oraz wzdłuż szerszego brzegu Grevelingenmeer przy Noord) — nie wchodź na jego teren. Start Noord jest zamknięty od 1 listopada do 15 marca ze względu na ochronę ptaków. Wiatr południowy na Zuid bywa porywisty przy grobli.",
+      "season": "Cały rok na Zuid; Noord otwarty tylko od 15 marca do 1 listopada",
+      "description": "Grevelingendam leży na grobli między bezpływowym, słonym jeziorem Grevelingenmeer a wyspą Schouwen-Duiveland, oferując dwa odrębne starty zwrócone w stronę przeciwnych brzegów jeziora. Strona Zuid działa przy wietrze południowym i zachodnim, a przy przypływie zamienia się w płytką, płaską lagunę idealną dla początkujących i freestyle'owców; strona Noord, dostępna tylko w oknie marzec-listopad, łapie wiatr wschodni — rzadkość na tym wybrzeżu — nad bardziej wzburzoną i głębszą wodą, lepszą dla pewniejszych riderów. Po obu stronach niezbędne są buty ze względu na kamienisty brzeg, a długi rozbieg jeziora sprzyja jazdie freeride po płaskiej wodzie i downwinderom wzdłuż jego długości."
+    }
+  },
+  {
+    "name": "Ouwerkerk",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/67661",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ouwerkerk",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.616791,3.961531",
+    "spotInfo": {
+      "type": "Tidal delta (Oosterschelde), flat water",
+      "bestWind": "NW, W, SW, S, SE",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Small sand beach between two breakwaters, limited space",
+      "hazards": "RESTRICTED spot — open only October-April, closed the rest of the year. Tight kite zone squeezed between two breakwaters with an active dive site immediately south of the zone — never stray outside the marked area. Very shallow at low tide with sharp shells and oysters underfoot (reef shoes essential); at high tide the already-small beach nearly disappears, leaving almost nowhere to rig. Free parking is limited to about 20 vehicles and there is no public transport to the spot.",
+      "season": "October-April only (closed May-September)",
+      "description": "Ouwerkerk is a small, tightly-boxed launch on the Oosterschelde tidal delta, squeezed between two breakwaters on Schouwen-Duiveland. It is only open to kiters from October through April, and even then the beach is tiny — shrinking further at high tide — so it suits confident beginners and intermediates who can handle a cramped, shallow, shell-strewn entry rather than complete newcomers. There is no dedicated Windguru forecast point for the spot itself; the nearest official station is roughly 13 km away, so treat the numbers as a regional guide rather than an exact reading."
+    },
+    "spotInfoPL": {
+      "type": "Pływowa delta (Oosterschelde), płaska woda",
+      "bestWind": "NW, W, SW, S, SE",
+      "waterTemp": "6-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Mała piaszczysta plaża między dwiema falochronami, mało miejsca",
+      "hazards": "SPOT OGRANICZONY — otwarty tylko od października do kwietnia, poza tym okresem zamknięty. Ciasna strefa kitowa wciśnięta między dwa falochrony, z czynnym miejscem nurkowym tuż na południe od strefy — nigdy nie wychodź poza wyznaczony obszar. Przy odpływie bardzo płytko, z ostrymi muszlami i ostrygami pod nogami (buty do wody obowiązkowe); przy przypływie i tak mała plaża niemal znika, zostawiając bardzo mało miejsca na rozłożenie sprzętu. Bezpłatny parking to tylko ok. 20 miejsc, brak komunikacji publicznej do spotu.",
+      "season": "Tylko od października do kwietnia (zamknięte maj-wrzesień)",
+      "description": "Ouwerkerk to niewielki, ciasno wciśnięty start na pływowej delcie Oosterschelde, między dwoma falochronami na wyspie Schouwen-Duiveland. Spot jest dostępny dla kitesurferów tylko od października do kwietnia, a i wtedy plaża jest maleńka — przy przypływie robi się jeszcze mniejsza — więc pasuje raczej pewnym siebie początkującym i średniozaawansowanym niż zupełnym nowicjuszom. Spot nie ma własnej stacji prognozy Windguru; najbliższa oficjalna stacja znajduje się około 13 km dalej, więc dane traktuj jako orientacyjne dla regionu, a nie dokładny odczyt."
+    }
+  },
+  {
+    "name": "Tholen Oesterdam",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/187",
+    "windguruFallbackUrl": "https://www.windguru.cz/4848",
+    "windfinderUrl": "https://www.windfinder.com/forecast/oosterschelde_oesterdam",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.460934,4.221407",
+    "spotInfo": {
+      "type": "Tidal delta (Oosterschelde), flat water",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach, plenty of space; avoid rigging on the grass verge next to the road",
+      "hazards": "Kite only inside the yellow-buoy marked zone. The beach is tide-dependent: sand is only exposed roughly from 2 hours after high tide until 2 hours before the next high tide, and disappears around the high-tide peak — plan sessions around the tide table. Oysters and sharp shells in the water make reef shoes advisable. Keep clear of the grass verge along the parallel road: rigging there distracts passing traffic and has previously led authorities to consider closing the road. Weight your kite down on the beach so it cannot lift and blow onto the dyke road.",
+      "season": "Year-round",
+      "description": "Tholen Oesterdam is a wide, sandy launch on the Oesterdam causeway across the Oosterschelde, popular for its generous rigging space and flat, shallow water inside a yellow-buoy kite zone. The beach comes and goes with the tide — it is only rideable for a window either side of low water, since the sand largely submerges around high tide — so local knowledge of the tide table matters more than at most spots. Northerly through southerly winds all work here, making it a reliable year-round option for beginners through intermediates once the tide is cooperating."
+    },
+    "spotInfoPL": {
+      "type": "Pływowa delta (Oosterschelde), płaska woda",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; unikaj rozkładania sprzętu na trawiastym poboczu przy drodze",
+      "hazards": "Kituj tylko w strefie wyznaczonej żółtymi bojami. Plaża zależy od pływu: piasek jest odsłonięty mniej więcej od 2 godzin po przypływie do 2 godzin przed kolejnym przypływem, a znika w okolicach szczytu przypływu — planuj sesje według tabeli pływów. Ostrygi i ostre muszle w wodzie sprawiają, że warto założyć buty do wody. Trzymaj się z dala od trawiastego pobocza wzdłuż równoległej drogi: rozkładanie tam sprzętu rozprasza kierowców i już wcześniej skłaniało władze do rozważania zamknięcia drogi. Obciążaj kite na plaży, by nie uniosło się i nie przeleciało nad groblą na drogę.",
+      "season": "Cały rok",
+      "description": "Tholen Oesterdam to szeroki, piaszczysty start na grobli Oesterdam przecinającej Oosterschelde, ceniony za mnóstwo miejsca do rozłożenia sprzętu i płaską, płytką wodę w strefie wyznaczonej żółtymi bojami. Plaża pojawia się i znika wraz z pływem — jest jezdna tylko w oknie wokół odpływu, bo przy przypływie piasek w większości znika pod wodą — więc znajomość tabeli pływów liczy się tu bardziej niż na większości spotów. Wiatry od północnego po południowy działają dobrze, co czyni to miejsce solidną, całoroczną opcją dla początkujących i średniozaawansowanych, gdy tylko pływ współpracuje."
+    }
+  },
+  {
+    "name": "Baarland",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48327",
+    "windfinderUrl": "https://www.windfinder.com/forecast/scheldeoord_hoek-van-baarland",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.394135,3.896531",
+    "spotInfo": {
+      "type": "Tidal estuary (Westerschelde), flat water with strong currents",
+      "bestWind": "SW, S, SE, E",
+      "waterTemp": "6-20°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach at the sea dike, limited space; park along the dike, keep the access ramp clear",
+      "hazards": "Advanced spot only: the Westerschelde's strong tidal current can sweep riders into the shipping channel or make it impossible to get back to the beach. Rideable at both high and low tide, but stay strictly inside the yellow-buoy zone. Never put swimmers or waders at risk in the water or on the beach.",
+      "season": "Year-round",
+      "description": "Baarland sits directly on the Westerschelde estuary, one of the busiest shipping waterways in Europe, and the tidal current here is strong enough that only experienced riders should launch. The kite zone is marked by yellow buoys and is rideable through the tide cycle, but getting pushed toward the shipping channel is a real risk if you misjudge the current. There is no dedicated Windguru station at Baarland itself, so forecasts are read from Borssele roughly 12 km up the estuary — treat the numbers as indicative rather than exact for this stretch of coast."
+    },
+    "spotInfoPL": {
+      "type": "Pływowy estuarium (Westerschelde), płaska woda z silnymi prądami",
+      "bestWind": "SW, S, SE, E",
+      "waterTemp": "6-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża przy grobli, mało miejsca; parkowanie wzdłuż grobli, zjazd musi pozostać wolny",
+      "hazards": "Spot tylko dla zaawansowanych: silny prąd pływowy na Westerschelde może znieść ridera na tor wodny dla statków lub uniemożliwić powrót na plażę. Można kitować zarówno przy przypływie, jak i odpływie, ale trzeba trzymać się ściśle strefy wyznaczonej żółtymi bojami. Nigdy nie stwarzaj zagrożenia dla osób kąpiących się lub brodzących w wodzie i na plaży.",
+      "season": "Cały rok",
+      "description": "Baarland leży bezpośrednio przy ujściu Westerschelde, jednej z najbardziej ruchliwych dróg wodnych w Europie, a prąd pływowy jest tu na tyle silny, że powinni tu wodować wyłącznie doświadczeni riderzy. Strefa kitowa wyznaczona jest żółtymi bojami i jest jezdna przez cały cykl pływów, ale zniesienie w kierunku toru wodnego dla statków to realne ryzyko przy błędnej ocenie prądu. Baarland nie ma własnej stacji Windguru, więc prognozy odczytywane są ze stacji Borssele, ok. 12 km w górę estuarium — traktuj dane jako orientacyjne, a nie dokładne dla tego odcinka wybrzeża."
+    }
+  },
+  {
+    "name": "Borssele (de Kaloot)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48327",
+    "windguruFallbackUrl": "https://www.windguru.cz/48326",
+    "windfinderUrl": "https://www.windfinder.com/forecast/borssele",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.433178,3.709353",
+    "spotInfo": {
+      "type": "Tidal estuary (Westerschelde), flat water",
+      "bestWind": "W, SW",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, limited space",
+      "hazards": "This is the Westerschelde shipping lane: never approach or enter the main fairway under any circumstances, even when it's busy and low water leaves little room. Do not kite in offshore wind. Equipment should carry a traceable ID sticker per the local shipping regulations.",
+      "season": "Year-round",
+      "description": "De Kaloot at Borssele sits right on the main Westerschelde shipping channel, so the golden rule here is to never interfere with passing vessels — this is commercial water first and a kite spot second. It rides at both high and low tide over flat, shallow sand, with west and southwest wind the reliable options; offshore wind is off-limits by local agreement. Give the shipping lane a wide berth at all times, especially when the tide narrows the usable strip of water."
+    },
+    "spotInfoPL": {
+      "type": "Pływowy estuarium (Westerschelde), płaska woda",
+      "bestWind": "W, SW",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża, mało miejsca",
+      "hazards": "To główny tor wodny Westerschelde: nigdy nie zbliżaj się do głównego szlaku żeglugowego ani nie wpływaj na niego, nawet gdy jest ruchliwie, a odpływ zostawia mało miejsca. Nie kituj przy wietrze odlądowym. Sprzęt powinien mieć naklejkę identyfikacyjną zgodnie z lokalnymi przepisami żeglugowymi.",
+      "season": "Cały rok",
+      "description": "De Kaloot przy Borssele leży bezpośrednio przy głównym torze wodnym Westerschelde, więc złota zasada brzmi: nigdy nie przeszkadzaj przepływającym statkom — to przede wszystkim woda komercyjna, a dopiero potem spot kitesurfingowy. Jeździ się tu zarówno przy przypływie, jak i odpływie, po płaskim, płytkim piasku, a wiatr zachodni i południowo-zachodni to pewniaki; wiatr odlądowy jest tu zakazany lokalną umową. Zawsze trzymaj się z daleka od toru wodnego, zwłaszcza gdy odpływ zawęża używalny pas wody."
+    }
+  },
+  {
+    "name": "Terneuzen (Put van Terneuzen)",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48327",
+    "windfinderUrl": "https://www.windfinder.com/forecast/terneuzen",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.337162,3.839594",
+    "spotInfo": {
+      "type": "Tidal estuary (Westerschelde), flat water with short chop",
+      "bestWind": "N, NE, NW, E",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Small sandy beach, limited space; at high tide entry/exit may only be possible over a slippery stone dike revetment",
+      "hazards": "This is the Westerschelde, a busy shipping channel with strong current — sail only with adequate experience and skill. Local agreement with Rijkswaterstaat: no kiting in offshore wind of Beaufort 8+ or visibility under 2000m; never obstruct shipping; stay strictly within the marked boundaries shown on-site; always carry sufficient flotation/rescue gear, including a KNRM contact sticker on the board. The beach is small, sometimes vanishes completely at high tide, and the stone revetment underfoot can be slippery.",
+      "season": "Year-round",
+      "description": "Terneuzen's 'put van' launch is a compact beach on the Westerschelde with short, punchy wave chop and shallow water — fun in the right northerly-to-easterly winds, but demanding because the beach shrinks or vanishes at high tide and the only way in or out can be a slick, stone-covered dike face. This is a working shipping channel with real current, so it is not a beginner spot even on a calm day, and everyone rides under a set of rules agreed with the Dutch waterway authority: no kiting in strong offshore wind or poor visibility, and shipping always has priority. Riders should come prepared with rescue gear and solid water-start skills."
+    },
+    "spotInfoPL": {
+      "type": "Pływowy estuarium (Westerschelde), płaska woda z krótką falą",
+      "bestWind": "N, NE, NW, E",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Mała piaszczysta plaża, mało miejsca; przy przypływie wejście/wyjście może być możliwe tylko po śliskiej kamiennej opasce grobli",
+      "hazards": "To Westerschelde — ruchliwy tor wodny z silnym prądem, pływaj tylko z odpowiednim doświadczeniem i umiejętnościami. Lokalne porozumienie z Rijkswaterstaat: zakaz kitowania przy wietrze odlądowym 8+ w skali Beauforta lub widoczności poniżej 2000m; nigdy nie utrudniaj żeglugi; trzymaj się ściśle wyznaczonych granic pokazanych na miejscu; zawsze miej przy sobie odpowiedni sprzęt ratunkowy, w tym naklejkę kontaktową KNRM na desce. Plaża jest mała, czasem całkowicie znika przy przypływie, a kamienna opaska pod nogami bywa śliska.",
+      "season": "Cały rok",
+      "description": "Start 'put van' w Terneuzen to niewielka plaża na Westerschelde z krótką, mocną falą i płytką wodą — świetna przy odpowiednim wietrze od północnego do wschodniego, ale wymagająca, bo plaża kurczy się lub znika przy przypływie, a jedyną drogą wejścia lub wyjścia bywa śliska, kamienista skarpa grobli. To czynny tor wodny z realnym prądem, więc nie jest to spot dla początkujących nawet w spokojny dzień, a wszyscy jeżdżą według zasad uzgodnionych z holenderskim zarządem dróg wodnych: zakaz kitowania przy silnym wietrze odlądowym lub słabej widoczności, żegluga zawsze ma pierwszeństwo. Riderzy powinni mieć przy sobie sprzęt ratunkowy i solidne umiejętności startu z wody."
+    }
+  },
+  {
+    "name": "Den Haag - Zuiderstrand",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/572",
+    "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.093886073505,4.2496079841309",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Wide sandy beach, plenty of space; dedicated kite zone at breakwater 37, between beach accesses 10 and 11",
+      "hazards": "Breakwaters with fast-developing deep water close to shore; shifting, constantly-changing sandbanks offshore, so keep tricks away from the shallows near the beach; strong and treacherous rip current (mui) around the breakwater; shared with swimmers, loose dogs and wave surfers, especially in summer",
+      "season": "Year-round",
+      "description": "Zuiderstrand occupies the quieter stretch of Hague coastline between Kijkduin and Scheveningen's Noorderstrand, well away from the crowds around Scheveningen pier. A row of stone breakwaters marks a dedicated kite zone near beach access 37, but the seabed drops off fast and shifting offshore sandbanks mean depth near the entry point can change from one session to the next. Rip currents around the breakwaters are the main hazard, and the beach fills with sunbathers, dog walkers and wave surfers in season, so this suits confident, experienced riders rather than newcomers."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża, dużo miejsca; wyznaczona strefa kite przy falochronie 37, między zejściami na plażę 10 i 11",
+      "hazards": "Falochrony, przy których woda szybko robi się głęboka; stale zmieniające się mielizny u wybrzeża - triki wykonuj z dala od płycizny przy brzegu; silny i zdradliwy prąd wsteczny (mui) przy falochronie; latem plaża dzielona z plażowiczami, wolno biegającymi psami i surferami falowymi",
+      "season": "Cały rok",
+      "description": "Zuiderstrand to spokojniejszy odcinek wybrzeża Hagi, położony między Kijkduin a Noorderstrand w Scheveningen, z dala od tłumów przy molo. Rząd kamiennych falochronów wyznacza strefę kite w okolicy zejścia 37, ale woda szybko robi się głęboka, a zmieniające się mielizny sprawiają, że głębokość przy wejściu potrafi się zmieniać z sesji na sesję. Głównym zagrożeniem są prądy wsteczne przy falochronach, a latem plaża bywa zatłoczona przez plażowiczów, psy i surferów falowych, dlatego spot poleca się pewnym siebie, doświadczonym riderom, a nie początkującym."
+    }
+  },
+  {
+    "name": "Kijkduin",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48305",
+    "windguruFallbackUrl": "https://www.windguru.cz/48306",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kijkduin_south_holland_netherlands",
+    "webcamUrl": "https://www.strandweer.nu/livestreams/kijkduin/",
+    "locationUrl": "https://www.google.com/maps?q=52.066525,4.21192",
+    "spotInfo": {
+      "type": "North Sea, waves, sometimes shallow near shore",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy beach, plenty of space",
+      "hazards": "Submerged breakwaters, often invisible at high water, generating strong rip currents; shifting offshore sandbanks that can turn shallow suddenly, so keep tricks away from the beach; keep distance from swimmers and other beach users",
+      "season": "Year-round",
+      "description": "Kijkduin is a wide, popular Hague beach where an outer sandbar can trap water into a shallow, almost lagoon-like pool for part of the tide, making it more forgiving than most Dutch North Sea spots. Submerged breakwaters run along the beach and become a serious hazard once covered, throwing up rip currents that catch riders off guard. Rideable directions run from SW through W, NW and N to NE, with a clean northerly considered the best; an NKV information point at Kiteboardschool.nl, next to Boca Grandi Beach Club, covers local rules and safety. The sheltered shallows suit less experienced riders on the right tide, while the outer surf keeps advanced kiters entertained."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale, czasem płytko przy brzegu",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża, dużo miejsca",
+      "hazards": "Zatopione falochrony, często niewidoczne przy wysokim stanie wody, generujące silne prądy wsteczne; zmieniające się mielizny, na których nagle robi się płytko - triki wykonuj z dala od brzegu; zachowuj odległość od pływaków i innych plażowiczów",
+      "season": "Cały rok",
+      "description": "Kijkduin to szeroka, popularna plaża Hagi, gdzie zewnętrzna mielizna potrafi zatrzymać wodę w płytkim, niemal lagunowym basenie przez część cyklu pływów, co czyni ten spot bardziej łagodnym niż większość holenderskich spotów na Morzu Północnym. Wzdłuż plaży biegną zatopione falochrony, które stają się poważnym zagrożeniem po przykryciu wodą, generując zaskakujące prądy wsteczne. Da się jeździć na kierunkach od SW przez W, NW i N po NE, a za najlepszy uznaje się czysty kierunek północny; punkt informacyjny NKV znajduje się przy Kiteboardschool.nl, obok Boca Grandi Beach Club. Osłonięta płycizna przy odpowiednim stanie wody sprzyja mniej doświadczonym riderom, a fale na zewnątrz dają zabawę zaawansowanym."
+    }
+  },
+  {
+    "name": "Kijkduin - Zandmotor",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48306",
+    "windguruFallbackUrl": "https://www.windguru.cz/48305",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ter_heijde",
+    "webcamUrl": "https://blow.surf/webcam/",
+    "locationUrl": "https://www.google.com/maps?q=52.055203138626,4.1865212910156",
+    "spotInfo": {
+      "type": "Artificial sand peninsula, shallow tidal lagoon on the North Sea",
+      "bestWind": "NW, W, SW, NE",
+      "waterTemp": "7-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space; best launched when the lagoon is full around high tide",
+      "hazards": "Very popular and often crowded - check the webcam before heading out; mix of beginners and advanced riders sharing a small area, know right of way; outer, seaward edge of the peninsula has surf, current and breakwaters; swimmers present in summer; quieter alternatives nearby are Rockanje and Oostvoorne",
+      "season": "Year-round",
+      "description": "The Zandmotor is an artificial sand peninsula built for coastal defence, and its sheltered side forms a shallow lagoon that is genuinely rare on this stretch of the North Sea coast - flat, shallow water that grows and shrinks with the tide. Timing a session around high water gives the deepest, most rideable pool, while the outer, seaward edge of the peninsula has proper surf, current and breakwaters for those who want more power. It is one of the most popular spots on the South Holland coast and gets crowded with a mix of beginners and advanced riders, so checking the live webcam before driving out is worthwhile; Rockanje and Oostvoorne are the go-to quieter alternatives."
+    },
+    "spotInfoPL": {
+      "type": "Sztuczny półwysep piaszczysty, płytka laguna pływowa na Morzu Północnym",
+      "bestWind": "NW, W, SW, NE",
+      "waterTemp": "7-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; najlepiej startować, gdy laguna jest pełna, w okolicach przypływu",
+      "hazards": "Bardzo popularny i często zatłoczony spot - sprawdź kamerę internetową przed wyjazdem; mieszanka początkujących i zaawansowanych na niewielkim obszarze, znaj zasady pierwszeństwa; zewnętrzna, morska strona półwyspu ma fale, prąd i falochrony; latem obecni pływacy; spokojniejsze alternatywy w pobliżu to Rockanje i Oostvoorne",
+      "season": "Cały rok",
+      "description": "Zandmotor to sztuczny półwysep piaszczysty zbudowany w celu ochrony wybrzeża, a jego osłonięta strona tworzy płytką lagunę - coś naprawdę rzadkiego na tym odcinku Morza Północnego: płaską, płytką wodę, która rośnie i kurczy się wraz z pływami. Sesja zaplanowana w okolicach przypływu daje najgłębszy i najbardziej dogodny basen, podczas gdy zewnętrzna, morska strona półwyspu oferuje prawdziwe fale, prąd i falochrony dla tych, którzy szukają mocniejszych wrażeń. To jeden z najpopularniejszych spotów na wybrzeżu Holandii Południowej, bywa więc zatłoczony mieszanką początkujących i zaawansowanych, dlatego warto sprawdzić kamerę na żywo przed wyjazdem; spokojniejsze alternatywy to Rockanje i Oostvoorne."
+    }
+  },
+  {
+    "name": "'s-Gravenzande (Slag Beukel)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/984134",
+    "windguruFallbackUrl": "https://www.windguru.cz/48307",
+    "windfinderUrl": "https://www.windfinder.com/forecast/s_gravenzande_south_holland_netherlands",
+    "webcamUrl": "https://www.northseasurfing.nl/webcam/",
+    "locationUrl": "https://www.google.com/maps?q=52.01080376684,4.1389538677368",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space; marked kite zone about 300m south (left, facing the sea) of the main beach access, used for rigging and de-rigging",
+      "hazards": "Water gets deep quickly with a challenging shorebreak; offshore wind on S, SE and E - unrideable; gusty conditions on SW wind, sheltered by the Rotterdam harbour mole and Maasvlakte II; strong tidal current along the beach - flood runs south to north from 2h before to 3.5h after high water, ebb runs north to south from 3.5h after to 2h before high water; partly-submerged breakwaters near the access and further north, often hard to see; wave surfers share the water on swell days",
+      "season": "Year-round",
+      "description": "Slag Beukel is the home beach of local club North Sea Surfing, which has storage, changing rooms and showers on site, though new memberships are currently closed. A signed kite zone about 300m south of the main beach access is where riders rig and land, and the water turns deep fast just beyond a sometimes-nasty shorebreak. Sitting in the lee of the Rotterdam harbour mole and Maasvlakte II, the spot gets gusty on southwesterly wind and produces smaller waves than the open coast further north, which suits less experienced wave riders. Tidal currents run strongly along this stretch, so check the flood/ebb timing before launching."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca; wyznaczona strefa kite około 300 m na południe (w lewo, patrząc na morze) od głównego zejścia na plażę, używana do rozkładania i składania sprzętu",
+      "hazards": "Woda szybko robi się głęboka, wymagający shorebreak; wiatr od S, SE i E jest wiatrem od lądu - nie do jazdy; przy SW porywisto z powodu osłony przez falochron portu w Rotterdamie i Maasvlakte II; silny prąd pływowy wzdłuż plaży - prąd przypływu płynie z południa na północ od 2h przed do 3,5h po pełni wody, prąd odpływu płynie z północy na południe od 3,5h po do 2h przed pełnią wody; częściowo zatopione falochrony przy zejściu i dalej na północ, często słabo widoczne; w dni z dobrą falą obecni surferzy falowi",
+      "season": "Cały rok",
+      "description": "Slag Beukel to macierzysta plaża lokalnego klubu North Sea Surfing, który dysponuje na miejscu przechowalnią sprzętu, przebieralnią i prysznicami, choć obecnie nie przyjmuje nowych członków. Oznaczona strefa kite około 300 m na południe od głównego zejścia to miejsce, gdzie riderzy rozkładają i lądują sprzęt, a woda robi się głęboka tuż za czasem niebezpiecznym shorebreakiem. Spot leży w osłonie falochronu portu w Rotterdamie i Maasvlakte II, więc przy wietrze z SW bywa porywisto, a fale są mniejsze niż na otwartym wybrzeżu dalej na północ, co sprzyja mniej doświadczonym surferom falowym. Wzdłuż tego odcinka płyną silne prądy pływowe, dlatego przed wejściem do wody warto sprawdzić godziny przypływu i odpływu."
+    }
+  },
+  {
+    "name": "Wassenaarse slag",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500878",
+    "windguruFallbackUrl": "https://www.windguru.cz/48303",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wassenaar",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.163361,4.34611",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Wide sandy beach, plenty of space",
+      "hazards": "Access is restricted - kitesurfing here is only permitted for members of Surfclub Wassenaar, who must register online with the club before riding; open North Sea surf with breaking waves and current",
+      "season": "Year-round",
+      "description": "Wassenaarse Slag is a wide, open beach north of The Hague with proper North Sea surf, swell and current - a genuine wave-kiting spot rather than a flat-water cruise. Access is gated: kitesurfing is only permitted for members of the local Surfclub Wassenaar, who register online before sessioning, so this is not a spot to just turn up at. For members, the beach offers plenty of rigging space and reliably clean conditions on the favoured northerly and southwesterly winds."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża, dużo miejsca",
+      "hazards": "Dostęp ograniczony - kitesurfing dozwolony jest wyłącznie dla członków Surfclub Wassenaar, którzy muszą zarejestrować się online przed wejściem do wody; otwarte morze z łamiącymi się falami i prądem",
+      "season": "Cały rok",
+      "description": "Wassenaarse Slag to szeroka, otwarta plaża na północ od Hagi z prawdziwymi warunkami Morza Północnego - falą, przybojem i prądem - a więc prawdziwy spot do jazdy na fali, a nie do jazdy po płaskiej wodzie. Dostęp jest ograniczony: kitesurfing jest dozwolony wyłącznie dla członków lokalnego Surfclub Wassenaar, którzy rejestrują się online przed sesją, więc nie jest to miejsce, gdzie można po prostu przyjechać i wejść do wody. Dla członków plaża oferuje dużo miejsca do rozłożenia sprzętu i stabilne, czyste warunki przy preferowanych kierunkach północnym i południowo-zachodnim."
+    }
+  },
+  {
+    "name": "Katwijk",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48303",
+    "windguruFallbackUrl": "https://www.windguru.cz/500878",
+    "windfinderUrl": "https://www.windfinder.com/forecast/katwijk_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.201435,4.386593",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space, split into three club-run zones (Skuytevaert in the south, Katwijkse Branding Surfclub in the middle, Kitesurf Vereniging Airtime in the north)",
+      "hazards": "From 1 April to 1 October, kitesurfing is only allowed within one of the three marked club zones and requires (day) membership of the relevant club, shown by wearing that club's rash vest; outside that window (1 October-1 April) kiting is allowed anywhere on the beach; standard North Sea surf, current and partly-submerged breakwater hazards apply",
+      "season": "Year-round, but club-zone membership is required 1 April-1 October",
+      "description": "Katwijk aan Zee is a long, open surf beach north of Scheveningen split into three kitesurf zones run by local clubs. During the busy season from April to October you need (day) membership of one of the clubs - Skuytevaert in the south, Katwijkse Branding Surfclub in the middle, or Kitesurf Vereniging Airtime in the north - plus their rash vest to ride within its zone; outside that window the whole beach opens up to anyone. It is a proper North Sea wave spot with breaking swell and current, better suited to confident intermediate and advanced riders than newcomers."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca, podzielona na trzy strefy klubowe (Skuytevaert na południu, Katwijkse Branding Surfclub w środku, Kitesurf Vereniging Airtime na północy)",
+      "hazards": "Od 1 kwietnia do 1 października kitesurfing dozwolony jest wyłącznie w jednej z trzech wyznaczonych stref klubowych i wymaga (dziennego) członkostwa w odpowiednim klubie, potwierdzonego noszeniem koszulki tego klubu; poza tym okresem (1 października-1 kwietnia) można kitować na całej plaży; obowiązują standardowe zagrożenia Morza Północnego - fale, prąd i częściowo zatopione falochrony",
+      "season": "Cały rok, ale od 1 kwietnia do 1 października wymagane jest członkostwo w strefie klubowej",
+      "description": "Katwijk aan Zee to długa, otwarta plaża surfingowa na północ od Scheveningen, podzielona na trzy strefy kitesurfingowe prowadzone przez lokalne kluby. W sezonie, od kwietnia do października, potrzebne jest (dzienne) członkostwo jednego z klubów - Skuytevaert na południu, Katwijkse Branding Surfclub w środku lub Kitesurf Vereniging Airtime na północy - oraz ich koszulka, by jeździć w danej strefie; poza tym okresem cała plaża jest otwarta dla wszystkich. To prawdziwy spot na fali Morza Północnego, z łamiącą się falą i prądem, bardziej odpowiedni dla pewnych siebie riderów średniozaawansowanych i zaawansowanych niż dla początkujących."
+    }
+  },
+  {
+    "name": "Hoek van Holland - Hoekse Watersport Vereniging",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48307",
+    "windguruFallbackUrl": "https://www.windguru.cz/984134",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hoek_van_holland",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.991804,4.114208",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NE, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, 150m marked launch corridor within a 500m watersports zone shared by two clubs (HWSV and Windsurfing Hoek van Holland)",
+      "hazards": "Water deepens quickly and a tricky shorebreak can build; S, SE and E wind is dead offshore and unrideable; SW wind is gusty due to wind shadow from the Rotterdam harbour mole and Maasvlakte 2; launch/land only within the marked 150m corridor; paid parking",
+      "season": "Year-round",
+      "description": "Hoek van Holland's south beach hosts two active watersports clubs, Hoekse Watersportvereniging (HWSV) and Windsurfing Hoek van Holland (WSHVH), sharing a 500m-wide watersports zone with a strictly marked 150m start-and-land corridor between it and the swimming beach. The seabed drops off fast and a tricky shorebreak can build, so this suits confident intermediate to advanced riders rather than first-timers. Sitting in the lee of the Rotterdam harbour mole and Maasvlakte 2, southwesterly wind is often gusty with smaller waves, while south, southeast and east directions are dead offshore. Both clubs run coastal downwinders from here, and the beach has food stalls, showers, toilets and paid parking year-round."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NE, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża, wyznaczony 150-metrowy korytarz startowy w obrębie 500-metrowej strefy sportów wodnych, wspólnej dla dwóch klubów (HWSV i Windsurfing Hoek van Holland)",
+      "hazards": "Woda szybko robi się głęboka, może pojawić się trudny shorebreak; wiatr z S, SE i E jest całkowicie odlądowy i nie nadaje się do jazdy; wiatr SW bywa porywisty z powodu cienia wiatrowego od falochronu portu rotterdamskiego i Maasvlakte 2; start i lądowanie tylko w wyznaczonym 150-metrowym korytarzu; parking płatny",
+      "season": "Cały rok",
+      "description": "Południowa plaża w Hoek van Holland to siedziba dwóch aktywnych klubów sportów wodnych, Hoekse Watersportvereniging (HWSV) i Windsurfing Hoek van Holland (WSHVH), które dzielą 500-metrową strefę sportów wodnych z wyraźnie oznaczonym 150-metrowym korytarzem startowo-lądowiskowym oddzielonym od plaży kąpielowej. Dno szybko się pogłębia, a przy brzegu potrafi uformować się trudny shorebreak, więc spot jest przeznaczony raczej dla pewnych siebie średniozaawansowanych i zaawansowanych riderów niż dla początkujących. Miejsce leży w cieniu falochronu portu rotterdamskiego i Maasvlakte 2, przez co wiatr z SW bywa porywisty, a fale mniejsze, natomiast kierunki S, SE i E są całkowicie odlądowe. Oba kluby organizują stąd downwindery wzdłuż wybrzeża, a na plaży przez cały rok dostępne są punkty gastronomiczne, prysznice, toalety i płatny parking."
+    }
+  },
+  {
+    "name": "Oostvoorne Noordzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/316",
+    "windfinderUrl": "https://www.windfinder.com/forecast/oostvoorne",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.915137,4.060598",
+    "spotInfo": {
+      "type": "North Sea, tidal flat water (open sea beach)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space (long walk from the car park)",
+      "hazards": "Adjacent fenced-off bird nature reserve - stay inside the marked, poled kite zone; beach narrows sharply at high tide; long walk to the water",
+      "season": "Year-round",
+      "description": "A long walk from the car park brings you to a wide, gently sloping open North Sea beach that turns shallow and dead flat at low tide, making it one of the easier spots on this stretch of coast to learn on - though it narrows considerably as the tide comes in. The kite zone runs alongside a fenced nature reserve marked with poles and prohibition signs that protects nesting and resting wading birds, so staying inside the marked area matters more here than at most spots. Food, drink and toilets are near the car park, with paid parking."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, płytka woda pływowa (otwarta plaża morska)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca (długi spacer od parkingu)",
+      "hazards": "Sąsiedztwo ogrodzonego rezerwatu ptaków - pozostań w wyznaczonej, oznaczonej palikami strefie kitesurfingu; plaża mocno się zwęża przy przypływie; długi spacer do wody",
+      "season": "Cały rok",
+      "description": "Długi spacer od parkingu prowadzi na szeroką, łagodnie opadającą otwartą plażę Morza Północnego, która przy odpływie robi się płytka i zupełnie płaska - to jedno z łatwiejszych miejsc na naukę na tym odcinku wybrzeża, choć przy przypływie mocno się zwęża. Strefa kitesurfingu biegnie wzdłuż ogrodzonego rezerwatu przyrody, oznaczonego palikami i tablicami zakazu, chroniącego gniazdujące i odpoczywające ptaki siewkowate, dlatego pozostawanie w wyznaczonej strefie ma tu większe znaczenie niż w wielu innych miejscach. Blisko parkingu są jedzenie, napoje i toalety, parking jest płatny."
+    }
+  },
+  {
+    "name": "Oostvoornse meer",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48311",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.92918,4.066458",
+    "spotInfo": {
+      "type": "Brackish lake (former sea arm), deep, short chop - inland water, distinct from the nearby open-sea Oostvoorne Noordzee beach",
+      "bestWind": "W, SW, S, SE, E",
+      "waterTemp": "6-20°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, limited space, launch directly at the waterline",
+      "hazards": "Small stone breakwaters (palenrijen) with narrow gaps line the shore - can injure riders or damage kites/boards; gusty, unstable wind close to shore caused by buildings and trees on land; deep water starts right at the launch; limited launch space",
+      "season": "Year-round",
+      "description": "Don't be fooled by the name - Oostvoornse Meer is a brackish, land-locked former sea arm, not a gentle lake, and it rides more like an inland sea for experienced riders only. The water is deep and remarkably clear, with short, choppy wind waves rather than swell, and you launch and land right at the waterline with little room to spare. A string of small stone breakwaters with narrow gaps lines the shore - handy for breaking the chop, but sharp enough to injure a rider or wreck gear on contact - and buildings on land disturb the wind, making it unstable close in. Free parking sits right at the water's edge. This is a completely different body of water from the open North Sea beach at Oostvoorne, a few kilometres away."
+    },
+    "spotInfoPL": {
+      "type": "Słonawe jezioro (dawna odnoga morska), głębokie, krótka fala - woda śródlądowa, zupełnie inna niż pobliska otwarta plaża morska Oostvoorne Noordzee",
+      "bestWind": "W, SW, S, SE, E",
+      "waterTemp": "6-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, mało miejsca, start bezpośrednio przy linii wody",
+      "hazards": "Wzdłuż brzegu ciągną się małe kamienne ostrogi (palenrijen) z wąskimi przejściami - mogą zranić ridera lub uszkodzić sprzęt; niestabilny, porywisty wiatr blisko brzegu z powodu zabudowy i drzew na lądzie; głęboka woda zaczyna się tuż przy starcie; mało miejsca do startu",
+      "season": "Cały rok",
+      "description": "Nazwa myli - Oostvoornse Meer to słonawa, śródlądowa dawna odnoga morska, a nie spokojne jezioro, i pływa się tu bardziej jak na morzu wewnętrznym, wyłącznie dla doświadczonych riderów. Woda jest głęboka i wyjątkowo przejrzysta, z krótką, poszarpaną falą wiatrową zamiast martwej fali, a start i lądowanie odbywają się tuż przy linii wody, bez wiele miejsca na błędy. Wzdłuż brzegu ciągnie się rząd małych kamiennych ostróg z wąskimi przejściami - przydatnych do rozbijania fali, ale wystarczająco ostrych, by zranić ridera albo zniszczyć sprzęt przy kontakcie - a zabudowa na lądzie zaburza wiatr, czyniąc go niestabilnym blisko brzegu. Bezpłatny parking znajduje się tuż przy wodzie. To zupełnie inny akwen niż otwarta plaża Morza Północnego w Oostvoorne, położona kilka kilometrów dalej."
+    }
+  },
+  {
+    "name": "Rockanje Sportstrand",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500879",
+    "windguruFallbackUrl": "https://www.windguru.cz/48313",
+    "windfinderUrl": "https://www.windfinder.com/forecast/rockanje",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.872293,4.044898",
+    "spotInfo": {
+      "type": "North Sea, flat to light chop (no real shorebreak)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "RESTRICTED: the Badstrand (bathing beach) section, between beach accesses 1 and 2, is closed to kiting from May through September (swimmer zone) - kite only on the Sportstrand year-round, or on the Badstrand section itself from October to April; an offshore sandbank about 1.5km out is off-limits; paid parking April-October",
+      "season": "Sportstrand: year-round. Badstrand section: October-April only (closed to kiting May-September)",
+      "description": "Rockanje has no real surf break - the water shelves gently from shallow to deeper rather than punching through waves - which, combined with easy access, makes it popular with kiters and swimmers alike. Kiting is allowed year-round on the Sportstrand (sports beach), while the adjoining Badstrand (bathing beach) between beach accesses 1 and 2 is closed to kites from May through September when it's full of swimmers, reopening for kiting from October to April. A sandbank roughly 1.5km offshore is a no-go area. Kite schools operate from the first beach access (Eerste Slag), the local lifeguard brigade is on call for emergencies, and beach cafes, showers and toilets run through the summer with paid parking April-October."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, płaska woda do lekkiego falowania (bez prawdziwego shorebreaku)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "OGRANICZENIE: odcinek Badstrand (plaża kąpielowa) między zejściami 1 i 2 jest zamknięty dla kitesurfingu od maja do września (strefa kąpielowa) - w tym okresie kitować można tylko na Sportstrand; od października do kwietnia kitowanie dozwolone jest też na Badstrand; ławica piasku ok. 1,5 km od brzegu jest zakazana; parking płatny od kwietnia do października",
+      "season": "Sportstrand: cały rok. Odcinek Badstrand: tylko październik-kwiecień (zamknięty dla kitesurfingu maj-wrzesień)",
+      "description": "Rockanje nie ma prawdziwego shorebreaku - woda pogłębia się łagodnie zamiast załamywać się w falach - co razem z łatwym dostępem czyni tę plażę popularną zarówno wśród kiterów, jak i pływaków. Kitesurfing jest dozwolony przez cały rok na Sportstrand (plaży sportowej), natomiast sąsiedni odcinek Badstrand (plaża kąpielowa) między zejściami 1 i 2 jest zamknięty dla kitów od maja do września, gdy roi się od kąpiących się, i otwiera się ponownie dla kitesurfingu od października do kwietnia. Ławica piasku około 1,5 km od brzegu jest strefą zakazaną. Szkoły kitesurfingu działają przy pierwszym zejściu na plażę (Eerste Slag), miejscowa brygada ratownicza dyżuruje na wypadek awarii, a plażowe bary, prysznice i toalety działają latem, z płatnym parkingiem od kwietnia do października."
+    }
+  },
+  {
+    "name": "Ouddorp",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500880",
+    "windguruFallbackUrl": "https://www.windguru.cz/181964",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ouddorp",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.82172,3.878164",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "Strong ebb current near beach access 9 (by beach club Iloon); rocky groynes between accesses 7 and 8, exposed at low tide; narrow beach; the offshore sandbank is a protected seal habitat - off-limits to kiters",
+      "season": "Year-round",
+      "description": "After the Maasvlakte, Ouddorp is reckoned the best wave spot in Zuid-Holland, drawing wave riders as much as kiters - which also means it's strictly an advanced affair. Expect a narrow beach, sizeable North Sea waves, a strong ebb current near beach access 9, and rocky groynes between accesses 7 and 8 that surface at low tide. The kite zone runs between accesses 7 and 9; the sandbank further offshore is protected seal habitat and closed to kiters. Less experienced riders are better off heading to Brouwersdam or Oostvoorne."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "Silny prąd odpływowy przy zejściu na plażę nr 9 (przy beach clubie Iloon); kamienne ostrogi między zejściami 7 i 8, odsłonięte przy odpływie; wąska plaża; ławica piasku na morzu to chroniony habitat fok - zakaz wstępu dla kiterów",
+      "season": "Cały rok",
+      "description": "Po Maasvlakte, Ouddorp uchodzi za najlepszy spot wave w Zuid-Holland, przyciągający zarówno wave riderów, jak i kiterów - co oznacza też, że to miejsce wyłącznie dla zaawansowanych. Spodziewaj się wąskiej plaży, sporych fal Morza Północnego, silnego prądu odpływowego przy zejściu nr 9 oraz kamiennych ostróg między zejściami 7 i 8, które wystają przy odpływie. Strefa kitesurfingu biegnie między zejściami 7 i 9; ławica piasku dalej od brzegu to chroniony habitat fok, zamknięty dla kiterów. Mniej doświadczeni riderzy lepiej trafią na Brouwersdam lub do Oostvoorne."
+    }
+  },
+  {
+    "name": "Hellevoetsluis - Haringvliet",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48313",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hellevoetsluis",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.820636,4.159094",
+    "spotInfo": {
+      "type": "Haringvliet estuary, sheltered flat water",
+      "bestWind": "W, SW, S",
+      "waterTemp": "6-20°C",
+      "experience": "Beginner",
+      "launch": "Grass and sand, plenty of space (400m walk from the car park)",
+      "hazards": "Rocks underfoot near the water's edge; small beach; no officially marked kite zone - watch for other water users",
+      "season": "Year-round",
+      "description": "A 400m walk from the car park leads to the small Schelpenstrand (shell beach) on the Haringvliet, a sheltered, low-energy spot with short, gentle chop rather than open-sea swell - a good option for beginners after calmer water than the North Sea coast. The beach itself is small with some rocks underfoot when wading in, and there's no officially marked kite zone, so keep an eye on other water users. Parking is free, and the launch area is a mix of grass and sand with plenty of room."
+    },
+    "spotInfoPL": {
+      "type": "Estuarium Haringvliet, osłonięta płaska woda",
+      "bestWind": "W, SW, S",
+      "waterTemp": "6-20°C",
+      "experience": "Początkujący",
+      "launch": "Trawa i piasek, dużo miejsca (400 m spaceru od parkingu)",
+      "hazards": "Kamienie pod nogami przy linii wody; mała plaża; brak oficjalnie wyznaczonej strefy kitesurfingu - uważaj na innych użytkowników wody",
+      "season": "Cały rok",
+      "description": "400-metrowy spacer od parkingu prowadzi na małą plażę Schelpenstrand (plażę muszelkową) nad Haringvliet - osłonięte, spokojne miejsce z krótką, łagodną falą zamiast morskiego falowania, dobra opcja dla początkujących szukających spokojniejszej wody niż na wybrzeżu Morza Północnego. Sama plaża jest niewielka, przy wchodzeniu do wody można natrafić na kamienie, a strefa kitesurfingu nie jest oficjalnie wyznaczona, więc trzeba uważać na innych użytkowników wody. Parking jest bezpłatny, a miejsce startu to mieszanka trawy i piasku z dużą ilością przestrzeni."
+    }
+  },
+  {
+    "name": "Zandvoort",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/19439",
+    "windguruFallbackUrl": "https://www.windguru.cz/500875",
+    "windfinderUrl": "https://www.windfinder.com/forecast/zandvoort_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.365335,4.519106",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of room; six numbered pole markers split the beach into launch zones between beach clubs and watersport associations",
+      "hazards": "Longshore current, requires launching upwind within the zone; from 15 April to 1 October kiting is restricted to the marked watersport zones only (free everywhere 150m offshore year-round), occasional marked fishing stake nets, busy swimmer beach on warm summer days, most of the beach is paid parking year-round",
+      "season": "Year-round (zoned launch required 15 April-1 October)",
+      "description": "A big, open North Sea beach south of IJmuiden with six separate kite zones spread along roughly 5km of coast, each anchored to a beach club or watersport association. Deep water close to shore and a steady longshore current make it a spot for confident intermediates and above, with clean wave riding on onshore W/SW blows. Outside the summer season (October-April) the zoning relaxes and you can launch anywhere along the beach."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca; sześć ponumerowanych stref startowych wyznaczonych palami między klubami plażowymi a stowarzyszeniami sportów wodnych",
+      "hazards": "Prąd wzdłużbrzegowy, konieczność startu pod wiatr w obrębie strefy; od 15 kwietnia do 1 października kitesurfing dozwolony wyłącznie w wyznaczonych strefach (cały rok wolno latać 150 m od linii wody), sporadyczne oznakowane sieci rybackie, tłoczna plaża w ciepłe letnie dni, w większości płatny parking przez cały rok",
+      "season": "Cały rok (od 15 kwietnia do 1 października obowiązują wyznaczone strefy)",
+      "description": "Rozległa, otwarta plaża na Morzu Północnym na południe od IJmuiden z sześcioma odrębnymi strefami kitesurfingowymi rozłożonymi na około 5 km wybrzeża, każda przy innym klubie plażowym. Głęboka woda tuż przy brzegu i stały prąd wzdłużbrzegowy sprawiają, że to miejsce dla pewnych siebie średniozaawansowanych i zaawansowanych kiterów, z czystymi falami przy wietrze z W/SW. Poza sezonem letnim (październik-kwiecień) strefowanie jest zniesione i można startować z dowolnego miejsca na plaży."
+    }
+  },
+  {
+    "name": "Bloemendaal aan Zee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500875",
+    "windguruFallbackUrl": "https://www.windguru.cz/19439",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bloemendaal_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.416317,4.549245",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of room, but the kite zone is a 400-450m walk south (or north) of the two beach access ramps at Parnassia and Bloemendaal aan Zee",
+      "hazards": "Surf and current, deep water close to shore, the walk-in from parking means carrying rigged gear some distance, paid parking",
+      "season": "Year-round",
+      "description": "A quieter alternative to Zandvoort a few kilometres north, popular with the local surf club and worth the short walk from the car park for a less crowded beach. Surf, current and deep water close in mean it suits advanced riders, with clean waves on onshore W/NW/SW wind."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca, ale strefa kitesurfingowa leży 400-450 m na południe (lub północ) od dwóch zejść na plażę przy Parnassia i Bloemendaal aan Zee",
+      "hazards": "Fale i prąd, głęboka woda blisko brzegu, dojście od parkingu oznacza noszenie rozłożonego sprzętu kawałek drogi, płatny parking",
+      "season": "Cały rok",
+      "description": "Spokojniejsza alternatywa dla Zandvoort, kilka kilometrów na północ, popularna wśród lokalnego klubu surfingowego i warta krótkiego spaceru od parkingu ze względu na mniej zatłoczoną plażę. Fale, prąd i głęboka woda blisko brzegu sprawiają, że spot odpowiada zaawansowanym kiterom, z czystymi falami przy wietrze z kierunku W/NW/SW."
+    }
+  },
+  {
+    "name": "Wijk aan Zee - Pier (Strand Noordpier Velsen-Noord)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/1120682",
+    "windguruFallbackUrl": "https://www.windguru.cz/48299",
+    "windfinderUrl": "https://www.windfinder.com/forecast/wijk_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.471031,4.565752",
+    "spotInfo": {
+      "type": "North Sea, waves (wave shadow behind the IJmuiden Noorderpier)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Two sandy access points sharing the same kite zone (Zone 2): via Aloha Beach just north of the IJmuiden Noorderpier, and via de HangOut further north near Wijk aan Zee village; both plenty of space",
+      "hazards": "Strong, near-constant south-to-north current that gets stronger the further you go from the pier; kiting is banned in Zone 1 right next to the pier (swimmers and surfers only) - stay in the marked Zone 2; watch for free parking bay boundaries (fines outside marked bays)",
+      "season": "Year-round",
+      "description": "A favourite Dutch North Sea wave spot: the IJmuiden Noorderpier blocks the worst of the current and lets clean waves roll in on SW wind. Two access points feed the same official kite zone - Aloha Beach closer to the pier (better current shelter, good for progressing riders) and de HangOut further north toward Wijk aan Zee (a bit more current, popular with beginners on calmer days). Both are free NKV information points where locals can advise on the day's sandbanks and current."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale (osłona falowa za falochronem Noorderpier w IJmuiden)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Dwa piaszczyste wejścia na tę samą strefę kitesurfingową (Strefa 2): przy Aloha Beach tuż na północ od falochronu Noorderpier w IJmuiden oraz przy de HangOut dalej na północ, bliżej wsi Wijk aan Zee; oba miejsca oferują dużo przestrzeni",
+      "hazards": "Silny, niemal stały prąd z południa na północ, który nasila się w miarę oddalania się od falochronu; kitesurfing zabroniony w Strefie 1 tuż przy falochronie (wyłącznie pływacy i surferzy) - obowiązuje pozostawanie w wyznaczonej Strefie 2; uwaga na granice bezpłatnych miejsc parkingowych (mandaty za parkowanie poza wyznaczonymi polami)",
+      "season": "Cały rok",
+      "description": "Ulubiony holenderski spot falowy na Morzu Północnym: falochron Noorderpier w IJmuiden osłabia najsilniejszy prąd i pozwala wejść czystym falom przy wietrze z SW. Dwa wejścia prowadzą do tej samej oficjalnej strefy kitesurfingowej - Aloha Beach bliżej falochronu (lepsza osłona od prądu, dobre miejsce dla rozwijających się riderów) oraz de HangOut dalej na północ w stronę Wijk aan Zee (nieco silniejszy prąd, popularne wśród początkujących w spokojniejsze dni). Oba miejsca to bezpłatne punkty informacyjne NKV, gdzie lokalni kiterzy doradzą w kwestii aktualnych mielizn i prądu."
+    }
+  },
+  {
+    "name": "Castricum aan Zee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48296",
+    "windguruFallbackUrl": "https://www.windguru.cz/32161",
+    "windfinderUrl": "https://www.windfinder.com/forecast/castricum_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.556786,4.605667",
+    "spotInfo": {
+      "type": "North Sea, waves at high tide / flat sandbank lagoon (\"zwin\") at mid-to-low tide",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of room, two zones: left of the beach access (300m walk, watch the old wreck) and right of the access at Sports At Sea / kite school 4Wind (main obstacle-free watersport zone)",
+      "hazards": "A very old, partly-buried shipwreck lies about 250m south of Club Zand and can be sharp when exposed by shifting sand (marked with a beach sign); rip currents (\"muien\") shift daily with the sandbanks - check with the 4Wind info point before launching; shared water with wave surfers, kiters should launch downwind of them",
+      "season": "Year-round",
+      "description": "A sandbank-fed North Sea beach where tide state changes the spot completely: mid-to-low tide exposes a sheltered, flat lagoon behind the outer bank that is great for beginners and freestyle, while high tide pushes waves right up the beach for more advanced wave riding. The northern watersport zone by 4Wind is wide open and obstacle-free, making it one of the more forgiving North Sea launches in the region."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale przy wysokim stanie wody / płaska laguna piaszczysta (\"zwin\") przy średnim i niskim stanie",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, dwie strefy: na lewo od zejścia na plażę (300 m spaceru, uwaga na wrak) oraz na prawo od zejścia przy Sports At Sea / szkole kitesurfingu 4Wind (główna strefa sportów wodnych, wolna od przeszkód)",
+      "hazards": "Bardzo stary, częściowo zasypany wrak statku leży około 250 m na południe od Club Zand i bywa ostry, gdy odsłoni go przesuwający się piasek (oznaczony tablicą na plaży); prądy rozrywające (\"muien\") zmieniają położenie codziennie wraz z mieliznami - warto sprawdzić w punkcie informacyjnym 4Wind przed startem; woda dzielona z surferami falowymi, kiterzy powinni startować w dół od nich",
+      "season": "Cały rok",
+      "description": "Plaża na Morzu Północnym ukształtowana przez mielizny, gdzie stan pływu całkowicie zmienia charakter spotu: przy średnim i niskim stanie wody odsłania się osłonięta, płaska laguna za zewnętrzną mielizną, świetna dla początkujących i freestyle'u, a przy wysokim stanie fale dochodzą blisko brzegu, oferując bardziej zaawansowany wave riding. Północna strefa sportów wodnych przy 4Wind jest szeroko otwarta i wolna od przeszkód, co czyni ją jednym z bardziej przyjaznych startów na tym odcinku Morza Północnego."
+    }
+  },
+  {
+    "name": "Egmond Binnen/aan Zee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/32161",
+    "windguruFallbackUrl": "https://www.windguru.cz/48294",
+    "windfinderUrl": "https://www.windfinder.com/forecast/egmond_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.613762,4.616011",
+    "spotInfo": {
+      "type": "North Sea, waves (shallower nearshore water)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of room within the orange-marked activity zones either side of the main beach access",
+      "hazards": "Shallow sandbanks with waves breaking close to shore, current that varies with the sandbanks, kiting confined to the marked orange activity zones from 1 May to 1 October (unrestricted along the whole beach from 1 October to 1 May)",
+      "season": "Year-round (zoned 1 May-1 October, open beach 1 October-1 May)",
+      "description": "A classic, slightly shallower North Sea wave beach north of IJmuiden, best on onshore NW-SW wind when waves break close and hard. It suits wave riders who like punchy, shorter-period surf rather than open swell. Zoning eases outside the summer season, opening up the whole beach for launching."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale (płytsza woda przy brzegu)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca w wyznaczonych pomarańczowych strefach aktywności po obu stronach głównego zejścia na plażę",
+      "hazards": "Płytkie mielizny z falami załamującymi się blisko brzegu, prąd zmienny w zależności od układu mielizn, kitesurfing ograniczony do wyznaczonych pomarańczowych stref od 1 maja do 1 października (bez ograniczeń na całej plaży od 1 października do 1 maja)",
+      "season": "Cały rok (strefy obowiązują od 1 maja do 1 października, otwarta plaża od 1 października do 1 maja)",
+      "description": "Klasyczna, nieco płytsza plaża falowa na Morzu Północnym na północ od IJmuiden, najlepsza przy wietrze z NW-SW, gdy fale załamują się blisko i mocno. Odpowiada riderom lubiącym krótkie, mocne fale bardziej niż otwarty swell. Poza sezonem letnim strefowanie jest zniesione, co otwiera całą plażę do startu."
+    }
+  },
+  {
+    "name": "Bergen aan Zee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48294",
+    "windguruFallbackUrl": "https://www.windguru.cz/32161",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bergen_aan_zee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.658703,4.626903",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Wide sandy beach, plenty of room in the orange-marked activity zones on both sides of the main beach access",
+      "hazards": "Deep water and current typical of this open stretch of North Sea coast, stay within the marked orange zones, check current sandbank/current info at the Hang Loose info point before launching",
+      "season": "Year-round",
+      "description": "A wide, open North Sea beach at the northern end of this stretch of coast, with generous space either side of the main access for launching and clean waves on onshore NW-SW wind. Hang Loose acts as the local NKV information point for daily conditions and sandbank changes."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża, dużo miejsca w wyznaczonych pomarańczowych strefach aktywności po obu stronach głównego zejścia na plażę",
+      "hazards": "Głęboka woda i prąd typowe dla tego otwartego odcinka wybrzeża Morza Północnego, obowiązuje pozostawanie w wyznaczonych pomarańczowych strefach, warto sprawdzić aktualne informacje o mieliznach i prądzie w punkcie informacyjnym Hang Loose przed startem",
+      "season": "Cały rok",
+      "description": "Szeroka, otwarta plaża na Morzu Północnym na północnym krańcu tego odcinka wybrzeża, z dużą przestrzenią po obu stronach głównego zejścia do startu i czystymi falami przy wietrze z NW-SW. Hang Loose pełni funkcję lokalnego punktu informacyjnego NKV w sprawie codziennych warunków i zmian mielizn."
+    }
+  },
+  {
+    "name": "Camperduin",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48292",
+    "windguruFallbackUrl": "https://www.windguru.cz/48293",
+    "windfinderUrl": "https://www.windfinder.com/forecast/camperduin",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.728309042802,4.6397652751465",
+    "spotInfo": {
+      "type": "North Sea, waves + small seasonal flat-water lagoon",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space; Hookipa Beach kite/beach club on site",
+      "hazards": "Lagoon fills up fast (comfortably fits ~5 kiters), open only 1 October-1 May outside the swimming season; open sea side has normal North Sea surf and currents",
+      "season": "Year-round",
+      "description": "Camperduin sits on North Holland's open North Sea coast, offering full-on surf and swell for wave riders alongside a rare bonus: a small, semi-sheltered lagoon behind the dunes with genuinely flat water. The lagoon only opens outside the summer swimming season (1 October-1 May) and fills up fast — five kiters is already a crowd. Hookipa Beach's kite and beach club anchors the launch, with food, showers and gear storage on site, making this a solid all-round stop for freeriders, foilers and wave riders."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale + mała sezonowa laguna z płaską wodą",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; na miejscu klub kite/plażowy Hookipa Beach",
+      "hazards": "Laguna szybko się zapełnia (komfortowo mieści ok. 5 kiterów), otwarta tylko od 1 października do 1 maja poza sezonem kąpielowym; od strony otwartego morza typowy dla Morza Północnego surf i prądy",
+      "season": "Cały rok",
+      "description": "Camperduin leży na otwartym wybrzeżu Morza Północnego w Holandii Północnej, oferując pełne fale dla wave riderów, a do tego rzadki bonus: niewielką, częściowo osłoniętą lagunę za wydmami z naprawdę płaską wodą. Laguna jest otwarta tylko poza sezonem kąpielowym (od 1 października do 1 maja) i szybko się zapełnia — pięciu kiterów to już tłok. Klub kite i plażowy Hookipa Beach stanowi bazę startową, z jedzeniem, prysznicami i przechowalnią sprzętu na miejscu, co czyni to miejsce solidnym wyborem dla freeriderów, foilerów i wave riderów."
+    }
+  },
+  {
+    "name": "Petten (Pettemer Zeewering)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48291",
+    "windguruFallbackUrl": "https://www.windguru.cz/48292",
+    "windfinderUrl": "https://www.windfinder.com/forecast/petten",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.763783,4.649366",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space; kiting permitted only south of the pole row (palendorp)",
+      "hazards": "Strong current and shorebreak; inner sandbank ~100-150m out can be 30cm-1m deep at low tide (watch big airs); kiting only allowed south of the pole row (palendorp); summer swimmers on the official beach",
+      "season": "Year-round",
+      "description": "Petten (Pettemer Zeewering) is a quieter alternative to the often-crowded Wijk aan Zee, with the same North Sea wave energy but noticeably fewer people on the beach. Strong longshore current and a punchy shorebreak mean walking upwind before launching is standard practice here, and locals often downwind the run to or from Camperduin or Callantsoog to dodge the drift. Two sandbanks shape the ride: the inner bar sits roughly 100-150m out and can be as shallow as 30cm at low tide (watch it on big airs), while wave riders find the best faces on the second bar around 350m out on a rising tide. Kiting is only permitted south of the pole row (palendorp), and in summer locals stay well clear of the beach's swimmer zone."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca; kitowanie dozwolone tylko na południe od rzędu pali (palendorp)",
+      "hazards": "Silny prąd i mocny shorebreak; wewnętrzna mielizna ok. 100-150m od brzegu może mieć 30cm-1m głębokości przy odpływie (uwaga przy wysokich skokach); kitowanie dozwolone tylko na południe od rzędu pali (palendorp); latem kąpiący się na oficjalnej plaży",
+      "season": "Cały rok",
+      "description": "Petten (Pettemer Zeewering) to spokojniejsza alternatywa dla często zatłoczonego Wijk aan Zee, z taką samą energią fal Morza Północnego, ale zauważalnie mniejszą liczbą osób na plaży. Silny prąd wzdłużbrzegowy i mocny shorebreak sprawiają, że wchodzenie pod wiatr przed startem jest tu standardem, a lokalni kiterzy często jeżdżą downwind do lub z Camperduin albo Callantsoog, żeby uniknąć znosu. Kształt fal wyznaczają dwie mielizny: wewnętrzna leży ok. 100-150m od brzegu i przy odpływie może mieć zaledwie 30cm głębokości (uwaga przy dużych skokach), a najlepsze fale do jazdy wave znajdziesz na drugiej mieliźnie ok. 350m od brzegu przy przypływie. Kitowanie jest dozwolone tylko na południe od rzędu pali (palendorp), a latem lokalni kiterzy trzymają się z dala od strefy kąpielowej."
+    }
+  },
+  {
+    "name": "Callantsoog",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48290",
+    "windguruFallbackUrl": "https://www.windguru.cz/500876",
+    "windfinderUrl": "https://www.windfinder.com/forecast/callantsoog",
+    "webcamUrl": "https://www.strandpaviljoendetoko.nl/webcam/",
+    "locationUrl": "https://www.google.com/maps?q=52.840599,4.691325",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space; launch north of Strandpaviljoen de Stern (year-round) or via the Abbestee beach access",
+      "hazards": "Currents; groynes fully submerged and invisible at high tide; access south of Strandpaviljoen de Stern restricted to 1 October-1 April (or lifeguard-flagged summer days); no parking at the Seinpost access",
+      "season": "Year-round",
+      "description": "Callantsoog is a wide, relatively calm North Sea beach dotted with a few beach pavilions, well suited to freeriders and foilers looking for open water without the crowds of the bigger Noord-Holland spots. Groynes running out from the beach are a genuine hazard at high tide, when they disappear completely under the surface, so plan your riding line around the tide table. Kiting north of Strandpaviljoen de Stern is allowed year-round; south of it, access is limited to 1 October-1 April, or to summer days when the lifeguards raise the black-and-white checkered flag. Park at the Abbestee beach access — there's no parking at the Seinpost entrance further south."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca; start na północ od Strandpaviljoen de Stern (cały rok) lub przy wejściu na plażę Abbestee",
+      "hazards": "Prądy; ostrogi brzegowe całkowicie znikają pod wodą przy przypływie; dostęp na południe od Strandpaviljoen de Stern ograniczony do 1 października-1 kwietnia (lub letnich dni z podniesioną biało-czarną flagą ratowników); brak parkingu przy wejściu Seinpost",
+      "season": "Cały rok",
+      "description": "Callantsoog to szeroka, stosunkowo spokojna plaża nad Morzem Północnym z kilkoma pawilonami plażowymi, dobrze nadająca się dla freeriderów i foilerów szukających otwartej wody bez tłumu większych spotów Holandii Północnej. Ostrogi brzegowe wychodzące od plaży są realnym zagrożeniem przy przypływie, gdy całkowicie znikają pod powierzchnią wody, więc trasę jazdy warto planować według tabeli pływów. Kitowanie na północ od Strandpaviljoen de Stern jest dozwolone cały rok; na południe od niego dostęp jest ograniczony do okresu 1 października-1 kwietnia lub letnich dni, gdy ratownicy podniosą biało-czarną flagę w kratkę. Parkuj przy wejściu na plażę Abbestee — przy wejściu Seinpost dalej na południe nie ma parkingu."
+    }
+  },
+  {
+    "name": "Julianadorp",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500876",
+    "windguruFallbackUrl": "https://www.windguru.cz/500877",
+    "windfinderUrl": "https://www.windfinder.com/forecast/julianadorp",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.895462,4.711245",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "Groynes along the beach, not consistently marked with poles — hard to see, especially at high tide",
+      "season": "Year-round",
+      "description": "Julianadorp is a straightforward North Sea beach break north of Callantsoog, popular with advanced freeriders and wave riders comfortable working around obstacles. The beach is lined with groynes that are not consistently marked with poles, so they can be hard to spot — especially at high tide when they sit just under the surface. Conditions here track the open Noord-Holland coast: expect a real swell, a stiff longshore push, and plenty of room to spread out away from the crowds further south."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "Ostrogi brzegowe wzdłuż plaży, niekonsekwentnie oznaczone palikami — trudno je dostrzec, zwłaszcza przy przypływie",
+      "season": "Cały rok",
+      "description": "Julianadorp to prosty spot z falami Morza Północnego na północ od Callantsoog, popularny wśród zaawansowanych freeriderów i wave riderów, którzy dobrze radzą sobie z omijaniem przeszkód. Plaża jest usiana ostrogami brzegowymi, które nie zawsze są oznaczone palikami, więc bywają trudne do zauważenia — zwłaszcza przy przypływie, gdy leżą tuż pod powierzchnią wody. Warunki odpowiadają otwartemu wybrzeżu Holandii Północnej: prawdziwa fala, mocny prąd wzdłużbrzegowy i mnóstwo miejsca z dala od tłumu na spotach dalej na południe."
+    }
+  },
+  {
+    "name": "Den Helder - Huisduinen",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48289",
+    "windguruFallbackUrl": "https://www.windguru.cz/4854",
+    "windfinderUrl": "https://www.windfinder.com/forecast/huisduinen",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.953239,4.720852",
+    "spotInfo": {
+      "type": "North Sea / tidal inlet (Marsdiep), waves to flat depending on tide",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach between the breakwaters, 500m walk from the Fort Kijkduin car park; never launch from the dike",
+      "hazards": "Strong tidal current from the adjacent Marsdiep/Wadden Sea entrance; mussel-covered breakwaters can cut skin and gear in a crash; shipping channel crossing en route to the Noorderhaaks/Razende Bol sandbank (experienced groups only); protected nature reserve on the sandbank's back side — landing there is prohibited and monitored",
+      "season": "Year-round",
+      "description": "Huisduinen sits right at the northern tip of Noord-Holland, where the North Sea meets the Marsdiep tidal inlet into the Wadden Sea — expect anything from clean groundswell to glassy flat water depending on the state of the tide. Launch from the beach between the breakwaters after a 500m walk from the Fort Kijkduin car park; never rig on the dike itself, where gusts turn unpredictable and the base is lined with rocks. The mussel-covered breakwaters are a real hazard in a crash, and the tidal current running past this corner into the Wadden Sea is genuinely strong — treat it with respect. Very experienced riders can cross the shipping channel to the Noorderhaaks/Razende Bol sandbank 2km offshore, but only in a group, watching for commercial traffic, and staying off the reserve's protected back side."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne / cieśnina pływowa (Marsdiep), od fal po płaską wodę zależnie od pływu",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża między falochronami, 500m spacerem od parkingu przy Fort Kijkduin; nigdy nie stawiaj sprzętu na wale",
+      "hazards": "Silny prąd pływowy od strony pobliskiego wejścia do Morza Wattowego (Marsdiep); falochrony porośnięte małżami mogą poranić skórę i sprzęt przy wywrotce; trasa na mieliznę Noorderhaaks/Razende Bol przecina tor wodny (tylko dla bardzo doświadczonych, w grupie); chroniony rezerwat przyrody po drugiej stronie mielizny — lądowanie tam jest zabronione i monitorowane",
+      "season": "Cały rok",
+      "description": "Huisduinen leży na samym północnym cyplu Holandii Północnej, tam gdzie Morze Północne spotyka się z pływową cieśniną Marsdiep prowadzącą do Morza Wattowego — w zależności od stanu pływu można tu spotkać zarówno czystą falę, jak i gładką, płaską wodę. Start z plaży pomiędzy falochronami, po 500-metrowym spacerze od parkingu przy Fort Kijkduin; nigdy nie stawiaj sprzętu na samym wale, gdzie wiatr robi się nieprzewidywalny, a u podstawy leżą kamienie. Porośnięte małżami falochrony są realnym zagrożeniem przy wywrotce, a prąd pływowy płynący w tym miejscu do Morza Wattowego bywa naprawdę silny — trzeba go traktować poważnie. Bardzo doświadczeni riderzy mogą przepłynąć tor wodny do mielizny Noorderhaaks/Razende Bol 2 km od brzegu, ale wyłącznie w grupie, uważając na ruch statków i omijając chronioną tylną część rezerwatu."
+    }
+  },
+  {
+    "name": "Amstelmeer Lutjestrand Zuid",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/3602",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.88512492308,4.9165667510046",
+    "spotInfo": {
+      "type": "Lake, flat water with short chop offshore (freshwater/brackish)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Advanced",
+      "launch": "Grass and sand, plenty of space in principle but limited to the enclosed kitesurf beach (southernmost of four zones), capacity ~6 riders",
+      "hazards": "Not beginner-friendly: jetties, dams, poles and benches around the launch; poor upwind ability is dangerous given the stone dikes; part of the lake is closed off as a bird sanctuary; a road runs along the dike to the north; short choppy chop outside the breakwater dam",
+      "season": "Year-round",
+      "description": "Amstelmeer's Lutjestrand is a freshwater/brackish lake spot tucked behind a breakwater dam at the southernmost of four beach zones — the only stretch where rigging and launching a kite is allowed. It's tight and technical: space inside the dam fills up fast (comfortably around six riders), obstacles like jetties, groynes and benches crowd the shoreline, and a poor upwind game quickly turns risky against the stone dikes, so this is not a beginner spot. Outside the dam the lake throws up a short, choppy wave in fresh breeze, part of the lake is closed off as a bird sanctuary, and a road runs along the dike just to the north. It's a solid, sheltered inland option when the coast is blown out, with free parking and EV charging at the Lutjeweg."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płaska woda z krótkim falowaniem za falochronem (woda słodka/lekko słonawa)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Zaawansowany",
+      "launch": "Trawa i piasek, dużo miejsca w teorii, ale ograniczone do wydzielonej plaży kitesurfingowej (najbardziej wysunięta na południe strefa), pojemność ok. 6 osób",
+      "hazards": "Miejsce nieprzyjazne początkującym: pomosty, groble, paliki i ławki wokół startu; słaba umiejętność chodzenia pod wiatr jest niebezpieczna przy kamiennych groblach; część jeziora zamknięta jako ostoja ptaków; droga wzdłuż grobli na północy; krótka, urywana fala za falochronem",
+      "season": "Cały rok",
+      "description": "Lutjestrand nad Amstelmeer to spot na słodkowodnym/lekko słonawym jeziorze, ukryty za falochronem w najbardziej wysuniętej na południe z czterech stref plażowych — to jedyny odcinek, gdzie wolno rozkładać i startować z kitem. Miejsce jest ciasne i techniczne: przestrzeń wewnątrz falochronu szybko się zapełnia (komfortowo mieści ok. sześciu riderów), przeszkody takie jak pomosty, groble i ławki otaczają brzeg, a słabe chodzenie pod wiatr szybko staje się ryzykowne przy kamiennych groblach — to nie jest spot dla początkujących. Poza falochronem jezioro przy mocniejszym wietrze robi się krótkie i urywane, część jeziora jest zamknięta jako ostoja ptaków, a tuż na północ od spotu biegnie droga na grobli. To solidna, osłonięta opcja śródlądowa, gdy na wybrzeżu wieje za mocno, z bezpłatnym parkingiem i ładowarkami do aut elektrycznych przy Lutjeweg."
+    }
+  },
+  {
+    "name": "Muiderberg",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/59330",
+    "windfinderUrl": "https://www.windfinder.com/forecast/muiderberg",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.329876,5.113459",
+    "spotInfo": {
+      "type": "Lake (Gooimeer/Markermeer), flat water, shallow (freshwater)",
+      "bestWind": "N, NW, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grass, limited space",
+      "hazards": "Gusty wind off the tree line behind the launch (launch toward the water, not the trees); very limited beach space, often crowded — wrap lines around the bar while resting; floating weed in summer slows riders; marked swimmer buoy line during swimming season — stay clear; sharp mussel shells underfoot (wear booties); the waterside car park fills fast and roadside parking is fined",
+      "season": "Year-round",
+      "description": "Muiderberg sits on the Gooimeer, the southern arm of the Markermeer/IJsselmeer system just outside Amsterdam, with shallow water you can stand in for roughly 300 metres from shore. Winds from N/NW/E/NE arrive fairly clean, though gusts can be sharp coming off the tree line behind the beach, so launch toward the water rather than the trees. It's a compact, popular local spot — the shoreline is narrow and gets crowded, and by mid-summer floating weed can slow riders down considerably."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Gooimeer/Markermeer), płaska woda, płytko (słodka woda)",
+      "bestWind": "N, NW, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "Porywisty wiatr znad drzew za miejscem startu (startuj w stronę wody, nie drzew); bardzo ograniczona przestrzeń na plaży, często tłoczno — zwijaj linki wokół bara podczas odpoczynku; latem unoszące się wodorosty spowalniają jazdę; w sezonie kąpielowym wyznaczona lina dla pływaków — omijaj ją; ostre muszle małży pod nogami (noś buty neoprenowe); parking przy wodzie szybko się zapełnia, a parkowanie wzdłuż drogi jest karane mandatem",
+      "season": "Cały rok",
+      "description": "Muiderberg leży nad Gooimeer, południowym ramieniem systemu Markermeer/IJsselmeer tuż za Amsterdamem, z płytką wodą, w której można stanąć na nogi na dystansie około 300 metrów od brzegu. Wiatry z kierunków N/NW/E/NE docierają dość czysto, choć porywy znad drzew rosnących za plażą bywają ostre, dlatego kitę należy startować w stronę wody, a nie drzew. To niewielki, popularny lokalny spot — pas brzegu jest wąski i bywa zatłoczony, a w środku lata unoszące się wodorosty mocno spowalniają jazdę."
+    }
+  },
+  {
+    "name": "Edam Noord - Galgenveld",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48276",
+    "windguruFallbackUrl": "https://www.windguru.cz/500868",
+    "windfinderUrl": "https://www.windfinder.com/forecast/markermeer_edam",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.52256,5.067095",
+    "spotInfo": {
+      "type": "Lake (Markermeer), flat water with short chop, rocky shallows (freshwater)",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Advanced",
+      "launch": "Grass, limited space",
+      "hazards": "Dike reinforced with basalt blocks makes water entry/exit hazardous — currently recommended for experienced/expert riders only (per site notice, late 2024); rocky, shallow first 50m; wet grass launch area is slippery, help each other launch and land; no roadside parking, use the strandbad car park 700m away; you are a guest on leased farmland with a sheep pen — respect the animals and fences",
+      "season": "Year-round",
+      "description": "Edam Noord sits on the open Markermeer north of town, on land leased from a local sheep farmer next to a large grass field. The first 50 metres of water are shallow and studded with loose rocks under a short wind chop, and the shoreline dike has recently been reinforced with basalt blocks, making water entry and exit properly technical. Since those works (as of late 2024) only experienced riders should treat this as a launch spot, and it's one of the few places in the region that works on easterly winter winds."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Markermeer), płaska woda z krótkim falowaniem, kamieniste mielizny (słodka woda)",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Zaawansowany",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "Wał wzmocniony blokami bazaltowymi utrudnia wejście/wyjście z wody — obecnie zalecany tylko dla doświadczonych/zaawansowanych riderów (wg informacji ze spotu, koniec 2024); pierwsze 50 m płytkiej wody usiane kamieniami; mokra trawa w miejscu startu jest śliska, pomagajcie sobie przy starcie i lądowaniu; brak parkowania wzdłuż drogi, korzystaj z parkingu przy strandbad 700 m dalej; jesteś gościem na dzierżawionej ziemi rolnika z zagrodą owiec — szanuj zwierzęta i ogrodzenia",
+      "season": "Cały rok",
+      "description": "Edam Noord leży nad otwartym Markermeer na północ od miasteczka, na terenie dzierżawionym od lokalnego hodowcy owiec, obok dużego pastwiska. Pierwsze 50 metrów wody jest płytkie i usiane luźnymi kamieniami, do tego dochodzi krótkie falowanie od wiatru, a nadbrzeżny wał został niedawno wzmocniony blokami bazaltowymi, przez co wejście i wyjście z wody stało się technicznie wymagające. Od czasu tych prac (stan na koniec 2024) spot nadaje się tylko dla doświadczonych riderów — to też jedno z niewielu miejsc w regionie, które działa przy zimowym wietrze wschodnim."
+    }
+  },
+  {
+    "name": "Warder",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48276",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.565662,5.033157",
+    "spotInfo": {
+      "type": "Lake (Markermeer), flat water, shallow with small shell beach (freshwater)",
+      "bestWind": "N, SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grass, limited space",
+      "hazards": "NKV-restricted spot (Beperkt): open April-September only, closed October-March; dike-reinforcement works are underway at the launch (as of late 2024) — only a narrow strip of beach remains usable, expect construction fencing and sand/rubble/stone obstacles; sharp shells underfoot (wear booties); slippery grass rigging area; check the local rescue station (reddingsstation.nl) before sessions",
+      "season": "April-September (closed October-March)",
+      "description": "Warder is a low-key, easy-to-miss spot on the Markermeer just north of Edam, reached on foot from the swimming pool car park and a short hop over a drainage ditch. The water is shallow with a small shell beach, and the sheltered orientation makes it workable on N/E/NE/SE winds. Dike-reinforcement works are ongoing at the spot, so only a narrow strip of beach is currently usable, and it is open seasonally rather than year-round."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Markermeer), płaska woda, płytko, mała plaża z muszelkami (słodka woda)",
+      "bestWind": "N, SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "Spot z ograniczeniami NKV (Beperkt): otwarty tylko od kwietnia do września, zamknięty od października do marca; na spocie trwają prace przy wzmacnianiu wału (stan na koniec 2024) — do dyspozycji jest tylko wąski pas plaży, mogą występować ogrodzenia budowlane oraz przeszkody z piasku/gruzu/kamieni; ostre muszle pod nogami (noś buty neoprenowe); śliska trawa w miejscu rozkładania sprzętu; przed sesją sprawdź informacje lokalnej stacji ratowniczej (reddingsstation.nl)",
+      "season": "Kwiecień-Wrzesień (zamknięte październik-marzec)",
+      "description": "Warder to niepozorny, łatwy do przeoczenia spot nad Markermeer tuż na północ od Edam, do którego dochodzi się pieszo od parkingu przy basenie, przeskakując po drodze mały rów. Woda jest płytka, z niewielką plażą z muszelkami, a osłonięte położenie sprawia, że spot działa przy wiatrach N/E/NE/SE. Na spocie trwają obecnie prace przy wzmacnianiu wału, więc do startu/lądowania dostępny jest tylko wąski pas plaży, a sam spot jest otwarty sezonowo, a nie przez cały rok."
+    }
+  },
+  {
+    "name": "Schellinkhout",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/46940",
+    "windguruFallbackUrl": "https://www.windguru.cz/60383",
+    "windfinderUrl": "https://www.windfinder.com/forecast/markermeer_schellinkhout",
+    "webcamUrl": "https://www.kitefeel.nl/webcam-schellinkhout-kitefeel-surfcenter/",
+    "locationUrl": "https://www.google.com/maps?q=52.632278,5.120788",
+    "spotInfo": {
+      "type": "Lake (Markermeer), flat water with short chop, hip-deep shallows (freshwater)",
+      "bestWind": "W, SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sandy beach, plenty of space",
+      "hazards": "Can get very crowded, especially on weekends — NKV volunteer spot coaches and surf stewards are usually present to help; launch/land from the sandy beach, not the grass (slippery, most injuries happen there); parking only in the lower car park, roadside/dike parking is prohibited and enforced",
+      "season": "Year-round",
+      "description": "Schellinkhout is the most popular inland kite spot in Noord-Holland, set on the Markermeer with hip-deep water and a short wind chop that suits everything from first lessons to freestyle. An NKV wind station is mounted right on site, giving unusually accurate live readings and forecasts for the spot. It gets busy, but volunteer NKV spot coaches and surf stewards are typically on hand to help manage the crowd and keep things safe."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Markermeer), płaska woda z krótkim falowaniem, płytko po biodra (słodka woda)",
+      "bestWind": "W, SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piaszczysta plaża, dużo miejsca",
+      "hazards": "Bywa bardzo tłoczno, zwłaszcza w weekendy — zwykle obecni są wolontariusze NKV (spot coache i surf stewardzi), którzy pomagają; startuj i ląduj z piaszczystej plaży, nie z trawy (śliska, tam dochodzi do większości kontuzji); parkowanie tylko na dolnym parkingu, parkowanie na wale/przy drodze jest zabronione i egzekwowane mandatami",
+      "season": "Cały rok",
+      "description": "Schellinkhout to najpopularniejszy śródlądowy spot kitesurfingowy w Noord-Holland, położony nad Markermeer, z wodą sięgającą bioder i krótkim falowaniem od wiatru, odpowiednim zarówno na pierwsze lekcje, jak i freestyle. Bezpośrednio na spocie zamontowana jest stacja pomiarowa NKV, dająca wyjątkowo dokładne odczyty wiatru i prognozy na żywo. Bywa tu tłoczno, ale zazwyczaj obecni są wolontariusze — spot coache i surf stewardzi NKV — którzy pomagają utrzymać porządek i bezpieczeństwo."
+    }
+  },
+  {
+    "name": "Enkhuizen",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/46944",
+    "windguruFallbackUrl": "https://www.windguru.cz/46947",
+    "windfinderUrl": "https://www.windfinder.com/forecast/enkhuizen",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.714832,5.288304",
+    "spotInfo": {
+      "type": "Lake (Markermeer/IJsselmeer boundary), flat water near shore, short chop/small waves further out (freshwater)",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass, limited space (rigging field south of the swimming pool)",
+      "hazards": "NKV-restricted spot (Beperkt): normally open October-March only (closed April-September, shared swimming-beach season); the spot is inside an active coastal construction zone for the new 'kustboog' bay project — total closure of the entire spot 1 September 2026 to 30 April 2027 for the main construction works (verify current status on the NKV page before visiting); only the eastern public/swimming Enkhuizen beach is a legal kite zone — the western new/temporary beach is off-limits and marked with flagged construction poles, stay well clear; shares water with swimmers and other beach users on the permitted beach; trees behind the rigging field have claimed kites before",
+      "season": "October-March (spot fully closed 1 September 2026 - 30 April 2027 for coastal construction works)",
+      "description": "Enkhuizen sits right where the Markermeer meets the IJsselmeer at the start of the Houtribdijk, with shallow flat water for the first 850 metres before it deepens into a short wave/chop zone further out. The spot is currently entangled with a major coastal construction project (the new 'kustboog' bay), which limits both where and when you can ride. Only the eastern, public Enkhuizen swimming beach is open to kiters — the western temporary beach, marked with flagged construction poles, is completely off-limits."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (granica Markermeer/IJsselmeer), płaska woda przy brzegu, dalej krótkie fale (słodka woda)",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Trawa, mało miejsca (pole do rozkładania sprzętu na południe od basenu)",
+      "hazards": "Spot z ograniczeniami NKV (Beperkt): normalnie otwarty tylko od października do marca (zamknięty od kwietnia do września — sezon kąpielowy); spot znajduje się w obrębie aktywnej budowy nowej zatoki przybrzeżnej 'kustboog' — całkowite zamknięcie całego spotu od 1 września 2026 do 30 kwietnia 2027 na czas głównych prac budowlanych (przed wizytą sprawdź aktualny status na stronie NKV); jedyną legalną strefą kite jest wschodnia, publiczna plaża kąpielowa Enkhuizen — zachodnia, nowa/tymczasowa plaża jest zamknięta i oznaczona palikami z chorągiewkami budowy, należy trzymać się z daleka; na dozwolonej plaży dzielisz wodę z pływakami i innymi użytkownikami plaży; drzewa za miejscem rozkładania sprzętu potrafią 'złapać' kitę",
+      "season": "Październik-Marzec (spot całkowicie zamknięty od 1 września 2026 do 30 kwietnia 2027 z powodu prac budowlanych na wybrzeżu)",
+      "description": "Enkhuizen leży dokładnie tam, gdzie Markermeer łączy się z IJsselmeer, na początku wału Houtribdijk — pierwsze 850 metrów to płytka, płaska woda, dalej robi się głębiej i pojawia się krótkie falowanie. Spot jest obecnie mocno powiązany z dużym projektem budowy nowej zatoki przybrzeżnej ('kustboog'), co ogranicza zarówno miejsce, jak i czas, w którym można tu latać. Kiterzy mogą korzystać wyłącznie ze wschodniej, publicznej plaży kąpielowej Enkhuizen — zachodnia, tymczasowa plaża, oznaczona palikami z chorągiewkami budowy, jest całkowicie zamknięta."
+    }
+  },
+  {
+    "name": "Medemblik",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48274",
+    "windguruFallbackUrl": "https://www.windguru.cz/46947",
+    "windfinderUrl": "https://www.windfinder.com/forecast/marina_medemblik",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.755039,5.125001",
+    "spotInfo": {
+      "type": "Lake (IJsselmeer), flat water, shallow with sandbanks (freshwater)",
+      "bestWind": "N, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, limited space",
+      "hazards": "NKV-restricted spot (Beperkt): kiting permitted April-September only — banned 1 October to 31 March to protect birds in the adjacent nature reserve; you must stay within the yellow-buoy-marked kite zone; kiting at Andijk, just east of Medemblik, is completely prohibited — do not ride there; can get crowded, advanced riders should tack upwind behind the sandbanks to leave room near shore for beginners; keep clear of trees/bushes behind the rigging area",
+      "season": "April-September (closed October-March, bird protection)",
+      "description": "Medemblik is a rare inland spot that genuinely works on N/E/NE winds, riding shallow IJsselmeer water broken up by sandbanks with a deeper pocket about 60 metres out and enough depth behind a crescent-shaped breakwater for foiling. It shares its shoreline with a bird nature reserve, which is the reason kiting is only allowed here for half the year. Advanced riders are asked to tack upwind past the sandbanks to free up space for beginners closer to shore."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (IJsselmeer), płaska woda, płytko, z piaszczystymi mieliznami (słodka woda)",
+      "bestWind": "N, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, mało miejsca",
+      "hazards": "Spot z ograniczeniami NKV (Beperkt): kitesurfing dozwolony tylko od kwietnia do września — zakaz od 1 października do 31 marca w celu ochrony ptaków w sąsiednim rezerwacie; obowiązuje pozostawanie w strefie kite wyznaczonej żółtymi bojami; kitesurfing w Andijk, tuż na wschód od Medemblik, jest całkowicie zabroniony — nie pływaj tam; bywa tłoczno, zaawansowani riderzy powinni wychodzić pod wiatr za mielizny, zostawiając miejsce bliżej brzegu początkującym; unikaj drzew/krzewów za polem rozkładania sprzętu",
+      "season": "Kwiecień-Wrzesień (zamknięte październik-marzec, ochrona ptaków)",
+      "description": "Medemblik to rzadki śródlądowy spot, który naprawdę działa przy wiatrach z kierunków N/E/NE — jazda odbywa się na płytkiej wodzie IJsselmeer, poprzecinanej piaszczystymi mieliznami, z głębszą kieszenią wody około 60 metrów od brzegu oraz wystarczającą głębokością za sierpowatym falochronem, umożliwiającą foiling. Spot sąsiaduje z rezerwatem ptaków, co jest powodem, dla którego kitesurfing jest tu dozwolony tylko przez pół roku. Zaawansowani riderzy proszeni są o wychodzenie pod wiatr za mielizny, by zostawić więcej miejsca początkującym bliżej brzegu."
+    }
+  },
+  {
+    "name": "Texel (Paal 17.6-18.99, 28.2-32)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48262",
+    "windguruFallbackUrl": "https://www.windguru.cz/212904",
+    "windfinderUrl": "https://www.windfinder.com/forecast/texel_paal_17",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.078442,4.731828",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach with plenty of space; ride only between beach poles 17.6-18.99 and 28.2-32",
+      "hazards": "Surf, swell and currents; wide but exposed beach; stay within the marked pole zones (17.6-18.99 and 28.2-32); rip currents possible near sandbanks",
+      "season": "Year-round",
+      "description": "Texel's main North Sea kite zone sits on a broad, open Atlantic-facing beach split into two marked stretches, poles 17.6-18.99 and 28.2-32. Expect real surf: breaking waves, swell and current make this a spot for confident riders, with plenty of room for wave riding and freestyle. It works in wind from north, northwest or southwest, and the open exposure keeps it powered even when inland spots go light."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, SW",
+      "waterTemp": "6-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża z dużą ilością miejsca; pływanie wyłącznie między palami plażowymi 17.6-18.99 oraz 28.2-32",
+      "hazards": "Fale, przybój i prądy; szeroka, ale odsłonięta plaża; pozostawać w wyznaczonych strefach między palami (17.6-18.99 i 28.2-32); możliwe prądy rozrywające przy mieliznach",
+      "season": "Cały rok",
+      "description": "Główna strefa kitesurfingu na Morzu Północnym na Texelu leży na szerokiej, otwartej na Atlantyk plaży podzielonej na dwa wyznaczone odcinki - pale 17.6-18.99 oraz 28.2-32. Trzeba liczyć się z prawdziwym surfem: załamujące się fale, martwa fala i prąd sprawiają, że to miejsce dla pewnych siebie riderów, z dużą przestrzenią do jazdy wave i freestyle. Spot działa przy wietrze z północy, północnego zachodu lub południowego zachodu, a otwarta ekspozycja utrzymuje moc wiatru nawet gdy spoty w głębi lądu mają za mało wiatru."
+    }
+  },
+  {
+    "name": "Texel - Dijkmanshuizen (Wadzijde)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500859",
+    "windfinderUrl": "https://www.windfinder.com/forecast/oudeschild",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.064888,4.873644",
+    "spotInfo": {
+      "type": "Tidal flat, shallow water (Waddenzee)",
+      "bestWind": "S, SE, E",
+      "waterTemp": "5-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Small sandy beach, limited space",
+      "hazards": "Restricted spot - kiting only permitted April through September; closed October-March; small launch area with limited space; shallow water with short wind chop; lies within the Waddenzee Natura 2000 / UNESCO World Heritage nature reserve - respect seal haul-out and bird sanctuary boundaries and stay off closed mudflats",
+      "season": "April-September (closed October-March)",
+      "description": "A small, sheltered pocket beach on Texel's Waddenzee shore, facing the tidal flats instead of the open sea. The water is shallow with short, choppy wind waves rather than swell, and the launch zone is tight, so it suits riders comfortable working in a small space. The spot is only open to kiters from April through September - it's closed the rest of the year to protect the surrounding Wadden Sea nature reserve."
+    },
+    "spotInfoPL": {
+      "type": "Płycizna pływowa, płytka woda (Morze Wattowe)",
+      "bestWind": "S, SE, E",
+      "waterTemp": "5-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Mała piaszczysta plaża, ograniczona przestrzeń",
+      "hazards": "Spot z ograniczeniem - kitesurfing dozwolony wyłącznie od kwietnia do września; zamknięte od października do marca; mały teren startowy z ograniczoną przestrzenią; płytka woda z krótką falą wiatrową; teren leży w obrębie rezerwatu przyrody Waddenzee (Natura 2000 / UNESCO) - należy respektować granice lęgowisk ptaków i miejsc odpoczynku fok oraz nie wchodzić na zamknięte watty",
+      "season": "Kwiecień-Wrzesień (zamknięte od października do marca)",
+      "description": "Niewielka, osłonięta plaża na wattowym wybrzeżu Texelu, zwrócona w stronę płycizn pływowych zamiast otwartego morza. Woda jest płytka z krótką, załamującą się falą wiatrową zamiast martwej fali, a strefa startowa jest ciasna, więc spot pasuje riderom, którzy dobrze radzą sobie w małej przestrzeni. Miejsce jest dostępne dla kiterów wyłącznie od kwietnia do września - poza tym okresem jest zamknięte, aby chronić otaczający rezerwat przyrody Morza Wattowego."
+    }
+  },
+  {
+    "name": "Vlieland Noordzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48261",
+    "windfinderUrl": "https://www.windfinder.com/forecast/vlieland_north",
+    "webcamUrl": "https://webcam.nl/vlieland/",
+    "locationUrl": "https://www.google.com/maps?q=53.304478,5.048718",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space, west of the Badhuys beach club",
+      "hazards": "A few low groynes (strekdammetjes) that disappear underwater at high tide - watch your lines; open surf with waves and some current",
+      "season": "Year-round",
+      "description": "Vlieland's North Sea beach is wide, open and works across a broad wind window from north through northwest to northeast, with the kite zone set just west of the Badhuys beach club. It's a genuine surf beach with breaking waves and some current, but the wide, uncrowded sand and gentle shore break make it approachable for confident beginners as well as wave riders. A handful of low groynes lurk just offshore and can vanish under a rising tide, so keep an eye on the water level."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, na zachód od klubu plażowego Badhuys",
+      "hazards": "Kilka niskich ostróg (strekdammetjes), które znikają pod wodą przy przypływie - uważać na linki; otwarty surf z falami i pewnym prądem",
+      "season": "Cały rok",
+      "description": "Szeroka, otwarta plaża Vlielandu na Morzu Północnym działa w szerokim oknie wiatrowym od północy przez północny zachód po północny wschód, a strefa kitezony znajduje się tuż na zachód od klubu plażowego Badhuys. To prawdziwa plaża surfingowa z załamującymi się falami i pewnym prądem, ale szeroki, mało zatłoczony piasek i łagodny przybój przy brzegu czynią ją dostępną także dla pewnych siebie początkujących, obok riderów wave. Kilka niskich ostróg czai się tuż przy brzegu i może znikać pod wodą przy rosnącym przypływie, więc warto obserwować poziom wody."
+    }
+  },
+  {
+    "name": "Terschelling - Noordzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500857",
+    "windguruFallbackUrl": "https://www.windguru.cz/500866",
+    "windfinderUrl": "https://www.windfinder.com/forecast/terschelling",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.409386,5.280458",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space, reached via the Formerum and Kinnum beach accesses",
+      "hazards": "Seasonal launch-zone restriction May 1 - October 1: kiting only allowed outside a 200m no-go zone on either side of each beach access path (400m total per access, extending 100m out from the waterline); unrestricted along the whole North Sea coast October 1 - May 1; check tide times before heading out",
+      "season": "Year-round (seasonal launch-zone restriction May-October, see hazards)",
+      "description": "Terschelling's North Sea side is a classic Wadden-island beach: surf, swell and some current along a very wide strand, reached via the Formerum and Kinnum beach paths. From May through September, kiting is confined to the water outside a 200-metre buffer either side of each beach access, to keep the crossings clear for swimmers; from October to May the whole coast opens up. Northerly winds deliver full power straight off the sea."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, dostęp przez przejścia plażowe Formerum i Kinnum",
+      "hazards": "Sezonowe ograniczenie strefy startowej od 1 maja do 1 października: kitesurfing dozwolony wyłącznie poza strefą 200 m po obu stronach każdego zejścia na plażę (łącznie 400 m na przejście, sięgająca 100 m w głąb morza od linii wody); od 1 października do 1 maja brak ograniczeń wzdłuż całego wybrzeża Morza Północnego; przed wyjściem na wodę sprawdzić godziny pływów",
+      "season": "Cały rok (sezonowe ograniczenie strefy startowej maj-październik, patrz zagrożenia)",
+      "description": "Północna strona Terschelling to klasyczna plaża wyspy wattowej: surf, martwa fala i pewien prąd wzdłuż bardzo szerokiego pasa piasku, dostępna przez przejścia plażowe Formerum i Kinnum. Od maja do września kitesurfing jest ograniczony do wody poza 200-metrową strefą buforową po obu stronach każdego zejścia na plażę, aby zejścia pozostały wolne dla pływaków; od października do maja otwarte jest całe wybrzeże. Wiatry północne dają pełną moc prosto znad morza."
+    }
+  },
+  {
+    "name": "Terschelling - Groene Strand",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500864",
+    "windguruFallbackUrl": "https://www.windguru.cz/500865",
+    "windfinderUrl": "https://www.windfinder.com/forecast/west_terschelling",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.355141,5.21029",
+    "spotInfo": {
+      "type": "Tidal flat, flat water (Waddenzee)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space at low tide; very small strip at high tide",
+      "hazards": "Only rideable roughly 3 hours either side of high tide; shallow (up to about 2m) with tidal current; kite zone bounded by the shipping channel (yellow buoy) and a red buoy to the west - stay inside it; give swimmers and beachgoers a wide berth; lies within the Waddenzee Natura 2000 / UNESCO nature reserve - respect seal haul-out and bird sanctuary areas",
+      "season": "Year-round",
+      "description": "An unusual setup for a Wadden island: this is the sheltered Waddenzee side of Terschelling, right by the harbour town of West-Terschelling, rather than the exposed North Sea. It only holds enough water for about three hours around high tide, ranging from shallow to roughly two metres depending on the state of the tide, with occasionally brisk current. The riding area is boxed in between the shipping channel and a red buoy further west, keeping it flat and beginner-friendly whenever the tide cooperates."
+    },
+    "spotInfoPL": {
+      "type": "Płycizna pływowa, płaska woda (Morze Wattowe)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca przy odpływie; bardzo wąski pasek przy przypływie",
+      "hazards": "Można pływać tylko około 3 godziny przed i po przypływie; płytko (do ok. 2 m) z prądem pływowym; strefa kitezony ograniczona torem wodnym (żółta boja) i czerwoną boją na zachodzie - nie wypływać poza nią; zachować duży dystans od plażowiczów i pływaków; teren leży w obrębie rezerwatu przyrody Waddenzee (Natura 2000 / UNESCO) - respektować miejsca odpoczynku fok i lęgowiska ptaków",
+      "season": "Cały rok",
+      "description": "Nietypowy układ jak na wyspę wattową: to osłonięta strona Waddenzee na Terschelling, tuż przy porcie West-Terschelling, a nie odsłonięte Morze Północne. Woda utrzymuje się tu tylko przez około trzy godziny wokół przypływu, od płycizny do około dwóch metrów w zależności od fazy pływu, czasem z wyraźnym prądem. Obszar do pływania jest ograniczony między torem wodnym a czerwoną boją dalej na zachód, co utrzymuje wodę płaską i przyjazną dla początkujących, gdy tylko pływ współpracuje."
+    }
+  },
+  {
+    "name": "Ameland - Noordzee",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/9401",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ameland_hollum",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.459965,5.741499",
+    "spotInfo": {
+      "type": "North Sea, waves",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space; three separate marked zones (near Buren, near Ballum-Nes, near Hollum)",
+      "hazards": "Kiting - and carrying gear to/from the water - only allowed within three marked pole ranges: poles 17.4-19 near Buren, poles 8.2-11.3 between Ballum and Nes, and poles 3-4 near Hollum; stay 50m from the waterline as signed; restricted to these zones March 1 - November 1, wider access outside marked no-kite areas November-March",
+      "season": "Year-round (zone restriction March-November, see hazards)",
+      "description": "Ameland's North Sea coast is a wide, relatively calm-for-the-sea beach spread across three separate, clearly marked kite zones near Buren, Ballum/Nes and Hollum. Northerly winds bring clean, powered conditions straight off open water. Between March and November, launching, riding and even carrying gear are confined to the marked pole ranges to keep the rest of the beach free for other users; outside that window the whole coast, minus posted no-fly areas, is open."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca; trzy oddzielne wyznaczone strefy (przy Buren, przy Ballum-Nes, przy Hollum)",
+      "hazards": "Kitesurfing - oraz przenoszenie sprzętu do i z wody - dozwolony wyłącznie w trzech wyznaczonych zakresach pali: pale 17.4-19 przy Buren, pale 8.2-11.3 między Ballum a Nes oraz pale 3-4 przy Hollum; zachować 50 m od linii wody zgodnie z oznaczeniami; ograniczenie do tych stref od 1 marca do 1 listopada, szerszy dostęp poza oznaczonymi strefami zakazu latania od listopada do marca",
+      "season": "Cały rok (ograniczenie strefowe marzec-listopad, patrz zagrożenia)",
+      "description": "Wybrzeże Ameland przy Morzu Północnym to szeroka, jak na morze stosunkowo spokojna plaża podzielona na trzy oddzielne, wyraźnie oznaczone strefy kitesurfingu przy Buren, Ballum/Nes i Hollum. Wiatry północne dają czyste, mocne warunki prosto znad otwartej wody. Od marca do listopada start, pływanie, a nawet przenoszenie sprzętu są ograniczone do wyznaczonych zakresów pali, aby reszta plaży pozostała wolna dla innych użytkowników; poza tym okresem otwarte jest całe wybrzeże, z wyjątkiem oznaczonych stref zakazu."
+    }
+  },
+  {
+    "name": "Ameland - Waddenzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/9401",
+    "windguruFallbackUrl": "https://www.windguru.cz/48258",
+    "windfinderUrl": "https://www.windfinder.com/forecast/nes",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.439205,5.77345",
+    "spotInfo": {
+      "type": "Tidal flat, flat water (Waddenzee)",
+      "bestWind": "W, SW, S, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Small sandy beach, limited space, next to the Nes ferry harbour",
+      "hazards": "Only rideable roughly 3 hours either side of high tide; small, tight launch area; keep well clear of the ferry dam (Veerdam) and ferry traffic; lies within the Waddenzee Natura 2000 / UNESCO nature reserve - respect seal haul-out and bird sanctuary areas",
+      "season": "Year-round",
+      "description": "Tucked right beside the Nes ferry harbour, this is Ameland's sheltered Waddenzee-side alternative to the open North Sea beach - flat, shallow water rather than surf, with a small beach that only really works within about three hours of high tide. It's the go-to option when the wind swings onshore from the south, while keeping a respectful distance from the ferry dam. Village facilities are close by, but the launch strip itself is tight, so arrive with your kit organised."
+    },
+    "spotInfoPL": {
+      "type": "Płycizna pływowa, płaska woda (Morze Wattowe)",
+      "bestWind": "W, SW, S, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Mała piaszczysta plaża, ograniczona przestrzeń, obok portu promowego w Nes",
+      "hazards": "Można pływać tylko około 3 godziny przed i po przypływie; mały, ciasny teren startowy; zachować bezpieczny dystans od grobli promowej (Veerdam) i ruchu promów; teren leży w obrębie rezerwatu przyrody Waddenzee (Natura 2000 / UNESCO) - respektować miejsca odpoczynku fok i lęgowiska ptaków",
+      "season": "Cały rok",
+      "description": "Ukryty tuż przy porcie promowym w Nes, to osłonięta alternatywa Ameland po stronie Waddenzee wobec otwartej plaży Morza Północnego - płaska, płytka woda zamiast surfu, z małą plażą, która działa w praktyce tylko przez około trzy godziny wokół przypływu. To dobra opcja, gdy wiatr wieje z południa prosto na brzeg, przy zachowaniu odpowiedniego dystansu od grobli promowej. Udogodnienia we wiosce są blisko, ale sam pas startowy jest ciasny, więc warto przygotować sprzęt wcześniej."
+    }
+  },
+  {
+    "name": "Schiermonnikoog (Noordzee: Paal 3-5)",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48253",
+    "windguruFallbackUrl": "https://www.windguru.cz/500861",
+    "windfinderUrl": "https://www.windfinder.com/forecast/schiermonnikoog_reactief_buitensport",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.504333,6.180988",
+    "spotInfo": {
+      "type": "North Sea, waves and tidal lagoon",
+      "bestWind": "N, NW, W, SW, E, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, plenty of space, the 'activiteitenstrand' between beach poles 3 and 5",
+      "hazards": "Kiting only permitted on the 2km 'activiteitenstrand' between poles 3 and 5; second sandbank roughly 500m offshore - waves at high tide, flatter water at low tide; whole island lies within the Waddenzee Natura 2000 / UNESCO nature reserve and Schiermonnikoog National Park - respect seal haul-out and bird sanctuary zones beyond the marked kite area",
+      "season": "Year-round",
+      "description": "Schiermonnikoog's entire island is a national park in the Wadden Sea UNESCO World Heritage area, and kiting is confined to a two-kilometre 'activiteitenstrand' between beach poles 3 and 5. A sandbank roughly 500m offshore means high tide brings genuine waves while low tide reveals a flatter, lagoon-like stretch behind it - handy for progressing from flat water to small surf without changing spots. The coastline angles here, so at pole 3 a westerly is side-onshore and southwest is side-shore, while at pole 5 a northeasterly is side-onshore and an easterly is side-shore - an unusually wide range of usable wind directions for one beach."
+    },
+    "spotInfoPL": {
+      "type": "Morze Północne, fale i pływowa laguna",
+      "bestWind": "N, NW, W, SW, E, NE",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, 'activiteitenstrand' między palami plażowymi 3 i 5",
+      "hazards": "Kitesurfing dozwolony wyłącznie na 2-kilometrowym 'activiteitenstrand' między palami 3 i 5; druga mielizna około 500 m od brzegu - fale przy przypływie, płaska woda przy odpływie; cała wyspa leży w obrębie rezerwatu Waddenzee (Natura 2000 / UNESCO) oraz Parku Narodowego Schiermonnikoog - poza wyznaczoną strefą kitesurfingu respektować miejsca odpoczynku fok i lęgowiska ptaków",
+      "season": "Cały rok",
+      "description": "Cała wyspa Schiermonnikoog jest parkiem narodowym w obszarze Morza Wattowego wpisanym na listę UNESCO, a kitesurfing jest ograniczony do dwukilometrowego 'activiteitenstrand' między palami plażowymi 3 i 5. Mielizna leżąca około 500 m od brzegu sprawia, że przy przypływie pojawiają się prawdziwe fale, a przy odpływie odsłania się płaski, przypominający lagunę pas wody za nią - wygodne miejsce, by przechodzić od płaskiej wody do małego surfu bez zmiany spotu. Linia brzegowa jest tu lekko skośna, więc przy palu 3 wiatr zachodni jest side-onshore, a południowo-zachodni side-shore, natomiast przy palu 5 wiatr północno-wschodni jest side-onshore, a wschodni side-shore - niezwykle szeroki zakres używalnych kierunków wiatru jak na jedną plażę."
+    }
+  },
+  {
+    "name": "Makkum",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48265",
+    "windguruFallbackUrl": "https://www.windguru.cz/500867",
+    "windfinderUrl": "https://www.windfinder.com/forecast/makkum",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.05312,5.376227",
+    "spotInfo": {
+      "type": "Lake, shallow flat water inside the bay, deeper offshore (freshwater)",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "3-15°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, limited space; use the marked kite zone at the north-west corner of the bay only",
+      "hazards": "Kiting is only permitted October-April; a shipping channel (Makkum-Kornwerderzand, marked with red/green buoys) runs immediately north of the kite zone and must not be crossed; windsurfers share the bay and may not expect kiters; westerly winds make beach launching impossible in the kite zone, so a water/drift launch is required; protected nature reserve borders the spot",
+      "season": "October-April (closed to kiting May-September)",
+      "description": "Makkum sits in a shallow, sheltered bay on the Frisian IJsselmeer shore, with knee-deep flat water for schools and beginners near shore giving way to deeper freeride and foil water further out. Kiting is confined to a marked zone at the north-west corner of the beach, hemmed in by a shipping lane to the north and a beach resort to the south, and the spot only opens for kitesurfing in the winter half of the year. Steady north-west to south winds sweep in cleanly across the lake, but westerly directions block beach launching entirely, so plan on a water start."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płytka płaska woda w zatoce, głębiej dalej od brzegu (słodka woda)",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "3-15°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, mało miejsca; korzystaj wyłącznie z wyznaczonej strefy kite w północno-zachodnim rogu zatoki",
+      "hazards": "Kitesurfing dozwolony wyłącznie od października do kwietnia; tor wodny (Makkum-Kornwerderzand, oznaczony czerwonymi i zielonymi bojami) biegnie tuż na północ od strefy kite i nie wolno go przecinać; zatokę dzielą z kiterami windsurferzy, którzy mogą nie spodziewać się kitów; przy wietrze zachodnim start z plaży w strefie kite jest niemożliwy, konieczny start z wody; obok znajduje się chroniony rezerwat przyrody",
+      "season": "Październik-Kwiecień (zamknięte dla kitesurfingu od maja do września)",
+      "description": "Makkum leży w płytkiej, osłoniętej zatoce na fryzyjskim wybrzeżu IJsselmeer - płaska, sięgająca kolan woda blisko brzegu sprzyja szkołom i początkującym, a dalej robi się głębiej, co odpowiada freeride'owi i foilowi. Kitesurfing ograniczony jest do wyznaczonej strefy w północno-zachodnim rogu plaży, zamkniętej między torem wodnym od północy a beach resortem od południa, a sam spot jest otwarty dla kiterów tylko zimową połową roku. Wiatry od północnego zachodu po południe wchodzą czysto znad jeziora, ale przy zachodnim kierunku start z plaży w strefie kite jest niemożliwy, więc trzeba liczyć się ze startem z wody."
+    }
+  },
+  {
+    "name": "Hindeloopen",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48268",
+    "windguruFallbackUrl": "https://www.windguru.cz/48269",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hindeloopen",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.93354,5.403361",
+    "spotInfo": {
+      "type": "Lake, deep water, short wind chop (freshwater)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner",
+      "launch": "Grass on the dike, limited space; carry the rigged kite past a line of wooden poles before launching in open water",
+      "hazards": "No shallow shelf: water is deep right off the launch, so water-start ability is required; kite must be rigged on the dike and carried past a wooden pole row into the water before launching; limited rigging space",
+      "season": "Year-round",
+      "description": "Hindeloopen is a quiet, low-key spot on the IJsselmeer south of Workum, still waiting on a promised sand beach for water sports. Kiters currently rig on the grassy dike and carry the kite past a row of wooden marker poles before launching directly into deep water, so a confident water start matters more here than a big beginner beach. Beyond a narrow sandbank, foilers find flat, open water; a local kite club runs an information point right at the spot."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, głęboka woda, krótka fala wiatrowa (słodka woda)",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Początkujący",
+      "launch": "Trawa na grobli, mało miejsca; złożonego kite'a trzeba przenieść za rząd drewnianych pali przed startem",
+      "hazards": "Brak płycizny - woda jest głęboka tuż przy starcie, wymagany pewny start z wody; kite trzeba złożyć na grobli i przenieść za rząd drewnianych pali zanim wystartuje się na otwartej wodzie; mało miejsca na rozłożenie sprzętu",
+      "season": "Cały rok",
+      "description": "Hindeloopen to spokojne, kameralne miejsce nad IJsselmeer na południe od Workum, wciąż czekające na obiecaną piaszczystą plażę dla sportów wodnych. Obecnie kiterzy rozkładają sprzęt na trawiastej grobli i przenoszą kite'a za rząd drewnianych pali, zanim wystartują od razu na głębokiej wodzie, więc pewny start z wody liczy się tu bardziej niż duża plaża dla początkujących. Za wąską mielizną foilerzy znajdują płaską, otwartą wodę; miejscowy klub kite prowadzi tu punkt informacyjny."
+    }
+  },
+  {
+    "name": "Stavoren - it Suderstrand",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48270",
+    "windguruFallbackUrl": "https://www.windguru.cz/48269",
+    "windfinderUrl": "https://www.windfinder.com/forecast/stavoren",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.871937950156,5.3698568207782",
+    "spotInfo": {
+      "type": "Lake, deep water with small wind waves (freshwater)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass, limited space; launch only beyond the swimming zone buoy line",
+      "hazards": "Deep water right off the launch, no standing depth; a marked swimming zone (red/white striped poles) is roped off May-November and must be avoided; quieter and more exposed than nearby beginner spots",
+      "season": "Year-round",
+      "description": "It Suderstrand at Stavoren is the go-to spot for kiters who want more room and fewer beginners than the nearby bays offer, with small wind waves rolling in over deep water right from the grassy launch. From May to November a marked swimming zone splits the shoreline, so kites must be flown and launched clear of the roped-off buoy line at all times. Southerly and westerly winds give clean, mostly onshore power for advanced freeride and wave riding."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, głęboka woda z niewielką falą wiatrową (słodka woda)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Trawa, mało miejsca; start wyłącznie poza strefą kąpielową",
+      "hazards": "Głęboka woda tuż przy starcie, brak możliwości stania; od maja do listopada wyznaczona jest strefa kąpielowa (czerwono-białe pale), której należy unikać; spokojniejsze i bardziej otwarte miejsce niż pobliskie spoty dla początkujących",
+      "season": "Cały rok",
+      "description": "It Suderstrand w Stavoren to miejsce dla kiterów szukających więcej przestrzeni i mniejszego tłoku początkujących niż w pobliskich zatokach - niewielka fala wiatrowa napływa tu po głębokiej wodzie od razu przy trawiastym starcie. Od maja do listopada plażę dzieli wyznaczona strefa kąpielowa, więc latanie i start kite'a muszą odbywać się poza linią boi. Wiatry z południa i zachodu dają czyste, w większości przybrzeżne warunki do freeride'u i jazdy na fali dla zaawansowanych."
+    }
+  },
+  {
+    "name": "Mirns",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/3642",
+    "windguruFallbackUrl": "https://www.windguru.cz/48270",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.850101,5.481972",
+    "spotInfo": {
+      "type": "Lake, shallow flat water (freshwater)",
+      "bestWind": "W, SW, S, SE, E",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Smooth grass beach, limited space; large kite zone marked by yellow buoys",
+      "hazards": "Kite zone bounded by yellow buoys to keep kiters out of the protected 'Mokkebank' nature reserve immediately west; gets busy with kite schools, so wrap lines around the bar promptly after sessions; knee-to-hip-deep water close to shore",
+      "season": "Year-round",
+      "description": "Mirns is one of the busiest and most popular beginner-friendly spots on the whole IJsselmeer, thanks to a wide, buoy-marked kite zone over knee- to hip-deep water that stays forgiving well out from shore. A protected bird reserve sits just west of the zone, so staying inside the yellow buoys matters both for safety and for the local wildlife. Riders looking for a quieter, more advanced alternative nearby head south to Stavoren instead."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płytka płaska woda (słodka woda)",
+      "bestWind": "W, SW, S, SE, E",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Gładka trawiasta plaża, mało miejsca; duża strefa kite oznaczona żółtymi bojami",
+      "hazards": "Strefa kite ograniczona żółtymi bojami, by nie wpływać do chronionego rezerwatu przyrody 'Mokkebank' tuż na zachód; bywa tłoczno przez szkoły kite, więc po sesji od razu zwijaj linki wokół bara; woda sięgająca kolan do bioder blisko brzegu",
+      "season": "Cały rok",
+      "description": "Mirns to jeden z najbardziej popularnych i przyjaznych początkującym spotów nad całym IJsselmeer, dzięki szerokiej, oznaczonej bojami strefie kite nad wodą sięgającą kolan do bioder daleko od brzegu. Tuż na zachód od strefy leży chroniony rezerwat ptaków, więc pozostawanie w granicach żółtych boi jest ważne zarówno dla bezpieczeństwa, jak i dla dzikiej przyrody. Kiterzy szukający spokojniejszej, bardziej zaawansowanej alternatywy jadą na południe do Stavoren."
+    }
+  },
+  {
+    "name": "Lemmer",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/3642",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lemmer",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.843899,5.692941",
+    "spotInfo": {
+      "type": "Lake, quickly deepens, short wind chop (freshwater)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "3-15°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "Kiting only permitted October-April (NKV restricted rating); water deepens quickly close to shore, no gentle shallow shelf for beginners; short, choppy wind waves; no local Windguru station, forecast is taken from Mirns roughly 16 km southwest on the open IJsselmeer shore",
+      "season": "October-April (closed to kiting May-September)",
+      "description": "Lemmer offers a wide, roomy sand beach on the eastern IJsselmeer shore, but the water turns deep only a short distance out, so it suits confident intermediate and advanced riders rather than first-timers. Like several other Frisian lake beaches, kiting here is limited to the winter half of the year. There is no Windguru station at Lemmer itself; the nearest reading that reflects the same open-lake exposure comes from Mirns on the opposite shore rather than the small, sheltered Heegermeer inland lake closer by."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, szybko robi się głęboko, krótka fala wiatrowa (słodka woda)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "3-15°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "Kitesurfing dozwolony wyłącznie od października do kwietnia (status 'beperkt' wg NKV); woda szybko robi się głęboka blisko brzegu, brak łagodnej płycizny dla początkujących; krótka, wzburzona fala wiatrowa; brak lokalnej stacji Windguru - prognoza pochodzi z Mirns, ok. 16 km na południowy zachód, na otwartym brzegu IJsselmeer",
+      "season": "Październik-Kwiecień (zamknięte dla kitesurfingu od maja do września)",
+      "description": "Lemmer oferuje szeroką, przestronną piaszczystą plażę na wschodnim brzegu IJsselmeer, ale woda robi się głęboka już kawałek od brzegu, więc spot pasuje raczej pewnym siebie średniozaawansowanym i zaawansowanym kiterom niż osobom zaczynającym. Podobnie jak kilka innych fryzyjskich plaż nad jeziorami, kitesurfing jest tu dozwolony tylko zimową połową roku. W samym Lemmer nie ma stacji Windguru - najbliższy odczyt odzwierciedlający tę samą otwartą ekspozycję jeziora pochodzi z Mirns po drugiej stronie zatoki, a nie z bliższego, ale osłoniętego jeziora Heegermeer."
+    }
+  },
+  {
+    "name": "Kornwerderzand",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500867",
+    "windguruFallbackUrl": "https://www.windguru.cz/48264",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kornwerderzand",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.074985705595,5.3441219206543",
+    "spotInfo": {
+      "type": "Lake, shallow flat water near shore, deep further out (freshwater)",
+      "bestWind": "N, NE, E, SE, S, SW, W, NW",
+      "waterTemp": "12-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at the foot of the dike or water launch; the grass field beside the road is for rigging only, never for launching",
+      "hazards": "Kite zone open May-September only (NKV restricted rating); a wedge-shaped kite area is marked with large yellow buoys, bounded by the Afsluitdijk/beach to the north-west, the 'De Noordwaard' nature reserve to the east, a shipping channel to the south and the Lorentz lock complex to the west; NE/NNE wind is offshore over deep water, drift-away risk for anything less than advanced riders; never carry a kite onto the dike - the A7 access road runs only a few metres away",
+      "season": "May-September (closed October-April)",
+      "description": "Kornwerderzand sits right at the Lorentz lock complex on the Afsluitdijk, with a wedge of buoy-marked water that is shallow and flat close to shore before dropping off for freeride and foiling further out. Unusually for this stretch of coast, the spot only opens in summer, the opposite season to nearby Makkum and Lemmer, so the three complement each other across the year. The one direction to respect is north-east: it blows straight offshore into deep water, and the busy A7 motorway access road runs just a line-length behind the rigging area, so kites must stay off the dike entirely."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płytka płaska woda blisko brzegu, głębiej dalej (słodka woda)",
+      "bestWind": "N, NE, E, SE, S, SW, W, NW",
+      "waterTemp": "12-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża u podnóża grobli lub start z wody; trawiasty pas przy drodze służy wyłącznie do rozkładania sprzętu, nigdy do startu",
+      "hazards": "Strefa kite otwarta wyłącznie od maja do września (status 'beperkt' wg NKV); klinowata strefa kite oznaczona dużymi żółtymi bojami, ograniczona Afsluitdijk/plażą od północnego zachodu, rezerwatem przyrody 'De Noordwaard' od wschodu, torem wodnym od południa i kompleksem śluz Lorentz od zachodu; wiatr z NE/NNE jest odlądowy nad głęboką wodą - ryzyko zniesienia dla mniej niż zaawansowanych; nigdy nie wnoś kite'a na groblę - droga dojazdowa A7 biegnie zaledwie kilka metrów dalej",
+      "season": "Maj-Wrzesień (zamknięte od października do kwietnia)",
+      "description": "Kornwerderzand leży tuż przy kompleksie śluz Lorentz na Afsluitdijk, z klinowatym, oznaczonym bojami akwenem, który blisko brzegu jest płytki i płaski, a dalej pogłębia się, sprzyjając freeride'owi i foilowi. Nietypowo dla tego wybrzeża spot jest otwarty tylko latem - odwrotnie niż pobliskie Makkum i Lemmer - dzięki czemu te trzy miejsca uzupełniają się w ciągu roku. Jedynym kierunkiem, którego trzeba pilnować, jest północny wschód: wieje wtedy prosto odlądowo nad głęboką wodą, a ruchliwa droga dojazdowa do autostrady A7 biegnie tuż za strefą rozkładania sprzętu, więc kite nigdy nie może trafić na groblę."
+    }
+  },
+  {
+    "name": "Harlingen - Waddenzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500860",
+    "windfinderUrl": "https://www.windfinder.com/forecast/harlingen_friesland_netherlands",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.166355,5.415011",
+    "spotInfo": {
+      "type": "Waddenzee, tidal flats, mostly flat water",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "5-20°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "Strongly tide-dependent: best window is roughly 2h before to 2h after high tide; at low tide large areas turn to knee-deep mud/silt; from 1 April to 1 September riders must stay inside the marked yellow-buoy kite zone in front of the beach pavilion (outside this period the whole bay is open)",
+      "season": "Year-round",
+      "description": "Harlingen sits on the Frisian Waddenzee coast, a shallow tidal flat that drains out at low water and fills back in around high tide. The best riding window is roughly two hours either side of high water, since low tide leaves broad stretches of ankle-to-knee-deep mud. From April to September riders are asked to stay inside a yellow-buoy zone in front of the beach pavilion, while the rest of the year the whole bay is open, and the wide sandy beach behind it gives plenty of room to rig."
+    },
+    "spotInfoPL": {
+      "type": "Waddenzee, pływy, przeważnie płaska woda",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "5-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "Spot mocno zależny od pływów: najlepsze okno to około 2h przed i 2h po przypływie; przy odpływie duże obszary zamieniają się w błoto sięgające do kolan; od 1 kwietnia do 1 września trzeba pływać w strefie kite wyznaczonej żółtymi bojami przed pawilonem plażowym (poza tym okresem cała zatoka jest otwarta)",
+      "season": "Cały rok",
+      "description": "Harlingen leży na fryzyjskim wybrzeżu Waddenzee, płytkiej strefie pływowej, która przy odpływie odsłania dno, a przy przypływie ponownie się wypełnia. Najlepsze okno do pływania to około dwie godziny przed i po przypływie, bo przy odpływie odsłaniają się rozległe, błotniste płycizny sięgające do kolan. Od kwietnia do września obowiązuje pływanie w strefie wyznaczonej żółtymi bojami przed pawilonem plażowym, a poza tym okresem dostępna jest cała zatoka; szeroka piaszczysta plaża za nią daje mnóstwo miejsca na rozłożenie sprzętu."
+    }
+  },
+  {
+    "name": "Lauwersoog Waddenzee",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500863",
+    "windguruFallbackUrl": "https://www.windguru.cz/48251",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lauwersoog",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.408802,6.157198",
+    "spotInfo": {
+      "type": "Waddenzee, tidal flats, flat water (rocky bottom)",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grass, limited space",
+      "hazards": "Sharp stones under water near the launch, reef shoes strongly recommended; recently rebuilt dyke means less rigging space than before; tidal currents on the open Waddenzee; nearest emergency contact is Schiermonnikoog lighthouse (+31 519 531 247) or 112",
+      "season": "Year-round",
+      "description": "Lauwersoog Waddenzee is the tidal, open-sea launch just outside the Lauwersoog sluices, on the Wadden Sea itself rather than the enclosed freshwater lake of the same name a few hundred metres away behind the dyke. A recently rebuilt dyke gives a safer, if narrower, path to the water, and the bottom hides sharp stones, so reef shoes are worth wearing. It's a beginner-friendly, year-round spot with best wind from the north-to-west quadrant, though the tide and the shallow rocky shoreline both call for a bit of caution."
+    },
+    "spotInfoPL": {
+      "type": "Waddenzee, pływy, płaska woda (kamieniste dno)",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "Ostre kamienie pod wodą przy starcie, zalecane buty neoprenowe; po przebudowie wału mniej miejsca na rozłożenie sprzętu niż wcześniej; prądy pływowe na otwartej Waddenzee; najbliższy kontakt alarmowy to latarnia morska Schiermonnikoog (+31 519 531 247) lub 112",
+      "season": "Cały rok",
+      "description": "Lauwersoog Waddenzee to pływowy spot na otwartym morzu tuż za śluzami Lauwersoog, w odróżnieniu od zamkniętego, słodkowodnego jeziora o tej samej nazwie leżącego kilkaset metrów dalej, po drugiej stronie wału. Niedawno przebudowany wał daje bezpieczniejsze, choć węższe, zejście do wody, a dno kryje ostre kamienie, więc warto założyć buty neoprenowe. To przyjazny początkującym, całoroczny spot z najlepszym wiatrem z sektora północ-zachód, choć pływy i płytkie, kamieniste wybrzeże wymagają ostrożności."
+    }
+  },
+  {
+    "name": "Lauwersmeer",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/100",
+    "windguruFallbackUrl": "https://www.windguru.cz/48252",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lauwersmeer_lauwersoog",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.407505420145,6.1614794627635",
+    "spotInfo": {
+      "type": "Lake, flat water (freshwater, enclosed lake)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner",
+      "launch": "Grass, limited space",
+      "hazards": "RESTRICTED: kiting is only permitted from June through September; the rest of the year it is prohibited. Riders must stay inside the kite zone marked by the yellow buoys and get out of it quickly if pushed outside; deep water close to shore",
+      "season": "June-September",
+      "description": "Lauwersmeer is the enclosed freshwater lake behind the Lauwersoog sluices, calm and current-free in contrast to the tidal Waddenzee spot a few hundred metres away on the other side of the dyke. Kiting here is only permitted from June through September, and riders must stay inside the kite zone marked by yellow buoys just off the grass launch. It's a gentle, beginner-friendly lake with best wind from the south-to-southwest quadrant, well suited to foiling."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płaska woda (słodka woda, zamknięty zbiornik)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Początkujący",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "SPOT OGRANICZONY: pływanie dozwolone tylko od czerwca do września; poza tym okresem jest zabronione. Trzeba pozostawać w strefie kite wyznaczonej żółtymi bojami i szybko z niej wracać, jeśli wiatr wypchnie poza granice; głęboka woda blisko brzegu",
+      "season": "Czerwiec-Wrzesień",
+      "description": "Lauwersmeer to zamknięte, słodkowodne jezioro za śluzami Lauwersoog, spokojne i bez prądów, w przeciwieństwie do pływowego spotu na Waddenzee leżącego kilkaset metrów dalej, po drugiej stronie wału. Pływanie jest tu dozwolone wyłącznie od czerwca do września, a kitesurferzy muszą pozostawać w strefie wyznaczonej żółtymi bojami tuż przy trawiastym starcie. To łagodny, przyjazny początkującym spot z najlepszym wiatrem z sektora południe-południowy zachód, dobrze nadający się do foilingu."
+    }
+  },
+  {
+    "name": "Delfzijl",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48249",
+    "windfinderUrl": "https://www.windfinder.com/forecast/delfzijl",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.33453,6.931337",
+    "spotInfo": {
+      "type": "Eems estuary, tidal flat water",
+      "bestWind": "NW, SE, E, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach, limited space",
+      "hazards": "Only rideable around high tide and a few hours either side of it; close to the working harbour and Eems shipping channel, watch for vessel traffic; limited launch/landing space",
+      "season": "Year-round",
+      "description": "Delfzijl sits on the Eems estuary at the Dutch-German border, a tidal shallow that only becomes rideable a few hours either side of high water. The sandy launch has limited space and lies close to the working harbour and shipping channel, so it suits riders comfortable managing tide and boat traffic together. Wind from the northwest through northeast quadrant blows cleanly across the estuary."
+    },
+    "spotInfoPL": {
+      "type": "Estuarium Ems, pływowa płaska woda",
+      "bestWind": "NW, SE, E, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża, mało miejsca",
+      "hazards": "Pływalne tylko w okolicach przypływu, kilka godzin przed i po; bliskość czynnego portu i toru wodnego na Ems, uwaga na ruch statków; mało miejsca do startu i lądowania",
+      "season": "Cały rok",
+      "description": "Delfzijl leży nad estuarium Ems na granicy holendersko-niemieckiej, w płytkiej, pływowej zatoce, która staje się pływalna dopiero kilka godzin przed i po przypływie. Piaszczysty start ma mało miejsca i sąsiaduje z czynnym portem oraz torem wodnym, więc spot sprawdzi się dla osób, które potrafią jednocześnie ogarnąć pływy i ruch statków. Wiatr z sektora północny zachód-północny wschód wieje tu czysto wzdłuż estuarium."
+    }
+  },
+  {
+    "name": "Zuidlaardermeer",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/1154",
+    "windfinderUrl": "https://www.windfinder.com/forecast/zuidlaardermeer",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.145409,6.693851",
+    "spotInfo": {
+      "type": "Lake, flat water with light chop (freshwater)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach, plenty of space",
+      "hazards": "Some obstacles on the beach, pick a clear patch for launching and landing; deep water with short wind chop",
+      "season": "Year-round",
+      "description": "Zuidlaardermeer is a deep freshwater lake in Groningen province with a short, choppy wind swell rather than flat water, popular with local freestyle and foil riders. The sandy beach offers plenty of rigging space, but scattered obstacles mean picking a clear patch for launching and landing. Southwest-to-southeast winds work best, and the lake is free to use year-round with food, drink and toilet facilities on site."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płaska woda z lekkim rozchlapem (słodka woda)",
+      "bestWind": "SW, S, SE",
+      "waterTemp": "8-22°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża, dużo miejsca",
+      "hazards": "Na plaży występują przeszkody, warto wybrać czyste miejsce do startu i lądowania; głęboka woda z krótkim rozchlapem",
+      "season": "Cały rok",
+      "description": "Zuidlaardermeer to głębokie, słodkowodne jezioro w prowincji Groningen z krótkim, poszarpanym rozchlapem zamiast płaskiej wody, popularne wśród lokalnych riderów freestyle i foil. Piaszczysta plaża daje dużo miejsca na rozłożenie sprzętu, ale rozrzucone przeszkody wymagają wybrania czystego miejsca do startu i lądowania. Najlepiej sprawdza się wiatr z sektora południowy zachód-południowy wschód, a spot jest darmowy i dostępny cały rok, z jedzeniem, piciem i toaletą na miejscu."
+    }
+  },
+  {
+    "name": "Midwolda Oldambtmeer",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/444404",
+    "windfinderUrl": "https://www.windfinder.com/forecast/oldambtmeer",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.193245,7.027293",
+    "spotInfo": {
+      "type": "Lake, deep flat water (freshwater)",
+      "bestWind": "SE, E",
+      "waterTemp": "8-22°C",
+      "experience": "Advanced",
+      "launch": "Grass, limited space",
+      "hazards": "RESTRICTED: kiting is forbidden from April through October because the lake is used by swimmers during that period; the beach itself is not usable for launching or landing at any time of year due to obstacles and swimmers, use the designated grass area instead; wind can be gusty and unstable near shore due to onshore obstacles; water gets deep quickly",
+      "season": "October-April",
+      "description": "Midwolda Oldambtmeer is a deep freshwater lake in the Oldambt region of Groningen, where shoreline trees and buildings can make the wind gusty and unstable close in. Kiting is only permitted from October through April; for the rest of the year the lake is reserved for swimmers, and the beach itself is unusable for launching or landing at any time due to obstacles. It suits advanced riders comfortable rigging in a tight grass area, with best wind from the southeast to east."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, głęboka płaska woda (słodka woda)",
+      "bestWind": "SE, E",
+      "waterTemp": "8-22°C",
+      "experience": "Zaawansowany",
+      "launch": "Trawa, mało miejsca",
+      "hazards": "SPOT OGRANICZONY: pływanie zabronione od kwietnia do października, bo w tym okresie jezioro jest wykorzystywane przez pływających; sama plaża przez cały rok nie nadaje się do startu ani lądowania z powodu przeszkód i kąpiących się, trzeba korzystać z wyznaczonej trawiastej strefy; wiatr blisko brzegu bywa porywisty i niestabilny z powodu przeszkód na lądzie; woda szybko robi się głęboka",
+      "season": "Październik-Kwiecień",
+      "description": "Midwolda Oldambtmeer to głębokie, słodkowodne jezioro w regionie Oldambt w prowincji Groningen, gdzie drzewa i zabudowania przy brzegu potrafią uczynić wiatr porywistym i niestabilnym blisko lądu. Pływanie jest dozwolone tylko od października do kwietnia; przez resztę roku jezioro jest zarezerwowane dla pływających, a sama plaża przez cały rok nie nadaje się do startu ani lądowania z powodu przeszkód. Spot pasuje zaawansowanym riderom, którzy poradzą sobie z rozkładaniem sprzętu na ciasnej trawiastej strefie, przy najlepszym wietrze z kierunku południowo-wschodniego do wschodniego."
+    }
+  },
+  {
+    "name": "Almere",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/59330",
+    "windguruFallbackUrl": "https://www.windguru.cz/48278",
+    "windfinderUrl": "https://www.windfinder.com/forecast/almere",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.34747029479,5.1335594920654",
+    "spotInfo": {
+      "type": "Lake, deep flat water with light chop (freshwater)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach with plenty of space; access is via the northernmost car park and a gate in the perimeter fence",
+      "hazards": "Water deepens to around 2m a short way out; scattered rocks near the beach; on SW-NW wind the downwind shore is low and rocky, so riders cannot stand up if they come off the board; aquatic weed growth blocks foiling in summer",
+      "season": "Year-round",
+      "description": "Almere is a spacious, laid-back freestyle and foiling spot on the IJmeer/Gooimeer shoreline near Pampus, just outside Amsterdam. The enormous kite zone rarely gets crowded and is popular with intermediate and advanced foilers thanks to a light wind chop rather than real waves. Water deepens to around 2 metres a short way out and scattered rocks lie near the beach, so riders need to be comfortable staying off their feet; southwest-through-northwest wind pushes toward a low, rocky shore, which is why this isn't considered a beginner spot. Reach the sandy launch through the gate at the northernmost paid car park; in summer, aquatic weed growth can rule out foiling."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, głęboka płaska woda z lekkim zafalowaniem (słodka woda)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża z dużą ilością miejsca; dojście przez bramę w ogrodzeniu od strony najbardziej wysuniętego na północ parkingu",
+      "hazards": "Woda szybko robi się głęboka (ok. 2 m) niedaleko brzegu; rozproszone kamienie przy plaży; przy wietrze z sektora SW-NW nawietrzny brzeg jest niski i skalisty, więc po wypadnięciu z deski nie da się stanąć na dnie; latem wodne rośliny uniemożliwiają foilowanie",
+      "season": "Cały rok",
+      "description": "Almere to przestronny, kameralny spot do freestyle'u i foilowania nad IJmeer/Gooimeer w pobliżu Pampus, tuż za Amsterdamem. Ogromna strefa kite rzadko bywa zatłoczona i jest popularna wśród średniozaawansowanych i zaawansowanych foilerów dzięki lekkiemu falowaniu zamiast prawdziwych fal. Woda szybko robi się głęboka (ok. 2 metrów) niedaleko brzegu, a przy plaży leżą rozproszone kamienie, więc trzeba czuć się pewnie, nie mogąc stanąć na dnie; wiatr z sektora południowo-zachodni-północno-zachodni pcha w stronę niskiego, skalistego brzegu, dlatego to nie jest miejsce dla początkujących. Piaszczyste stanowisko startowe znajdziesz przez bramę przy najbardziej wysuniętym na północ płatnym parkingu; latem wodne rośliny mogą uniemożliwić foilowanie."
+    }
+  },
+  {
+    "name": "Lelystad - Bataviastrand",
+    "country": "Netherlands",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/48272",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lelystad",
+    "webcamUrl": "https://www.markermeerzicht.nl",
+    "locationUrl": "https://www.google.com/maps?q=52.524357,5.424342",
+    "spotInfo": {
+      "type": "Markermeer, flat water with wind chop and short shorebreak",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach, plenty of space, free parking",
+      "hazards": "Shared watersports/swimming beach with a marked swimmer zone in effect May-October (keep well clear); water deepens quickly; strong wind can build real shorebreak and short waves; riders sail well offshore quickly so self-rescue skills are required",
+      "season": "Year-round",
+      "description": "Bataviastrand is Lelystad's big open-water watersports beach on the Markermeer, a few kilometres south of Trintelhaven and the Houtribdijk. It has serious fetch for its size, and when the wind picks up it throws a proper shorebreak and short, punchy waves rather than the flat water typical of Dutch inland lakes. It shares the beach with swimmers and holidaymakers, who get a marked-off zone from May to October that riders must respect; combined with quickly deepening water and long runs offshore, this makes it a spot best suited to confident intermediate and advanced kiters."
+    },
+    "spotInfoPL": {
+      "type": "Markermeer, płaska woda z falowaniem i krótkim przybojem",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża, dużo miejsca, bezpłatny parking",
+      "hazards": "Wspólna plaża ze strefą dla pływaków wyznaczoną od maja do października (zachowaj bezpieczny dystans); woda szybko robi się głęboka; przy mocnym wietrze pojawia się prawdziwy przybój i krótkie, ostre fale; szybko wypływa się daleko od brzegu, więc potrzebna jest umiejętność samodzielnego ratowania się",
+      "season": "Cały rok",
+      "description": "Bataviastrand to duża, otwarta plaża watersportowa w Lelystad nad Markermeer, kilka kilometrów na południe od Trintelhaven i tamy Houtribdijk. Ma spory rozbieg fali jak na holenderskie warunki, a przy mocniejszym wietrze pojawia się prawdziwy przybój i krótkie, ostre fale, zamiast typowej płaskiej wody śródlądowych jezior. Plażę dzieli się z pływakami i turystami, dla których od maja do października wyznaczona jest osobna strefa, której trzeba bezwzględnie przestrzegać; w połączeniu z szybko pogłębiającą się wodą i długimi wypłynięciami od brzegu, to miejsce dla pewnych siebie kiterów średniozaawansowanych i zaawansowanych."
+    }
+  },
+  {
+    "name": "Lelystad - Trintelhaven",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/48272",
+    "windguruFallbackUrl": "https://www.windguru.cz/3601",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lelystad",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.636238,5.413053",
+    "spotInfo": {
+      "type": "IJsselmeer, flat water",
+      "bestWind": "N, SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach",
+      "hazards": "SEASONAL KITESURFING BAN: closed to kiting from 1 August through March each year, open only April-July under an agreement with local authorities; riders must stay within the buoy-marked kite zone on the water; park only in the designated car park, not near the turn-off or along the cycle paths",
+      "season": "April-July (closed August-March)",
+      "description": "Trintelhaven is a seasonal IJsselmeer spot on the Houtribdijk near Lelystad, secured through negotiation between the NKV and local authorities specifically for kitesurfing from April through July. Food, drink and toilets are on site, and the buoy-marked zone sits in open, flat water well suited to less experienced riders. The trade-off for having this spot at all is that the community is expected to respect the closure from August to March without exception, since continued access depends on kiters honouring that agreement."
+    },
+    "spotInfoPL": {
+      "type": "IJsselmeer, płaska woda",
+      "bestWind": "N, SE, E, NE",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża",
+      "hazards": "SEZONOWY ZAKAZ KITESURFINGU: spot zamknięty dla kiterów od 1 sierpnia do końca marca, otwarty tylko od kwietnia do lipca na mocy porozumienia z lokalnymi władzami; trzeba pozostać w strefie wyznaczonej bojami na wodzie; parkować tylko na wyznaczonym parkingu, nie przy zjeździe ani wzdłuż ścieżek rowerowych",
+      "season": "Kwiecień-Lipiec (zamknięte sierpień-marzec)",
+      "description": "Trintelhaven to sezonowy spot nad IJsselmeer przy tamie Houtribdijk koło Lelystad, wywalczony dzięki negocjacjom NKV z lokalnymi władzami specjalnie na potrzeby kitesurfingu od kwietnia do lipca. Na miejscu jest jedzenie, picie i toalety, a wyznaczona bojami strefa leży na otwartej, płaskiej wodzie, dobrze nadającej się dla mniej doświadczonych riderów. Cena za posiadanie tego miejsca w ogóle to bezwzględne przestrzeganie zamknięcia od sierpnia do marca, ponieważ dalszy dostęp zależy od tego, czy kiterzy dotrzymają ustaleń."
+    }
+  },
+  {
+    "name": "Strand Horst",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/355",
+    "windguruFallbackUrl": "https://www.windguru.cz/48281",
+    "windfinderUrl": "https://www.windfinder.com/forecast/strand_horst",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.32291,5.570562",
+    "spotInfo": {
+      "type": "Lake (Wolderwijd/Veluwemeer), shallow flat water (freshwater)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grass, limited space; water-launch required (nearby trees make a stable land launch impossible)",
+      "hazards": "Land launching is not possible - trees and bushes cause gusty, unstable wind on the beach, so kiters launch and land from the water; gusty wind near the tree line; commercial teaching/activities require prior permission from the site operator (Leisurelands)",
+      "season": "Year-round",
+      "description": "Strand Horst on the Wolderwijd is one of the busiest, most sociable kite beaches in the Netherlands, with knee-to-hip-deep flat water across the whole kite zone - forgiving terrain for learning and freestyle. The catch is the launch itself: nearby trees make the wind on the beach too gusty and unstable for a land launch, so everyone kites and lands from the water instead. Parking is paid and space on the grass strip is tight, but food, drink and toilets are all on site, and it stays busy throughout the season."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Wolderwijd/Veluwemeer), płytka płaska woda (słodka woda)",
+      "bestWind": "N, NW, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawa, mało miejsca; wymagany start z wody (pobliskie drzewa uniemożliwiają stabilny start z lądu)",
+      "hazards": "Start z lądu jest niemożliwy - drzewa i zarośla powodują porywisty, niestabilny wiatr na plaży, dlatego kiterzy startują i lądują z wody; porywisty wiatr blisko linii drzew; prowadzenie lekcji/działalności komercyjnej wymaga wcześniejszej zgody zarządcy terenu (Leisurelands)",
+      "season": "Cały rok",
+      "description": "Strand Horst nad Wolderwijd to jeden z najbardziej obleganych i towarzyskich spotów kitesurfingowych w Holandii, z płaską wodą sięgającą od kolan do bioder w całej strefie kite - idealne warunki do nauki i freestyle'u. Haczyk tkwi w samym starcie: pobliskie drzewa sprawiają, że wiatr na plaży jest zbyt porywisty i niestabilny do startu z lądu, więc wszyscy startują i lądują z wody. Parking jest płatny, a miejsca na trawiastym pasie niewiele, ale na miejscu jest jedzenie, picie i toalety, a spot tętni życiem przez cały sezon."
+    }
+  },
+  {
+    "name": "Elburg",
+    "country": "Netherlands",
+    "windguruUrl": "https://www.windguru.cz/500872",
+    "windguruFallbackUrl": "https://www.windguru.cz/48286",
+    "windfinderUrl": "https://www.windfinder.com/forecast/elburg",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.455063,5.817958",
+    "spotInfo": {
+      "type": "Lake (Veluwemeer/Drontermeer), shallow flat water (freshwater)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy, limited space; water launch/land required (beach too small, with poles and static caravans nearby)",
+      "hazards": "CAPACITY LIMIT: a maximum of 10 kiters allowed on the water at the same time; riders must check in at reception and read the posted rules before sailing; gusty wind is common; stay strictly within the marked kite zone shown on site or the spot risks being lost",
+      "season": "April-September",
+      "description": "Elburg is a small, convenient kite zone on the Veluwemeer for riders who don't have time to travel to the bigger Flevoland spots, tucked in front of a holiday park. Access is a privilege rather than a right here: everyone must sign in at reception, read the posted flyer, and stick to the marked zone, with a strict 10-rider cap on the water at once. The tiny beach, plus nearby poles and static caravans, rules out a land launch, so kiting starts and ends in the water, and gusty wind off the surrounding terrain rewards riders who already have solid boat-handling and self-launch skills."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro (Veluwemeer/Drontermeer), płytka płaska woda (słodka woda)",
+      "bestWind": "W, SW, S",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piasek, mało miejsca; wymagany start/lądowanie z wody (plaża zbyt mała, w pobliżu słupy i przyczepy kempingowe)",
+      "hazards": "LIMIT LICZBY OSÓB: maksymalnie 10 kiterów na wodzie jednocześnie; obowiązkowe zgłoszenie się w recepcji i zapoznanie z regulaminem przed wypłynięciem; częste podmuchy wiatru; trzeba bezwzględnie pozostać w wyznaczonej strefie kite pokazanej na miejscu, inaczej spot może zostać zamknięty",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Elburg to niewielka, wygodna strefa kite nad Veluwemeer dla riderów, którzy nie mają czasu jechać na większe spoty we Flevoland, położona tuż przy parku wypoczynkowym. Dostęp do tego miejsca to przywilej, a nie oczywistość: każdy musi zgłosić się w recepcji, zapoznać się z ulotką i trzymać się wyznaczonej strefy, przy ścisłym limicie 10 osób na wodzie jednocześnie. Malutka plaża oraz pobliskie słupy i przyczepy kempingowe wykluczają start z lądu, więc kitesurfing zaczyna się i kończy w wodzie, a porywisty wiatr od okolicznego terenu premiuje riderów, którzy mają już solidne umiejętności kontroli latawca i samodzielnego startu."
+    }
   }
 ]

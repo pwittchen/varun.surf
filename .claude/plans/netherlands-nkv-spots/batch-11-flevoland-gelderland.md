@@ -7,24 +7,24 @@ Randmeren and Veluwemeer inland water — the classic Dutch flatwater/freestyle 
 
 ## Spots
 
-- [ ] **Almere**
+- [x] **Almere**
       source: https://kitesurfvereniging.nl/kitespot/almere/
-- [ ] **Lelystad – Bataviastrand**
+- [x] **Lelystad – Bataviastrand**
       source: https://kitesurfvereniging.nl/kitespot/lelystad-bataviastrand/
-- [ ] **Lelystad – Trintelhaven** **[RESTRICTED]**
+- [x] **Lelystad – Trintelhaven** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/lelystad-trintelhaven/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Strand Horst**
+- [x] **Strand Horst**
       source: https://kitesurfvereniging.nl/kitespot/strand-horst/
-- [ ] **Elburg** **[RESTRICTED]**
+- [x] **Elburg** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/elburg/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
 
 ## Done when
 
-- [ ] 5 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 5 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

@@ -7,28 +7,28 @@ Each island has a North Sea (wave) side and a Waddenzee (flat, shallow) side —
 
 ## Spots
 
-- [ ] **Texel Paal 17.6 – 18.99 en 28.2 – 32**
+- [x] **Texel Paal 17.6 – 18.99 en 28.2 – 32**
       source: https://kitesurfvereniging.nl/kitespot/texel/
-- [ ] **Texel – Dijkmanshuizen (Wadzijde)** **[RESTRICTED]**
+- [x] **Texel – Dijkmanshuizen (Wadzijde)** **[RESTRICTED]**
       source: https://kitesurfvereniging.nl/kitespot/texel-dijkmanshuizen/
       NKV policy: *Beperkt* — read the restriction on the source page and put it
       in `hazards` / `season` in BOTH `spotInfo` and `spotInfoPL`.
-- [ ] **Vlieland Noordzee**
+- [x] **Vlieland Noordzee**
       source: https://kitesurfvereniging.nl/kitespot/vlieland-noordzee/
-- [ ] **Terschelling – Noordzee**
+- [x] **Terschelling – Noordzee**
       source: https://kitesurfvereniging.nl/kitespot/terschelling-noordzee/
-- [ ] **Terschelling – Groene Strand**
+- [x] **Terschelling – Groene Strand**
       source: https://kitesurfvereniging.nl/kitespot/terschelling-groene-strand/
-- [ ] **Ameland – Noordzee**
+- [x] **Ameland – Noordzee**
       source: https://kitesurfvereniging.nl/kitespot/ameland-noordzee/
-- [ ] **Ameland – Waddenzee**
+- [x] **Ameland – Waddenzee**
       source: https://kitesurfvereniging.nl/kitespot/ameland-waddenzee/
-- [ ] **Schiermonnikoog (Noordzee: Paal 3-5)**
+- [x] **Schiermonnikoog (Noordzee: Paal 3-5)**
       source: https://kitesurfvereniging.nl/kitespot/schiermonnikoog-noordzee/
 
 ## Done when
 
-- [ ] 8 entries appended to `src/main/resources/spots.json`
-- [ ] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
-- [ ] `./gradlew test` green
-- [ ] boxes ticked here and in `README.md`
+- [x] 8 entries appended to `src/main/resources/spots.json`
+- [x] `python3 -c "import json; json.load(open('src/main/resources/spots.json'))"` passes
+- [x] `./gradlew test` green
+- [x] boxes ticked here and in `README.md`

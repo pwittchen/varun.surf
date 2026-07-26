@@ -166,3 +166,66 @@ Scope it separately.
 
 Worth crediting the NKV as the source in `README.md`. The spot-manager network
 behind that map is who keeps this data accurate.
+
+## Outcome
+
+All 11 batches shipped. `spots.json` went **159 → 227 spots**, Netherlands **6 → 74**,
+which is what the estimate above predicted. `./gradlew test` and `./gradlew testE2e`
+are both green.
+
+### Windguru station IDs — the bottleneck turned out to be solvable
+
+The plan assumed each station needed a manual browser lookup. It doesn't. Windguru's
+spot-search autocomplete is reachable without a PRO account, and it accepts a
+coordinate:
+
+```
+https://www.windguru.cz/int/iapi.php?q=autocomplete_ss&type_info=true&latlon=1
+  &spots=1&nearby_wg=50&lat=<lat>&lon=<lon>          # nearest forecast spots
+  &query=<name>                                      # or search by name
+```
+
+It needs `Referer: https://www.windguru.cz/map/` (without it: `Unauthorized!`), and
+returns `{data: <id>, value: <name>, lat, lon, type, id_user}`. `type` starting with
+`W` and no `s` flag means a forecast spot rather than a live station; `id_user: 169`
+marks the official Windguru spots, `id_user: 2` the ones auto-created from private
+weather stations.
+
+Sweeping that endpoint over a 0.07° × 0.10° grid across the Netherlands (1978 calls)
+produced a local catalogue of **285 forecast spots**, 192 of them official. Every NKV
+launch could then be matched by distance and confirmed by fetching
+`https://www.windguru.cz/<id>` and reading the `<title>`. **No spot was skipped for
+lack of a station.**
+
+Launch coordinates came from the NKV pages themselves — each carries a Google Maps
+"navigate" link with the precise lat/lng, which is more accurate than the map widget's
+3-decimal attributes. Every `locationUrl` is a coordinate URL built from it.
+
+### Spots sharing a forecast point
+
+`Spot.wgId()` is derived from `windguruUrl` and is the app's public identifier — it
+routes `/api/v1/spots/{id}`, `/llms/spots/{wgId}.md` and every in-memory cache — so two
+spots may not carry the same Windguru URL. Ten entries genuinely share a forecast point
+with a neighbour (the Ameland Noordzee/Waddenzee pair, the four Westerschelde spots
+behind Borssele, and so on). They use the pattern the model already supports and the
+existing Kadyny entry already uses: empty `windguruUrl` plus the shared point in
+`windguruFallbackUrl`, so `forecastWgId()` still fetches the right forecast while
+`wgId()` falls back to a deterministic per-spot id.
+
+`JsonSpotsStructureValidationTest.shouldValidateNoDuplicateWindguruUrls` was comparing
+raw strings, so several empty values would have tripped it. It now ignores empties, and
+a new `shouldValidateNoDuplicateWgIds` asserts the invariant that actually matters.
+
+### Known gaps
+
+- **7 spots have no `windfinderUrl`** — Kamperland, Breskens Oost, Paulinapolder,
+  Oostvoornse meer, Amstelmeer Lutjestrand Zuid, Warder and Mirns have no Windfinder
+  page. Every other slug was fetched and its page title confirmed.
+- **10 spots have a webcam.** The rest either have none or the NKV link turned out to
+  be a photo gallery, a camera-network portal, or a cam pointed somewhere else.
+- **Enkhuizen** is closed 1 Sep 2026 – 30 Apr 2027 for the *kustboog* coastal works.
+  That is recorded in `hazards`, but it is a dated closure and will need removing.
+- The **enrichment** of the 11 NKV spots already covered by existing entries
+  (Noordwijk, Scheveningen, Workum, IJmuiden, Slufterstrand, Brouwersdam) was not part
+  of any batch and has not been done.
+- The **RWS live-wind strategy** in "Follow-up worth considering" remains unscoped.
