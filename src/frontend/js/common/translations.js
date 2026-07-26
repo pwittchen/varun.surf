@@ -13,6 +13,10 @@ export const translations = {
         searchPlaceholder: "Search spots...",
         allCountries: "All",
         spotsCount: "spots",
+        headerStatsSpots: "spots",
+        headerStatsCountries: "countries",
+        headerStatsStations: "stations",
+        headerStatsStationsTooltip: "Spots with live weather station data",
 
         // Tooltips
         themeToggleTooltip: "Toggle theme",
@@ -283,6 +287,15 @@ export const translations = {
         searchPlaceholder: "Szukaj spotów...",
         allCountries: "Wszystkie",
         spotsCount: "spotów",
+        // Odmiana przez liczbę: 2-4 (poza 12-14) biorą formę "few" ("102 spoty"),
+        // pozostałe dopełniacz liczby mnogiej ("105 spotów")
+        headerStatsSpots: "spotów",
+        headerStatsSpotsFew: "spoty",
+        headerStatsCountries: "krajów",
+        headerStatsCountriesFew: "kraje",
+        headerStatsStations: "stacji",
+        headerStatsStationsFew: "stacje",
+        headerStatsStationsTooltip: "Spoty z danymi ze stacji pogodowych na żywo",
 
         // Tooltips
         themeToggleTooltip: "Przełącz motyw",

@@ -882,8 +882,63 @@ function populateCountryDropdown(data) {
     // Update the selected country text in the button
     updateSelectedCountryLabel(savedCountry);
 
+    // Header badge shares the same counts as the dropdown
+    updateHeaderStats(data.length, availableCountries.size, countLiveStations(data));
+
     // Re-attach event listeners for the new dropdown options
     setupDropdownEvents();
+}
+
+// Polish nouns take the "few" form for counts ending in 2-4, except 12-14
+// ("102 spoty" but "105 spotów" and "112 spotów")
+function pluralizedLabel(count, key) {
+    if (state.getLanguage() !== 'pl') {
+        return translations.t(key);
+    }
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    const isFew = lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14);
+    return translations.t(isFew ? `${key}Few` : key);
+}
+
+// Spots reporting live data from a weather station. Mirrors the backend's
+// countLiveStations(): any of wind / gusts / direction present is enough.
+function countLiveStations(data) {
+    return data.filter(spot => {
+        const current = spot.currentConditions;
+        if (!current) {
+            return false;
+        }
+        return toNumber(current.wind) > 0
+            || toNumber(current.gusts) > 0
+            || !!current.direction;
+    }).length;
+}
+
+// Renders the "N spots · M countries · K stations" badge in the header (desktop)
+function updateHeaderStats(spotsCount, countriesCount, stationsCount) {
+    const headerStats = document.getElementById('headerStats');
+    if (!headerStats) {
+        return;
+    }
+
+    if (!spotsCount) {
+        headerStats.innerHTML = '';
+        return;
+    }
+
+    const spotsLabel = pluralizedLabel(spotsCount, 'headerStatsSpots');
+    const countriesLabel = pluralizedLabel(countriesCount, 'headerStatsCountries');
+    const stationsLabel = pluralizedLabel(stationsCount, 'headerStatsStations');
+    const stationsTooltip = translations.t('headerStatsStationsTooltip');
+
+    headerStats.innerHTML =
+        `<span class="header-stats-value">${spotsCount}</span> ${spotsLabel}` +
+        `<span class="header-stats-separator">·</span>` +
+        `<span class="header-stats-value">${countriesCount}</span> ${countriesLabel}` +
+        `<span class="header-stats-separator">·</span>` +
+        `<span class="header-stats-stations" title="${stationsTooltip}">` +
+        `<span class="header-stats-value">${stationsCount}</span> ${stationsLabel}</span>`;
 }
 
 function updateSelectedCountryLabel(countryKey) {

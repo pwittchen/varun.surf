@@ -510,6 +510,45 @@ body.spot-page .header-logo {
     color: var(--text-black);
 }
 
+/* Coverage badge ("102 spots · 15 countries · 41 stations") sitting left of the
+   language switcher in the header controls. Hidden below 1300px, where the row
+   would otherwise run into the fixed logo + wordmark. */
+.header-stats {
+    margin-right: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    cursor: default;
+}
+
+.header-stats:empty {
+    display: none;
+}
+
+.header-stats-value {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.header-stats-separator {
+    margin: 0 8px;
+    color: var(--text-tertiary);
+}
+
+/* Only this segment carries a tooltip explaining what a "station" is */
+.header-stats-stations {
+    cursor: help;
+}
+
+@media (max-width: 1299px) {
+    .header-stats {
+        display: none !important;
+    }
+}
+
 /* On the spot page the logo is nudged right to align with the card (50% - 700px),
    so shift the title to match: logo left + 32px logo width + 11px gap = +43px.
    Both clamp at the same viewport width (1440px), keeping the gap constant while
