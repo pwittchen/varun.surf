@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
-      --app.feature.icm.vision.enabled=false
+      --app.feature.icm.vision.enabled=true
       --app.ai.provider=openai
     expose:
       - "8080"
@@ -47,6 +47,7 @@ services:
     restart: unless-stopped
     command: >
       --app.feature.ai.forecast.analysis.enabled=true
+      --app.feature.icm.vision.enabled=true
       --app.ai.provider=openai
     expose:
       - "8080"
