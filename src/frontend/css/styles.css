@@ -112,6 +112,9 @@
     /* Wind Strength Colors (Dark Theme) */
     --wind-weak: #64748b;
     --wind-weak-bg: rgba(100, 116, 139, 0.15);
+    /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
+    --wind-calm: #64748b;
+    --wind-light: #38bdf8;
     --wind-moderate: #2ee66d;
     --wind-moderate-bg: rgba(46, 230, 109, 0.14);
     --wind-strong: #f59e0b;
@@ -235,6 +238,9 @@
     /* Wind Strength Colors (Light Theme) */
     --wind-weak: #6b7280;
     --wind-weak-bg: rgba(107, 114, 128, 0.1);
+    /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
+    --wind-calm: #6b7280;
+    --wind-light: #0284c7;
     --wind-moderate: #059669;
     --wind-moderate-bg: rgba(5, 150, 105, 0.15);
     --wind-strong: #ea580c;
@@ -4937,6 +4943,14 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     background-color: var(--wind-extreme);
 }
 
+.custom-marker.wind-calm .marker-dot {
+    background-color: var(--wind-calm);
+}
+
+.custom-marker.wind-light .marker-dot {
+    background-color: var(--wind-light);
+}
+
 .custom-marker.wind-weak .marker-dot {
     background-color: var(--wind-weak);
 }
@@ -4989,6 +5003,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: block;
 }
 
+.wind-arrow-marker.wind-calm { color: var(--wind-calm); }
+.wind-arrow-marker.wind-light { color: var(--wind-light); }
 .wind-arrow-marker.wind-weak { color: var(--wind-weak); }
 .wind-arrow-marker.wind-moderate { color: var(--wind-moderate); }
 .wind-arrow-marker.wind-strong { color: var(--wind-strong); }

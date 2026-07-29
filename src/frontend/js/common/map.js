@@ -279,13 +279,17 @@ export const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap'];
 // Upward-pointing arrow (north) used as the base glyph; rotated per wind direction.
 const WIND_ARROW_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2l6 9h-4v11h-4V11H6z"/></svg>';
 
-// Colour for wind below the rideable threshold: flat grey (not rideable, so it
-// must NOT read as green). Matches the app's "weak" wind class (< 12 kts).
+// Colour for no wind at all (< 5 kts): flat grey. Nothing is happening, so it
+// must not compete with the colours that mean something.
 const WIND_FIELD_GRAY = [100, 116, 139];
 
-// Gradient stops for rideable wind (>= 12 kts), in knots, aligned with the
-// app's wind classes. Green starts exactly at 12 kts; below that it stays grey.
+// Gradient stops in knots, cold -> warm. Grey (no wind) fades into blue for wind
+// that blows but is not rideable (5-11 kts), then green from exactly 12 kts up
+// (aligned with the app's wind classes), through amber to red.
 const WIND_FIELD_STOPS = [
+    { kt: 5, rgb: [100, 116, 139] },  // calm (grey) - start of the blue ramp
+    { kt: 8, rgb: [59, 130, 246] },   // light (blue)
+    { kt: 11, rgb: [34, 211, 238] },  // light (cyan), just below rideable
     { kt: 12, rgb: [46, 230, 109] },  // moderate (green)
     { kt: 18, rgb: [245, 158, 11] },  // strong (amber)
     { kt: 25, rgb: [245, 72, 74] },   // extreme (red)
@@ -293,8 +297,9 @@ const WIND_FIELD_STOPS = [
 ];
 
 /**
- * Map a wind speed (knots) to an [r,g,b] colour. Below 12 kts the field is grey
- * (not rideable); from 12 kts up it interpolates green -> amber -> red.
+ * Map a wind speed (knots) to an [r,g,b] colour. Below 5 kts the field is grey
+ * (no wind), 5-11 kts ramps through blue (blowing but not rideable), and from
+ * 12 kts up it interpolates green -> amber -> red.
  * @param {number} kt - Wind speed in knots
  * @returns {number[]} [r, g, b]
  */
@@ -369,7 +374,7 @@ export function createWindArrowLayer(spots, getConditions, buildPopup) {
             return;
         }
 
-        const windClass = weather.getWindClass(sample.wind);
+        const windClass = weather.getMapWindClass(sample.wind);
         // App convention: arrow points toward where the wind blows (N wind -> down),
         // so rotate the north-pointing base glyph by 180deg from the "from" angle.
         const rotation = (weather.getWindRotation(sample.direction) + 180) % 360;

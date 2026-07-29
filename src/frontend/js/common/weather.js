@@ -46,6 +46,22 @@ export function getWindClass(windValue) {
 }
 
 /**
+ * Get CSS class for wind intensity on the map. Unlike getWindClass it splits the
+ * sub-rideable range so the map reads as a cold -> warm scale: grey when there is
+ * effectively no wind, blue when it blows but is still not rideable.
+ * @param {number} windValue - Wind speed in knots
+ * @returns {string} CSS class name (wind-calm, wind-light, wind-moderate, wind-strong, wind-extreme)
+ */
+export function getMapWindClass(windValue) {
+    if (windValue < 5) {
+        return 'wind-calm';
+    } else if (windValue < 12) {
+        return 'wind-light';
+    }
+    return getWindClass(windValue);
+}
+
+/**
  * Get simple wind class for TV display (without 'wind-' prefix).
  * @param {number} wind - Wind speed in knots
  * @param {number} gusts - Gust speed in knots

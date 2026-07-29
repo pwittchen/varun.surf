@@ -2988,7 +2988,7 @@ function addMarkersToMap(spots) {
 
         const spotConditions = getSpotConditions(spot);
         const markerWindClass = spotConditions
-            ? weather.getWindClass(spotConditions.wind)
+            ? weather.getMapWindClass(spotConditions.wind)
             : 'wind-no-data';
 
         const markerIcon = L.divIcon({
