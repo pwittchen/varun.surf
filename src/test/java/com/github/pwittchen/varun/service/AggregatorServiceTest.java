@@ -5,6 +5,7 @@ import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
+import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
@@ -30,6 +31,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -775,6 +777,147 @@ class AggregatorServiceTest {
                 .map(m -> m.key())
                 .toList();
         assertThat(modelKeys).doesNotContain("average");
+    }
+
+    @Test
+    void shouldFetchCoordinatesOnStartupWithoutAnyApiCall() throws InterruptedException {
+        // given
+        var spot = createTestSpotWithLocation(123, "Test Spot");
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(googleMapsService.getCoordinates(any(Spot.class)))
+                .thenReturn(Mono.just(new Coordinates(54.0, 19.0)));
+
+        // when - nobody calls getSpots(), only the application starts
+        aggregatorService.init();
+        Thread.sleep(200);
+
+        // then
+        verify(googleMapsService).getCoordinates(any(Spot.class));
+
+        @SuppressWarnings("unchecked")
+        var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
+                ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
+        assertThat(coordinates).containsKey(123);
+    }
+
+    @Test
+    void shouldNotFetchIcmForecastsWhenVisionIsDisabled() {
+        // given
+        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", false);
+
+        // when
+        aggregatorService.fetchIcmForecastsEveryThreeHours();
+
+        // then
+        verify(icmForecastVisionService, never()).extractForecastFromMeteogram(any());
+    }
+
+    @Test
+    void shouldFetchIcmForecastsOnScheduleWithoutAnyApiCall() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
+
+        @SuppressWarnings("unchecked")
+        var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
+                ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
+        coordinates.put(123, new Coordinates(54.0, 19.0));
+
+        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(true);
+        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
+        when(icmForecastVisionService.extractForecastFromMeteogram("https://meteo.pl/icm"))
+                .thenReturn(Optional.of(icmForecast));
+
+        // when
+        aggregatorService.fetchIcmForecastsEveryThreeHours();
+
+        // then
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        assertThat(forecastCache.get(123).hourly(ForecastModel.ICM_METEO)).isEqualTo(icmForecast);
+
+        // and the on-demand discovery of the remaining models is not blocked by a fresh timestamp
+        @SuppressWarnings("unchecked")
+        var timestamps = (java.util.concurrent.ConcurrentMap<Integer, Long>)
+                ReflectionTestUtils.getField(aggregatorService, "hourlyForecastCacheTimestamps");
+        assertThat(timestamps).doesNotContainKey(123);
+    }
+
+    @Test
+    void shouldSkipIcmForecastsForCountriesOutsideTheIcmGrid() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
+        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(false);
+
+        // when
+        aggregatorService.fetchIcmForecastsEveryThreeHours();
+
+        // then
+        verify(icmForecastVisionService, never()).extractForecastFromMeteogram(any());
+    }
+
+    @Test
+    void shouldKeepIcmForecastWhenRefreshingGfsForecasts() throws Exception {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
+        var gfsDaily = List.of(new Forecast("Mon", 10.0, 20.0, "N", 15.0, 0.0, 0, 0));
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(forecastService.getForecastData(123))
+                .thenReturn(Mono.just(new ForecastData(gfsDaily, Map.of())));
+
+        aggregatorService.init();
+        Thread.sleep(100);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(ForecastModel.ICM_METEO, icmForecast)));
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        assertThat(forecastCache.get(123).hourly(ForecastModel.ICM_METEO)).isEqualTo(icmForecast);
+        assertThat(forecastCache.get(123).daily()).isEqualTo(gfsDaily);
+    }
+
+    private Spot createTestSpotWithLocation(int wgId, String name) {
+        var spot = createTestSpot(wgId, name);
+        return new Spot(
+                spot.name(),
+                spot.country(),
+                spot.windguruUrl(),
+                null,
+                null,
+                null,
+                null,
+                "https://maps.google.com/@54.0,19.0",
+                null,
+                new ArrayList<>(),
+                spot.forecast(),
+                spot.forecastHourly(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     private Spot createTestSpot(int wgId, String name) {

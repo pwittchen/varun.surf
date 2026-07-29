@@ -76,6 +76,8 @@ public class AggregatorService {
     private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
     private static final long AI_FETCH_INTERVAL_MS = 8 * 60 * 60 * 1000;          // 8 hours
     private static final long AI_INITIAL_DELAY_MS = 5 * 60 * 1000;                // 5 minutes
+    private static final long ICM_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;         // 3 hours
+    private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
 
     // Concurrency limits
@@ -165,7 +167,23 @@ public class AggregatorService {
                     spotsList.forEach(spot -> this.spots.put(spot.wgId(), spot));
                     log.info("Loaded {} spots", this.spots.size());
                     updateMetricsGauges();
+                    warmUpSpots();
                 }, error -> log.error("Failed to load spots", error));
+    }
+
+    /**
+     * Resolves everything that used to be resolved lazily on the first API call, so that a freshly
+     * started instance serves complete spots (coordinates, ICM URLs, photos) without waiting for a
+     * visitor to warm the caches up.
+     */
+    private void warmUpSpots() {
+        log.info("Warming up spots");
+        spots.values().forEach(spot -> {
+            spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
+            if (!locationCoordinates.containsKey(spot.wgId())) {
+                scheduleLocationCoordinatesFetch(spot);
+            }
+        });
     }
 
     private void updateMetricsGauges() {
@@ -425,13 +443,21 @@ public class AggregatorService {
                 .filter(pair -> pair.getValue1() != null && !pair.getValue1().daily().isEmpty())
                 .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
 
-        forecastCache.putAll(newForecasts);
+        // Merge instead of overwrite, so the models fetched outside this cycle (ICM, on-demand
+        // Windguru models) survive the periodic GFS refresh.
+        newForecasts.forEach((spotId, data) -> forecastCache.merge(spotId, data, AggregatorService::mergeForecastData));
 
         spots.replaceAll((_, spot) -> Optional
                 .ofNullable(forecastCache.get(spot.wgId()))
                 .map(data -> spot.withForecasts(data.daily(), Collections.emptyList()))
                 .orElse(spot)
         );
+    }
+
+    private static ForecastData mergeForecastData(ForecastData existing, ForecastData fresh) {
+        Map<ForecastModel, List<Forecast>> hourly = new HashMap<>(existing.hourly());
+        hourly.putAll(fresh.hourly());
+        return new ForecastData(fresh.daily(), hourly);
     }
 
     @Scheduled(fixedRate = CONDITIONS_FETCH_INTERVAL_MS)
@@ -499,6 +525,94 @@ public class AggregatorService {
         }
     }
 
+    /**
+     * Keeps ICM meteogram forecasts warm for every Polish/Czech spot. Without it ICM data appears
+     * only for spots someone has already opened, because it is otherwise fetched on demand.
+     */
+    @Scheduled(fixedRate = ICM_FETCH_INTERVAL_MS, initialDelay = ICM_INITIAL_DELAY_MS)
+    public void fetchIcmForecastsEveryThreeHours() {
+        if (!icmVisionEnabled) {
+            log.info("Fetching ICM forecasts is DISABLED");
+            return;
+        }
+        log.info("Fetching ICM forecasts");
+        fetchIcmForecasts();
+    }
+
+    @Async
+    public void fetchIcmForecasts() {
+        List<Spot> icmSpots = spots
+                .values()
+                .stream()
+                .filter(spot -> icmGridMapper.isCountrySupported(spot.country()))
+                .toList();
+
+        if (icmSpots.isEmpty()) {
+            log.info("No spots covered by the ICM grid");
+            return;
+        }
+
+        try (var scope = openScope("icmForecasts")) {
+            var tasks = icmSpots
+                    .stream()
+                    .map(spot -> scope.fork(() -> {
+                        discoveryLimiter.acquire();
+                        try {
+                            int spotId = spot.wgId();
+                            Optional<String> icmUrl = resolveIcmUrl(spotId, spot);
+                            if (icmUrl.isEmpty()) {
+                                return Pair.with(spotId, Optional.<List<Forecast>>empty());
+                            }
+                            return Pair.with(spotId, fetchIcmForecast(icmUrl.get()));
+                        } finally {
+                            discoveryLimiter.release();
+                        }
+                    }))
+                    .toList();
+
+            try {
+                scope.join();
+            } catch (Exception e) {
+                log.error("Error while fetching ICM forecasts", e);
+                return;
+            }
+
+            long updated = tasks
+                    .stream()
+                    .filter(task -> task.state() == Subtask.State.SUCCESS)
+                    .map(Subtask::get)
+                    .filter(pair -> updateIcmForecast(pair.getValue0(), pair.getValue1()))
+                    .count();
+
+            log.info("ICM forecasts fetched for {} of {} spots", updated, icmSpots.size());
+        }
+    }
+
+    private Optional<List<Forecast>> fetchIcmForecast(String icmUrl) {
+        return icmForecastVisionService
+                .extractForecastFromMeteogram(icmUrl)
+                .filter(forecasts -> !forecasts.isEmpty());
+    }
+
+    /**
+     * Merges ICM forecasts into the cached forecast data of a spot, leaving the other models and the
+     * daily forecast untouched. Deliberately does not touch hourlyForecastCacheTimestamps, so opening
+     * a spot still triggers the discovery of the remaining Windguru models.
+     */
+    private boolean updateIcmForecast(int spotId, Optional<List<Forecast>> forecasts) {
+        if (forecasts.isEmpty()) {
+            return false;
+        }
+        forecastCache.compute(spotId, (_, existing) -> {
+            Map<ForecastModel, List<Forecast>> hourly = existing != null
+                    ? new HashMap<>(existing.hourly())
+                    : new HashMap<>();
+            hourly.put(ForecastModel.ICM_METEO, forecasts.get());
+            return new ForecastData(existing != null ? existing.daily() : List.of(), hourly);
+        });
+        return true;
+    }
+
     @Async
     public void fetchForecastsForAllModels(int spotId) {
         if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
@@ -550,12 +664,10 @@ public class AggregatorService {
                         tasks.add(scope.fork(() -> {
                             discoveryLimiter.acquire();
                             try {
-                                var forecasts = icmForecastVisionService.extractForecastFromMeteogram(icmUrl.get());
-                                if (forecasts.isPresent()) {
-                                    Map<ForecastModel, List<Forecast>> hourlyMap = Map.of(ForecastModel.ICM_METEO, forecasts.get());
-                                    return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), hourlyMap));
-                                }
-                                return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), Map.of()));
+                                Map<ForecastModel, List<Forecast>> hourlyMap = fetchIcmForecast(icmUrl.get())
+                                        .<Map<ForecastModel, List<Forecast>>>map(f -> Map.of(ForecastModel.ICM_METEO, f))
+                                        .orElseGet(Map::of);
+                                return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), hourlyMap));
                             } finally {
                                 discoveryLimiter.release();
                             }

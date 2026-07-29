@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -16,6 +17,9 @@ import java.util.concurrent.ConcurrentMap;
 public class IcmGridMapper {
     private static final Logger log = LoggerFactory.getLogger(IcmGridMapper.class);
     private static final String ICM_URL_FORMAT = "https://www.meteo.pl/um/metco/mgram_pict.php?ntype=0u&row=%d&col=%d&lang=pl";
+
+    // The ICM grid covers only Poland and the Czech Republic
+    private static final Set<String> SUPPORTED_COUNTRIES = Set.of("Poland", "Czech Republic");
 
     // Empirically fitted for Poland + the Czech Republic (UM 4 km grid)
     private static final double ROW_A = -27.52;
@@ -37,12 +41,19 @@ public class IcmGridMapper {
     }
 
     /**
+     * Tells whether the ICM UM 4 km grid covers the given country.
+     * Lets callers skip spots that can never have a meteogram before resolving their coordinates.
+     */
+    public boolean isCountrySupported(String country) {
+        return SUPPORTED_COUNTRIES.contains(country);
+    }
+
+    /**
      * Converts lat/lon coordinates to ICM meteogram URL.
      * Snaps to the nearest valid grid point since the ICM grid is sparse.
      */
     public Optional<String> toIcmUrl(double lat, double lon, String country) {
-        // ICM grid is only available for Poland and the Czech Republic, so we can use it only for those countries
-        if (!country.equals("Poland") && !country.equals("Czech Republic")) {
+        if (!isCountrySupported(country)) {
             return Optional.empty();
         }
         final IcmGrid approximateGrid = toRowCol(lat, lon);
