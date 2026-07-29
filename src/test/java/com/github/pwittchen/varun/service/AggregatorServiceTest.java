@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -798,6 +799,55 @@ class AggregatorServiceTest {
         var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
                 ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
         assertThat(coordinates).containsKey(123);
+    }
+
+    @Test
+    void shouldResolveIcmUrlOnStartupWithoutAnyApiCall() throws InterruptedException {
+        // given
+        var spot = createTestSpotWithLocation(123, "Test Spot");
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(googleMapsService.getCoordinates(any(Spot.class)))
+                .thenReturn(Mono.just(new Coordinates(54.0, 19.0)));
+        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
+
+        // when - nobody calls getSpots(), only the application starts
+        aggregatorService.init();
+        Thread.sleep(200);
+
+        // then
+        verify(icmGridMapper).toIcmUrl(54.0, 19.0, "Poland");
+
+        @SuppressWarnings("unchecked")
+        var icmUrls = (java.util.concurrent.ConcurrentMap<Integer, String>)
+                ReflectionTestUtils.getField(aggregatorService, "icmUrls");
+        assertThat(icmUrls).containsEntry(123, "https://meteo.pl/icm");
+    }
+
+    @Test
+    void shouldServeCachedIcmUrlWithoutResolvingTheGridWhileServingSpots() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
+                ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
+        coordinates.put(123, new Coordinates(54.0, 19.0));
+
+        @SuppressWarnings("unchecked")
+        var icmUrls = (java.util.concurrent.ConcurrentMap<Integer, String>)
+                ReflectionTestUtils.getField(aggregatorService, "icmUrls");
+        icmUrls.put(123, "https://meteo.pl/icm");
+
+        // when
+        var result = aggregatorService.getSpots();
+
+        // then - the grid is never validated over HTTP while a request is being served
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).icmUrl()).isEqualTo("https://meteo.pl/icm");
+        verify(icmGridMapper, never()).toIcmUrl(anyDouble(), anyDouble(), any());
     }
 
     @Test

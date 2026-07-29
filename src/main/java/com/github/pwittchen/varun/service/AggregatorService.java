@@ -100,6 +100,7 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, Coordinates> locationCoordinates;
+    private final ConcurrentMap<Integer, String> icmUrls;
     private final ConcurrentMap<Integer, String> spotPhotos;
 
     private final SpotsDataProvider spotsDataProvider;
@@ -119,6 +120,7 @@ public class AggregatorService {
     private final Semaphore aiLimiter = new Semaphore(AI_SEMAPHORE_PERMITS);
     private final Semaphore discoveryLimiter = new Semaphore(DISCOVERY_SEMAPHORE_PERMITS);
     private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
+    private final ConcurrentMap<Integer, Disposable> icmUrlResolutionSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
 
     public AggregatorService(
@@ -140,7 +142,9 @@ public class AggregatorService {
         this.aiAnalysisPl = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.locationCoordinatesFetchSubscriptions = new ConcurrentHashMap<>();
+        this.icmUrlResolutionSubscriptions = new ConcurrentHashMap<>();
         this.locationCoordinates = new ConcurrentHashMap<>();
+        this.icmUrls = new ConcurrentHashMap<>();
         this.spotPhotos = new ConcurrentHashMap<>();
         this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -180,8 +184,12 @@ public class AggregatorService {
         log.info("Warming up spots");
         spots.values().forEach(spot -> {
             spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
-            if (!locationCoordinates.containsKey(spot.wgId())) {
+            var coords = locationCoordinates.get(spot.wgId());
+            if (coords == null) {
+                // the ICM URL is resolved as soon as the coordinates arrive
                 scheduleLocationCoordinatesFetch(spot);
+            } else if (!icmUrls.containsKey(spot.wgId())) {
+                scheduleIcmUrlResolution(spot, coords);
             }
         });
     }
@@ -203,6 +211,8 @@ public class AggregatorService {
         }
         locationCoordinatesFetchSubscriptions.values().forEach(Disposable::dispose);
         locationCoordinatesFetchSubscriptions.clear();
+        icmUrlResolutionSubscriptions.values().forEach(Disposable::dispose);
+        icmUrlResolutionSubscriptions.clear();
     }
 
     public List<Spot> getSpots() {
@@ -330,9 +340,12 @@ public class AggregatorService {
         var coords = locationCoordinates.get(spot.wgId());
         if (coords != null) {
             enrichedSpot = enrichedSpot.withCoordinates(coords);
-            var icmUrl = icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
-            if (icmUrl.isPresent()) {
-                enrichedSpot = enrichedSpot.withIcmUrl(icmUrl.get());
+            // Only the cached value, resolving it validates ICM grid points over HTTP
+            var icmUrl = icmUrls.get(spot.wgId());
+            if (icmUrl != null) {
+                enrichedSpot = enrichedSpot.withIcmUrl(icmUrl);
+            } else {
+                scheduleIcmUrlResolution(spot, coords);
             }
         } else {
             scheduleLocationCoordinatesFetch(spot);
@@ -350,11 +363,42 @@ public class AggregatorService {
         locationCoordinatesFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
                 loadCoordinates(spot)
                         .subscribeOn(Schedulers.boundedElastic())
-                        .doOnNext(c -> locationCoordinates.put(id, c))
+                        .doOnNext(c -> {
+                            locationCoordinates.put(id, c);
+                            resolveAndCacheIcmUrl(id, spot, c);
+                        })
                         .doOnError(error -> log.warn("Coordinates fetch failed for spot {}", id, error))
                         .doFinally(_ -> locationCoordinatesFetchSubscriptions.remove(id))
                         .subscribe()
         );
+    }
+
+    /**
+     * Resolves the ICM meteogram URL off the request path. Snapping coordinates to a valid ICM grid
+     * point costs a few HTTP calls, so it must never happen while serving a spot.
+     */
+    private void scheduleIcmUrlResolution(final Spot spot, final Coordinates coords) {
+        if (!icmGridMapper.isCountrySupported(spot.country())) {
+            return;
+        }
+        icmUrlResolutionSubscriptions.computeIfAbsent(spot.wgId(), id ->
+                Mono.fromRunnable(() -> resolveAndCacheIcmUrl(id, spot, coords))
+                        .subscribeOn(Schedulers.boundedElastic())
+                        .doOnError(error -> log.warn("ICM URL resolution failed for spot {}", id, error))
+                        .onErrorComplete()
+                        .doFinally(_ -> icmUrlResolutionSubscriptions.remove(id))
+                        .subscribe()
+        );
+    }
+
+    private Optional<String> resolveAndCacheIcmUrl(int spotId, Spot spot, Coordinates coords) {
+        String cached = icmUrls.get(spotId);
+        if (cached != null) {
+            return Optional.of(cached);
+        }
+        Optional<String> icmUrl = icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
+        icmUrl.ifPresent(url -> icmUrls.put(spotId, url));
+        return icmUrl;
     }
 
     private Mono<Coordinates> loadCoordinates(Spot spot) {
@@ -689,6 +733,10 @@ public class AggregatorService {
     }
 
     private Optional<String> resolveIcmUrl(int spotId, Spot spot) {
+        String cached = icmUrls.get(spotId);
+        if (cached != null) {
+            return Optional.of(cached);
+        }
         Coordinates coords = locationCoordinates.get(spotId);
         if (coords == null) {
             log.info("Coordinates not cached for spot {}, loading synchronously for ICM resolution", spotId);
@@ -700,7 +748,7 @@ public class AggregatorService {
         if (coords == null) {
             return Optional.empty();
         }
-        return icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
+        return resolveAndCacheIcmUrl(spotId, spot, coords);
     }
 
     private boolean isHourlyForecastCacheTimestampNotExpired(int spotId) {
