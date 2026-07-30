@@ -33,12 +33,14 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
-    void shouldReturnTrueForTurawaWgId() {
-        assertThat(strategy.canProcess(726)).isTrue();
+    void shouldReturnTrueForTurawaSouthWgId() {
+        assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Południe"))).isTrue();
     }
 
     @Test
     void shouldReturnFalseForOtherWgIds() {
+        // the northern shore is served by the airmax station
+        assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Północ"))).isFalse();
         assertThat(strategy.canProcess(859182)).isFalse();
         assertThat(strategy.canProcess(999999)).isFalse();
     }
@@ -50,7 +52,7 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
 
     @Test
     void shouldReturnCorrectUrl() {
-        assertThat(strategy.getUrl(726)).isEqualTo(
+        assertThat(strategy.getUrl(SpotsJson.wgIdOf("Turawa Południe"))).isEqualTo(
                 "https://api.weather.com/v2/pws/observations/current"
                         + "?stationId=ISZCZE187&format=json&units=m&apiKey=test-api-key");
     }

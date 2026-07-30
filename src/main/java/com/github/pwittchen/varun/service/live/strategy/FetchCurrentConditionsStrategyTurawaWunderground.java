@@ -15,16 +15,19 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Primary strategy for fetching current conditions for Turawa Lake
+ * Strategy for fetching current conditions for the southern shore of Turawa Lake
  * from the ISZCZE187 personal weather station in Szczedrzyk available on
  * <a href="https://www.wunderground.com/dashboard/pws/ISZCZE187">Weather Underground</a>.
- * When this station is unavailable or returns stale data,
- * {@link FetchCurrentConditionsStrategyTurawa} (airmax.pl) is used as a fallback.
+ * The station sits on the southern shore, so it serves the "Turawa Południe" spot,
+ * while the northern shore ("Turawa Północ") is covered by
+ * {@link FetchCurrentConditionsStrategyTurawa} (airmax.pl).
  */
 @Component
 public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
 
-    private static final int TURAWA_WG_ID = 726;
+    // generated ID of the "Turawa Południe" spot,
+    // which shares the Windguru forecast point with "Turawa Północ"
+    private static final int TURAWA_SOUTH_WG_ID = 9387270;
     private static final String STATION_ID = "ISZCZE187";
     private static final String OBSERVATIONS_URL =
             "https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&apiKey=%s";
@@ -47,7 +50,7 @@ public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurre
 
     @Override
     public boolean canProcess(int wgId) {
-        return wgId == TURAWA_WG_ID;
+        return wgId == TURAWA_SOUTH_WG_ID;
     }
 
     @Override

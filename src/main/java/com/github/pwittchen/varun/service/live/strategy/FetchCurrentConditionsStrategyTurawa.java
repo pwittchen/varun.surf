@@ -15,10 +15,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Fallback strategy for fetching current conditions for Turawa Lake available
+ * Strategy for fetching current conditions for the northern shore of Turawa Lake available
  * on the <a href="https://airmax.pl/kamery/turawa">Airmax</a> website.
- * This strategy serves as a backup when the primary Weather Underground ISZCZE187 station
- * is unavailable or returns stale data.
+ * The southern shore ("Turawa Południe") is covered by
+ * {@link FetchCurrentConditionsStrategyTurawaWunderground} (Weather Underground ISZCZE187).
  */
 @Component
 public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditionsStrategyBase implements FetchCurrentConditions {
@@ -39,11 +39,6 @@ public class FetchCurrentConditionsStrategyTurawa extends FetchCurrentConditions
     @Override
     public boolean canProcess(int wgId) {
         return wgId == TURAWA_WG_ID;
-    }
-
-    @Override
-    public boolean isFallbackStation() {
-        return true;
     }
 
     @Override

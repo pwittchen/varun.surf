@@ -477,7 +477,7 @@
     }
   },
   {
-    "name": "Turawa",
+    "name": "Turawa Północ",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/726",
     "windfinderUrl": "https://www.windfinder.com/forecast/jezioro_turawskie",
@@ -485,23 +485,54 @@
     "locationUrl": "https://maps.app.goo.gl/cmZTqjfZfNvBjhV38",
     "spotInfo": {
       "type": "Lake",
-      "bestWind": "S, SW (North Coast), NW (South Coast)",
+      "bestWind": "S, SW",
       "waterTemp": "10-20°C",
       "experience": "Advanced",
       "launch": "Small beaches",
       "hazards": "Trees on shore, gusty wind, wind shadow behind the pier",
       "season": "April-October",
-      "description": "Opole region lake popular with local windsurfers and kiters."
+      "description": "North shore of the Opole region lake, popular with local windsurfers and kiters. Works with winds from the southern sector."
     },
     "spotInfoPL": {
       "type": "Jezioro",
-      "bestWind": "S, SW (brzeg północny), NW (brzeg południowy)",
+      "bestWind": "S, SW",
       "waterTemp": "10-20°C",
       "experience": "Zaawansowany",
       "launch": "Małe plaże",
       "hazards": "Drzewa na brzegu, porywisty wiatr, cienie wiatrowe za molo",
       "season": "Kwiecień-Październik",
-      "description": "Jezioro w regionie opolskim popularne wśród lokalnych windsurferów i kitesurferów."
+      "description": "Północny brzeg jeziora w regionie opolskim, popularny wśród lokalnych windsurferów i kitesurferów. Działa przy wiatrach z sektora południowego."
+    }
+  },
+  {
+    "name": "Turawa Południe",
+    "country": "Poland",
+    "windguruUrl": "",
+    "windguruFallbackUrl": "https://www.windguru.cz/726",
+    "windfinderUrl": "https://www.windfinder.com/forecast/jezioro_turawskie",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.7097,18.1261",
+    "spotInfo": {
+      "type": "Lake, water reservoir",
+      "bestWind": "N, NW, W",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide sandy beach near the Jowisz and Peters resorts",
+      "hazards": "Water level changes a lot during the season (shallows disappear and the beach floods when the reservoir is full), shallow and muddy bottom in places, cyanobacteria blooms in summer",
+      "season": "April-October",
+      "description": "Southern shore of Lake Turawa near Szczedrzyk, the side of the reservoir to pick when the wind blows from the northern sector. The shoreline is open and free of trees, so the wind is cleaner and less gusty than on the wooded north coast, and the shallow flats make it a friendly place to learn when the water level is low.",
+      "llmComment": "This is the north-sector counterpart of the Turawa Północ spot on the north shore. N and NW winds are side-onshore here and give the flattest water in the whole reservoir. Water level is the key variable: at a low level there are waist-deep flats good for learning, at a high level the beach is flooded and the spot mostly disappears. Local riders consider Windguru and Windfinder unreliable for this lake and prefer the ICM model. Cyanobacteria blooms are common in mid-summer."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, zbiornik retencyjny",
+      "bestWind": "N, NW, W",
+      "waterTemp": "10-20°C",
+      "experience": "Początkujący do średniozaawansowanego",
+      "launch": "Szeroka piaszczysta plaża przy ośrodkach Jowisz i Peters",
+      "hazards": "Mocno zmienny poziom wody w sezonie (przy pełnym zbiorniku płycizny znikają, a plaża jest zalana), miejscami płytkie i muliste dno, sinice latem",
+      "season": "Kwiecień-Październik",
+      "description": "Południowy brzeg Jeziora Turawskiego w okolicy Szczedrzyka, czyli strona zbiornika wybierana przy wiatrach z sektora północnego. Brzeg jest otwarty i pozbawiony drzew, więc wiatr jest czystszy i mniej porywisty niż na zalesionym brzegu północnym, a płycizny sprzyjają nauce przy niskim stanie wody.",
+      "llmComment": "To odpowiednik spotu Turawa Północ na wiatry z sektora północnego. Wiatry N i NW są tu boczno-dopychające i dają najbardziej płaską wodę na całym zbiorniku. Kluczowy jest stan wody: przy niskim poziomie są płycizny po pas idealne do nauki, przy wysokim plaża jest zalana i spot praktycznie znika. Lokalni uważają Windguru i Windfinder za mało wiarygodne dla tego akwenu i polecają model ICM. W pełni lata często pojawiają się sinice."
     }
   },
   {

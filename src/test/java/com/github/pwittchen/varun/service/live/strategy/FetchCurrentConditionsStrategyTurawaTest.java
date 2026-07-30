@@ -33,18 +33,20 @@ class FetchCurrentConditionsStrategyTurawaTest {
 
     @Test
     void shouldReturnTrueForTurawaWgId() {
-        assertThat(strategy.canProcess(726)).isTrue();
+        assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Północ"))).isTrue();
     }
 
     @Test
     void shouldReturnFalseForOtherWgIds() {
+        // the southern shore is served by the Weather Underground station
+        assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Południe"))).isFalse();
         assertThat(strategy.canProcess(859182)).isFalse();
         assertThat(strategy.canProcess(999999)).isFalse();
     }
 
     @Test
-    void shouldReturnTrueForIsFallbackStation() {
-        assertThat(strategy.isFallbackStation()).isTrue();
+    void shouldNotBeFallbackStation() {
+        assertThat(strategy.isFallbackStation()).isFalse();
     }
 
     @Test
