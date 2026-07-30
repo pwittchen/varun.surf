@@ -68,6 +68,8 @@ export const translations = {
         footerOpenSource: "open-source",
         footerChangelog: "changelog",
         footerStatus: "status",
+        footerSources: "sources",
+        footerMcp: "mcp",
         footerLlms: "llms.txt",
 
         // Days of the week (short forms as they appear in the forecast)
@@ -348,6 +350,8 @@ export const translations = {
         footerOpenSource: "open-source",
         footerChangelog: "historia zmian",
         footerStatus: "status",
+        footerSources: "źródła",
+        footerMcp: "mcp",
         footerLlms: "llms.txt",
 
         // Days of the week (short forms as they appear in the forecast)

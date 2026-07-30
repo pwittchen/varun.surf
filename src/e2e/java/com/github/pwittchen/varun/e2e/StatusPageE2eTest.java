@@ -83,11 +83,31 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have refresh status button")
+    @DisplayName("Should have the shared navigation with the current page highlighted")
+    void shouldHaveTheSharedNavigationWithTheCurrentPageHighlighted() {
+        navigateToStatusPage();
+
+        Locator actions = page.locator(".status-actions a");
+        actions.first().waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(actions.allTextContents().stream().map(String::trim).toList())
+            .containsExactly("Status", "Sources", "MCP", "Metrics", "Logs", "Dashboard")
+            .inOrder();
+
+        Locator active = page.locator(".status-actions a.active");
+        assertThat(active.count()).isEqualTo(1);
+        assertThat(active.getAttribute("href")).isEqualTo("/status");
+        assertThat(active.getAttribute("aria-current")).isEqualTo("page");
+    }
+
+    @Test
+    @DisplayName("Should have refresh status button in the header card")
     void shouldHaveRefreshStatusButton() {
         navigateToStatusPage();
 
-        Locator refreshButton = page.locator("#refresh-status");
+        Locator refreshButton = page.locator(".status-header-actions #refresh-status");
         refreshButton.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
@@ -117,6 +137,57 @@ class StatusPageE2eTest extends BaseE2eTest {
 
         String currentUrl = page.url();
         assertThat(currentUrl.startsWith(BASE_URL)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should navigate to sources page from status actions")
+    void shouldNavigateToSourcesPageFromStatusActions() {
+        navigateToStatusPage();
+
+        Locator sourcesLink = page.locator(".status-actions a[href='/sources']");
+        sourcesLink.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        sourcesLink.click();
+
+        page.waitForURL(BASE_URL + "/sources",
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
+
+        assertThat(page.title()).contains("Sources");
+    }
+
+    @Test
+    @DisplayName("Should navigate to mcp page from status actions")
+    void shouldNavigateToMcpPageFromStatusActions() {
+        navigateToStatusPage();
+
+        Locator mcpLink = page.locator(".status-actions a[href='/mcp']");
+        mcpLink.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        mcpLink.click();
+
+        page.waitForURL(BASE_URL + "/mcp",
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
+
+        assertThat(page.title()).contains("MCP Server");
+    }
+
+    @Test
+    @DisplayName("Should have sources and mcp links in the footer")
+    void shouldHaveSourcesAndMcpLinksInTheFooter() {
+        navigateToStatusPage();
+
+        Locator sourcesFooterLink = page.locator(".footer-content a[href='/sources']");
+        Locator mcpFooterLink = page.locator(".footer-content a[href='/mcp']");
+        sourcesFooterLink.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(sourcesFooterLink.isVisible()).isTrue();
+        assertThat(mcpFooterLink.isVisible()).isTrue();
     }
 
     @Test

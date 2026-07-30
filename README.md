@@ -113,6 +113,7 @@ To do that, follow the instructions below.
 ## monitoring
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.
+Data sources are listed on the [/sources](https://varun.surf/sources) page.
 
 ### actuator metrics
 
@@ -326,7 +327,8 @@ claude mcp list
 
 You can now ask Claude things like *"what's the wind forecast for Jastarnia tomorrow?"* or *"list all kite spots in Spain"*, and it will call the relevant tool on the varun.surf MCP server.
 
-The status page at [/status](https://varun.surf/status) also displays the live MCP endpoint URL and a one-click copy of the install command.
+The [/mcp](https://varun.surf/mcp) page displays the live MCP endpoint URL, a ready-to-use JSON config
+and a one-click copy of the install command, along with the list of available tools.
 
 ### configuration
 
@@ -366,7 +368,7 @@ All responses are served as `text/markdown; charset=UTF-8` and use the same in-m
 
 Forecasts come from [Windguru](https://www.windguru.cz), [Windfinder](https://www.windfinder.com)
 and [ICM Meteo](https://www.meteo.pl). Live wind comes from the weather stations listed on the
-[status page](https://varun.surf/status), which also lists the sources behind the spot
+[sources page](https://varun.surf/sources), which also lists the sources behind the spot
 database itself:
 
 | Source | Contribution |

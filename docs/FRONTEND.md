@@ -33,11 +33,15 @@ varun.surf/
 │   │   └── page/
 │   │       ├── index.js           # Dashboard page logic
 │   │       ├── spot.js            # Single spot page logic
-│   │       └── status.js          # Status page logic
+│   │       ├── status.js          # Status page logic
+│   │       ├── sources.js         # Data sources page logic
+│   │       └── mcp.js             # MCP server page logic
 │   ├── html/                      # HTML templates
 │   │   ├── index.html             # Dashboard page template
 │   │   ├── spot.html              # Single spot page template
-│   │   └── status.html            # Status page template
+│   │   ├── status.html            # Status page template
+│   │   ├── sources.html           # Data sources page template
+│   │   └── mcp.html               # MCP server page template
 │   ├── css/                       # Stylesheets
 │   │   └── styles.css             # Global styles
 │   ├── images/                    # Spot photos
@@ -52,6 +56,8 @@ varun.surf/
 │   ├── index.html                 # Dashboard page (130KB minified)
 │   ├── spot.html                  # Single spot page (104KB minified)
 │   ├── status.html                # Status page (48KB minified)
+│   ├── sources.html               # Data sources page
+│   ├── mcp.html                   # MCP server page
 │   ├── logo.png                   # Brand logo
 │   ├── ai.txt                     # AI crawler instructions
 │   ├── llms.txt                   # LLM-friendly site info
@@ -168,6 +174,37 @@ DOM Manipulation (vanilla JS)
 - `renderMetricsCharts()` - Canvas-based charts for metrics history
 - Password authentication via `X-Metrics-Password` header
 - Auto-refresh with 30s interval
+
+#### 4. Sources Page (`sources.html`)
+**URL Pattern**:
+- `/sources` - External data sources used by the application
+
+**Features**:
+- Spots data sources (links to the providers behind `spots.json`)
+- Forecast sources with live health checks (green/red dots + latency)
+- Live weather station sources
+- Auto-refresh every 30 seconds
+
+**JavaScript Logic** (`page/sources.js`):
+- `checkSources()` - Get sources from `/api/v1/status/sources`
+- `renderSources()` - Render health-checked sources with status dots
+- `renderStationLinks()` - Render link-only source lists
+
+#### 5. MCP Page (`mcp.html`)
+**URL Pattern**:
+- `/mcp` - Model Context Protocol server configuration
+
+**Features**:
+- SSE endpoint URL, resolved from `window.location.origin`
+- Claude Code install command and JSON client config, both copyable
+- List of tools exposed by the MCP server
+
+**JavaScript Logic** (`page/mcp.js`):
+- `initMcpConfig()` - Build endpoint/command/JSON config for the current origin
+  and wire up the copy-to-clipboard buttons
+
+> Note: only the exact `/mcp` path serves this page. The MCP server itself is
+> exposed by Spring AI under `/mcp/sse` and `/mcp/message`.
 
 ### Core JavaScript Modules
 
@@ -479,6 +516,8 @@ function updateUrlForStarred() {
 - `/starred` → Favorites view
 - `/spot/123` → Single spot detail (spot ID 123)
 - `/status` → System status page
+- `/sources` → Data sources page
+- `/mcp` → MCP server configuration page
 
 **Popstate Handling**:
 ```javascript

@@ -92,6 +92,36 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> sourcesRouter() {
+        return RouterFunctions.route(
+                GET("/sources"),
+                _ -> {
+                    Resource sourcesHtml = new ClassPathResource("static/sources.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(sourcesHtml);
+                }
+        );
+    }
+
+    // NOTE: only the exact /mcp path serves this page; the MCP server itself is
+    // exposed under /mcp/sse and /mcp/message by Spring AI.
+    @Bean
+    public RouterFunction<ServerResponse> mcpPageRouter() {
+        return RouterFunctions.route(
+                GET("/mcp"),
+                _ -> {
+                    Resource mcpHtml = new ClassPathResource("static/mcp.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(mcpHtml);
+                }
+        );
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> metricsRouter() {
         return RouterFunctions.route(
                 GET("/metrics"),

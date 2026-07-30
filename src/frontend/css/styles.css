@@ -4381,6 +4381,18 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     text-align: center;
 }
 
+/* Current page in the bottom navigation */
+.status-actions .btn.active {
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    font-weight: 600;
+    cursor: default;
+}
+
+.status-actions .btn.active:hover {
+    background: var(--bg-secondary);
+}
+
 @media (max-width: 480px) {
     .status-actions {
         flex-direction: column;
@@ -4466,21 +4478,86 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     border-color: var(--status-up);
 }
 
-.mcp-tools-hint {
-    color: var(--text-secondary);
-    font-size: 0.8125rem;
-    margin: 16px 0 0 0;
-    line-height: 1.6;
-}
-
-.mcp-tools-hint code {
+.mcp-description code {
     background: var(--bg-primary);
     border: 1px solid var(--border-primary);
     border-radius: 3px;
     padding: 1px 6px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    font-size: 0.8125rem;
+    color: var(--text-primary);
+}
+
+/* MCP JSON config block */
+.mcp-code-block {
+    align-items: flex-start;
+}
+
+.mcp-code-block pre {
+    flex: 1;
+    margin: 0;
+    overflow-x: auto;
+}
+
+.mcp-code-block pre code {
+    display: block;
+    white-space: pre;
+    word-break: normal;
+}
+
+/* MCP tools list */
+.mcp-tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mcp-tool {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.mcp-tool:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.mcp-tool-name {
+    color: var(--text-primary);
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    font-size: 0.875rem;
+    align-self: flex-start;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 3px;
+    padding: 2px 8px;
+}
+
+.mcp-tool-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.mcp-tool-description code {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
     font-size: 0.75rem;
     color: var(--text-primary);
+}
+
+/* Sources page */
+.sources-description {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin: 0 0 16px 0;
 }
 
 @media (max-width: 480px) {

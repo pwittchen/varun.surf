@@ -179,105 +179,13 @@ function renderHealthHistory(data) {
 }
 
 // ============================================================================
-// EXTERNAL SOURCE HEALTH CHECK FUNCTIONS
+// STATUS REFRESH
 // ============================================================================
-
-async function checkSources() {
-    try {
-        const response = await fetch('/api/v1/status/sources', { credentials: 'same-origin' });
-        if (!response.ok) {
-            throw new Error('Failed to fetch sources');
-        }
-        const data = await response.json();
-        renderSources('forecast-sources', data.forecastSources);
-        renderStationLinks('live-station-sources', data.liveStationSources);
-        renderStationLinks('spots-data-sources', data.spotsDataSources);
-    } catch (error) {
-        console.error('Error checking sources:', error);
-    }
-}
-
-function renderSources(containerId, sources) {
-    const container = document.getElementById(containerId);
-    if (!sources || sources.length === 0) {
-        container.innerHTML = '<div class="status-endpoint"><span>No sources available</span></div>';
-        return;
-    }
-
-    container.innerHTML = sources.map(source => {
-        const dotClass = source.ok ? 'status-endpoint-dot status-endpoint-dot-up' : 'status-endpoint-dot status-endpoint-dot-down';
-        const statusText = source.ok
-            ? `<span class="status-endpoint-text">operational</span> <span class="status-endpoint-latency">(${source.latencyMs}ms)</span>`
-            : '<span class="status-endpoint-text">unreachable</span>';
-
-        return `
-            <div class="status-endpoint">
-                <div class="status-endpoint-info">
-                    <span class="${dotClass}"></span>
-                    <span class="status-endpoint-name">${source.name} <a href="${source.url}" target="_blank" rel="noopener noreferrer" class="source-link">${source.displayUrl}</a></span>
-                </div>
-                <span class="status-endpoint-status">${statusText}</span>
-            </div>
-        `;
-    }).join('');
-}
-
-function renderStationLinks(containerId, sources) {
-    const container = document.getElementById(containerId);
-    if (!sources || sources.length === 0) {
-        container.innerHTML = '<div class="status-endpoint"><span>No sources available</span></div>';
-        return;
-    }
-
-    container.innerHTML = sources.map(source => `
-        <div class="status-endpoint">
-            <div class="status-endpoint-info">
-                <span class="status-endpoint-name">${source.name} <a href="${source.url}" target="_blank" rel="noopener noreferrer" class="source-link">${source.displayUrl}</a></span>
-            </div>
-        </div>
-    `).join('');
-}
 
 async function refreshStatus() {
     await fetchStatus();
     await checkAllEndpoints();
-    await checkSources();
     await fetchHealthHistory();
-}
-
-// ============================================================================
-// MCP SERVER CARD
-// ============================================================================
-
-function initMcpCard() {
-    const origin = window.location.origin;
-    const sseUrl = `${origin}/mcp/sse`;
-    const installCmd = `claude mcp add --transport sse varun-surf ${sseUrl}`;
-
-    const endpointEl = document.getElementById('mcp-endpoint-url');
-    const installEl = document.getElementById('mcp-install-cmd');
-    if (endpointEl) endpointEl.textContent = sseUrl;
-    if (installEl) installEl.textContent = installCmd;
-
-    document.querySelectorAll('.mcp-copy-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const targetId = btn.getAttribute('data-copy-target');
-            const target = document.getElementById(targetId);
-            if (!target) return;
-            try {
-                await navigator.clipboard.writeText(target.textContent);
-                const original = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 1500);
-            } catch (err) {
-                console.error('Failed to copy', err);
-            }
-        });
-    });
 }
 
 // ============================================================================
@@ -290,9 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerTitle) {
         headerTitle.addEventListener('click', routing.navigateToHome);
     }
-
-    // MCP card setup
-    initMcpCard();
 
     // Initial load
     refreshStatus();

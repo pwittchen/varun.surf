@@ -408,6 +408,8 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Custom metrics dashboard (/api/v1/metrics)
 - [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
 - [x] Status page with uptime and stats
+- [x] Sources page (/sources) with spots, forecast and live station data sources
+- [x] MCP server page (/mcp) with endpoint, install command and JSON config
 - [x] Health check history (90 data points, 1-minute intervals)
 - [x] Session cookie authentication (API access gated behind SESSION cookie)
 - [x] Hero section with random spot photo, name/location, and slogan (EN/PL)
