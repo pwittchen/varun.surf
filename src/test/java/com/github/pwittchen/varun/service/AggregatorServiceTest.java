@@ -28,10 +28,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,6 +46,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AggregatorServiceTest {
+
+    private static final Duration AWAIT_TIMEOUT = Duration.ofSeconds(10);
 
     @Mock
     private SpotsDataProvider spotsDataProvider;
@@ -93,6 +97,43 @@ class AggregatorServiceTest {
         );
     }
 
+    /**
+     * Work started by {@link AggregatorService#init()} hops across boundedElastic threads, so tests
+     * have to wait for the effect they assert on rather than for a fixed amount of time. Fixed sleeps
+     * are what used to make this class fail on loaded CI runners.
+     */
+    private static void awaitUntil(String description, BooleanSupplier condition) {
+        var deadline = System.nanoTime() + AWAIT_TIMEOUT.toNanos();
+        while (System.nanoTime() < deadline) {
+            if (condition.getAsBoolean()) {
+                return;
+            }
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError("interrupted while waiting for " + description, e);
+            }
+        }
+        throw new AssertionError("timed out after " + AWAIT_TIMEOUT + " waiting for " + description);
+    }
+
+    private void awaitSpotsLoaded(int expectedSpotCount) {
+        awaitUntil(
+                expectedSpotCount + " spot(s) to be loaded",
+                () -> spotsCache().size() == expectedSpotCount
+        );
+    }
+
+    /**
+     * Reads the cache directly instead of going through {@code getSpots()}, which would enrich spots
+     * and trigger the very background fetches some of these tests verify.
+     */
+    @SuppressWarnings("unchecked")
+    private Map<Integer, Spot> spotsCache() {
+        return (Map<Integer, Spot>) ReflectionTestUtils.getField(aggregatorService, "spots");
+    }
+
     @Test
     void shouldInitializeWithEmptySpots() {
         // given
@@ -106,7 +147,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldInitializeWithSpots() throws InterruptedException {
+    void shouldInitializeWithSpots() {
         // given
         var spot1 = createTestSpot(1, "Test Spot 1");
         var spot2 = createTestSpot(2, "Test Spot 2");
@@ -115,8 +156,7 @@ class AggregatorServiceTest {
         // when
         aggregatorService.init();
 
-        // give reactor time to process async
-        Thread.sleep(100);
+        awaitSpotsLoaded(2);
 
         // then
         verify(spotsDataProvider).getSpots();
@@ -136,11 +176,11 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldDisposeOnCleanup() throws InterruptedException {
+    void shouldDisposeOnCleanup() {
         // given
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(createTestSpot(1, "Test")));
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.cleanup();
@@ -165,7 +205,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFetchForecastsSuccessfully() throws FetchingForecastException, InterruptedException {
+    void shouldFetchForecastsSuccessfully() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         var forecast = new Forecast("Mon 12:00", 10.0, 20.0, "N", 15.0, 0.0, 0, 0);
@@ -174,7 +214,7 @@ class AggregatorServiceTest {
         when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(forecast), Map.of())));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchForecastsEveryThreeHours();
@@ -209,7 +249,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenForecastFetchFails() throws InterruptedException {
+    void shouldThrowExceptionWhenForecastFetchFails() {
         // given
         var spot = createTestSpot(123, "Test Spot");
 
@@ -217,7 +257,7 @@ class AggregatorServiceTest {
         when(forecastService.getForecastData(123)).thenReturn(Mono.error(new RuntimeException("API Error")));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when/then
         assertThatThrownBy(() -> aggregatorService.fetchForecastsEveryThreeHours())
@@ -236,7 +276,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFetchCurrentConditionsSuccessfully() throws FetchingCurrentConditionsException, InterruptedException {
+    void shouldFetchCurrentConditionsSuccessfully() throws FetchingCurrentConditionsException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         var currentConditions = new CurrentConditions("2025-01-01 12:00", 15, 25, "NW", 10);
@@ -245,7 +285,7 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(currentConditions));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
@@ -255,7 +295,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldHandlePartialFailuresInCurrentConditionsFetch() throws FetchingCurrentConditionsException, InterruptedException {
+    void shouldHandlePartialFailuresInCurrentConditionsFetch() throws FetchingCurrentConditionsException {
         // given
         var spot1 = createTestSpot(123, "Test Spot 1");
         var spot2 = createTestSpot(456, "Test Spot 2");
@@ -266,7 +306,7 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(456)).thenReturn(Mono.error(new RuntimeException("Failed")));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(2);
 
         // when
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
@@ -288,13 +328,13 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldSkipAiForecastAnalysisWhenDisabled() throws FetchingForecastException, InterruptedException {
+    void shouldSkipAiForecastAnalysisWhenDisabled() throws FetchingForecastException {
         // given
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", false);
         when(spotsDataProvider.getSpots()).thenReturn(Flux.empty());
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(0);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
@@ -304,7 +344,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFetchAiAnalysisWhenEnabled() throws FetchingForecastException, InterruptedException {
+    void shouldFetchAiAnalysisWhenEnabled() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
@@ -313,7 +353,7 @@ class AggregatorServiceTest {
         when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just("AI analysis result"));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
@@ -334,12 +374,12 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldHandleEmptySpotsList() throws FetchingForecastException, InterruptedException {
+    void shouldHandleEmptySpotsList() throws FetchingForecastException {
         // given
         when(spotsDataProvider.getSpots()).thenReturn(Flux.empty());
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(0);
 
         // when
         aggregatorService.fetchForecastsEveryThreeHours();
@@ -350,7 +390,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFilterEmptyCurrentConditions() throws FetchingCurrentConditionsException, InterruptedException {
+    void shouldFilterEmptyCurrentConditions() throws FetchingCurrentConditionsException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         var emptyConditions = new CurrentConditions(null, 0, 0, null, 0);
@@ -359,7 +399,7 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(emptyConditions));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
@@ -369,7 +409,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFilterEmptyAiAnalysis() throws FetchingForecastException, InterruptedException {
+    void shouldFilterEmptyAiAnalysis() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
@@ -378,7 +418,7 @@ class AggregatorServiceTest {
         when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
@@ -388,13 +428,13 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldSkipAiForecastAnalysisPlWhenDisabled() throws FetchingForecastException, InterruptedException {
+    void shouldSkipAiForecastAnalysisPlWhenDisabled() throws FetchingForecastException {
         // given
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", false);
         when(spotsDataProvider.getSpots()).thenReturn(Flux.empty());
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(0);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
@@ -404,7 +444,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFetchAiAnalysisPlWhenEnabled() throws FetchingForecastException, InterruptedException {
+    void shouldFetchAiAnalysisPlWhenEnabled() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
@@ -413,7 +453,7 @@ class AggregatorServiceTest {
         when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Analiza AI"));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
@@ -423,7 +463,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFilterEmptyAiAnalysisPl() throws FetchingForecastException, InterruptedException {
+    void shouldFilterEmptyAiAnalysisPl() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
@@ -432,7 +472,7 @@ class AggregatorServiceTest {
         when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
@@ -458,7 +498,7 @@ class AggregatorServiceTest {
         });
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(2);
 
         // when
         var aiThread = new Thread(() -> {
@@ -470,11 +510,10 @@ class AggregatorServiceTest {
         });
         aiThread.start();
 
-        Thread.sleep(150); // Wait for first spot to complete, second still processing
-
         // then - first spot should already have AI analysis in cache even though second is still processing
         @SuppressWarnings("unchecked")
         var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisPl");
+        awaitUntil("AI analysis of the fast spot to be cached", () -> aiAnalysisCache.containsKey(123));
         assertThat(aiAnalysisCache).containsKey(123);
         assertThat(aiAnalysisCache.get(123)).isEqualTo("Analiza dla spotu 1");
 
@@ -501,7 +540,7 @@ class AggregatorServiceTest {
         when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Polska analiza AI"));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when - fetch both languages
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
@@ -542,7 +581,7 @@ class AggregatorServiceTest {
         });
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(2);
 
         // when
         var aiThread = new Thread(() -> {
@@ -554,11 +593,10 @@ class AggregatorServiceTest {
         });
         aiThread.start();
 
-        Thread.sleep(150); // Wait for first spot to complete, second still processing
-
         // then - first spot should already have AI analysis in cache even though second is still processing
         @SuppressWarnings("unchecked")
         var aiAnalysisCache = (Map<Integer, String>) ReflectionTestUtils.getField(aggregatorService, "aiAnalysisEn");
+        awaitUntil("AI analysis of the fast spot to be cached", () -> aiAnalysisCache.containsKey(123));
         assertThat(aiAnalysisCache).containsKey(123);
         assertThat(aiAnalysisCache.get(123)).isEqualTo("Analysis for spot 1");
 
@@ -584,7 +622,7 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(123)).thenReturn(Mono.just(currentConditions));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         // when - fetch current conditions (simulates scheduled task)
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
@@ -602,7 +640,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldCountLiveStationsWithNonEmptyConditions() throws InterruptedException {
+    void shouldCountLiveStationsWithNonEmptyConditions() {
         // given
         var spot1 = createTestSpot(123, "Test Spot 1");
         var spot2 = createTestSpot(124, "Test Spot 2");
@@ -618,11 +656,10 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(125)).thenReturn(Mono.just(liveConditions));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(3);
 
         // when
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
-        Thread.sleep(100);
 
         // then
         var liveStationsCount = aggregatorService.countLiveStations();
@@ -630,7 +667,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldCountZeroLiveStationsWhenAllConditionsAreEmpty() throws InterruptedException {
+    void shouldCountZeroLiveStationsWhenAllConditionsAreEmpty() {
         // given
         var spot1 = createTestSpot(123, "Test Spot 1");
         var spot2 = createTestSpot(124, "Test Spot 2");
@@ -643,11 +680,10 @@ class AggregatorServiceTest {
         when(currentConditionsService.fetchCurrentConditions(124)).thenReturn(Mono.just(emptyConditions));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(2);
 
         // when
         aggregatorService.fetchCurrentConditionsEveryOneMinute();
-        Thread.sleep(100);
 
         // then
         var liveStationsCount = aggregatorService.countLiveStations();
@@ -781,7 +817,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldFetchCoordinatesOnStartupWithoutAnyApiCall() throws InterruptedException {
+    void shouldFetchCoordinatesOnStartupWithoutAnyApiCall() {
         // given
         var spot = createTestSpotWithLocation(123, "Test Spot");
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
@@ -790,19 +826,19 @@ class AggregatorServiceTest {
 
         // when - nobody calls getSpots(), only the application starts
         aggregatorService.init();
-        Thread.sleep(200);
 
         // then
-        verify(googleMapsService).getCoordinates(any(Spot.class));
-
         @SuppressWarnings("unchecked")
         var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
                 ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
+        awaitUntil("coordinates to be resolved during warm-up", () -> coordinates.containsKey(123));
+
+        verify(googleMapsService).getCoordinates(any(Spot.class));
         assertThat(coordinates).containsKey(123);
     }
 
     @Test
-    void shouldResolveIcmUrlOnStartupWithoutAnyApiCall() throws InterruptedException {
+    void shouldResolveIcmUrlOnStartupWithoutAnyApiCall() {
         // given
         var spot = createTestSpotWithLocation(123, "Test Spot");
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
@@ -812,14 +848,14 @@ class AggregatorServiceTest {
 
         // when - nobody calls getSpots(), only the application starts
         aggregatorService.init();
-        Thread.sleep(200);
 
         // then
-        verify(icmGridMapper).toIcmUrl(54.0, 19.0, "Poland");
-
         @SuppressWarnings("unchecked")
         var icmUrls = (java.util.concurrent.ConcurrentMap<Integer, String>)
                 ReflectionTestUtils.getField(aggregatorService, "icmUrls");
+        awaitUntil("ICM URL to be resolved during warm-up", () -> icmUrls.containsKey(123));
+
+        verify(icmGridMapper).toIcmUrl(54.0, 19.0, "Poland");
         assertThat(icmUrls).containsEntry(123, "https://meteo.pl/icm");
     }
 
@@ -928,7 +964,7 @@ class AggregatorServiceTest {
                 .thenReturn(Mono.just(new ForecastData(gfsDaily, Map.of())));
 
         aggregatorService.init();
-        Thread.sleep(100);
+        awaitSpotsLoaded(1);
 
         @SuppressWarnings("unchecked")
         var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
