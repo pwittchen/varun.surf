@@ -112,6 +112,37 @@
     }
   },
   {
+    "name": "Mewia Rewa",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1005114",
+    "windguruFallbackUrl": "https://www.windguru.cz/4165",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cypel",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.690000,18.550000",
+    "spotInfo": {
+      "type": "Offshore sandbar, ultra shallow flat water",
+      "bestWind": "N, NE, E, W",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "No shore launch, boat transfer from Rewa or Chałupy",
+      "hazards": "Current in the Głębinka channel, boat traffic, far from shore, protected bird nesting area",
+      "season": "May-September",
+      "description": "Also known as Rybitwia Mielizna or Ryf Mew, a 10 km sandbar crossing Puck Bay from Cypel Rewski to Kuźnica with knee deep flat water on both sides.",
+      "llmComment": "This spot has no shore launch and is reached only by boat transfer arranged with a local kite school. Treat it as a wind direction dependent alternative to Rewa and Chałupy rather than a primary spot."
+    },
+    "spotInfoPL": {
+      "type": "Mielizna na otwartej zatoce, bardzo płytka płaska woda",
+      "bestWind": "N, NE, E, W",
+      "waterTemp": "10-18°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Brak startu z brzegu, dojazd łodzią z Rewy lub Chałup",
+      "hazards": "Prąd w przekopie Głębinka, ruch łodzi, duża odległość od brzegu, obszar lęgowy ptaków objęty ochroną",
+      "season": "Maj-Wrzesień",
+      "description": "Znana też jako Rybitwia Mielizna lub Ryf Mew, 10-kilometrowa mielizna przecinająca Zatokę Pucką od Cypla Rewskiego do Kuźnicy, z płaską wodą po kolana po obu stronach.",
+      "llmComment": "Ten spot nie ma startu z brzegu, dopływa się tam wyłącznie łodzią w ramach transferu organizowanego przez lokalną szkołę kitesurfingu. Traktuj go jako alternatywę dla Rewy i Chałup zależną od kierunku wiatru, a nie jako spot podstawowy."
+    }
+  },
+  {
     "name": "Kuźnica",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/509469",
@@ -446,6 +477,37 @@
       "hazards": "Płytkie obszary, glony, porywisty wiatr w pobliżu lasu",
       "season": "Maj-Wrzesień",
       "description": "Polska wyspa na Bałtyku, płaskie laguny i otwarte morze. Dobry spot letni ze zmiennymi kierunkami wiatru."
+    }
+  },
+  {
+    "name": "Międzyzdroje",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/48019",
+    "windguruFallbackUrl": "https://www.windguru.cz/1180",
+    "windfinderUrl": "https://www.windfinder.com/forecast/miedzyzdroje_misdroy",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.930000,14.440000",
+    "spotInfo": {
+      "type": "Open sea, waves",
+      "bestWind": "W, NW, N",
+      "waterTemp": "10-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach",
+      "hazards": "Shorebreak, crowded swimming areas in summer, jellyfish",
+      "season": "April-October",
+      "description": "Open Baltic beach on Wolin Island below the cliffs of Wolin National Park. Best in W-NW cross-onshore wind for jumping and wave riding.",
+      "llmComment": "Kiters launch west of the pier at the K and L beach entrances, where there is more space and fewer swimmers in high season. On hot days with light easterly wind an afternoon thermal off the Kawcza Góra cliff can lift the wind above the morning forecast."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, fale",
+      "bestWind": "W, NW, N",
+      "waterTemp": "10-18°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Plaża piaszczysta",
+      "hazards": "Fala przybojowa, tłok kąpiących się latem, meduzy",
+      "season": "Kwiecień-Październik",
+      "description": "Plaża na otwartym Bałtyku na wyspie Wolin, u podnóża klifów Wolińskiego Parku Narodowego. Najlepsze warunki przy wietrze W-NW skośnie od morza, do skoków i jazdy na fali.",
+      "llmComment": "Kitesurferzy startują na zachód od mola, przy zejściach na plażę K i L, gdzie jest więcej miejsca i mniej kąpiących się w sezonie. W gorące dni przy słabym wietrze wschodnim popołudniowa termika znad klifu Kawczej Góry potrafi wzmocnić wiatr ponad poranną prognozę."
     }
   },
   {
