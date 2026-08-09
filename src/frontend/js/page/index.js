@@ -40,7 +40,10 @@ const HERO_SLOGANS = {
         "Respect the locals.",
         "Keep the spot clean.",
         "The worst day on the water is better than the best day in the office.",
-        "Plan the epic kite trip."
+        "Plan the epic kite trip.",
+        "Lend your pump to a kiter in need.",
+        "Be kind when someone on the water offers help.",
+        "A good rider rides well on every kite."
     ],
     pl: [
         "Goń wiatr. Jedź na fali.",
@@ -55,6 +58,9 @@ const HERO_SLOGANS = {
         "Zachowaj czystość na spocie.",
         "Najgorszy dzień na wodzie jest lepszy, niż najlepszy dzień w biurze.",
         "Zaplanuj epicki kite trip.",
+        "Pożycz pompkę kitesurferowi w potrzebie.",
+        "Bądź uprzejmy, jeśli ktoś na wodzie oferuje pomoc.",
+        "Dobry zawodnik pływa na każdym kajcie dobrze.",
     ]
 };
 
