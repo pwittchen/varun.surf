@@ -778,6 +778,7 @@ class AggregatorServiceTest {
                 ForecastModel.GFS, gfsHourly,
                 ForecastModel.IFS, ifsHourly
         )));
+        markModelDiscoveryAsCompleted(123);
 
         // when
         var result = aggregatorService.getSpotById(123);
@@ -788,6 +789,74 @@ class AggregatorServiceTest {
                 .map(m -> m.key())
                 .toList();
         assertThat(modelKeys).contains("average");
+    }
+
+    @Test
+    void shouldExposeOnlyDefaultModelWhenModelDiscoveryHasNotFinishedYet() {
+        // given - ICM is pre-fetched by a scheduled job before the spot is ever opened
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var icmHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 21.0, 0.0, 0, 0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfsHourly,
+                ForecastModel.ICM_METEO, icmHourly
+        )));
+
+        // when
+        var result = aggregatorService.getSpotById(123);
+
+        // then
+        assertThat(result).isPresent();
+        var modelKeys = result.get().availableModels().stream()
+                .map(m -> m.key())
+                .toList();
+        assertThat(modelKeys).containsExactly("gfs");
+    }
+
+    @Test
+    void shouldExposeAllModelsOnceModelDiscoveryHasFinished() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+        var icmHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 21.0, 0.0, 0, 0));
+
+        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
+        spotsMap.put(spot.wgId(), spot);
+        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
+
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(
+                ForecastModel.GFS, gfsHourly,
+                ForecastModel.ICM_METEO, icmHourly
+        )));
+        markModelDiscoveryAsCompleted(123);
+
+        // when
+        var result = aggregatorService.getSpotById(123);
+
+        // then
+        assertThat(result).isPresent();
+        var modelKeys = result.get().availableModels().stream()
+                .map(m -> m.key())
+                .toList();
+        assertThat(modelKeys).containsExactly("gfs", "icm", "average");
+    }
+
+    private void markModelDiscoveryAsCompleted(int spotId) {
+        @SuppressWarnings("unchecked")
+        var timestamps = (java.util.concurrent.ConcurrentMap<Integer, Long>)
+                ReflectionTestUtils.getField(aggregatorService, "hourlyForecastCacheTimestamps");
+        timestamps.put(spotId, System.currentTimeMillis());
     }
 
     @Test

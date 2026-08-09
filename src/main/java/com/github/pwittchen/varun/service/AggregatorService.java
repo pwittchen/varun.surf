@@ -62,6 +62,7 @@ import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.StructuredTaskScope.Joiner;
 import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @SuppressWarnings({"preview"})
@@ -296,8 +297,18 @@ public class AggregatorService {
                 enrichedSpot = enrichedSpot.withForecastHourly(data.hourly(ForecastModel.GFS));
             }
 
-            List<AvailableModel> available = new ArrayList<>(data.hourly().keySet().stream()
-                    .filter(m -> !data.hourly(m).isEmpty())
+            // Model discovery runs asynchronously once a spot is opened, so until it has finished
+            // the cache may already hold a partial set of models (ICM is pre-fetched for Polish and
+            // Czech spots by a separate scheduled job). Publishing that partial set would make the
+            // frontend treat the model list as complete and stop waiting for the remaining models,
+            // so only the default model is exposed until discovery completes.
+            Stream<ForecastModel> discoveredModels = data.hourly().keySet().stream()
+                    .filter(m -> !data.hourly(m).isEmpty());
+            if (!hourlyForecastCacheTimestamps.containsKey(spot.wgId())) {
+                discoveredModels = discoveredModels.filter(m -> m == ForecastModel.GFS);
+            }
+
+            List<AvailableModel> available = new ArrayList<>(discoveredModels
                     .sorted(Comparator.comparingInt(ForecastModel::ordinal))
                     .map(m -> new AvailableModel(m.modelKey(), m.displayName()))
                     .toList());

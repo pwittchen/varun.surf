@@ -205,7 +205,7 @@ function startModelDiscoveryPolling(spotId) {
     setModelDropdownLoading();
 
     let attempts = 0;
-    const maxAttempts = 6;
+    const maxAttempts = 8;
     const interval = 5000; // 5 seconds
 
     modelDiscoveryIntervalId = setInterval(async () => {
