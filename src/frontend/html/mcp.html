@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="status-card">
+                <div class="status-card" id="mcp-tools-card">
                     <h3>Available Tools</h3>
                     <div class="mcp-tools-list">
                         <div class="mcp-tool">
@@ -124,6 +124,69 @@
                                 Returns a short service summary: number of spots, countries
                                 and active live weather stations.
                             </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card" id="mcp-llms-card">
+                    <h3>llms.txt</h3>
+                    <p class="mcp-description">
+                        If your AI assistant cannot speak MCP, the same data is available as
+                        plain Markdown. VARUN.SURF publishes an
+                        <a href="https://llmstxt.org" target="_blank" rel="noopener noreferrer">
+                            llms.txt
+                        </a>
+                        file describing the service, its data sources and the Markdown
+                        endpoints listed below. All of them are public, need no session
+                        cookie and no authentication, and are free to fetch, crawl or index.
+                    </p>
+                    <div class="mcp-info-grid">
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label">llms.txt</div>
+                            <div class="mcp-code">
+                                <code id="mcp-llms-url">-</code>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-llms-url" type="button">Copy</button>
+                            </div>
+                        </div>
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label">Markdown endpoints</div>
+                            <div class="mcp-tools-list">
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms.txt</code>
+                                    <span class="mcp-tool-description">
+                                        Service overview, data sources, API access and links
+                                        to the Markdown endpoints below.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/spots.md</code>
+                                    <span class="mcp-tool-description">
+                                        Index of all kite spots with their countries and links
+                                        to the per-spot documents.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/spots/{wgId}.md</code>
+                                    <span class="mcp-tool-description">
+                                        Single spot: overview, current conditions, daily and
+                                        hourly forecast, and external links.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/countries.md</code>
+                                    <span class="mcp-tool-description">
+                                        Index of all countries with the number of spots in each.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/countries/{slug}.md</code>
+                                    <span class="mcp-tool-description">
+                                        Spots in a single country, where the slug is the
+                                        lowercased country name with spaces replaced by hyphens,
+                                        e.g. <code>poland</code> or <code>czech-republic</code>.
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

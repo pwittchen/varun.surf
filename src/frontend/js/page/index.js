@@ -576,6 +576,16 @@ function initLanguage() {
             appInfoCollaborationText.innerHTML = translations.t('appInfoCollaborationText');
         }
 
+        const appInfoDevTitle = document.getElementById('appInfoDevTitle');
+        if (appInfoDevTitle) {
+            appInfoDevTitle.textContent = translations.t('appInfoDevTitle');
+        }
+
+        const appInfoDevText = document.getElementById('appInfoDevText');
+        if (appInfoDevText) {
+            appInfoDevText.innerHTML = translations.t('appInfoDevText');
+        }
+
         // Update kite size calculator modal content
         const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
         if (kiteSizeModalTitle) {

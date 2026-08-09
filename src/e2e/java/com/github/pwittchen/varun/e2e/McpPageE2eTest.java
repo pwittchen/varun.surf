@@ -61,7 +61,7 @@ class McpPageE2eTest extends BaseE2eTest {
     void shouldListAllAvailableMcpTools() {
         navigateToMcpPage();
 
-        Locator tools = page.locator(".mcp-tool-name");
+        Locator tools = page.locator("#mcp-tools-card .mcp-tool-name");
         tools.first().waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
@@ -87,7 +87,29 @@ class McpPageE2eTest extends BaseE2eTest {
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(copyButtons.count()).isEqualTo(3);
+        assertThat(copyButtons.count()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("Should display llms.txt section with markdown endpoints")
+    void shouldDisplayLlmsTxtSectionWithMarkdownEndpoints() {
+        navigateToMcpPage();
+
+        Locator llmsUrl = page.locator("#mcp-llms-url");
+        llmsUrl.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(llmsUrl.textContent()).isEqualTo(BASE_URL + "/llms.txt");
+
+        Locator endpoints = page.locator("#mcp-llms-card .mcp-tool-name");
+        assertThat(endpoints.allTextContents()).containsExactly(
+            "/llms.txt",
+            "/llms/spots.md",
+            "/llms/spots/{wgId}.md",
+            "/llms/countries.md",
+            "/llms/countries/{slug}.md"
+        );
     }
 
     @Test

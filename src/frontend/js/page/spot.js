@@ -2573,6 +2573,16 @@ function updateUITranslations() {
         appInfoCollaborationText.innerHTML = translations.t('appInfoCollaborationText');
     }
 
+    const appInfoDevTitle = document.getElementById('appInfoDevTitle');
+    if (appInfoDevTitle) {
+        appInfoDevTitle.textContent = translations.t('appInfoDevTitle');
+    }
+
+    const appInfoDevText = document.getElementById('appInfoDevText');
+    if (appInfoDevText) {
+        appInfoDevText.innerHTML = translations.t('appInfoDevText');
+    }
+
     // Update map layer switcher labels
     map.updateLayerSwitcherLabels();
 

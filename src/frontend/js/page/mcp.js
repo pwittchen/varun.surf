@@ -30,9 +30,11 @@ function initMcpConfig() {
     const endpointEl = document.getElementById('mcp-endpoint-url');
     const installEl = document.getElementById('mcp-install-cmd');
     const jsonEl = document.getElementById('mcp-json-config');
+    const llmsEl = document.getElementById('mcp-llms-url');
     if (endpointEl) endpointEl.textContent = sseUrl;
     if (installEl) installEl.textContent = installCmd;
     if (jsonEl) jsonEl.textContent = jsonConfig;
+    if (llmsEl) llmsEl.textContent = `${origin}/llms.txt`;
 
     document.querySelectorAll('.mcp-copy-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
