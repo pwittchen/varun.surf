@@ -28,7 +28,7 @@
     }
   },
   {
-    "name": "Chałupy",
+    "name": "Chałupy 6",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/500757",
     "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
@@ -61,7 +61,7 @@
     "windguruUrl": "https://www.windguru.cz/1109734",
     "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
     "webcamUrl": "https://surfpeople.pl/pogoda-chalupy-hel/",
-    "locationUrl": "https://maps.app.goo.gl/EcM6mTHgAq1WE5B77",
+    "locationUrl": "https://www.google.com/maps?q=54.773518,18.465481",
     "spotInfo": {
       "type": "Lagoon, flat water, small chop",
       "bestWind": "W, SW",
@@ -818,7 +818,7 @@
   {
     "name": "Bukówka",
     "country": "Poland",
-    "windguruUrl": "https://www.windguru.cz/102604",
+    "windguruUrl": "https://www.windguru.cz/65606",
     "windfinderUrl": "",
     "webcamUrl": "",
     "locationUrl": "https://maps.app.goo.gl/v6mzLyXyEkTH3Zkw9",
@@ -1857,7 +1857,7 @@
     "windguruUrl": "https://www.windguru.cz/1524",
     "windfinderUrl": "https://www.windfinder.com/forecast/romo_surf_beach",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/GqKG8X6zEM4Nzecv7",
+    "locationUrl": "https://www.google.com/maps?q=55.150000,8.480000",
     "spotInfo": {
       "type": "North Sea, wide sandy beach",
       "bestWind": "W, NW",
