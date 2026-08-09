@@ -43,7 +43,8 @@ const HERO_SLOGANS = {
         "Plan the epic kite trip.",
         "Lend your pump to a kiter in need.",
         "Be kind when someone on the water offers help.",
-        "A good rider rides well on every kite."
+        "A good rider rides well on every kite.",
+        "No wind? Check if there's a new drama on the kite forum."
     ],
     pl: [
         "Goń wiatr. Jedź na fali.",
@@ -61,6 +62,7 @@ const HERO_SLOGANS = {
         "Pożycz pompkę kitesurferowi w potrzebie.",
         "Bądź uprzejmy, jeśli ktoś na wodzie oferuje pomoc.",
         "Dobry zawodnik pływa na każdym kajcie dobrze.",
+        "Nie wieje? Sprawdź, czy jest nowa afera na kiteforum.",
     ]
 };
 
