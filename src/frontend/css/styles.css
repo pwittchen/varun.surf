@@ -45,22 +45,22 @@
        Dark Theme Colors (Default)
        ------------------------------------------------------------------------- */
 
-    /* Background Colors (cool "ocean night" neutrals) */
-    --bg-primary: #0a0e14;
-    --bg-secondary: #121821;
-    --bg-tertiary: #1c2530;
+    /* Background Colors (near-neutral "ink" greys, faint cool cast) */
+    --bg-primary: #08090a;
+    --bg-secondary: #0f1113;
+    --bg-tertiary: #17191c;
 
     /* Text Colors */
-    --text-primary: #e8e8e8;
-    --text-secondary: #8b97a8;
-    --text-tertiary: #5e6165;
+    --text-primary: #f2f3f4;
+    --text-secondary: #8a8f98;
+    --text-tertiary: #62666d;
     --text-white: #ffffff;
     --text-black: #000000;
 
-    /* Border Colors */
-    --border-primary: #1e2733;
-    --border-secondary: #2b3949;
-    --border-hover: #3a4c60;
+    /* Border Colors (hairlines, one step apart) */
+    --border-primary: #1c1e21;
+    --border-secondary: #26292e;
+    --border-hover: #3a3e45;
 
     /* Accent Colors (wind/water cyan — distinct from green "firing" status) */
     --accent-primary: #22c3e6;
@@ -69,12 +69,16 @@
     --accent-color: #22c3e6;
 
     /* Card & Surface */
-    --card-bg: #121821;
+    --card-bg: #0f1113;
+
+    /* Translucent surfaces (header, side rail) */
+    --surface-glass: rgba(9, 10, 12, 0.72);
+    --surface-glass-border: rgba(255, 255, 255, 0.07);
 
     /* Radius Scale */
-    --radius-sm: 8px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
     --radius-pill: 999px;
 
     /* Spacing Scale */
@@ -85,16 +89,20 @@
     --space-6: 24px;
 
     /* Button & Active Backgrounds */
-    --gradient-button: #1d1d1d;
-    --gradient-button-hover: #2c2c2c;
+    --gradient-button: #141618;
+    --gradient-button-hover: #1c1f22;
     --gradient-active: #0e5d70;
     --gradient-header: #0e5d70;
 
-    /* Shadows */
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
-    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.35);
+    /* Shadows (hairline-first: surfaces are defined by borders, not elevation) */
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.32);
+    --shadow-overlay: 0 16px 48px rgba(0, 0, 0, 0.45);
     --shadow-accent: none;
-    --shadow-ghost: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-ghost: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+    /* Focus Ring */
+    --focus-ring: 0 0 0 3px rgba(34, 195, 230, 0.22);
 
     /* Status Colors */
     --success-color: #22c55e;
@@ -109,19 +117,29 @@
     --error-border: #840808;
     --error-text: #fca5a5;
 
-    /* Wind Strength Colors (Dark Theme) */
+    /* Wind Strength Colors (Dark Theme).
+       The *-bg tints wash whole rows and card headers, so they stay faint —
+       colour carries the signal through the text, not through a filled block. */
     --wind-weak: #64748b;
-    --wind-weak-bg: rgba(100, 116, 139, 0.15);
+    --wind-weak-bg: rgba(100, 116, 139, 0.06);
     /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
     --wind-calm: #64748b;
     --wind-light: #38bdf8;
     --wind-moderate: #2ee66d;
-    --wind-moderate-bg: rgba(46, 230, 109, 0.14);
+    --wind-moderate-bg: rgba(46, 230, 109, 0.05);
     --wind-strong: #f59e0b;
     --wind-strong-alt: #f9b116;
-    --wind-strong-bg: rgba(245, 158, 11, 0.15);
+    --wind-strong-bg: rgba(245, 158, 11, 0.06);
     --wind-extreme: #f5484a;
-    --wind-extreme-bg: rgba(245, 72, 74, 0.15);
+    --wind-extreme-bg: rgba(245, 72, 74, 0.06);
+
+    /* Stronger variants for the dense forecast grid, where the fill *is* the
+       heat map and has to stay legible at a glance (the faint *-bg tints above
+       would flatten it into one block). */
+    --wind-weak-fill: rgba(100, 116, 139, 0.16);
+    --wind-moderate-fill: rgba(46, 230, 109, 0.15);
+    --wind-strong-fill: rgba(245, 158, 11, 0.16);
+    --wind-extreme-fill: rgba(245, 72, 74, 0.16);
 
     /* Temperature Colors */
     --temp-positive: #f97316;
@@ -171,8 +189,8 @@
     --leaflet-border: rgba(0, 0, 0, 0.2);
 
     /* Overlay Colors */
-    --overlay-dark: rgba(0, 0, 0, 0.8);
-    --overlay-light: rgba(255, 255, 255, 0.1);
+    --overlay-dark: rgba(0, 0, 0, 0.6);
+    --overlay-light: rgba(255, 255, 255, 0.06);
     --overlay-accent: rgba(34, 195, 230, 0.1);
 
     /* Disclaimer */
@@ -185,22 +203,22 @@
        Light Theme Colors
        ------------------------------------------------------------------------- */
 
-    /* Background Colors */
+    /* Background Colors (warm paper neutrals) */
     --bg-primary: #ffffff;
-    --bg-secondary: #f2f6f9;
-    --bg-tertiary: #e8ecf1;
+    --bg-secondary: #f7f7f5;
+    --bg-tertiary: #efefec;
 
-    /* Text Colors */
-    --text-primary: #0a0a0a;
-    --text-secondary: #4a5568;
-    --text-tertiary: #9ca3af;
+    /* Text Colors (warm ink rather than pure black) */
+    --text-primary: #37352f;
+    --text-secondary: #6b6a64;
+    --text-tertiary: #9b9a94;
     --text-white: #ffffff;
-    --text-black: #000000;
+    --text-black: #1f1e1b;
 
-    /* Border Colors */
-    --border-primary: #d1d5db;
-    --border-secondary: #b8bfc7;
-    --border-hover: #6b7280;
+    /* Border Colors (hairlines) */
+    --border-primary: #ebebe8;
+    --border-secondary: #e0e0dc;
+    --border-hover: #c7c6c0;
 
     /* Accent Colors (cyan matching the dark theme identity, darkened for contrast on white) */
     --accent-primary: #0891b2;
@@ -211,16 +229,25 @@
     /* Card & Surface */
     --card-bg: #ffffff;
 
+    /* Translucent surfaces (header, side rail) */
+    --surface-glass: rgba(255, 255, 255, 0.8);
+    --surface-glass-border: rgba(15, 15, 15, 0.09);
+
     /* Button & Active Backgrounds */
     --gradient-button: #ffffff;
-    --gradient-button-hover: #f0f3f7;
+    --gradient-button-hover: #f4f4f2;
     --gradient-active: #0891b2;
     --gradient-header: #0891b2;
 
     /* Shadows */
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+    --shadow-card: 0 1px 2px rgba(15, 15, 15, 0.05);
+    --shadow-hover: 0 2px 6px rgba(15, 15, 15, 0.09);
+    --shadow-overlay: 0 16px 48px rgba(15, 15, 15, 0.16);
     --shadow-accent: none;
+    --shadow-ghost: 0 8px 24px rgba(15, 15, 15, 0.18);
+
+    /* Focus Ring */
+    --focus-ring: 0 0 0 3px rgba(8, 145, 178, 0.18);
 
     /* Error State */
     --error-bg: #fee2e2;
@@ -235,19 +262,25 @@
     --danger-color: #dc2626;
     --danger-light: #dc2626;
 
-    /* Wind Strength Colors (Light Theme) */
+    /* Wind Strength Colors (Light Theme) — tints kept faint, see dark theme note */
     --wind-weak: #6b7280;
-    --wind-weak-bg: rgba(107, 114, 128, 0.1);
+    --wind-weak-bg: rgba(107, 114, 128, 0.05);
     /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
     --wind-calm: #6b7280;
     --wind-light: #0284c7;
     --wind-moderate: #059669;
-    --wind-moderate-bg: rgba(5, 150, 105, 0.15);
+    --wind-moderate-bg: rgba(5, 150, 105, 0.07);
     --wind-strong: #ea580c;
     --wind-strong-alt: #ea580c;
-    --wind-strong-bg: rgba(234, 88, 12, 0.15);
+    --wind-strong-bg: rgba(234, 88, 12, 0.07);
     --wind-extreme: #dc2626;
-    --wind-extreme-bg: rgba(220, 38, 38, 0.15);
+    --wind-extreme-bg: rgba(220, 38, 38, 0.07);
+
+    /* Stronger variants for the dense forecast grid — see dark theme note */
+    --wind-weak-fill: rgba(107, 114, 128, 0.12);
+    --wind-moderate-fill: rgba(5, 150, 105, 0.14);
+    --wind-strong-fill: rgba(234, 88, 12, 0.14);
+    --wind-extreme-fill: rgba(220, 38, 38, 0.14);
 
     /* Temperature Colors */
     --temp-positive: #ea580c;
@@ -274,8 +307,8 @@
     --chart-grid: rgba(0, 0, 0, 0.15);
 
     /* Overlay Colors */
-    --overlay-dark: rgba(0, 0, 0, 0.8);
-    --overlay-light: rgba(0, 0, 0, 0.03);
+    --overlay-dark: rgba(15, 15, 15, 0.4);
+    --overlay-light: rgba(55, 53, 47, 0.06);
 }
 
 
@@ -294,7 +327,32 @@ body {
     background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
+    /* Slightly negative tracking + grayscale smoothing: the dense-UI typography
+       setup Linear/Notion use, which keeps small text crisp on dark surfaces. */
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Numbers line up in columns wherever they are compared side by side */
+.weather-table,
+.condition-value,
+.wind-speed,
+.spot-now {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Keyboard focus is a soft accent ring rather than the platform outline */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: var(--focus-ring);
+}
+
+::selection {
+    background: var(--overlay-accent);
+    color: var(--text-primary);
 }
 
 
@@ -339,18 +397,12 @@ body {
     right: 0 !important;
     width: 100% !important;
     z-index: 9999 !important;
-    background: rgba(15, 15, 15, 0.85) !important;
-    backdrop-filter: blur(5px) !important;
-    -webkit-backdrop-filter: blur(5px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    background: var(--surface-glass) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+    border-bottom: 1px solid var(--surface-glass-border) !important;
     padding: 20px !important;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-}
-
-[data-theme="light"] .fixed-header {
-    background: rgba(255, 255, 255, 0.92) !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) !important;
+    box-shadow: none !important;
 }
 
 .header-content {
@@ -421,28 +473,36 @@ body.spot-page .header-logo {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    padding: 12px 10px;
-    background: rgba(15, 15, 15, 0.85);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    gap: 6px;
+    padding: 8px 6px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--surface-glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
     max-height: calc(100vh - 160px);
     overflow-y: auto;
 }
 
-[data-theme="light"] .side-menu {
-    background: rgba(255, 255, 255, 0.92);
-    border-color: rgba(0, 0, 0, 0.12);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-/* Keep every button a uniform icon square in the vertical bar */
+/* Keep every button a uniform icon square in the vertical bar. Inside the rail
+   the buttons are chrome-less — the rail is already a surface, so a second
+   border/fill per icon reads as noise; hover and active states supply it. */
 .side-menu .theme-toggle {
     width: 40px;
     flex: 0 0 auto;
+    background: transparent;
+    border-color: transparent;
+}
+
+.side-menu .theme-toggle:hover {
+    background: var(--overlay-light);
+    border-color: transparent;
+}
+
+.side-menu .theme-toggle.active {
+    background: var(--overlay-light);
+    border-color: transparent;
 }
 
 /* Text labels are redundant in the icon-only vertical bar */
@@ -464,13 +524,13 @@ body.spot-page .header-logo {
 .side-menu-hint {
     position: fixed;
     z-index: 10000;
-    padding: 7px 12px;
-    background: var(--bg-secondary);
+    padding: 6px 10px;
+    background: var(--bg-tertiary);
     color: var(--text-primary);
-    border-radius: 8px;
-    box-shadow: var(--shadow-card);
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-hover);
+    font-size: 0.8rem;
+    font-weight: 500;
     line-height: 1.2;
     white-space: nowrap;
     pointer-events: none;
@@ -493,7 +553,7 @@ body.spot-page .header-logo {
     transform: translateY(-50%);
     border-width: 6px 6px 6px 0;
     border-style: solid;
-    border-color: transparent var(--bg-secondary) transparent transparent;
+    border-color: transparent var(--bg-tertiary) transparent transparent;
 }
 
 /* Title sits right of the fixed logo, viewport-anchored so the logo + wordmark
@@ -503,11 +563,11 @@ body.spot-page .header-logo {
     left: max(74px, calc(50% - 678px));
     top: 18px;
     font-size: 2.8rem;
-    font-weight: 100;
+    font-weight: 200;
     color: var(--text-white);
     margin-bottom: 8px;
     margin-left: 0;
-    letter-spacing: -.02em;
+    letter-spacing: -.03em;
     text-align: left;
     cursor: pointer;
 }
@@ -521,11 +581,11 @@ body.spot-page .header-logo {
    would otherwise run into the fixed logo + wordmark. */
 .header-stats {
     margin-right: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: .04em;
+    letter-spacing: .06em;
     text-transform: uppercase;
-    color: var(--text-secondary);
+    color: var(--text-tertiary);
     white-space: nowrap;
     cursor: default;
 }
@@ -535,8 +595,8 @@ body.spot-page .header-logo {
 }
 
 .header-stats-value {
-    color: var(--text-primary);
-    font-weight: 700;
+    color: var(--text-secondary);
+    font-weight: 600;
 }
 
 .header-stats-separator {
@@ -642,21 +702,25 @@ body.spot-page .header-title {
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
     padding: 12px 32px 12px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-weight: 500;
     width: 100%;
-    transition: all 0.3s ease;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
 .search-input::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-tertiary);
+}
+
+.search-input:hover {
+    border-color: var(--border-hover);
 }
 
 .search-input:focus {
     outline: none;
     border-color: var(--accent-primary);
-    background: var(--bg-secondary);
+    box-shadow: var(--focus-ring);
 }
 
 .search-clear {
@@ -739,13 +803,13 @@ body.spot-page .header-title {
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
     padding: 8px 32px 8px 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     font-size: .9rem;
     font-weight: 500;
     width: 220px;
     text-align: left;
-    transition: all .3s ease;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
     position: relative;
     display: flex;
     align-items: center;
@@ -762,9 +826,9 @@ body.spot-page .header-title {
 }
 
 .dropdown-button.active {
-    background: var(--gradient-active);
-    border-color: var(--accent-primary);
-    color: var(--text-white);
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
     box-shadow: var(--shadow-accent);
 }
 
@@ -789,7 +853,7 @@ body.spot-page .header-title {
 }
 
 .dropdown-button.active .dropdown-arrow {
-    color: var(--text-white);
+    color: var(--text-secondary);
 }
 
 .dropdown-button.open .dropdown-arrow {
@@ -803,14 +867,15 @@ body.spot-page .header-title {
     right: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border-secondary);
-    border-radius: 12px;
-    margin-top: 4px;
+    border-radius: var(--radius-lg);
+    margin-top: 6px;
+    padding: 4px;
     z-index: 100;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
-    transition: all .3s ease;
-    box-shadow: var(--shadow-card);
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s;
+    box-shadow: var(--shadow-overlay);
     max-height: 300px;
     overflow-y: auto;
 }
@@ -821,11 +886,13 @@ body.spot-page .header-title {
     transform: translateY(0);
 }
 
+/* Menu rows: no dividers — a rounded hover highlight separates them instead */
 .dropdown-option {
-    padding: 12px 16px;
+    padding: 9px 10px;
     cursor: pointer;
-    transition: all .2s ease;
-    border-bottom: 1px solid var(--border-primary);
+    transition: background-color .12s ease, color .12s ease;
+    border-bottom: none;
+    border-radius: var(--radius-sm);
     font-size: .9rem;
     display: flex;
     align-items: center;
@@ -846,13 +913,9 @@ body.spot-page .header-title {
     color: var(--text-primary);
 }
 
-.dropdown-option:last-child {
-    border-bottom: none;
-}
-
 .dropdown-option:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-white);
+    background: var(--overlay-light);
+    color: var(--text-primary);
 }
 
 [data-theme="light"] .dropdown-option:hover {
@@ -860,16 +923,9 @@ body.spot-page .header-title {
 }
 
 .dropdown-option.selected {
-    background: var(--gradient-active);
-    color: var(--text-white);
-}
-
-.dropdown-option:first-child {
-    border-radius: 11px 11px 0 0;
-}
-
-.dropdown-option:last-child {
-    border-radius: 0 0 11px 11px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 
@@ -883,11 +939,11 @@ body.spot-page .header-title {
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -924,10 +980,12 @@ body.spot-page .header-title {
     border-color: var(--border-hover);
 }
 
+/* Active icon buttons read as "pressed" via a neutral fill + accent glyph,
+   rather than a saturated accent block. */
 .theme-toggle.active {
-    background: var(--gradient-active);
-    border-color: var(--accent-primary);
-    color: var(--text-white);
+    background: var(--bg-tertiary);
+    border-color: var(--border-secondary);
+    color: var(--accent-primary);
     box-shadow: var(--shadow-accent);
 }
 
@@ -943,7 +1001,7 @@ body.spot-page .header-title {
 }
 
 .theme-toggle.active .icon {
-    fill: var(--text-white);
+    fill: var(--accent-primary);
 }
 
 [data-theme="light"] .theme-toggle .icon {
@@ -955,7 +1013,7 @@ body.spot-page .header-title {
 }
 
 [data-theme="light"] .theme-toggle.active .icon {
-    fill: var(--text-white);
+    fill: var(--accent-primary);
 }
 
 .theme-icon {
@@ -978,14 +1036,14 @@ body.spot-page .header-title {
 
 /* Generic Button Styles */
 .btn {
-    padding: 12px 24px;
-    border-radius: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
     font-size: 0.9375rem;
     font-weight: 500;
     text-decoration: none;
     border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
     display: inline-block;
 }
 
@@ -1101,10 +1159,11 @@ body.spot-page .header-title {
     }
 }
 
+/* Hover is a border + elevation nudge only — no vertical travel, so a grid of
+   cards stays still while the pointer crosses it. */
 .spot-card:hover {
-    transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
-    border-color: var(--border-secondary);
+    border-color: var(--border-hover);
 }
 
 /* Single spot view: the card is static — no hover movement/elevation */
@@ -1116,19 +1175,19 @@ body.spot-page .header-title {
 
 /* Faint tint at the top of the card, colored by current wind strength */
 .spot-card.status-weak {
-    background: linear-gradient(180deg, var(--wind-weak-bg) 0%, var(--card-bg) 90px);
+    background: linear-gradient(180deg, var(--wind-weak-bg) 0%, var(--card-bg) 70px);
 }
 
 .spot-card.status-moderate {
-    background: linear-gradient(180deg, var(--wind-moderate-bg) 0%, var(--card-bg) 90px);
+    background: linear-gradient(180deg, var(--wind-moderate-bg) 0%, var(--card-bg) 70px);
 }
 
 .spot-card.status-strong {
-    background: linear-gradient(180deg, var(--wind-strong-bg) 0%, var(--card-bg) 90px);
+    background: linear-gradient(180deg, var(--wind-strong-bg) 0%, var(--card-bg) 70px);
 }
 
 .spot-card.status-extreme {
-    background: linear-gradient(180deg, var(--wind-extreme-bg) 0%, var(--card-bg) 90px);
+    background: linear-gradient(180deg, var(--wind-extreme-bg) 0%, var(--card-bg) 70px);
 }
 
 /* "Now" readout — promoted current/live conditions above the forecast table.
@@ -1245,8 +1304,9 @@ body.spot-page .header-title {
 }
 
 .spot-name {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
+    letter-spacing: -0.02em;
     color: var(--text-white);
 }
 
@@ -1283,11 +1343,11 @@ body.spot-page .header-title {
 
 .country-tag {
     background: var(--bg-tertiary);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: .75rem;
+    padding: 3px 9px;
+    border-radius: var(--radius-sm);
+    font-size: .72rem;
     color: var(--text-secondary);
-    border: none;
+    border: 1px solid var(--border-primary);
     font-weight: 500;
 }
 
@@ -1390,24 +1450,30 @@ body.spot-page .header-title {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
-.weather-table th {
-    background: var(--bg-tertiary);
-    color: var(--text-white);
-    padding: 12px 8px;
-    text-align: center;
-    font-weight: 600;
+.weather-table tbody tr:last-child td {
     border-bottom: none;
-    font-size: .8rem;
+}
+
+/* Column labels are a quiet caption row: no filled band, just a hairline rule
+   under muted small-caps — the data below carries all the colour. */
+.weather-table th {
+    background: transparent;
+    color: var(--text-tertiary);
+    padding: 8px;
+    text-align: center;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: .6875rem;
     text-transform: uppercase;
-    letter-spacing: .05em;
+    letter-spacing: .07em;
 }
 
 [data-theme="light"] .weather-table th {
-    color: var(--text-black);
+    color: var(--text-tertiary);
 }
 
 .weather-table th:first-child {
@@ -1718,19 +1784,20 @@ body.spot-page .header-title {
     margin-left: 6px;
 }
 
-/* Outdated Chip */
+/* Outdated Chip — tinted badge rather than a solid amber block */
 .outdated-chip {
     display: inline-flex;
     align-items: center;
-    background: #f59e0b;
-    color: #592305;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: var(--warning-color);
     font-size: 0.65rem;
     font-weight: 600;
-    padding: 5px 5px;
-    border-radius: 4px;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
     line-height: 1;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
     margin-left: auto;
 }
 
@@ -1766,7 +1833,8 @@ body.spot-page .header-title {
     width: 100%;
     height: 100%;
     background: var(--overlay-dark);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: none;
     justify-content: center;
     align-items: center;
@@ -1781,28 +1849,31 @@ body.spot-page .header-title {
 .modal {
     background: var(--bg-secondary);
     border: 1px solid var(--border-secondary);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     width: 90%;
     max-width: 600px;
     max-height: 80vh;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn .3s ease;
+    box-shadow: var(--shadow-overlay);
+    animation: modalSlideIn .2s ease;
 }
 
+/* Dialog chrome stays neutral — the title reads as text, not as a coloured
+   title bar, and the hairline is the only separation from the body. */
 .modal-header {
-    background: var(--gradient-header);
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border-secondary);
+    background: transparent;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .modal-title {
-    color: var(--text-white);
-    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-size: 1.05rem;
     font-weight: 600;
+    letter-spacing: -0.02em;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1811,16 +1882,18 @@ body.spot-page .header-title {
 .modal-close {
     background: transparent;
     border: none;
-    color: var(--text-white);
+    color: var(--text-secondary);
     font-size: 1.5rem;
+    line-height: 1;
     cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background .2s ease;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: background .15s ease, color .15s ease;
 }
 
 .modal-close:hover {
     background: var(--overlay-light);
+    color: var(--text-primary);
 }
 
 .modal-content {
@@ -1849,14 +1922,15 @@ body.spot-page .header-title {
 }
 
 .modal-section h3 {
-    color: var(--accent-primary);
-    font-size: 1.05rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
     margin-bottom: 8px;
 }
 
 [data-theme="light"] .modal-section h3 {
-    color: var(--accent-primary);
+    color: var(--text-primary);
 }
 
 .modal-section p {
@@ -1974,14 +2048,15 @@ body.spot-page .header-title {
 }
 
 .spot-info h3 {
-    color: var(--accent-primary);
+    color: var(--text-primary);
     margin-bottom: 12px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 [data-theme="light"] .spot-info h3 {
-    color: var(--accent-primary);
+    color: var(--text-primary);
 }
 
 .spot-info p {
@@ -2015,7 +2090,7 @@ body.spot-page .header-title {
 
 /* Rounded corners for spot info items in modal only */
 .modal-content .info-item {
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
 }
 
@@ -2038,12 +2113,13 @@ body.spot-page .header-title {
     background: transparent;
     color: var(--text-secondary);
     text-decoration: none;
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: .75rem;
+    padding: 5px 9px;
+    border-radius: var(--radius-sm);
+    font-size: .72rem;
     font-weight: 500;
-    border: 1px solid var(--border-secondary);
-    transition: all .15s ease;
+    letter-spacing: 0;
+    border: 1px solid var(--border-primary);
+    transition: background-color .12s ease, color .12s ease, border-color .12s ease;
     cursor: pointer;
 }
 
@@ -2052,9 +2128,9 @@ body.spot-page .header-title {
 }
 
 .external-link:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-white);
-    border-color: var(--border-hover);
+    background: var(--overlay-light);
+    color: var(--text-primary);
+    border-color: var(--border-secondary);
 }
 
 [data-theme="light"] .external-link:hover {
@@ -2757,7 +2833,7 @@ body.spot-page .error-description {
 
 .current-conditions-card {
     background: var(--bg-secondary);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-primary);
     padding: 24px;
     margin-bottom: 0;
@@ -2776,11 +2852,11 @@ body.spot-page .error-description {
 }
 
 .conditions-label {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
 }
 
 .conditions-main {
@@ -2825,37 +2901,38 @@ body.spot-page .error-description {
 
 .wind-speed {
     font-size: 3rem;
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: -0.03em;
     line-height: 1;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Wind strength colors for wind speed */
 .wind-speed.wind-weak {
-    background-color: var(--wind-weak-bg);
+    background-color: var(--wind-weak-fill);
     color: var(--wind-weak);
 }
 
 .wind-speed.wind-moderate {
-    background-color: var(--wind-moderate-bg);
+    background-color: var(--wind-moderate-fill);
     color: var(--wind-moderate);
 }
 
 .wind-speed.wind-strong {
-    background-color: var(--wind-strong-bg);
+    background-color: var(--wind-strong-fill);
     color: var(--wind-strong-alt);
 }
 
 .wind-speed.wind-extreme {
-    background-color: var(--wind-extreme-bg);
+    background-color: var(--wind-extreme-fill);
     color: var(--wind-extreme);
 }
 
 .wind-label {
-    font-size: 1rem;
-    color: var(--text-secondary);
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-weight: 500;
@@ -2870,15 +2947,15 @@ body.spot-page .error-description {
 .condition-item {
     background: var(--bg-tertiary);
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
 }
 
 .condition-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
     margin-bottom: 6px;
     font-weight: 500;
 }
@@ -2924,25 +3001,26 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     align-items: flex-end;
     margin-top: 15px;
     margin-bottom: 8px;
-    border-bottom: 2px solid var(--border-primary);
+    border-bottom: 1px solid var(--border-primary);
 }
 
 .forecast-tabs {
     display: flex;
-    gap: 8px;
+    gap: 2px;
 }
 
 .forecast-tab {
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    padding: 10px 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color .15s ease, background-color .15s ease, border-color .15s ease;
     border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    margin-bottom: -1px;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2957,7 +3035,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .forecast-tab:hover {
     color: var(--text-primary);
-    background: var(--overlay-accent);
+    background: var(--overlay-light);
 }
 
 .forecast-tab:hover .tab-icon {
@@ -3378,11 +3456,11 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     align-items: center;
     justify-content: center;
     padding: 0 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
     border-bottom: 1px solid var(--border-primary);
     background: var(--bg-tertiary);
 }
@@ -3469,25 +3547,25 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 /* Wind classes in Windguru view */
 .windguru-cell.wind-weak {
     color: var(--text-secondary);
-    background: var(--wind-weak-bg);
+    background: var(--wind-weak-fill);
 }
 
 .windguru-cell.wind-moderate {
     color: var(--wind-moderate);
     font-weight: 600;
-    background: var(--wind-moderate-bg);
+    background: var(--wind-moderate-fill);
 }
 
 .windguru-cell.wind-strong {
     color: var(--wind-strong);
     font-weight: 600;
-    background: var(--wind-strong-bg);
+    background: var(--wind-strong-fill);
 }
 
 .windguru-cell.wind-extreme {
     color: var(--wind-extreme);
     font-weight: 600;
-    background: var(--wind-extreme-bg);
+    background: var(--wind-extreme-fill);
 }
 
 .windguru-cell.temp-positive {
