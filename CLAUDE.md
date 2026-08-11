@@ -342,6 +342,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SecurityConfig.java    # Spring Security (HTTP Basic Auth + session filter)
 │   ├── SessionConfig.java     # SESSION cookie configuration
 │   ├── SessionAuthenticationFilter.java # Session-based API access gating
+│   ├── CacheControlFilter.java # Cache-Control headers (cache busting)
 │   ├── LogAppenderConfig.java # In-memory log appender
 │   └── LoggingFilter.java
 ├── controller/                # REST controllers
@@ -499,6 +500,18 @@ The AI forecast analysis is disabled by default because:
     - Exempt paths: `/api/v1/health`, `/actuator/**`, static assets
     - Cookie config: httpOnly, sameSite=Lax, 24h maxAge (configurable via `app.session.max-age-seconds`)
     - Runs as a `WebFilter` before Spring Security authentication (metrics/logs still require HTTP Basic on top)
+
+17. **Cache Busting** (updates visible without waiting for the Cloudflare cache):
+    - CSS, JS and the logo are content-hashed at build time into `/assets/<name>.<hash>.<ext>` (`build.ts`)
+    - Spot photos get a `?v=<content hash>` suffix (`AggregatorService.loadSpotPhotoPath`)
+    - `CacheControlFilter` (`WebFilter`, highest precedence) sets headers on every response:
+      - `/assets/**` and any `?v=`-versioned URL: `public, max-age=31536000, immutable`
+      - unversioned images and root static files: `public, max-age=300, must-revalidate`
+      - HTML: `no-cache, must-revalidate` (a fresh document is what makes new asset URLs reachable)
+      - `/api/**`, `/actuator/**`, `/mcp/**`, `/llms/**`: `no-store`
+      - a `Cache-Control` header already set by a handler is never overwritten
+    - `deployment.sh` purges the Cloudflare cache after a successful deploy when
+      `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_API_TOKEN` are set (skipped otherwise)
 
 ## Adding New Kite Spots
 

@@ -21,11 +21,18 @@ const HTML_ENTRIES = [
 
 // Static assets to copy
 const STATIC_ASSETS = [
+  // the root copy stays for absolute URLs referenced outside the app (og:image, social cards)
   { src: "assets/logo.png", dest: "logo.png" },
   { src: "assets/ai.txt", dest: "ai.txt" },
   { src: "assets/llms.txt", dest: "llms.txt" },
   { src: "assets/robots.txt", dest: "robots.txt" },
   // sitemap.xml is served dynamically by SeoController (covers all spot/country pages)
+];
+
+// Images referenced from HTML that get a content-hashed copy under /assets,
+// so an updated image reaches users without waiting for the CDN cache to expire
+const HASHED_IMAGES = [
+  { src: "assets/logo.png", name: "logo", ext: "png", reference: "/logo.png" },
 ];
 
 // HTML minification options (matching Vite config)
@@ -146,7 +153,38 @@ async function bundleCSS(): Promise<Map<string, string>> {
   return results;
 }
 
-async function processHTML(jsMap: Map<string, string>, cssMap: Map<string, string>): Promise<void> {
+async function hashImages(): Promise<Map<string, string>> {
+  console.log("Hashing images...");
+
+  const results = new Map<string, string>();
+
+  for (const { src, name, ext, reference } of HASHED_IMAGES) {
+    const file = Bun.file(join(FRONTEND_DIR, src));
+    if (!(await file.exists())) {
+      console.log(`  Skipping ${src} (not found)`);
+      continue;
+    }
+
+    const content = await file.arrayBuffer();
+
+    const hasher = new Bun.CryptoHasher("md5");
+    hasher.update(content);
+    const hash = hasher.digest("hex").slice(0, 8);
+
+    const outputName = `${name}.${hash}.${ext}`;
+    await Bun.write(join(OUTPUT_DIR, "assets", outputName), content);
+    results.set(reference, `/assets/${outputName}`);
+    console.log(`  ${src} -> assets/${outputName}`);
+  }
+
+  return results;
+}
+
+async function processHTML(
+  jsMap: Map<string, string>,
+  cssMap: Map<string, string>,
+  imageMap: Map<string, string>
+): Promise<void> {
   console.log("Processing HTML files...");
 
   for (const { name, path } of HTML_ENTRIES) {
@@ -201,6 +239,12 @@ async function processHTML(jsMap: Map<string, string>, cssMap: Map<string, strin
       /src="\.\.\/js\/page\/tv\.js"/g,
       `src="${jsMap.get("tv") || "/assets/tv.js"}"`
     );
+
+    // Replace image references with their content-hashed copies
+    // (only in src attributes - absolute URLs in meta tags keep the stable /logo.png path)
+    for (const [reference, hashedPath] of imageMap) {
+      html = html.replaceAll(`src="${reference}"`, `src="${hashedPath}"`);
+    }
 
     // Minify HTML
     const minifiedHtml = await minify(html, HTML_MINIFY_OPTIONS);
@@ -259,7 +303,8 @@ async function build(): Promise<void> {
   await cleanOutputDir();
   const jsMap = await bundleJavaScript();
   const cssMap = await bundleCSS();
-  await processHTML(jsMap, cssMap);
+  const imageMap = await hashImages();
+  await processHTML(jsMap, cssMap, imageMap);
   await copyStaticAssets();
 
   // Remove .gitkeep

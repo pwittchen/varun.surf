@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.service;
 
+import com.github.pwittchen.varun.config.CacheControlFilter;
 import com.github.pwittchen.varun.data.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
@@ -40,10 +41,13 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -70,6 +74,7 @@ public class AggregatorService {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorService.class);
     private static final List<String> SPOT_PHOTO_EXTENSIONS = List.of("jpg", "png");
+    private static final int PHOTO_VERSION_LENGTH = 8;
     private static final int CURRENT_CONDITIONS_HISTORY_LIMIT_IN_MINUTES = 12 * 60;
 
     // Scheduling intervals
@@ -432,10 +437,26 @@ public class AggregatorService {
             String resourcePath = "static/images/spots/" + spotId + "." + extension;
             ClassPathResource resource = new ClassPathResource(resourcePath);
             if (resource.exists()) {
-                return "/images/spots/" + spotId + "." + extension;
+                String path = "/images/spots/" + spotId + "." + extension;
+                return contentVersionOf(resource)
+                        .map(version -> path + "?" + CacheControlFilter.VERSION_PARAM + "=" + version)
+                        .orElse(path);
             }
         }
         return "";
+    }
+
+    /**
+     * Content hash appended to a photo URL, so that replacing the file changes the URL and
+     * the new photo shows up immediately instead of waiting for a CDN or browser cache to expire.
+     */
+    private Optional<String> contentVersionOf(ClassPathResource resource) {
+        try (InputStream stream = resource.getInputStream()) {
+            return Optional.of(DigestUtils.md5DigestAsHex(stream).substring(0, PHOTO_VERSION_LENGTH));
+        } catch (IOException e) {
+            log.warn("Failed to compute content hash for {}", resource.getPath(), e);
+            return Optional.empty();
+        }
     }
 
     @Scheduled(fixedRate = FORECAST_FETCH_INTERVAL_MS)

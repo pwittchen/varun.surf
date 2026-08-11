@@ -110,6 +110,23 @@ To do that, follow the instructions below.
 - If you want to test the deployment locally, run `./deployment.sh dev` script.
 - To stop everything, run: `docker stop varun-app-blue-live varun-app-green-live varun-nginx`
 
+## cache busting
+
+Updated styles, scripts, and images are visible right after a deployment, without waiting for the
+Cloudflare edge cache or a browser cache to expire. This works on three levels:
+
+- **content-hashed assets**: CSS, JS, and the logo are emitted as `/assets/<name>.<hash>.<ext>` by the
+  frontend build, spot photos get a `?v=<content hash>` suffix. A changed file means a changed URL.
+- **cache headers** (`CacheControlFilter`): hashed assets are `immutable` for a year, HTML is always
+  revalidated (so pages never keep pointing at stale asset URLs), unversioned files are cached for
+  5 minutes, API and actuator responses are `no-store`.
+- **cache purge on deploy**: when `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_API_TOKEN` are set in the `.env`
+  file, `deployment.sh` purges the Cloudflare cache once the new version is live. The API token needs
+  the *Zone → Cache Purge* permission. Without these variables the purge step is skipped.
+
+In Cloudflare, keep *Browser Cache TTL* set to **Respect Existing Headers**, otherwise the dashboard
+setting overrides the headers described above.
+
 ## monitoring
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.

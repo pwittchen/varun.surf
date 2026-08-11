@@ -512,6 +512,7 @@ src/main/java/com/github/pwittchen/varun/
 ├── Application.java                      # Main entry point
 ├── config/                               # Spring configuration
 │   ├── AsyncConfig.java                  # @Async executor config
+│   ├── CacheControlFilter.java           # Cache-Control headers (cache busting)
 │   ├── CorsConfig.java                   # CORS policy
 │   ├── GsonConfig.java                   # JSON serialization
 │   ├── LLMConfig.java                    # Spring AI ChatClient

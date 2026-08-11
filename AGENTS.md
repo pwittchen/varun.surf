@@ -893,6 +893,32 @@ All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` c
 - Metrics/logs endpoints additionally require HTTP Basic Auth (enforced by Spring Security)
 - Both layers must pass for authenticated endpoints
 
+### 11. Cache Busting
+Style, script and image updates reach users right after a deployment, instead of waiting for the
+Cloudflare edge cache (or a browser cache) to expire.
+
+**Fingerprinted URLs**:
+- `build.ts` emits CSS, JS and the logo as `/assets/<name>.<hash>.<ext>` and rewrites the HTML references
+- `AggregatorService.loadSpotPhotoPath` appends `?v=<content hash>` to `/images/spots/<wgId>.<ext>`
+- the root `/logo.png` copy stays for absolute URLs used outside the app (`og:image`, social cards)
+
+**Cache Headers** (`CacheControlFilter`, a `WebFilter` with `HIGHEST_PRECEDENCE`):
+| Response | Cache-Control |
+|---|---|
+| `/assets/**`, any URL with `?v=` | `public, max-age=31536000, immutable` |
+| unversioned images, root static files | `public, max-age=300, must-revalidate` |
+| HTML (by content type) | `no-cache, must-revalidate` |
+| `/api/**`, `/actuator/**`, `/mcp/**`, `/llms/**` | `no-store` |
+
+Headers are applied in `beforeCommit`, and a `Cache-Control` already set by a handler wins.
+Always-fresh HTML is the key part: without it, browsers keep requesting the old asset URLs.
+
+**Deploy-time Purge**:
+- `deployment.sh` purges the Cloudflare cache after the blue/green swap completes
+- requires `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_API_TOKEN` in `.env` (Zone → Cache Purge permission)
+- skipped with a log message when the variables are missing
+- Cloudflare *Browser Cache TTL* must be set to *Respect Existing Headers*
+
 ## Adding New Kite Spots
 
 **Automated Method (Recommended)**:

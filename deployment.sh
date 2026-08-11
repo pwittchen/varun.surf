@@ -13,6 +13,30 @@ fi
 
 echo "==> Starting deployment"
 
+# Purges the Cloudflare edge cache so updated pages, styles and images are served
+# immediately instead of waiting for the cached copies to expire.
+# No-op unless CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN are present in the .env file.
+purge_cloudflare_cache() {
+  if [[ -z "${CLOUDFLARE_ZONE_ID:-}" || -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+    echo "==> Skipping Cloudflare cache purge (CLOUDFLARE_ZONE_ID or CLOUDFLARE_API_TOKEN not set)"
+    return 0
+  fi
+
+  echo "==> Purging Cloudflare cache..."
+  local response
+  response=$(curl -s -X POST \
+    "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+    -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+    -H "Content-Type: application/json" \
+    --data '{"purge_everything":true}' || true)
+
+  if [[ "$response" == *'"success":true'* ]]; then
+    echo "==> Cloudflare cache purged"
+  else
+    echo "==> WARNING: Cloudflare cache purge failed: ${response:-no response}"
+  fi
+}
+
 # Load environment variables from .env file
 ENV_FILE="$(dirname "$0")/.env"
 if [[ "$ENV" == "prod" ]]; then
@@ -67,6 +91,7 @@ if ! docker ps --format '{{.Names}}' | grep -qE '^varun-app-(blue|green)-live$';
   echo "==> First deployment: starting nginx and blue environment"
   $COMPOSE_CMD --profile blue-live up -d --wait varun-nginx varun-app-blue-live
   echo "==> Blue environment is live"
+  purge_cloudflare_cache
   exit 0
 fi
 
@@ -87,6 +112,8 @@ sleep 6
 echo "==> Stopping $CURRENT environment..."
 $COMPOSE_CMD stop "$CURRENT_CONTAINER"
 $COMPOSE_CMD rm -f "$CURRENT_CONTAINER"
+
+purge_cloudflare_cache
 
 echo "==> Deployment complete: $NEXT is now live"
 exit 0

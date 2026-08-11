@@ -973,22 +973,31 @@ None required (vanilla JS, modern browsers only).
    - `css/styles.css` - Global styles
    - `assets/*` - Static assets (logo, robots.txt, etc.)
 
-2. **Build Script** (`build-frontend.sh`):
-   - Inline CSS from `css/styles.css` into HTML
-   - Inline JS (translations + page-specific) into HTML
+2. **Build Script** (`build.ts`, run with Bun):
+   - Bundle and minify JS per page into `assets/<page>.<hash>.js`
+   - Minify CSS into `assets/<name>.<hash>.css`
+   - Copy the logo into `assets/logo.<hash>.png`
+   - Rewrite CSS/JS/image references in HTML to the hashed paths
    - Minify HTML (remove whitespace, comments)
-   - Copy assets from `assets/` to `static/`
+   - Copy assets from `assets/` and spot photos from `images/spots/` to `static/`
 
 3. **Output** (`src/main/resources/static/`):
-   - `index.html` (130KB minified, includes inlined CSS + JS)
-   - `spot.html` (104KB minified, includes inlined CSS + JS)
-   - `status.html` (48KB minified, includes inlined CSS + JS)
-   - `logo.png`, `ai.txt`, `llms.txt`, `robots.txt`, `sitemap.xml`
+   - `index.html`, `spot.html`, `status.html`, `sources.html`, `mcp.html`,
+     `metrics.html`, `logs.html`, `embed.html`, `tv.html` (minified)
+   - `assets/*.<hash>.{js,css,png}` - content-hashed bundles
+   - `images/spots/<wgId>.jpg` - spot photos
+   - `logo.png`, `ai.txt`, `llms.txt`, `robots.txt` (`sitemap.xml` is served dynamically)
+
+### Cache Busting
+- Hashed filenames mean a changed file always gets a new URL
+- Spot photos keep a stable filename and get a `?v=<content hash>` suffix from the backend
+- `CacheControlFilter` marks hashed/versioned URLs `immutable` for a year and forces HTML to be
+  revalidated, so a deployment is visible without waiting for the Cloudflare cache
+- `deployment.sh` additionally purges the Cloudflare cache when credentials are configured
 
 ### Deployment
 - Static files served directly by Spring Boot (`/static/`)
-- No CDN dependencies (all assets self-hosted)
-- Single request for HTML + inline JS/CSS (no external HTTP requests)
+- No CDN dependencies (all assets self-hosted, Cloudflare in front as a cache/proxy)
 
 ## Accessibility
 
