@@ -3041,6 +3041,10 @@ function addMarkersToMap(spots) {
         } else {
             leafletMap.fitBounds(bounds, { padding: [50, 50] });
         }
+        // On tall viewports the fitted world is shorter than the map container,
+        // which shows an empty stripe above the top tile row - nudge the zoom
+        // up until the view sits inside the world again.
+        map.zoomToFillWorld(leafletMap);
         mapBoundsInitialized = true;
     }
 }

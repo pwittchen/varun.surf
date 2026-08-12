@@ -72,6 +72,53 @@ export function updateTileLayer(map, currentTileLayer, layerType) {
 }
 
 // ============================================================================
+// VIEW UTILITIES
+// ============================================================================
+
+// Web Mercator stops at ±85.05°, so nothing is painted beyond that latitude.
+const WORLD_EDGE_LAT = 85.05;
+
+/**
+ * Zoom in until the viewport no longer reaches past the poles.
+ *
+ * A world view fitted to the spot bounds can end up taller than the projected
+ * world, which leaves an empty stripe above the northernmost tile row. Leaflet
+ * only keeps fractional zoom while `zoomSnap` is below 1, so the snap is
+ * relaxed for the correction and restored right after: the initial view gets
+ * just enough extra zoom to close the gap, while every later zoom step still
+ * lands on a crisp integer level.
+ *
+ * @param {L.Map} map - Leaflet map instance
+ * @param {number} [step=0.25] - Zoom increment per iteration
+ */
+export function zoomToFillWorld(map, step = 0.25) {
+    if (!map) {
+        return;
+    }
+
+    const fitsWorld = () => {
+        const bounds = map.getBounds();
+        return bounds.getNorth() <= WORLD_EDGE_LAT && bounds.getSouth() >= -WORLD_EDGE_LAT;
+    };
+
+    if (fitsWorld()) {
+        return;
+    }
+
+    const previousSnap = map.options.zoomSnap;
+    map.options.zoomSnap = step;
+
+    // A full zoom level doubles the world height, which always closes the gap;
+    // the iteration cap is only a safety net.
+    const maxSteps = Math.ceil(1 / step);
+    for (let i = 0; i < maxSteps && !fitsWorld(); i++) {
+        map.setZoom(map.getZoom() + step, { animate: false });
+    }
+
+    map.options.zoomSnap = previousSnap;
+}
+
+// ============================================================================
 // LAYER SWITCHER CONTROL
 // ============================================================================
 
