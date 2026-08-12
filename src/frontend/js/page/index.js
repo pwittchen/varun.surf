@@ -461,6 +461,11 @@ function initLanguage() {
             heroToggle.title = translations.t('heroToggleTooltip');
         }
 
+        const randomSpotToggle = document.getElementById('randomSpotToggle');
+        if (randomSpotToggle) {
+            randomSpotToggle.title = translations.t('randomSpotTooltip');
+        }
+
         const listViewBtn = document.getElementById('listViewBtn');
         if (listViewBtn) {
             listViewBtn.title = translations.t('listViewTooltip');
@@ -2419,7 +2424,7 @@ const SIDE_MENU_BREAKPOINT = 929;
 const SIDE_MENU_HINT_IDS = [
     'infoToggle', 'themeToggle', 'favoritesToggle', 'firingSortToggle',
     'liveStationsToggle', 'mapToggle', 'heroToggle', 'kiteSizeToggle',
-    'listViewBtn', 'gridViewBtn'
+    'randomSpotToggle', 'listViewBtn', 'gridViewBtn'
 ];
 
 // Custom tooltips for the sticky left menu, styled like the map popups. A single
@@ -3291,6 +3296,45 @@ function setupMapToggle() {
     });
 }
 
+// ============================================================================
+// RANDOM SPOT
+// ============================================================================
+
+// Opens a random spot page. Picks from the spots currently in view (country
+// filter, search and the live-stations filter all apply) so the result matches
+// what the user is looking at, falling back to every spot when that set is
+// empty.
+function setupRandomSpotToggle() {
+    const btn = document.getElementById('randomSpotToggle');
+    if (!btn) {
+        return;
+    }
+
+    btn.addEventListener('click', async () => {
+        let spots = globalWeatherData;
+
+        if (spots.length === 0) {
+            try {
+                spots = await api.fetchAllSpots();
+                globalWeatherData = spots;
+            } catch (error) {
+                console.error('Error fetching spots for random pick:', error);
+                return;
+            }
+        }
+
+        const filtered = filterSpots(spots, currentFilter, currentSearchQuery);
+        const candidates = filtered.length > 0 ? filtered : spots;
+
+        if (candidates.length === 0) {
+            return;
+        }
+
+        const randomSpot = candidates[Math.floor(Math.random() * candidates.length)];
+        routing.navigateToSpot(randomSpot.wgId);
+    });
+}
+
 function updateMapMarkers() {
     if (!isMapView) return;
 
@@ -3336,6 +3380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFiringSortToggle();
     setupLiveStationsToggle();
     setupMapToggle();
+    setupRandomSpotToggle();
     handlePopState();
     setupInfoToggle();
     renderMainSponsors();

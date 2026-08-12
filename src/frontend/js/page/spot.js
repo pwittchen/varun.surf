@@ -2592,6 +2592,12 @@ function updateUITranslations() {
         infoToggleLabel.textContent = translations.t('infoButtonLabel');
     }
 
+    // Update random spot button tooltip
+    const randomSpotToggle = document.getElementById('randomSpotToggle');
+    if (randomSpotToggle) {
+        randomSpotToggle.title = translations.t('randomSpotTooltip');
+    }
+
     // Update loading text
     const loadingMessage = document.getElementById('loadingMessage');
     if (loadingMessage && loadingMessage.style.display !== 'none') {
@@ -2689,6 +2695,40 @@ function setupInfoToggle() {
             openAppInfoModal();
         });
     }
+}
+
+// Setup random spot button: jumps to a randomly picked spot other than the one
+// currently open. The spots list is not held by this page, so it is fetched on
+// click (~170 kB gzipped) and the button is disabled meanwhile.
+function setupRandomSpotToggle() {
+    const btn = document.getElementById('randomSpotToggle');
+    if (!btn) {
+        return;
+    }
+
+    btn.addEventListener('click', async () => {
+        if (btn.disabled) {
+            return;
+        }
+
+        btn.disabled = true;
+
+        try {
+            const spots = await api.fetchAllSpots();
+            const candidates = spots.filter(spot => String(spot.wgId) !== String(currentSpotId));
+            const pool = candidates.length > 0 ? candidates : spots;
+
+            if (pool.length === 0) {
+                return;
+            }
+
+            routing.navigateToSpot(pool[Math.floor(Math.random() * pool.length)].wgId);
+        } catch (error) {
+            console.error('Error fetching spots for random pick:', error);
+        } finally {
+            btn.disabled = false;
+        }
+    });
 }
 
 // Setup mobile hamburger menu
@@ -3017,6 +3057,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupModals();
     setupEmbedModal();
     setupInfoToggle();
+    setupRandomSpotToggle();
     setupHamburgerMenu();
     setupHeaderNavigation();
     setupResizeHandler();
