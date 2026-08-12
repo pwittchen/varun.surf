@@ -1511,6 +1511,46 @@ function setupForecastTabs() {
 let osmSatelliteMap = null;
 let currentSpotMapLayer = 'satellite'; // Default to satellite view
 let spotTileLayer = null; // Track current tile layer
+// Center/zoom carried over when the map has to be rebuilt, tagged with the
+// coordinates it was captured at so it is never applied to a different spot.
+let spotMapView = null;
+
+const DEFAULT_SPOT_MAP_ZOOM = 13;
+
+/**
+ * Release the Leaflet instance once its container has left the document.
+ *
+ * The spot card is rebuilt by replacing `spotContainer.innerHTML`, and the map
+ * markup only exists in the desktop layout. Shrinking the window below the
+ * mobile breakpoint and widening it again therefore leaves `osmSatelliteMap`
+ * bound to a detached container while a fresh, empty one sits in the page, so
+ * the map looks like it disappeared. Dropping the stale instance (keeping its
+ * view) lets `setupSpotMediaTabs()` build a new map into the new container.
+ */
+function releaseDetachedSpotMap() {
+    if (!osmSatelliteMap) {
+        return;
+    }
+
+    const container = osmSatelliteMap.getContainer();
+    if (container && container.isConnected) {
+        return;
+    }
+
+    if (currentSpot && currentSpot.coordinates) {
+        const center = osmSatelliteMap.getCenter();
+        spotMapView = {
+            lat: currentSpot.coordinates.lat,
+            lon: currentSpot.coordinates.lon,
+            center: [center.lat, center.lng],
+            zoom: osmSatelliteMap.getZoom()
+        };
+    }
+
+    osmSatelliteMap.remove();
+    osmSatelliteMap = null;
+    spotTileLayer = null;
+}
 
 function initOsmSatelliteMap() {
     const mapContainer = document.getElementById('osm-satellite-map');
@@ -1525,10 +1565,17 @@ function initOsmSatelliteMap() {
         spotTileLayer = null;
     }
 
+    // Reuse the previous view only when it belongs to this spot
+    const restoredView = spotMapView
+        && spotMapView.lat === currentSpot.coordinates.lat
+        && spotMapView.lon === currentSpot.coordinates.lon
+        ? spotMapView
+        : null;
+
     // Initialize Leaflet map
     osmSatelliteMap = L.map('osm-satellite-map').setView(
-        [currentSpot.coordinates.lat, currentSpot.coordinates.lon],
-        13
+        restoredView ? restoredView.center : [currentSpot.coordinates.lat, currentSpot.coordinates.lon],
+        restoredView ? restoredView.zoom : DEFAULT_SPOT_MAP_ZOOM
     );
 
     // Add initial tile layer based on current selection
@@ -2329,6 +2376,9 @@ function displaySpot(spot) {
                 newMapFrame.appendChild(preservedMapNode);
             }
         }
+
+        // The rebuilt card may carry a brand new (or no) map container
+        releaseDetachedSpotMap();
 
         document.title = `${spot.name} - VARUN.SURF`;
 
