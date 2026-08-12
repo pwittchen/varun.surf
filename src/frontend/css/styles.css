@@ -5070,6 +5070,18 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     box-shadow: var(--shadow-card);
 }
 
+/* The map view hides the hero banner, so the map is the first element in the
+   content column. Drop its top margin on desktop so its top edge lines up with
+   the sticky left menu (both then start at 140px); the height grows by the same
+   20px so the bottom edge stays put. Below 930px there is no left rail, so the
+   original spacing is kept. */
+@media (min-width: 930px) {
+    #mapContainer {
+        margin-top: 0;
+        height: calc(100vh - 160px);
+    }
+}
+
 #map {
     width: 100%;
     height: 100%;
