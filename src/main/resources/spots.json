@@ -33,7 +33,7 @@
     "windguruUrl": "https://www.windguru.cz/500757",
     "windfinderUrl": "https://www.windfinder.com/forecast/hel_chalupy",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/Yv8AH8nHJ2keBa338",
+    "locationUrl": "https://www.google.com/maps?q=54.761960,18.498201",
     "spotInfo": {
       "type": "Lagoon, flat water, small chop",
       "bestWind": "W, SW",
@@ -204,7 +204,7 @@
     "windguruUrl": "https://www.windguru.cz/500761",
     "windfinderUrl": "https://www.windfinder.com/forecast/jurata_hel",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/uFBhPnAVRkm8R6bj7",
+    "locationUrl": "https://www.google.com/maps?q=54.681721,18.710661",
     "spotInfo": {
       "type": "Lagoon and open sea",
       "bestWind": "W, SW, NW",
@@ -232,7 +232,7 @@
     "windguruUrl": "https://www.windguru.cz/14473",
     "windfinderUrl": "https://www.windfinder.com/forecast/krynica_morska",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/BVSnbZBCu2Z2RZ9j8",
+    "locationUrl": "https://www.google.com/maps?q=54.387772,19.443025",
     "spotInfo": {
       "type": "Lagoon, Open sea, waves",
       "bestWind": "N, NE, NW",
@@ -261,7 +261,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/126330",
     "windfinderUrl": "https://www.windfinder.com/forecast/kadyny",
     "webcamUrl": "https://www.wiatrkadyny.pl/index.php",
-    "locationUrl": "https://maps.app.goo.gl/RZLNq3RbixGvTWrL6",
+    "locationUrl": "https://www.google.com/maps?q=54.304122,19.473924",
     "spotInfo": {
       "type": "Lagoon, Vistula Lagoon",
       "bestWind": "W, SW, N, NE",
@@ -457,7 +457,7 @@
     "windguruUrl": "https://www.windguru.cz/217357",
     "windfinderUrl": "https://www.windfinder.com/forecast/wolin_west_pomerania_poland",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/NX6zNv9Gv9Dcj9eAA",
+    "locationUrl": "https://www.google.com/maps?q=53.843362,14.617739",
     "spotInfo": {
       "type": "Lagoon / Baltic Sea",
       "bestWind": "W, NW, SW",
@@ -771,7 +771,7 @@
     "windguruUrl": "https://www.windguru.cz/3644",
     "windfinderUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/qisDuectLyu2FmDBA",
+    "locationUrl": "https://www.google.com/maps?q=51.830991,18.721239",
     "spotInfo": {
       "type": "Lake",
       "bestWind": "W, NW",
@@ -1023,7 +1023,7 @@
     "windguruUrl": "https://www.windguru.cz/872453",
     "windfinderUrl": "https://www.windfinder.com/forecast/haeaedemeeste",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/EVyCfAWHqUg2zhCg6",
+    "locationUrl": "https://www.google.com/maps?q=58.076621,24.493989",
     "spotInfo": {
       "type": "Lagoon, flat to shallow water",
       "bestWind": "W, SW, NW",
@@ -1135,7 +1135,7 @@
     "windguruUrl": "https://www.windguru.cz/542133",
     "windfinderUrl": "https://www.windfinder.com/forecast/lo-stagnone_kiteboarding-club",
     "webcamUrl": "https://www.chilikite.com/en/webcam",
-    "locationUrl": "https://maps.app.goo.gl/B4nsfbMNK6vzcB1j8",
+    "locationUrl": "https://www.google.com/maps?q=37.880290,12.462122",
     "spotInfo": {
       "type": "Lagoon, ultra flat water",
       "bestWind": "NW, N",
@@ -1163,7 +1163,7 @@
     "windguruUrl": "https://www.windguru.cz/436366",
     "windfinderUrl": "https://www.windfinder.com/forecast/punta_trettu",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/68hnsAoxCmasWqBd6",
+    "locationUrl": "https://www.google.com/maps?q=39.112231,8.437006",
     "spotInfo": {
       "type": "Lagoon, flat water",
       "bestWind": "Mistral NW",
@@ -1219,7 +1219,7 @@
     "windguruUrl": "https://www.windguru.cz/766",
     "windfinderUrl": "https://www.windfinder.com/forecast/lake_como_colico",
     "webcamUrl": "https://www.kitezoo.it/webcam/",
-    "locationUrl": "https://maps.app.goo.gl/6MuCVHFUHVfHgzwh7",
+    "locationUrl": "https://www.google.com/maps?q=46.137843,9.372217",
     "spotInfo": {
       "type": "Lake Como, thermal winds",
       "bestWind": "Breva S, Tivano N",
@@ -1527,7 +1527,7 @@
     "windguruUrl": "https://www.windguru.cz/48827",
     "windfinderUrl": "https://www.windfinder.com/forecast/mar_menor_la_manga",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/Sye88Ge8FvaWbkoP7",
+    "locationUrl": "https://www.google.com/maps?q=37.736376,-0.739174",
     "spotInfo": {
       "type": "Lagoon (Mar Menor), flat water",
       "bestWind": "E, SE, W",
@@ -1583,7 +1583,7 @@
     "windguruUrl": "https://www.windguru.cz/49329",
     "windfinderUrl": "https://www.windfinder.com/forecast/sotavento",
     "webcamUrl": "https://spainwebcam.com/90-rene-egli-sotavento-beach.html",
-    "locationUrl": "https://maps.app.goo.gl/P9FXVqZzQKM6Pog79",
+    "locationUrl": "https://www.google.com/maps?q=28.135943,-14.245248",
     "spotInfo": {
       "type": "Lagoon & Ocean",
       "bestWind": "NE (Trade winds)",
@@ -1611,7 +1611,7 @@
     "windguruUrl": "https://www.windguru.cz/49341",
     "windfinderUrl": "https://www.windfinder.com/forecast/fuerteventura_flag_beach",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/ARBWaG8JYxb7BAkm7",
+    "locationUrl": "https://www.google.com/maps?q=28.720700,-13.841057",
     "spotInfo": {
       "type": "Ocean / reef breaks",
       "bestWind": "NE (Trade winds)",
@@ -1695,7 +1695,7 @@
     "windguruUrl": "https://www.windguru.cz/103",
     "windfinderUrl": "https://www.windfinder.com/forecast/viana_do_castelo",
     "webcamUrl": "https://www.windfinder.com/forecast/viana_do_castelo_praia_norte",
-    "locationUrl": "https://maps.app.goo.gl/rKQQLzj2NA5Jrpjc6",
+    "locationUrl": "https://www.google.com/maps?q=41.676902,-8.829210",
     "spotInfo": {
       "type": "Atlantic beach, waves and chop",
       "bestWind": "N, NW",
@@ -1723,7 +1723,7 @@
     "windguruUrl": "https://www.windguru.cz/317",
     "windfinderUrl": "https://www.windfinder.com/forecast/fonte_da_telha",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/64XRNHtmwS1Rgo3t8",
+    "locationUrl": "https://www.google.com/maps?q=38.572075,-9.196222",
     "spotInfo": {
       "type": "Atlantic beach, waves",
       "bestWind": "N, NW",
@@ -1751,7 +1751,7 @@
     "windguruUrl": "https://www.windguru.cz/1528",
     "windfinderUrl": "https://www.windfinder.com/forecast/peniche",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/C6N63jt7MqXdaNfu8",
+    "locationUrl": "https://www.google.com/maps?q=39.363353,-9.371702",
     "spotInfo": {
       "type": "Atlantic coast, waves",
       "bestWind": "N, NW",
@@ -1779,7 +1779,7 @@
     "windguruUrl": "https://www.windguru.cz/75856",
     "windfinderUrl": "https://www.windfinder.com/forecast/nazare",
     "webcamUrl": "https://www.surftotal.com/livecams/nazare",
-    "locationUrl": "https://maps.app.goo.gl/Ef7RfBYEoCnrysRp9",
+    "locationUrl": "https://www.google.com/maps?q=39.623160,-9.083613",
     "spotInfo": {
       "type": "Atlantic coast, giant waves",
       "bestWind": "N, NW",
@@ -1807,7 +1807,7 @@
     "windguruUrl": "https://www.windguru.cz/501161",
     "windfinderUrl": "https://www.windfinder.com/forecast/algarve",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/ntfcxeXxRnvcYF1G6",
+    "locationUrl": "https://www.google.com/maps?q=37.109698,-8.660337",
     "spotInfo": {
       "type": "Atlantic coast, waves & flat lagoons",
       "bestWind": "N, NW",
@@ -1863,7 +1863,7 @@
     "windguruUrl": "https://www.windguru.cz/233",
     "windfinderUrl": "https://www.windfinder.com/forecast/sankt_peter_ording_schleswig_holstein_germany",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/UUgQuqpJGEum8Yeo6",
+    "locationUrl": "https://www.google.com/maps?q=54.326552,8.606214",
     "spotInfo": {
       "type": "North Sea, huge sandy beach",
       "bestWind": "W, NW",
@@ -2031,7 +2031,7 @@
     "windguruUrl": "https://www.windguru.cz/48035",
     "windfinderUrl": "https://www.windfinder.com/forecast/agger_dorf",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/zRfdiB8jBnYo7kCX7",
+    "locationUrl": "https://www.google.com/maps?q=56.782655,8.229245",
     "spotInfo": {
       "type": "Fjord with flat water + North Sea with waves",
       "bestWind": "W, NW",
@@ -2059,7 +2059,7 @@
     "windguruUrl": "https://www.windguru.cz/48037",
     "windfinderUrl": "https://www.windfinder.com/forecast/norre_vorupor_bay",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/KeT5W6kMtUSxt1Pq9",
+    "locationUrl": "https://www.google.com/maps?q=56.948797,8.363828",
     "spotInfo": {
       "type": "North Sea, waves",
       "bestWind": "W, NW",
@@ -2143,7 +2143,7 @@
     "windguruUrl": "https://www.windguru.cz/258",
     "windfinderUrl": "https://www.windfinder.com/forecast/leucate-plage",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/qMgJnEQiT7tUzYzNA",
+    "locationUrl": "https://www.google.com/maps?q=42.932784,3.035639",
     "spotInfo": {
       "type": "Lagoon & sea",
       "bestWind": "Tramontane N, Marin SE",
@@ -2199,7 +2199,7 @@
     "windguruUrl": "https://www.windguru.cz/572",
     "windfinderUrl": "https://www.windfinder.com/forecast/scheveningen",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/JWNy7TaRTgiuVFVe6",
+    "locationUrl": "https://www.google.com/maps?q=52.109866,4.271471",
     "spotInfo": {
       "type": "North Sea, waves",
       "bestWind": "W, NW",
@@ -2227,7 +2227,7 @@
     "windguruUrl": "https://www.windguru.cz/275794",
     "windfinderUrl": "https://www.windfinder.com/forecast/neretva",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/CJmFg5t8VAJXkM6TA",
+    "locationUrl": "https://www.google.com/maps?q=43.020337,17.448692",
     "spotInfo": {
       "type": "River delta lagoon",
       "bestWind": "NW thermal",
@@ -2283,7 +2283,7 @@
     "windguruUrl": "https://www.windguru.cz/49315",
     "windfinderUrl": "https://www.windfinder.com/forecast/dakhla_attitude",
     "webcamUrl": "https://www.allosurf.net/meteo/surf/webcam-dakhla-pointe-de-lassarga-webcam-live-180-1000000-vue-1000001-3001343.html",
-    "locationUrl": "https://maps.app.goo.gl/JoRCGYfiBZfrEMYW6",
+    "locationUrl": "https://www.google.com/maps?q=23.894248,-15.773378",
     "spotInfo": {
       "type": "Lagoon + ocean waves",
       "bestWind": "N, NE",
@@ -2339,7 +2339,7 @@
     "windguruUrl": "https://www.windguru.cz/153754",
     "windfinderUrl": "https://www.windfinder.com/forecast/soma_bay_surf_motion",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/1eJvFQ8rwT3tzHf57",
+    "locationUrl": "https://www.google.com/maps?q=26.855993,33.987479",
     "spotInfo": {
       "type": "Lagoon, flat water",
       "bestWind": "N, NE",
@@ -2647,7 +2647,7 @@
     "windguruUrl": "https://www.windguru.cz/206855",
     "windfinderUrl": "https://www.windfinder.com/forecast/guajiru",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/nxTm4pUaQdpeeNtx8",
+    "locationUrl": "https://www.google.com/maps?q=-3.237697,-39.234581",
     "spotInfo": {
       "type": "Sea, wave and choppy water",
       "bestWind": "E, NE",
@@ -2675,7 +2675,7 @@
     "windguruUrl": "https://www.windguru.cz/68535",
     "windfinderUrl": "https://www.windfinder.com/forecast/cumbuco",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/77YUjctGZ1rRxAnT6",
+    "locationUrl": "https://www.google.com/maps?q=-3.625298,-38.725777",
     "spotInfo": {
       "type": "Sea and lagoon – choppy to flat water",
       "bestWind": "E, ESE",
@@ -2731,7 +2731,7 @@
     "windguruUrl": "https://www.windguru.cz/235167",
     "windfinderUrl": "https://www.windfinder.com/forecast/barra_grande",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/hp1prCiwzyUSRWrd6",
+    "locationUrl": "https://www.google.com/maps?q=-2.908482,-41.409975",
     "spotInfo": {
       "type": "Sea, flat to choppy water with tidal lagoons",
       "bestWind": "E, NE",
@@ -2871,7 +2871,7 @@
     "windguruUrl": "https://www.windguru.cz/206922",
     "windfinderUrl": "https://www.windfinder.com/forecast/baja_california_la_ventana",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/i71JFNSzrwXS7SE86",
+    "locationUrl": "https://www.google.com/maps?q=24.045772,-109.986777",
     "spotInfo": {
       "type": "Bay, flat water, small chop",
       "bestWind": "N, NE",
@@ -2901,7 +2901,7 @@
     "windguruUrl": "https://www.windguru.cz/85080",
     "windfinderUrl": "https://www.windfinder.com/forecast/tulum",
     "webcamUrl": "",
-    "locationUrl": "https://maps.app.goo.gl/gvLeqQG3YBYvg5fq8",
+    "locationUrl": "https://www.google.com/maps?q=20.208723,-87.429714",
     "spotInfo": {
       "type": "Beach, small waves, turquoise water",
       "bestWind": "E, SE",
@@ -3047,7 +3047,7 @@
     "windguruUrl": "https://www.windguru.cz/1146458",
     "windfinderUrl": "https://www.windfinder.com/forecast/le_barcares_occitanie_france",
     "webcamUrl": "https://www.skaping.com/le-barcares/dosses",
-    "locationUrl": "https://maps.app.goo.gl/qracoyEuMxK1mUPJA",
+    "locationUrl": "https://www.google.com/maps?q=42.840841,3.031046",
     "spotInfo": {
       "type": "Lagoon, flat water",
       "bestWind": "NW, N (Tramontane)",
@@ -3316,7 +3316,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/48515",
     "windfinderUrl": "https://www.windfinder.com/forecast/ile_de_noirmoutier_la_gueriniere",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=46.9033,-2.1574",
+    "locationUrl": "https://www.google.com/maps?q=46.904776,-2.166195",
     "spotInfo": {
       "type": "Sea, tidal lagoon and sandflats, flat water at low tide",
       "bestWind": "W, SW, NW, N",
@@ -3440,7 +3440,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/21572",
     "windfinderUrl": "https://www.windfinder.com/forecast/wissant",
     "webcamUrl": "https://www.skylinewebcams.com/en/webcam/france/hauts-de-france/wissant/plage.html",
-    "locationUrl": "https://www.google.com/maps?q=50.8887,1.6613",
+    "locationUrl": "https://www.google.com/maps?q=50.890135,1.656038",
     "spotInfo": {
       "type": "Sea, waves and chop (English Channel)",
       "bestWind": "SW, W, NW, NE",
@@ -3645,7 +3645,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/549",
     "windfinderUrl": "https://www.windfinder.com/forecast/ijmuiden",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=52.4471,4.5714",
+    "locationUrl": "https://www.google.com/maps?q=52.449929,4.562052",
     "spotInfo": {
       "type": "North Sea, choppy waves",
       "bestWind": "SW, W, NW, N",
@@ -4108,7 +4108,7 @@
     "windguruFallbackUrl": "",
     "windfinderUrl": "https://www.windfinder.com/forecast/misty_cliffs",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=-34.1817,18.3777",
+    "locationUrl": "https://www.google.com/maps?q=-34.184951,18.363497",
     "spotInfo": {
       "type": "Sea, Atlantic wave spot, powerful open-ocean swell",
       "bestWind": "SE, S, SW",
@@ -4166,7 +4166,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/579409",
     "windfinderUrl": "https://www.windfinder.com/forecast/kalpitiya",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=8.2425,79.7437",
+    "locationUrl": "https://www.google.com/maps?q=8.242326,79.739714",
     "spotInfo": {
       "type": "Lagoon, flat water + open sea",
       "bestWind": "SW, W",
@@ -4224,7 +4224,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/47147",
     "windfinderUrl": "https://www.windfinder.com/forecast/mui_ne_bay",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=10.9375,108.2458",
+    "locationUrl": "https://www.google.com/maps?q=10.938902,108.191743",
     "spotInfo": {
       "type": "Sea, waves and chop; flat water near harbor wall",
       "bestWind": "NE, E",
@@ -4456,7 +4456,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/98819",
     "windfinderUrl": "https://www.windfinder.com/forecast/gmunden_traunsee",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=47.804861,13.792689",
+    "locationUrl": "https://www.google.com/maps?q=47.809336,13.793314",
     "spotInfo": {
       "type": "Deep alpine lake (420 m a.s.l.), flat water",
       "bestWind": "N to E, sometimes SE (thermal)",
