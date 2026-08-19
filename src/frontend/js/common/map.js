@@ -396,18 +396,278 @@ function getWindSample(spot, getConditions) {
     };
 }
 
+// ============================================================================
+// CLUSTERING
+// Spots that sit on top of each other in a zoomed-out view are merged into a
+// single marker. Grouping happens in screen pixels, so it dissolves by itself
+// as the user zooms in and never depends on the geographic scale.
+// ============================================================================
+
+// Spots closer than this many screen pixels are merged into one cluster.
+const CLUSTER_RADIUS_PX = 60;
+
+// From this zoom level up every spot is drawn on its own, however close it is.
+const CLUSTER_MAX_ZOOM = 10;
+
+// Cardinal directions with a meaningful bearing. An unknown/empty direction is
+// skipped when averaging instead of being treated as north.
+const CARDINAL_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+
 /**
- * Create a Leaflet layer group of wind arrows for the given spots.
- * Arrows point in the direction the wind blows toward (matching the app's
- * arrow glyphs) and are coloured by wind strength. When a popup builder is
- * provided the arrows act as clickable spot markers (used when the dot markers
- * are hidden); otherwise they render as a non-interactive visual overlay.
+ * Group nearby points into clusters based on their distance on screen.
+ *
+ * Greedy single-pass grouping: each ungrouped point seeds a cluster and takes
+ * every remaining point within the pixel radius. With ~100 spots the quadratic
+ * scan is far cheaper than maintaining an index, and the result is stable for a
+ * given zoom level.
+ *
+ * @param {L.Map} map - Leaflet map instance (provides the projection and zoom)
+ * @param {Array} points - Items to cluster; each needs { lat, lon }
+ * @param {object} [options] - { radius, maxZoom }
+ * @returns {Array<{lat:number, lon:number, points:Array}>} Clusters (single-point ones included)
+ */
+export function clusterPoints(map, points, options = {}) {
+    const {
+        radius = CLUSTER_RADIUS_PX,
+        maxZoom = CLUSTER_MAX_ZOOM
+    } = options;
+
+    const valid = Array.isArray(points)
+        ? points.filter(p => p && Number.isFinite(p.lat) && Number.isFinite(p.lon))
+        : [];
+
+    const asSingletons = () => valid.map(p => ({ lat: p.lat, lon: p.lon, points: [p] }));
+
+    if (!map || valid.length === 0) {
+        return asSingletons();
+    }
+
+    const zoom = map.getZoom();
+    if (!Number.isFinite(zoom) || zoom > maxZoom) {
+        return asSingletons();
+    }
+
+    const projected = valid.map(p => ({ point: p, xy: map.project([p.lat, p.lon], zoom) }));
+    const grouped = new Array(projected.length).fill(false);
+    const radiusSq = radius * radius;
+    const clusters = [];
+
+    for (let i = 0; i < projected.length; i++) {
+        if (grouped[i]) {
+            continue;
+        }
+        grouped[i] = true;
+
+        const members = [projected[i]];
+        for (let j = i + 1; j < projected.length; j++) {
+            if (grouped[j]) {
+                continue;
+            }
+            const dx = projected[j].xy.x - projected[i].xy.x;
+            const dy = projected[j].xy.y - projected[i].xy.y;
+            if (dx * dx + dy * dy <= radiusSq) {
+                grouped[j] = true;
+                members.push(projected[j]);
+            }
+        }
+
+        if (members.length === 1) {
+            // Keep the exact position so a lone spot never drifts off its coast.
+            clusters.push({ lat: valid[i].lat, lon: valid[i].lon, points: [valid[i]] });
+            continue;
+        }
+
+        // Centroid in projected space, converted back to lat/lon.
+        let sumX = 0;
+        let sumY = 0;
+        members.forEach(m => {
+            sumX += m.xy.x;
+            sumY += m.xy.y;
+        });
+        const center = map.unproject(L.point(sumX / members.length, sumY / members.length), zoom);
+
+        clusters.push({
+            lat: center.lat,
+            lon: center.lng,
+            points: members.map(m => m.point)
+        });
+    }
+
+    return clusters;
+}
+
+/**
+ * Vector-average a set of wind directions, weighted by wind speed so the
+ * stronger spots dominate the cluster arrow.
+ * @param {Array<{wind:number, direction:string}>} samples - Wind samples
+ * @returns {number|null} Averaged "wind from" bearing in degrees, or null
+ */
+function averageWindBearing(samples) {
+    let x = 0;
+    let y = 0;
+
+    samples.forEach(sample => {
+        if (!CARDINAL_DIRECTIONS.includes(sample.direction)) {
+            return;
+        }
+        const rad = weather.getWindRotation(sample.direction) * Math.PI / 180;
+        const weight = Math.max(sample.wind, 0.1);
+        x += Math.sin(rad) * weight;
+        y += Math.cos(rad) * weight;
+    });
+
+    if (x === 0 && y === 0) {
+        return null;
+    }
+
+    return (Math.atan2(x, y) * 180 / Math.PI + 360) % 360;
+}
+
+/**
+ * Average wind speed of a set of samples.
+ * @param {Array<{wind:number}>} samples - Wind samples
+ * @returns {number|null} Mean wind speed in knots, or null when there is none
+ */
+function averageWindSpeed(samples) {
+    const winds = samples.map(s => s.wind).filter(Number.isFinite);
+    if (winds.length === 0) {
+        return null;
+    }
+    return winds.reduce((sum, w) => sum + w, 0) / winds.length;
+}
+
+/**
+ * Bubble diameter for a cluster: grows with the number of spots but stays
+ * bounded so a dense area never swallows the map.
+ * @param {number} count - Number of spots in the cluster
+ * @returns {number} Diameter in pixels
+ */
+function clusterBubbleSize(count) {
+    if (count < 5) return 32;
+    if (count < 10) return 38;
+    if (count < 25) return 44;
+    return 50;
+}
+
+/**
+ * Tooltip text for a cluster marker.
+ * @param {number} count - Number of spots in the cluster
+ * @returns {string} Localized "N spots" label
+ */
+function clusterTitle(count) {
+    return `${count} ${translations.t('mapClusterSpotsLabel')}`;
+}
+
+/**
+ * Zoom the map in on the spots behind a cluster marker.
+ * @param {L.Map} map - Leaflet map instance
+ * @param {Array<{lat:number, lon:number}>} points - Clustered points
+ */
+function zoomToCluster(map, points) {
+    if (!map || points.length === 0) {
+        return;
+    }
+
+    const bounds = L.latLngBounds(points.map(p => [p.lat, p.lon]));
+    if (bounds.getNorth() === bounds.getSouth() && bounds.getEast() === bounds.getWest()) {
+        // Spots share the exact same coordinates - bounds have no extent to fit.
+        map.setView([points[0].lat, points[0].lon], Math.min(map.getZoom() + 2, map.getMaxZoom() || 19));
+        return;
+    }
+
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: CLUSTER_MAX_ZOOM + 2 });
+}
+
+/**
+ * Create a Leaflet layer group of spot markers (dots), clustered when the map
+ * is zoomed out. A cluster renders as a bubble carrying the number of spots,
+ * coloured by their average wind; clicking it zooms in on its members.
+ * @param {L.Map} map - Leaflet map instance
  * @param {Array} spots - Spot objects
  * @param {function} getConditions - Returns wind conditions for a spot
  * @param {function} [buildPopup] - Optional (spot) => popup HTML string
  * @returns {L.LayerGroup} Leaflet layer group
  */
-export function createWindArrowLayer(spots, getConditions, buildPopup) {
+export function createSpotMarkerLayer(map, spots, getConditions, buildPopup) {
+    const group = L.layerGroup();
+    if (!Array.isArray(spots)) {
+        return group;
+    }
+
+    const points = [];
+    spots.forEach(spot => {
+        if (!spot || !spot.coordinates) {
+            return;
+        }
+        const { lat, lon } = spot.coordinates;
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+            return;
+        }
+        const conditions = getConditions ? getConditions(spot) : null;
+        points.push({
+            lat,
+            lon,
+            spot,
+            wind: conditions && Number.isFinite(conditions.wind) ? conditions.wind : null
+        });
+    });
+
+    clusterPoints(map, points).forEach(cluster => {
+        if (cluster.points.length === 1) {
+            const point = cluster.points[0];
+            const windClass = point.wind === null ? 'wind-no-data' : weather.getMapWindClass(point.wind);
+
+            const marker = L.marker([cluster.lat, cluster.lon], {
+                icon: createMarkerIcon(windClass)
+            });
+
+            if (typeof buildPopup === 'function') {
+                marker.bindPopup(buildPopup(point.spot));
+            }
+
+            marker.addTo(group);
+            return;
+        }
+
+        const count = cluster.points.length;
+        const avgWind = averageWindSpeed(cluster.points.filter(p => p.wind !== null));
+        const windClass = avgWind === null ? 'wind-no-data' : weather.getMapWindClass(avgWind);
+        const size = clusterBubbleSize(count);
+
+        const icon = L.divIcon({
+            className: 'map-cluster-icon',
+            html: `<div class="map-cluster-bubble ${windClass}" style="width:${size}px;height:${size}px">${count}</div>`,
+            iconSize: [size, size],
+            iconAnchor: [size / 2, size / 2]
+        });
+
+        const marker = L.marker([cluster.lat, cluster.lon], {
+            icon,
+            title: clusterTitle(count),
+            keyboard: false
+        });
+        marker.on('click', () => zoomToCluster(map, cluster.points));
+        marker.addTo(group);
+    });
+
+    return group;
+}
+
+/**
+ * Create a Leaflet layer group of wind arrows for the given spots.
+ * Arrows point in the direction the wind blows toward (matching the app's
+ * arrow glyphs) and are coloured by wind strength. When the map is zoomed out,
+ * nearby spots collapse into a single averaged arrow badged with the number of
+ * spots behind it. When a popup builder is provided the arrows act as clickable
+ * spot markers (used when the dot markers are hidden); otherwise they render as
+ * a non-interactive visual overlay.
+ * @param {L.Map} map - Leaflet map instance
+ * @param {Array} spots - Spot objects
+ * @param {function} getConditions - Returns wind conditions for a spot
+ * @param {function} [buildPopup] - Optional (spot) => popup HTML string
+ * @returns {L.LayerGroup} Leaflet layer group
+ */
+export function createWindArrowLayer(map, spots, getConditions, buildPopup) {
     const group = L.layerGroup();
     if (!Array.isArray(spots)) {
         return group;
@@ -415,34 +675,67 @@ export function createWindArrowLayer(spots, getConditions, buildPopup) {
 
     const interactive = typeof buildPopup === 'function';
 
+    const samples = [];
     spots.forEach(spot => {
         const sample = getWindSample(spot, getConditions);
-        if (!sample) {
+        if (sample) {
+            samples.push({ ...sample, spot });
+        }
+    });
+
+    clusterPoints(map, samples).forEach(cluster => {
+        // App convention: arrow points toward where the wind blows (N wind -> down),
+        // so rotate the north-pointing base glyph by 180deg from the "from" angle.
+        if (cluster.points.length === 1) {
+            const sample = cluster.points[0];
+            const windClass = weather.getMapWindClass(sample.wind);
+            const rotation = (weather.getWindRotation(sample.direction) + 180) % 360;
+
+            const icon = L.divIcon({
+                className: `wind-arrow-icon${interactive ? ' wind-arrow-interactive' : ''}`,
+                html: `<div class="wind-arrow-marker ${windClass}" style="transform: rotate(${rotation}deg)">${WIND_ARROW_SVG}</div>`,
+                iconSize: [26, 26],
+                iconAnchor: [13, 13]
+            });
+
+            const marker = L.marker([cluster.lat, cluster.lon], {
+                icon,
+                interactive,
+                keyboard: false
+            });
+
+            if (interactive) {
+                marker.bindPopup(buildPopup(sample.spot));
+            }
+
+            marker.addTo(group);
             return;
         }
 
-        const windClass = weather.getMapWindClass(sample.wind);
-        // App convention: arrow points toward where the wind blows (N wind -> down),
-        // so rotate the north-pointing base glyph by 180deg from the "from" angle.
-        const rotation = (weather.getWindRotation(sample.direction) + 180) % 360;
+        const count = cluster.points.length;
+        const avgWind = averageWindSpeed(cluster.points);
+        const windClass = weather.getMapWindClass(avgWind);
+        const bearing = averageWindBearing(cluster.points);
+        const rotation = bearing === null ? 0 : (bearing + 180) % 360;
+        const arrowStyle = bearing === null ? '' : ` style="transform: rotate(${rotation.toFixed(1)}deg)"`;
 
         const icon = L.divIcon({
-            className: `wind-arrow-icon${interactive ? ' wind-arrow-interactive' : ''}`,
-            html: `<div class="wind-arrow-marker ${windClass}" style="transform: rotate(${rotation}deg)">${WIND_ARROW_SVG}</div>`,
-            iconSize: [26, 26],
-            iconAnchor: [13, 13]
+            className: `wind-arrow-icon${interactive ? ' wind-arrow-interactive' : ''} wind-arrow-cluster-icon`,
+            html: `<div class="wind-arrow-cluster ${windClass}">`
+                + `<div class="wind-arrow-marker ${windClass}"${arrowStyle}>${WIND_ARROW_SVG}</div>`
+                + `<span class="wind-arrow-cluster-count">${count}</span>`
+                + `</div>`,
+            iconSize: [34, 34],
+            iconAnchor: [17, 17]
         });
 
-        const marker = L.marker([sample.lat, sample.lon], {
+        const marker = L.marker([cluster.lat, cluster.lon], {
             icon,
-            interactive,
+            interactive: true,
+            title: clusterTitle(count),
             keyboard: false
         });
-
-        if (interactive) {
-            marker.bindPopup(buildPopup(spot));
-        }
-
+        marker.on('click', () => zoomToCluster(map, cluster.points));
         marker.addTo(group);
     });
 

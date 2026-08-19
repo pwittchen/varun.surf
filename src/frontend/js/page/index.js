@@ -2621,12 +2621,14 @@ window.onbeforeunload = function () {
 // ============================================================================
 
 let leafletMap = null;
-let mapMarkers = [];
+// Persistent containers: markers and overlays are cleared and refilled in place,
+// so a rebuild can never leave an orphaned layer behind on the map.
+let mapMarkerLayer = null;
+let windOverlayLayer = null;
 let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite' or 'osm'
-let windOverlayLayer = null; // active wind overlay layer (arrows group or heat layer)
 let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap'
 let windHeatmapDisclaimerEl = null;
 
@@ -2638,6 +2640,10 @@ function initMap() {
 
     // Initialize Leaflet map
     leafletMap = L.map('map').setView([51.505, -0.09], 2); // Default world view
+
+    // Containers for spot markers and the wind overlay, kept for the map's lifetime
+    mapMarkerLayer = L.layerGroup().addTo(leafletMap);
+    windOverlayLayer = L.layerGroup().addTo(leafletMap);
 
     // Add base tile layer
     mapTileLayer = map.updateTileLayer(leafletMap, mapTileLayer, currentMapLayer);
@@ -2663,6 +2669,14 @@ function initMap() {
         }
     });
     leafletMap.addControl(windOverlayControl);
+
+    // Clustering is computed in screen pixels, so markers and arrows have to be
+    // rebuilt whenever the zoom level changes.
+    leafletMap.on('zoomend', () => {
+        if (isMapView) {
+            updateMapMarkers();
+        }
+    });
 }
 
 function ensureWindHeatmapDisclaimer(visible) {
@@ -2683,24 +2697,21 @@ function ensureWindHeatmapDisclaimer(visible) {
 }
 
 function renderWindOverlay(spots) {
-    if (!leafletMap) return;
+    if (!leafletMap || !windOverlayLayer) return;
 
-    // Remove any existing overlay layer
-    if (windOverlayLayer) {
-        leafletMap.removeLayer(windOverlayLayer);
-        windOverlayLayer = null;
-    }
+    // Drop the previous overlay contents (the container itself stays on the map)
+    windOverlayLayer.clearLayers();
 
     if (windOverlayMode === 'arrows') {
         // Arrows double as spot markers with the same clickable popup as the dots.
-        windOverlayLayer = map.createWindArrowLayer(spots, getSpotConditions, buildSpotMarkerPopup);
-        windOverlayLayer.addTo(leafletMap);
+        windOverlayLayer.addLayer(
+            map.createWindArrowLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
+        );
         ensureWindHeatmapDisclaimer(false);
     } else if (windOverlayMode === 'heatmap') {
         const heatLayer = map.createWindHeatLayer(spots, getSpotConditions);
         if (heatLayer) {
-            windOverlayLayer = heatLayer;
-            windOverlayLayer.addTo(leafletMap);
+            windOverlayLayer.addLayer(heatLayer);
             ensureWindHeatmapDisclaimer(true);
         } else {
             ensureWindHeatmapDisclaimer(false);
@@ -2746,66 +2757,52 @@ function buildSpotMarkerPopup(spot) {
 }
 
 function addMarkersToMap(spots) {
-    // Clear existing markers
-    mapMarkers.forEach(marker => marker.remove());
-    mapMarkers = [];
+    if (!leafletMap || !mapMarkerLayer) return;
 
-    if (!leafletMap || !spots || spots.length === 0) return;
+    mapMarkerLayer.clearLayers();
+
+    if (!spots || spots.length === 0) return;
+
+    // Fit map to show all markers (only on first view to avoid repeated zooming).
+    // Done before the markers are built so clustering already sees the final zoom.
+    fitMapToSpots(spots);
 
     // In arrows mode the wind arrows act as the spot markers, so hide the dots.
-    const showDots = windOverlayMode !== 'arrows';
-
-    const bounds = [];
-
-    spots.forEach(spot => {
-        if (!spot.coordinates || !spot.coordinates.lat || !spot.coordinates.lon) return;
-
-        const lat = spot.coordinates.lat;
-        const lng = spot.coordinates.lon;
-
-        const spotConditions = getSpotConditions(spot);
-        const markerWindClass = spotConditions
-            ? weather.getMapWindClass(spotConditions.wind)
-            : 'wind-no-data';
-
-        const markerIcon = L.divIcon({
-            className: 'custom-marker-icon',
-            html: `<div class="custom-marker ${markerWindClass}"><div class="marker-dot"></div></div>`,
-            iconSize: [18, 18],
-            iconAnchor: [9, 9]
-        });
-
-        // Create marker
-        const marker = L.marker([lat, lng], { icon: markerIcon });
-
-        // Add popup with clickable spot name and wind summary
-        marker.bindPopup(buildSpotMarkerPopup(spot));
-
-        if (showDots) {
-            marker.addTo(leafletMap);
-        }
-
-        mapMarkers.push(marker);
-        bounds.push([lat, lng]);
-    });
-
-    // Fit map to show all markers (only on first view to avoid repeated zooming)
-    if (bounds.length > 0 && !mapBoundsInitialized) {
-        const isMobile = window.innerWidth <= 929;
-        if (isMobile) {
-            // On mobile, fit bounds then zoom in by 1 level to fill vertical space better
-            leafletMap.fitBounds(bounds, { padding: [0, 0] });
-            const currentZoom = leafletMap.getZoom();
-            leafletMap.setZoom(currentZoom + 1);
-        } else {
-            leafletMap.fitBounds(bounds, { padding: [50, 50] });
-        }
-        // On tall viewports the fitted world is shorter than the map container,
-        // which shows an empty stripe above the top tile row - nudge the zoom
-        // up until the view sits inside the world again.
-        map.zoomToFillWorld(leafletMap);
-        mapBoundsInitialized = true;
+    if (windOverlayMode !== 'arrows') {
+        // Nearby spots collapse into a numbered bubble while the map is zoomed out.
+        mapMarkerLayer.addLayer(
+            map.createSpotMarkerLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
+        );
     }
+}
+
+// Zoom the map onto the spots once per session. The flag is raised before the
+// zoom changes, because zooming fires 'zoomend' which re-enters the rendering
+// path - without it the fit would recurse.
+function fitMapToSpots(spots) {
+    if (mapBoundsInitialized) return;
+
+    const bounds = spots
+        .filter(spot => spot.coordinates && spot.coordinates.lat && spot.coordinates.lon)
+        .map(spot => [spot.coordinates.lat, spot.coordinates.lon]);
+
+    if (bounds.length === 0) return;
+
+    mapBoundsInitialized = true;
+
+    const isMobile = window.innerWidth <= 929;
+    if (isMobile) {
+        // On mobile, fit bounds then zoom in by 1 level to fill vertical space better
+        leafletMap.fitBounds(bounds, { padding: [0, 0] });
+        const currentZoom = leafletMap.getZoom();
+        leafletMap.setZoom(currentZoom + 1);
+    } else {
+        leafletMap.fitBounds(bounds, { padding: [50, 50] });
+    }
+    // On tall viewports the fitted world is shorter than the map container,
+    // which shows an empty stripe above the top tile row - nudge the zoom
+    // up until the view sits inside the world again.
+    map.zoomToFillWorld(leafletMap);
 }
 
 function showMapView() {
@@ -2897,10 +2894,9 @@ function hideMapView(options = {}) {
     }
     updateHeroVisibility();
 
-    // Tear down the wind overlay layer (rebuilt on next showMapView)
-    if (windOverlayLayer && leafletMap) {
-        leafletMap.removeLayer(windOverlayLayer);
-        windOverlayLayer = null;
+    // Tear down the wind overlay contents (rebuilt on next showMapView)
+    if (windOverlayLayer) {
+        windOverlayLayer.clearLayers();
     }
     ensureWindHeatmapDisclaimer(false);
 

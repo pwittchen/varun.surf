@@ -5140,6 +5140,42 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     background-color: var(--wind-extreme);
 }
 
+/* Cluster bubble: nearby spots merged into one marker carrying their count.
+   Coloured by the average wind of its members, same scale as the dots. */
+.map-cluster-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.map-cluster-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--marker-border);
+    background-color: var(--wind-extreme);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18), 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.12s ease;
+}
+
+.map-cluster-bubble:hover {
+    transform: scale(1.08);
+}
+
+.map-cluster-bubble.wind-calm { background-color: var(--wind-calm); }
+.map-cluster-bubble.wind-light { background-color: var(--wind-light); }
+.map-cluster-bubble.wind-weak { background-color: var(--wind-weak); }
+.map-cluster-bubble.wind-moderate { background-color: var(--wind-moderate); }
+.map-cluster-bubble.wind-strong { background-color: var(--wind-strong); }
+.map-cluster-bubble.wind-extreme { background-color: var(--wind-extreme); }
+.map-cluster-bubble.wind-no-data { background-color: var(--marker-no-data); }
+
 /* Wind overlay: arrows. Non-interactive by default (visual only); when they
    double as spot markers (dots hidden) they become clickable. */
 .wind-arrow-icon {
@@ -5174,6 +5210,52 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .wind-arrow-marker.wind-moderate { color: var(--wind-moderate); }
 .wind-arrow-marker.wind-strong { color: var(--wind-strong); }
 .wind-arrow-marker.wind-extreme { color: var(--wind-extreme); }
+
+/* Clustered wind arrow: averaged direction plus the number of spots behind it. */
+.wind-arrow-cluster-icon {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.wind-arrow-cluster {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wind-arrow-cluster .wind-arrow-marker {
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.7));
+}
+
+.wind-arrow-cluster-count {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    /* Neutral chip: the arrow already carries the wind colour, so the count
+       stays readable whatever colour it lands on. */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(15, 23, 42, 0.92);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    line-height: 15px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.wind-arrow-cluster.wind-calm { color: var(--wind-calm); }
+.wind-arrow-cluster.wind-light { color: var(--wind-light); }
+.wind-arrow-cluster.wind-weak { color: var(--wind-weak); }
+.wind-arrow-cluster.wind-moderate { color: var(--wind-moderate); }
+.wind-arrow-cluster.wind-strong { color: var(--wind-strong); }
+.wind-arrow-cluster.wind-extreme { color: var(--wind-extreme); }
 
 /* Wind field (interpolated) layer: blur the composited tiles together for a
    smooth field without per-tile seams. */
