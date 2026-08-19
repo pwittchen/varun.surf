@@ -10,6 +10,7 @@ import * as map from '../common/map.js';
 import * as state from '../common/state.js';
 import * as modals from '../common/modals.js';
 import * as calculator from '../common/calculator.js';
+import * as sideMenu from '../common/sideMenu.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -421,70 +422,7 @@ function initLanguage() {
         }
 
         // Update tooltips
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            themeToggle.title = translations.t('themeToggleTooltip');
-        }
-
-        const favoritesToggle = document.getElementById('favoritesToggle');
-        if (favoritesToggle) {
-            favoritesToggle.title = translations.t('favoritesToggleTooltip');
-        }
-
-        const infoToggle = document.getElementById('infoToggle');
-        if (infoToggle) {
-            infoToggle.title = translations.t('infoToggleTooltip');
-        }
-
-        const infoToggleLabel = document.getElementById('infoToggleLabel');
-        if (infoToggleLabel) {
-            infoToggleLabel.textContent = translations.t('infoButtonLabel');
-        }
-
-        const mapToggle = document.getElementById('mapToggle');
-        if (mapToggle) {
-            mapToggle.title = translations.t('mapToggleTooltip');
-        }
-
-        const mapToggleLabel = document.getElementById('mapToggleLabel');
-        if (mapToggleLabel) {
-            mapToggleLabel.textContent = translations.t('mapButtonLabel');
-        }
-
-        const kiteSizeToggle = document.getElementById('kiteSizeToggle');
-        if (kiteSizeToggle) {
-            kiteSizeToggle.title = translations.t('kiteSizeToggleTooltip');
-        }
-
-        const heroToggle = document.getElementById('heroToggle');
-        if (heroToggle) {
-            heroToggle.title = translations.t('heroToggleTooltip');
-        }
-
-        const randomSpotToggle = document.getElementById('randomSpotToggle');
-        if (randomSpotToggle) {
-            randomSpotToggle.title = translations.t('randomSpotTooltip');
-        }
-
-        const listViewBtn = document.getElementById('listViewBtn');
-        if (listViewBtn) {
-            listViewBtn.title = translations.t('listViewTooltip');
-        }
-
-        const gridViewBtn = document.getElementById('gridViewBtn');
-        if (gridViewBtn) {
-            gridViewBtn.title = translations.t('gridViewTooltip');
-        }
-
-        const firingSortToggle = document.getElementById('firingSortToggle');
-        if (firingSortToggle) {
-            firingSortToggle.title = translations.t('firingSortTooltip');
-        }
-
-        const liveStationsToggle = document.getElementById('liveStationsToggle');
-        if (liveStationsToggle) {
-            liveStationsToggle.title = translations.t('liveStationsTooltip');
-        }
+        sideMenu.updateTranslations(translations.t);
 
         const liveStationsFilter = document.getElementById('liveStationsFilter');
         if (liveStationsFilter) {
@@ -494,20 +432,6 @@ function initLanguage() {
         if (languageToggle) {
             languageToggle.title = translations.t('languageToggleTooltip');
         }
-
-        // Convert the sticky left menu's native tooltips into custom hint
-        // bubbles (styled like the map popups). The text is moved off `title`
-        // (so the browser's default tooltip no longer duplicates the bubble)
-        // into `data-hint` for setupSideMenuHints() and kept as aria-label for
-        // accessibility / the mobile drawer.
-        SIDE_MENU_HINT_IDS.forEach(id => {
-            const btn = document.getElementById(id);
-            if (btn && btn.title) {
-                btn.dataset.hint = btn.title;
-                btn.setAttribute('aria-label', btn.title);
-                btn.removeAttribute('title');
-            }
-        });
 
         // Update language code text
         const langCode = document.getElementById('langCode');
@@ -592,73 +516,7 @@ function initLanguage() {
         }
 
         // Update kite size calculator modal content
-        const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
-        if (kiteSizeModalTitle) {
-            kiteSizeModalTitle.textContent = translations.t('kiteSizeCalculatorTitle');
-        }
-
-        const windSpeedLabel = document.querySelector('label[for="windSpeed"]');
-        if (windSpeedLabel) {
-            windSpeedLabel.textContent = translations.t('windSpeedLabel');
-        }
-
-        const windSpeedInput = document.getElementById('windSpeed');
-        if (windSpeedInput) {
-            windSpeedInput.placeholder = translations.t('windSpeedPlaceholder');
-        }
-
-        const riderWeightLabel = document.querySelector('label[for="riderWeight"]');
-        if (riderWeightLabel) {
-            riderWeightLabel.textContent = translations.t('riderWeightLabel');
-        }
-
-        const riderWeightInput = document.getElementById('riderWeight');
-        if (riderWeightInput) {
-            riderWeightInput.placeholder = translations.t('riderWeightPlaceholder');
-        }
-
-        const skillLevelLabel = document.querySelector('label[for="skillLevel"]');
-        if (skillLevelLabel) {
-            skillLevelLabel.textContent = translations.t('skillLevelLabel');
-        }
-
-        const skillLevelSelect = document.getElementById('skillLevel');
-        if (skillLevelSelect) {
-            const options = skillLevelSelect.querySelectorAll('option');
-            options[0].textContent = translations.t('skillLevelPlaceholder');
-            options[1].textContent = translations.t('skillBeginnerFlat');
-            options[2].textContent = translations.t('skillBeginnerSmall');
-            options[3].textContent = translations.t('skillIntermediateFlat');
-            options[4].textContent = translations.t('skillIntermediateMedium');
-            options[5].textContent = translations.t('skillAdvancedFlat');
-            options[6].textContent = translations.t('skillAdvancedMedium');
-            options[7].textContent = translations.t('skillAdvancedLarge');
-        }
-
-        const calculateBtn = document.getElementById('calculateBtn');
-        if (calculateBtn) {
-            calculateBtn.textContent = translations.t('calculateButton');
-        }
-
-        const calcResultTitle = document.querySelector('#calcResult .calc-result-title');
-        if (calcResultTitle) {
-            calcResultTitle.textContent = translations.t('recommendedEquipment');
-        }
-
-        const kiteSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(2) .calc-result-label');
-        if (kiteSizeLabel) {
-            kiteSizeLabel.textContent = translations.t('kiteSizeLabel');
-        }
-
-        const boardSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(3) .calc-result-label');
-        if (boardSizeLabel) {
-            boardSizeLabel.textContent = translations.t('boardSizeLabel');
-        }
-
-        const calcDisclaimer = document.querySelector('#calcResult .modal-disclaimer');
-        if (calcDisclaimer) {
-            calcDisclaimer.textContent = translations.t('calcDisclaimer');
-        }
+        calculator.updateTranslations(translations.t);
 
         // Update AI modal disclaimer
         const aiDisclaimer = document.querySelector('#aiModal .modal-disclaimer');
@@ -2411,113 +2269,8 @@ function setupHamburgerMenu() {
 
 // ============================================================================
 // STICKY LEFT MENU
-// The action buttons live in the vertical #sideMenu on desktop / tablet. At
-// mobile widths (<=929px) the hamburger drawer takes over, so the buttons are
-// moved into #headerIcons (inside .header-controls) where the drawer styles
-// lay them out. This mirrors the old overflow-menu shuffle.
+// Implementation lives in ../common/sideMenu.js (shared with the spot page).
 // ============================================================================
-
-const SIDE_MENU_BREAKPOINT = 929;
-
-// Buttons that live in the sticky left menu on desktop / tablet. Their tooltips
-// are rendered as custom hint bubbles (see setupSideMenuHints).
-const SIDE_MENU_HINT_IDS = [
-    'infoToggle', 'themeToggle', 'favoritesToggle', 'firingSortToggle',
-    'liveStationsToggle', 'mapToggle', 'heroToggle', 'kiteSizeToggle',
-    'randomSpotToggle', 'listViewBtn', 'gridViewBtn'
-];
-
-// Custom tooltips for the sticky left menu, styled like the map popups. A single
-// bubble element is reused and positioned to the right of the hovered icon.
-// It is appended to <body> and positioned with fixed coordinates so it escapes
-// the side menu's overflow clipping (overflow-y: auto also clips horizontally).
-function setupSideMenuHints() {
-    const sideMenu = document.getElementById('sideMenu');
-    if (!sideMenu) {
-        return;
-    }
-
-    let hint = document.getElementById('sideMenuHint');
-    if (!hint) {
-        hint = document.createElement('div');
-        hint.id = 'sideMenuHint';
-        hint.className = 'side-menu-hint';
-        hint.setAttribute('role', 'tooltip');
-        document.body.appendChild(hint);
-    }
-
-    let activeBtn = null;
-
-    function hide() {
-        activeBtn = null;
-        hint.classList.remove('visible');
-    }
-
-    function show(btn) {
-        // Only pop out from the vertical rail; in the mobile drawer the buttons
-        // move into #headerIcons and the bubble would be misplaced.
-        if (btn.parentElement !== sideMenu) {
-            return;
-        }
-        const text = btn.dataset.hint || btn.getAttribute('aria-label');
-        if (!text) {
-            return;
-        }
-        activeBtn = btn;
-        hint.textContent = text;
-        // Measure before revealing so vertical centering is exact.
-        const btnRect = btn.getBoundingClientRect();
-        const hintRect = hint.getBoundingClientRect();
-        hint.style.left = `${btnRect.right + 12}px`;
-        hint.style.top = `${btnRect.top + (btnRect.height - hintRect.height) / 2}px`;
-        hint.classList.add('visible');
-    }
-
-    sideMenu.querySelectorAll('.theme-toggle').forEach(btn => {
-        btn.addEventListener('mouseenter', () => show(btn));
-        btn.addEventListener('mouseleave', hide);
-    });
-
-    // Keep the bubble anchored if the rail scrolls, and dismiss on scroll/resize
-    // to avoid a stale position.
-    window.addEventListener('scroll', hide, true);
-    window.addEventListener('resize', hide);
-}
-
-function setupSideMenu() {
-    const sideMenu = document.getElementById('sideMenu');
-    const headerIcons = document.getElementById('headerIcons');
-
-    if (!sideMenu || !headerIcons) {
-        return;
-    }
-
-    // Capture the buttons in their authored order so they always go back the
-    // same way regardless of which container currently holds them.
-    const iconButtons = Array.from(sideMenu.children);
-
-    function moveTo(container) {
-        iconButtons.forEach(btn => container.appendChild(btn));
-    }
-
-    function update() {
-        if (window.innerWidth <= SIDE_MENU_BREAKPOINT) {
-            if (iconButtons[0] && iconButtons[0].parentElement !== headerIcons) {
-                moveTo(headerIcons);
-            }
-        } else if (iconButtons[0] && iconButtons[0].parentElement !== sideMenu) {
-            moveTo(sideMenu);
-        }
-    }
-
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(update, 150);
-    });
-
-    update();
-}
 
 // ============================================================================
 // COLUMN LAYOUT TOGGLE (2 vs 3 columns)
@@ -2528,7 +2281,7 @@ let currentViewMode = 'grid'; // 'grid' or 'list'
 let desktopViewMode = 'grid'; // Store desktop preference separately
 let listSortColumn = null;
 let listSortDirection = 'asc';
-let showOnlyLiveStations = false; // Keep only spots backed by a live weather station
+let showOnlyLiveStations = state.getLiveStationsOnly(); // Keep only spots backed by a live weather station
 let firingSortEnabled = state.getFiringSort(); // Default main-page ordering by live wind strength
 
 function isMobileView() {
@@ -2572,6 +2325,7 @@ function setupFiringSortToggle() {
 // the list-header checkbox stay in sync whichever one flipped it.
 function setLiveStationsFilter(enabled) {
     showOnlyLiveStations = enabled;
+    state.setLiveStationsOnly(enabled);
 
     const btn = document.getElementById('liveStationsToggle');
     if (btn) {
@@ -3373,8 +3127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupListDragAndDrop();
     setupFavorites();
     setupHamburgerMenu();
-    setupSideMenu();
-    setupSideMenuHints();
+    sideMenu.setup();
+    sideMenu.setupHints();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupFiringSortToggle();

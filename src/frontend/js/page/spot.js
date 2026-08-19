@@ -9,6 +9,8 @@ import * as routing from '../common/routing.js';
 import * as map from '../common/map.js';
 import * as state from '../common/state.js';
 import * as modals from '../common/modals.js';
+import * as sideMenu from '../common/sideMenu.js';
+import * as calculator from '../common/calculator.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -46,6 +48,7 @@ let embedLanguageSelection = 'en';
 
 // Selected data source ('forecast' or 'liveData')
 let selectedDataSource = 'forecast';
+
 
 // ============================================================================
 // SVG ICONS (spot page specific)
@@ -2636,17 +2639,11 @@ function updateUITranslations() {
     // Update map layer switcher labels
     map.updateLayerSwitcherLabels();
 
-    // Update info toggle button label
-    const infoToggleLabel = document.getElementById('infoToggleLabel');
-    if (infoToggleLabel) {
-        infoToggleLabel.textContent = translations.t('infoButtonLabel');
-    }
+    // Update sticky left menu labels and tooltips
+    sideMenu.updateTranslations(translations.t);
 
-    // Update random spot button tooltip
-    const randomSpotToggle = document.getElementById('randomSpotToggle');
-    if (randomSpotToggle) {
-        randomSpotToggle.title = translations.t('randomSpotTooltip');
-    }
+    // Update kite size calculator modal content
+    calculator.updateTranslations(translations.t);
 
     // Update loading text
     const loadingMessage = document.getElementById('loadingMessage');
@@ -2744,6 +2741,82 @@ function setupInfoToggle() {
         infoToggle.addEventListener('click', () => {
             openAppInfoModal();
         });
+    }
+}
+
+// ============================================================================
+// MAIN PAGE SHORTCUTS
+// The rest of the sticky left menu acts on the main page's spot list, which
+// does not exist here. Each button stores its mode (the main page reads the
+// same keys on load) and navigates back, so the effect is visible right away.
+// No button is ever highlighted here — an active state describes the spots
+// list, so it belongs to the main page only.
+// ============================================================================
+
+function onSideMenuClick(id, handler) {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.addEventListener('click', handler);
+    }
+}
+
+// Grey out and switch off a button that has nothing to act on here
+function markDisabled(id) {
+    const btn = document.getElementById(id);
+    if (btn) {
+        btn.classList.add('side-menu-disabled');
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+    }
+}
+
+function setupMainPageShortcuts() {
+    // The hero banner belongs to the main page only
+    markDisabled('heroToggle');
+
+    onSideMenuClick('favoritesToggle', () => {
+        state.setShowingFavorites(true);
+        window.location.href = '/starred';
+    });
+
+    onSideMenuClick('mapToggle', () => {
+        window.location.href = '/map';
+    });
+
+    onSideMenuClick('firingSortToggle', () => {
+        state.setFiringSort(!state.getFiringSort());
+        goToSpotsList();
+    });
+
+    onSideMenuClick('liveStationsToggle', () => {
+        state.setLiveStationsOnly(!state.getLiveStationsOnly());
+        goToSpotsList();
+    });
+
+    onSideMenuClick('listViewBtn', () => {
+        state.setDesktopViewMode('list');
+        goToSpotsList();
+    });
+
+    onSideMenuClick('gridViewBtn', () => {
+        state.setDesktopViewMode('grid');
+        goToSpotsList();
+    });
+}
+
+// Back to the spots list the user came from: favorites if that mode is on,
+// otherwise the country filter (the same target as the logo and the wordmark).
+function goToSpotsList() {
+    if (state.getShowingFavorites()) {
+        window.location.href = '/starred';
+        return;
+    }
+
+    const savedCountry = state.getSelectedCountry();
+    if (savedCountry === 'all') {
+        routing.navigateToHome();
+    } else {
+        routing.navigateToCountry(savedCountry);
     }
 }
 
@@ -3108,7 +3181,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupEmbedModal();
     setupInfoToggle();
     setupRandomSpotToggle();
+    setupMainPageShortcuts();
+    calculator.setupKiteSizeCalculator();
     setupHamburgerMenu();
+    sideMenu.setup();
+    sideMenu.setupHints();
     setupHeaderNavigation();
     setupResizeHandler();
     setupModelDropdown();

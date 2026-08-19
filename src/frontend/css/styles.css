@@ -370,17 +370,19 @@ body {
     padding: 20px;
 }
 
-/* Reserve room for the sticky left menu on the main page (desktop / tablet).
-   Scoped to .index-page so other pages (spot/status) keep their full width.
-   The header gets the same left inset so its centered content column matches
-   the main content column exactly — this keeps the right edge of the header
-   controls (country dropdown) flush with the content/banner below it. */
+/* Reserve room for the sticky left menu on the pages that have one (desktop /
+   tablet). Scoped to those pages so the others (status/sources/...) keep their
+   full width. The header gets the same left inset so its centered content
+   column matches the main content column exactly — this keeps the right edge of
+   the header controls (country / model dropdown) flush with the content below. */
 @media (min-width: 930px) {
-    .index-page .main-content {
+    .index-page .main-content,
+    .spot-page .main-content {
         padding-left: 84px;
     }
 
-    .index-page .fixed-header {
+    .index-page .fixed-header,
+    .spot-page .fixed-header {
         padding-left: 84px !important;
     }
 }
@@ -431,13 +433,6 @@ body {
 
 .header-logo:hover {
     opacity: 0.8;
-}
-
-/* Single spot page has no sticky left menu, so align the logo's left edge with
-   the left edge of the spot card below (container: max-width 1400px, centered,
-   with 20px .main-content padding → left edge at max(20px, 50% - 700px)). */
-body.spot-page .header-logo {
-    left: max(20px, calc(50% - 700px));
 }
 
 .header-controls {
@@ -621,14 +616,6 @@ body.index-page .header-title {
     .header-stats {
         display: none !important;
     }
-}
-
-/* On the spot page the logo is nudged right to align with the card (50% - 700px),
-   so shift the title to match: logo left + 32px logo width + 11px gap = +43px.
-   Both clamp at the same viewport width (1440px), keeping the gap constant while
-   resizing so the 32px logo never overlaps the title. */
-body.spot-page .header-title {
-    left: max(63px, calc(50% - 657px));
 }
 
 /* Spot Counter */
@@ -5061,7 +5048,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: flex !important;
 }
 
-.disabled-in-map {
+/* Greyed out and inert: a side menu button with nothing to act on in the
+   current context (the map view, or the single spot page) */
+.disabled-in-map,
+.side-menu-disabled {
     opacity: 0.4;
     pointer-events: none;
     cursor: default;

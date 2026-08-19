@@ -41,6 +41,9 @@ export const STORAGE_KEYS = {
     // Firing-now sort (main page default ordering by live wind strength)
     FIRING_SORT: 'firingSort',
 
+    // Live-stations-only filter (main page)
+    LIVE_STATIONS_ONLY: 'liveStationsOnly',
+
     // Map wind overlay mode ('off' | 'arrows' | 'heatmap')
     WIND_OVERLAY_MODE: 'windOverlayMode'
 };
@@ -170,6 +173,16 @@ export function getFiringSort() {
 
 export function setFiringSort(enabled) {
     localStorage.setItem(STORAGE_KEYS.FIRING_SORT, enabled ? 'true' : 'false');
+}
+
+// Live-stations-only filter defaults to OFF, so the spot page can hand the
+// main page a filter that is already switched on
+export function getLiveStationsOnly() {
+    return localStorage.getItem(STORAGE_KEYS.LIVE_STATIONS_ONLY) === 'true';
+}
+
+export function setLiveStationsOnly(enabled) {
+    localStorage.setItem(STORAGE_KEYS.LIVE_STATIONS_ONLY, enabled ? 'true' : 'false');
 }
 
 // ============================================================================

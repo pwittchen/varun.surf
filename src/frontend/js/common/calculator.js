@@ -222,3 +222,77 @@ export function setupKiteSizeCalculator() {
         }
     });
 }
+
+/**
+ * Apply the current language to the kite/board size calculator modal.
+ * @param {function(string): string} t - Translation lookup
+ */
+export function updateTranslations(t) {
+    const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
+    if (kiteSizeModalTitle) {
+        kiteSizeModalTitle.textContent = t('kiteSizeCalculatorTitle');
+    }
+
+    const windSpeedLabel = document.querySelector('label[for="windSpeed"]');
+    if (windSpeedLabel) {
+        windSpeedLabel.textContent = t('windSpeedLabel');
+    }
+
+    const windSpeedInput = document.getElementById('windSpeed');
+    if (windSpeedInput) {
+        windSpeedInput.placeholder = t('windSpeedPlaceholder');
+    }
+
+    const riderWeightLabel = document.querySelector('label[for="riderWeight"]');
+    if (riderWeightLabel) {
+        riderWeightLabel.textContent = t('riderWeightLabel');
+    }
+
+    const riderWeightInput = document.getElementById('riderWeight');
+    if (riderWeightInput) {
+        riderWeightInput.placeholder = t('riderWeightPlaceholder');
+    }
+
+    const skillLevelLabel = document.querySelector('label[for="skillLevel"]');
+    if (skillLevelLabel) {
+        skillLevelLabel.textContent = t('skillLevelLabel');
+    }
+
+    const skillLevelSelect = document.getElementById('skillLevel');
+    if (skillLevelSelect) {
+        const options = skillLevelSelect.querySelectorAll('option');
+        options[0].textContent = t('skillLevelPlaceholder');
+        options[1].textContent = t('skillBeginnerFlat');
+        options[2].textContent = t('skillBeginnerSmall');
+        options[3].textContent = t('skillIntermediateFlat');
+        options[4].textContent = t('skillIntermediateMedium');
+        options[5].textContent = t('skillAdvancedFlat');
+        options[6].textContent = t('skillAdvancedMedium');
+        options[7].textContent = t('skillAdvancedLarge');
+    }
+
+    const calculateBtn = document.getElementById('calculateBtn');
+    if (calculateBtn) {
+        calculateBtn.textContent = t('calculateButton');
+    }
+
+    const calcResultTitle = document.querySelector('#calcResult .calc-result-title');
+    if (calcResultTitle) {
+        calcResultTitle.textContent = t('recommendedEquipment');
+    }
+
+    const kiteSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(2) .calc-result-label');
+    if (kiteSizeLabel) {
+        kiteSizeLabel.textContent = t('kiteSizeLabel');
+    }
+
+    const boardSizeLabel = document.querySelector('#calcResult .calc-result-item:nth-child(3) .calc-result-label');
+    if (boardSizeLabel) {
+        boardSizeLabel.textContent = t('boardSizeLabel');
+    }
+
+    const calcDisclaimer = document.querySelector('#calcResult .modal-disclaimer');
+    if (calcDisclaimer) {
+        calcDisclaimer.textContent = t('calcDisclaimer');
+    }
+}
