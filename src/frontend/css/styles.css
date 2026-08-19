@@ -576,6 +576,14 @@ body.spot-page .header-logo {
     color: var(--text-black);
 }
 
+/* The index page is the only one loading the Inter webfont, and the weights it
+   fetches skip 200 — so the wordmark drops to Inter's 100 face and renders far
+   thinner than on the spot page, which has no Inter and falls back to the system
+   font. Drop Inter for the wordmark here so both views render it identically. */
+body.index-page .header-title {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 /* Coverage badge ("102 spots · 15 countries · 41 stations") sitting left of the
    language switcher in the header controls. Hidden below 1300px, where the row
    would otherwise run into the fixed logo + wordmark. */
