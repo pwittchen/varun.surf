@@ -1,15 +1,5 @@
-import * as translations from '../common/translations.js';
-import * as footer from '../common/footer.js';
+import * as toolsPage from '../common/toolsPage.js';
 import * as api from '../common/api.js';
-import * as routing from '../common/routing.js';
-import * as state from '../common/state.js';
-
-// ============================================================================
-// THEME INITIALIZATION
-// ============================================================================
-
-// Set the initial theme
-state.applyTheme(state.getTheme());
 
 // ============================================================================
 // STATUS API FUNCTIONS
@@ -193,11 +183,7 @@ async function refreshStatus() {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Setup header title click handler
-    const headerTitle = document.getElementById('headerTitle');
-    if (headerTitle) {
-        headerTitle.addEventListener('click', routing.navigateToHome);
-    }
+    toolsPage.setup();
 
     // Initial load
     refreshStatus();
@@ -205,6 +191,4 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(refreshStatus, 30000);
     // Manual refresh button
     document.getElementById('refresh-status').addEventListener('click', refreshStatus);
-
-    footer.updateFooter(translations.t);
 });

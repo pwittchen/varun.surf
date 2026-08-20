@@ -48,7 +48,10 @@ export const STORAGE_KEYS = {
     LIVE_STATIONS_ONLY: 'liveStationsOnly',
 
     // Map wind overlay mode ('off' | 'arrows' | 'heatmap')
-    WIND_OVERLAY_MODE: 'windOverlayMode'
+    WIND_OVERLAY_MODE: 'windOverlayMode',
+
+    // Sidebar collapsed to an icon rail (desktop / tablet)
+    SIDEBAR_COLLAPSED: 'sidebarCollapsed'
 };
 
 // ============================================================================
@@ -186,6 +189,19 @@ export function getLiveStationsOnly() {
 
 export function setLiveStationsOnly(enabled) {
     localStorage.setItem(STORAGE_KEYS.LIVE_STATIONS_ONLY, enabled ? 'true' : 'false');
+}
+
+// ============================================================================
+// SIDEBAR
+// ============================================================================
+
+// The sidebar opens expanded (labels visible) until the user collapses it
+export function getSidebarCollapsed() {
+    return localStorage.getItem(STORAGE_KEYS.SIDEBAR_COLLAPSED) === 'true';
+}
+
+export function setSidebarCollapsed(collapsed) {
+    localStorage.setItem(STORAGE_KEYS.SIDEBAR_COLLAPSED, collapsed ? 'true' : 'false');
 }
 
 // ============================================================================

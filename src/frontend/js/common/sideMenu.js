@@ -1,16 +1,26 @@
 // ============================================================================
-// STICKY LEFT MENU
-// The action buttons live in the vertical #sideMenu on desktop / tablet. At
-// mobile widths (<=929px) the hamburger drawer takes over, so the buttons are
-// moved into #headerIcons (inside .header-controls) where the drawer styles
-// lay them out. Shared by the main page and the single spot page.
+// SIDEBAR
+// Behaviour of the sidebar every page shares (its markup lives in appShell.js):
+// a brand, labelled menu entries grouped into sections, and a collapse switch
+// that shrinks it to an icon rail (remembered across visits).
+// At mobile widths (<=929px) the sidebar steps aside. Where the page has a
+// drawer (main page, single spot page) its entries move into #headerIcons
+// (inside .header-controls) and the brand into the header; on the pages with no
+// drawer (status / sources / MCP / logs / metrics) only the brand moves, and the
+// header — wordmark plus language switch — is the whole chrome.
 // ============================================================================
+
+import * as state from './state.js';
 
 export const BREAKPOINT = 929;
 
-// Every button that can live in the sticky left menu, with the translation key
-// for its tooltip. Missing buttons are skipped, so a page carrying only part of
-// the menu can use this as-is.
+// Between the drawer and this width the sidebar keeps to its icon rail: the
+// content column (the list view in particular) has no room for both.
+export const NARROW_BREAKPOINT = 1100;
+
+// Every button that can live in the sidebar, with the translation key for its
+// tooltip. Missing buttons are skipped, so a page carrying only part of the
+// menu can use this as-is.
 const TOOLTIP_KEYS = {
     infoToggle: 'infoToggleTooltip',
     themeToggle: 'themeToggleTooltip',
@@ -22,18 +32,57 @@ const TOOLTIP_KEYS = {
     kiteSizeToggle: 'kiteSizeToggleTooltip',
     randomSpotToggle: 'randomSpotTooltip',
     listViewBtn: 'listViewTooltip',
-    gridViewBtn: 'gridViewTooltip'
+    gridViewBtn: 'gridViewTooltip',
+    statusLink: 'statusLinkTooltip',
+    sourcesLink: 'sourcesLinkTooltip',
+    mcpLink: 'mcpLinkTooltip',
+    githubLink: 'githubLinkTooltip',
+    logsLink: 'logsLinkTooltip',
+    metricsLink: 'metricsLinkTooltip'
+};
+
+// Row labels next to the icons, plus the section headings above them. Short by
+// design: the full sentence stays in the tooltip.
+const SIDEBAR_LABEL_KEYS = {
+    infoToggleSidebarLabel: 'sidebarInfo',
+    themeToggleSidebarLabel: 'sidebarTheme',
+    listViewBtnSidebarLabel: 'sidebarListView',
+    gridViewBtnSidebarLabel: 'sidebarGridView',
+    mapToggleSidebarLabel: 'sidebarMap',
+    heroToggleSidebarLabel: 'sidebarHero',
+    favoritesToggleSidebarLabel: 'sidebarFavorites',
+    firingSortToggleSidebarLabel: 'sidebarFiring',
+    liveStationsToggleSidebarLabel: 'sidebarLiveStations',
+    kiteSizeToggleSidebarLabel: 'sidebarCalculator',
+    randomSpotToggleSidebarLabel: 'sidebarRandomSpot',
+    statusLinkSidebarLabel: 'sidebarStatus',
+    sourcesLinkSidebarLabel: 'sidebarSources',
+    mcpLinkSidebarLabel: 'sidebarMcp',
+    githubLinkSidebarLabel: 'sidebarGithub',
+    logsLinkSidebarLabel: 'sidebarLogs',
+    metricsLinkSidebarLabel: 'sidebarMetrics',
+    sidebarSectionView: 'sidebarSectionView',
+    sidebarSectionFilters: 'sidebarSectionFilters',
+    sidebarSectionTools: 'sidebarSectionTools',
+    sidebarSectionMore: 'sidebarSectionMore',
+    sidebarSectionAdmin: 'sidebarSectionAdmin'
 };
 
 // Text labels next to the icon; visible only in the mobile drawer, where the
-// rail's icon-only styling no longer applies.
+// sidebar's own labels are dropped.
 const LABEL_KEYS = {
     infoToggleLabel: 'infoButtonLabel',
     mapToggleLabel: 'mapButtonLabel'
 };
 
-// Apply the current language to every side menu button present on the page.
+// Kept from the last updateTranslations() call so the collapse switch can
+// relabel itself ("Collapse" <-> "Expand") without the caller passing t again.
+let translate = null;
+
+// Apply the current language to every sidebar button present on the page.
 export function updateTranslations(t) {
+    translate = t;
+
     Object.entries(TOOLTIP_KEYS).forEach(([id, key]) => {
         const btn = document.getElementById(id);
         if (btn) {
@@ -41,20 +90,37 @@ export function updateTranslations(t) {
         }
     });
 
-    Object.entries(LABEL_KEYS).forEach(([id, key]) => {
+    Object.entries({...LABEL_KEYS, ...SIDEBAR_LABEL_KEYS}).forEach(([id, key]) => {
         const label = document.getElementById(id);
         if (label) {
             label.textContent = t(key);
         }
     });
 
+    updateCollapseLabel();
+
     convertTitlesToHints(Object.keys(TOOLTIP_KEYS));
 }
 
-// Convert the sticky left menu's native tooltips into custom hint bubbles
-// (styled like the map popups). The text is moved off `title` (so the browser's
-// default tooltip no longer duplicates the bubble) into `data-hint` for
-// setupHints() and kept as aria-label for accessibility / the mobile drawer.
+function updateCollapseLabel() {
+    const btn = document.getElementById('sidebarCollapse');
+    if (!btn || !translate) {
+        return;
+    }
+    const collapsed = document.body.classList.contains('sidebar-collapsed');
+    const text = translate(collapsed ? 'sidebarExpand' : 'sidebarCollapse');
+    const label = document.getElementById('sidebarCollapseLabel');
+    if (label) {
+        label.textContent = text;
+    }
+    btn.setAttribute('aria-label', text);
+    btn.dataset.hint = text;
+}
+
+// Convert the sidebar's native tooltips into custom hint bubbles (styled like
+// the map popups). The text is moved off `title` (so the browser's default
+// tooltip no longer duplicates the bubble) into `data-hint` for setupHints()
+// and kept as aria-label for accessibility / the mobile drawer.
 export function convertTitlesToHints(ids) {
     ids.forEach(id => {
         const btn = document.getElementById(id);
@@ -66,10 +132,11 @@ export function convertTitlesToHints(ids) {
     });
 }
 
-// Custom tooltips for the sticky left menu, styled like the map popups. A single
-// bubble element is reused and positioned to the right of the hovered icon.
-// It is appended to <body> and positioned with fixed coordinates so it escapes
-// the side menu's overflow clipping (overflow-y: auto also clips horizontally).
+// Custom tooltips for the collapsed sidebar, styled like the map popups. A
+// single bubble element is reused and positioned to the right of the hovered
+// icon. It is appended to <body> and positioned with fixed coordinates so it
+// escapes the sidebar's overflow clipping. Expanded, the row already carries
+// its label, so no bubble is shown.
 export function setupHints() {
     const sideMenu = document.getElementById('sideMenu');
     if (!sideMenu) {
@@ -90,9 +157,10 @@ export function setupHints() {
     }
 
     function show(btn) {
-        // Only pop out from the vertical rail; in the mobile drawer the buttons
-        // move into #headerIcons and the bubble would be misplaced.
-        if (btn.parentElement !== sideMenu) {
+        // Only pop out from the collapsed rail: expanded rows show their label,
+        // and in the mobile drawer the buttons move into #headerIcons, where the
+        // bubble would be misplaced.
+        if (!sideMenu.contains(btn) || !document.body.classList.contains('sidebar-collapsed')) {
             return;
         }
         const text = btn.dataset.hint || btn.getAttribute('aria-label');
@@ -109,7 +177,7 @@ export function setupHints() {
     }
 
     // The buttons may already sit in the mobile drawer when this runs, so look
-    // in both containers; show() keeps the bubble to the vertical rail anyway.
+    // in both containers; show() keeps the bubble to the collapsed rail anyway.
     const headerIcons = document.getElementById('headerIcons');
     const containers = headerIcons ? [sideMenu, headerIcons] : [sideMenu];
 
@@ -120,43 +188,108 @@ export function setupHints() {
         });
     });
 
-    // Keep the bubble anchored if the rail scrolls, and dismiss on scroll/resize
-    // to avoid a stale position.
+    // Keep the bubble anchored if the sidebar scrolls, and dismiss on
+    // scroll/resize to avoid a stale position.
     window.addEventListener('scroll', hide, true);
     window.addEventListener('resize', hide);
 }
 
-export function setup() {
-    const sideMenu = document.getElementById('sideMenu');
-    const headerIcons = document.getElementById('headerIcons');
+// Collapse switch: shrinks the sidebar to an icon rail and back. The state is
+// stored, so the sidebar opens the way it was left.
+function setupCollapse() {
+    syncCollapsed();
 
-    if (!sideMenu || !headerIcons) {
+    // Enable the width transitions only after the stored state is on the body,
+    // so a collapsed sidebar does not slide shut on every page load.
+    requestAnimationFrame(() => document.body.classList.add('sidebar-ready'));
+
+    const btn = document.getElementById('sidebarCollapse');
+    if (!btn) {
         return;
     }
 
-    // Capture the buttons in their authored order so they always go back the
-    // same way regardless of which container currently holds them.
-    const iconButtons = Array.from(sideMenu.children);
+    btn.addEventListener('click', () => {
+        const collapsed = !document.body.classList.contains('sidebar-collapsed');
+        state.setSidebarCollapsed(collapsed);
+        syncCollapsed();
+    });
+}
 
-    function moveTo(container) {
-        iconButtons.forEach(btn => container.appendChild(btn));
+// Debounced, and registered even on the pages whose menu has nothing to hand
+// over to a drawer, so the narrow-width rail always follows the window
+function onResize(handler) {
+    let timer;
+    window.addEventListener('resize', () => {
+        clearTimeout(timer);
+        timer = setTimeout(handler, 150);
+    });
+}
+
+// Apply the stored preference, except on narrow desktop widths, where the
+// labelled sidebar would squeeze the content column: there it stays an icon
+// rail and the switch is hidden, since it would have nothing to do.
+function syncCollapsed() {
+    const forced = window.innerWidth <= NARROW_BREAKPOINT;
+    document.body.classList.toggle('sidebar-forced-collapsed', forced);
+    document.body.classList.toggle('sidebar-collapsed', forced || state.getSidebarCollapsed());
+    updateCollapseLabel();
+}
+
+export function setup() {
+    const sideMenu = document.getElementById('sideMenu');
+    const headerContent = document.querySelector('.header-content');
+
+    setupCollapse();
+    onResize(syncCollapsed);
+
+    if (!sideMenu || !headerContent) {
+        return;
     }
 
-    function update() {
-        if (window.innerWidth <= BREAKPOINT) {
-            if (iconButtons[0] && iconButtons[0].parentElement !== headerIcons) {
-                moveTo(headerIcons);
-            }
-        } else if (iconButtons[0] && iconButtons[0].parentElement !== sideMenu) {
-            moveTo(sideMenu);
+    // Pages without a drawer (status / sources / MCP / logs / metrics) hand over
+    // the wordmark only: at mobile widths their header is the whole chrome.
+    const headerIcons = document.getElementById('headerIcons');
+    const brand = document.getElementById('sidebarBrand');
+
+    // Capture where each moveable element belongs in the sidebar, so it always
+    // goes back to its own section rather than to the end of the menu.
+    const homes = [
+        ...(brand ? [brand] : []),
+        ...(headerIcons ? sideMenu.querySelectorAll('.sidebar-item') : [])
+    ].map(el => ({el, parent: el.parentElement, next: el.nextElementSibling}));
+
+    if (homes.length === 0) {
+        return;
+    }
+
+    function moveToDrawer() {
+        homes.forEach(({el}) => {
+            // The wordmark closes the mobile header, below the drawer it opens
+            (el === brand ? headerContent : headerIcons).appendChild(el);
+        });
+    }
+
+    function moveToSidebar() {
+        // Back to front: an element's recorded successor is already in place by
+        // the time it is re-inserted before it.
+        for (let i = homes.length - 1; i >= 0; i--) {
+            const {el, parent, next} = homes[i];
+            parent.insertBefore(el, next);
         }
     }
 
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(update, 150);
-    });
+    function update() {
+        const inDrawer = homes[0] && homes[0].el.parentElement !== homes[0].parent;
+        if (window.innerWidth <= BREAKPOINT) {
+            if (!inDrawer) {
+                moveToDrawer();
+            }
+        } else if (inDrawer) {
+            moveToSidebar();
+        }
+    }
+
+    onResize(update);
 
     update();
 }

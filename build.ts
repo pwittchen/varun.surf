@@ -141,7 +141,10 @@ async function bundleCSS(): Promise<Map<string, string>> {
     const minifiedCSS = content
       .replace(/\/\*[\s\S]*?\*\//g, "") // Remove comments
       .replace(/\s+/g, " ") // Collapse whitespace
-      .replace(/\s*([{}:;,>+~])\s*/g, "$1") // Remove spaces around selectors
+      // Remove spaces around selectors. "+" is deliberately left out: calc()
+      // requires whitespace around it, so stripping it silently breaks
+      // calc(a + b) declarations (and nth-child(2n + 1) selectors).
+      .replace(/\s*([{}:;,>~])\s*/g, "$1")
       .replace(/;}/g, "}") // Remove last semicolon
       .trim();
 

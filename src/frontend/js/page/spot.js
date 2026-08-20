@@ -9,6 +9,8 @@ import * as routing from '../common/routing.js';
 import * as map from '../common/map.js';
 import * as state from '../common/state.js';
 import * as modals from '../common/modals.js';
+import * as appShell from '../common/appShell.js';
+import * as mainPageShortcuts from '../common/mainPageShortcuts.js';
 import * as sideMenu from '../common/sideMenu.js';
 import * as calculator from '../common/calculator.js';
 
@@ -2522,7 +2524,7 @@ function initTheme() {
         if (theme === 'light') {
             themeIcon.innerHTML = '<path d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5,5-2.24,5-5-2.24-5-5-5Zm0,7c-1.1,0-2-.9-2-2s.9-2,2-2,2,.9,2,2-.9,2-2,2Zm4.95-6.95c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0,.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44ZM7.05,16.95c.59,.59,.59,1.54,0,2.12l-1.41,1.41c-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44c-.59-.59-.59-1.54,0-2.12l1.41-1.41c.59-.59,1.54-.59,2.12,0ZM3.51,5.64c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41Zm16.97,12.73c.59,.59,.59,1.54,0,2.12-.29,.29-.68,.44-1.06,.44s-.77-.15-1.06-.44l-1.41-1.41c-.59-.59-.59-1.54,0-2.12,.59-.59,1.54-.59,2.12,0l1.41,1.41Zm3.51-6.36c0,.83-.67,1.5-1.5,1.5h-2c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5h2c.83,0,1.5,.67,1.5,1.5ZM3.5,13.5H1.5c-.83,0-1.5-.67-1.5-1.5s.67-1.5,1.5-1.5H3.5c.83,0,1.5,.67,1.5,1.5s-.67,1.5-1.5,1.5ZM10.5,3.5V1.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5V3.5c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5Zm3,17v2c0,.83-.67,1.5-1.5,1.5s-1.5-.67-1.5-1.5v-2c0-.83,.67-1.5-1.5-1.5s1.5,.67,1.5,1.5Z"/>';
         } else {
-            themeIcon.innerHTML = '<path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>';
+            themeIcon.innerHTML = constants.THEME_ICON_MOON;
         }
         state.setTheme(theme);
         // Re-render wind chart to update colors for new theme
@@ -2742,116 +2744,6 @@ function setupInfoToggle() {
             openAppInfoModal();
         });
     }
-}
-
-// ============================================================================
-// MAIN PAGE SHORTCUTS
-// The rest of the sticky left menu acts on the main page's spot list, which
-// does not exist here. Each button stores its mode (the main page reads the
-// same keys on load) and navigates back, so the effect is visible right away.
-// No button is ever highlighted here — an active state describes the spots
-// list, so it belongs to the main page only.
-// ============================================================================
-
-function onSideMenuClick(id, handler) {
-    const btn = document.getElementById(id);
-    if (btn) {
-        btn.addEventListener('click', handler);
-    }
-}
-
-// Grey out and switch off a button that has nothing to act on here
-function markDisabled(id) {
-    const btn = document.getElementById(id);
-    if (btn) {
-        btn.classList.add('side-menu-disabled');
-        btn.disabled = true;
-        btn.setAttribute('aria-disabled', 'true');
-    }
-}
-
-function setupMainPageShortcuts() {
-    // The hero banner belongs to the main page only
-    markDisabled('heroToggle');
-
-    onSideMenuClick('favoritesToggle', () => {
-        state.setShowingFavorites(true);
-        window.location.href = '/starred';
-    });
-
-    onSideMenuClick('mapToggle', () => {
-        window.location.href = '/map';
-    });
-
-    onSideMenuClick('firingSortToggle', () => {
-        state.setFiringSort(!state.getFiringSort());
-        goToSpotsList();
-    });
-
-    onSideMenuClick('liveStationsToggle', () => {
-        state.setLiveStationsOnly(!state.getLiveStationsOnly());
-        goToSpotsList();
-    });
-
-    onSideMenuClick('listViewBtn', () => {
-        state.setDesktopViewMode('list');
-        goToSpotsList();
-    });
-
-    onSideMenuClick('gridViewBtn', () => {
-        state.setDesktopViewMode('grid');
-        goToSpotsList();
-    });
-}
-
-// Back to the spots list the user came from: favorites if that mode is on,
-// otherwise the country filter (the same target as the logo and the wordmark).
-function goToSpotsList() {
-    if (state.getShowingFavorites()) {
-        window.location.href = '/starred';
-        return;
-    }
-
-    const savedCountry = state.getSelectedCountry();
-    if (savedCountry === 'all') {
-        routing.navigateToHome();
-    } else {
-        routing.navigateToCountry(savedCountry);
-    }
-}
-
-// Setup random spot button: jumps to a randomly picked spot other than the one
-// currently open. The spots list is not held by this page, so it is fetched on
-// click (~170 kB gzipped) and the button is disabled meanwhile.
-function setupRandomSpotToggle() {
-    const btn = document.getElementById('randomSpotToggle');
-    if (!btn) {
-        return;
-    }
-
-    btn.addEventListener('click', async () => {
-        if (btn.disabled) {
-            return;
-        }
-
-        btn.disabled = true;
-
-        try {
-            const spots = await api.fetchAllSpots();
-            const candidates = spots.filter(spot => String(spot.wgId) !== String(currentSpotId));
-            const pool = candidates.length > 0 ? candidates : spots;
-
-            if (pool.length === 0) {
-                return;
-            }
-
-            routing.navigateToSpot(pool[Math.floor(Math.random() * pool.length)].wgId);
-        } catch (error) {
-            console.error('Error fetching spots for random pick:', error);
-        } finally {
-            btn.disabled = false;
-        }
-    });
 }
 
 // Setup mobile hamburger menu
@@ -3210,13 +3102,17 @@ function getSpotWindSpeed() {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', async function () {
+    // The sidebar and its modals are shared markup; everything below wires them up
+    appShell.renderSidebar();
+    appShell.renderModals();
+
     initTheme();
     initLanguage();
     setupModals();
     setupEmbedModal();
     setupInfoToggle();
-    setupRandomSpotToggle();
-    setupMainPageShortcuts();
+    mainPageShortcuts.setupRandomSpotToggle(() => currentSpotId);
+    mainPageShortcuts.setup();
     calculator.setupKiteSizeCalculator({getSpotWindSpeed});
     setupHamburgerMenu();
     sideMenu.setup();

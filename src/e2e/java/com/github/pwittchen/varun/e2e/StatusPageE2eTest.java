@@ -6,6 +6,8 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("Status Page E2E Tests")
@@ -83,23 +85,22 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have the shared navigation with the current page highlighted")
-    void shouldHaveTheSharedNavigationWithTheCurrentPageHighlighted() {
+    @DisplayName("Should have the sidebar with the current page highlighted")
+    void shouldHaveTheSidebarWithTheCurrentPageHighlighted() {
         navigateToStatusPage();
 
-        Locator actions = page.locator(".status-actions a");
-        actions.first().waitFor(new Locator.WaitForOptions()
+        Locator links = page.locator("#sideMenu .sidebar-link");
+        links.first().waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(actions.allTextContents().stream().map(String::trim).toList())
-            .containsExactly("Status", "Sources", "MCP", "Metrics", "Logs", "Dashboard")
-            .inOrder();
+        assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
+            .isEqualTo(List.of("/status", "/sources", "/mcp",
+                "https://github.com/pwittchen/varun.surf", "/logs", "/metrics"));
 
-        Locator active = page.locator(".status-actions a.active");
+        Locator active = page.locator("#sideMenu [aria-current='page']");
         assertThat(active.count()).isEqualTo(1);
         assertThat(active.getAttribute("href")).isEqualTo("/status");
-        assertThat(active.getAttribute("aria-current")).isEqualTo("page");
     }
 
     @Test
@@ -119,32 +120,29 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have back to dashboard link")
-    void shouldHaveBackToDashboardLink() {
+    @DisplayName("Should go back to the dashboard from the wordmark")
+    void shouldGoBackToTheDashboardFromTheWordmark() {
         navigateToStatusPage();
 
-        Locator backLink = page.locator("a[href='/']");
-        backLink.waitFor(new Locator.WaitForOptions()
+        Locator wordmark = page.locator("#headerTitle");
+        wordmark.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(backLink.isVisible()).isTrue();
-
-        backLink.click();
+        wordmark.click();
 
         page.waitForURL(url -> url.equals(BASE_URL + "/") || url.equals(BASE_URL),
             new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
 
-        String currentUrl = page.url();
-        assertThat(currentUrl.startsWith(BASE_URL)).isTrue();
+        assertThat(page.title()).contains("VARUN.SURF");
     }
 
     @Test
-    @DisplayName("Should navigate to sources page from status actions")
-    void shouldNavigateToSourcesPageFromStatusActions() {
+    @DisplayName("Should navigate to sources page from the sidebar")
+    void shouldNavigateToSourcesPageFromTheSidebar() {
         navigateToStatusPage();
 
-        Locator sourcesLink = page.locator(".status-actions a[href='/sources']");
+        Locator sourcesLink = page.locator("#sourcesLink");
         sourcesLink.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
@@ -158,11 +156,11 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should navigate to mcp page from status actions")
-    void shouldNavigateToMcpPageFromStatusActions() {
+    @DisplayName("Should navigate to mcp page from the sidebar")
+    void shouldNavigateToMcpPageFromTheSidebar() {
         navigateToStatusPage();
 
-        Locator mcpLink = page.locator(".status-actions a[href='/mcp']");
+        Locator mcpLink = page.locator("#mcpLink");
         mcpLink.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));

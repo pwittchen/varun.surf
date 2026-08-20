@@ -1,13 +1,4 @@
-import * as footer from '../common/footer.js';
-import * as routing from '../common/routing.js';
-import * as state from '../common/state.js';
-import * as translations from '../common/translations.js';
-
-// ============================================================================
-// THEME INITIALIZATION
-// ============================================================================
-
-state.applyTheme(state.getTheme());
+import * as toolsPage from '../common/toolsPage.js';
 
 // ============================================================================
 // STATE
@@ -58,12 +49,6 @@ function showLoginForm() {
 
     const container = document.querySelector('.status-container');
     container.innerHTML = `
-        <div class="status-page-header">
-            <div class="status-page-header-content">
-                <h1 class="status-page-title"><span id="headerTitle">VARUN.SURF</span></h1>
-            </div>
-        </div>
-        <h2>Application Metrics</h2>
         <div class="status-card">
             <h3>Authentication Required</h3>
             <form id="login-form" class="metrics-login-form">
@@ -75,17 +60,7 @@ function showLoginForm() {
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
-        <div class="status-actions">
-            <a href="/status" class="btn btn-secondary">View Status</a>
-            <a href="/logs/" class="btn btn-secondary">View Logs</a>
-            <a href="/" class="btn btn-secondary">View Dashboard</a>
-        </div>
     `;
-
-    const headerTitle = document.getElementById('headerTitle');
-    if (headerTitle) {
-        headerTitle.addEventListener('click', routing.navigateToHome);
-    }
 
     document.getElementById('login-form').addEventListener('submit', handleLogin);
 }
@@ -758,67 +733,13 @@ window.addEventListener('resize', () => {
 });
 
 // ============================================================================
-// WIDE VIEW TOGGLE
-// ============================================================================
-
-const WIDE_VIEW_KEY = 'metrics_wide_view';
-
-function toggleWideView() {
-    const isWide = document.body.classList.toggle('wide-view');
-    const button = document.getElementById('toggle-wide');
-    const iconExpand = document.getElementById('icon-expand');
-    const iconCollapse = document.getElementById('icon-collapse');
-
-    if (isWide) {
-        button.title = 'Narrow View';
-        iconExpand.style.display = 'none';
-        iconCollapse.style.display = 'block';
-    } else {
-        button.title = 'Wide View';
-        iconExpand.style.display = 'block';
-        iconCollapse.style.display = 'none';
-    }
-    localStorage.setItem(WIDE_VIEW_KEY, isWide ? 'true' : 'false');
-
-    requestAnimationFrame(resizeCharts);
-}
-
-function restoreWideView() {
-    const isWide = localStorage.getItem(WIDE_VIEW_KEY) === 'true';
-    if (isWide) {
-        document.body.classList.add('wide-view');
-        const button = document.getElementById('toggle-wide');
-        const iconExpand = document.getElementById('icon-expand');
-        const iconCollapse = document.getElementById('icon-collapse');
-        if (button) {
-            button.title = 'Narrow View';
-        }
-        if (iconExpand) {
-            iconExpand.style.display = 'none';
-        }
-        if (iconCollapse) {
-            iconCollapse.style.display = 'block';
-        }
-    }
-}
-
-// ============================================================================
 // INITIALIZATION
 // ============================================================================
 
 async function initializeMetrics() {
-    // Setup header title click handler
-    const headerTitle = document.getElementById('headerTitle');
-    if (headerTitle) {
-        headerTitle.addEventListener('click', routing.navigateToHome);
-    }
+    toolsPage.setup();
 
-    // Setup toggle buttons
     document.getElementById('toggle-refresh').addEventListener('click', toggleAutoRefresh);
-    document.getElementById('toggle-wide').addEventListener('click', toggleWideView);
-
-    // Restore wide view preference
-    restoreWideView();
 
     try {
         // Load historical data first
@@ -842,7 +763,6 @@ async function initializeMetrics() {
     startAutoRefresh();
 
     // Update footer
-    footer.updateFooter(translations.t);
 }
 
 document.addEventListener('DOMContentLoaded', initializeMetrics);

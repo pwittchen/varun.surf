@@ -157,6 +157,63 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should link to the other pages from the sidebar")
+    void shouldLinkToTheOtherPagesFromTheSidebar() {
+        navigateToMainPage();
+        waitForPageLoad();
+
+        assertThat(page.locator("#statusLink").getAttribute("href")).isEqualTo("/status");
+        assertThat(page.locator("#sourcesLink").getAttribute("href")).isEqualTo("/sources");
+        assertThat(page.locator("#mcpLink").getAttribute("href")).isEqualTo("/mcp");
+        assertThat(page.locator("#logsLink").getAttribute("href")).isEqualTo("/logs");
+        assertThat(page.locator("#metricsLink").getAttribute("href")).isEqualTo("/metrics");
+
+        Locator githubLink = page.locator("#githubLink");
+        assertThat(githubLink.getAttribute("href")).isEqualTo("https://github.com/pwittchen/varun.surf");
+        assertThat(githubLink.getAttribute("target")).isEqualTo("_blank");
+
+        page.locator("#statusLink").click();
+        page.waitForLoadState();
+
+        assertThat(page.url()).endsWith("/status");
+        Locator statusIndicator = page.locator("#status-indicator");
+        statusIndicator.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(statusIndicator.isVisible()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should collapse the sidebar and remember it")
+    void shouldCollapseSidebarAndRememberIt() {
+        navigateToMainPage();
+        waitForPageLoad();
+
+        Locator body = page.locator("body");
+        Locator collapseButton = page.locator("#sidebarCollapse");
+        Locator label = page.locator("#favoritesToggleSidebarLabel");
+
+        assertThat(body.getAttribute("class")).doesNotContain("sidebar-collapsed");
+        assertThat(label.isVisible()).isTrue();
+
+        collapseButton.click();
+        page.waitForTimeout(500);
+
+        assertThat(body.getAttribute("class")).contains("sidebar-collapsed");
+        assertThat(label.isVisible()).isFalse();
+
+        // The collapsed state survives a reload
+        navigateToMainPage();
+        assertThat(body.getAttribute("class")).contains("sidebar-collapsed");
+
+        collapseButton.click();
+        page.waitForTimeout(500);
+
+        assertThat(body.getAttribute("class")).doesNotContain("sidebar-collapsed");
+        assertThat(label.isVisible()).isTrue();
+    }
+
+    @Test
     @DisplayName("Should open info modal")
     void shouldOpenInfoModal() {
         navigateToMainPage();

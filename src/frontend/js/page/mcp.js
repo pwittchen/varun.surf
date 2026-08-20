@@ -1,14 +1,4 @@
-import * as translations from '../common/translations.js';
-import * as footer from '../common/footer.js';
-import * as routing from '../common/routing.js';
-import * as state from '../common/state.js';
-
-// ============================================================================
-// THEME INITIALIZATION
-// ============================================================================
-
-// Set the initial theme
-state.applyTheme(state.getTheme());
+import * as toolsPage from '../common/toolsPage.js';
 
 // ============================================================================
 // MCP SERVER CONFIGURATION
@@ -62,13 +52,7 @@ function initMcpConfig() {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Setup header title click handler
-    const headerTitle = document.getElementById('headerTitle');
-    if (headerTitle) {
-        headerTitle.addEventListener('click', routing.navigateToHome);
-    }
+    toolsPage.setup();
 
     initMcpConfig();
-
-    footer.updateFooter(translations.t);
 });

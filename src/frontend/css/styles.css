@@ -81,6 +81,12 @@
     --radius-lg: 12px;
     --radius-pill: 999px;
 
+    /* Sidebar (desktop / tablet); body.sidebar-collapsed swaps in the rail width */
+    --sidebar-width: 232px;
+    --sidebar-width-collapsed: 64px;
+    /* Header box: 20px padding + 54px min-height + 1px border */
+    --header-height: 95px;
+
     /* Spacing Scale */
     --space-1: 4px;
     --space-2: 8px;
@@ -360,8 +366,10 @@ body {
    3. LAYOUT & CONTAINER
    ============================================================================ */
 
+/* Every page runs edge to edge: the sidebar sets the left boundary, the page
+   padding the right one, and the content uses everything in between. */
 .container {
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
 }
 
@@ -370,20 +378,19 @@ body {
     padding: 20px;
 }
 
-/* Reserve room for the sticky left menu on the pages that have one (desktop /
-   tablet). Scoped to those pages so the others (status/sources/...) keep their
-   full width. The header gets the same left inset so its centered content
-   column matches the main content column exactly — this keeps the right edge of
-   the header controls (country / model dropdown) flush with the content below. */
+/* Reserve room for the sidebar (desktop / tablet). The header takes the same
+   inset further down, so both centered columns land on the same pixels. It
+   tracks --sidebar-width, which body.sidebar-collapsed shrinks. */
 @media (min-width: 930px) {
-    .index-page .main-content,
-    .spot-page .main-content {
-        padding-left: 84px;
+    .main-content {
+        padding-left: calc(var(--sidebar-width) + 20px);
     }
 
-    .index-page .fixed-header,
-    .spot-page .fixed-header {
-        padding-left: 84px !important;
+    /* Only animate once the stored collapsed state has been applied, so a
+       collapsed sidebar does not visibly slide shut on every page load */
+    body.sidebar-ready .main-content,
+    body.sidebar-ready .fixed-header {
+        transition: padding-left 0.18s ease;
     }
 }
 
@@ -407,24 +414,32 @@ body {
     box-shadow: none !important;
 }
 
+/* The header column has to sit exactly over the content column, so that the
+   right edge of its controls (country / model dropdown, language switch) lines
+   up with the cards, hero banner and tables below. That means the same left
+   inset for the sidebar — declared after the shorthand above, which is
+   !important and would otherwise win. */
+@media (min-width: 930px) {
+    .fixed-header {
+        padding-left: calc(var(--sidebar-width) + 20px) !important;
+    }
+}
+
 .header-content {
-    max-width: 1400px;
+    max-width: none;
     margin: 0 auto;
     position: relative;
     display: flex;
     flex-direction: column;
     text-align: left;
-    /* Keeps the header height while the logo + title are pulled out of flow
-       (position: fixed) so they can line up with the viewport-fixed side menu */
+    /* Holds the header height on desktop, where the brand lives in the sidebar
+       and only the right-aligned controls sit here */
     min-height: 54px;
 }
 
-/* Logo stays centered over the sticky left menu axis and tracks the centered
-   layout with it (same 50% anchor, offset so its center matches the rail). */
+/* Logo + wordmark live in the sidebar brand row on desktop and are moved into
+   the header by sideMenu.setup() at <=929px, where the drawer takes over. */
 .header-logo {
-    position: fixed;
-    left: max(31px, calc(50% - 721px));
-    top: 30px;
     height: auto;
     width: auto;
     cursor: pointer;
@@ -452,70 +467,252 @@ body {
     gap: 12px;
 }
 
-/* Sticky vertical menu on the left, holding the action icons that used to sit
-   in the top header. It lives outside .fixed-header in the DOM so position:
-   fixed is resolved against the viewport (the header's backdrop-filter would
-   otherwise become the containing block). Hidden at <=929px, where its buttons
-   move into the hamburger drawer. */
-.side-menu {
-    position: fixed;
-    /* Track the centered layout: pinned at 16px until the content column starts
-       centering (~1504px), then drift right with it (container left edge is
-       calc(50% - 668px); the rail sits 8px into its left gutter). */
-    left: max(16px, calc(50% - 736px));
-    top: 140px;
-    z-index: 9998;
+/* Header controls of the sidebar-only pages (status / sources / MCP / logs /
+   metrics): the language switch alone, so none of the drawer machinery that
+   .header-controls carries applies — it stays a plain row at every width. */
+.header-actions {
+    position: absolute;
+    top: 5px;
+    right: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 8px 6px;
-    background: var(--surface-glass);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    border: 1px solid var(--surface-glass-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    max-height: calc(100vh - 160px);
-    overflow-y: auto;
+    gap: 12px;
 }
 
-/* Keep every button a uniform icon square in the vertical bar. Inside the rail
-   the buttons are chrome-less — the rail is already a surface, so a second
-   border/fill per icon reads as noise; hover and active states supply it. */
-.side-menu .theme-toggle {
-    width: 40px;
+/* ----------------------------------------------------------------------------
+   SIDEBAR (desktop / tablet)
+
+   A classic app sidebar: a full-height column pinned to the left edge, holding
+   the brand, the labelled navigation and a collapse switch. It lives outside
+   .fixed-header in the DOM so position: fixed is resolved against the viewport
+   (the header's backdrop-filter would otherwise become the containing block)
+   and so it paints over the header, whose left inset it owns. Hidden at <=929px,
+   where its buttons move into the hamburger drawer.
+   ---------------------------------------------------------------------------- */
+.side-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    /* Same layer as the header, later in the DOM: the sidebar wins the overlap
+       while modals (10000) still cover both. */
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+    overflow: hidden;
+}
+
+body.sidebar-collapsed {
+    --sidebar-width: var(--sidebar-width-collapsed);
+}
+
+/* See the .main-content note: no width animation before the stored state lands */
+body.sidebar-ready .side-menu {
+    transition: width 0.18s ease;
+}
+
+/* Brand row, sized to the header so the rule under it continues the header's
+   bottom border across the viewport. Scoped to the sidebar: the whole row moves
+   into the header at <=929px, where it is only a wrapper for the wordmark. */
+.side-menu .sidebar-brand {
     flex: 0 0 auto;
+    height: calc(var(--header-height) - 1px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--border-primary);
+    overflow: hidden;
+}
+
+body.sidebar-collapsed .side-menu .sidebar-brand {
+    padding: 0;
+    justify-content: center;
+}
+
+.side-menu .header-logo {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+}
+
+/* The wordmark shrinks from the old oversized header lockup to a sidebar-sized
+   brand; it is the page <h1>, so it stays a heading rather than a plain label. */
+.side-menu .header-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+body.sidebar-collapsed .side-menu .header-title {
+    display: none;
+}
+
+.sidebar-nav {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-section + .sidebar-section {
+    margin-top: 16px;
+}
+
+.sidebar-section-title {
+    padding: 0 10px 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Collapsed, the group headings turn into the hairlines they were implying */
+body.sidebar-collapsed .sidebar-section-title {
+    height: 1px;
+    padding: 0;
+    margin: 8px 12px;
+    font-size: 0;
+    background: var(--border-primary);
+}
+
+/* Menu entries are full-width rows: icon, then label. They are chrome-less —
+   the sidebar is already a surface, so a border/fill per row reads as noise;
+   hover and active states supply it. */
+.side-menu .theme-toggle {
+    width: 100%;
+    height: 36px;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 0 10px;
     background: transparent;
     border-color: transparent;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+body.sidebar-collapsed .side-menu .theme-toggle {
+    justify-content: center;
+    padding: 0;
 }
 
 .side-menu .theme-toggle:hover {
     background: var(--overlay-light);
     border-color: transparent;
+    color: var(--text-primary);
 }
 
-.side-menu .theme-toggle.active {
-    background: var(--overlay-light);
+/* Switched-on toggles and the entry for the page currently open read the same */
+.side-menu .theme-toggle.active,
+.side-menu .theme-toggle[aria-current="page"] {
+    background: var(--overlay-accent);
     border-color: transparent;
+    color: var(--accent-primary);
+    box-shadow: none;
 }
 
-/* Text labels are redundant in the icon-only vertical bar */
+.side-menu .theme-toggle .icon {
+    flex: 0 0 20px;
+    fill: var(--text-secondary);
+}
+
+.side-menu .theme-toggle:hover .icon,
+.side-menu .theme-toggle.active .icon,
+.side-menu .theme-toggle[aria-current="page"] .icon {
+    fill: var(--accent-primary);
+}
+
+/* Rows that navigate to another page (status / sources / MCP) rather than
+   toggling something. They are real links — middle-click and "open in new tab"
+   work — and stay in the sidebar at mobile widths, where the footer already
+   carries the same three links. */
+.sidebar-link {
+    text-decoration: none;
+}
+
+/* Label next to the icon; the drawer keeps its own icon grid, so it is dropped
+   there (see the mobile media query) together with the collapsed rail. */
+.sidebar-label {
+    flex: 1 1 auto;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.sidebar-collapsed .sidebar-label {
+    display: none;
+}
+
+/* Text labels the mobile drawer owns are redundant in the sidebar rows */
 .side-menu .info-label,
 .side-menu .map-label {
     display: none !important;
 }
 
-/* The drawer owns the buttons at mobile widths; hide the desktop bar */
+.sidebar-footer {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border-top: 1px solid var(--border-primary);
+}
+
+/* Narrow desktop widths keep the icon rail either way (see syncCollapsed), so
+   the switch has nothing to offer */
+body.sidebar-forced-collapsed .sidebar-footer {
+    display: none;
+}
+
+.sidebar-collapse .icon {
+    transition: transform 0.18s ease;
+}
+
+body.sidebar-collapsed .sidebar-collapse .icon {
+    transform: rotate(180deg);
+}
+
+/* The drawer owns the buttons at mobile widths; hide the sidebar. On the pages
+   built around the sidebar (status / sources / MCP / logs / metrics) there is no
+   drawer at all: the header — wordmark plus language switch — is the whole
+   chrome, and the wordmark leads back to the dashboard. */
 @media (max-width: 929px) {
     .side-menu {
         display: none !important;
     }
+
+    .sidebar-label {
+        display: none !important;
+    }
+
+    /* Their header carries no hamburger, so it is shorter than the others' */
+    .tools-page .main-content {
+        margin-top: 95px;
+    }
 }
 
-/* Custom hint bubble for the sticky left menu, styled like the map popups.
-   Positioned via JS (setupSideMenuHints) to the right of the hovered icon and
-   appended to <body> so it escapes the rail's overflow clipping. */
+/* Custom hint bubble for the collapsed sidebar, styled like the map popups.
+   Positioned via JS (setupHints) to the right of the hovered icon and appended
+   to <body> so it escapes the sidebar's overflow clipping. */
 .side-menu-hint {
     position: fixed;
     z-index: 10000;
@@ -551,13 +748,10 @@ body {
     border-color: transparent var(--bg-tertiary) transparent transparent;
 }
 
-/* Title sits right of the fixed logo, viewport-anchored so the logo + wordmark
-   stay together and aligned with the side menu at every width. */
+/* Wordmark; sits next to the logo in the sidebar brand row on desktop and in
+   the header, centred above the drawer, at <=929px. */
 .header-title {
-    position: fixed;
-    left: max(74px, calc(50% - 678px));
-    top: 18px;
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     font-weight: 200;
     color: var(--text-white);
     margin-bottom: 8px;
@@ -1072,19 +1266,17 @@ body.index-page .header-title {
     gap: 30px;
 }
 
+/* The column count follows the window: as many 365px-wide tiles as fit, four or
+   more on a wide screen. 365px is the width at which the widest tile — seven
+   forecast columns, wave data included — still holds every value on one line.
+   Every tile fills its track, so the gaps between them are identical
+   everywhere, with no leftover strip at the end of a row. auto-fill (not
+   auto-fit) keeps the tile size steady when a filter leaves only a couple of
+   spots on the page. Once two tiles can no longer hold their content on a
+   single line (<=1024px) the JS switches to the list view. */
 .spots-grid.three-columns {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(365px, 1fr));
     gap: 20px;
-}
-
-/* Below 1355px the grid drops from three to two columns. Once two tiles can no
-   longer hold their content on a single line (<=1024px) the JS switches to the
-   list view instead. The card stretch override lives after the base .spot-card
-   rule below so it wins the cascade. */
-@media (max-width: 1354px) {
-    .spots-grid.three-columns {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 .spots-grid.three-columns .spot-title {
@@ -1110,14 +1302,27 @@ body.index-page .header-title {
     font-size: 0.75rem;
 }
 
+/* Tighter than the single spot page: the column labels give up a little size
+   and tracking so that seven columns of forecast fit a tile on one line */
 .spots-grid.three-columns .weather-table th {
-    font-size: 0.7rem;
-    padding: 8px 4px;
+    font-size: 0.63rem;
+    letter-spacing: 0.03em;
+    padding: 8px 3px;
 }
 
 .spots-grid.three-columns .weather-table td {
-    padding: 8px 4px;
+    padding: 8px 3px;
     font-size: 0.75rem;
+}
+
+/* Nothing inside a tile wraps onto a second line: a two-line cell makes its row
+   taller and knocks the neighbouring tiles out of step. The tile is never
+   narrower than the widest single-line row (see the grid track minimum). */
+.spots-grid.three-columns .weather-table th,
+.spots-grid.three-columns .weather-table td,
+.spots-grid.three-columns .country-tag,
+.spots-grid.three-columns .external-link {
+    white-space: nowrap;
 }
 
 .spots-grid.three-columns .wind-arrow {
@@ -1143,15 +1348,7 @@ body.index-page .header-title {
 .spots-grid.three-columns .spot-card {
     padding: 14px;
     width: 100%;
-    max-width: 452px;
     min-width: 0;
-}
-
-/* Two-column layout: drop the 452px cap so cards fill the wider cells */
-@media (max-width: 1354px) {
-    .spots-grid.three-columns .spot-card {
-        max-width: none;
-    }
 }
 
 /* Hover is a border + elevation nudge only — no vertical travel, so a grid of
@@ -1323,6 +1520,9 @@ body.index-page .header-title {
     font-size: .75rem;
     color: var(--text-tertiary);
     font-weight: 400;
+    /* One line whatever the tile width: a wrapped timestamp shifts the whole
+       card header and makes a row of tiles look ragged */
+    white-space: nowrap;
 }
 
 [data-theme="light"] .last-updated {
@@ -3188,7 +3388,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     position: relative;
     min-height: 300px;
     width: 100%;
-    max-width: 930px;
 }
 
 .forecast-view {
@@ -4051,76 +4250,26 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    25. STATUS PAGE STYLES
    ============================================================================ */
 
+/* Shared by the status / sources / MCP / logs / metrics pages. Their chrome is
+   the sidebar plus a header holding only the language switch, so the cards start
+   right under it. */
 .status-page {
-    padding: 20px 0;
+    padding: 0 0 20px;
 }
 
-.status-page .main-content {
-    margin-top: 0;
-}
-
-.main-content-status {
-    margin-top: 0 !important;
-}
-
+/* Full width: tables, charts and lists are the whole content of these pages,
+   and they want every pixel of the window */
 .status-container {
-    max-width: 900px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 40px;
 }
 
-/* Status Page Header */
-.status-page-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-    position: relative;
-}
-
-.status-page-header-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    cursor: pointer;
-}
-
-.status-page-header-content:hover .status-page-logo,
-.status-page-header-content:hover .status-page-title span {
-    opacity: 0.8;
-}
-
-.status-page-logo {
-    height: 32px;
-    width: auto;
-    transition: opacity 0.3s ease;
-}
-
-.status-page-title {
-    font-size: 2.8rem;
-    font-weight: 100;
-    color: var(--text-primary);
-    margin: 0;
-    letter-spacing: -0.02em;
-    line-height: 1;
-}
-
-.status-page-title span {
-    transition: opacity 0.3s ease;
-}
-
-.status-theme-toggle {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.status-container h2 {
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    font-weight: 100;
-    margin-bottom: 30px;
-    text-align: center;
+/* The phone has no pixels to spare on gutters */
+@media (max-width: 929px) {
+    .status-container {
+        padding: 0 20px;
+    }
 }
 
 /* Status Card */
@@ -4439,41 +4588,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 .source-link:hover {
     text-decoration: underline;
-}
-
-.status-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.status-actions .btn {
-    flex: 1;
-    min-width: 0;
-    text-align: center;
-}
-
-/* Current page in the bottom navigation */
-.status-actions .btn.active {
-    color: var(--accent-primary);
-    border-color: var(--accent-primary);
-    font-weight: 600;
-    cursor: default;
-}
-
-.status-actions .btn.active:hover {
-    background: var(--bg-secondary);
-}
-
-@media (max-width: 480px) {
-    .status-actions {
-        flex-direction: column;
-    }
-
-    .status-actions .btn {
-        width: 100%;
-    }
 }
 
 /* MCP Server Card */
@@ -5069,10 +5183,9 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* The map view hides the hero banner, so the map is the first element in the
-   content column. Drop its top margin on desktop so its top edge lines up with
-   the sticky left menu (both then start at 140px); the height grows by the same
-   20px so the bottom edge stays put. Below 930px there is no left rail, so the
-   original spacing is kept. */
+   content column. Drop its top margin on desktop so it starts right under the
+   header; the height grows by the same 20px so the bottom edge stays put.
+   Below 930px there is no sidebar, so the original spacing is kept. */
 @media (min-width: 930px) {
     #mapContainer {
         margin-top: 0;
@@ -5897,10 +6010,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: none;
     }
 
-    .theme-toggle-single-spot {
-        width: 36% !important;
-    }
-
     /* Sponsors responsive */
     .sponsors-container {
         padding: 15px;
@@ -6030,15 +6139,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         transform: none;
     }
 
-    .status-actions {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .status-actions .btn {
-        width: 100%;
-        text-align: center;
-    }
 
     /* Embed modal mobile */
     .embed-preview-container {
@@ -6190,17 +6290,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         display: block !important;
     }
 }
-
-/* Small Mobile (max-width: 600px) */
-@media (max-width: 600px) {
-    body.spot-page #themeToggle,
-    body.spot-page #languageToggle {
-        width: 144px !important;
-        min-width: 144px !important;
-        flex: 0 0 auto;
-    }
-}
-
 
 /* ============================================================================
    30. LOGS PAGE
@@ -6412,14 +6501,19 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     background: var(--status-neutral);
 }
 
-/* Wide View Mode (for metrics and logs pages) */
-body.wide-view .status-container {
-    max-width: 100%;
-    padding: 0 40px;
+/* These pages inset their panels by another 40px (see .status-container), so
+   the language switch moves with them and stays flush with their right edge. */
+body.tools-page .header-actions {
+    right: 40px;
 }
 
-body.wide-view .container {
-    max-width: 100%;
+/* On a phone these pages are read, not configured: the header is left with the
+   wordmark alone, which leads back to the dashboard. Their content is in
+   English either way, so the language switch has nothing to offer here. */
+@media (max-width: 929px) {
+    body.tools-page .header-actions {
+        display: none;
+    }
 }
 
 /* Responsive */

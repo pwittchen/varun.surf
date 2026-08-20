@@ -5,6 +5,8 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @DisplayName("MCP Page E2E Tests")
@@ -113,22 +115,21 @@ class McpPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have the shared navigation with the current page highlighted")
-    void shouldHaveTheSharedNavigationWithTheCurrentPageHighlighted() {
+    @DisplayName("Should have the sidebar with the current page highlighted")
+    void shouldHaveTheSidebarWithTheCurrentPageHighlighted() {
         navigateToMcpPage();
 
-        Locator actions = page.locator(".status-actions a");
-        actions.first().waitFor(new Locator.WaitForOptions()
+        Locator links = page.locator("#sideMenu .sidebar-link");
+        links.first().waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(actions.allTextContents().stream().map(String::trim).toList())
-            .containsExactly("Status", "Sources", "MCP", "Metrics", "Logs", "Dashboard")
-            .inOrder();
+        assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
+            .isEqualTo(List.of("/status", "/sources", "/mcp",
+                "https://github.com/pwittchen/varun.surf", "/logs", "/metrics"));
 
-        Locator active = page.locator(".status-actions a.active");
+        Locator active = page.locator("#sideMenu [aria-current='page']");
         assertThat(active.count()).isEqualTo(1);
         assertThat(active.getAttribute("href")).isEqualTo("/mcp");
-        assertThat(active.getAttribute("aria-current")).isEqualTo("page");
     }
 }
