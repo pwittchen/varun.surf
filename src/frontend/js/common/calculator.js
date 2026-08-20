@@ -4,6 +4,7 @@
 // ============================================================================
 
 import * as modals from './modals.js';
+import * as state from './state.js';
 
 /**
  * Calculate recommended kite size based on wind speed, rider weight, and skill level
@@ -146,9 +147,73 @@ export function validateInput(windSpeed, riderWeight, skillLevel) {
 }
 
 /**
- * Setup the kite size calculator modal and event handlers
+ * Restore the last entered inputs into the calculator form.
+ * On the single spot view the spot wind speed always wins over the remembered one
+ * and overwrites it, so the remembered value stays in sync with the last used data.
+ * @param {number|null} spotWindSpeed - Wind speed of the displayed spot in knots
  */
-export function setupKiteSizeCalculator() {
+function restoreInputs(spotWindSpeed) {
+    const windSpeedInput = document.getElementById('windSpeed');
+    const riderWeightInput = document.getElementById('riderWeight');
+    const skillLevelSelect = document.getElementById('skillLevel');
+    const saved = state.getCalculatorInputs() || {};
+
+    if (windSpeedInput) {
+        if (spotWindSpeed !== null && spotWindSpeed !== undefined) {
+            windSpeedInput.value = spotWindSpeed;
+        } else if (saved.windSpeed !== undefined && saved.windSpeed !== null) {
+            windSpeedInput.value = saved.windSpeed;
+        }
+    }
+
+    if (riderWeightInput && saved.riderWeight !== undefined && saved.riderWeight !== null) {
+        riderWeightInput.value = saved.riderWeight;
+    }
+
+    if (skillLevelSelect && saved.skillLevel) {
+        skillLevelSelect.value = saved.skillLevel;
+    }
+
+    // Persist right away, so the spot wind speed overwrites the remembered one
+    rememberInputs();
+}
+
+/**
+ * Remember the currently entered inputs so they are restored next time
+ */
+function rememberInputs() {
+    const windSpeedInput = document.getElementById('windSpeed');
+    const riderWeightInput = document.getElementById('riderWeight');
+    const skillLevelSelect = document.getElementById('skillLevel');
+
+    state.setCalculatorInputs({
+        windSpeed: windSpeedInput && windSpeedInput.value !== '' ? windSpeedInput.value : null,
+        riderWeight: riderWeightInput && riderWeightInput.value !== '' ? riderWeightInput.value : null,
+        skillLevel: skillLevelSelect ? skillLevelSelect.value : ''
+    });
+}
+
+/**
+ * Read the wind speed provided by the page (single spot view) in knots
+ * @param {function(): (number|null)} [getSpotWindSpeed] - Spot wind speed provider
+ * @returns {number|null} Rounded wind speed in knots or null when unavailable
+ */
+function readSpotWindSpeed(getSpotWindSpeed) {
+    if (typeof getSpotWindSpeed !== 'function') return null;
+    const windSpeed = getSpotWindSpeed();
+    if (windSpeed === null || windSpeed === undefined) return null;
+    const parsed = parseFloat(windSpeed);
+    return Number.isFinite(parsed) ? Math.round(parsed) : null;
+}
+
+/**
+ * Setup the kite size calculator modal and event handlers
+ * @param {Object} [options] - Setup options
+ * @param {function(): (number|null)} [options.getSpotWindSpeed] - Returns the current wind speed
+ *        in knots for the displayed spot (live station or forecast), used on the single spot view
+ *        to always prefill and overwrite the remembered wind speed
+ */
+export function setupKiteSizeCalculator(options = {}) {
     const kiteSizeButton = document.getElementById('kiteSizeToggle');
     const kiteSizeModal = document.getElementById('kiteSizeModal');
     const kiteSizeCloseButton = document.getElementById('kiteSizeModalClose');
@@ -164,10 +229,24 @@ export function setupKiteSizeCalculator() {
     // Open modal
     kiteSizeButton.addEventListener('click', () => {
         modals.openModal('kiteSizeModal');
-        // Reset result visibility
+        // Restore last entered data, prefilling wind speed with the spot wind speed when available
+        restoreInputs(readSpotWindSpeed(options.getSpotWindSpeed));
+        // Reset warning and result visibility
+        const calcWarning = document.getElementById('calcWarning');
+        if (calcWarning) {
+            calcWarning.style.display = 'none';
+        }
         const calcResult = document.getElementById('calcResult');
         if (calcResult) {
             calcResult.classList.remove('show');
+        }
+    });
+
+    // Remember inputs as they change, so they survive closing the modal without calculating
+    ['windSpeed', 'riderWeight', 'skillLevel'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', rememberInputs);
         }
     });
 
@@ -195,6 +274,9 @@ export function setupKiteSizeCalculator() {
             // Hide previous warnings and results
             calcWarning.style.display = 'none';
             calcResult.classList.remove('show');
+
+            // Remember the entered data for the next time the calculator is opened
+            rememberInputs();
 
             // Validate input
             const warning = validateInput(windSpeed, riderWeight, skillLevel);

@@ -38,6 +38,9 @@ export const STORAGE_KEYS = {
     // Hero section
     HERO_VISIBLE: 'heroVisible',
 
+    // Kite & board size calculator (last entered inputs)
+    CALCULATOR_INPUTS: 'calculatorInputs',
+
     // Firing-now sort (main page default ordering by live wind strength)
     FIRING_SORT: 'firingSort',
 
@@ -317,4 +320,23 @@ export function getHeroVisible() {
 
 export function setHeroVisible(visible) {
     localStorage.setItem(STORAGE_KEYS.HERO_VISIBLE, visible ? 'true' : 'false');
+}
+
+// ============================================================================
+// KITE & BOARD SIZE CALCULATOR INPUTS
+// ============================================================================
+
+export function getCalculatorInputs() {
+    const stored = localStorage.getItem(STORAGE_KEYS.CALCULATOR_INPUTS);
+    if (!stored) return null;
+    try {
+        const parsed = JSON.parse(stored);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+export function setCalculatorInputs(inputs) {
+    localStorage.setItem(STORAGE_KEYS.CALCULATOR_INPUTS, JSON.stringify(inputs));
 }

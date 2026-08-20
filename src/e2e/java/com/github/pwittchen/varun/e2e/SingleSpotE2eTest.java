@@ -180,6 +180,42 @@ class SingleSpotE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should prefill kite size calculator with the spot wind speed")
+    void shouldPrefillKiteSizeCalculatorWithSpotWindSpeed() {
+        navigateToSpotPage();
+        waitForSpotToLoad();
+
+        // remember a wind speed that must be overwritten by the spot wind speed
+        page.evaluate("() => localStorage.setItem('calculatorInputs', "
+            + "JSON.stringify({windSpeed: 33, riderWeight: 82, skillLevel: 'advanced-flat'}))");
+        page.reload();
+        waitForSpotToLoad();
+
+        Locator spotWindSpeed = page.locator(".current-conditions-card .wind-speed");
+        spotWindSpeed.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        // the card renders e.g. "13 kts", the calculator prefills the rounded knots
+        String renderedWindSpeed = spotWindSpeed.textContent().replaceAll("[^0-9.].*$", "").trim();
+        String expectedWindSpeed = String.valueOf(Math.round(Double.parseDouble(renderedWindSpeed)));
+
+        page.locator("#kiteSizeToggle").click();
+        page.locator("#kiteSizeModal").waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // wind speed comes from the spot, the remaining inputs from the remembered data
+        assertThat(page.locator("#windSpeed").inputValue()).isEqualTo(expectedWindSpeed);
+        assertThat(page.locator("#riderWeight").inputValue()).isEqualTo("82");
+        assertThat(page.locator("#skillLevel").inputValue()).isEqualTo("advanced-flat");
+
+        // the spot wind speed also overwrites the remembered one
+        Object storedWindSpeed = page.evaluate(
+            "() => JSON.parse(localStorage.getItem('calculatorInputs')).windSpeed");
+        assertThat(String.valueOf(storedWindSpeed)).isEqualTo(expectedWindSpeed);
+    }
+
+    @Test
     @DisplayName("Should change language on single spot page")
     void shouldChangeLanguageOnSingleSpotPage() {
         navigateToSpotPage();

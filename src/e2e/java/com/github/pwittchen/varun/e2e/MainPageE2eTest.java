@@ -207,6 +207,40 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should remember last entered kite size calculator data")
+    void shouldRememberLastEnteredKiteSizeCalculatorData() {
+        navigateToMainPage();
+        waitForPageLoad();
+
+        page.locator("#kiteSizeToggle").click();
+
+        Locator kiteSizeModal = page.locator("#kiteSizeModal");
+        kiteSizeModal.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        page.locator("#windSpeed").fill("18");
+        page.locator("#riderWeight").fill("80");
+        page.locator("#skillLevel").selectOption("intermediate-flat");
+        page.locator("#calculateBtn").click();
+
+        page.locator("#kiteSizeModalClose").click();
+        kiteSizeModal.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.HIDDEN)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        navigateToMainPage();
+        page.locator("#kiteSizeToggle").click();
+        kiteSizeModal.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(page.locator("#windSpeed").inputValue()).isEqualTo("18");
+        assertThat(page.locator("#riderWeight").inputValue()).isEqualTo("80");
+        assertThat(page.locator("#skillLevel").inputValue()).isEqualTo("intermediate-flat");
+    }
+
+    @Test
     @DisplayName("Should filter spots by search")
     void shouldFilterSpotsBySearch() {
         navigateToMainPage();

@@ -3171,6 +3171,41 @@ window.openEmbedModal = openEmbedModal;
 window.closeEmbedModal = closeEmbedModal;
 
 // ============================================================================
+// KITE & BOARD SIZE CALCULATOR
+// ============================================================================
+
+/**
+ * Provide the current wind speed of the displayed spot to the calculator, so the wind
+ * speed input is always prefilled with the spot conditions. Uses the live station reading
+ * when it is up to date and falls back to the forecast closest to the current time.
+ * @returns {number|null} Wind speed in knots or null when no spot data is available
+ */
+function getSpotWindSpeed() {
+    if (!currentSpot) return null;
+
+    const conditions = currentSpot.currentConditions;
+    if (conditions && conditions.wind !== undefined && conditions.wind !== null
+        && !date.isConditionsOutdated(conditions.date)) {
+        return conditions.wind;
+    }
+
+    const forecastData = (currentSpot.forecastHourly && currentSpot.forecastHourly.length > 0)
+        ? currentSpot.forecastHourly
+        : (currentSpot.forecast || []);
+    const closestForecast = date.findClosestForecast(forecastData);
+    if (closestForecast && closestForecast.wind !== undefined && closestForecast.wind !== null) {
+        return closestForecast.wind;
+    }
+
+    // Last resort: an outdated live reading is still better than an empty input
+    if (conditions && conditions.wind !== undefined && conditions.wind !== null) {
+        return conditions.wind;
+    }
+
+    return null;
+}
+
+// ============================================================================
 // START APPLICATION
 // ============================================================================
 
@@ -3182,7 +3217,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupInfoToggle();
     setupRandomSpotToggle();
     setupMainPageShortcuts();
-    calculator.setupKiteSizeCalculator();
+    calculator.setupKiteSizeCalculator({getSpotWindSpeed});
     setupHamburgerMenu();
     sideMenu.setup();
     sideMenu.setupHints();
