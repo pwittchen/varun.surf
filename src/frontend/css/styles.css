@@ -75,17 +75,17 @@
     --surface-glass: rgba(9, 10, 12, 0.72);
     --surface-glass-border: rgba(255, 255, 255, 0.07);
 
-    /* Radius Scale */
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
+    /* Radius Scale — tight, one step apart: chips 4, controls 6, surfaces 10 */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
     --radius-pill: 999px;
 
     /* Sidebar (desktop / tablet); body.sidebar-collapsed swaps in the rail width */
     --sidebar-width: 232px;
     --sidebar-width-collapsed: 64px;
-    /* Header box: 20px padding + 54px min-height + 1px border */
-    --header-height: 95px;
+    /* Header box: 14px padding + 46px min-height + 1px border */
+    --header-height: 75px;
 
     /* Spacing Scale */
     --space-1: 4px;
@@ -124,24 +124,19 @@
     --error-text: #fca5a5;
 
     /* Wind Strength Colors (Dark Theme).
-       The *-bg tints wash whole rows and card headers, so they stay faint —
-       colour carries the signal through the text, not through a filled block. */
+       Outside the forecast heat map, wind strength is a text colour and never
+       a filled block: cards, tables and readouts keep a neutral surface. */
     --wind-weak: #64748b;
-    --wind-weak-bg: rgba(100, 116, 139, 0.06);
     /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
     --wind-calm: #64748b;
     --wind-light: #38bdf8;
     --wind-moderate: #2ee66d;
-    --wind-moderate-bg: rgba(46, 230, 109, 0.05);
     --wind-strong: #f59e0b;
     --wind-strong-alt: #f9b116;
-    --wind-strong-bg: rgba(245, 158, 11, 0.06);
     --wind-extreme: #f5484a;
-    --wind-extreme-bg: rgba(245, 72, 74, 0.06);
 
-    /* Stronger variants for the dense forecast grid, where the fill *is* the
-       heat map and has to stay legible at a glance (the faint *-bg tints above
-       would flatten it into one block). */
+    /* The one place a fill is the point: the dense forecast grid, where the
+       colour *is* the heat map and has to read at a glance. */
     --wind-weak-fill: rgba(100, 116, 139, 0.16);
     --wind-moderate-fill: rgba(46, 230, 109, 0.15);
     --wind-strong-fill: rgba(245, 158, 11, 0.16);
@@ -173,7 +168,6 @@
     --favorite-hover: #f59e0b;
 
     /* Special Colors */
-    --ai-link-border: #1f7987;
     --calc-warning-bg: #681414;
     --status-up: #28a745;
     --status-down: #dc3545;
@@ -268,21 +262,17 @@
     --danger-color: #dc2626;
     --danger-light: #dc2626;
 
-    /* Wind Strength Colors (Light Theme) — tints kept faint, see dark theme note */
+    /* Wind Strength Colors (Light Theme) — text colours, see dark theme note */
     --wind-weak: #6b7280;
-    --wind-weak-bg: rgba(107, 114, 128, 0.05);
     /* Map only: splits the sub-rideable range into calm (grey) and light (blue) */
     --wind-calm: #6b7280;
     --wind-light: #0284c7;
     --wind-moderate: #059669;
-    --wind-moderate-bg: rgba(5, 150, 105, 0.07);
     --wind-strong: #ea580c;
     --wind-strong-alt: #ea580c;
-    --wind-strong-bg: rgba(234, 88, 12, 0.07);
     --wind-extreme: #dc2626;
-    --wind-extreme-bg: rgba(220, 38, 38, 0.07);
 
-    /* Stronger variants for the dense forecast grid — see dark theme note */
+    /* Forecast heat map fills — see dark theme note */
     --wind-weak-fill: rgba(107, 114, 128, 0.12);
     --wind-moderate-fill: rgba(5, 150, 105, 0.14);
     --wind-strong-fill: rgba(234, 88, 12, 0.14);
@@ -373,8 +363,11 @@ body {
     margin: 0 auto;
 }
 
+/* Clears the fixed header (--header-height) plus the page's own top gutter.
+   The mobile header is taller — it carries the drawer — and restores its own
+   margin in the <=929px block. */
 .main-content {
-    margin-top: 120px;
+    margin-top: 100px;
     padding: 20px;
 }
 
@@ -421,6 +414,10 @@ body {
    !important and would otherwise win. */
 @media (min-width: 930px) {
     .fixed-header {
+        /* Tighter band than the mobile header, which has to hold the drawer
+           toggle: with a single 36px row of controls in it, 14px of padding is
+           all the breathing room it needs — the rest was empty chrome. */
+        padding: 14px 20px !important;
         padding-left: calc(var(--sidebar-width) + 20px) !important;
     }
 }
@@ -433,8 +430,10 @@ body {
     flex-direction: column;
     text-align: left;
     /* Holds the header height on desktop, where the brand lives in the sidebar
-       and only the right-aligned controls sit here */
-    min-height: 54px;
+       and only the right-aligned controls sit here: 5px + a 36px control + 5px.
+       Keep this in step with --header-height, which the sidebar brand row uses
+       to land its hairline on the header's bottom border. */
+    min-height: 46px;
 }
 
 /* Logo + wordmark live in the sidebar brand row on desktop and are moved into
@@ -633,8 +632,12 @@ body.sidebar-collapsed .side-menu .theme-toggle {
     box-shadow: none;
 }
 
+/* A notch smaller than the 20px the header and drawer buttons use: in a list
+   of labelled rows the glyph is a marker for the text, not the control itself. */
 .side-menu .theme-toggle .icon {
-    flex: 0 0 20px;
+    flex: 0 0 17px;
+    width: 17px;
+    height: 17px;
     fill: var(--text-secondary);
 }
 
@@ -890,7 +893,8 @@ body.index-page .header-title {
     background: var(--gradient-button);
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
-    padding: 12px 32px 12px 12px;
+    height: 36px;
+    padding: 0 32px 0 12px;
     border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-weight: 500;
@@ -950,7 +954,7 @@ body.index-page .header-title {
 
 #modelDropdownContainer .dropdown-button {
     min-width: 100px;
-    padding: 11px 24px 11px 12px;
+    padding: 0 24px 0 12px;
     white-space: nowrap;
 }
 
@@ -1000,7 +1004,8 @@ body.index-page .header-title {
     background: var(--gradient-button);
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
-    padding: 8px 32px 8px 12px;
+    height: 36px;
+    padding: 0 28px 0 12px;
     border-radius: var(--radius-md);
     cursor: pointer;
     font-size: .9rem;
@@ -1147,8 +1152,10 @@ body.index-page .header-title {
     gap: 8px;
     min-width: 10px;
     justify-content: center;
-    height: 40px;
-    width: 40px;
+    /* One control height across the app — 36px, the same box the sidebar rows,
+       the search field and the dropdowns sit in */
+    height: 36px;
+    width: 36px;
 }
 
 .info-toggle {
@@ -1343,14 +1350,18 @@ body.index-page .header-title {
     grid-column: 1 / -1;
 }
 
-/* Spot Card */
+/* Spot Card — a flat, neutral surface held by a hairline. No elevation: a grid
+   of drop-shadowed tiles reads as clutter at this density, and the border alone
+   already separates the card from the page. No wind-strength tint either — that
+   signal lives in the "now" readout and the forecast numbers, so a screen full
+   of tiles reads as one grid rather than a patchwork of coloured blocks. */
 .spot-card {
     background: var(--card-bg);
     border-radius: var(--radius-lg);
     padding: 24px;
-    box-shadow: var(--shadow-card);
+    box-shadow: none;
     border: 1px solid var(--border-primary);
-    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    transition: border-color .2s ease, background-color .2s ease;
     position: relative;
 }
 
@@ -1360,39 +1371,24 @@ body.index-page .header-title {
     min-width: 0;
 }
 
-/* Hover is a border + elevation nudge only — no vertical travel, so a grid of
-   cards stays still while the pointer crosses it. */
+/* Hover lifts the border one step — no elevation and no vertical travel, so a
+   grid of cards stays still while the pointer crosses it. */
 .spot-card:hover {
-    box-shadow: var(--shadow-hover);
+    box-shadow: none;
     border-color: var(--border-hover);
 }
 
-/* Single spot view: the card is static — no hover movement/elevation */
+/* Single spot view: the card is static — no hover feedback at all */
 #spotContainer .spot-card:hover {
     transform: none;
-    box-shadow: var(--shadow-card);
+    box-shadow: none;
     border-color: var(--border-primary);
 }
 
-/* Faint tint at the top of the card, colored by current wind strength */
-.spot-card.status-weak {
-    background: linear-gradient(180deg, var(--wind-weak-bg) 0%, var(--card-bg) 70px);
-}
-
-.spot-card.status-moderate {
-    background: linear-gradient(180deg, var(--wind-moderate-bg) 0%, var(--card-bg) 70px);
-}
-
-.spot-card.status-strong {
-    background: linear-gradient(180deg, var(--wind-strong-bg) 0%, var(--card-bg) 70px);
-}
-
-.spot-card.status-extreme {
-    background: linear-gradient(180deg, var(--wind-extreme-bg) 0%, var(--card-bg) 70px);
-}
-
 /* "Now" readout — promoted current/live conditions above the forecast table.
-   Everything sits on a single line at one uniform font size. */
+   Everything sits on a single line at one uniform font size. No box around it:
+   the card is already the container, and a nested filled panel inside a filled
+   card is one surface too many. */
 .spot-now {
     display: flex;
     align-items: center;
@@ -1400,12 +1396,11 @@ body.index-page .header-title {
     flex-wrap: nowrap;
     white-space: nowrap;
     overflow: hidden;
-    padding: 12px 14px;
-    margin-top: 20px;
-    margin-bottom: 16px;
-    border-radius: var(--radius-md);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
+    padding: 4px 2px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    background: transparent;
+    border: none;
     font-size: 0.95rem;
     line-height: 1;
 }
@@ -1470,7 +1465,7 @@ body.index-page .header-title {
 /* Compact readout in dense three-column grid (still one uniform size) */
 .spots-grid.three-columns .spot-now {
     gap: 10px;
-    padding: 10px 12px;
+    padding: 4px 0;
     font-size: 0.85rem;
 }
 
@@ -1479,16 +1474,26 @@ body.index-page .header-title {
     cursor: grabbing;
 }
 
-/* Spot Header */
+/* Spot Header. The rule under it closes the title block; the padding above it
+   is only breathing room, not a gap to fill, so it stays small. */
 .spot-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-left: 22px;
-    margin-bottom: 20px;
-    padding-bottom: 30px;
+    margin-bottom: 4px;
+    padding-bottom: 14px;
     padding-left: 5px;
     border-bottom: 1px solid var(--border-primary);
+}
+
+/* In the grid tiles the rule is dropped: the card border already frames the
+   title, and a second hairline a few pixels inside it was drawing a box within
+   a box. The single spot page keeps its rule — there the header spans a much
+   wider card and needs the separation. */
+.spots-grid .spot-header {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .spot-title {
@@ -1547,11 +1552,11 @@ body.index-page .header-title {
 
 .country-tag {
     background: var(--bg-tertiary);
-    padding: 3px 9px;
+    padding: 3px 8px;
     border-radius: var(--radius-sm);
     font-size: .72rem;
     color: var(--text-secondary);
-    border: 1px solid var(--border-primary);
+    border: none;
     font-weight: 500;
 }
 
@@ -1574,6 +1579,10 @@ body.index-page .header-title {
     cursor: grabbing;
 }
 
+/* The handle sits in the gutter left of the header, which is why it used to
+   carry a tall padding and a border of its own: that was the stub continuing
+   the header's hairline across the gutter. The tile has no header rule any
+   more, so only the grip remains — padded a little to stay easy to grab. */
 .drag-handle {
     position: absolute;
     top: 18px;
@@ -1583,9 +1592,8 @@ body.index-page .header-title {
     transition: color 0.2s ease;
     user-select: none;
     z-index: 10;
-    margin-bottom: 20px;
-    padding-bottom: 51px;
-    border-bottom: 1px solid var(--border-primary);
+    padding: 2px 4px;
+    margin-left: -4px;
 }
 
 .drag-handle .drag-icon {
@@ -1595,7 +1603,6 @@ body.index-page .header-title {
 }
 
 .three-columns .drag-handle {
-    padding-bottom: 43px;
     top: 28px !important;
 }
 
@@ -1805,25 +1812,33 @@ body.index-page .header-title {
     color: var(--text-secondary) !important;
 }
 
-/* Wind Row Background Colors */
+/* Wind strength rows carry their colour in the numbers only. Washing whole
+   rows turned a card into a stack of coloured bands and drowned out the one
+   thing worth spotting — which day is actually windy — so the fill is gone and
+   the row background stays neutral. */
 .weather-table tr.weak-wind {
     background: transparent;
     color: var(--text-secondary);
 }
 
 .weather-table tr.moderate-wind {
-    background: var(--wind-moderate-bg);
+    background: transparent;
     color: var(--success-color);
 }
 
 .weather-table tr.strong-wind {
-    background: var(--wind-strong-bg);
+    background: transparent;
     color: var(--warning-color);
 }
 
 .weather-table tr.extreme-wind {
-    background: var(--wind-extreme-bg);
+    background: transparent;
     color: var(--danger-color);
+}
+
+/* Pointer feedback replaces the fills: one row at a time, in neutral grey */
+.weather-table tbody tr:hover {
+    background: var(--overlay-light);
 }
 
 /* Light Theme Wind Table Overrides */
@@ -1921,18 +1936,6 @@ body.index-page .header-title {
 [data-theme="light"] .weather-table tbody td.wave-large {
     color: var(--wave-large) !important;
     font-weight: 700;
-}
-
-[data-theme="light"] .weather-table tr.moderate-wind {
-    background: var(--wind-moderate-bg);
-}
-
-[data-theme="light"] .weather-table tr.strong-wind {
-    background: var(--wind-strong-bg);
-}
-
-[data-theme="light"] .weather-table tr.extreme-wind {
-    background: var(--wind-extreme-bg);
 }
 
 /* Wind Arrow */
@@ -2310,6 +2313,16 @@ body.index-page .header-title {
     flex-wrap: wrap;
 }
 
+/* In the grid tiles the chips hang off the right edge, under the country tag
+   and timestamp they belong with — the left column stays reserved for the spot
+   name and the forecast rows below it. */
+.spots-grid .external-links {
+    justify-content: flex-end;
+}
+
+/* Ghost chips: no resting border or fill. Half a dozen outlined boxes in a row
+   read as a toolbar competing with the forecast; unboxed labels sit quietly
+   until the pointer picks one out. */
 .external-link {
     display: inline-flex;
     align-items: center;
@@ -2317,12 +2330,12 @@ body.index-page .header-title {
     background: transparent;
     color: var(--text-secondary);
     text-decoration: none;
-    padding: 5px 9px;
+    padding: 5px 8px;
     border-radius: var(--radius-sm);
     font-size: .72rem;
     font-weight: 500;
     letter-spacing: 0;
-    border: 1px solid var(--border-primary);
+    border: 1px solid transparent;
     transition: background-color .12s ease, color .12s ease, border-color .12s ease;
     cursor: pointer;
 }
@@ -2334,7 +2347,7 @@ body.index-page .header-title {
 .external-link:hover {
     background: var(--overlay-light);
     color: var(--text-primary);
-    border-color: var(--border-secondary);
+    border-color: transparent;
 }
 
 [data-theme="light"] .external-link:hover {
@@ -2359,8 +2372,10 @@ body.index-page .header-title {
     opacity: 1;
 }
 
+/* The one chip that is not a plain outbound link keeps its identity through
+   colour rather than through the outline the others gave up */
 .external-link.ai-link {
-    border: 1px solid var(--ai-link-border);
+    color: var(--accent-primary);
 }
 
 .external-link.ai-link::after {
@@ -2394,7 +2409,7 @@ body.index-page .header-title {
 .error-message {
     background: var(--error-bg);
     border: 1px solid var(--error-border);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 24px;
     margin: 20px 0;
     text-align: center;
@@ -2428,7 +2443,7 @@ body.index-page .header-title {
 .loading-message {
     background: var(--bg-secondary);
     border: 1px solid var(--border-primary);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 24px;
     margin: 20px 0;
     text-align: center;
@@ -2677,7 +2692,7 @@ body.index-page .header-title {
 
 .sponsors-container {
     background: var(--bg-secondary);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 30px;
     border: 1px solid var(--border-primary);
@@ -2775,19 +2790,19 @@ body.index-page .header-title {
     width: 100% !important;
     height: clamp(260px, 40vw, 360px);
     border: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
 }
 
 .spot-windy-map iframe {
     width: 100% !important;
     height: clamp(260px, 40vw, 360px);
     border: 0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
 }
 
 .spot-media-panel-map .spot-embedded-map {
     background: transparent;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
 }
 
 /* Spot Media Switcher */
@@ -2860,7 +2875,7 @@ body.index-page .header-title {
 }
 
 .spot-photo-frame {
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--bg-tertiary);
 }
@@ -3103,34 +3118,31 @@ body.spot-page .error-description {
     gap: 4px;
 }
 
+/* The headline number is the largest thing on the page; a filled plate behind
+   it only boxes in type that already dominates. Strength shows in its colour. */
 .wind-speed {
     font-size: 3rem;
     font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1;
-    padding: 8px 16px;
-    border-radius: var(--radius-md);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 8px 0;
+    transition: color 0.3s ease;
 }
 
 /* Wind strength colors for wind speed */
 .wind-speed.wind-weak {
-    background-color: var(--wind-weak-fill);
     color: var(--wind-weak);
 }
 
 .wind-speed.wind-moderate {
-    background-color: var(--wind-moderate-fill);
     color: var(--wind-moderate);
 }
 
 .wind-speed.wind-strong {
-    background-color: var(--wind-strong-fill);
     color: var(--wind-strong-alt);
 }
 
 .wind-speed.wind-extreme {
-    background-color: var(--wind-extreme-fill);
     color: var(--wind-extreme);
 }
 
@@ -3148,9 +3160,11 @@ body.spot-page .error-description {
     gap: 16px;
 }
 
+/* Hairline cells on the card's own surface rather than four filled tiles
+   nested inside a filled card */
 .condition-item {
-    background: var(--bg-tertiary);
-    padding: 12px 16px;
+    background: transparent;
+    padding: 12px 14px;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
 }
@@ -3279,10 +3293,42 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .filter-windy-days-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
     cursor: pointer;
-    accent-color: var(--accent-primary);
+}
+
+/* Checkbox — the platform control is a chunky blue square that belongs to the
+   OS, not to this UI. This is the same size and hit area, drawn with the app's
+   hairline + accent: empty square at rest, accent fill and a stroked tick when
+   on. The tick is an inline SVG mask so it inherits nothing from the font. */
+.filter-windy-days-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 auto;
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    transition: background-color .12s ease, border-color .12s ease;
+}
+
+.filter-windy-days-label:hover input[type="checkbox"] {
+    border-color: var(--accent-primary);
+}
+
+.filter-windy-days-label input[type="checkbox"]:checked {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2308090a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
+    background-size: 12px 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* The light theme's accent is dark enough that the tick has to invert */
+[data-theme="light"] .filter-windy-days-label input[type="checkbox"]:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");
 }
 
 .filter-windy-days-label .filter-text {
@@ -3321,8 +3367,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     margin-left: 16px;
     margin-right: 16px;
     margin-bottom: 10px;
-    background: var(--bg-tertiary);
-    border-radius: 8px;
+    background: transparent;
+    border-radius: var(--radius-md);
     padding: 2px;
     border: 1px solid var(--border-primary);
 }
@@ -3346,9 +3392,13 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--text-primary);
 }
 
+/* Segmented control: a hairline track with a neutral fill on the selected
+   half, the way the icon buttons show "pressed". A saturated accent block for
+   a two-way switch shouted louder than anything else on the page. The track is
+   transparent so the fill reads as raised in both themes. */
 .data-source-radio-container input[type="radio"]:checked + label {
-    background: var(--accent-primary);
-    color: var(--text-white);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
 }
 
 .forecast-filters-right {
@@ -3927,7 +3977,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 .spots-list-header {
     background: var(--bg-secondary);
     border: 1px solid var(--border-primary);
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     padding: 16px 20px;
     display: grid;
     grid-template-columns: 24px 40px 1fr 100px 100px 120px 80px 80px 1fr 40px;
@@ -4018,7 +4068,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .list-row:last-child {
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .list-row.current-conditions {
@@ -5017,22 +5067,53 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    26. EMBED MODAL STYLES
    ============================================================================ */
 
+/* The embed dialog is sized to the viewport rather than to its contents: the
+   whole thing — options, live preview, code, copy button — has to be reachable
+   without scrolling the modal, on a laptop as well as on a tall screen. The
+   modal is a flex column, everything but the preview keeps its natural height,
+   and the preview absorbs whatever room is left. */
+#embedModal .modal {
+    display: flex;
+    flex-direction: column;
+    /* A definite height, not a max: the preview can only grow into free space
+       that actually exists, and this is what creates it. Everything around the
+       preview is a fixed cost, so on a short laptop screen every pixel handed
+       to the dialog goes straight into how large the widget can be shown. */
+    height: min(92vh, 860px);
+    max-height: 92vh;
+}
+
+#embedModal .modal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+    /* auto, not hidden: on a very short window the preview hits its floor and
+       the dialog scrolls rather than clipping the copy button off the bottom */
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+#embedModal .modal-intro {
+    margin-bottom: 14px;
+}
+
 .embed-config {
-    margin: 20px 0;
+    margin: 0 0 16px;
     padding: 0;
     background: var(--bg-secondary);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
 }
 
 .embed-dropdowns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
 }
 
 .embed-dropdown .dropdown-button {
     width: 100%;
-    height: 48px;
     justify-content: space-between;
 }
 
@@ -5041,60 +5122,90 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 .embed-section-title {
-    font-size: 16px;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
     color: var(--text-primary);
 }
 
+/* The one flexible block: it gives its height back to the sections around it
+   when the window is short, down to a floor where the widget is still legible. */
 .embed-preview-section {
-    margin: 24px 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 16px;
 }
 
+/* flex-basis 0, not auto: the frame's height is set by fitEmbedPreview() to the
+   widget's full height, and a content-derived basis would let that feed back
+   into the box that is supposed to be measuring the space available for it. */
 .embed-preview-container {
+    flex: 1 1 0;
     width: 100%;
-    height: 420px;
+    min-height: 160px;
+    /* The widget is authored for 500px — past that the preview would only be
+       stretching empty space */
+    max-height: 500px;
     border: 1px solid var(--border-primary);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--bg-secondary);
 }
 
+/* Laid out oversized — the widget's full height, and a width scaled up by the
+   reciprocal of the fit — then scaled back down by fitEmbedPreview(). Anchored
+   top left so the result lands exactly on the frame's top-left corner and fills
+   its width; the overhang outside it is clipped by the container. */
 .embed-preview-frame {
+    display: block;
     width: 100%;
     height: 100%;
     border: none;
+    transform-origin: top left;
 }
 
 .embed-code-section {
-    margin: 24px 0;
+    flex: 0 0 auto;
+    margin: 0;
 }
 
+/* Height is set to the snippet's own by autoSizeEmbedCode() — how many lines
+   the tag wraps to depends on the modal width and on the spot's URL, so a fixed
+   height would clip it at some sizes and leave a dead strip at others. The cap
+   is the backstop: past it the box scrolls rather than crowding out the
+   preview. */
 .embed-code-textarea {
     width: 100%;
-    min-height: 120px;
-    padding: 12px;
+    min-height: 0;
+    max-height: 150px;
+    padding: 10px 12px;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
+    font-size: 0.8125rem;
+    line-height: 1.55;
     background: var(--bg-secondary);
     color: var(--text-primary);
     border: 1px solid var(--border-primary);
-    border-radius: 6px;
-    resize: vertical;
-    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+    resize: none;
+    margin-bottom: 10px;
 }
 
 .embed-copy-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
     gap: 8px;
-    padding: 12px 20px;
+    height: 40px;
+    padding: 0 20px;
     background: var(--accent-primary);
     color: var(--text-white);
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
@@ -5143,7 +5254,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     width: 100%;
     height: calc(100vh - 180px);
     margin: 20px 0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-card);
 }
@@ -5544,7 +5655,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     position: relative;
     width: 100%;
     height: 320px;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     margin-bottom: 20px;
     box-shadow: var(--shadow-card);

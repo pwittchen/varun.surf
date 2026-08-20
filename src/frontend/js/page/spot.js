@@ -478,6 +478,7 @@ function closeIcmModal() {
 
 const embedDropdownRegistry = [];
 let embedDropdownsInitialized = false;
+let embedPreviewObserver = null;
 
 // Open embed widget modal
 function openEmbedModal() {
@@ -503,6 +504,8 @@ function openEmbedModal() {
 function closeEmbedModal() {
     modals.closeModal('embedModal');
     closeEmbedDropdowns();
+    embedPreviewObserver?.disconnect();
+    embedPreviewObserver = null;
 }
 
 function buildEmbedUrl(theme, view) {
@@ -513,6 +516,79 @@ function buildEmbedUrl(theme, view) {
 function generateEmbedCode() {
     const embedUrl = buildEmbedUrl(embedThemeSelection, embedViewSelection);
     return `<iframe src="${embedUrl}" width="100%" height="500" frameborder="0" style="border-radius: 12px; max-width: 600px;"></iframe>`;
+}
+
+// The preview frame is narrower than the widget wants to be tall: the widget is
+// as tall as its content (a good 450px for current conditions, more for the
+// forecast table) while the frame only gets the room the modal has left over.
+// Cropping it into a scroll box makes the preview useless — you cannot see at a
+// glance what you are about to embed. So the iframe is laid out at the widget's
+// full height and scaled down to fit, like a page thumbnail.
+//
+// Scaling shrinks the width along with the height, which would leave the widget
+// floating in a band of empty frame. To keep it edge to edge, the iframe is laid
+// out wider by exactly the reciprocal of the scale, so that scaling brings it
+// back to the frame's width. That only works because this widget's height does
+// not depend on its width — its rows and tiles are fixed height — so widening
+// the frame cannot invalidate the height the scale was computed from.
+function fitEmbedPreview() {
+    const frame = document.getElementById('embedPreview');
+    const container = frame?.parentElement;
+    if (!frame || !container) return;
+
+    const width = container.clientWidth;
+    const available = container.clientHeight;
+
+    let widgetHeight = 0;
+    try {
+        // Same origin, so the widget can be measured directly. Its rect is in
+        // the iframe's own coordinates and so is unaffected by our transform.
+        const doc = frame.contentDocument;
+        allowFullWidthPreview(doc);
+        const widget = doc?.getElementById('varunWidget');
+        widgetHeight = widget ? widget.getBoundingClientRect().height : 0;
+    } catch (e) {
+        widgetHeight = 0;
+    }
+
+    if (!widgetHeight || !width) {
+        frame.style.width = '100%';
+        frame.style.height = '100%';
+        frame.style.transform = '';
+        return;
+    }
+
+    const scale = Math.min(1, available / widgetHeight);
+
+    frame.style.width = `${width / scale}px`;
+    frame.style.height = `${Math.ceil(widgetHeight)}px`;
+    frame.style.transform = scale < 1 ? `scale(${scale})` : '';
+}
+
+// The widget stops at 600px in the wild, which is the width the embed snippet
+// gives it. In the preview it has to reach the edges of a frame whose layout
+// width is the frame's width divided by the scale, so the cap is lifted for the
+// preview document only — what the viewer sees is still the widget at the
+// proportions it will have on their page.
+function allowFullWidthPreview(doc) {
+    if (!doc?.head || doc.getElementById('varunPreviewFullWidth')) return;
+
+    const style = doc.createElement('style');
+    style.id = 'varunPreviewFullWidth';
+    style.textContent = '.varun-embed-widget { max-width: none; }';
+    doc.head.appendChild(style);
+}
+
+// Grow the code box to the snippet it holds, so the whole tag is readable
+// without scrolling it. CSS caps the height; past the cap it scrolls again
+// rather than eating the preview's room.
+function autoSizeEmbedCode() {
+    const textarea = document.getElementById('embedCode');
+    if (!textarea) return;
+
+    textarea.style.height = 'auto';
+    if (!textarea.scrollHeight) return; // not laid out yet (modal still hidden)
+    textarea.style.height = `${textarea.scrollHeight + 2}px`; // + the hairline border
 }
 
 // Update embed code and preview
@@ -527,9 +603,15 @@ function updateEmbedCode() {
 
     if (embedCodeTextarea) {
         embedCodeTextarea.value = embedCode;
+        autoSizeEmbedCode();
     }
 
     if (embedPreview) {
+        // Reset before the swap: the old view's scale must not survive into the
+        // new one, which is a different height.
+        embedPreview.style.transform = '';
+        embedPreview.style.width = '100%';
+        embedPreview.style.height = '100%';
         embedPreview.src = buildEmbedUrl(embedThemeSelection, embedViewSelection);
     }
 }
@@ -708,6 +790,30 @@ function setupEmbedModal() {
 
     if (copyEmbedCodeButton) {
         copyEmbedCodeButton.addEventListener('click', copyEmbedCode);
+    }
+
+    const embedPreview = document.getElementById('embedPreview');
+    if (embedPreview) {
+        // The widget renders its data after the document loads, so a single
+        // measurement on load would catch it while it is still empty. Watch the
+        // widget instead and re-fit whenever it settles on a new height.
+        embedPreview.addEventListener('load', () => {
+            fitEmbedPreview();
+
+            const widget = embedPreview.contentDocument?.getElementById('varunWidget');
+            if (!widget || typeof ResizeObserver === 'undefined') return;
+
+            embedPreviewObserver?.disconnect();
+            embedPreviewObserver = new ResizeObserver(() => fitEmbedPreview());
+            embedPreviewObserver.observe(widget);
+        });
+
+        // Both are sized by the modal, which is sized by the viewport: the code
+        // rewraps and the frame gets a different amount of room to fit into.
+        window.addEventListener('resize', () => {
+            autoSizeEmbedCode();
+            fitEmbedPreview();
+        });
     }
 
     setupEmbedDropdowns();
