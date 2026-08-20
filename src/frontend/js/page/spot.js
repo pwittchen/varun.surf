@@ -1411,27 +1411,11 @@ function setupForecastTabs() {
     const windguruView = document.querySelector('.windguru-view');
     const chartView = document.querySelector('.chart-view');
 
-    const compactContainer = document.querySelector('.compact-view-container');
-
-    // Helper function to update compact checkbox visibility
-    function updateCompactVisibility(targetView) {
-        if (compactContainer) {
-            compactContainer.style.display = targetView === 'windguru' ? '' : 'none';
-        }
-    }
-
-    // Apply saved compact preference on load
-    if (windguruView && state.getCompactWindguru()) {
-        windguruView.classList.add('compact');
-    }
-
     // Helper function to update view visibility
     function updateViewVisibility(targetView) {
         if (tableView) tableView.classList.toggle('active', targetView === 'table');
         if (windguruView) windguruView.classList.toggle('active', targetView === 'windguru');
         if (chartView) chartView.classList.toggle('active', targetView === 'chart');
-
-        updateCompactVisibility(targetView);
 
         // Render chart when chart view becomes active
         if (targetView === 'chart') {
@@ -2267,12 +2251,6 @@ function createSpotCard(spot) {
                                 </button>
                             </div>
                             <div class="forecast-filters-right">
-                                <div class="compact-view-container" style="display: none;">
-                                    <label class="compact-view-label">
-                                        <input type="checkbox" id="compactViewCheckbox" ${state.getCompactWindguru() ? 'checked' : ''} />
-                                        <span class="filter-text">${translations.t('compactViewLabel')}</span>
-                                    </label>
-                                </div>
                                 <div class="filter-windy-days-container" ${isLiveDataMode ? 'style="display: none;"' : ''}>
                                     <label class="filter-windy-days-label">
                                         <input type="checkbox" id="filterWindyDaysCheckbox" ${getFilterWindyDaysPreference() ? 'checked' : ''} />
@@ -2393,9 +2371,6 @@ function displaySpot(spot) {
         // Setup filter windy days checkbox
         setupFilterWindyDaysCheckbox();
 
-        // Setup compact view checkbox
-        setupCompactViewCheckbox();
-
         // Setup data source dropdown
         setupDataSourceDropdown();
 
@@ -2434,22 +2409,6 @@ function setupFilterWindyDaysCheckbox() {
         // Re-render the spot to apply the filter
         if (currentSpot) {
             displaySpot(currentSpot);
-        }
-    });
-}
-
-// Setup compact view checkbox
-function setupCompactViewCheckbox() {
-    const checkbox = document.getElementById('compactViewCheckbox');
-    if (!checkbox) return;
-
-    checkbox.addEventListener('change', (e) => {
-        const enabled = e.target.checked;
-        state.setCompactWindguru(enabled);
-
-        const windguruView = document.querySelector('.windguru-view');
-        if (windguruView) {
-            windguruView.classList.toggle('compact', enabled);
         }
     });
 }
@@ -2839,32 +2798,29 @@ function setupResizeHandler() {
 // MODEL DROPDOWN (dynamic multi-model)
 // ============================================================================
 
+// The loading state lives inside the dropdown itself - the button carries the
+// label and a spinner, so nothing is rendered underneath it.
 function setModelDropdownLoading() {
     const modelDropdown = document.getElementById('modelDropdown');
-    const container = document.getElementById('modelDropdownContainer');
-    if (!modelDropdown || !container) return;
+    const modelDropdownText = document.getElementById('modelDropdownText');
+    if (!modelDropdown || !modelDropdownText) return;
 
-    modelDropdown.classList.add('disabled');
-
-    if (!container.querySelector('.model-loading-indicator')) {
-        const indicator = document.createElement('div');
-        indicator.className = 'model-loading-indicator';
-        indicator.innerHTML = `<span class="mini-spinner"></span>${translations.t('loadingModels')}`;
-        container.appendChild(indicator);
-    }
+    modelDropdown.classList.add('disabled', 'loading');
+    modelDropdownText.textContent = translations.t('loadingModels');
 }
 
 function clearModelDropdownLoading() {
     const modelDropdown = document.getElementById('modelDropdown');
-    const container = document.getElementById('modelDropdownContainer');
-    if (!modelDropdown || !container) return;
+    const modelDropdownText = document.getElementById('modelDropdownText');
+    if (!modelDropdown || !modelDropdownText) return;
 
-    modelDropdown.classList.remove('disabled');
-
-    const indicator = container.querySelector('.model-loading-indicator');
-    if (indicator) {
-        indicator.remove();
+    // Put the selected model back before the caller overwrites it with the
+    // display name, so an empty model list doesn't leave the label loading
+    if (modelDropdown.classList.contains('loading')) {
+        modelDropdownText.textContent = getSelectedModel().toUpperCase();
     }
+
+    modelDropdown.classList.remove('disabled', 'loading');
 }
 
 // Setup forecast model dropdown (toggle/close behavior only)

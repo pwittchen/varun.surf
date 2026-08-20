@@ -620,12 +620,6 @@ function showErrorMessage(error) {
 // WEATHER DISPLAY HELPER FUNCTIONS
 // ============================================================================
 
-function getSpotInfo(spot) {
-    if (!spot) return null;
-    // Direct access - no fallback, all translations are complete
-    return state.getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
-}
-
 function translateDayName(dayName) {
     const dayMap = {
         'Mon': translations.t('dayMon'),
@@ -978,60 +972,6 @@ function closeAIModal() {
     modals.closeModal('aiModal');
 }
 
-function openInfoModal(spotName) {
-    const spot = globalWeatherData.find(spot => spot.name === spotName);
-    if (!spot || !spot.spotInfo) return;
-
-    const modalSpotName = document.getElementById('infoModalSpotName');
-    const spotInfoContent = document.getElementById('spotInfoContent');
-
-    modalSpotName.textContent = `${spotName}`;
-
-    const info = getSpotInfo(spot);
-    spotInfoContent.innerHTML = `
-                <div class="info-grid">
-                    <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${translations.t('overviewLabel')}</div>
-                        <div class="info-value">${info.description}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('spotTypeLabel')}</div>
-                        <div class="info-value">${info.type}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('bestWindLabel')}</div>
-                        <div class="info-value">${info.bestWind}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('waterTempLabel')}</div>
-                        <div class="info-value">${info.waterTemp}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('experienceLabel')}</div>
-                        <div class="info-value">${info.experience}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('launchTypeLabel')}</div>
-                        <div class="info-value">${info.launch}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">${translations.t('hazardsLabel')}</div>
-                        <div class="info-value">${info.hazards}</div>
-                    </div>
-                    <div class="info-item" style="grid-column: 1 / -1;">
-                        <div class="info-label">${translations.t('seasonLabel')}</div>
-                        <div class="info-value">${info.season}</div>
-                    </div>
-                </div>
-            `;
-
-    modals.openModal('infoModal');
-}
-
-function closeInfoModal() {
-    modals.closeModal('infoModal');
-}
-
 function openIcmModal(spotName, icmUrl) {
     const modalSpotName = document.getElementById('icmModalSpotName');
     const icmImage = document.getElementById('icmImage');
@@ -1055,7 +995,6 @@ function setupModals() {
     const modalConfigs = [
         { modalId: 'aiModal', closeButtonId: 'modalClose', closeCallback: closeAIModal },
         { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
-        { modalId: 'infoModal', closeButtonId: 'infoModalClose', closeCallback: closeInfoModal },
         { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal }
     ];
 
@@ -1202,7 +1141,6 @@ function createSpotCard(spot) {
                     </div>
                 </div>
                 <div class="external-links">
-                    ${spot.spotInfo ? `<span class="external-link info-link" onclick="openInfoModal('${spot.name}')"></span>` : ''}
                     ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
                     ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
@@ -3103,8 +3041,6 @@ window.openAppInfoModal = openAppInfoModal;
 window.closeAppInfoModal = closeAppInfoModal;
 window.openAIModal = openAIModal;
 window.closeAIModal = closeAIModal;
-window.openInfoModal = openInfoModal;
-window.closeInfoModal = closeInfoModal;
 window.openIcmModal = openIcmModal;
 window.closeIcmModal = closeIcmModal;
 window.toggleFavorite = toggleFavorite;

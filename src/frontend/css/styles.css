@@ -960,27 +960,36 @@ body.index-page .header-title {
     pointer-events: none;
 }
 
-#modelDropdownContainer .model-loading-indicator {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
+/* While the models are being discovered the button says so itself — no caption
+   underneath. The arrow gives way to a spinner and the label breathes, so the
+   wait reads as activity without adding a second element to the header. */
+#modelDropdownContainer .dropdown-button.loading {
+    opacity: 1;
     color: var(--text-secondary);
-    margin-top: 8px;
-    white-space: nowrap;
 }
 
-#modelDropdownContainer .model-loading-indicator .mini-spinner {
-    display: inline-block;
+#modelDropdownContainer .dropdown-button.loading .dropdown-arrow {
+    display: none;
+}
+
+#modelDropdownContainer .dropdown-button.loading #modelDropdownText {
+    animation: model-loading-pulse 1.4s ease-in-out infinite;
+}
+
+#modelDropdownContainer .dropdown-button.loading::after {
+    content: "";
+    flex: 0 0 auto;
     width: 12px;
     height: 12px;
     border: 2px solid var(--border-primary);
-    border-top: 2px solid var(--accent-primary);
+    border-top-color: var(--accent-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+@keyframes model-loading-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
 }
 
 #modelDropdownContainer .dropdown-menu {
@@ -3246,41 +3255,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--accent-primary);
 }
 
-/* Compact View Toggle */
-.compact-view-container {
-    display: flex;
-    align-items: center;
-    padding-bottom: 10px;
-    padding-right: 16px;
-    margin-right: 4px;
-}
-
-.compact-view-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s ease;
-}
-
-.compact-view-label:hover {
-    color: var(--text-primary);
-}
-
-.compact-view-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: var(--accent-primary);
-}
-
-.compact-view-label .filter-text {
-    font-weight: 500;
-}
-
 /* Filter Windy Days */
 .filter-windy-days-container {
     display: flex;
@@ -3429,10 +3403,9 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     }
 }
 
-/* Below 1240px the spot view hides the compact / windy-days checkboxes
+/* Below 1240px the spot view hides the windy-days checkbox
    (not enough room next to the forecast tabs). */
 @media (max-width: 1239px) {
-    body.spot-page .compact-view-container,
     body.spot-page .filter-windy-days-container {
         display: none !important;
     }
@@ -3585,10 +3558,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
     body.spot-page .spot-info-card .info-item[style*="grid-column"] {
         grid-column: 1 / -1 !important;
-    }
-
-    body.spot-page .compact-view-container {
-        display: none !important;
     }
 
     body.spot-page .live-text {
@@ -3825,53 +3794,50 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 
-/* Compact Windguru View - full/compact value toggling */
-.windguru-cell .compact-value {
+/* Windguru view is always compact: every cell shows its short value and the
+   grid runs at the denser row/column metrics. */
+.windguru-view .windguru-cell .full-value {
     display: none;
 }
 
-.windguru-view.compact .windguru-cell .full-value {
-    display: none;
-}
-
-.windguru-view.compact .windguru-cell .compact-value {
+.windguru-view .windguru-cell .compact-value {
     display: inline;
 }
 
-.windguru-view.compact .windguru-cell .direction-text {
+.windguru-view .windguru-cell .direction-text {
     display: none;
 }
 
-.windguru-view.compact .windguru-cell {
+.windguru-view .windguru-cell {
     flex: 0 0 32px;
     padding: 10px 2px;
     font-size: 0.75rem;
 }
 
-.windguru-view.compact .windguru-time-cell {
+.windguru-view .windguru-time-cell {
     font-size: 0.65rem;
 }
 
-.windguru-view.compact .windguru-data-row {
+.windguru-view .windguru-data-row {
     height: 34px;
 }
 
-.windguru-view.compact .windguru-day-header {
+.windguru-view .windguru-day-header {
     height: 38px;
     font-size: 0.75rem;
     padding: 0 4px;
 }
 
-.windguru-view.compact .windguru-label-header {
+.windguru-view .windguru-label-header {
     height: 38px;
 }
 
-.windguru-view.compact .windguru-label {
+.windguru-view .windguru-label {
     height: 34px;
     font-size: 0.65rem;
 }
 
-.windguru-view.compact .wind-arrow {
+.windguru-view .wind-arrow {
     font-size: 0.8rem;
 }
 
@@ -5980,10 +5946,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
     .main-content.menu-open {
         margin-top: 380px;
-    }
-
-    .compact-view-container {
-        display: none !important;
     }
 
     .info-grid {
