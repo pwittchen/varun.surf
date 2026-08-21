@@ -692,11 +692,51 @@ function updateEmbedDropdownOptionsText(menuId) {
     });
 }
 
+// Every embed option is a dropdown with the same shape, so the setup, the
+// translation refresh and the selected-state sync all walk the same list. The
+// language one is also driven from outside the dialog: the page language
+// toggle picks the embed language too, so its button has to be re-synced here
+// and not only when it is clicked.
+const embedDropdownConfigs = [
+    {
+        buttonId: 'embedViewDropdown',
+        menuId: 'embedViewDropdownMenu',
+        textId: 'embedViewDropdownText',
+        getSelection: () => embedViewSelection,
+        setSelection: (value) => {
+            embedViewSelection = value;
+        }
+    },
+    {
+        buttonId: 'embedThemeDropdown',
+        menuId: 'embedThemeDropdownMenu',
+        textId: 'embedThemeDropdownText',
+        getSelection: () => embedThemeSelection,
+        setSelection: (value) => {
+            embedThemeSelection = value;
+        }
+    },
+    {
+        buttonId: 'embedLanguageDropdown',
+        menuId: 'embedLanguageDropdownMenu',
+        textId: 'embedLanguageDropdownText',
+        getSelection: () => embedLanguageSelection,
+        setSelection: (value) => {
+            embedLanguageSelection = value;
+        }
+    }
+];
+
 function refreshEmbedDropdownTranslations() {
-    updateEmbedDropdownOptionsText('embedViewDropdownMenu');
-    updateEmbedDropdownOptionsText('embedThemeDropdownMenu');
-    updateEmbedDropdownText('embedViewDropdownMenu', 'embedViewDropdownText', embedViewSelection);
-    updateEmbedDropdownText('embedThemeDropdownMenu', 'embedThemeDropdownText', embedThemeSelection);
+    embedDropdownConfigs.forEach(config => {
+        const menu = document.getElementById(config.menuId);
+        if (!menu) return;
+
+        const value = config.getSelection();
+        updateEmbedDropdownOptionsText(config.menuId);
+        updateEmbedDropdownText(config.menuId, config.textId, value);
+        updateEmbedDropdownSelectedState(menu, value);
+    });
 }
 
 function closeEmbedDropdowns() {
@@ -714,30 +754,7 @@ function setupEmbedDropdowns() {
 
     embedDropdownsInitialized = true;
 
-    const configs = [
-        {
-            buttonId: 'embedViewDropdown',
-            menuId: 'embedViewDropdownMenu',
-            textId: 'embedViewDropdownText',
-            getSelection: () => embedViewSelection,
-            setSelection: (value) => {
-                embedViewSelection = value;
-                updateEmbedCode();
-            }
-        },
-        {
-            buttonId: 'embedThemeDropdown',
-            menuId: 'embedThemeDropdownMenu',
-            textId: 'embedThemeDropdownText',
-            getSelection: () => embedThemeSelection,
-            setSelection: (value) => {
-                embedThemeSelection = value;
-                updateEmbedCode();
-            }
-        }
-    ];
-
-    configs.forEach(config => {
+    embedDropdownConfigs.forEach(config => {
         const button = document.getElementById(config.buttonId);
         const menu = document.getElementById(config.menuId);
         const textElement = document.getElementById(config.textId);
@@ -765,6 +782,7 @@ function setupEmbedDropdowns() {
                 event.stopPropagation();
                 const value = option.dataset.value;
                 config.setSelection(value);
+                updateEmbedCode();
                 updateEmbedDropdownSelectedState(menu, value);
                 updateEmbedDropdownText(config.menuId, config.textId, value);
                 closeEmbedDropdowns();

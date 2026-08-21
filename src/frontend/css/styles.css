@@ -5106,15 +5106,29 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     border-radius: var(--radius-md);
 }
 
+/* View, theme and language sit on one row: at the dialog's 600px the three
+   share ~176px each, which is enough for the longest label plus the arrow. */
 .embed-dropdowns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
 }
 
 .embed-dropdown .dropdown-button {
     width: 100%;
     justify-content: space-between;
+    /* The arrow is a flex child here, so the wide right padding meant for an
+       overlaid arrow would only steal room from the label. */
+    padding: 0 12px;
+    gap: 8px;
+}
+
+/* Three buttons on one row leave the longest labels little slack; truncate
+   rather than let a label push the arrow out of the button. */
+.embed-dropdown .dropdown-button > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .embed-dropdown .dropdown-menu {
