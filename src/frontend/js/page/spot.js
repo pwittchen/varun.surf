@@ -1744,10 +1744,11 @@ const PRESERVED_MAP_FRAMES = ['.spot-embedded-map-frame', '.spot-wind-map-frame'
 let windMapSpots = null;
 let windMapSpotsRequest = null;
 
-// Zoomed further out than the satellite tab: the field's influence radius is
-// measured in screen pixels, so neighbouring spots have to be close enough on
-// screen to blend into a continuous field.
-const WIND_MAP_ZOOM = 8;
+// Close enough that the spot itself is readable - on a lake spot a wider view
+// shows no water at all, just land. The field's influence radius grows with the
+// zoom level, so it still washes over the surroundings here instead of
+// collapsing into a blob on the marker.
+const WIND_MAP_ZOOM = 12;
 
 function releaseDetachedWindMap() {
     if (!spotWindMap) {

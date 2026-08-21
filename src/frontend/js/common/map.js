@@ -350,11 +350,34 @@ const WIND_FIELD_STOPS = [
     { kt: 35, rgb: [176, 20, 42] }    // very extreme (deep red)
 ];
 
-// How far a single spot influences the field, in screen pixels, and the
-// fraction of that radius held at full strength before it fades out. Shared by
-// the colour wash and the particles so the two passes cover the same ground.
+// How far a single spot influences the field, in screen pixels at the reference
+// zoom, and the fraction of that radius held at full strength before it fades
+// out. Shared by the colour wash and the particles so the two passes cover the
+// same ground.
 const WIND_FIELD_MAX_DIST = 70;
 const WIND_FIELD_FADE_FROM = 0.5;
+
+// Above the reference zoom the radius doubles per zoom level, so the field keeps
+// covering the same patch of ground instead of shrinking into a small blob
+// around each spot when the map is zoomed in on a single spot. Capped so a deep
+// zoom doesn't grow the per-pixel interpolation work without bound. Below the
+// reference zoom the pixel radius is held, which is what keeps the country- and
+// continent-wide views looking the way they do.
+const WIND_FIELD_REFERENCE_ZOOM = 8;
+const WIND_FIELD_MAX_GROWTH = 8;
+
+/**
+ * Influence radius of a single spot at the given zoom, in screen pixels.
+ * @param {number} zoom - Map zoom level
+ * @returns {number} Radius in pixels
+ */
+function windFieldRadius(zoom) {
+    if (!Number.isFinite(zoom) || zoom <= WIND_FIELD_REFERENCE_ZOOM) {
+        return WIND_FIELD_MAX_DIST;
+    }
+    const growth = Math.min(WIND_FIELD_MAX_GROWTH, Math.pow(2, zoom - WIND_FIELD_REFERENCE_ZOOM));
+    return WIND_FIELD_MAX_DIST * growth;
+}
 
 /**
  * Map a wind speed (knots) to an [r,g,b] colour. Below 5 kts the field is grey
@@ -784,10 +807,7 @@ export function createWindHeatLayer(spots, getConditions) {
     }
 
     const STEP = 8;              // sampling block size in px (divides 256 -> seamless across tiles)
-    const MAX_DIST = WIND_FIELD_MAX_DIST;
-    const MAX_DIST_SQ = MAX_DIST * MAX_DIST;
     const BASE_ALPHA = 0.6;
-    const FADE_FROM = MAX_DIST * WIND_FIELD_FADE_FROM;
 
     const WindFieldLayer = L.GridLayer.extend({
         createTile: function(coords) {
@@ -804,6 +824,10 @@ export function createWindHeatLayer(spots, getConditions) {
             const zoom = coords.z;
             const originX = coords.x * size.x;
             const originY = coords.y * size.y;
+
+            const MAX_DIST = windFieldRadius(zoom);
+            const MAX_DIST_SQ = MAX_DIST * MAX_DIST;
+            const FADE_FROM = MAX_DIST * WIND_FIELD_FADE_FROM;
 
             // Project samples into layer-pixel space at this zoom; keep only those
             // that can influence this tile (within MAX_DIST of the tile bounds).
@@ -949,9 +973,10 @@ function windParticleColor(kt) {
  * @param {Array} samples - Wind samples ({ lat, lon, wind, direction })
  * @param {{x:number, y:number}} size - Canvas size in pixels
  * @param {number} margin - Offset between container and canvas coordinates
+ * @param {number} radius - Influence radius in pixels at the current zoom
  * @returns {Array<{x:number, y:number, u:number, v:number}>} Velocity points
  */
-function projectWindVectors(map, samples, size, margin) {
+function projectWindVectors(map, samples, size, margin, radius) {
     const points = [];
 
     samples.forEach(sample => {
@@ -962,8 +987,8 @@ function projectWindVectors(map, samples, size, margin) {
         const projected = map.latLngToContainerPoint([sample.lat, sample.lon]);
         const x = projected.x + margin;
         const y = projected.y + margin;
-        if (x < -WIND_FIELD_MAX_DIST || x > size.x + WIND_FIELD_MAX_DIST ||
-            y < -WIND_FIELD_MAX_DIST || y > size.y + WIND_FIELD_MAX_DIST) {
+        if (x < -radius || x > size.x + radius ||
+            y < -radius || y > size.y + radius) {
             return;
         }
 
@@ -991,16 +1016,17 @@ function projectWindVectors(map, samples, size, margin) {
  *
  * @param {Array} points - Velocity points from projectWindVectors
  * @param {{x:number, y:number}} size - Canvas size in pixels
+ * @param {number} radius - Influence radius in pixels at the current zoom
  * @returns {{cols:number, rows:number, u:Float32Array, v:Float32Array, strength:Float32Array}}
  */
-function buildWindField(points, size) {
+function buildWindField(points, size, radius) {
     const cols = Math.ceil(size.x / PARTICLE_GRID_STEP) + 1;
     const rows = Math.ceil(size.y / PARTICLE_GRID_STEP) + 1;
     const u = new Float32Array(cols * rows);
     const v = new Float32Array(cols * rows);
     const strength = new Float32Array(cols * rows);
-    const maxDistSq = WIND_FIELD_MAX_DIST * WIND_FIELD_MAX_DIST;
-    const fadeSpan = WIND_FIELD_MAX_DIST * (1 - WIND_FIELD_FADE_FROM);
+    const maxDistSq = radius * radius;
+    const fadeSpan = radius * (1 - WIND_FIELD_FADE_FROM);
 
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
@@ -1037,7 +1063,7 @@ function buildWindField(points, size) {
             v[index] = vSum / weightSum;
 
             const nearest = Math.sqrt(nearestSq);
-            strength[index] = Math.max(0, Math.min(1, (WIND_FIELD_MAX_DIST - nearest) / fadeSpan));
+            strength[index] = Math.max(0, Math.min(1, (radius - nearest) / fadeSpan));
         }
     }
 
@@ -1091,14 +1117,15 @@ function sampleWindField(field, x, y, out) {
  *
  * @param {Array} points - Velocity points from projectWindVectors
  * @param {object} particle - Particle to reposition (mutated)
+ * @param {number} radius - Influence radius in pixels at the current zoom
  */
-function respawnParticle(points, particle) {
+function respawnParticle(points, particle, radius) {
     const origin = points[Math.floor(Math.random() * points.length)];
     const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * WIND_FIELD_MAX_DIST;
+    const distance = Math.sqrt(Math.random()) * radius;
 
-    particle.x = origin.x + Math.cos(angle) * radius;
-    particle.y = origin.y + Math.sin(angle) * radius;
+    particle.x = origin.x + Math.cos(angle) * distance;
+    particle.y = origin.y + Math.sin(angle) * distance;
     particle.age = Math.floor(Math.random() * PARTICLE_LIFE);
 }
 
@@ -1198,22 +1225,27 @@ export function createWindParticleLayer(spots, getConditions) {
             this._ctx.clearRect(0, 0, size.x, size.y);
 
             this._size = size;
-            this._points = projectWindVectors(map, samples, size, margin);
+            this._radius = windFieldRadius(map.getZoom());
+            this._points = projectWindVectors(map, samples, size, margin, this._radius);
             if (this._points.length === 0) {
                 this._particles = [];
                 return;
             }
 
-            this._field = buildWindField(this._points, size);
+            this._field = buildWindField(this._points, size, this._radius);
 
+            // The budget is per spot, so a zoomed-in view - where a single spot
+            // spreads its field across the whole map - has to buy more particles
+            // to stay as dense as a zoomed-out view full of them.
+            const perSpot = PARTICLES_PER_SPOT * (this._radius / WIND_FIELD_MAX_DIST);
             const count = Math.max(
                 PARTICLES_MIN,
-                Math.min(PARTICLES_MAX, this._points.length * PARTICLES_PER_SPOT)
+                Math.min(PARTICLES_MAX, Math.round(this._points.length * perSpot))
             );
             this._particles = [];
             for (let i = 0; i < count; i++) {
                 const particle = { x: 0, y: 0, age: 0 };
-                respawnParticle(this._points, particle);
+                respawnParticle(this._points, particle, this._radius);
                 this._particles.push(particle);
             }
 
@@ -1271,7 +1303,7 @@ export function createWindParticleLayer(spots, getConditions) {
                 const inside = sampleWindField(this._field, particle.x, particle.y, sample);
                 if (!inside || sample[2] < PARTICLE_MIN_FIELD || particle.age++ > PARTICLE_LIFE) {
                     if (allowRespawn) {
-                        respawnParticle(this._points, particle);
+                        respawnParticle(this._points, particle, this._radius);
                     }
                     continue;
                 }
