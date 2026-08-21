@@ -327,12 +327,12 @@ export function buildWindyEmbedUrl(lat, lon) {
 }
 
 // ============================================================================
-// WIND OVERLAY (arrows + heatmap)
+// WIND OVERLAY (arrows + heatmap + particles)
 // Renders wind visualization from the app's own per-spot data (no external
-// map embeds). Modes: 'off' | 'arrows' | 'heatmap'.
+// map embeds). Modes: 'off' | 'arrows' | 'heatmap' | 'particles'.
 // ============================================================================
 
-export const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap'];
+export const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap', 'particles'];
 
 // Upward-pointing arrow (north) used as the base glyph; rotated per wind direction.
 const WIND_ARROW_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2l6 9h-4v11h-4V11H6z"/></svg>';
@@ -876,14 +876,424 @@ export function createWindHeatLayer(spots, getConditions) {
     });
 }
 
+// ============================================================================
+// WIND PARTICLES
+// Animated streaklines drifting along an interpolated wind field, the way
+// Windfinder/Windy animate their maps. The field is the same inverse-distance
+// interpolation the heatmap uses, except direction is interpolated too (as a
+// vector), so particles bend between neighbouring spots instead of jumping.
+// ============================================================================
+
+// Vector-field resolution in screen pixels. Small enough that trajectories look
+// smooth after bilinear sampling, coarse enough to rebuild in a few ms.
+const PARTICLE_GRID_STEP = 16;
+
+// How far a single spot influences the field, in screen pixels.
+const PARTICLE_MAX_DIST = 150;
+
+// Beyond this fraction of the influence radius the field fades out, so isolated
+// spots don't end in a hard circle of particles.
+const PARTICLE_FADE_FROM = 0.5;
+
+// Particles die where the field is this weak - i.e. far from every spot.
+const PARTICLE_MIN_FIELD = 0.05;
+
+// Screen pixels travelled per knot per frame (at 60 fps).
+const PARTICLE_SPEED = 0.09;
+
+// Frames a particle lives before it respawns somewhere else. Randomised per
+// particle so the whole field never blinks at once.
+const PARTICLE_LIFE = 90;
+
+// Per-frame alpha erased from the canvas; controls how long the trails linger.
+const PARTICLE_TRAIL_FADE = 0.12;
+
+// Particle budget: scaled by the number of spots in view so a single visible
+// spot doesn't get a dense blob crammed into its influence radius.
+const PARTICLES_PER_SPOT = 45;
+const PARTICLES_MIN = 40;
+const PARTICLES_MAX = 1400;
+
+// The canvas is grown beyond the viewport so a short pan (during which the
+// animation is frozen) doesn't reveal an empty edge.
+const PARTICLE_CANVAS_MARGIN = 96;
+
+// Frames advected for the single static frame drawn under reduced motion.
+const PARTICLE_STATIC_STEPS = 26;
+
+/**
+ * Project wind samples into canvas pixel space and turn each into a velocity
+ * vector. Samples without a usable cardinal direction are dropped - guessing
+ * north for them would drag the whole neighbourhood the wrong way.
+ * @param {L.Map} map - Leaflet map instance
+ * @param {Array} samples - Wind samples ({ lat, lon, wind, direction })
+ * @param {{x:number, y:number}} size - Canvas size in pixels
+ * @param {number} margin - Offset between container and canvas coordinates
+ * @returns {Array<{x:number, y:number, u:number, v:number}>} Velocity points
+ */
+function projectWindVectors(map, samples, size, margin) {
+    const points = [];
+
+    samples.forEach(sample => {
+        if (!CARDINAL_DIRECTIONS.includes(sample.direction)) {
+            return;
+        }
+
+        const projected = map.latLngToContainerPoint([sample.lat, sample.lon]);
+        const x = projected.x + margin;
+        const y = projected.y + margin;
+        if (x < -PARTICLE_MAX_DIST || x > size.x + PARTICLE_MAX_DIST ||
+            y < -PARTICLE_MAX_DIST || y > size.y + PARTICLE_MAX_DIST) {
+            return;
+        }
+
+        // App convention: the wind direction names where the wind comes FROM,
+        // so particles have to travel along the opposite bearing.
+        const rad = ((weather.getWindRotation(sample.direction) + 180) % 360) * Math.PI / 180;
+        points.push({
+            x,
+            y,
+            u: Math.sin(rad) * sample.wind,
+            v: -Math.cos(rad) * sample.wind
+        });
+    });
+
+    return points;
+}
+
+/**
+ * Build the interpolated velocity field covering the canvas.
+ *
+ * Each grid node averages the surrounding velocity vectors with inverse-distance
+ * weighting, and carries a strength in [0,1] that fades toward the edge of the
+ * sampled area. Vectors are averaged as components, so opposing winds cancel
+ * into a calm zone instead of averaging into a meaningless middle bearing.
+ *
+ * @param {Array} points - Velocity points from projectWindVectors
+ * @param {{x:number, y:number}} size - Canvas size in pixels
+ * @returns {{cols:number, rows:number, u:Float32Array, v:Float32Array, strength:Float32Array}}
+ */
+function buildWindField(points, size) {
+    const cols = Math.ceil(size.x / PARTICLE_GRID_STEP) + 1;
+    const rows = Math.ceil(size.y / PARTICLE_GRID_STEP) + 1;
+    const u = new Float32Array(cols * rows);
+    const v = new Float32Array(cols * rows);
+    const strength = new Float32Array(cols * rows);
+    const maxDistSq = PARTICLE_MAX_DIST * PARTICLE_MAX_DIST;
+    const fadeSpan = PARTICLE_MAX_DIST * (1 - PARTICLE_FADE_FROM);
+
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const px = col * PARTICLE_GRID_STEP;
+            const py = row * PARTICLE_GRID_STEP;
+
+            let weightSum = 0;
+            let uSum = 0;
+            let vSum = 0;
+            let nearestSq = Infinity;
+
+            for (let i = 0; i < points.length; i++) {
+                const dx = points[i].x - px;
+                const dy = points[i].y - py;
+                const distSq = dx * dx + dy * dy;
+                if (distSq < nearestSq) {
+                    nearestSq = distSq;
+                }
+                if (distSq > maxDistSq) {
+                    continue;
+                }
+                const weight = 1 / (distSq + 1); // inverse-distance, power 2
+                weightSum += weight;
+                uSum += weight * points[i].u;
+                vSum += weight * points[i].v;
+            }
+
+            if (weightSum === 0) {
+                continue;
+            }
+
+            const index = row * cols + col;
+            u[index] = uSum / weightSum;
+            v[index] = vSum / weightSum;
+
+            const nearest = Math.sqrt(nearestSq);
+            strength[index] = Math.max(0, Math.min(1, (PARTICLE_MAX_DIST - nearest) / fadeSpan));
+        }
+    }
+
+    return { cols, rows, u, v, strength };
+}
+
+/**
+ * Bilinearly sample the velocity field at a pixel position.
+ * @param {object} field - Field from buildWindField
+ * @param {number} x - Canvas x coordinate
+ * @param {number} y - Canvas y coordinate
+ * @param {number[]} out - Reused [u, v, strength] output array
+ * @returns {boolean} False when the position lies outside the field
+ */
+function sampleWindField(field, x, y, out) {
+    const gx = x / PARTICLE_GRID_STEP;
+    const gy = y / PARTICLE_GRID_STEP;
+    const col = Math.floor(gx);
+    const row = Math.floor(gy);
+
+    if (col < 0 || row < 0 || col + 1 >= field.cols || row + 1 >= field.rows) {
+        return false;
+    }
+
+    const fx = gx - col;
+    const fy = gy - row;
+    const i00 = row * field.cols + col;
+    const i10 = i00 + 1;
+    const i01 = i00 + field.cols;
+    const i11 = i01 + 1;
+
+    const w00 = (1 - fx) * (1 - fy);
+    const w10 = fx * (1 - fy);
+    const w01 = (1 - fx) * fy;
+    const w11 = fx * fy;
+
+    out[0] = field.u[i00] * w00 + field.u[i10] * w10 + field.u[i01] * w01 + field.u[i11] * w11;
+    out[1] = field.v[i00] * w00 + field.v[i10] * w10 + field.v[i01] * w01 + field.v[i11] * w11;
+    out[2] = field.strength[i00] * w00 + field.strength[i10] * w10
+        + field.strength[i01] * w01 + field.strength[i11] * w11;
+
+    return true;
+}
+
+/**
+ * Pick a random spawn position inside some spot's influence radius.
+ *
+ * Spawning uniformly across the canvas would waste most particles on empty
+ * water, so a random spot is picked first and the particle is dropped in its
+ * disc (square-rooted radius keeps the distribution even across the disc).
+ *
+ * @param {Array} points - Velocity points from projectWindVectors
+ * @param {object} particle - Particle to reposition (mutated)
+ */
+function respawnParticle(points, particle) {
+    const origin = points[Math.floor(Math.random() * points.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.sqrt(Math.random()) * PARTICLE_MAX_DIST;
+
+    particle.x = origin.x + Math.cos(angle) * radius;
+    particle.y = origin.y + Math.sin(angle) * radius;
+    particle.age = Math.floor(Math.random() * PARTICLE_LIFE);
+}
+
+/**
+ * Create an animated wind-particle layer for the given spots.
+ *
+ * Particles are advected through the interpolated wind field on a canvas that
+ * covers the viewport, leaving fading trails coloured by wind strength - the
+ * same palette as the heatmap, so both overlays read identically.
+ *
+ * The animation is frozen while the map is being panned or zoomed (the canvas
+ * rides along with the overlay pane, keeping the frozen frame geographically
+ * anchored) and the field is rebuilt once the view settles. Under
+ * `prefers-reduced-motion` a single static frame of streaklines is drawn.
+ *
+ * @param {Array} spots - Spot objects
+ * @param {function} getConditions - Returns wind conditions for a spot
+ * @returns {L.Layer} Leaflet layer
+ */
+export function createWindParticleLayer(spots, getConditions) {
+    const samples = [];
+    if (Array.isArray(spots)) {
+        spots.forEach(spot => {
+            const sample = getWindSample(spot, getConditions);
+            if (sample) {
+                samples.push(sample);
+            }
+        });
+    }
+
+    const prefersReducedMotion = typeof window.matchMedia === 'function'
+        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const WindParticleLayer = L.Layer.extend({
+        onAdd: function(map) {
+            this._canvas = L.DomUtil.create('canvas', 'wind-particle-layer leaflet-zoom-hide');
+            this._ctx = this._canvas.getContext('2d');
+            map.getPane('overlayPane').appendChild(this._canvas);
+
+            map.on('moveend zoomend resize', this._restart, this);
+            map.on('movestart zoomstart', this._freeze, this);
+
+            this._restart();
+        },
+
+        onRemove: function(map) {
+            this._freeze();
+            map.off('moveend zoomend resize', this._restart, this);
+            map.off('movestart zoomstart', this._freeze, this);
+
+            if (this._canvas && this._canvas.parentNode) {
+                this._canvas.parentNode.removeChild(this._canvas);
+            }
+            this._canvas = null;
+            this._ctx = null;
+        },
+
+        // Stop the loop without touching the canvas: the drawn frame stays put
+        // and is carried along by the overlay pane while the map moves.
+        _freeze: function() {
+            if (this._frame) {
+                L.Util.cancelAnimFrame(this._frame);
+                this._frame = null;
+            }
+            if (this._pendingRebuild) {
+                L.Util.cancelAnimFrame(this._pendingRebuild);
+                this._pendingRebuild = null;
+            }
+        },
+
+        // A single gesture fires several view events (a zoom ends with both
+        // 'zoomend' and 'moveend'), so the rebuild is deferred by a frame and
+        // collapses into one.
+        _restart: function() {
+            this._freeze();
+            this._pendingRebuild = L.Util.requestAnimFrame(this._rebuild, this);
+        },
+
+        // Re-measure, re-anchor, rebuild the field and refill the particles.
+        _rebuild: function() {
+            this._pendingRebuild = null;
+
+            const map = this._map;
+            if (!map || !this._canvas) {
+                return;
+            }
+
+            const viewport = map.getSize();
+            const margin = PARTICLE_CANVAS_MARGIN;
+            const size = { x: viewport.x + margin * 2, y: viewport.y + margin * 2 };
+
+            this._canvas.width = size.x;
+            this._canvas.height = size.y;
+            L.DomUtil.setPosition(this._canvas, map.containerPointToLayerPoint([-margin, -margin]));
+            this._ctx.clearRect(0, 0, size.x, size.y);
+
+            this._size = size;
+            this._points = projectWindVectors(map, samples, size, margin);
+            if (this._points.length === 0) {
+                this._particles = [];
+                return;
+            }
+
+            this._field = buildWindField(this._points, size);
+
+            const count = Math.max(
+                PARTICLES_MIN,
+                Math.min(PARTICLES_MAX, this._points.length * PARTICLES_PER_SPOT)
+            );
+            this._particles = [];
+            for (let i = 0; i < count; i++) {
+                const particle = { x: 0, y: 0, age: 0 };
+                respawnParticle(this._points, particle);
+                this._particles.push(particle);
+            }
+
+            if (prefersReducedMotion) {
+                this._drawStaticFrame();
+                return;
+            }
+
+            this._lastFrameTime = 0;
+            this._frame = L.Util.requestAnimFrame(this._step, this);
+        },
+
+        _step: function() {
+            if (!this._ctx || !this._field) {
+                return;
+            }
+
+            // Keep the motion frame-rate independent; the clamp stops a long
+            // stall (background tab, GC pause) from teleporting every particle.
+            const now = performance.now();
+            const elapsed = this._lastFrameTime ? now - this._lastFrameTime : 16.67;
+            this._lastFrameTime = now;
+            const dt = Math.min(Math.max(elapsed, 8), 50) / 16.67;
+
+            this._fadeTrails();
+            this._advance(dt, true);
+
+            this._frame = L.Util.requestAnimFrame(this._step, this);
+        },
+
+        // Erase a slice of the previous frame instead of clearing it, which is
+        // what leaves the comet-like trails behind the particles.
+        _fadeTrails: function() {
+            const ctx = this._ctx;
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = `rgba(0,0,0,${PARTICLE_TRAIL_FADE})`;
+            ctx.fillRect(0, 0, this._size.x, this._size.y);
+            ctx.globalCompositeOperation = 'source-over';
+        },
+
+        /**
+         * Advance every particle one step and draw the segment it travelled.
+         * @param {number} dt - Frame time in 60fps units
+         * @param {boolean} allowRespawn - Whether exhausted particles are recycled
+         */
+        _advance: function(dt, allowRespawn) {
+            const ctx = this._ctx;
+            const sample = this._sampleOut || (this._sampleOut = [0, 0, 0]);
+
+            ctx.lineWidth = 1.4;
+            ctx.lineCap = 'round';
+
+            for (let i = 0; i < this._particles.length; i++) {
+                const particle = this._particles[i];
+
+                const inside = sampleWindField(this._field, particle.x, particle.y, sample);
+                if (!inside || sample[2] < PARTICLE_MIN_FIELD || particle.age++ > PARTICLE_LIFE) {
+                    if (allowRespawn) {
+                        respawnParticle(this._points, particle);
+                    }
+                    continue;
+                }
+
+                const x = particle.x + sample[0] * PARTICLE_SPEED * dt;
+                const y = particle.y + sample[1] * PARTICLE_SPEED * dt;
+
+                const speed = Math.sqrt(sample[0] * sample[0] + sample[1] * sample[1]);
+                const rgb = windFieldColor(speed);
+                // Fade with the field so particles dissolve at its edge rather
+                // than stopping dead on an invisible boundary.
+                const alpha = (0.35 + 0.5 * Math.min(1, sample[2])).toFixed(3);
+
+                ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
+                ctx.beginPath();
+                ctx.moveTo(particle.x, particle.y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                particle.x = x;
+                particle.y = y;
+            }
+        },
+
+        // Reduced-motion fallback: draw the streaklines once, no animation.
+        _drawStaticFrame: function() {
+            for (let step = 0; step < PARTICLE_STATIC_STEPS; step++) {
+                this._advance(1, false);
+            }
+        }
+    });
+
+    return new WindParticleLayer();
+}
+
 // SVG wind icon for the overlay switcher button.
 const WIND_OVERLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3 12h15a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3 16h9a2.5 2.5 0 1 1-2.5 2.5"/></svg>';
 
 /**
  * Create a Leaflet control that toggles the wind overlay mode
- * (off -> arrows -> heatmap). Mirrors the layer switcher UI.
+ * (off -> arrows -> heatmap -> particles). Mirrors the layer switcher UI.
  * @param {object} options - Configuration options
- * @param {function} options.getMode - Returns current mode ('off'|'arrows'|'heatmap')
+ * @param {function} options.getMode - Returns current mode ('off'|'arrows'|'heatmap'|'particles')
  * @param {function} options.onModeChange - Callback with the new mode
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
@@ -898,7 +1308,8 @@ export function createWindOverlayControl(options) {
     const modeOptions = [
         { value: 'off', translationKey: 'windOverlayOff' },
         { value: 'arrows', translationKey: 'windOverlayArrows' },
-        { value: 'heatmap', translationKey: 'windOverlayHeatmap' }
+        { value: 'heatmap', translationKey: 'windOverlayHeatmap' },
+        { value: 'particles', translationKey: 'windOverlayParticles' }
     ];
 
     const WindOverlayControl = L.Control.extend({

@@ -5467,8 +5467,17 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     filter: blur(8px);
 }
 
-/* Wind heatmap disclaimer badge */
-.wind-heatmap-disclaimer {
+/* Animated wind particles: a single canvas positioned by Leaflet, drawn on top
+   of the base tiles and never intercepting clicks meant for the markers. */
+.wind-particle-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+/* Wind overlay disclaimer badge (interpolated overlays) */
+.wind-overlay-disclaimer {
     position: absolute;
     top: 10px;
     left: 50%;

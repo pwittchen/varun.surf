@@ -104,7 +104,7 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should cycle wind overlay heatmap -> off -> arrows -> heatmap")
+    @DisplayName("Should cycle wind overlay particles -> off -> arrows -> heatmap -> particles")
     void shouldCycleWindOverlayModes() {
         navigateToMainPage();
         waitForSpotsToLoad();
@@ -121,39 +121,53 @@ class MainPageE2eTest extends BaseE2eTest {
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        Locator heatDisclaimer = page.locator(".wind-heatmap-disclaimer");
+        Locator disclaimer = page.locator(".wind-overlay-disclaimer");
         Locator activeOption = page.locator(".leaflet-control-wind-overlay .layer-switcher-option.active");
 
-        // Default mode is heatmap: button active, disclaimer visible.
+        Locator particleCanvas = page.locator("canvas.wind-particle-layer");
+
+        // Default mode is particles: button active, animated canvas present, disclaimer visible.
         // (Marker/arrow rendering depends on network-resolved coordinates, which are
         // not available in the sandboxed E2E run, so we assert the control mechanics.)
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("heatmap");
+        assertThat(activeOption.getAttribute("data-value")).isEqualTo("particles");
         assertThat(overlayButton.getAttribute("class")).contains("active");
-        assertThat(heatDisclaimer.isVisible()).isTrue();
+        assertThat(disclaimer.isVisible()).isTrue();
+        assertThat(particleCanvas.count()).isEqualTo(1);
 
-        // Switch to off: button not active, disclaimer removed
+        // Switch to off: button not active, disclaimer and canvas removed
         overlayButton.click();
         page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='off']").click();
         page.waitForTimeout(300);
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("off");
         assertThat(overlayButton.getAttribute("class")).doesNotContain("active");
-        assertThat(heatDisclaimer.count()).isEqualTo(0);
+        assertThat(disclaimer.count()).isEqualTo(0);
+        assertThat(particleCanvas.count()).isEqualTo(0);
 
-        // Switch to arrows: option active, button active, no heatmap disclaimer
+        // Switch to arrows: option active, button active, no interpolation disclaimer
         overlayButton.click();
         page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='arrows']").click();
         page.waitForTimeout(300);
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("arrows");
         assertThat(overlayButton.getAttribute("class")).contains("active");
-        assertThat(heatDisclaimer.count()).isEqualTo(0);
+        assertThat(disclaimer.count()).isEqualTo(0);
 
-        // Switch back to heatmap: disclaimer visible, option active
+        // Switch to heatmap: disclaimer visible, no particle canvas
         overlayButton.click();
         page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='heatmap']").click();
         page.waitForTimeout(300);
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("heatmap");
         assertThat(overlayButton.getAttribute("class")).contains("active");
-        assertThat(heatDisclaimer.isVisible()).isTrue();
+        assertThat(disclaimer.isVisible()).isTrue();
+        assertThat(particleCanvas.count()).isEqualTo(0);
+
+        // Switch back to particles: animated canvas added again
+        overlayButton.click();
+        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='particles']").click();
+        page.waitForTimeout(300);
+        assertThat(activeOption.getAttribute("data-value")).isEqualTo("particles");
+        assertThat(overlayButton.getAttribute("class")).contains("active");
+        assertThat(disclaimer.isVisible()).isTrue();
+        assertThat(particleCanvas.count()).isEqualTo(1);
     }
 
     @Test

@@ -205,11 +205,11 @@ export function setSidebarCollapsed(collapsed) {
 // MAP WIND OVERLAY MODE
 // ============================================================================
 
-const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap'];
+const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap', 'particles'];
 
 export function getWindOverlayMode() {
     const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
-    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'heatmap';
+    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'particles';
 }
 
 export function setWindOverlayMode(mode) {

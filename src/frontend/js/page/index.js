@@ -528,8 +528,8 @@ function initLanguage() {
         // Update map layer switcher labels
         map.updateLayerSwitcherLabels();
         map.updateWindOverlayLabels();
-        if (windHeatmapDisclaimerEl) {
-            windHeatmapDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+        if (windOverlayDisclaimerEl) {
+            windOverlayDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
         }
 
         // Re-render spots to update table headers and content
@@ -2568,8 +2568,8 @@ let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
-let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap'
-let windHeatmapDisclaimerEl = null;
+let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap' | 'particles'
+let windOverlayDisclaimerEl = null;
 
 function initMap() {
     if (leafletMap) return; // Already initialized
@@ -2597,7 +2597,7 @@ function initMap() {
     });
     leafletMap.addControl(layerSwitcher);
 
-    // Add wind overlay control (off -> arrows -> heatmap)
+    // Add wind overlay control (off -> arrows -> heatmap -> particles)
     const windOverlayControl = map.createWindOverlayControl({
         getMode: () => windOverlayMode,
         onModeChange: (newMode) => {
@@ -2618,20 +2618,22 @@ function initMap() {
     });
 }
 
-function ensureWindHeatmapDisclaimer(visible) {
+// Shown by the overlays that interpolate between spots (heatmap, particles),
+// so nobody reads the painted field as measured data.
+function ensureWindOverlayDisclaimer(visible) {
     const mapContainer = document.getElementById('mapContainer');
     if (!mapContainer) return;
 
     if (visible) {
-        if (!windHeatmapDisclaimerEl) {
-            windHeatmapDisclaimerEl = document.createElement('div');
-            windHeatmapDisclaimerEl.className = 'wind-heatmap-disclaimer';
-            mapContainer.appendChild(windHeatmapDisclaimerEl);
+        if (!windOverlayDisclaimerEl) {
+            windOverlayDisclaimerEl = document.createElement('div');
+            windOverlayDisclaimerEl.className = 'wind-overlay-disclaimer';
+            mapContainer.appendChild(windOverlayDisclaimerEl);
         }
-        windHeatmapDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
-    } else if (windHeatmapDisclaimerEl) {
-        windHeatmapDisclaimerEl.remove();
-        windHeatmapDisclaimerEl = null;
+        windOverlayDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+    } else if (windOverlayDisclaimerEl) {
+        windOverlayDisclaimerEl.remove();
+        windOverlayDisclaimerEl = null;
     }
 }
 
@@ -2646,17 +2648,25 @@ function renderWindOverlay(spots) {
         windOverlayLayer.addLayer(
             map.createWindArrowLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
         );
-        ensureWindHeatmapDisclaimer(false);
+        ensureWindOverlayDisclaimer(false);
     } else if (windOverlayMode === 'heatmap') {
         const heatLayer = map.createWindHeatLayer(spots, getSpotConditions);
         if (heatLayer) {
             windOverlayLayer.addLayer(heatLayer);
-            ensureWindHeatmapDisclaimer(true);
+            ensureWindOverlayDisclaimer(true);
         } else {
-            ensureWindHeatmapDisclaimer(false);
+            ensureWindOverlayDisclaimer(false);
+        }
+    } else if (windOverlayMode === 'particles') {
+        const particleLayer = map.createWindParticleLayer(spots, getSpotConditions);
+        if (particleLayer) {
+            windOverlayLayer.addLayer(particleLayer);
+            ensureWindOverlayDisclaimer(true);
+        } else {
+            ensureWindOverlayDisclaimer(false);
         }
     } else {
-        ensureWindHeatmapDisclaimer(false);
+        ensureWindOverlayDisclaimer(false);
     }
 }
 
@@ -2788,7 +2798,7 @@ function showMapView() {
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     addMarkersToMap(filteredSpots);
 
-    // Render the active wind overlay (arrows/heatmap) on top of markers
+    // Render the active wind overlay (arrows/heatmap/particles) on top of markers
     renderWindOverlay(filteredSpots);
 
     // Invalidate map size (needed for proper rendering)
@@ -2837,7 +2847,7 @@ function hideMapView(options = {}) {
     if (windOverlayLayer) {
         windOverlayLayer.clearLayers();
     }
-    ensureWindHeatmapDisclaimer(false);
+    ensureWindOverlayDisclaimer(false);
 
     // Hide map container
     mapContainer.style.display = 'none';
