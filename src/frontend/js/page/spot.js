@@ -2416,7 +2416,7 @@ function createSpotCard(spot) {
     }
 
     // ========================================================================
-    // BUILD AI ANALYSIS CARD (sidebar)
+    // BUILD AI ANALYSIS CARD (between the map and the forecast)
     // ========================================================================
 
     const aiAnalysisText = getAiAnalysisForCurrentLanguage(spot);
@@ -2425,10 +2425,11 @@ function createSpotCard(spot) {
     if (aiAnalysisText) {
         aiAnalysisCardHtml = `
                 <div class="ai-analysis-card">
+                    <div class="info-label">${translations.t('aiAnalysisTitle')}</div>
                     <div class="ai-analysis">
                         <p>${aiAnalysisText}</p>
                     </div>
-                    <div class="modal-disclaimer">${translations.t('aiDisclaimer')}</div>
+                    <div class="ai-analysis-note">${translations.t('aiDisclaimer')}</div>
                 </div>
             `;
     }
@@ -2500,11 +2501,11 @@ function createSpotCard(spot) {
                     <div class="spot-detail-left">
                         ${currentConditionsCardHtml}
                         ${spotInfoCardHtml}
-                        ${aiAnalysisCardHtml}
                         ${sponsorsCardHtml}
                     </div>
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
+                        ${aiAnalysisCardHtml}
                         ${isDesktopView ? `
                         <div class="forecast-tabs-container">
                             <div class="forecast-tabs">
