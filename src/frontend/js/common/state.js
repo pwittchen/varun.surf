@@ -44,7 +44,7 @@ export const STORAGE_KEYS = {
     // Live-stations-only filter (main page)
     LIVE_STATIONS_ONLY: 'liveStationsOnly',
 
-    // Map wind overlay mode ('off' | 'arrows' | 'heatmap')
+    // Map wind overlay mode ('off' | 'arrows' | 'field')
     WIND_OVERLAY_MODE: 'windOverlayMode',
 
     // Sidebar collapsed to an icon rail (desktop / tablet)
@@ -205,11 +205,13 @@ export function setSidebarCollapsed(collapsed) {
 // MAP WIND OVERLAY MODE
 // ============================================================================
 
-const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap', 'particles'];
+const WIND_OVERLAY_MODES = ['off', 'arrows', 'field'];
 
+// 'field' is also the fallback, which quietly migrates the 'heatmap' and
+// 'particles' values stored before the two were merged into one overlay.
 export function getWindOverlayMode() {
     const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
-    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'particles';
+    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'field';
 }
 
 export function setWindOverlayMode(mode) {

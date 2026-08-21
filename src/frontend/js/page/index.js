@@ -529,7 +529,7 @@ function initLanguage() {
         map.updateLayerSwitcherLabels();
         map.updateWindOverlayLabels();
         if (windOverlayDisclaimerEl) {
-            windOverlayDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+            windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
         }
 
         // Re-render spots to update table headers and content
@@ -2568,7 +2568,7 @@ let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
-let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap' | 'particles'
+let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'field'
 let windOverlayDisclaimerEl = null;
 
 function initMap() {
@@ -2597,7 +2597,7 @@ function initMap() {
     });
     leafletMap.addControl(layerSwitcher);
 
-    // Add wind overlay control (off -> arrows -> heatmap -> particles)
+    // Add wind overlay control (off -> arrows -> field)
     const windOverlayControl = map.createWindOverlayControl({
         getMode: () => windOverlayMode,
         onModeChange: (newMode) => {
@@ -2618,8 +2618,8 @@ function initMap() {
     });
 }
 
-// Shown by the overlays that interpolate between spots (heatmap, particles),
-// so nobody reads the painted field as measured data.
+// Shown by the field overlay, which interpolates between spots, so nobody reads
+// the painted field as measured data.
 function ensureWindOverlayDisclaimer(visible) {
     const mapContainer = document.getElementById('mapContainer');
     if (!mapContainer) return;
@@ -2630,7 +2630,7 @@ function ensureWindOverlayDisclaimer(visible) {
             windOverlayDisclaimerEl.className = 'wind-overlay-disclaimer';
             mapContainer.appendChild(windOverlayDisclaimerEl);
         }
-        windOverlayDisclaimerEl.textContent = translations.t('windHeatmapDisclaimer');
+        windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
     } else if (windOverlayDisclaimerEl) {
         windOverlayDisclaimerEl.remove();
         windOverlayDisclaimerEl = null;
@@ -2649,22 +2649,13 @@ function renderWindOverlay(spots) {
             map.createWindArrowLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
         );
         ensureWindOverlayDisclaimer(false);
-    } else if (windOverlayMode === 'heatmap') {
-        const heatLayer = map.createWindHeatLayer(spots, getSpotConditions);
-        if (heatLayer) {
-            windOverlayLayer.addLayer(heatLayer);
-            ensureWindOverlayDisclaimer(true);
-        } else {
-            ensureWindOverlayDisclaimer(false);
-        }
-    } else if (windOverlayMode === 'particles') {
-        const particleLayer = map.createWindParticleLayer(spots, getSpotConditions);
-        if (particleLayer) {
-            windOverlayLayer.addLayer(particleLayer);
-            ensureWindOverlayDisclaimer(true);
-        } else {
-            ensureWindOverlayDisclaimer(false);
-        }
+    } else if (windOverlayMode === 'field') {
+        // One overlay, two passes: the colour wash says how hard it blows, the
+        // particles on top say where. Added in this order so the streaks stay
+        // above the wash in the overlay pane.
+        windOverlayLayer.addLayer(map.createWindHeatLayer(spots, getSpotConditions));
+        windOverlayLayer.addLayer(map.createWindParticleLayer(spots, getSpotConditions));
+        ensureWindOverlayDisclaimer(true);
     } else {
         ensureWindOverlayDisclaimer(false);
     }
@@ -2798,7 +2789,7 @@ function showMapView() {
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     addMarkersToMap(filteredSpots);
 
-    // Render the active wind overlay (arrows/heatmap/particles) on top of markers
+    // Render the active wind overlay (arrows/field) on top of markers
     renderWindOverlay(filteredSpots);
 
     // Invalidate map size (needed for proper rendering)

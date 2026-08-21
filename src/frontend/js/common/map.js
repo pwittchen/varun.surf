@@ -327,12 +327,17 @@ export function buildWindyEmbedUrl(lat, lon) {
 }
 
 // ============================================================================
-// WIND OVERLAY (arrows + heatmap + particles)
+// WIND OVERLAY (arrows + interpolated field)
 // Renders wind visualization from the app's own per-spot data (no external
-// map embeds). Modes: 'off' | 'arrows' | 'heatmap' | 'particles'.
+// map embeds). Modes: 'off' | 'arrows' | 'field'.
+//
+// The 'field' mode draws one overlay in two passes: a colour wash for how hard
+// it blows, and animated particles on top for where it blows. Both interpolate
+// from the same samples over the same influence radius, so they always describe
+// the same patch of water.
 // ============================================================================
 
-export const WIND_OVERLAY_MODES = ['off', 'arrows', 'heatmap', 'particles'];
+export const WIND_OVERLAY_MODES = ['off', 'arrows', 'field'];
 
 // Upward-pointing arrow (north) used as the base glyph; rotated per wind direction.
 const WIND_ARROW_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2l6 9h-4v11h-4V11H6z"/></svg>';
@@ -353,6 +358,12 @@ const WIND_FIELD_STOPS = [
     { kt: 25, rgb: [245, 72, 74] },   // extreme (red)
     { kt: 35, rgb: [176, 20, 42] }    // very extreme (deep red)
 ];
+
+// How far a single spot influences the field, in screen pixels, and the
+// fraction of that radius held at full strength before it fades out. Shared by
+// the colour wash and the particles so the two passes cover the same ground.
+const WIND_FIELD_MAX_DIST = 70;
+const WIND_FIELD_FADE_FROM = 0.5;
 
 /**
  * Map a wind speed (knots) to an [r,g,b] colour. Below 5 kts the field is grey
@@ -782,10 +793,10 @@ export function createWindHeatLayer(spots, getConditions) {
     }
 
     const STEP = 8;              // sampling block size in px (divides 256 -> seamless across tiles)
-    const MAX_DIST = 70;         // influence radius in px
+    const MAX_DIST = WIND_FIELD_MAX_DIST;
     const MAX_DIST_SQ = MAX_DIST * MAX_DIST;
     const BASE_ALPHA = 0.6;
-    const FADE_FROM = MAX_DIST * 0.5; // full opacity until half the radius, then fade
+    const FADE_FROM = MAX_DIST * WIND_FIELD_FADE_FROM;
 
     const WindFieldLayer = L.GridLayer.extend({
         createTile: function(coords) {
@@ -878,22 +889,15 @@ export function createWindHeatLayer(spots, getConditions) {
 
 // ============================================================================
 // WIND PARTICLES
-// Animated streaklines drifting along an interpolated wind field, the way
-// Windfinder/Windy animate their maps. The field is the same inverse-distance
-// interpolation the heatmap uses, except direction is interpolated too (as a
+// The moving half of the field overlay: animated streaklines drifting along the
+// same inverse-distance interpolation the colour wash paints, the way
+// Windfinder/Windy animate their maps. Direction is interpolated too (as a
 // vector), so particles bend between neighbouring spots instead of jumping.
 // ============================================================================
 
 // Vector-field resolution in screen pixels. Small enough that trajectories look
 // smooth after bilinear sampling, coarse enough to rebuild in a few ms.
 const PARTICLE_GRID_STEP = 16;
-
-// How far a single spot influences the field, in screen pixels.
-const PARTICLE_MAX_DIST = 150;
-
-// Beyond this fraction of the influence radius the field fades out, so isolated
-// spots don't end in a hard circle of particles.
-const PARTICLE_FADE_FROM = 0.5;
 
 // Particles die where the field is this weak - i.e. far from every spot.
 const PARTICLE_MIN_FIELD = 0.05;
@@ -903,14 +907,14 @@ const PARTICLE_SPEED = 0.09;
 
 // Frames a particle lives before it respawns somewhere else. Randomised per
 // particle so the whole field never blinks at once.
-const PARTICLE_LIFE = 90;
+const PARTICLE_LIFE = 60;
 
 // Per-frame alpha erased from the canvas; controls how long the trails linger.
 const PARTICLE_TRAIL_FADE = 0.12;
 
 // Particle budget: scaled by the number of spots in view so a single visible
 // spot doesn't get a dense blob crammed into its influence radius.
-const PARTICLES_PER_SPOT = 45;
+const PARTICLES_PER_SPOT = 18;
 const PARTICLES_MIN = 40;
 const PARTICLES_MAX = 1400;
 
@@ -920,6 +924,31 @@ const PARTICLE_CANVAS_MARGIN = 96;
 
 // Frames advected for the single static frame drawn under reduced motion.
 const PARTICLE_STATIC_STEPS = 26;
+
+// How far the streak colour is pushed toward white. The wash underneath already
+// carries the speed as hue, so the particles only have to stay legible on top of
+// it - lightness, not hue, is what separates the two passes.
+const PARTICLE_LIGHTEN = 0.65;
+
+// Streak width, and the darker halo stroked underneath it so the light streaks
+// survive a pale base map as well as the satellite one.
+const PARTICLE_WIDTH = 1.4;
+const PARTICLE_HALO_WIDTH = 3;
+const PARTICLE_HALO_ALPHA = 0.35;
+
+/**
+ * Particle colour for a wind speed: the field palette lightened toward white.
+ * @param {number} kt - Wind speed in knots
+ * @returns {number[]} [r, g, b]
+ */
+function windParticleColor(kt) {
+    const rgb = windFieldColor(kt);
+    return [
+        Math.round(rgb[0] + (255 - rgb[0]) * PARTICLE_LIGHTEN),
+        Math.round(rgb[1] + (255 - rgb[1]) * PARTICLE_LIGHTEN),
+        Math.round(rgb[2] + (255 - rgb[2]) * PARTICLE_LIGHTEN)
+    ];
+}
 
 /**
  * Project wind samples into canvas pixel space and turn each into a velocity
@@ -942,8 +971,8 @@ function projectWindVectors(map, samples, size, margin) {
         const projected = map.latLngToContainerPoint([sample.lat, sample.lon]);
         const x = projected.x + margin;
         const y = projected.y + margin;
-        if (x < -PARTICLE_MAX_DIST || x > size.x + PARTICLE_MAX_DIST ||
-            y < -PARTICLE_MAX_DIST || y > size.y + PARTICLE_MAX_DIST) {
+        if (x < -WIND_FIELD_MAX_DIST || x > size.x + WIND_FIELD_MAX_DIST ||
+            y < -WIND_FIELD_MAX_DIST || y > size.y + WIND_FIELD_MAX_DIST) {
             return;
         }
 
@@ -979,8 +1008,8 @@ function buildWindField(points, size) {
     const u = new Float32Array(cols * rows);
     const v = new Float32Array(cols * rows);
     const strength = new Float32Array(cols * rows);
-    const maxDistSq = PARTICLE_MAX_DIST * PARTICLE_MAX_DIST;
-    const fadeSpan = PARTICLE_MAX_DIST * (1 - PARTICLE_FADE_FROM);
+    const maxDistSq = WIND_FIELD_MAX_DIST * WIND_FIELD_MAX_DIST;
+    const fadeSpan = WIND_FIELD_MAX_DIST * (1 - WIND_FIELD_FADE_FROM);
 
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
@@ -1017,7 +1046,7 @@ function buildWindField(points, size) {
             v[index] = vSum / weightSum;
 
             const nearest = Math.sqrt(nearestSq);
-            strength[index] = Math.max(0, Math.min(1, (PARTICLE_MAX_DIST - nearest) / fadeSpan));
+            strength[index] = Math.max(0, Math.min(1, (WIND_FIELD_MAX_DIST - nearest) / fadeSpan));
         }
     }
 
@@ -1075,7 +1104,7 @@ function sampleWindField(field, x, y, out) {
 function respawnParticle(points, particle) {
     const origin = points[Math.floor(Math.random() * points.length)];
     const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * PARTICLE_MAX_DIST;
+    const radius = Math.sqrt(Math.random()) * WIND_FIELD_MAX_DIST;
 
     particle.x = origin.x + Math.cos(angle) * radius;
     particle.y = origin.y + Math.sin(angle) * radius;
@@ -1086,8 +1115,10 @@ function respawnParticle(points, particle) {
  * Create an animated wind-particle layer for the given spots.
  *
  * Particles are advected through the interpolated wind field on a canvas that
- * covers the viewport, leaving fading trails coloured by wind strength - the
- * same palette as the heatmap, so both overlays read identically.
+ * covers the viewport, leaving fading trails. Meant to be stacked on top of
+ * createWindHeatLayer: both read the same samples over the same radius, and the
+ * streaks are drawn in a lightened version of the wash's own palette so they
+ * stay legible against it.
  *
  * The animation is frozen while the map is being panned or zoomed (the canvas
  * rides along with the overlay pane, keeping the frozen frame geographically
@@ -1241,7 +1272,6 @@ export function createWindParticleLayer(spots, getConditions) {
             const ctx = this._ctx;
             const sample = this._sampleOut || (this._sampleOut = [0, 0, 0]);
 
-            ctx.lineWidth = 1.4;
             ctx.lineCap = 'round';
 
             for (let i = 0; i < this._particles.length; i++) {
@@ -1259,15 +1289,27 @@ export function createWindParticleLayer(spots, getConditions) {
                 const y = particle.y + sample[1] * PARTICLE_SPEED * dt;
 
                 const speed = Math.sqrt(sample[0] * sample[0] + sample[1] * sample[1]);
-                const rgb = windFieldColor(speed);
+                const rgb = windParticleColor(speed);
                 // Fade with the field so particles dissolve at its edge rather
                 // than stopping dead on an invisible boundary.
-                const alpha = (0.35 + 0.5 * Math.min(1, sample[2])).toFixed(3);
+                const strength = Math.min(1, sample[2]);
+                const alpha = (0.35 + 0.5 * strength).toFixed(3);
+                const haloAlpha = (PARTICLE_HALO_ALPHA * strength).toFixed(3);
 
-                ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
+                // The same segment stroked twice: a dark halo first, the light
+                // streak over it. The halo is what keeps the streaks readable on
+                // a pale base map, where the colour wash alone is too light to
+                // separate them; on the satellite map it barely shows.
                 ctx.beginPath();
                 ctx.moveTo(particle.x, particle.y);
                 ctx.lineTo(x, y);
+
+                ctx.lineWidth = PARTICLE_HALO_WIDTH;
+                ctx.strokeStyle = `rgba(15,23,42,${haloAlpha})`;
+                ctx.stroke();
+
+                ctx.lineWidth = PARTICLE_WIDTH;
+                ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
                 ctx.stroke();
 
                 particle.x = x;
@@ -1291,9 +1333,9 @@ const WIND_OVERLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
 
 /**
  * Create a Leaflet control that toggles the wind overlay mode
- * (off -> arrows -> heatmap -> particles). Mirrors the layer switcher UI.
+ * (off -> arrows -> field). Mirrors the layer switcher UI.
  * @param {object} options - Configuration options
- * @param {function} options.getMode - Returns current mode ('off'|'arrows'|'heatmap'|'particles')
+ * @param {function} options.getMode - Returns current mode ('off'|'arrows'|'field')
  * @param {function} options.onModeChange - Callback with the new mode
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
@@ -1308,8 +1350,7 @@ export function createWindOverlayControl(options) {
     const modeOptions = [
         { value: 'off', translationKey: 'windOverlayOff' },
         { value: 'arrows', translationKey: 'windOverlayArrows' },
-        { value: 'heatmap', translationKey: 'windOverlayHeatmap' },
-        { value: 'particles', translationKey: 'windOverlayParticles' }
+        { value: 'field', translationKey: 'windOverlayField' }
     ];
 
     const WindOverlayControl = L.Control.extend({

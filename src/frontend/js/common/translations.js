@@ -223,9 +223,8 @@ export const translations = {
         windOverlayTooltip: "Wind overlay",
         windOverlayOff: "No wind overlay",
         windOverlayArrows: "Wind arrows",
-        windOverlayHeatmap: "Wind heatmap",
-        windOverlayParticles: "Wind particles",
-        windHeatmapDisclaimer: "Interpolated from spot data",
+        windOverlayField: "Wind field",
+        windOverlayDisclaimer: "Interpolated from spot data",
         mapClusterSpotsLabel: "spots - click to zoom in",
 
         // Spot info labels
@@ -546,9 +545,8 @@ export const translations = {
         windOverlayTooltip: "Nakładka wiatru",
         windOverlayOff: "Bez nakładki wiatru",
         windOverlayArrows: "Strzałki wiatru",
-        windOverlayHeatmap: "Mapa ciepła wiatru",
-        windOverlayParticles: "Cząsteczki wiatru",
-        windHeatmapDisclaimer: "Interpolacja z danych spotów",
+        windOverlayField: "Pole wiatru",
+        windOverlayDisclaimer: "Interpolacja z danych spotów",
         mapClusterSpotsLabel: "spotów - kliknij, aby przybliżyć",
 
         // Spot info labels
