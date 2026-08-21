@@ -2567,7 +2567,7 @@ let windOverlayLayer = null;
 let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
-let currentMapLayer = 'satellite'; // 'satellite' or 'osm'
+let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
 let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'heatmap'
 let windHeatmapDisclaimerEl = null;
 

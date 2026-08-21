@@ -10,30 +10,40 @@ import * as weather from './weather.js';
 // TILE LAYER CONFIGURATIONS
 // ============================================================================
 
+const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+const TILE_CONFIGS = {
+    satellite: {
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        options: {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            maxZoom: 19
+        }
+    },
+    osm: {
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        options: {
+            attribution: OSM_ATTRIBUTION,
+            maxZoom: 19
+        }
+    },
+    osmDark: {
+        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+        options: {
+            attribution: `${OSM_ATTRIBUTION} &copy; <a href="https://carto.com/attributions">CARTO</a>`,
+            subdomains: 'abcd',
+            maxZoom: 20
+        }
+    }
+};
+
 /**
  * Get tile layer configuration for a given layer type
- * @param {string} layerType - 'satellite' or 'osm'
+ * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
  * @returns {object} Configuration object with url and options
  */
 export function getMapTileConfig(layerType) {
-    if (layerType === 'satellite') {
-        return {
-            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-            options: {
-                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-                maxZoom: 19
-            }
-        };
-    } else {
-        // OSM default layer
-        return {
-            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            options: {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19
-            }
-        };
-    }
+    return TILE_CONFIGS[layerType] || TILE_CONFIGS.osm;
 }
 
 // ============================================================================
@@ -42,7 +52,7 @@ export function getMapTileConfig(layerType) {
 
 /**
  * Create a tile layer for a Leaflet map
- * @param {string} layerType - 'satellite' or 'osm'
+ * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
  * @returns {L.TileLayer} Leaflet tile layer
  */
 export function createTileLayer(layerType) {
@@ -54,7 +64,7 @@ export function createTileLayer(layerType) {
  * Update the tile layer on a map
  * @param {L.Map} map - Leaflet map instance
  * @param {L.TileLayer|null} currentTileLayer - Current tile layer (will be removed)
- * @param {string} layerType - 'satellite' or 'osm'
+ * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
  * @returns {L.TileLayer} The new tile layer that was added
  */
 export function updateTileLayer(map, currentTileLayer, layerType) {
@@ -128,7 +138,7 @@ const LAYER_SWITCHER_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 /**
  * Create a Leaflet layer switcher control
  * @param {object} options - Configuration options
- * @param {function} options.getCurrentLayer - Function that returns current layer type ('satellite' or 'osm')
+ * @param {function} options.getCurrentLayer - Function that returns current layer type ('satellite', 'osm' or 'osmDark')
  * @param {function} options.onLayerChange - Callback when layer is changed, receives new layer type
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
@@ -160,8 +170,9 @@ export function createLayerSwitcher(options) {
 
             // Create dropdown options with translation keys
             const layerOptions = [
+                { value: 'satellite', translationKey: 'mapLayerSatellite' },
                 { value: 'osm', translationKey: 'mapLayerOsm' },
-                { value: 'satellite', translationKey: 'mapLayerSatellite' }
+                { value: 'osmDark', translationKey: 'mapLayerOsmDark' }
             ];
 
             layerOptions.forEach(option => {
