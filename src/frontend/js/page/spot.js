@@ -2416,13 +2416,14 @@ function createSpotCard(spot) {
     }
 
     // ========================================================================
-    // BUILD AI ANALYSIS CARD (between the map and the forecast)
+    // BUILD AI ANALYSIS CARD (desktop only, between the map and the forecast)
+    // On mobile the analysis stays available through the AI button and modal.
     // ========================================================================
 
     const aiAnalysisText = getAiAnalysisForCurrentLanguage(spot);
 
     let aiAnalysisCardHtml = '';
-    if (aiAnalysisText) {
+    if (isDesktopView && aiAnalysisText) {
         aiAnalysisCardHtml = `
                 <div class="ai-analysis-card">
                     <div class="info-label">${translations.t('aiAnalysisTitle')}</div>
