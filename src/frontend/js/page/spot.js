@@ -57,7 +57,7 @@ let selectedDataSource = 'forecast';
 // ============================================================================
 const OSM_MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m9.553,14.397c.675.66,1.561.99,2.447.99s1.772-.33,2.447-.99l2.502-2.448c1.322-1.322,2.051-3.08,2.051-4.95s-.729-3.627-2.051-4.95c-1.321-1.322-3.079-2.05-4.949-2.05s-3.628.728-4.95,2.05c-2.729,2.729-2.729,7.17.008,9.907l2.495,2.44Zm-1.089-10.933c.944-.944,2.2-1.464,3.536-1.464s2.591.52,3.535,1.464,1.465,2.2,1.465,3.536-.521,2.591-1.457,3.528l-2.494,2.44c-.578.564-1.52.564-2.098,0l-2.487-2.432c-1.949-1.95-1.949-5.122,0-7.071Zm.536,3.526c0-1.657,1.343-3,3-3s3,1.343,3,3-1.343,3-3,3-3-1.343-3-3Zm15,9.777c0,.352-.185.677-.485.857l-9.861,5.917c-.51.306-1.082.459-1.653.459s-1.144-.153-1.653-.459L.485,17.625c-.301-.181-.485-.506-.485-.857s.185-.677.485-.857l4.229-2.537c.475-.285,1.089-.131,1.372.343.284.474.131,1.088-.343,1.372l-2.8,1.68,8.433,5.06c.385.23.863.23,1.248,0l8.433-5.06-2.8-1.68c-.474-.284-.627-.898-.343-1.372s.897-.628,1.372-.343l4.229,2.537c.301.181.485.506.485.857Z"/></svg>`;
 const PHOTO_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/><path fill="currentColor" d="M16,10.5A3.5,3.5,0,1,0,12.5,7,3.5,3.5,0,0,0,16,10.5Zm0-5A1.5,1.5,0,1,1,14.5,7,1.5,1.5,0,0,1,16,5.5Z"/></svg>`;
-const WINDY_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.5,13h-5a1.5,1.5,0,0,1,0-3h5A1.5,1.5,0,0,1,6.5,13Z"/><path fill="currentColor" d="M18.5,13h-7a1.5,1.5,0,0,1,0-3h7A2.5,2.5,0,0,0,21,7.468a2.031,2.031,0,0,0-1.656-1.941A2,2,0,0,0,17,7.5,1.5,1.5,0,0,1,15.5,9c-2.767-.318-1.178-4.225.26-5.308A5,5,0,0,1,24,7.431,5.5,5.5,0,0,1,18.5,13Z"/><path fill="currentColor" d="M7,8H1.5a1.5,1.5,0,0,1,0-3H7a1.069,1.069,0,0,0,1.075-.777.982.982,0,0,0-.208-.818,1.158,1.158,0,0,0-1.681.088A1.5,1.5,0,1,1,3.859,1.6a4.125,4.125,0,0,1,6.307-.116,3.989,3.989,0,0,1,.858,3.275A4.031,4.031,0,0,1,7,8Z"/><path fill="currentColor" d="M15.585,24.008a4.832,4.832,0,0,1-3.709-1.752,1.5,1.5,0,0,1,2.323-1.9,1.736,1.736,0,0,0,2.542.11,1.508,1.508,0,0,0,.322-1.256A1.606,1.606,0,0,0,15.438,18H1.5a1.5,1.5,0,0,1,0-3H15.438a4.577,4.577,0,0,1,4.577,3.678,4.506,4.506,0,0,1-4.43,5.33Z"/></svg>`;
+const WIND_MAP_TAB_ICON = `<svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.5,13h-5a1.5,1.5,0,0,1,0-3h5A1.5,1.5,0,0,1,6.5,13Z"/><path fill="currentColor" d="M18.5,13h-7a1.5,1.5,0,0,1,0-3h7A2.5,2.5,0,0,0,21,7.468a2.031,2.031,0,0,0-1.656-1.941A2,2,0,0,0,17,7.5,1.5,1.5,0,0,1,15.5,9c-2.767-.318-1.178-4.225.26-5.308A5,5,0,0,1,24,7.431,5.5,5.5,0,0,1,18.5,13Z"/><path fill="currentColor" d="M7,8H1.5a1.5,1.5,0,0,1,0-3H7a1.069,1.069,0,0,0,1.075-.777.982.982,0,0,0-.208-.818,1.158,1.158,0,0,0-1.681.088A1.5,1.5,0,1,1,3.859,1.6a4.125,4.125,0,0,1,6.307-.116,3.989,3.989,0,0,1,.858,3.275A4.031,4.031,0,0,1,7,8Z"/><path fill="currentColor" d="M15.585,24.008a4.832,4.832,0,0,1-3.709-1.752,1.5,1.5,0,0,1,2.323-1.9,1.736,1.736,0,0,0,2.542.11,1.508,1.508,0,0,0,.322-1.256A1.606,1.606,0,0,0,15.438,18H1.5a1.5,1.5,0,0,1,0-3H15.438a4.577,4.577,0,0,1,4.577,3.678,4.506,4.506,0,0,1-4.43,5.33Z"/></svg>`;
 
 // ============================================================================
 // MODEL SELECTION HELPERS
@@ -1721,7 +1721,165 @@ function initOsmSatelliteMap() {
         .openPopup();
 }
 
-// Setup media (OSM map/photo/windy) tabs in desktop spot view
+// ============================================================================
+// WIND MAP
+// The wind tab renders the same interpolated field as the main map - a colour
+// wash for how hard it blows plus animated particles for where - built from the
+// app's own spot readings rather than an embedded third-party map.
+// ============================================================================
+
+let spotWindMap = null;
+let windMapTileLayer = null;
+let currentWindMapLayer = 'satellite';
+
+// Which media tab the visitor picked, so a card rebuild restores it
+let selectedMediaTab = 'osm';
+
+// Frames whose live Leaflet node survives a card rebuild (see displaySpot)
+const PRESERVED_MAP_FRAMES = ['.spot-embedded-map-frame', '.spot-wind-map-frame'];
+
+// Neighbouring spots, fetched once the wind tab is first opened. The field
+// interpolates between spots, so the current spot alone would only ever paint a
+// single blob of its own reading.
+let windMapSpots = null;
+let windMapSpotsRequest = null;
+
+// Zoomed further out than the satellite tab: the field's influence radius is
+// measured in screen pixels, so neighbouring spots have to be close enough on
+// screen to blend into a continuous field.
+const WIND_MAP_ZOOM = 8;
+
+function releaseDetachedWindMap() {
+    if (!spotWindMap) {
+        return;
+    }
+
+    const container = spotWindMap.getContainer();
+    if (container && container.isConnected) {
+        return;
+    }
+
+    spotWindMap.remove();
+    spotWindMap = null;
+    windMapTileLayer = null;
+}
+
+/**
+ * Load every spot once, so the wind field has neighbours to interpolate between.
+ * Falls back to the current spot alone when the request fails - a lone blob is
+ * still better than an empty map.
+ * @returns {Promise<Array>} Spots to build the field from
+ */
+function loadWindMapSpots() {
+    if (windMapSpots) {
+        return Promise.resolve(windMapSpots);
+    }
+    if (!windMapSpotsRequest) {
+        windMapSpotsRequest = api.fetchAllSpots()
+            .then(spots => {
+                windMapSpots = Array.isArray(spots) && spots.length > 0 ? spots : [currentSpot];
+                return windMapSpots;
+            })
+            .catch(() => {
+                windMapSpotsRequest = null;
+                return [currentSpot];
+            });
+    }
+    return windMapSpotsRequest;
+}
+
+function buildWindMapPopup(spot) {
+    const conditions = weather.getWindConditions(spot);
+    const windDetails = conditions
+        ? `<div class="map-popup-wind ${weather.getWindClass(conditions.wind)}">`
+            + `<span class="wind-arrow">${weather.getWindArrow(conditions.direction)}</span>`
+            + `<span class="map-popup-direction">${conditions.direction || '-'}</span>`
+            + `<span class="map-popup-speed">${conditions.wind} kts - ${Number.isFinite(conditions.gusts) ? `${conditions.gusts} kts` : '-'}</span>`
+            + `</div>`
+        : '';
+
+    return `
+        <div class="map-popup">
+            <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
+            ${windDetails}
+        </div>
+    `;
+}
+
+function initSpotWindMap() {
+    const mapContainer = document.getElementById('spot-wind-map');
+    if (!mapContainer || !currentSpot || !currentSpot.coordinates) {
+        return;
+    }
+
+    if (spotWindMap) {
+        spotWindMap.remove();
+        spotWindMap = null;
+        windMapTileLayer = null;
+    }
+
+    const { lat, lon } = currentSpot.coordinates;
+    spotWindMap = L.map('spot-wind-map').setView([lat, lon], WIND_MAP_ZOOM);
+
+    windMapTileLayer = map.updateTileLayer(spotWindMap, windMapTileLayer, currentWindMapLayer);
+
+    const layerSwitcher = map.createLayerSwitcher({
+        getCurrentLayer: () => currentWindMapLayer,
+        onLayerChange: (newLayer) => {
+            currentWindMapLayer = newLayer;
+            windMapTileLayer = map.updateTileLayer(spotWindMap, windMapTileLayer, currentWindMapLayer);
+        }
+    });
+    layerSwitcher.addTo(spotWindMap);
+
+    // Containers filled in once the spots arrive; kept for the map's lifetime so
+    // a rebuild can never strand a layer on the map.
+    const fieldLayer = L.layerGroup().addTo(spotWindMap);
+    const neighbourLayer = L.layerGroup().addTo(spotWindMap);
+
+    // This spot's own marker sits above the field, with its popup open so the
+    // spot the page is about is named among its neighbours.
+    const spotMarker = L.marker([lat, lon], { icon: map.createMarkerIcon('custom-marker-red') })
+        .addTo(spotWindMap)
+        .bindPopup(`<b>${currentSpot.name}</b>`)
+        .openPopup();
+
+    // Recentering is how you get back to this spot after roaming the field, so
+    // the crosshair reopens the popup as well - otherwise you land on the spot
+    // without anything marking which of the markers it is.
+    const resetViewControl = map.createResetViewControl({
+        lat,
+        lon,
+        zoom: WIND_MAP_ZOOM,
+        onReset: () => spotMarker.openPopup()
+    });
+    resetViewControl.addTo(spotWindMap);
+
+    const builtFor = spotWindMap;
+
+    loadWindMapSpots().then(spots => {
+        // The tab may have been rebuilt (or the spot changed) while we waited.
+        if (spotWindMap !== builtFor) {
+            return;
+        }
+
+        fieldLayer.addLayer(map.createWindHeatLayer(spots, weather.getWindConditions));
+        fieldLayer.addLayer(map.createWindParticleLayer(spots, weather.getWindConditions));
+
+        // Neighbouring spots explain the shape of the field; clustering happens
+        // in screen pixels, so they are rebuilt whenever the zoom changes.
+        const renderNeighbours = () => {
+            neighbourLayer.clearLayers();
+            neighbourLayer.addLayer(
+                map.createSpotMarkerLayer(spotWindMap, spots, weather.getWindConditions, buildWindMapPopup)
+            );
+        };
+        renderNeighbours();
+        spotWindMap.on('zoomend', renderNeighbours);
+    });
+}
+
+// Setup media (OSM map/photo/wind map) tabs in desktop spot view
 function setupSpotMediaTabs() {
     const tabButtons = Array.from(document.querySelectorAll('.spot-media-tab'));
     if (tabButtons.length === 0) {
@@ -1729,20 +1887,38 @@ function setupSpotMediaTabs() {
     }
 
     const osmPanel = document.querySelector('.spot-media-panel-osm');
-    const windyPanel = document.querySelector('.spot-media-panel-windy');
+    const windPanel = document.querySelector('.spot-media-panel-wind');
     const photoPanel = document.querySelector('.spot-media-panel-photo');
 
-    // At minimum we need OSM and windy panels
-    if (!osmPanel || !windyPanel) {
+    // At minimum we need the OSM and wind map panels
+    if (!osmPanel || !windPanel) {
         return;
     }
 
-    // Initialize OSM map on page load if it's the active panel
-    if (osmPanel.classList.contains('active') && !osmSatelliteMap) {
-        // Small delay to ensure container is visible
-        setTimeout(() => {
-            initOsmSatelliteMap();
-        }, 100);
+    // Build (or resize) the map behind whichever panel is showing. Both maps are
+    // created lazily on first view - the wind map's all-spots fetch never runs
+    // for visitors who don't open its tab. The delay lets the panel become
+    // visible first, so Leaflet measures a container with a real size.
+    const activateMedia = (media) => {
+        if (media === 'osm') {
+            if (osmSatelliteMap) {
+                osmSatelliteMap.invalidateSize();
+            } else {
+                setTimeout(() => initOsmSatelliteMap(), 100);
+            }
+        } else if (media === 'wind') {
+            if (spotWindMap) {
+                spotWindMap.invalidateSize();
+            } else {
+                setTimeout(() => initSpotWindMap(), 100);
+            }
+        }
+    };
+
+    // The card is rebuilt with the remembered tab already marked active
+    const activeButton = tabButtons.find(tab => tab.classList.contains('active'));
+    if (activeButton) {
+        activateMedia(activeButton.dataset.media);
     }
 
     tabButtons.forEach(button => {
@@ -1752,24 +1928,16 @@ function setupSpotMediaTabs() {
             }
 
             const targetMedia = button.dataset.media;
+            selectedMediaTab = targetMedia;
             tabButtons.forEach(tab => tab.classList.toggle('active', tab === button));
 
             osmPanel.classList.toggle('active', targetMedia === 'osm');
-            // Initialize OSM satellite map when the tab is activated
-            if (targetMedia === 'osm' && !osmSatelliteMap) {
-                // Small delay to ensure container is visible
-                setTimeout(() => {
-                    initOsmSatelliteMap();
-                }, 100);
-            } else if (targetMedia === 'osm' && osmSatelliteMap) {
-                // Invalidate map size if already initialized
-                osmSatelliteMap.invalidateSize();
-            }
-
-            windyPanel.classList.toggle('active', targetMedia === 'windy');
+            windPanel.classList.toggle('active', targetMedia === 'wind');
             if (photoPanel) {
                 photoPanel.classList.toggle('active', targetMedia === 'photo');
             }
+
+            activateMedia(targetMedia);
         });
     });
 }
@@ -2182,11 +2350,11 @@ function createSpotCard(spot) {
 
     // Google Maps removed - using OSM satellite map instead
 
-    // Generate Windy.com iframe
-    let windyMapIframe = '';
+    // Wind map container - a Leaflet map carrying the interpolated wind field,
+    // built from the app's own data instead of an embedded third-party map
+    let windMapContainer = '';
     if (hasCoordinates) {
-        const windyUrl = map.buildWindyEmbedUrl(spot.coordinates.lat, spot.coordinates.lon);
-        windyMapIframe = `<iframe src="${windyUrl}" width="100%" height="360" frameborder="0"></iframe>`;
+        windMapContainer = `<div id="spot-wind-map" style="width: 100%; height: 360px; border-radius: 8px;"></div>`;
     }
 
     // Generate OpenStreetMap with ESRI satellite tiles (custom Leaflet map)
@@ -2196,66 +2364,51 @@ function createSpotCard(spot) {
     }
 
     let embeddedMapHtml = '';
-    if (hasCoordinates && hasSpotPhoto) {
+    if (hasCoordinates) {
+        // The card is rebuilt on every background refresh (once a minute), so the
+        // tab the visitor is actually looking at has to be restored - otherwise
+        // the animated wind map would throw them back to the satellite tab.
+        const mediaTabs = [
+            {
+                media: 'osm',
+                icon: OSM_MAP_TAB_ICON,
+                label: translations.t('osmMapTabLabel'),
+                panel: `<div class="spot-embedded-map"><div class="spot-embedded-map-frame">${osmMapIframe}</div></div>`
+            },
+            {
+                media: 'wind',
+                icon: WIND_MAP_TAB_ICON,
+                label: translations.t('windMapTabLabel'),
+                panel: `<div class="spot-wind-map-frame">${windMapContainer}</div>`
+            }
+        ];
+
+        if (hasSpotPhoto) {
+            mediaTabs.push({
+                media: 'photo',
+                icon: PHOTO_TAB_ICON,
+                label: translations.t('photoTabLabel'),
+                panel: `<div class="spot-photo-frame"><img src="${spotPhotoUrl}" alt="${spot.name} photo" loading="lazy" /></div>`
+            });
+        }
+
+        // A remembered photo tab is meaningless for a spot without a photo
+        const activeMedia = mediaTabs.some(tab => tab.media === selectedMediaTab) ? selectedMediaTab : 'osm';
+
         embeddedMapHtml = `
                 <div class="spot-media-switcher">
                     <div class="spot-media-tabs">
-                        <button type="button" class="spot-media-tab active" data-media="osm">
-                            ${OSM_MAP_TAB_ICON}
-                            <span>${translations.t('osmMapTabLabel')}</span>
-                        </button>
-                        <button type="button" class="spot-media-tab" data-media="windy">
-                            ${WINDY_TAB_ICON}
-                            <span>${translations.t('windyMapTabLabel')}</span>
-                        </button>
-                        <button type="button" class="spot-media-tab" data-media="photo">
-                            ${PHOTO_TAB_ICON}
-                            <span>${translations.t('photoTabLabel')}</span>
-                        </button>
+                        ${mediaTabs.map(tab => `
+                        <button type="button" class="spot-media-tab${tab.media === activeMedia ? ' active' : ''}" data-media="${tab.media}">
+                            ${tab.icon}
+                            <span>${tab.label}</span>
+                        </button>`).join('')}
                     </div>
                     <div class="spot-media-panels">
-                        <div class="spot-media-panel spot-media-panel-osm active">
-                            <div class="spot-embedded-map">
-                                <div class="spot-embedded-map-frame">${osmMapIframe}</div>
-                            </div>
-                        </div>
-                        <div class="spot-media-panel spot-media-panel-windy">
-                            <div class="spot-windy-map">
-                                ${windyMapIframe}
-                            </div>
-                        </div>
-                        <div class="spot-media-panel spot-media-panel-photo">
-                            <div class="spot-photo-frame">
-                                <img src="${spotPhotoUrl}" alt="${spot.name} photo" loading="lazy" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-    } else if (hasCoordinates) {
-        embeddedMapHtml = `
-                <div class="spot-media-switcher">
-                    <div class="spot-media-tabs">
-                        <button type="button" class="spot-media-tab active" data-media="osm">
-                            ${OSM_MAP_TAB_ICON}
-                            <span>${translations.t('osmMapTabLabel')}</span>
-                        </button>
-                        <button type="button" class="spot-media-tab" data-media="windy">
-                            ${WINDY_TAB_ICON}
-                            <span>${translations.t('windyMapTabLabel')}</span>
-                        </button>
-                    </div>
-                    <div class="spot-media-panels">
-                        <div class="spot-media-panel spot-media-panel-osm active">
-                            <div class="spot-embedded-map">
-                                <div class="spot-embedded-map-frame">${osmMapIframe}</div>
-                            </div>
-                        </div>
-                        <div class="spot-media-panel spot-media-panel-windy">
-                            <div class="spot-windy-map">
-                                ${windyMapIframe}
-                            </div>
-                        </div>
+                        ${mediaTabs.map(tab => `
+                        <div class="spot-media-panel spot-media-panel-${tab.media}${tab.media === activeMedia ? ' active' : ''}">
+                            ${tab.panel}
+                        </div>`).join('')}
                     </div>
                 </div>
             `;
@@ -2457,35 +2610,39 @@ function displaySpot(spot) {
     currentErrorText = '';
     currentLoadingKey = null;
 
-    // Preserve embedded map iframe to avoid reload
-    let preservedMapNode = null;
+    // Carry the live map nodes over to the rebuilt card instead of throwing them
+    // away: the background refresh rebuilds the card once a minute, which would
+    // otherwise reset each map's view - and the wind map's animation with it.
     const shouldPreserveMap = previousSpot
         && previousSpot.coordinates
         && spot.coordinates
         && previousSpot.coordinates.lat === spot.coordinates.lat
         && previousSpot.coordinates.lon === spot.coordinates.lon;
 
+    const preservedMapNodes = new Map();
     if (shouldPreserveMap) {
-        const currentMapFrame = document.querySelector('.spot-embedded-map-frame');
-        if (currentMapFrame && currentMapFrame.firstElementChild) {
-            preservedMapNode = currentMapFrame.firstElementChild;
-        }
+        PRESERVED_MAP_FRAMES.forEach(selector => {
+            const frame = document.querySelector(selector);
+            if (frame && frame.firstElementChild) {
+                preservedMapNodes.set(selector, frame.firstElementChild);
+            }
+        });
     }
 
     if (spot) {
         spotContainer.innerHTML = createSpotCard(spot);
 
-        // Restore preserved map iframe
-        if (shouldPreserveMap && preservedMapNode) {
-            const newMapFrame = document.querySelector('.spot-embedded-map-frame');
-            if (newMapFrame) {
-                newMapFrame.innerHTML = '';
-                newMapFrame.appendChild(preservedMapNode);
+        preservedMapNodes.forEach((node, selector) => {
+            const frame = document.querySelector(selector);
+            if (frame) {
+                frame.innerHTML = '';
+                frame.appendChild(node);
             }
-        }
+        });
 
-        // The rebuilt card may carry a brand new (or no) map container
+        // The rebuilt card may carry brand new (or no) map containers
         releaseDetachedSpotMap();
+        releaseDetachedWindMap();
 
         document.title = `${spot.name} - VARUN.SURF`;
 

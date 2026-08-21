@@ -2793,11 +2793,9 @@ body.index-page .header-title {
     border-radius: var(--radius-lg);
 }
 
-.spot-windy-map iframe {
-    width: 100% !important;
-    height: clamp(260px, 40vw, 360px);
-    border: 0;
+.spot-wind-map-frame {
     border-radius: var(--radius-lg);
+    overflow: hidden;
 }
 
 .spot-media-panel-map .spot-embedded-map {
@@ -5567,6 +5565,15 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* Leaflet layer switcher control - uses fixed light colors for map UI */
+/* Lift the bottom-left controls above the attribution. In a narrow map (the
+   spot page tabs) the attribution wraps to two full-width lines that reach
+   across the bottom-left corner; it lives in the opposite corner container, so
+   only raising that container clears it - a z-index on the control itself
+   cannot cross the two stacking contexts. */
+.leaflet-bottom.leaflet-left {
+    z-index: 1001;
+}
+
 .leaflet-control-layer-switcher {
     background: var(--leaflet-bg);
     border: 2px solid var(--leaflet-border);

@@ -2,6 +2,8 @@
 // WEATHER DISPLAY UTILITIES
 // ============================================================================
 
+import * as date from './date.js';
+
 /**
  * Get wind direction arrow character based on a cardinal direction.
  * @param {string} direction - Cardinal direction (N, NE, E, SE, S, SW, W, NW)
@@ -73,4 +75,101 @@ export function getWindClassSimple(wind, gusts) {
     if (avgWind >= 12 && avgWind < 18) return 'moderate';
     if (avgWind >= 18 && avgWind <= 25) return 'strong';
     return 'extreme';
+}
+
+// ============================================================================
+// CURRENT CONDITIONS
+// ============================================================================
+
+/**
+ * Coerce an API value to a finite number.
+ * @param {*} value - Raw value
+ * @returns {number|null} The number, or null when it isn't one
+ */
+export function toNumber(value) {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value;
+    }
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
+/**
+ * Pick the forecast entry that best stands in for "right now": the hourly entry
+ * closest to the current time, falling back to today's daily entry.
+ * @param {object} spot - Spot object
+ * @returns {object|null} Forecast entry, or null when the spot has none
+ */
+function selectForecastForConditions(spot) {
+    if (!spot) {
+        return null;
+    }
+
+    if (Array.isArray(spot.forecastHourly) && spot.forecastHourly.length > 0) {
+        const closest = date.findClosestForecast(spot.forecastHourly);
+        if (closest) {
+            return closest;
+        }
+    }
+
+    if (Array.isArray(spot.forecast) && spot.forecast.length > 0) {
+        const todayForecast = spot.forecast.find(forecast => typeof forecast.date === 'string' && forecast.date.toLowerCase() === 'today');
+        return todayForecast || spot.forecast[0];
+    }
+
+    return null;
+}
+
+/**
+ * Current wind conditions for a spot: the live station reading when the spot has
+ * one, otherwise the forecast entry closest to now. `isCurrent` says which of the
+ * two it is, and `forecastDate` carries the raw date of the forecast fallback so
+ * callers can label it however they format dates.
+ *
+ * @param {object} spot - Spot object
+ * @returns {{wind:number, gusts:number, direction:string, temp:number|null,
+ *   precipitation:number|null, isCurrent:boolean, forecastDate:string|null}|null}
+ */
+export function getWindConditions(spot) {
+    if (!spot) {
+        return null;
+    }
+
+    const current = spot.currentConditions;
+    if (current) {
+        const wind = toNumber(current.wind);
+        const gusts = toNumber(current.gusts);
+        if (wind !== null && gusts !== null) {
+            return {
+                wind,
+                gusts,
+                direction: current.direction || '',
+                temp: toNumber(current.temp),
+                precipitation: null,
+                isCurrent: true,
+                forecastDate: null
+            };
+        }
+    }
+
+    const forecast = selectForecastForConditions(spot);
+    if (!forecast) {
+        return null;
+    }
+
+    const wind = toNumber(forecast.wind);
+    const gusts = toNumber(forecast.gusts);
+    if (wind === null || gusts === null) {
+        return null;
+    }
+
+    return {
+        wind,
+        gusts,
+        direction: forecast.direction || '',
+        temp: toNumber(forecast.temp),
+        precipitation: toNumber(forecast.precipitation),
+        isCurrent: false,
+        forecastDate: forecast.date || null
+    };
 }

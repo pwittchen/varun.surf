@@ -240,6 +240,7 @@ const RESET_VIEW_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
  * @param {number} options.lon - Spot longitude
  * @param {number} [options.zoom=13] - Zoom level to reset to
  * @param {string} [options.position='bottomright'] - Control position
+ * @param {function} [options.onReset] - Called with the map after recentering
  * @returns {L.Control} Leaflet control instance
  */
 export function createResetViewControl(options) {
@@ -247,7 +248,8 @@ export function createResetViewControl(options) {
         lat,
         lon,
         zoom = 13,
-        position = 'bottomright'
+        position = 'bottomright',
+        onReset = null
     } = options;
 
     const ResetViewControl = L.Control.extend({
@@ -266,6 +268,9 @@ export function createResetViewControl(options) {
             L.DomEvent.on(button, 'click', function(e) {
                 L.DomEvent.stopPropagation(e);
                 map.setView([lat, lon], zoom);
+                if (typeof onReset === 'function') {
+                    onReset(map);
+                }
             });
 
             L.DomEvent.disableClickPropagation(container);
@@ -310,20 +315,6 @@ export function createMarkerIcon(colorClass = '') {
         iconSize: [18, 18],
         iconAnchor: [9, 9]
     });
-}
-
-// ============================================================================
-// URL BUILDERS
-// ============================================================================
-
-/**
- * Build a Windy.com embed URL for a location
- * @param {number} lat - Latitude
- * @param {number} lon - Longitude
- * @returns {string} Windy embed URL
- */
-export function buildWindyEmbedUrl(lat, lon) {
-    return `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=kt&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=${lat}&lon=${lon}&message=true`;
 }
 
 // ============================================================================

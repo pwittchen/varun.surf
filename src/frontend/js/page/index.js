@@ -663,75 +663,20 @@ function formatForecastDateLabel(rawDate) {
     return `${formattedDay}. ${translatedDay} ${timeToken}`.trim();
 }
 
-function toNumber(value) {
-    if (typeof value === 'number' && Number.isFinite(value)) {
-        return value;
-    }
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
-}
+const toNumber = weather.toNumber;
 
-function selectForecastForConditions(spot) {
-    if (!spot) {
-        return null;
-    }
-
-    if (Array.isArray(spot.forecastHourly) && spot.forecastHourly.length > 0) {
-        const closest = date.findClosestForecast(spot.forecastHourly);
-        if (closest) {
-            return closest;
-        }
-    }
-
-    if (Array.isArray(spot.forecast) && spot.forecast.length > 0) {
-        const todayForecast = spot.forecast.find(forecast => typeof forecast.date === 'string' && forecast.date.toLowerCase() === 'today');
-        return todayForecast || spot.forecast[0];
-    }
-
-    return null;
-}
-
+// The shared reading plus a label formatted the way this page shows dates.
 function getSpotConditions(spot) {
-    if (!spot) {
-        return null;
-    }
-
-    const current = spot.currentConditions;
-    if (current) {
-        const wind = toNumber(current.wind);
-        const gusts = toNumber(current.gusts);
-        if (wind !== null && gusts !== null) {
-            return {
-                wind,
-                gusts,
-                direction: current.direction || '',
-                temp: toNumber(current.temp),
-                precipitation: null,
-                label: translations.t('nowLabel'),
-                isCurrent: true
-            };
-        }
-    }
-
-    const forecast = selectForecastForConditions(spot);
-    if (!forecast) {
-        return null;
-    }
-
-    const wind = toNumber(forecast.wind);
-    const gusts = toNumber(forecast.gusts);
-    if (wind === null || gusts === null) {
+    const conditions = weather.getWindConditions(spot);
+    if (!conditions) {
         return null;
     }
 
     return {
-        wind,
-        gusts,
-        direction: forecast.direction || '',
-        temp: toNumber(forecast.temp),
-        precipitation: toNumber(forecast.precipitation),
-        label: formatForecastDateLabel(forecast.date),
-        isCurrent: false
+        ...conditions,
+        label: conditions.isCurrent
+            ? translations.t('nowLabel')
+            : formatForecastDateLabel(conditions.forecastDate)
     };
 }
 
