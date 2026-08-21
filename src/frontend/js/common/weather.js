@@ -173,3 +173,90 @@ export function getWindConditions(spot) {
         forecastDate: forecast.date || null
     };
 }
+
+// ============================================================================
+// WIND TIMELINE
+// The maps can be stepped hour by hour through the coming days, so conditions
+// have to be resolvable for a point in time rather than only for "right now".
+// Step 0 is now (the live reading where a spot has one) and step N is the Nth
+// hour of the timeline served by /api/v1/wind - one grid of hours shared by
+// every spot, so a step is a single index into all of them at once.
+// ============================================================================
+
+// Order the timeline's direction indices refer to (mirrors WindTimeline.DIRECTIONS)
+const TIMELINE_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+
+/**
+ * Index a wind timeline payload by spot id, so conditions can be looked up per
+ * spot and step without scanning the whole payload on every repaint.
+ * @param {{hours: Array<string>, spots: Array<object>}} timeline - Payload from /api/v1/wind
+ * @returns {{hours: Array<string>, bySpotId: Map<number, object>}} Indexed timeline
+ */
+export function indexWindTimeline(timeline) {
+    const hours = timeline && Array.isArray(timeline.hours) ? timeline.hours : [];
+    const bySpotId = new Map();
+
+    if (timeline && Array.isArray(timeline.spots)) {
+        timeline.spots.forEach(entry => {
+            if (entry && Number.isFinite(entry.wgId)) {
+                bySpotId.set(entry.wgId, entry);
+            }
+        });
+    }
+
+    return { hours, bySpotId };
+}
+
+/**
+ * Wind conditions for a spot at one hour of the timeline.
+ * @param {object} spot - Spot object
+ * @param {number} hourIndex - 0-based index into the timeline's hours
+ * @param {object} index - Indexed timeline from indexWindTimeline
+ * @returns {{wind:number, gusts:number, direction:string, temp:number|null,
+ *   precipitation:number|null, isCurrent:boolean, forecastDate:string|null}|null}
+ */
+export function getTimelineConditions(spot, hourIndex, index) {
+    if (!spot || !index) {
+        return null;
+    }
+
+    const entry = index.bySpotId.get(spot.wgId);
+    if (!entry || !Array.isArray(entry.wind)) {
+        return null;
+    }
+
+    const wind = toNumber(entry.wind[hourIndex]);
+    if (wind === null) {
+        return null;
+    }
+
+    const gusts = toNumber(Array.isArray(entry.gusts) ? entry.gusts[hourIndex] : null);
+    const direction = Array.isArray(entry.direction) ? entry.direction[hourIndex] : null;
+
+    return {
+        wind,
+        // A spot without a gust reading still has wind to draw; the arrows and the
+        // field only look at the wind speed, and the popup shows a dash for gusts.
+        gusts: gusts === null ? NaN : gusts,
+        direction: TIMELINE_DIRECTIONS[direction] || '',
+        temp: null,
+        precipitation: null,
+        isCurrent: false,
+        forecastDate: index.hours[hourIndex] || null
+    };
+}
+
+/**
+ * Wind conditions for a timeline step: step 0 is now, later steps are hours of
+ * the wind timeline.
+ * @param {object} spot - Spot object
+ * @param {number} step - Timeline step (0 = now)
+ * @param {object} [index] - Indexed timeline from indexWindTimeline
+ * @returns {object|null} Conditions in the same shape getWindConditions returns
+ */
+export function getWindConditionsAtStep(spot, step, index) {
+    if (!Number.isFinite(step) || step < 1) {
+        return getWindConditions(spot);
+    }
+    return getTimelineConditions(spot, Math.round(step) - 1, index);
+}

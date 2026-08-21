@@ -528,6 +528,7 @@ function initLanguage() {
         // Update map layer switcher labels
         map.updateLayerSwitcherLabels();
         map.updateWindOverlayLabels();
+        map.updateForecastTimelineLabels();
         if (windOverlayDisclaimerEl) {
             windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
         }
@@ -2515,6 +2516,69 @@ let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
 let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'field'
 let windOverlayDisclaimerEl = null;
+// Hourly slider under the map: 0 is now, later steps walk the forecast hour by
+// hour. The hours come from /api/v1/wind, which the spots response can't carry.
+let mapTimeline = null;
+let mapTimelineIndex = null;
+let mapTimelineRequest = null;
+let mapForecastStep = 0;
+
+// Everything the map draws - dots, arrows, field, popups - reads its conditions
+// through the timeline, so the whole map describes the selected hour at once.
+function getMapSpotConditions(spot) {
+    const conditions = weather.getWindConditionsAtStep(spot, mapForecastStep, mapTimelineIndex);
+    if (!conditions) {
+        return null;
+    }
+
+    return {
+        ...conditions,
+        label: conditions.isCurrent
+            ? translations.t('nowLabel')
+            : formatForecastDateLabel(conditions.forecastDate)
+    };
+}
+
+// Fetched the first time the map is opened, so visitors who never leave the
+// spots grid don't pay for it. Until it arrives the map shows what it always
+// has: the conditions right now.
+function ensureMapTimeline() {
+    if (mapTimeline || mapTimelineRequest) {
+        return;
+    }
+
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) {
+        return;
+    }
+
+    mapTimelineRequest = api.fetchWindTimeline().then(timeline => {
+        const index = weather.indexWindTimeline(timeline);
+        if (index.hours.length === 0 || index.bySpotId.size === 0) {
+            // Nothing to step through - leave the map on "now" and let a later
+            // visit to the map view try again.
+            mapTimelineRequest = null;
+            return;
+        }
+
+        mapTimelineIndex = index;
+        mapTimeline = map.createForecastTimeline({
+            container: mapContainer,
+            hours: index.hours,
+            initialStep: mapForecastStep,
+            onChange: (step) => {
+                mapForecastStep = step;
+                updateMapMarkers();
+            }
+        });
+
+        // The slider takes height off the map container, so Leaflet has to
+        // re-measure before its next repaint
+        if (leafletMap) {
+            leafletMap.invalidateSize();
+        }
+    });
+}
 
 function initMap() {
     if (leafletMap) return; // Already initialized
@@ -2591,15 +2655,15 @@ function renderWindOverlay(spots) {
     if (windOverlayMode === 'arrows') {
         // Arrows double as spot markers with the same clickable popup as the dots.
         windOverlayLayer.addLayer(
-            map.createWindArrowLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
+            map.createWindArrowLayer(leafletMap, spots, getMapSpotConditions, buildSpotMarkerPopup)
         );
         ensureWindOverlayDisclaimer(false);
     } else if (windOverlayMode === 'field') {
         // One overlay, two passes: the colour wash says how hard it blows, the
         // particles on top say where. Added in this order so the streaks stay
         // above the wash in the overlay pane.
-        windOverlayLayer.addLayer(map.createWindHeatLayer(spots, getSpotConditions));
-        windOverlayLayer.addLayer(map.createWindParticleLayer(spots, getSpotConditions));
+        windOverlayLayer.addLayer(map.createWindHeatLayer(spots, getMapSpotConditions));
+        windOverlayLayer.addLayer(map.createWindParticleLayer(spots, getMapSpotConditions));
         ensureWindOverlayDisclaimer(true);
     } else {
         ensureWindOverlayDisclaimer(false);
@@ -2632,7 +2696,7 @@ function buildMapPopupWindDetails(spotConditions) {
 // Shared popup markup for a spot (clickable name + wind summary). Used by both
 // the dot markers and the wind-arrow markers.
 function buildSpotMarkerPopup(spot) {
-    const popupWindDetails = buildMapPopupWindDetails(getSpotConditions(spot));
+    const popupWindDetails = buildMapPopupWindDetails(getMapSpotConditions(spot));
     return `
         <div class="map-popup">
             <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
@@ -2656,7 +2720,7 @@ function addMarkersToMap(spots) {
     if (windOverlayMode !== 'arrows') {
         // Nearby spots collapse into a numbered bubble while the map is zoomed out.
         mapMarkerLayer.addLayer(
-            map.createSpotMarkerLayer(leafletMap, spots, getSpotConditions, buildSpotMarkerPopup)
+            map.createSpotMarkerLayer(leafletMap, spots, getMapSpotConditions, buildSpotMarkerPopup)
         );
     }
 }
@@ -2719,13 +2783,17 @@ function showMapView() {
     spotsGrid.style.display = 'none';
 
     // Show map container
-    mapContainer.style.display = 'block';
+    // Flex, not block: the container stacks the map above the day slider
+    mapContainer.style.display = 'flex';
 
     // Mark map button as active and deselect view buttons
     mapToggle.classList.add('active');
     if (listViewBtn) listViewBtn.classList.remove('active');
     if (gridViewBtn) gridViewBtn.classList.remove('active');
 
+
+    // Fetch the hourly forecast grid behind the slider (once per session)
+    ensureMapTimeline();
 
     // Initialize map if not already done
     initMap();

@@ -4,6 +4,7 @@
 
 // API Endpoints
 const API_ENDPOINT_SPOTS = '/api/v1/spots';
+const API_ENDPOINT_WIND = '/api/v1/wind';
 const API_ENDPOINT_SPONSORS = '/api/v1/sponsors';
 const API_ENDPOINT_STATUS = '/api/v1/status';
 
@@ -58,6 +59,28 @@ export async function fetchSpot(spotId, model = null) {
     } catch (error) {
         console.error('Error fetching spot data:', error);
         throw error;
+    }
+}
+
+/**
+ * Fetch the hourly wind timeline: every spot's wind laid out on one shared grid
+ * of hours, which is what the map's forecast slider steps through. Per-spot
+ * hourly forecasts are stripped from the spots response, so the map reads this
+ * instead.
+ * @returns {Promise<{hours: Array<string>, spots: Array<object>}>} Timeline (empty on error)
+ */
+export async function fetchWindTimeline() {
+    try {
+        const response = await fetch(API_ENDPOINT_WIND, { credentials: 'same-origin' });
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching wind timeline:', error);
+        return { hours: [], spots: [] };
     }
 }
 

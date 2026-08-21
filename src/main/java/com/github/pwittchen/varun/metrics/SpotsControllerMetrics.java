@@ -9,6 +9,7 @@ public class SpotsControllerMetrics {
 
     private final Counter apiSpotsRequestCounter;
     private final Counter apiSpotByIdRequestCounter;
+    private final Counter apiWindRequestCounter;
 
     public SpotsControllerMetrics(MeterRegistry registry) {
         this.apiSpotsRequestCounter = Counter
@@ -19,6 +20,10 @@ public class SpotsControllerMetrics {
                 .builder("varun.api.spot.requests")
                 .description("Number of requests to /api/v1/spots/{id} endpoint")
                 .register(registry);
+        this.apiWindRequestCounter = Counter
+                .builder("varun.api.wind.requests")
+                .description("Number of requests to /api/v1/wind endpoint")
+                .register(registry);
     }
 
     public void incrementSpotsRequestCounter() {
@@ -27,5 +32,9 @@ public class SpotsControllerMetrics {
 
     public void incrementSpotByIdRequestCounter() {
         apiSpotByIdRequestCounter.increment();
+    }
+
+    public void incrementWindRequestCounter() {
+        apiWindRequestCounter.increment();
     }
 }

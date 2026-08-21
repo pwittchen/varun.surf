@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
+import com.github.pwittchen.varun.mapper.WindTimelineMapper;
 import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.map.Coordinates;
@@ -70,6 +71,8 @@ class AggregatorServiceTest {
     @Mock
     private IcmGridMapper icmGridMapper;
 
+    private final WindTimelineMapper windTimelineMapper = new WindTimelineMapper();
+
     @Mock
     private IcmForecastVisionService icmForecastVisionService;
 
@@ -91,6 +94,7 @@ class AggregatorServiceTest {
                 aiServicePl,
                 googleMapsService,
                 icmGridMapper,
+                windTimelineMapper,
                 icmForecastVisionService,
                 sponsorsService,
                 metricsService

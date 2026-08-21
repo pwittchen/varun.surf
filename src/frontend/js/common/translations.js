@@ -226,6 +226,10 @@ export const translations = {
         windOverlayField: "Wind field",
         windOverlayDisclaimer: "Interpolated from spot data",
         mapClusterSpotsLabel: "spots - click to zoom in",
+        timelineTitle: "Wind forecast",
+        timelineNow: "Now",
+        timelinePrevHour: "Previous hour",
+        timelineNextHour: "Next hour",
 
         // Spot info labels
         overviewLabel: "Overview",
@@ -548,6 +552,10 @@ export const translations = {
         windOverlayField: "Pole wiatru",
         windOverlayDisclaimer: "Interpolacja z danych spotów",
         mapClusterSpotsLabel: "spotów - kliknij, aby przybliżyć",
+        timelineTitle: "Prognoza wiatru",
+        timelineNow: "Teraz",
+        timelinePrevHour: "Poprzednia godzina",
+        timelineNextHour: "Następna godzina",
 
         // Spot info labels
         overviewLabel: "Przegląd",

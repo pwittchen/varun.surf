@@ -3,6 +3,7 @@
 // Common map-related functions for OSM and satellite tile layers
 // ============================================================================
 
+import * as date from './date.js';
 import * as translations from './translations.js';
 import * as weather from './weather.js';
 
@@ -1441,6 +1442,325 @@ export function createWindOverlayControl(options) {
     });
 
     return new WindOverlayControl();
+}
+
+// ============================================================================
+// FORECAST TIMELINE
+// An hourly slider under the map. The wind overlays (field, arrows) and the spot
+// markers all read their conditions through the selected step, so the whole map
+// can be stepped forward through the forecast hour by hour instead of only ever
+// showing what is happening right now.
+// ============================================================================
+
+const WEEKDAY_TRANSLATION_KEYS = ['daySun', 'dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat'];
+
+const MONTH_TRANSLATION_KEYS = [
+    'monthJan', 'monthFeb', 'monthMar', 'monthApr', 'monthMay', 'monthJun',
+    'monthJul', 'monthAug', 'monthSep', 'monthOct', 'monthNov', 'monthDec'
+];
+
+// Marks under the slider name whole days rather than hours - one per hour would
+// be an unreadable smear at this resolution. A day whose mark would land this
+// close to the previous one (as a fraction of the slider) is dropped instead of
+// printed on top of it; that happens to today, whose remaining hours start right
+// next to "now".
+const TIMELINE_TICK_MIN_GAP = 0.07;
+
+// Hour each day is marked at: midday reads as "that day" better than midnight,
+// and the nearest available hour is used when the grid doesn't reach it.
+const TIMELINE_TICK_HOUR = 12;
+
+// Every mounted timeline, so a language switch relabels them all in place - the
+// slider outlives the re-renders that rebuild the rest of the page.
+const mountedTimelines = new Set();
+
+// SVG chevrons for the hour-by-hour step buttons
+const TIMELINE_PREV_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+const TIMELINE_NEXT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
+/**
+ * Hour label of a forecast timestamp, e.g. "14:00".
+ * @param {Date} date - Parsed forecast date
+ * @returns {string} Zero-padded hour
+ */
+function timelineHourLabel(date) {
+    return `${String(date.getHours()).padStart(2, '0')}:00`;
+}
+
+/**
+ * Whether two dates fall on the same calendar day.
+ * @param {Date} a - First date
+ * @param {Date} b - Second date
+ * @returns {boolean} True when the day, month and year match
+ */
+function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
+
+/**
+ * Day part of a step label: "today", "tomorrow" or a weekday with its date.
+ * @param {Date} date - Parsed forecast date
+ * @returns {string} Localized day label
+ */
+function timelineDayLabel(date) {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (isSameDay(date, today)) {
+        return translations.t('dayToday');
+    }
+    if (isSameDay(date, tomorrow)) {
+        return translations.t('dayTomorrow');
+    }
+
+    const weekday = translations.t(WEEKDAY_TRANSLATION_KEYS[date.getDay()]);
+    const month = translations.t(MONTH_TRANSLATION_KEYS[date.getMonth()]);
+    return `${weekday} ${date.getDate()} ${month}`;
+}
+
+/**
+ * Pick the step that stands for each calendar day of the grid: the hour closest
+ * to midday among the hours the grid actually holds for that day.
+ * @param {Array<Date>} dates - Parsed grid hours, one per step from step 1
+ * @returns {Array<{step:number, date:Date}>} One entry per day, in grid order
+ */
+function timelineDaySteps(dates) {
+    const byDay = new Map();
+
+    dates.forEach((date, index) => {
+        const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        const distance = Math.abs(date.getHours() - TIMELINE_TICK_HOUR);
+        const best = byDay.get(key);
+        if (!best || distance < best.distance) {
+            // Step 0 is "now", so grid hour i is step i + 1
+            byDay.set(key, { step: index + 1, date, distance });
+        }
+    });
+
+    return Array.from(byDay.values()).map(({ step, date }) => ({ step, date }));
+}
+
+/**
+ * Create the forecast slider shown under a map.
+ *
+ * Steps run 0..hours.length: step 0 is "now" and every later step is one hour of
+ * the shared forecast grid. Dragging the slider only moves its labels; the map is
+ * rebuilt once the drag ends, so a swipe across five days doesn't repaint the
+ * interpolated field a hundred times over.
+ *
+ * @param {object} options - Configuration options
+ * @param {HTMLElement} options.container - Element the slider is appended to
+ * @param {Array<string>} options.hours - Forecast timestamps, one per hourly step
+ * @param {number} [options.initialStep=0] - Step selected on creation
+ * @param {function} [options.onChange] - Called with the new step once it settles
+ * @returns {{element:HTMLElement, refreshLabels:function, destroy:function}|null}
+ *   Null when there is nothing to step through
+ */
+export function createForecastTimeline(options) {
+    const {
+        container,
+        hours,
+        initialStep = 0,
+        onChange = null
+    } = options;
+
+    const grid = Array.isArray(hours) ? hours : [];
+    if (!container || grid.length < 1) {
+        return null;
+    }
+
+    const dates = grid.map(hour => date.parseForecastDate(hour));
+    const steps = grid.length;
+
+    const clampStep = (value) => Math.max(0, Math.min(steps, Math.round(value) || 0));
+
+    // `step` is what the labels show while dragging; `appliedStep` is the last
+    // one the map was rebuilt for.
+    let step = clampStep(initialStep);
+    let appliedStep = step;
+
+    const element = document.createElement('div');
+    element.className = 'map-timeline';
+
+    const head = document.createElement('div');
+    head.className = 'map-timeline-head';
+
+    const title = document.createElement('span');
+    title.className = 'map-timeline-title';
+
+    const value = document.createElement('span');
+    value.className = 'map-timeline-value';
+
+    // An hour out of a hundred-odd is not something anyone hits by dragging,
+    // least of all on a phone, so the exact hour is reachable one step at a time.
+    const prevButton = document.createElement('button');
+    prevButton.type = 'button';
+    prevButton.className = 'map-timeline-step';
+    prevButton.innerHTML = TIMELINE_PREV_ICON;
+
+    const nextButton = document.createElement('button');
+    nextButton.type = 'button';
+    nextButton.className = 'map-timeline-step';
+    nextButton.innerHTML = TIMELINE_NEXT_ICON;
+
+    const selection = document.createElement('div');
+    selection.className = 'map-timeline-selection';
+    selection.appendChild(prevButton);
+    selection.appendChild(value);
+    selection.appendChild(nextButton);
+
+    head.appendChild(title);
+    head.appendChild(selection);
+
+    const range = document.createElement('input');
+    range.type = 'range';
+    range.className = 'map-timeline-range';
+    range.min = '0';
+    range.max = String(steps);
+    range.step = '1';
+    range.value = String(step);
+
+    const ticks = document.createElement('div');
+    ticks.className = 'map-timeline-ticks';
+
+    // "Now" plus one mark per day, dropping any that would print on top of the
+    // one before it
+    const tickSteps = [0];
+    let lastPosition = 0;
+    timelineDaySteps(dates).forEach(({ step: dayStep }) => {
+        const position = dayStep / steps;
+        if (position - lastPosition < TIMELINE_TICK_MIN_GAP) {
+            return;
+        }
+        tickSteps.push(dayStep);
+        lastPosition = position;
+    });
+
+    const tickButtons = tickSteps.map(tickStep => {
+        const tick = document.createElement('button');
+        tick.type = 'button';
+        tick.className = 'map-timeline-tick';
+        tick.dataset.step = String(tickStep);
+        // Sit each label under the slider position it selects rather than
+        // spreading them evenly, which would drift off the thumb stops.
+        tick.style.left = `${(tickStep / steps) * 100}%`;
+        ticks.appendChild(tick);
+        return tick;
+    });
+
+    element.appendChild(head);
+    element.appendChild(range);
+    element.appendChild(ticks);
+    container.appendChild(element);
+
+    /**
+     * Full label for a step: "now", or the day and hour it points at.
+     * @param {number} target - Timeline step
+     * @returns {string} Localized label
+     */
+    const stepLabel = (target) => {
+        if (target < 1) {
+            return translations.t('timelineNow');
+        }
+        const stepDate = dates[target - 1];
+        return `${timelineDayLabel(stepDate)} ${timelineHourLabel(stepDate)}`;
+    };
+
+    /**
+     * Short label under the slider: a weekday abbreviation, or "now" for step 0.
+     * @param {number} target - Timeline step
+     * @returns {string} Localized label
+     */
+    const tickLabel = (target) => {
+        if (target < 1) {
+            return translations.t('timelineNow');
+        }
+        return translations.t(WEEKDAY_TRANSLATION_KEYS[dates[target - 1].getDay()]);
+    };
+
+    const refreshLabels = () => {
+        const selectedLabel = stepLabel(step);
+        title.textContent = translations.t('timelineTitle');
+        value.textContent = selectedLabel;
+        range.setAttribute('aria-label', translations.t('timelineTitle'));
+        range.setAttribute('aria-valuetext', selectedLabel);
+        prevButton.title = translations.t('timelinePrevHour');
+        prevButton.setAttribute('aria-label', translations.t('timelinePrevHour'));
+        nextButton.title = translations.t('timelineNextHour');
+        nextButton.setAttribute('aria-label', translations.t('timelineNextHour'));
+
+        tickButtons.forEach(tick => {
+            const tickStep = Number(tick.dataset.step);
+            tick.textContent = tickLabel(tickStep);
+            tick.title = stepLabel(tickStep);
+            tick.classList.toggle('active', tickStep === step);
+        });
+    };
+
+    const showStep = (nextStep) => {
+        step = clampStep(nextStep);
+        range.value = String(step);
+        prevButton.disabled = step === 0;
+        nextButton.disabled = step === steps;
+        refreshLabels();
+    };
+
+    const commitStep = () => {
+        if (step === appliedStep) {
+            return;
+        }
+        appliedStep = step;
+        if (typeof onChange === 'function') {
+            onChange(step);
+        }
+    };
+
+    const goToStep = (nextStep) => {
+        showStep(nextStep);
+        commitStep();
+    };
+
+    // Dragging only moves the labels; the map is rebuilt once the slider settles
+    range.addEventListener('input', () => showStep(Number(range.value)));
+    range.addEventListener('change', () => goToStep(Number(range.value)));
+
+    prevButton.addEventListener('click', () => goToStep(step - 1));
+    nextButton.addEventListener('click', () => goToStep(step + 1));
+
+    tickButtons.forEach(tick => {
+        tick.addEventListener('click', () => goToStep(Number(tick.dataset.step)));
+    });
+
+    showStep(step);
+
+    const timeline = {
+        element,
+        refreshLabels,
+        destroy: () => {
+            mountedTimelines.delete(timeline);
+            element.remove();
+        }
+    };
+
+    mountedTimelines.add(timeline);
+    return timeline;
+}
+
+/**
+ * Update forecast timeline labels when language changes. Timelines whose markup
+ * has been dropped from the page are forgotten on the way through.
+ */
+export function updateForecastTimelineLabels() {
+    mountedTimelines.forEach(timeline => {
+        if (!timeline.element.isConnected) {
+            mountedTimelines.delete(timeline);
+            return;
+        }
+        timeline.refreshLabels();
+    });
 }
 
 /**

@@ -39,6 +39,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
+    ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
     ├─→ /api/v1/sponsors (sponsors list)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -210,6 +211,13 @@ chatClient.prompt().user(prompt)
 - `GET /api/v1/spots/{id}/{model}` - Single spot with model selection
   - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
   - Triggers async model discovery if not cached
+- `GET /api/v1/wind` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
+  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~230 spots), so the
+    map's forecast timeline reads this instead
+  - `WindTimelineMapper` projects each spot's hourly GFS forecast onto a 120-hour
+    grid and emits wind/gusts/direction as parallel arrays (~30 KB gzipped);
+    samples are held forward across the three-hourly stride the forecast drops to
+    after ~3 days
 
 **Response Processing**:
 - Enriches spots with cached forecasts, conditions, AI analysis

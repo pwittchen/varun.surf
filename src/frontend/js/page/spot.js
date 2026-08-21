@@ -1732,6 +1732,21 @@ let spotWindMap = null;
 let windMapTileLayer = null;
 let currentWindMapLayer = 'satellite';
 
+// Hourly slider under the wind map: 0 is now, later steps walk the forecast hour
+// by hour, off the shared grid served by /api/v1/wind.
+let windMapTimeline = null;
+let windMapTimelineIndex = null;
+let windMapForecastStep = 0;
+// Repaints the field and the neighbour markers for the selected hour; set once
+// the neighbouring spots have arrived.
+let renderWindMapLayers = null;
+
+// Field and markers both read their conditions through the slider, so the whole
+// map describes the selected hour at once.
+function getWindMapConditions(spot) {
+    return weather.getWindConditionsAtStep(spot, windMapForecastStep, windMapTimelineIndex);
+}
+
 // Which media tab the visitor picked, so a card rebuild restores it
 let selectedMediaTab = 'osm';
 
@@ -1743,6 +1758,7 @@ const PRESERVED_MAP_FRAMES = ['.spot-embedded-map-frame', '.spot-wind-map-frame'
 // single blob of its own reading.
 let windMapSpots = null;
 let windMapSpotsRequest = null;
+let windMapTimelineRequest = null;
 
 // Close enough that the spot itself is readable - on a lake spot a wider view
 // shows no water at all, just land. The field's influence radius grows with the
@@ -1763,6 +1779,11 @@ function releaseDetachedWindMap() {
     spotWindMap.remove();
     spotWindMap = null;
     windMapTileLayer = null;
+    renderWindMapLayers = null;
+    if (windMapTimeline) {
+        windMapTimeline.destroy();
+        windMapTimeline = null;
+    }
 }
 
 /**
@@ -1789,8 +1810,23 @@ function loadWindMapSpots() {
     return windMapSpotsRequest;
 }
 
+/**
+ * Load the hourly wind grid the slider steps through, once per session.
+ * @returns {Promise<object>} Indexed timeline (empty when the request fails)
+ */
+function loadWindMapTimeline() {
+    if (windMapTimelineIndex) {
+        return Promise.resolve(windMapTimelineIndex);
+    }
+    if (!windMapTimelineRequest) {
+        windMapTimelineRequest = api.fetchWindTimeline()
+            .then(timeline => weather.indexWindTimeline(timeline));
+    }
+    return windMapTimelineRequest;
+}
+
 function buildWindMapPopup(spot) {
-    const conditions = weather.getWindConditions(spot);
+    const conditions = getWindMapConditions(spot);
     const windDetails = conditions
         ? `<div class="map-popup-wind ${weather.getWindClass(conditions.wind)}">`
             + `<span class="wind-arrow">${weather.getWindArrow(conditions.direction)}</span>`
@@ -1799,10 +1835,16 @@ function buildWindMapPopup(spot) {
             + `</div>`
         : '';
 
+    // On a forecast day the reading is no longer a measurement, so say so.
+    const forecastMeta = conditions && !conditions.isCurrent
+        ? `<div class="map-popup-meta">${translations.t('forecastEstimateLabel')}</div>`
+        : '';
+
     return `
         <div class="map-popup">
             <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
             ${windDetails}
+            ${forecastMeta}
         </div>
     `;
 }
@@ -1817,6 +1859,11 @@ function initSpotWindMap() {
         spotWindMap.remove();
         spotWindMap = null;
         windMapTileLayer = null;
+    }
+    renderWindMapLayers = null;
+    if (windMapTimeline) {
+        windMapTimeline.destroy();
+        windMapTimeline = null;
     }
 
     const { lat, lon } = currentSpot.coordinates;
@@ -1856,27 +1903,54 @@ function initSpotWindMap() {
     });
     resetViewControl.addTo(spotWindMap);
 
+    // The slider goes under the map, inside the wrapper that survives a card
+    // rebuild, so the chosen hour outlives the once-a-minute refresh.
+    const wrapper = mapContainer.closest('.spot-wind-map-wrapper') || mapContainer.parentElement;
+
     const builtFor = spotWindMap;
 
-    loadWindMapSpots().then(spots => {
+    Promise.all([loadWindMapSpots(), loadWindMapTimeline()]).then(([spots, timelineIndex]) => {
         // The tab may have been rebuilt (or the spot changed) while we waited.
         if (spotWindMap !== builtFor) {
             return;
         }
 
-        fieldLayer.addLayer(map.createWindHeatLayer(spots, weather.getWindConditions));
-        fieldLayer.addLayer(map.createWindParticleLayer(spots, weather.getWindConditions));
+        windMapTimelineIndex = timelineIndex;
+
+        const renderField = () => {
+            fieldLayer.clearLayers();
+            fieldLayer.addLayer(map.createWindHeatLayer(spots, getWindMapConditions));
+            fieldLayer.addLayer(map.createWindParticleLayer(spots, getWindMapConditions));
+        };
 
         // Neighbouring spots explain the shape of the field; clustering happens
         // in screen pixels, so they are rebuilt whenever the zoom changes.
         const renderNeighbours = () => {
             neighbourLayer.clearLayers();
             neighbourLayer.addLayer(
-                map.createSpotMarkerLayer(spotWindMap, spots, weather.getWindConditions, buildWindMapPopup)
+                map.createSpotMarkerLayer(spotWindMap, spots, getWindMapConditions, buildWindMapPopup)
             );
         };
+
+        renderField();
         renderNeighbours();
         spotWindMap.on('zoomend', renderNeighbours);
+
+        // Stepping the slider repaints both passes for the selected hour
+        renderWindMapLayers = () => {
+            renderField();
+            renderNeighbours();
+        };
+
+        windMapTimeline = map.createForecastTimeline({
+            container: wrapper,
+            hours: timelineIndex.hours,
+            initialStep: windMapForecastStep,
+            onChange: (step) => {
+                windMapForecastStep = step;
+                renderWindMapLayers();
+            }
+        });
     });
 }
 
@@ -2355,7 +2429,11 @@ function createSpotCard(spot) {
     // built from the app's own data instead of an embedded third-party map
     let windMapContainer = '';
     if (hasCoordinates) {
-        windMapContainer = `<div id="spot-wind-map" style="width: 100%; height: 360px; border-radius: 8px;"></div>`;
+        // The wrapper is what survives a card rebuild (see displaySpot), so the
+        // day slider appended into it by initSpotWindMap rides along with the map.
+        // The frame already clips to a radius, and the slider sits below the map,
+        // so the map itself is left square-cornered.
+        windMapContainer = `<div class="spot-wind-map-wrapper"><div id="spot-wind-map" style="width: 100%; height: 360px;"></div></div>`;
     }
 
     // Generate OpenStreetMap with ESRI satellite tiles (custom Leaflet map)
@@ -2881,8 +2959,9 @@ function updateUITranslations() {
         appInfoDevText.innerHTML = translations.t('appInfoDevText');
     }
 
-    // Update map layer switcher labels
+    // Update map layer switcher and forecast timeline labels
     map.updateLayerSwitcherLabels();
+    map.updateForecastTimelineLabels();
 
     // Update sticky left menu labels and tooltips
     sideMenu.updateTranslations(translations.t);

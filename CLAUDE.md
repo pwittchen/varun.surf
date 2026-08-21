@@ -37,6 +37,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (single spot with GFS or IFS forecast)
+    ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -124,9 +125,14 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - `GET /api/v1/spots` - all spots with cached data
      - `GET /api/v1/spots/{id}` - single spot (GFS, triggers async IFS fetch)
      - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
+     - `GET /api/v1/wind` - hourly wind for every spot on one shared time grid
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
+   - `/api/v1/spots` strips `forecastHourly` (too large for ~230 spots), so the
+     map's forecast timeline reads `/api/v1/wind` instead: `WindTimelineMapper`
+     projects every spot's hourly GFS forecast onto one 120-hour grid and emits
+     wind/gusts/direction as parallel arrays (~30 KB gzipped)
 
 7. **StatusController** (`controller/StatusController.java`)
    - REST API endpoints:

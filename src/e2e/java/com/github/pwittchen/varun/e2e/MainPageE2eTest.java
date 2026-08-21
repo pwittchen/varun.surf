@@ -169,6 +169,62 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should step the map forecast timeline hour by hour and day by day")
+    void shouldStepTheMapForecastTimeline() {
+        navigateToMainPage();
+        waitForSpotsToLoad();
+
+        page.locator("#mapToggle").click();
+        Locator mapContainer = page.locator("#mapContainer");
+        mapContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // The slider is built from /api/v1/wind, fetched when the map first opens
+        Locator timeline = page.locator("#mapContainer .map-timeline");
+        timeline.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        Locator range = page.locator("#mapContainer .map-timeline-range");
+        Locator value = page.locator("#mapContainer .map-timeline-value");
+        Locator nextHour = page.locator("#mapContainer .map-timeline-step").last();
+
+        // One step per hour of the forecast grid, with the marks under the slider
+        // naming days rather than hours
+        int hours = Integer.parseInt(range.getAttribute("max"));
+        int marks = page.locator("#mapContainer .map-timeline-tick").count();
+        assertThat(hours).isAtLeast(24);
+        assertThat(marks).isLessThan(hours);
+
+        // Starts on "now" - the live readings the map has always shown
+        assertThat(range.inputValue()).isEqualTo("0");
+        assertThat(page.locator("#mapContainer .map-timeline-tick.active").getAttribute("data-step")).isEqualTo("0");
+        String nowLabel = value.textContent();
+
+        // One hour forward is one step, and names the hour it landed on
+        nextHour.click();
+        page.waitForTimeout(300);
+        assertThat(range.inputValue()).isEqualTo("1");
+        assertThat(value.textContent()).isNotEqualTo(nowLabel);
+        assertThat(value.textContent()).contains(":00");
+
+        // A day mark jumps straight to that day, slider and label together
+        Locator lastMark = page.locator("#mapContainer .map-timeline-tick").last();
+        String lastMarkStep = lastMark.getAttribute("data-step");
+        lastMark.click();
+        page.waitForTimeout(300);
+        assertThat(range.inputValue()).isEqualTo(lastMarkStep);
+        assertThat(lastMark.getAttribute("class")).contains("active");
+
+        // And back to now
+        page.locator("#mapContainer .map-timeline-tick[data-step='0']").click();
+        page.waitForTimeout(300);
+        assertThat(range.inputValue()).isEqualTo("0");
+        assertThat(value.textContent()).isEqualTo(nowLabel);
+    }
+
+    @Test
     @DisplayName("Should link to the other pages from the sidebar")
     void shouldLinkToTheOtherPagesFromTheSidebar() {
         navigateToMainPage();

@@ -78,10 +78,19 @@ class StatusPageE2eTest extends BaseE2eTest {
         Locator healthEndpoint = page.locator("[data-endpoint='/api/v1/health']");
         Locator statusEndpoint = page.locator("[data-endpoint='/api/v1/status']");
         Locator spotsEndpoint = page.locator("[data-endpoint='/api/v1/spots']");
+        Locator windEndpoint = page.locator("[data-endpoint='/api/v1/wind']");
 
         assertThat(healthEndpoint.isVisible()).isTrue();
         assertThat(statusEndpoint.isVisible()).isTrue();
         assertThat(spotsEndpoint.isVisible()).isTrue();
+        assertThat(windEndpoint.isVisible()).isTrue();
+
+        // Every listed endpoint is probed, so none may be left on "checking..."
+        Locator windStatus = windEndpoint.locator(".status-endpoint-text");
+        windStatus.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(windStatus.textContent()).isEqualTo("operational");
     }
 
     @Test

@@ -72,7 +72,7 @@ async function checkEndpoint(endpoint) {
 }
 
 async function checkAllEndpoints() {
-    const endpoints = ['/api/v1/health', '/api/v1/status', '/api/v1/spots'];
+    const endpoints = ['/api/v1/health', '/api/v1/status', '/api/v1/spots', '/api/v1/wind'];
     await Promise.all(endpoints.map(checkEndpoint));
 }
 

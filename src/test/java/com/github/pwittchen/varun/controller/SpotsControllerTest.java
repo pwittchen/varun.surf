@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.controller;
 import com.github.pwittchen.varun.metrics.SpotsControllerMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -453,6 +454,38 @@ class SpotsControllerTest {
                 null,
                 "2025-01-15 14:30:00 CET"
         );
+    }
+
+    @Test
+    void shouldReturnWindTimelineFromAggregatorService() {
+        WindTimeline timeline = new WindTimeline(
+                List.of("Tue 28 Oct 2025 14:00", "Tue 28 Oct 2025 15:00"),
+                List.of(new WindTimeline.SpotWind(500760, List.of(12, 14), List.of(16, 18), List.of(5, 6)))
+        );
+        when(aggregatorService.getWindTimeline()).thenReturn(timeline);
+
+        StepVerifier.create(controller.wind())
+                .assertNext(result -> {
+                    assertThat(result.hours()).hasSize(2);
+                    assertThat(result.spots()).hasSize(1);
+                    assertThat(result.spots().getFirst().wgId()).isEqualTo(500760);
+                    assertThat(result.spots().getFirst().wind()).containsExactly(12, 14).inOrder();
+                })
+                .verifyComplete();
+
+        verify(metrics, times(1)).incrementWindRequestCounter();
+    }
+
+    @Test
+    void shouldReturnEmptyWindTimelineWhenNoForecastsAreCached() {
+        when(aggregatorService.getWindTimeline()).thenReturn(new WindTimeline(List.of(), List.of()));
+
+        StepVerifier.create(controller.wind())
+                .assertNext(result -> {
+                    assertThat(result.hours()).isEmpty();
+                    assertThat(result.spots()).isEmpty();
+                })
+                .verifyComplete();
     }
 
     private Spot createMockSpotWithCompleteData() {

@@ -6,11 +6,13 @@ import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
+import com.github.pwittchen.varun.mapper.WindTimelineMapper;
 import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.forecast.AvailableModel;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
+import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
 import com.github.pwittchen.varun.model.map.Coordinates;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,6 +89,10 @@ public class AggregatorService {
     private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
 
+    // How far the map's hourly wind timeline reaches. Matched to the five days
+    // the daily forecast covers, which is as far as the map is worth stepping.
+    private static final int WIND_TIMELINE_HOURS = 5 * 24;
+
     // Concurrency limits
     private static final int FORECAST_SEMAPHORE_PERMITS = 32;
     private static final int CONDITIONS_SEMAPHORE_PERMITS = 32;
@@ -116,6 +123,7 @@ public class AggregatorService {
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
     private final IcmGridMapper icmGridMapper;
+    private final WindTimelineMapper windTimelineMapper;
     private final IcmForecastVisionService icmForecastVisionService;
     private final SponsorsService sponsorsService;
     private final AggregatorServiceMetrics metricsService;
@@ -137,6 +145,7 @@ public class AggregatorService {
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
             IcmGridMapper icmGridMapper,
+            WindTimelineMapper windTimelineMapper,
             IcmForecastVisionService icmForecastVisionService,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
@@ -160,6 +169,7 @@ public class AggregatorService {
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
         this.icmGridMapper = icmGridMapper;
+        this.windTimelineMapper = windTimelineMapper;
         this.icmForecastVisionService = icmForecastVisionService;
         this.sponsorsService = sponsorsService;
         this.metricsService = metricsService;
@@ -227,6 +237,25 @@ public class AggregatorService {
                 .stream()
                 .map(this::enrichSpotWithCachedData)
                 .toList();
+    }
+
+    /**
+     * Hourly wind for every spot at once, on one shared time grid.
+     *
+     * The map draws all spots for a single moment, so it reads the timeline
+     * rather than the per-spot forecasts, which are only served one spot at a
+     * time (and stripped from the all-spots response, being far too large).
+     */
+    public WindTimeline getWindTimeline() {
+        final Map<Integer, List<Forecast>> hourlyBySpotId = new HashMap<>();
+        forecastCache.forEach((spotId, data) -> {
+            List<Forecast> hourly = data.hourly(ForecastModel.GFS);
+            if (!hourly.isEmpty()) {
+                hourlyBySpotId.put(spotId, hourly);
+            }
+        });
+
+        return windTimelineMapper.toWindTimeline(hourlyBySpotId, LocalDateTime.now(), WIND_TIMELINE_HOURS);
     }
 
     public int countSpots() {
