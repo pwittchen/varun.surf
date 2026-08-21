@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.controller;
 import com.github.pwittchen.varun.metrics.SpotsControllerMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
@@ -484,6 +485,60 @@ class SpotsControllerTest {
                 .assertNext(result -> {
                     assertThat(result.hours()).isEmpty();
                     assertThat(result.spots()).isEmpty();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnHourlyForecastForSingleSpot() {
+        HourlyForecast hourly = new HourlyForecast(500760, List.of(
+                new Forecast("Tue 28 Oct 2025 14:00", 12, 16, "NW", 21, 0.4, 40, 1013, 0.8, 4.0, "SW"),
+                new Forecast("Tue 28 Oct 2025 15:00", 14, 18, "N", 20, 0.0, 20, 1014, 0.6, 4.0, "SW")
+        ));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(hourly));
+
+        StepVerifier.create(controller.forecast(500760))
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody().wgId()).isEqualTo(500760);
+                    assertThat(response.getBody().hours()).hasSize(2);
+
+                    // the single-spot response carries every field, not just wind
+                    Forecast first = response.getBody().hours().getFirst();
+                    assertThat(first.temp()).isEqualTo(21.0);
+                    assertThat(first.precipitation()).isEqualTo(0.4);
+                    assertThat(first.cloudCoverPercent()).isEqualTo(40.0);
+                    assertThat(first.pressureHpa()).isEqualTo(1013.0);
+                    assertThat(first.wave()).isEqualTo(0.8);
+                })
+                .verifyComplete();
+
+        verify(metrics, times(1)).incrementForecastRequestCounter();
+    }
+
+    @Test
+    void shouldReturnNotFoundForUnknownSpotHourlyForecast() {
+        when(aggregatorService.getHourlyForecast(999999)).thenReturn(Optional.empty());
+
+        StepVerifier.create(controller.forecast(999999))
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                    assertThat(response.getBody()).isNull();
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyHourlyForecastForSpotWithoutCachedForecast() {
+        // A known spot with nothing fetched yet answers 200 with no hours, which is
+        // a different answer from "no such spot"
+        when(aggregatorService.getHourlyForecast(500760))
+                .thenReturn(Optional.of(new HourlyForecast(500760, List.of())));
+
+        StepVerifier.create(controller.forecast(500760))
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody().hours()).isEmpty();
                 })
                 .verifyComplete();
     }

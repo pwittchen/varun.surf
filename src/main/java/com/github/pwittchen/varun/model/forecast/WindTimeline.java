@@ -27,6 +27,11 @@ public record WindTimeline(
      */
     public static final List<String> DIRECTIONS = List.of("N", "NE", "E", "SE", "S", "SW", "W", "NW");
 
+    /**
+     * No grid and no series - what a spot with nothing forecast yet comes back as.
+     */
+    public static final WindTimeline EMPTY = new WindTimeline(List.of(), List.of());
+
     public WindTimeline {
         hours = hours == null ? List.of() : List.copyOf(hours);
         spots = spots == null ? List.of() : List.copyOf(spots);

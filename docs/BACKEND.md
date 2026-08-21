@@ -73,7 +73,12 @@
   every 8h  -> fetchAiForecastAnalysisEn() + fetchAiForecastAnalysisPl() (if enabled via feature flag)
                  -> uses StructuredTaskScope with virtual threads (separate scopes for EN and PL)
                  -> semaphore limits to 16 concurrent requests
-                 -> for each Spot -> AiServiceEn.fetchAiAnalysis(spot) + AiServicePl.fetchAiAnalysis(spot)
+                 -> for each Spot -> getHourlyForecast(wgId) [the spot's hourly forecast]
+                 -> AiServiceEn.fetchAiAnalysis(spot, hourly) + AiServicePl.fetchAiAnalysis(spot, hourly)
+                 -> prompt carries the full hourly forecast (no daily averages),
+                    so the summary names hour ranges instead of whole days
+                 -> hourly for the first 48h, every 3h after that (~72 rows over 5 days)
+                 -> a spot without an hourly forecast is skipped, not summarised from its name
                  -> Spring AI ChatClient -> OpenAI
                  -> updates aiAnalysisEn{spotId -> String} and aiAnalysisPl{spotId -> String}
 
@@ -113,8 +118,13 @@
   GET /api/v1/wind
     -> SpotsController.wind()
     -> AggregatorService.getWindTimeline() [hourly GFS forecasts of every spot]
-    -> WindTimelineMapper projects them onto one 120-hour grid
+    -> HourlyForecastMapper projects them onto one 120-hour grid
     -> returns Mono<WindTimeline>
+
+  GET /api/v1/forecast/{wgId}
+    -> SpotsController.wind(wgId)
+    -> AggregatorService.getHourlyForecast(wgId) [same grid, one spot, every field]
+    -> returns Mono<ResponseEntity<HourlyForecast>> (404 when the spot is unknown)
 
   GET /api/v1/sponsors
     -> SponsorsController.sponsors()
@@ -455,6 +465,15 @@ Spots:
     - Samples are held forward across the three-hourly stride the forecast drops
       to after ~3 days; wider gaps stay null
     - Response: Mono<WindTimeline>
+
+  GET /api/v1/forecast/{wgId}
+    - Returns one spot's full hourly forecast on the same grid: wind, gusts,
+      direction, temperature, rain, cloud, pressure and waves
+    - The all-spots variant carries wind alone because the map draws every spot
+      at once; a single spot can afford the rest (~24 KB vs ~210 KB)
+    - 404 when the spot is unknown; a known spot with no forecast cached yet
+      returns 200 with no hours
+    - Response: Mono<ResponseEntity<HourlyForecast>>
 
 Sponsors:
   GET /api/v1/sponsors

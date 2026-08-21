@@ -38,6 +38,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (single spot with GFS or IFS forecast)
     ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
+    ├─→ /api/v1/forecast/{wgId} (one spot's full hourly forecast: wind, temp, rain, cloud, pressure, waves)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -112,6 +113,18 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - 28+ kts: very small kite (5-7 m²)
    - Streams responses with 15s timeout and 3 retries
    - Supports spot-specific LLM context via SpotInfo.llmComment
+   - The only forecast data in the prompt is the spot's `HourlyForecast` (the
+     same data `/api/v1/forecast/{wgId}` serves): wind, gusts, direction, temperature,
+     rain, cloud, pressure and waves. Daily averages were dropped: they hide the
+     hours a session actually happens in
+   - Rows are hourly for the first `AiService.DETAILED_HOURS` (48) hours, then
+     every `COARSE_STRIDE` (3) hours - which is the resolution Windguru itself
+     drops to after ~3 days, so the skipped rows would only repeat held-forward
+     values. ~72 rows over 5 days
+   - The three wave columns are dropped for spots with no wave data (inland
+     lakes), so the header never promises a column the rows don't carry
+   - A spot with no hourly forecast gets no analysis at all (rather than one
+     written from its name), since nothing else in the prompt carries a forecast
 
 5. **GoogleMapsService** (`service/map/GoogleMapsService.java`)
    - Converts location URLs to Coordinates objects
@@ -126,11 +139,12 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - `GET /api/v1/spots/{id}` - single spot (GFS, triggers async IFS fetch)
      - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
      - `GET /api/v1/wind` - hourly wind for every spot on one shared time grid
+     - `GET /api/v1/forecast/{wgId}` - one spot's full hourly forecast on the same grid (404 when unknown)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
    - `/api/v1/spots` strips `forecastHourly` (too large for ~230 spots), so the
-     map's forecast timeline reads `/api/v1/wind` instead: `WindTimelineMapper`
+     map's forecast timeline reads `/api/v1/wind` instead: `HourlyForecastMapper`
      projects every spot's hourly GFS forecast onto one 120-hour grid and emits
      wind/gusts/direction as parallel arrays (~30 KB gzipped)
 
@@ -431,6 +445,11 @@ The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
 2. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
 3. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
+
+Note: the hourly block is ~72 rows carrying every forecast variable, which makes
+a prompt of roughly 1300 tokens for a coastal spot and 1135 for an inland one
+(no wave columns) - about 4x the original daily-averages prompt. Lower
+`AiService.DETAILED_HOURS` or raise `COARSE_STRIDE` to trade precision for tokens.
 
 ## Important Notes for AI Assistants
 

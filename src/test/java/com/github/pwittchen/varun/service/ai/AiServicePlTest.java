@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.ai;
 
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,13 +42,20 @@ class AiServicePlTest {
         aiServicePl = new AiServicePl(chatClient);
     }
 
+    private void mockChatResponse(String... chunks) {
+        when(chatClient.prompt()).thenReturn(requestSpec);
+        when(requestSpec.user(anyString())).thenReturn(requestSpec);
+        when(requestSpec.stream()).thenReturn(streamSpec);
+        when(streamSpec.content()).thenReturn(Flux.just(chunks));
+    }
+
     @Test
     void shouldReturnEmptyWhenSpotNameIsEmpty() {
         // given
-        var spot = createSpot("", "Poland", List.of(createForecast()));
+        var spot = createSpot("", "Polska");
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        var result = aiServicePl.fetchAiAnalysis(spot, createHourlyForecast());
 
         // then
         StepVerifier.create(result)
@@ -60,10 +68,10 @@ class AiServicePlTest {
     @Test
     void shouldReturnEmptyWhenCountryIsEmpty() {
         // given
-        var spot = createSpot("Hel", "", List.of(createForecast()));
+        var spot = createSpot("Hel", "");
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        var result = aiServicePl.fetchAiAnalysis(spot, createHourlyForecast());
 
         // then
         StepVerifier.create(result)
@@ -74,28 +82,13 @@ class AiServicePlTest {
     }
 
     @Test
-    void shouldReturnEmptyWhenForecastIsEmpty() {
-        // given
-        var spot = createSpot("Hel", "Poland", List.of());
+    void shouldReturnEmptyWhenHourlyForecastIsEmpty() {
+        // given - the hourly forecast is the only weather data the prompt carries,
+        // so without it there is nothing to write an analysis from
+        var spot = createSpot("Hel", "Polska");
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
-
-        // then
-        StepVerifier.create(result)
-                .expectNextCount(0)
-                .verifyComplete();
-
-        verify(chatClient, never()).prompt();
-    }
-
-    @Test
-    void shouldReturnEmptyWhenAllFieldsAreEmpty() {
-        // given
-        var spot = createSpot("", "", List.of());
-
-        // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        var result = aiServicePl.fetchAiAnalysis(spot, new HourlyForecast(123, List.of()));
 
         // then
         StepVerifier.create(result)
@@ -108,19 +101,14 @@ class AiServicePlTest {
     @Test
     void shouldFetchAiAnalysisSuccessfully() {
         // given
-        var spot = createSpot("Hel", "Polska", List.of(createForecast()));
+        var spot = createSpot("Hel", "Polska");
         var aiResponse = "Dobre warunki do kitesurfingu z wiatrem 15 kts NW.";
 
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Dobre ", "warunki ", "do ", "kitesurfingu ", "z ", "wiatrem ", "15 ", "kts ", "NW."));
+        mockChatResponse("Dobre ", "warunki ", "do ", "kitesurfingu ", "z ", "wiatrem ", "15 ", "kts ", "NW.");
 
-        // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
-
-        // then
-        StepVerifier.create(result)
+        // when & then
+        StepVerifier.withVirtualTime(() -> aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()))
+                .thenAwait(Duration.ofSeconds(20))
                 .expectNext(aiResponse)
                 .verifyComplete();
 
@@ -133,26 +121,22 @@ class AiServicePlTest {
     @Test
     void shouldApplyDelayBetweenElements() {
         // given
-        var spot = createSpot("Hel", "Polska", List.of(createForecast()));
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Test ", "odpowiedź"));
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Test ", "odpowiedzi");
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        var result = aiServicePl.fetchAiAnalysis(spot, createHourlyForecast());
 
         // then
         StepVerifier.create(result)
-                .expectNext("Test odpowiedź")
+                .expectNext("Test odpowiedzi")
                 .verifyComplete();
     }
 
     @Test
     void shouldHandleEmptyStreamResponse() {
         // given
-        var spot = createSpot("Hel", "Polska", List.of(createForecast()));
+        var spot = createSpot("Hel", "Polska");
 
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(anyString())).thenReturn(requestSpec);
@@ -160,7 +144,7 @@ class AiServicePlTest {
         when(streamSpec.content()).thenReturn(Flux.empty());
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        var result = aiServicePl.fetchAiAnalysis(spot, createHourlyForecast());
 
         // then
         StepVerifier.create(result)
@@ -171,18 +155,14 @@ class AiServicePlTest {
     @Test
     void shouldConcatenateMultipleChunks() {
         // given
-        var spot = createSpot("Hel", "Polska", List.of(createForecast()));
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Część1", "Część2", "Część3"));
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Część1", "Część2", "Część3");
 
         // when & then
         // the 3 chunks are emitted at 1s, 2s and 3s by delayElements(), so awaiting 5s is enough.
         // awaiting longer would push virtual time past the 15s timeout() deadline of the last chunk
         // and let the timeout fire before completion is observed, which makes the test flaky.
-        StepVerifier.withVirtualTime(() -> aiServicePl.fetchAiAnalysis(spot))
+        StepVerifier.withVirtualTime(() -> aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()))
                 .thenAwait(Duration.ofSeconds(5))
                 .expectNext("Część1Część2Część3")
                 .verifyComplete();
@@ -191,61 +171,63 @@ class AiServicePlTest {
     @Test
     void shouldFormatPromptWithSpotData() {
         // given
-        var forecast = createForecast();
-        var spot = createSpot("Hel", "Polska", List.of(forecast));
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Odpowiedź"));
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Odpowiedź");
 
         // when
-        aiServicePl.fetchAiAnalysis(spot).block();
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
                 prompt.contains("Hel") &&
                         prompt.contains("Polska") &&
-                        prompt.contains("Mon 12:00|10.0|15.0|N|12.5|0.0") // TOON format
+                        // the full "Tue 28 Oct 2025 14:00" is shortened to save tokens
+                        prompt.contains("Tue 14:00|12|16|NW|21|0.4|40|1013|0.8|4|SW")
         ));
     }
 
     @Test
-    void shouldHandleMultipleForecastItems() {
+    void shouldCarryEveryForecastVariableInTheRows() {
         // given
-        var forecast1 = new Forecast("Pon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
-        var forecast2 = new Forecast("Pon 15:00", 12.0, 18.0, "NE", 15.0, 0.0, 0, 0);
-        var forecast3 = new Forecast("Pon 18:00", 8.0, 12.0, "E", 10.0, 1.0, 0, 0);
-        var spot = createSpot("Hel", "Polska", List.of(forecast1, forecast2, forecast3));
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Analiza"));
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Odpowiedź");
 
         // when
-        var result = aiServicePl.fetchAiAnalysis(spot);
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
 
         // then
-        StepVerifier.create(result)
-                .expectNext("Analiza")
-                .verifyComplete();
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("czas|wiatr|porywy|kierunek|temp|opady|zachmurzenie|ciśnienie|fala|okresFali|kierunekFali")
+        ));
+    }
+
+    @Test
+    void shouldDropWaveColumnsForInlandSpots() {
+        // given - three columns of dashes on every row of every lake is a lot of
+        // tokens spent saying nothing
+        var spot = createSpot("Zegrze", "Polska");
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, createInlandHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("czas|wiatr|porywy|kierunek|temp|opady|zachmurzenie|ciśnienie")
+                        && !prompt.contains("kierunekFali")
+                        && prompt.contains("Tue 14:00|12|16|NW|21|0.4|40|1013")
+        ));
     }
 
     @Test
     void shouldIncludeLlmCommentInPromptWhenProvided() {
         // given
-        var forecast = createForecast();
         var spotInfo = new SpotInfo("Plaża", "W, SW", "18-22°C", "Średniozaawansowany", "piaszczysty", "brak", "Wiosna, Lato", "Świetny spot", "Wiatr jest zazwyczaj silniejszy niż prognoza z powodu efektu termicznego z pobliskich gór.");
-        var spot = createSpotWithInfo("Hel", "Polska", List.of(forecast), spotInfo);
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Odpowiedź"));
+        var spot = createSpotWithInfo("Hel", "Polska", spotInfo);
+        mockChatResponse("Odpowiedź");
 
         // when
-        aiServicePl.fetchAiAnalysis(spot).block();
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
@@ -257,17 +239,12 @@ class AiServicePlTest {
     @Test
     void shouldNotIncludeLlmCommentSectionWhenEmpty() {
         // given
-        var forecast = createForecast();
         var spotInfo = new SpotInfo("Plaża", "W, SW", "18-22°C", "Średniozaawansowany", "piaszczysty", "brak", "Wiosna, Lato", "Świetny spot", "");
-        var spot = createSpotWithInfo("Hel", "Polska", List.of(forecast), spotInfo);
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Odpowiedź"));
+        var spot = createSpotWithInfo("Hel", "Polska", spotInfo);
+        mockChatResponse("Odpowiedź");
 
         // when
-        aiServicePl.fetchAiAnalysis(spot).block();
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
@@ -278,53 +255,55 @@ class AiServicePlTest {
     @Test
     void shouldUsePolishPromptTemplate() {
         // given
-        var forecast = createForecast();
-        var spot = createSpot("Hel", "Polska", List.of(forecast));
-
-        when(chatClient.prompt()).thenReturn(requestSpec);
-        when(requestSpec.user(anyString())).thenReturn(requestSpec);
-        when(requestSpec.stream()).thenReturn(streamSpec);
-        when(streamSpec.content()).thenReturn(Flux.just("Odpowiedź"));
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Odpowiedź");
 
         // when
-        aiServicePl.fetchAiAnalysis(spot).block();
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
 
         // then
         verify(requestSpec).user(argThat((String prompt) ->
                 prompt.contains("Jesteś profesjonalnym analitykiem pogodowym kitesurfingu") &&
                         prompt.contains("Spot:") &&
                         prompt.contains("Kraj:") &&
-                        prompt.contains("Dane prognozy")
+                        prompt.contains("Prognoza godzinowa")
         ));
     }
 
-    private Spot createSpot(String name, String country, List<Forecast> forecasts) {
-        return new Spot(
-                name,
-                country,
-                "https://windguru.cz/123",
-                null, // windguruFallbackUrl
-                null,
-                null,
-                null,
-                null,
-                null,
-                new ArrayList<>(),
-                new ArrayList<>(forecasts),
-                new ArrayList<>(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+    @Test
+    void shouldNotCarryDailyAveragesInPrompt() {
+        // given
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                !prompt.contains("Today|") && !prompt.contains("Tomorrow|")
+        ));
     }
 
-    private Spot createSpotWithInfo(String name, String country, List<Forecast> forecasts, SpotInfo spotInfo) {
+    private HourlyForecast createHourlyForecast() {
+        return new HourlyForecast(123, List.of(
+                new Forecast("Tue 28 Oct 2025 14:00", 12, 16, "NW", 21, 0.4, 40, 1013, 0.8, 4.0, "SW"),
+                new Forecast("Tue 28 Oct 2025 15:00", 14, 18, "N", 20, 0.0, 20, 1014, 0.6, 4.0, "SW")
+        ));
+    }
+
+    private HourlyForecast createInlandHourlyForecast() {
+        return new HourlyForecast(123, List.of(
+                new Forecast("Tue 28 Oct 2025 14:00", 12, 16, "NW", 21, 0.4, 40, 1013),
+                new Forecast("Tue 28 Oct 2025 15:00", 14, 18, "N", 20, 0.0, 20, 1014)
+        ));
+    }
+
+    private Spot createSpot(String name, String country) {
+        return createSpotWithInfo(name, country, null);
+    }
+
+    private Spot createSpotWithInfo(String name, String country, SpotInfo spotInfo) {
         return new Spot(
                 name,
                 country,
@@ -336,7 +315,7 @@ class AiServicePlTest {
                 null,
                 null,
                 new ArrayList<>(),
-                new ArrayList<>(forecasts),
+                new ArrayList<>(List.of(new Forecast("Today", 10.0, 15.0, "N", 12.5, 0.0, 0, 0))),
                 new ArrayList<>(),
                 null,
                 null,
@@ -348,9 +327,5 @@ class AiServicePlTest {
                 null,
                 null
         );
-    }
-
-    private Forecast createForecast() {
-        return new Forecast("Mon 12:00", 10.0, 15.0, "N", 12.5, 0.0, 0, 0);
     }
 }

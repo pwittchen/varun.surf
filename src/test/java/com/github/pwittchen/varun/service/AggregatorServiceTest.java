@@ -3,7 +3,7 @@ package com.github.pwittchen.varun.service;
 import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
-import com.github.pwittchen.varun.mapper.WindTimelineMapper;
+import com.github.pwittchen.varun.mapper.HourlyForecastMapper;
 import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.map.Coordinates;
@@ -40,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -71,7 +72,7 @@ class AggregatorServiceTest {
     @Mock
     private IcmGridMapper icmGridMapper;
 
-    private final WindTimelineMapper windTimelineMapper = new WindTimelineMapper();
+    private final HourlyForecastMapper hourlyForecastMapper = new HourlyForecastMapper();
 
     @Mock
     private IcmForecastVisionService icmForecastVisionService;
@@ -94,7 +95,7 @@ class AggregatorServiceTest {
                 aiServicePl,
                 googleMapsService,
                 icmGridMapper,
-                windTimelineMapper,
+                hourlyForecastMapper,
                 icmForecastVisionService,
                 sponsorsService,
                 metricsService
@@ -344,7 +345,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiServiceEn, never()).fetchAiAnalysis(any());
+        verify(aiServiceEn, never()).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -354,7 +355,7 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just("AI analysis result"));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("AI analysis result"));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
@@ -363,7 +364,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiServiceEn).fetchAiAnalysis(any());
+        verify(aiServiceEn).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -419,7 +420,7 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just(""));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
@@ -428,7 +429,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursEn();
 
         // then
-        verify(aiServiceEn).fetchAiAnalysis(any());
+        verify(aiServiceEn).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -444,7 +445,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
 
         // then
-        verify(aiServicePl, never()).fetchAiAnalysis(any());
+        verify(aiServicePl, never()).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -454,7 +455,7 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Analiza AI"));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Analiza AI"));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
@@ -463,7 +464,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
 
         // then
-        verify(aiServicePl).fetchAiAnalysis(any());
+        verify(aiServicePl).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -473,7 +474,7 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just(""));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just(""));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
@@ -482,7 +483,7 @@ class AggregatorServiceTest {
         aggregatorService.fetchAiAnalysisEveryEightHoursPl();
 
         // then
-        verify(aiServicePl).fetchAiAnalysis(any());
+        verify(aiServicePl).fetchAiAnalysis(any(), any());
     }
 
     @Test
@@ -495,8 +496,8 @@ class AggregatorServiceTest {
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
 
         // First spot completes quickly, second spot is slow
-        when(aiServicePl.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analiza dla spotu 1"));
-        when(aiServicePl.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
+        when(aiServicePl.fetchAiAnalysis(eq(spot1), any())).thenReturn(Mono.just("Analiza dla spotu 1"));
+        when(aiServicePl.fetchAiAnalysis(eq(spot2), any())).thenAnswer(invocation -> {
             Thread.sleep(300);
             return Mono.just("Analiza dla spotu 2");
         });
@@ -540,8 +541,8 @@ class AggregatorServiceTest {
         ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(aiServiceEn.fetchAiAnalysis(any())).thenReturn(Mono.just("English AI analysis"));
-        when(aiServicePl.fetchAiAnalysis(any())).thenReturn(Mono.just("Polska analiza AI"));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Polska analiza AI"));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
@@ -578,8 +579,8 @@ class AggregatorServiceTest {
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot1, spot2));
 
         // First spot completes quickly, second spot is slow
-        when(aiServiceEn.fetchAiAnalysis(spot1)).thenReturn(Mono.just("Analysis for spot 1"));
-        when(aiServiceEn.fetchAiAnalysis(spot2)).thenAnswer(invocation -> {
+        when(aiServiceEn.fetchAiAnalysis(eq(spot1), any())).thenReturn(Mono.just("Analysis for spot 1"));
+        when(aiServiceEn.fetchAiAnalysis(eq(spot2), any())).thenAnswer(invocation -> {
             Thread.sleep(300);
             return Mono.just("Analysis for spot 2");
         });

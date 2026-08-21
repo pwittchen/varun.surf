@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.metrics.SpotsControllerMetrics;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -42,6 +43,22 @@ public class SpotsController {
     public Mono<WindTimeline> wind() {
         metrics.incrementWindRequestCounter();
         return Mono.fromSupplier(aggregatorService::getWindTimeline);
+    }
+
+    /**
+     * One spot's hourly forecast on the same grid, with every field the all-spots
+     * wind timeline has to leave out for size: temperature, rain, cloud, pressure
+     * and waves alongside the wind. A spot with no forecast cached yet answers with
+     * an empty list of hours; an unknown one 404s.
+     */
+    @GetMapping("forecast/{wgId}")
+    public Mono<ResponseEntity<HourlyForecast>> forecast(@PathVariable int wgId) {
+        metrics.incrementForecastRequestCounter();
+        return Mono
+                .fromSupplier(() -> aggregatorService.getHourlyForecast(wgId))
+                .map(forecast -> forecast
+                        .map(ResponseEntity::ok)
+                        .orElseGet(() -> ResponseEntity.notFound().build()));
     }
 
     @GetMapping("spots/{id}")

@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.mapper;
 
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,18 +14,18 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 
-class WindTimelineMapperTest {
+class HourlyForecastMapperTest {
 
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm", Locale.ENGLISH);
 
     private static final LocalDateTime START = LocalDateTime.of(2025, 10, 28, 14, 0);
 
-    private WindTimelineMapper mapper;
+    private HourlyForecastMapper mapper;
 
     @BeforeEach
     void setUp() {
-        mapper = new WindTimelineMapper();
+        mapper = new HourlyForecastMapper();
     }
 
     private Forecast forecastAt(LocalDateTime time, double wind, double gusts, String direction) {
@@ -169,5 +170,95 @@ class WindTimelineMapperTest {
 
         assertThat(timeline.hours()).isEmpty();
         assertThat(timeline.spots()).isEmpty();
+    }
+
+    // ========================================================================
+    // Full hourly forecast for a single spot
+    // ========================================================================
+
+    private Forecast fullForecastAt(LocalDateTime time) {
+        return new Forecast(time.format(FORMATTER), 12, 16, "NW", 21, 0.4, 40, 1013, 0.8, 4.0, "SW");
+    }
+
+    @Test
+    void shouldKeepEveryForecastFieldOnTheGrid() {
+        HourlyForecast forecast = mapper.toHourlyForecast(
+                1, List.of(fullForecastAt(START)), START, 1);
+
+        assertThat(forecast.wgId()).isEqualTo(1);
+        assertThat(forecast.hours()).hasSize(1);
+
+        Forecast hour = forecast.hours().getFirst();
+        assertThat(hour.date()).isEqualTo("Tue 28 Oct 2025 14:00");
+        assertThat(hour.wind()).isEqualTo(12.0);
+        assertThat(hour.gusts()).isEqualTo(16.0);
+        assertThat(hour.direction()).isEqualTo("NW");
+        assertThat(hour.temp()).isEqualTo(21.0);
+        assertThat(hour.precipitation()).isEqualTo(0.4);
+        assertThat(hour.cloudCoverPercent()).isEqualTo(40.0);
+        assertThat(hour.pressureHpa()).isEqualTo(1013.0);
+        assertThat(hour.wave()).isEqualTo(0.8);
+        assertThat(hour.wavePeriod()).isEqualTo(4.0);
+        assertThat(hour.waveDirection()).isEqualTo("SW");
+    }
+
+    @Test
+    void shouldRestampHeldForwardHoursToTheirGridHour() {
+        // a three-hourly sample stands in for the two hours after it, and each row
+        // has to say which hour it stands in - not the hour the forecast was made for
+        HourlyForecast forecast = mapper.toHourlyForecast(
+                1, List.of(fullForecastAt(START)), START, 3);
+
+        assertThat(forecast.hours()).hasSize(3);
+        assertThat(forecast.hours().stream().map(Forecast::date))
+                .containsExactly(
+                        "Tue 28 Oct 2025 14:00",
+                        "Tue 28 Oct 2025 15:00",
+                        "Tue 28 Oct 2025 16:00"
+                ).inOrder();
+    }
+
+    @Test
+    void shouldLeaveOutHoursTheForecastSaysNothingAbout() {
+        // rather than emit zeros, which would read as a calm, rainless hour
+        HourlyForecast forecast = mapper.toHourlyForecast(
+                1, List.of(fullForecastAt(START), fullForecastAt(START.plusHours(5))), START, 6);
+
+        // hours 0-2 held forward from the first sample, 3-4 empty, 5 from the second
+        assertThat(forecast.hours()).hasSize(4);
+        assertThat(forecast.hours().stream().map(Forecast::date))
+                .containsExactly(
+                        "Tue 28 Oct 2025 14:00",
+                        "Tue 28 Oct 2025 15:00",
+                        "Tue 28 Oct 2025 16:00",
+                        "Tue 28 Oct 2025 19:00"
+                ).inOrder();
+    }
+
+    @Test
+    void shouldReturnEmptyHourlyForecastWhenNothingLandsOnTheGrid() {
+        HourlyForecast forecast = mapper.toHourlyForecast(
+                1, List.of(fullForecastAt(START.plusDays(9))), START, 3);
+
+        assertThat(forecast.wgId()).isEqualTo(1);
+        assertThat(forecast.isEmpty()).isTrue();
+    }
+
+    @Test
+    void shouldReturnEmptyHourlyForecastWithoutForecasts() {
+        assertThat(mapper.toHourlyForecast(1, List.of(), START, 3).isEmpty()).isTrue();
+        assertThat(mapper.toHourlyForecast(1, null, START, 3).isEmpty()).isTrue();
+        assertThat(mapper.toHourlyForecast(1, List.of(fullForecastAt(START)), START, 0).isEmpty()).isTrue();
+    }
+
+    @Test
+    void shouldKeepNullWaveFieldsForInlandSpots() {
+        HourlyForecast forecast = mapper.toHourlyForecast(
+                1, List.of(forecastAt(START, 12, 16, "N")), START, 1);
+
+        Forecast hour = forecast.hours().getFirst();
+        assertThat(hour.wave()).isNull();
+        assertThat(hour.wavePeriod()).isNull();
+        assertThat(hour.waveDirection()).isNull();
     }
 }

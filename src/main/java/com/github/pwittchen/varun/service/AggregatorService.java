@@ -6,12 +6,13 @@ import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
-import com.github.pwittchen.varun.mapper.WindTimelineMapper;
+import com.github.pwittchen.varun.mapper.HourlyForecastMapper;
 import com.github.pwittchen.varun.metrics.AggregatorServiceMetrics;
 import com.github.pwittchen.varun.model.forecast.AvailableModel;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
 import com.github.pwittchen.varun.model.forecast.ForecastModel;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.live.filter.CurrentConditionsEmptyFilter;
@@ -123,7 +124,7 @@ public class AggregatorService {
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
     private final IcmGridMapper icmGridMapper;
-    private final WindTimelineMapper windTimelineMapper;
+    private final HourlyForecastMapper hourlyForecastMapper;
     private final IcmForecastVisionService icmForecastVisionService;
     private final SponsorsService sponsorsService;
     private final AggregatorServiceMetrics metricsService;
@@ -145,7 +146,7 @@ public class AggregatorService {
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
             IcmGridMapper icmGridMapper,
-            WindTimelineMapper windTimelineMapper,
+            HourlyForecastMapper hourlyForecastMapper,
             IcmForecastVisionService icmForecastVisionService,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
@@ -169,7 +170,7 @@ public class AggregatorService {
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
         this.icmGridMapper = icmGridMapper;
-        this.windTimelineMapper = windTimelineMapper;
+        this.hourlyForecastMapper = hourlyForecastMapper;
         this.icmForecastVisionService = icmForecastVisionService;
         this.sponsorsService = sponsorsService;
         this.metricsService = metricsService;
@@ -255,7 +256,32 @@ public class AggregatorService {
             }
         });
 
-        return windTimelineMapper.toWindTimeline(hourlyBySpotId, LocalDateTime.now(), WIND_TIMELINE_HOURS);
+        return hourlyForecastMapper.toWindTimeline(hourlyBySpotId, LocalDateTime.now(), WIND_TIMELINE_HOURS);
+    }
+
+    /**
+     * One spot's full hourly forecast on the same grid - wind, temperature, rain,
+     * cloud, pressure and waves. A single spot can afford the fields the all-spots
+     * timeline has to leave out.
+     *
+     * An unknown spot is empty here, so the endpoint can answer 404. A known spot
+     * whose forecast hasn't been fetched yet is a present but empty forecast,
+     * which says "nothing for this spot yet" rather than "no such spot".
+     *
+     * @param wgId Windguru id of the spot
+     * @return the spot's hourly forecast, or empty when no such spot exists
+     */
+    public Optional<HourlyForecast> getHourlyForecast(int wgId) {
+        if (!spots.containsKey(wgId)) {
+            return Optional.empty();
+        }
+
+        ForecastData data = forecastCache.get(wgId);
+        List<Forecast> hourly = data == null ? List.of() : data.hourly(ForecastModel.GFS);
+
+        return Optional.of(
+                hourlyForecastMapper.toHourlyForecast(wgId, hourly, LocalDateTime.now(), WIND_TIMELINE_HOURS)
+        );
     }
 
     public int countSpots() {
@@ -924,7 +950,14 @@ public class AggregatorService {
                     .map(spot -> scope.fork(() -> {
                         aiLimiter.acquire();
                         try {
-                            var analysis = aiService.fetchAiAnalysis(spot).block();
+                            // The spots held here carry the daily rows only (hourly
+                            // forecasts are deliberately not kept on them), so the
+                            // hourly forecast comes from the same source
+                            // /api/v1/forecast/{wgId} serves - which is what lets the
+                            // summary name hours instead of days.
+                            var hourly = getHourlyForecast(spot.wgId())
+                                    .orElseGet(() -> new HourlyForecast(spot.wgId(), List.of()));
+                            var analysis = aiService.fetchAiAnalysis(spot, hourly).block();
                             updateAiAnalysisCache(spot.wgId(), analysis, cache);
                             return Pair.with(spot.wgId(), analysis);
                         } finally {

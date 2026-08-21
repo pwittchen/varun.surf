@@ -40,6 +40,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
     ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
+    ├─→ /api/v1/forecast/{wgId} (one spot's full hourly forecast: wind, temp, rain, cloud, pressure, waves)
     ├─→ /api/v1/sponsors (sponsors list)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/metrics (application metrics, password-protected)
@@ -169,7 +170,21 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
   - 19-25 kts: small kite (9-10 m²)
   - 28+ kts: very small kite (5-7 m²)
 - Custom context: `SpotInfo.llmComment` for spot-specific instructions
-- Output: 2-3 sentence objective summary (no emojis)
+- Forecast data: the spot's `HourlyForecast` - the same data
+  `/api/v1/forecast/{wgId}` serves (TOON:
+  `time|wind|gust|dir|temp|rain|cloud|pressure` plus `|wave|wavePeriod|waveDir`
+  for spots that have waves). Daily averages used to be included and were
+  dropped: they hide the hours a session actually happens in
+- Resolution: hourly for `AiService.DETAILED_HOURS` (48), then every
+  `COARSE_STRIDE` (3) hours, which is what Windguru itself provides past ~3 days
+  (~72 rows over 5 days)
+- Wave columns are dropped for spots with no wave data, so the header never
+  promises a column the rows don't carry
+- Lets the summary name hour ranges ("Saturday 13:00-18:00") and catch rideable
+  windows a daily average hides
+- A spot with no hourly forecast gets no analysis; nothing else in the prompt
+  carries a forecast
+- Output: 3-4 sentence objective summary (no emojis)
 
 **Streaming Implementation**:
 ```java
@@ -214,10 +229,16 @@ chatClient.prompt().user(prompt)
 - `GET /api/v1/wind` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
   - `/api/v1/spots` strips `forecastHourly` (megabytes across ~230 spots), so the
     map's forecast timeline reads this instead
-  - `WindTimelineMapper` projects each spot's hourly GFS forecast onto a 120-hour
+  - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto a 120-hour
     grid and emits wind/gusts/direction as parallel arrays (~30 KB gzipped);
     samples are held forward across the three-hourly stride the forecast drops to
     after ~3 days
+- `GET /api/v1/forecast/{wgId}` - One spot's full hourly forecast (Mono<ResponseEntity<HourlyForecast>>)
+  - Same grid, but every field: wind, gusts, direction, temp, rain, cloud,
+    pressure and waves. A single spot can afford what the all-spots timeline
+    has to leave out (~24 KB vs ~210 KB for all spots' wind alone)
+  - 404 for an unknown spot; a known spot with no forecast cached yet is 200 with
+    no hours
 
 **Response Processing**:
 - Enriches spots with cached forecasts, conditions, AI analysis
