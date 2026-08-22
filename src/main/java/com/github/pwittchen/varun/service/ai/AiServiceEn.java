@@ -36,6 +36,12 @@ public class AiServiceEn extends AiService {
             window even on a day that is mostly light. The rows run from the current
             hour, one per hour for the first two days and every three hours after that.
 
+            The rows carry daylight hours only (roughly 06:00-21:00); night hours are
+            left out on purpose, because nobody rides in the dark. Analyse only the
+            hours that are present: never describe conditions at night, never say a
+            night hour is missing, and never place a rideable window outside the hours
+            listed in the data.
+
             Kite size logic:
             - Below 8 kts: riding is not possible.
             - 8–11 kts: riding possible only with a foil.

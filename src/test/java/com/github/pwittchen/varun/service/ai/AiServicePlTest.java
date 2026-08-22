@@ -308,6 +308,42 @@ class AiServicePlTest {
     }
 
     @Test
+    void shouldTellTheModelNotToAnalyseNightHours() {
+        // given
+        var spot = createSpot("Hel", "Polska");
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("wyłącznie godziny dzienne") &&
+                        prompt.contains("nie opisuj warunków nocnych")
+        ));
+    }
+
+    @Test
+    void shouldDropNightHoursFromTheRows() {
+        // given - nobody rides in the dark, so night rows are noise in the answer
+        // and tokens in the prompt
+        var spot = createSpot("Hel", "Polska");
+        var hourly = new HourlyForecast(123, List.of(
+                new Forecast("Tue 28 Oct 2025 03:00", 20, 25, "N", 12, 0.0, 10, 1013),
+                new Forecast("Tue 28 Oct 2025 14:00", 12, 16, "NW", 21, 0.4, 40, 1013)
+        ));
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, hourly).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("Tue 14:00|") && !prompt.contains("Tue 03:00|")
+        ));
+    }
+
+    @Test
     void shouldNotCarryDailyAveragesInPrompt() {
         // given
         var spot = createSpot("Hel", "Polska");

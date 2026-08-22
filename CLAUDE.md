@@ -125,7 +125,13 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
    - Rows are hourly for the first `AiService.DETAILED_HOURS` (48) hours, then
      every `COARSE_STRIDE` (3) hours - which is the resolution Windguru itself
      drops to after ~3 days, so the skipped rows would only repeat held-forward
-     values. ~72 rows over 5 days
+     values
+   - Night rows are dropped: only hours between `FIRST_DAY_HOUR` (6) and
+     `LAST_DAY_HOUR` (21) reach the prompt, and the prompt tells the model to
+     analyse only the hours present, so it never names a 03:00 window. ~48 rows
+     over 5 days (a third fewer than with nights). The window is generous on
+     purpose - the same constants serve a Baltic summer evening and a Canarian
+     winter morning
    - The three wave columns are dropped for spots with no wave data (inland
      lakes), so the header never promises a column the rows don't carry
    - A spot with no hourly forecast gets no analysis at all (rather than one
@@ -451,10 +457,11 @@ The AI forecast analysis is disabled by default because:
 2. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
 3. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
 
-Note: the hourly block is ~72 rows carrying every forecast variable, which makes
-a prompt of roughly 1300 tokens for a coastal spot and 1135 for an inland one
-(no wave columns) - about 4x the original daily-averages prompt. Lower
-`AiService.DETAILED_HOURS` or raise `COARSE_STRIDE` to trade precision for tokens.
+Note: the hourly block is ~48 daylight rows carrying every forecast variable,
+which makes a prompt of roughly 950 tokens for a coastal spot and 850 for an
+inland one (no wave columns). Lower `AiService.DETAILED_HOURS`, raise
+`COARSE_STRIDE`, or narrow the `FIRST_DAY_HOUR`/`LAST_DAY_HOUR` window to trade
+precision for tokens.
 
 ## Important Notes for AI Assistants
 

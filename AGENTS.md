@@ -179,7 +179,9 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
   dropped: they hide the hours a session actually happens in
 - Resolution: hourly for `AiService.DETAILED_HOURS` (48), then every
   `COARSE_STRIDE` (3) hours, which is what Windguru itself provides past ~3 days
-  (~72 rows over 5 days)
+- Daylight only: rows outside `FIRST_DAY_HOUR` (6) - `LAST_DAY_HOUR` (21) are
+  dropped, and the prompt tells the model to analyse only the hours present, so
+  it never names a night window (~48 rows over 5 days)
 - Wave columns are dropped for spots with no wave data, so the header never
   promises a column the rows don't carry
 - Lets the summary name hour ranges ("Saturday 13:00-18:00") and catch rideable

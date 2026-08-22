@@ -324,10 +324,72 @@ class AiServiceEnTest {
 
         // then
         verify(requestSpec).user(argThat((String prompt) -> {
-            long rows = prompt.lines().filter(line -> line.matches("\\w{3} \\d{2}:\\d{2}\\|.*")).count();
-            // 48 hourly rows + (120 - 48) / 3 coarse rows
-            return rows == 48 + 24;
+            long rows = countRows(prompt);
+            // the grid starts at 14:00, so of the 48 hourly rows 32 fall in daylight
+            // (8 on the first evening, 16 on the full day, 8 on the last morning), and
+            // of the 24 coarse rows 15 do - the rest are night and are dropped
+            return rows == 32 + 15;
         }));
+    }
+
+    @Test
+    void shouldDropNightHoursFromTheRows() {
+        // given - nobody rides in the dark, so night rows are noise in the answer
+        // and tokens in the prompt
+        var spot = createSpot("Hel", "Poland");
+        mockChatResponse("Response");
+
+        // when
+        aiServiceEn.fetchAiAnalysis(spot, createFullGrid()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                countRows(prompt) > 0 && rowHours(prompt).allMatch(hour -> hour >= 6 && hour <= 21)
+        ));
+    }
+
+    @Test
+    void shouldKeepBothEndsOfTheDaylightWindow() {
+        // given
+        var spot = createSpot("Hel", "Poland");
+        mockChatResponse("Response");
+
+        // when
+        aiServiceEn.fetchAiAnalysis(spot, createFullGrid()).block();
+
+        // then - 06:00 and 21:00 are in, the hours either side of them are not
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains(shortHour(START.plusHours(16)) + "|")   // 06:00
+                        && prompt.contains(shortHour(START.plusHours(31)) + "|")   // 21:00
+                        && !prompt.contains(shortHour(START.plusHours(15)) + "|")  // 05:00
+                        && !prompt.contains(shortHour(START.plusHours(32)) + "|")  // 22:00
+        ));
+    }
+
+    @Test
+    void shouldTellTheModelNotToAnalyseNightHours() {
+        // given
+        var spot = createSpot("Hel", "Poland");
+        mockChatResponse("Response");
+
+        // when
+        aiServiceEn.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("daylight hours only")
+                        && prompt.contains("never describe conditions at night")
+        ));
+    }
+
+    private long countRows(String prompt) {
+        return prompt.lines().filter(line -> line.matches("\\w{3} \\d{2}:\\d{2}\\|.*")).count();
+    }
+
+    private java.util.stream.IntStream rowHours(String prompt) {
+        return prompt.lines()
+                .filter(line -> line.matches("\\w{3} \\d{2}:\\d{2}\\|.*"))
+                .mapToInt(line -> Integer.parseInt(line.substring(4, 6)));
     }
 
     @Test

@@ -23,6 +23,14 @@ public abstract class AiService {
     // them would spend tokens repeating values the forecast never made.
     private static final int COARSE_STRIDE = 3;
 
+    // Kitesurfing is a daylight sport, so night rows are dropped: nobody rides in
+    // them, and an analysis that names a 03:00 window is worse than useless. The
+    // window is deliberately generous - wide enough for a Baltic summer evening
+    // and a Canarian winter morning - since the exact sunset is a spot's own
+    // business. Roughly a third of the rows go, and the tokens with them.
+    private static final int FIRST_DAY_HOUR = 6;
+    private static final int LAST_DAY_HOUR = 21;
+
     private final ChatClient chatClient;
 
     public AiService(ChatClient chatClient) {
@@ -98,10 +106,13 @@ public abstract class AiService {
 
     /**
      * Thin the aligned forecast down to the rows the prompt carries: every hour
-     * while the exact hour still decides a session, every third hour after that.
+     * while the exact hour still decides a session, every third hour after that,
+     * and daylight hours only.
      *
      * The forecast is already aligned to whole hours from now, so index and hour
-     * are the same thing and the stride can be applied by position.
+     * are the same thing and the stride can be applied by position. Night rows are
+     * dropped after the stride, not before, so that skipping them never shifts
+     * which hours of the day the coarse part of the grid lands on.
      */
     protected List<Forecast> selectRows(HourlyForecast hourly) {
         if (hourly == null || hourly.isEmpty()) {
@@ -111,9 +122,41 @@ public abstract class AiService {
         List<Forecast> hours = hourly.hours();
         List<Forecast> selected = new ArrayList<>();
         for (int hour = 0; hour < hours.size(); hour += hour < DETAILED_HOURS ? 1 : COARSE_STRIDE) {
-            selected.add(hours.get(hour));
+            Forecast row = hours.get(hour);
+            if (isDaylight(row)) {
+                selected.add(row);
+            }
         }
         return selected;
+    }
+
+    /**
+     * Whether a row falls inside the daylight window. A row whose hour cannot be
+     * read is kept: dropping data on a parsing failure would silently shrink the
+     * forecast the analysis is written from.
+     */
+    protected boolean isDaylight(Forecast row) {
+        int hourOfDay = hourOfDay(row.date());
+        return hourOfDay < 0 || (hourOfDay >= FIRST_DAY_HOUR && hourOfDay <= LAST_DAY_HOUR);
+    }
+
+    /**
+     * The hour of day in "Sat 22 Aug 2026 14:00", or -1 when the stamp does not
+     * carry one.
+     */
+    private int hourOfDay(String date) {
+        if (date == null) {
+            return -1;
+        }
+        String[] parts = date.split(" ");
+        if (parts.length < 5) {
+            return -1;
+        }
+        try {
+            return Integer.parseInt(parts[4].split(":")[0]);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     /**

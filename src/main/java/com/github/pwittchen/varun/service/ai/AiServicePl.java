@@ -36,6 +36,11 @@ public class AiServicePl extends AiService {
             nawet w dniu, który w większości jest słaby. Wiersze zaczynają się od bieżącej
             godziny — co godzinę przez pierwsze dwa dni, a dalej co trzy godziny.
 
+            Dane obejmują wyłącznie godziny dzienne (mniej więcej 06:00–21:00) — godziny
+            nocne są celowo pominięte, bo po ciemku nikt nie pływa. Analizuj tylko
+            godziny, które są w danych: nie opisuj warunków nocnych, nie pisz, że godzin
+            nocnych brakuje, i nie wskazuj okna do pływania poza godzinami z danych.
+
             Logika doboru rozmiaru latawca:
             - Poniżej 8 kts: pływanie niemożliwe
             - 8–11 kts: pływanie tylko na foilu
