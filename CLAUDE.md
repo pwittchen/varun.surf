@@ -8,23 +8,25 @@
 
 ## Tech Stack
 
-- **Backend**: Spring Boot 3.5.9 (Reactive WebFlux)
-- **Java**: Version 24 with preview features enabled
+- **Backend**: Spring Boot 3.5.16 (Reactive WebFlux)
+- **Java**: Version 25 with preview features enabled
 - **Build Tool**: Gradle
 - **Frontend Build**: Bun (replaces npm for faster builds)
 - **Dependencies**:
   - Spring WebFlux (reactive, non-blocking)
   - Spring Security (authentication for protected endpoints)
   - Spring AI 1.0.2 (OpenAI integration for forecast analysis)
+  - Spring AI MCP server (WebFlux SSE transport)
   - Spring Actuator with Micrometer/Prometheus metrics
+  - Spring AOP (retries via @Retryable)
   - OkHttp 4.12.0 (HTTP client)
-  - Gson 2.13.2 (JSON serialization)
+  - Gson 2.14.0 (JSON serialization)
   - JavaTuples 1.2
-  - Guava 33.5.0-jre (EvictingQueue for metrics/logs history)
+  - Guava 33.7.1-jre (EvictingQueue for metrics/logs history)
   - spring-dotenv 4.0.0 (environment variable loading)
 - **Containerization**: Docker with GHCR deployment
 - **Frontend**: Vanilla JavaScript (static/index.html)
-- **Testing**: JUnit 5, Truth 1.4.5, MockWebServer, Playwright 1.49.0 (E2E), Jacoco 0.8.13 (coverage)
+- **Testing**: JUnit 5, Truth 1.4.5, MockWebServer, Playwright 1.62.0 (E2E), Jacoco 0.8.13 (coverage)
 
 ## Architecture Overview
 
@@ -41,13 +43,16 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/forecast/{wgId} (one spot's full hourly forecast: wind, temp, rain, cloud, pressure, waves)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
     ├─→ /api/v1/status (system status, uptime, counts)
+    ├─→ /api/v1/status/history (health check history, uptime %, latency)
+    ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
     ├─→ /api/v1/metrics (application metrics, password-protected)
     ├─→ /api/v1/logs (application logs, password-protected)
-    └─→ /api/v1/health (health check)
+    ├─→ /api/v1/health (health check)
+    └─→ /llms/*.md (LLM-friendly Markdown for spots and countries)
     ↓
-AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
+AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
     ├─→ ForecastService → Windguru micro API (GFS & IFS models)
-    ├─→ CurrentConditionsService → Multiple station providers (9 strategies)
+    ├─→ CurrentConditionsService → Multiple station providers (14 strategies)
     ├─→ GoogleMapsService → Google Maps (URL resolver, coordinates)
     ├─→ AiServiceEn/AiServicePl → LLM (OpenAI, language-specific)
     ├─→ MetricsHistoryService → Prometheus metrics with history
@@ -61,8 +66,9 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
    - Central orchestrator with multiple scheduled tasks:
      - Forecasts: every 3 hours (GFS model, daily + hourly)
      - Current conditions: every 1 minute
-     - AI analysis: every 8 hours (if enabled)
-   - Uses Java 24 StructuredTaskScope with virtual threads for concurrent execution
+     - ICM meteograms: every 3 hours for Polish/Czech spots (if enabled)
+     - AI analysis: every 8 hours, EN and PL separately (if enabled)
+   - Uses Java 25 StructuredTaskScope with virtual threads for concurrent execution
    - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI, 16 model discovery)
    - Maintains multiple in-memory caches (ConcurrentHashMap):
      - forecastCache: Map<Integer, ForecastData(daily, Map<ForecastModel, List<Forecast>>)>
@@ -71,6 +77,7 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - aiAnalysisEn/aiAnalysisPl: Map<Integer, String> (language-specific)
      - hourlyForecastCacheTimestamps: Map<Integer, Long> (3h TTL)
      - locationCoordinates: Map<Integer, Coordinates>
+     - icmUrls: Map<Integer, String> (resolved ICM meteogram URLs)
      - spotPhotos: Map<Integer, String>
      - spots: ConcurrentMap<Integer, Spot>
    - On-demand IFS model fetching when single spot is accessed
@@ -85,16 +92,21 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 
 3. **CurrentConditionsService** (`service/live/CurrentConditionsService.java`)
    - Uses strategy pattern for different weather station providers
-   - 9 strategy implementations for weather stations:
+   - 14 strategy implementations for weather stations:
      - WiatrKadynyStations (Poland - multiple locations)
      - Podersdorf (Austria - Neusiedler See)
+     - PodersdorfScpodo (Austria - Podersdorf, scpodo.at fallback)
      - Puck (Poland)
      - Turawa (Poland)
+     - TurawaWunderground (Poland - Turawa South, Weather Underground PWS)
      - MB (Poland - Mrzeżyno)
      - TarifaArteVida (Spain - Tarifa)
      - Mietkow (Poland)
      - Svencele (Lithuania)
      - ElMedano (Spain - Tenerife)
+     - LeBarcares (France - winds-up.com)
+     - Prasonisi (Greece - Rhodes)
+     - Silvaplana (Switzerland - kitesailing.ch)
    - Scrapes/parses real-time wind data from station websites
    - Filters empty conditions (not cached)
    - Returns current wind speed, gusts, direction, temperature, timestamp
@@ -162,14 +174,15 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 7. **StatusController** (`controller/StatusController.java`)
    - REST API endpoints:
      - `GET /api/v1/health` - simple health check
-     - `GET /api/v1/status` - detailed status (version, uptime, spots/countries count)
+     - `GET /api/v1/status` - detailed status (version, uptime, spots/countries/live stations count)
+     - `GET /api/v1/status/history` - health check history with uptime % and average latency
+     - `GET /api/v1/status/sources` - forecast, live station and spots data sources (forecast sources pinged live)
    - Returns application status and statistics
 
 8. **MetricsController** (`controller/MetricsController.java`)
    - REST API endpoints:
      - `GET /api/v1/metrics` - application metrics (password-protected)
-     - `GET /api/v1/metrics/history` - metrics history over time
-     - `POST /api/v1/metrics/auth` - metrics authentication
+     - `GET /api/v1/metrics/history` - metrics history over time (60 points, sampled every 5s)
    - Exposes gauges, counters, timers, JVM metrics, HTTP client metrics
 
 9. **LogsController** (`controller/LogsController.java`)
@@ -195,8 +208,26 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 12. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
      - `GET /api/v1/sponsors` - main sponsors only (isMain=true)
-     - `GET /api/v1/sponsors/{id}` - single sponsor
    - Loads from sponsors.json at startup
+
+13. **LlmController** (`controller/LlmController.java`)
+   - Serves LLM-friendly Markdown (`text/markdown`) under `/llms`:
+     - `GET /llms/spots.md` - all spots with live conditions and forecast summary
+     - `GET /llms/spots/{id}.md` - single spot with full hourly forecast
+     - `GET /llms/countries.md` - country index
+     - `GET /llms/countries/{slug}.md` - spots in one country
+   - Rendered from the AggregatorService caches, no session cookie required
+
+14. **SeoController** (`controller/SeoController.java`)
+   - Server-rendered entry points for crawlers and link previews:
+     - `GET /spot/{id}` - single spot page with meta tags
+     - `GET /country/{countryName}` - country page with meta tags
+     - `GET /sitemap.xml` - sitemap covering all spots and countries
+
+15. **McpToolService** (`service/mcp/McpToolService.java`, `config/McpConfig.java`)
+   - Exposes the spot data as MCP tools: `list_spots`, `get_spot`, `find_spot_by_name`,
+     `list_countries`, `get_spots_by_country`, `get_status`
+   - Registered as a `ToolCallbackProvider` in `McpConfig`; see the MCP section of README.md
 
 ### Data Model
 
@@ -254,20 +285,23 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
 
 ### spots.json
 - Location: `src/main/resources/spots.json`
-- Contains ~102 kite spots worldwide (Poland, Austria, Denmark, Spain, Portugal, Italy, Brazil, Lithuania, Germany, etc.)
+- Contains ~230 kite spots across 32 countries (Poland, Netherlands, France, Spain, Italy, Greece, Germany, Denmark, Brazil, Egypt, South Africa, etc.)
 - Each spot includes: location, URLs (Windguru, Windfinder, ICM, webcam), spot info (water type, best wind, hazards, season)
 - Loaded on startup by `JsonSpotsDataProvider`
 
 ### External APIs
 - **micro.windguru.cz**: Text-based forecast exports (parsed with regex)
-- **Weather stations** (9 integrations):
+- **Weather stations** (14 integrations):
   - wiatrkadyny.pl (Poland - Kadyny, Puck, Mrzeżyno, etc.)
-  - kiteriders.at (Austria - Podersdorf)
-  - Turawa station (Poland)
+  - kiteriders.at and scpodo.at (Austria - Podersdorf)
+  - Turawa station and Weather Underground PWS (Poland - Turawa)
   - Mietków station (Poland)
   - Svencele station (Lithuania)
   - Tarifa Arte Vida (Spain)
   - El Medano (Tenerife, Spain)
+  - winds-up.com (France - Le Barcarès)
+  - prasonisi.com (Greece - Rhodes)
+  - kitesailing.ch (Switzerland - Silvaplana)
 
 ## Configuration
 
@@ -280,10 +314,15 @@ app:
       forecast:
         analysis:
           enabled: false        # AI analysis disabled by default
+    icm:
+      vision:
+        enabled: false          # ICM meteogram parsing disabled by default
   analytics:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
   session:
     max-age-seconds: 86400      # SESSION cookie max age (24 hours)
+  wunderground:
+    api-key: ${WUNDERGROUND_API_KEY:...}  # Weather Underground PWS (Turawa South)
 
 spring:
   ai:
@@ -292,6 +331,11 @@ spring:
       chat:
         options:
           model: gpt-4o-mini
+    mcp:
+      server:
+        enabled: true           # MCP server (SSE at /mcp/sse, messages at /mcp/message)
+        name: varun-surf
+        type: ASYNC
 
 management:
   endpoints:
@@ -330,7 +374,7 @@ docker run -p 8080:8080 varun-surf
 ## Development Practices
 
 ### Conventions
-- Java 24 with preview features enabled
+- Java 25 with preview features enabled
 - Reactive programming with WebFlux (avoid blocking operations)
 - In-memory caching (no database)
 - Scheduled data fetching (every 3 hours for forecasts, every 1 minute for current conditions)
@@ -375,37 +419,45 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SessionAuthenticationFilter.java # Session-based API access gating
 │   ├── CacheControlFilter.java # Cache-Control headers (cache busting)
 │   ├── LogAppenderConfig.java # In-memory log appender
+│   ├── McpConfig.java         # MCP tool callback provider
 │   └── LoggingFilter.java
 ├── controller/                # REST controllers
 │   ├── SpotsController.java
 │   ├── SponsorsController.java
 │   ├── StatusController.java
 │   ├── MetricsController.java
-│   └── LogsController.java
+│   ├── LogsController.java
+│   ├── LlmController.java     # /llms/*.md Markdown for LLMs
+│   └── SeoController.java     # /spot/{id}, /country/{name}, /sitemap.xml
 ├── data/                      # Data providers
 │   ├── spots/JsonSpotsDataProvider.java
 │   └── sponsors/JsonSponsorsDataProvider.java
 ├── exception/                 # Custom exceptions
 ├── mapper/                    # Data transformation
-│   └── WeatherForecastMapper.java
+│   ├── WeatherForecastMapper.java
+│   └── HourlyForecastMapper.java # hourly forecasts onto one shared time grid
 ├── metrics/                   # Micrometer metrics
 │   ├── AggregatorServiceMetrics.java
 │   ├── SpotsControllerMetrics.java
 │   └── HttpClientMetricsEventListener.java
 ├── model/                     # Domain models (records)
-│   ├── forecast/              # Forecast, ForecastData, ForecastModel (40+ models), AvailableModel, IcmGrid
+│   ├── forecast/              # Forecast, ForecastData, ForecastModel (40+ models), AvailableModel,
+│   │                          # HourlyForecast, WindTimeline, ForecastWg, IcmGrid
 │   ├── spot/                  # Spot, SpotInfo
 │   ├── sponsor/               # Sponsor
 │   ├── live/                  # CurrentConditions, filter/
 │   ├── map/                   # Coordinates
-│   └── status/                # Uptime
+│   └── status/                # Uptime, SourceHealthResult
 └── service/                   # Business logic
     ├── AggregatorService.java
     ├── ai/                    # AiService, AiServiceEn, AiServicePl
-    ├── forecast/              # ForecastService, IcmGridMapper
-    ├── live/                  # CurrentConditionsService
-    │   └── strategy/          # 9 weather station strategies
+    ├── forecast/              # ForecastService, IcmGridMapper, IcmForecastVisionService,
+    │                          # ForecastAverageCalculator
+    ├── live/                  # CurrentConditionsService, FetchCurrentConditionsStrategyBase
+    │   └── strategy/          # 14 weather station strategies
     ├── map/                   # GoogleMapsService
+    ├── mcp/                   # McpToolService (MCP tools over the spot data)
+    ├── seo/                   # SeoService (server-rendered pages, sitemap)
     ├── sponsors/              # SponsorsService
     ├── metrics/               # MetricsHistoryService
     ├── logs/                  # LogsService, InMemoryLogAppender, LogEntry
@@ -415,8 +467,9 @@ src/main/java/com/github/pwittchen/varun/
 ## Deployment
 
 - **CI/CD**: GitHub Actions
-  - `gradle.yml`: Java CI with Gradle
-  - `docker.yml`: Docker image push to GHCR
+  - `ci.yml`: builds the project and runs tests with Gradle
+  - `cd.yml`: runs CI, pushes the Docker image to GHCR, deploys to production, creates a GitHub release
+  - `deps.yml`: scheduled dependency updates
 - **Registry**: ghcr.io/pwittchen/varun.surf
 - **VPS**: Uses `deployment.sh` helper script
 
@@ -449,13 +502,22 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Automatic language detection from browser settings
 - [x] Stale live conditions indicators (yellow for outdated data)
 - [x] Fallback weather station mechanism
+- [x] Interactive wind map with marker clustering, wind arrows, a wind field
+      overlay (heatmap + animated particles) and an hourly forecast timeline
+- [x] Sidebar navigation shared by every page, with a mobile drawer
+- [x] Embeddable spot widget (/embed) with language selection
+- [x] TV view (/tv) for a full-screen spot display
+- [x] SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
+- [x] MCP server exposing the spot data as tools (/mcp/sse)
 
 ## AI Analysis Feature (Experimental)
 
 The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
-2. Cost consideration: OpenAI gpt-4o-mini costs ~$0.01 per 102 spots (31k tokens)
-3. Estimated monthly cost at 6-hour intervals: ~$1.20/month (reasonable but not essential)
+2. Cost consideration: at ~900 tokens per prompt, one pass over ~230 spots is
+   ~220k input tokens, so roughly $0.05 per language pass on gpt-4o-mini
+3. Estimated monthly cost at the scheduled 8-hour interval in both languages:
+   single-digit dollars per month (reasonable but not essential)
 
 Note: the hourly block is ~48 daylight rows carrying every forecast variable,
 which makes a prompt of roughly 950 tokens for a coastal spot and 850 for an
@@ -465,9 +527,9 @@ precision for tokens.
 
 ## Important Notes for AI Assistants
 
-1. **Reactive Code**: This project uses Spring WebFlux. Avoid blocking operations. Use `Mono`, `Flux`, and reactive operators. Exception: `.block()` is allowed within Java 24 StructuredTaskScope contexts.
+1. **Reactive Code**: This project uses Spring WebFlux. Avoid blocking operations. Use `Mono`, `Flux`, and reactive operators. Exception: `.block()` is allowed within Java 25 StructuredTaskScope contexts.
 
-2. **Java 24 StructuredTaskScope**: This project uses preview features for structured concurrency:
+2. **Java 25 StructuredTaskScope**: This project uses preview features for structured concurrency:
    - Virtual threads via `Thread.ofVirtual().factory()`
    - Scoped concurrent execution with automatic cleanup
    - Subtasks tracked within scopes (ShutdownOnFailure or default)
