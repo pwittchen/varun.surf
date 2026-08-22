@@ -485,7 +485,7 @@
     "windguruUrl": "https://www.windguru.cz/48019",
     "windguruFallbackUrl": "https://www.windguru.cz/1180",
     "windfinderUrl": "https://www.windfinder.com/forecast/miedzyzdroje_misdroy",
-    "webcamUrl": "",
+    "webcamUrl": "https://miedzyzdroje-plaza.webcamera.pl/",
     "locationUrl": "https://www.google.com/maps?q=53.930000,14.440000",
     "spotInfo": {
       "type": "Open sea, waves",
@@ -854,7 +854,7 @@
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/32462",
     "windfinderUrl": "https://www.windfinder.com/forecast/zalew_sulejowski",
-    "webcamUrl": "",
+    "webcamUrl": "https://saily.pl/kamera/",
     "locationUrl": "https://maps.app.goo.gl/sCHsPHb27ij9eLJVA",
     "spotInfo": {
       "type": "Lake, choppy to flat water depending on wind",
