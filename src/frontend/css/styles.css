@@ -5280,6 +5280,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     position: relative;
     width: 100%;
     height: calc(100vh - 180px);
+    /* Mobile browsers measure 100vh with the URL bar hidden, so a map sized in
+       vh runs past what the phone actually shows and drops the forecast slider
+       under the fold. svh is the height that stays visible with the bar out,
+       and unlike dvh it does not resize the map mid-scroll. The vh line above
+       stays as the fallback for browsers without the unit. */
+    height: calc(100svh - 180px);
     margin: 20px 0;
     border-radius: var(--radius-lg);
     overflow: hidden;

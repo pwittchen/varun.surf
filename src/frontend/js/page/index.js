@@ -2141,6 +2141,13 @@ function setupHamburgerMenu() {
             if (mainContent) {
                 mainContent.classList.remove('menu-open');
             }
+            // Closing the drawer pulls the map back up by the height of the
+            // drawer - park it under the header again, slider and all. The
+            // header is still mid-collapse right now, so where the map belongs
+            // is only known once the drawer has finished folding away.
+            if (isMapView) {
+                afterDrawerCollapse(headerControls, scrollMapIntoView);
+            }
         } else {
             headerControls.classList.add('show');
             hamburgerMenu.classList.add('active');
@@ -2150,6 +2157,30 @@ function setupHamburgerMenu() {
             }
         }
     });
+}
+
+// Runs once the drawer has finished its max-height transition. The timer is
+// not a safety net but the second half of the rule: a drawer that was already
+// closed, or a browser that skips the animation, fires no transitionend at all.
+const DRAWER_COLLAPSE_MS = 350;
+
+function afterDrawerCollapse(headerControls, callback) {
+    let handled = false;
+
+    const run = () => {
+        if (handled) return;
+        handled = true;
+        headerControls.removeEventListener('transitionend', onEnd);
+        callback();
+    };
+
+    const onEnd = (event) => {
+        // Children fade out on their own transition - only the drawer counts
+        if (event.target === headerControls) run();
+    };
+
+    headerControls.addEventListener('transitionend', onEnd);
+    setTimeout(run, DRAWER_COLLAPSE_MS);
 }
 
 // ============================================================================
@@ -2841,10 +2872,47 @@ function showMapView() {
     // Update URL to /map
     routing.pushMapUrl();
 
-    // Scroll to top when opening map view
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+    scrollMapIntoView();
+}
+
+// Desktop has room to spare, so the map view simply starts at the top of the
+// page. On a phone the map is the only thing worth looking at, and at scroll 0
+// its bottom - the forecast slider - sits under the fold: mobile browsers size
+// 100vh with the URL bar hidden, while the visible viewport still has it. So
+// the page is nudged down until the map sits right under the fixed header,
+// which brings the slider into view without the user reaching for it.
+const MAP_VIEWPORT_GAP = 8;
+
+function scrollMapIntoView() {
+    if (!isMobileView()) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    const mapContainer = document.getElementById('mapContainer');
+    if (!mapContainer) {
+        return;
+    }
+
+    // After a layout pass: the drawer closing and the container switching to
+    // flex both move the map before its position can be measured.
+    requestAnimationFrame(() => {
+        const header = document.querySelector('.fixed-header');
+        const headerHeight = header ? header.getBoundingClientRect().height : 0;
+        const rect = mapContainer.getBoundingClientRect();
+        const top = rect.top + window.scrollY;
+
+        // Where the map starts just below the header, and the least scrolling
+        // that still reveals its bottom edge. The larger of the two wins: when
+        // the map fits, that is the tidy position under the header; when it
+        // does not, showing the slider matters more than the top tile row.
+        const underHeader = top - headerHeight - MAP_VIEWPORT_GAP;
+        const bottomVisible = top + rect.height - window.innerHeight + MAP_VIEWPORT_GAP;
+
+        window.scrollTo({
+            top: Math.max(0, underHeader, bottomVisible),
+            behavior: 'smooth'
+        });
     });
 }
 
