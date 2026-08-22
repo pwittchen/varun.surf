@@ -5691,6 +5691,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 6px;
 }
 
+/* Spot name in a popup that has no page to link to - the spot's own */
+.map-popup-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .map-popup-wind {
     display: flex;
     align-items: center;

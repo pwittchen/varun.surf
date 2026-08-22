@@ -659,6 +659,9 @@ export function createSpotMarkerLayer(map, spots, getConditions, buildPopup) {
             });
 
             if (typeof buildPopup === 'function') {
+                // The spot behind the marker, so a caller that rebuilds the layer
+                // can find its way back to the popup that was open before.
+                marker.spot = point.spot;
                 marker.bindPopup(buildPopup(point.spot));
             }
 
@@ -688,6 +691,48 @@ export function createSpotMarkerLayer(map, spots, getConditions, buildPopup) {
     });
 
     return group;
+}
+
+/**
+ * Windguru id of the spot whose marker popup is open in a marker layer.
+ *
+ * A marker layer is thrown away and rebuilt whenever the conditions behind it
+ * change, which closes whatever popup was open. Asking first is what lets the
+ * caller put it back afterwards.
+ *
+ * @param {L.LayerGroup} group - Group from createSpotMarkerLayer
+ * @returns {number|null} The spot's wgId, or null when no popup is open
+ */
+export function findOpenSpotPopup(group) {
+    let wgId = null;
+
+    group.eachLayer(layer => {
+        if (wgId === null && layer.spot && typeof layer.isPopupOpen === 'function' && layer.isPopupOpen()) {
+            wgId = layer.spot.wgId;
+        }
+    });
+
+    return wgId;
+}
+
+/**
+ * Reopen the popup of the marker standing for a spot. A spot swallowed by a
+ * cluster has no marker of its own to reopen, so nothing happens.
+ * @param {L.LayerGroup} group - Group from createSpotMarkerLayer
+ * @param {number} wgId - Windguru id of the spot
+ * @returns {boolean} True when the popup was reopened
+ */
+export function openSpotPopup(group, wgId) {
+    let opened = false;
+
+    group.eachLayer(layer => {
+        if (!opened && layer.spot && layer.spot.wgId === wgId && typeof layer.openPopup === 'function') {
+            layer.openPopup();
+            opened = true;
+        }
+    });
+
+    return opened;
 }
 
 /**

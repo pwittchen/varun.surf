@@ -1862,26 +1862,55 @@ function loadWindMapTimeline() {
     return windMapTimelineRequest;
 }
 
+/**
+ * Wind summary inside a wind-map popup: the arrow, the direction and the
+ * wind/gust pair. Once the slider leaves "now" the hour is named too - the popup
+ * follows the slider, so without it there is nothing saying which hour it
+ * describes.
+ * @param {object|null} conditions - Conditions from getWindMapConditions
+ * @returns {string} Popup markup fragment, empty when the spot has no reading
+ */
+function buildWindMapPopupDetails(conditions) {
+    if (!conditions) {
+        return '';
+    }
+
+    const gusts = Number.isFinite(conditions.gusts) ? `${conditions.gusts} kts` : '-';
+    const hour = conditions.forecastDate ? formatForecastDateLabel(conditions.forecastDate) : '';
+
+    // On a forecast hour the reading is no longer a measurement, so say so.
+    const forecastMeta = conditions.isCurrent
+        ? ''
+        : `<div class="map-popup-meta">${translations.t('forecastEstimateLabel')}${hour ? ` · ${hour}` : ''}</div>`;
+
+    return `<div class="map-popup-wind ${weather.getWindClass(conditions.wind)}">`
+        + `<span class="wind-arrow">${weather.getWindArrow(conditions.direction)}</span>`
+        + `<span class="map-popup-direction">${conditions.direction || '-'}</span>`
+        + `<span class="map-popup-speed">${conditions.wind} kts - ${gusts}</span>`
+        + `</div>`
+        + forecastMeta;
+}
+
 function buildWindMapPopup(spot) {
-    const conditions = getWindMapConditions(spot);
-    const windDetails = conditions
-        ? `<div class="map-popup-wind ${weather.getWindClass(conditions.wind)}">`
-            + `<span class="wind-arrow">${weather.getWindArrow(conditions.direction)}</span>`
-            + `<span class="map-popup-direction">${conditions.direction || '-'}</span>`
-            + `<span class="map-popup-speed">${conditions.wind} kts - ${Number.isFinite(conditions.gusts) ? `${conditions.gusts} kts` : '-'}</span>`
-            + `</div>`
-        : '';
-
-    // On a forecast day the reading is no longer a measurement, so say so.
-    const forecastMeta = conditions && !conditions.isCurrent
-        ? `<div class="map-popup-meta">${translations.t('forecastEstimateLabel')}</div>`
-        : '';
-
     return `
         <div class="map-popup">
             <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
-            ${windDetails}
-            ${forecastMeta}
+            ${buildWindMapPopupDetails(getWindMapConditions(spot))}
+        </div>
+    `;
+}
+
+/**
+ * Popup for the spot the page is about. Same wind summary its neighbours carry -
+ * the marker naming this spot should not be the one telling you least about it -
+ * but the name is plain text: linking a page to itself leads nowhere.
+ * @returns {string} Popup markup
+ */
+function buildWindMapCurrentSpotPopup() {
+    return `
+        <div class="map-popup">
+            <span class="map-popup-name">${currentSpot.name}</span>
+            ${buildWindMapPopupDetails(getWindMapConditions(currentSpot))}
         </div>
     `;
 }
@@ -1923,11 +1952,15 @@ function initSpotWindMap() {
     const neighbourLayer = L.layerGroup().addTo(spotWindMap);
 
     // This spot's own marker sits above the field, with its popup open so the
-    // spot the page is about is named among its neighbours.
+    // spot the page is about is named - and read - among its neighbours.
     const spotMarker = L.marker([lat, lon], { icon: map.createMarkerIcon('custom-marker-red') })
         .addTo(spotWindMap)
-        .bindPopup(`<b>${currentSpot.name}</b>`)
+        .bindPopup(buildWindMapCurrentSpotPopup())
         .openPopup();
+
+    // Rewritten in place rather than rebound, so an open popup keeps its wind
+    // reading in step with the slider instead of closing under it.
+    const refreshSpotPopup = () => spotMarker.setPopupContent(buildWindMapCurrentSpotPopup());
 
     // Recentering is how you get back to this spot after roaming the field, so
     // the crosshair reopens the popup as well - otherwise you land on the spot
@@ -1962,21 +1995,35 @@ function initSpotWindMap() {
 
         // Neighbouring spots explain the shape of the field; clustering happens
         // in screen pixels, so they are rebuilt whenever the zoom changes.
+        // Rebuilding drops every marker and with it any open popup, so the one
+        // that was open is remembered and reopened on the new markers - stepping
+        // the slider must update a neighbour's reading, not close it.
+        let neighbourMarkers = null;
         const renderNeighbours = () => {
+            const openWgId = neighbourMarkers ? map.findOpenSpotPopup(neighbourMarkers) : null;
             neighbourLayer.clearLayers();
-            neighbourLayer.addLayer(
-                map.createSpotMarkerLayer(spotWindMap, spots, getWindMapConditions, buildWindMapPopup)
+            neighbourMarkers = map.createSpotMarkerLayer(
+                spotWindMap, spots, getWindMapConditions, buildWindMapPopup
             );
+            neighbourLayer.addLayer(neighbourMarkers);
+            if (openWgId !== null) {
+                map.openSpotPopup(neighbourMarkers, openWgId);
+            }
         };
 
         renderField();
         renderNeighbours();
+        // The grid may have arrived after the popup was first written, and a step
+        // carried over from an earlier map is only resolvable now.
+        refreshSpotPopup();
         spotWindMap.on('zoomend', renderNeighbours);
 
-        // Stepping the slider repaints both passes for the selected hour
+        // Stepping the slider repaints both passes - and every popup - for the
+        // selected hour
         renderWindMapLayers = () => {
             renderField();
             renderNeighbours();
+            refreshSpotPopup();
         };
 
         windMapTimeline = map.createForecastTimeline({

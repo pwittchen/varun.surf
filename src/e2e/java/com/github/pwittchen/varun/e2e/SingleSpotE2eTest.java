@@ -216,6 +216,64 @@ class SingleSpotE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should read the wind map popup off the forecast slider")
+    void shouldUpdateWindMapPopupWithForecastSlider() {
+        // pick a spot the shared wind grid actually covers, so stepping the slider
+        // has something to say about it; the main page visit is what mints the session
+        page.navigate(BASE_URL + "/");
+        waitForPageLoad();
+
+        Object wgId = page.evaluate(
+            "async () => {"
+                + " const response = await fetch('/api/v1/wind?hours=24', { credentials: 'same-origin' });"
+                + " const timeline = await response.json();"
+                + " return timeline.spots && timeline.spots.length > 0 ? timeline.spots[0].wgId : null;"
+                + "}");
+        assertThat(wgId).isNotNull();
+
+        page.navigate(BASE_URL + "/spot/" + wgId);
+        waitForPageLoad();
+        waitForSpotToLoad();
+
+        // the wind map - and its all-spots fetch - is built only once its tab is opened
+        page.locator(".spot-media-tab[data-media='wind']").click();
+
+        // the spot's own marker opens with wind, gusts and direction, not just its name
+        Locator popup = page.locator(".spot-wind-map-wrapper .map-popup");
+        Locator speed = popup.locator(".map-popup-speed");
+        speed.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(speed.textContent()).contains("kts");
+        assertThat(popup.locator(".map-popup-direction").count()).isEqualTo(1);
+        String nowReading = popup.innerHTML();
+
+        // the slider under the map arrives with /api/v1/wind
+        Locator timeline = page.locator(".spot-wind-map-wrapper .map-timeline");
+        timeline.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // stepping into the forecast rewrites the popup in place instead of closing it
+        page.locator(".spot-wind-map-wrapper .map-timeline-tick").last().click();
+        page.waitForTimeout(500);
+
+        assertThat(popup.count()).isEqualTo(1);
+        assertThat(popup.locator(".map-popup-speed").textContent()).contains("kts");
+        // a forecast hour is not a measurement, so the popup names the hour it reads
+        assertThat(popup.locator(".map-popup-meta").count()).isEqualTo(1);
+        String forecastReading = popup.innerHTML();
+        assertThat(forecastReading).isNotEqualTo(nowReading);
+
+        // and back to now, still without reopening anything
+        page.locator(".spot-wind-map-wrapper .map-timeline-tick[data-step='0']").click();
+        page.waitForTimeout(500);
+
+        assertThat(popup.count()).isEqualTo(1);
+        assertThat(popup.innerHTML()).isNotEqualTo(forecastReading);
+    }
+
+    @Test
     @DisplayName("Should change language on single spot page")
     void shouldChangeLanguageOnSingleSpotPage() {
         navigateToSpotPage();
