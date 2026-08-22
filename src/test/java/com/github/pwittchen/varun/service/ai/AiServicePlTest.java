@@ -237,6 +237,43 @@ class AiServicePlTest {
     }
 
     @Test
+    void shouldPreferPolishLlmCommentOverEnglishOne() {
+        // given - both translations carry a comment; the Polish analysis must be
+        // steered by the Polish one
+        var spotInfoEn = createSpotInfoWithComment("Wind is stronger than forecast here.");
+        var spotInfoPl = createSpotInfoWithComment("Wiatr jest tu silniejszy niż prognoza.");
+        var spot = createSpotWithInfos("Hel", "Polska", spotInfoEn, spotInfoPl);
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("Wiatr jest tu silniejszy niż prognoza.") &&
+                        !prompt.contains("Wind is stronger than forecast here.")
+        ));
+    }
+
+    @Test
+    void shouldFallBackToEnglishLlmCommentWhenPolishTranslationHasNone() {
+        // given - a comment in the wrong language still beats no context at all
+        var spotInfoEn = createSpotInfoWithComment("Rideable only in S wind.");
+        var spotInfoPl = createSpotInfoWithComment("");
+        var spot = createSpotWithInfos("Hel", "Polska", spotInfoEn, spotInfoPl);
+        mockChatResponse("Odpowiedź");
+
+        // when
+        aiServicePl.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("DODATKOWY KONTEKST SPECYFICZNY DLA DANEGO SPOTU:") &&
+                        prompt.contains("Rideable only in S wind.")
+        ));
+    }
+
+    @Test
     void shouldNotIncludeLlmCommentSectionWhenEmpty() {
         // given
         var spotInfo = new SpotInfo("Plaża", "W, SW", "18-22°C", "Średniozaawansowany", "piaszczysty", "brak", "Wiosna, Lato", "Świetny spot", "");
@@ -303,7 +340,16 @@ class AiServicePlTest {
         return createSpotWithInfo(name, country, null);
     }
 
+    private SpotInfo createSpotInfoWithComment(String llmComment) {
+        return new SpotInfo("Plaża", "W, SW", "18-22°C", "Średniozaawansowany",
+                "piaszczysty", "brak", "Wiosna, Lato", "Świetny spot", llmComment);
+    }
+
     private Spot createSpotWithInfo(String name, String country, SpotInfo spotInfo) {
+        return createSpotWithInfos(name, country, spotInfo, null);
+    }
+
+    private Spot createSpotWithInfos(String name, String country, SpotInfo spotInfo, SpotInfo spotInfoPL) {
         return new Spot(
                 name,
                 country,
@@ -322,7 +368,7 @@ class AiServicePlTest {
                 null,
                 null,
                 spotInfo,
-                null,
+                spotInfoPL,
                 null,
                 null,
                 null

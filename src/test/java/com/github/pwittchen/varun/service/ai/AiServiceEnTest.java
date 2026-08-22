@@ -263,6 +263,24 @@ class AiServiceEnTest {
     }
 
     @Test
+    void shouldIgnorePolishLlmCommentInEnglishAnalysis() {
+        // given
+        var spotInfoEn = new SpotInfo("Beach", "S", "18-22°C", "Advanced", "sandy", "none", "Summer", "Great spot", "Rideable only in S wind.");
+        var spotInfoPl = new SpotInfo("Plaża", "S", "18-22°C", "Zaawansowany", "piaszczysty", "brak", "Lato", "Świetny spot", "Pływalne tylko przy wietrze S.");
+        var spot = createSpotWithInfos("Hel", "Poland", spotInfoEn, spotInfoPl);
+        mockChatResponse("Response");
+
+        // when
+        aiServiceEn.fetchAiAnalysis(spot, createHourlyForecast()).block();
+
+        // then
+        verify(requestSpec).user(argThat((String prompt) ->
+                prompt.contains("Rideable only in S wind.") &&
+                        !prompt.contains("Pływalne tylko przy wietrze S.")
+        ));
+    }
+
+    @Test
     void shouldNotIncludeLlmCommentSectionWhenEmpty() {
         // given
         var spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
@@ -365,6 +383,10 @@ class AiServiceEnTest {
     }
 
     private Spot createSpotWithInfo(String name, String country, SpotInfo spotInfo) {
+        return createSpotWithInfos(name, country, spotInfo, null);
+    }
+
+    private Spot createSpotWithInfos(String name, String country, SpotInfo spotInfo, SpotInfo spotInfoPL) {
         return new Spot(
                 name,
                 country,
@@ -383,7 +405,7 @@ class AiServiceEnTest {
                 null,
                 null,
                 spotInfo,
-                null,
+                spotInfoPL,
                 null,
                 null,
                 null

@@ -112,7 +112,12 @@ AggregatorService (core orchestrator with Java 24 StructuredTaskScope)
      - 19-25 kts: small kite (9-10 m²)
      - 28+ kts: very small kite (5-7 m²)
    - Streams responses with 15s timeout and 3 retries
-   - Supports spot-specific LLM context via SpotInfo.llmComment
+   - Supports an optional spot-specific prompt fragment via `SpotInfo.llmComment`
+     in `spots.json`, injected into the prompt as ADDITIONAL SPOT-SPECIFIC CONTEXT.
+     Each service reads the comment from the `SpotInfo` in its own language
+     (`spotInfo` for EN, `spotInfoPL` for PL) and falls back to the English one
+     when the translation carries none. Use it for local effects the gridded
+     forecast misses - venturi acceleration, thermal winds, direction-only spots
    - The only forecast data in the prompt is the spot's `HourlyForecast` (the
      same data `/api/v1/forecast/{wgId}` serves): wind, gusts, direction, temperature,
      rain, cloud, pressure and waves. Daily averages were dropped: they hide the
@@ -491,7 +496,8 @@ a prompt of roughly 1300 tokens for a coastal spot and 1135 for an inland one
     - Disabled by default via feature flag
     - Language-specific services: `AiServiceEn` and `AiServicePl`
     - Streams content with Spring AI ChatClient
-    - Supports spot-specific context via SpotInfo.llmComment
+    - Supports optional per-spot context via `SpotInfo.llmComment`, taken from the
+      `SpotInfo` matching the analysis language (`spotInfo` / `spotInfoPL`)
     - Professional kitesurfing analyst with kite size recommendations
     - 15s timeout, 3 retries, 1s delay between stream chunks
 

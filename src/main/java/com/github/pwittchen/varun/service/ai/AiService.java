@@ -3,6 +3,7 @@ package com.github.pwittchen.varun.service.ai;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.HourlyForecast;
 import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.model.spot.SpotInfo;
 import org.springframework.ai.chat.client.ChatClient;
 import reactor.core.publisher.Mono;
 
@@ -72,13 +73,27 @@ public abstract class AiService {
         );
     }
 
+    /**
+     * The spot's optional per-spot prompt fragment ({@code llmComment} in
+     * spots.json), taken from the {@link SpotInfo} written in this service's own
+     * language so the analysis is not steered by a comment in another one.
+     */
     protected String buildCustomContext(Spot spot) {
-        if (spot.spotInfo() != null &&
-                spot.spotInfo().llmComment() != null &&
-                !spot.spotInfo().llmComment().isEmpty()) {
-            return String.format(createPromptPartForAdditionalContext(), spot.spotInfo().llmComment());
+        String comment = llmComment(spotInfoForLanguage(spot));
+        if (comment.isEmpty()) {
+            comment = llmComment(spot.spotInfo());
         }
-        return "";
+        if (comment.isEmpty()) {
+            return "";
+        }
+        return String.format(createPromptPartForAdditionalContext(), comment);
+    }
+
+    private String llmComment(SpotInfo spotInfo) {
+        if (spotInfo == null || spotInfo.llmComment() == null) {
+            return "";
+        }
+        return spotInfo.llmComment().trim();
     }
 
     /**
@@ -153,6 +168,13 @@ public abstract class AiService {
         String[] parts = hour.split(" ");
         return parts.length >= 5 ? parts[0] + " " + parts[4] : hour;
     }
+
+    /**
+     * The {@link SpotInfo} carrying this service's language, so the per-spot
+     * comment reaches the prompt in the language the analysis is written in.
+     * Falls back to the English one when the spot has no translation.
+     */
+    protected abstract SpotInfo spotInfoForLanguage(Spot spot);
 
     public abstract String createPromptTemplate();
 

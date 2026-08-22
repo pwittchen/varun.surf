@@ -612,7 +612,8 @@
       "launch": "Shore access",
       "hazards": "Mountains cause gusts, small area for the launch, wind shadows during the launch and behind the port, current from the river",
       "season": "April-October",
-      "description": "Mountain river transforming into the lake with gusty but strong wind, used by local kiters. It's possible to kitesurf there with the pure southern winds only (S). Wind blows between the mountains causing Venturi Effect. Therefore wind can be 8-10 knots stronger than the predicted forecast."
+      "description": "Mountain river transforming into the lake with gusty but strong wind, used by local kiters. It's possible to kitesurf there with the pure southern winds only (S). Wind blows between the mountains causing Venturi Effect. Therefore wind can be 8-10 knots stronger than the predicted forecast.",
+      "llmComment": "This spot is rideable only in a pure southerly (S) wind - in any other direction the mountains block or shadow the valley and there is no session, however strong the forecast looks, so say so plainly instead of recommending a kite. When the wind is S, the valley funnels it and the Venturi effect adds a few knots (locally up to 8-10) over the forecast, so treat forecast values as a floor and recommend a kite size for the stronger, gustier reality."
     },
     "spotInfoPL": {
       "type": "Rzeka górska",
@@ -622,7 +623,8 @@
       "launch": "Wejście z brzegu",
       "hazards": "Góry powodują szkwały, mało miejsca na start, cienie wiatru podczas startu i za portem, prąd rzeki",
       "season": "Kwiecień-Październik",
-      "description": "Górska rzeka przekształcająca się w jezioro z porywistym, ale silnym wiatrem, wykorzystywana przez lokalnych kitesurferów. Możliwa jazda tylko przy czystym wietrze południowym (S). Wiatr wieje między górami powodując efekt Venturiego. Dlatego wiatr może być o 8-10 węzłów silniejszy niż prognozowany."
+      "description": "Górska rzeka przekształcająca się w jezioro z porywistym, ale silnym wiatrem, wykorzystywana przez lokalnych kitesurferów. Możliwa jazda tylko przy czystym wietrze południowym (S). Wiatr wieje między górami powodując efekt Venturiego. Dlatego wiatr może być o 8-10 węzłów silniejszy niż prognozowany.",
+      "llmComment": "Na tym spocie da się pływać wyłącznie przy czystym wietrze południowym (S) - przy każdym innym kierunku góry zasłaniają dolinę i sesji nie ma, niezależnie od tego, jak mocna wygląda prognoza, więc napisz to wprost zamiast polecać rozmiar latawca. Przy wietrze S dolina go zwęża i efekt Venturiego dokłada kilka węzłów (lokalnie nawet 8-10) ponad prognozę, więc traktuj wartości z prognozy jako dolną granicę i dobieraj latawiec do silniejszych, bardziej porywistych warunków."
     }
   },
   {
@@ -1228,7 +1230,8 @@
       "launch": "Lake shore beaches",
       "hazards": "Changing winds, mountains",
       "season": "April-September",
-      "description": "Beautiful alpine lake spot with reliable thermal winds. Wind will be stronger than in the global forecast due to the mountain region. It works mostly during the summer due to the termal winds."
+      "description": "Beautiful alpine lake spot with reliable thermal winds. Wind will be stronger than in the global forecast due to the mountain region. It works mostly during the summer due to the termal winds.",
+      "llmComment": "This spot runs on two thermal winds that gridded models routinely under-forecast, so read the forecast as a lower bound on a sunny, warm day. The Breva blows from the S and is the main kite wind: it fills around midday, holds until sunset (roughly 12:00-19:00) and runs 12-22 kts, accelerated by the narrowing of the lake north of Dervio, so Colico keeps the wind until the end of a sunny day. The Tivano is a NE morning wind, roughly 06:00-11:00 at 10-15 kts over flat water - a short early window that fades as the Breva arrives. Both need sun and a warm afternoon: with heavy cloud, rain or a strong synoptic gradient the thermals do not form and the forecast should be read at face value. Typical kite is 12 m, 16 m on light days. A N wind here is the Ventone, usually after mountain thunderstorms, gusting 40-60 km/h - warn against riding it rather than recommending a kite."
     },
     "spotInfoPL": {
       "type": "Jezioro Como, wiatry termiczne",
@@ -1238,7 +1241,8 @@
       "launch": "Plaże nad jeziorem",
       "hazards": "Zmienne wiatry, góry",
       "season": "Kwiecień-Wrzesień",
-      "description": "Piękny spot na alpejskim jeziorze z niezawodnymi wiatrami termicznymi. Wiatr będzie silniejszy niż w globalnej prognozie ze względu na region górski. Działa głównie latem ze względu na wiatry termiczne."
+      "description": "Piękny spot na alpejskim jeziorze z niezawodnymi wiatrami termicznymi. Wiatr będzie silniejszy niż w globalnej prognozie ze względu na region górski. Działa głównie latem ze względu na wiatry termiczne.",
+      "llmComment": "Ten spot działa na dwóch wiatrach termicznych, które modele siatkowe regularnie zaniżają, więc w słoneczny i ciepły dzień traktuj prognozę jako dolną granicę. Breva wieje z S i jest głównym wiatrem do kite: wypełnia się około południa, utrzymuje do zachodu słońca (mniej więcej 12:00-19:00) i daje 12-22 węzły, przyspieszając w zwężeniu jeziora na północ od Dervio, dzięki czemu w Colico wiatr trzyma do końca słonecznego dnia. Tivano to poranny wiatr z NE, mniej więcej 06:00-11:00, 10-15 węzłów na płaskiej wodzie - krótkie okno, które zanika wraz z nadejściem Brevy. Oba potrzebują słońca i ciepłego popołudnia: przy dużym zachmurzeniu, opadach lub silnym gradiencie synoptycznym termika się nie tworzy i prognozę należy czytać dosłownie. Typowy latawiec to 12 m, przy słabszym wietrze 16 m. Wiatr z N to tutaj Ventone, zwykle po burzach w górach, z porywami 40-60 km/h - ostrzeż przed pływaniem zamiast polecać rozmiar latawca."
     }
   },
   {
@@ -2124,7 +2128,8 @@
       "launch": "Lake shore",
       "hazards": "Cold water, altitude",
       "season": "June-September",
-      "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds."
+      "description": "World-famous alpine lake spot in Engadin valley with reliable thermal winds.",
+      "llmComment": "The wind here is the Maloja, a SW thermal pouring through the Maloja Pass, and gridded models under-forecast it badly - a forecast of only a few knots from S or SW on a sunny day still means a full session. It fills between 11:00 and 13:00 (earlier, around 11:00, in July and August), builds quickly through the afternoon, peaks about 15:00-17:00 at 20-25 kts and drops around 18:00-19:00 when the sun goes behind the mountains, so always give the afternoon window rather than a daily average. It is side-onshore from the right and unusually steady for a mountain lake. It needs sun: heavy cloud or rain kills it, and a synoptic flow from N through SE holds it back so it arrives late or not at all. The lake sits at about 1800 m, where thin air gives roughly 15-20 percent less power - recommend one size up from the sea-level equivalent (20 kts here is a 9-12 m kite, not a 7-9 m). Water is 5-18°C, so a wetsuit is required even in midsummer. The season is June to September; outside it there is no thermal."
     },
     "spotInfoPL": {
       "type": "Mountain lake",
@@ -2134,7 +2139,8 @@
       "launch": "Brzeg jeziora",
       "hazards": "Zimna woda, duża wysokość",
       "season": "Czerwiec-Wrzesień",
-      "description": "Światowej sławy spot na alpejskim jeziorze w dolinie Engadyny z niezawodnymi wiatrami termicznymi."
+      "description": "Światowej sławy spot na alpejskim jeziorze w dolinie Engadyny z niezawodnymi wiatrami termicznymi.",
+      "llmComment": "Wieje tu Maloja - termiczny wiatr z SW przelewający się przez przełęcz Maloja, mocno zaniżany przez modele siatkowe: prognoza kilku węzłów z S lub SW w słoneczny dzień i tak oznacza pełną sesję. Wypełnia się między 11:00 a 13:00 (w lipcu i sierpniu wcześniej, około 11:00), szybko narasta w ciągu popołudnia, osiąga szczyt mniej więcej 15:00-17:00 na poziomie 20-25 węzłów i słabnie około 18:00-19:00, gdy słońce chowa się za górami - zawsze podawaj popołudniowe okno zamiast średniej dobowej. Jest boczno-dopychający z prawej strony i jak na jezioro górskie wyjątkowo stabilny. Potrzebuje słońca: duże zachmurzenie lub opady go zabijają, a napływ synoptyczny z sektora od N przez SE go blokuje, przez co przychodzi później albo wcale. Jezioro leży na około 1800 m, gdzie rzadsze powietrze daje mniej więcej 15-20 procent mniej mocy - polecaj latawiec o rozmiar większy niż na poziomie morza (20 węzłów to tutaj 9-12 m, a nie 7-9 m). Woda ma 5-18°C, więc pianka jest konieczna nawet w pełni lata. Sezon trwa od czerwca do września; poza nim termiki nie ma."
     }
   },
   {
@@ -4320,7 +4326,8 @@
       "launch": "Sandy/pebble beach at Farra d'Alpago (lifeguard, showers, toilets in season)",
       "hazards": "Gusty on-shore thermal can push riders toward the swimmer area or the wooded/rocky shoreline; lake is fairly compact so watch for drifting into obstacles; cold water in spring (wetsuit needed); afternoon thunderstorms possible in summer; other lake users (sailing, SUP, swimmers) near the launch",
       "season": "April-September",
-      "description": "A scenic alpine lake in the Belluno Pre-Alps (Veneto), renowned for the 'Ora', a remarkably reliable thermal wind driven by the temperature difference between the Alpago mountains and the Venetian plain, amplified by a Venturi effect through the Lapisina valley. The thermal typically fills in around midday from the S/SE and holds 12-25+ knots into the early evening, with flat water and a mountain backdrop that make it one of Italy's best spots to learn kitesurfing. The main public launch and kite schools are at Farra d'Alpago on the north shore; Poiatte, mid-lake on the east shore, is another popular launch."
+      "description": "A scenic alpine lake in the Belluno Pre-Alps (Veneto), renowned for the 'Ora', a remarkably reliable thermal wind driven by the temperature difference between the Alpago mountains and the Venetian plain, amplified by a Venturi effect through the Lapisina valley. The thermal typically fills in around midday from the S/SE and holds 12-25+ knots into the early evening, with flat water and a mountain backdrop that make it one of Italy's best spots to learn kitesurfing. The main public launch and kite schools are at Farra d'Alpago on the north shore; Poiatte, mid-lake on the east shore, is another popular launch.",
+      "llmComment": "The 'Ora' is a thermal wind that gridded models routinely under-forecast here. When the wind is from the S (or SE), the air is warm and the sky is clear or nearly cloudless, the spot is rideable from around midday into the early evening even if the forecast numbers say it is not - the thermal typically builds to 12-25 knots regardless. In that situation say the spot is likely rideable despite the forecast, name the afternoon window, and recommend a kite size for the thermal rather than for the forecast wind. Heavy cloud, rain or a non-southerly direction kills the thermal, and then the forecast should be read at face value."
     },
     "spotInfoPL": {
       "type": "Górskie jezioro ze słodką wodą, płaska woda",
@@ -4330,7 +4337,8 @@
       "launch": "Piaszczysto-kamienista plaża we Farra d'Alpago (ratownik, prysznice, toalety w sezonie)",
       "hazards": "Porywisty, boczno-nabrzeżny wiatr termiczny może znosić w stronę kąpieliska lub zalesionego/skalistego brzegu; jezioro jest dość niewielkie, więc trzeba uważać na zniesienie na przeszkody; zimna woda wiosną (potrzebna pianka); możliwe letnie burze popołudniowe; inni użytkownicy jeziora (żeglarze, SUP, pływacy) w pobliżu startowiska",
       "season": "Kwiecień-Wrzesień",
-      "description": "Malownicze górskie jezioro w Prealpach Belluńskich (Wenecja Euganejska), znane z wiatru zwanego 'Ora' - niezwykle regularnego wiatru termicznego powstającego dzięki różnicy temperatur między górami Alpago a równiną wenecką, wzmacnianego efektem Venturiego w dolinie Lapisina. Termika zwykle pojawia się około południa z kierunku S/SE i utrzymuje się na poziomie 12-25+ węzłów do wczesnego wieczora, a płaska woda i górska sceneria czynią to miejsce jednym z najlepszych we Włoszech do nauki kitesurfingu. Główne publiczne startowisko i szkoły kite znajdują się we Farra d'Alpago na północnym brzegu; Poiatte, w połowie jeziora na wschodnim brzegu, to kolejne popularne miejsce startu."
+      "description": "Malownicze górskie jezioro w Prealpach Belluńskich (Wenecja Euganejska), znane z wiatru zwanego 'Ora' - niezwykle regularnego wiatru termicznego powstającego dzięki różnicy temperatur między górami Alpago a równiną wenecką, wzmacnianego efektem Venturiego w dolinie Lapisina. Termika zwykle pojawia się około południa z kierunku S/SE i utrzymuje się na poziomie 12-25+ węzłów do wczesnego wieczora, a płaska woda i górska sceneria czynią to miejsce jednym z najlepszych we Włoszech do nauki kitesurfingu. Główne publiczne startowisko i szkoły kite znajdują się we Farra d'Alpago na północnym brzegu; Poiatte, w połowie jeziora na wschodnim brzegu, to kolejne popularne miejsce startu.",
+      "llmComment": "'Ora' to wiatr termiczny, który modele siatkowe regularnie tu zaniżają. Przy wietrze z S (lub SE), wysokiej temperaturze i czystym lub prawie bezchmurnym niebie da się tu pływać od około południa do wczesnego wieczora nawet wtedy, gdy prognoza mówi, że jest za słabo - termika i tak zwykle rozkręca się do 12-25 węzłów. W takiej sytuacji napisz, że mimo prognozy spot najprawdopodobniej będzie pływalny, wskaż popołudniowe okno i dobierz rozmiar latawca do termiki, a nie do prognozowanego wiatru. Duże zachmurzenie, opady lub kierunek inny niż południowy zabijają termikę - wtedy prognozę należy czytać dosłownie."
     }
   },
   {

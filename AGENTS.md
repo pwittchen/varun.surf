@@ -169,7 +169,9 @@ AggregatorService (orchestrates with Java 24 StructuredTaskScope)
   - 15-18 kts: medium kite (11-12 m²)
   - 19-25 kts: small kite (9-10 m²)
   - 28+ kts: very small kite (5-7 m²)
-- Custom context: `SpotInfo.llmComment` for spot-specific instructions
+- Custom context: `SpotInfo.llmComment` - an optional per-spot prompt fragment in
+  `spots.json`, read from the `SpotInfo` matching the analysis language
+  (`spotInfo` for EN, `spotInfoPL` for PL, falling back to EN)
 - Forecast data: the spot's `HourlyForecast` - the same data
   `/api/v1/forecast/{wgId}` serves (TOON:
   `time|wind|gust|dir|temp|rain|cloud|pressure` plus `|wave|wavePeriod|waveDir`

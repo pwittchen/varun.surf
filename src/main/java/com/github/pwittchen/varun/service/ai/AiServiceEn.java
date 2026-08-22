@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.service.ai;
 
+import com.github.pwittchen.varun.model.spot.Spot;
+import com.github.pwittchen.varun.model.spot.SpotInfo;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +68,11 @@ public class AiServiceEn extends AiService {
 
     public AiServiceEn(ChatClient chatClient) {
         super(chatClient);
+    }
+
+    @Override
+    protected SpotInfo spotInfoForLanguage(Spot spot) {
+        return spot.spotInfo();
     }
 
     @Override
