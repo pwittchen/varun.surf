@@ -410,9 +410,61 @@
                 }
             };
 
+            // Country names in Polish, keyed by the English name with spaces removed
+            // (same convention as translations.js used by the main app)
+            const countriesPl = {
+                Poland: 'Polska',
+                CzechRepublic: 'Czechy',
+                Austria: 'Austria',
+                Belgium: 'Belgia',
+                Switzerland: 'Szwajcaria',
+                Latvia: 'Łotwa',
+                Lithuania: 'Litwa',
+                Estonia: 'Estonia',
+                Denmark: 'Dania',
+                Sweden: 'Szwecja',
+                Norway: 'Norwegia',
+                Iceland: 'Islandia',
+                Spain: 'Hiszpania',
+                Portugal: 'Portugalia',
+                Italy: 'Włochy',
+                Greece: 'Grecja',
+                France: 'Francja',
+                Germany: 'Niemcy',
+                Netherlands: 'Holandia',
+                Croatia: 'Chorwacja',
+                Malta: 'Malta',
+                Ireland: 'Irlandia',
+                UK: 'Anglia',
+                Turkey: 'Turcja',
+                Morocco: 'Maroko',
+                Egypt: 'Egipt',
+                CapeVerde: 'Cabo Verde',
+                Mauritius: 'Mauritius',
+                Brazil: 'Brazylia',
+                Peru: 'Peru',
+                Chile: 'Chile',
+                USA: 'USA',
+                Namibia: 'Namibia',
+                Mexico: 'Meksyk',
+                CostaRica: 'Kostaryka',
+                SouthAfrica: 'RPA',
+                Tanzania: 'Tanzania',
+                SriLanka: 'Sri Lanka',
+                Vietnam: 'Wietnam',
+                TurksandCaicos: 'Turks and Caicos'
+            };
+
             function t(key) {
                 const dict = translations[lang] || translations.en;
                 return dict[key] || translations.en[key] || key;
+            }
+
+            function translateCountry(country) {
+                if (!country || lang !== 'pl') {
+                    return country || '';
+                }
+                return countriesPl[country.replace(/\s+/g, '')] || country;
             }
             const apiBase = (window.location && window.location.origin && window.location.origin.startsWith('http'))
                 ? window.location.origin.replace(/\/$/, '')
@@ -421,6 +473,7 @@
             // Set theme
             const widget = document.getElementById('varunWidget');
             widget.setAttribute('data-theme', theme);
+            document.documentElement.lang = lang;
 
             const widgetContent = document.getElementById('widgetContent');
             if (widgetContent) {
@@ -471,7 +524,7 @@
                     spotName.innerHTML = '';
                     spotName.appendChild(spotLink);
                 }
-                spotCountry.textContent = spot.country;
+                spotCountry.textContent = translateCountry(spot.country);
 
                 if (view === 'conditions') {
                     displayCurrentConditions(spot, widgetContent);

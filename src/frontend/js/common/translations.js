@@ -308,6 +308,7 @@ export const translations = {
         Germany: "Germany",
         Netherlands: "Netherlands",
         Croatia: "Croatia",
+        Malta: "Malta",
         Ireland: "Ireland",
         UK: "UK",
         Turkey: "Turkey",
@@ -323,7 +324,9 @@ export const translations = {
         Mexico: "Mexico",
         CostaRica: "Costa Rica",
         SouthAfrica: "South Africa",
+        Tanzania: "Tanzania",
         SriLanka: "Sri Lanka",
+        Vietnam: "Vietnam",
         TurksandCaicos: "Turks and Caicos"
     },
     pl: {
@@ -634,6 +637,7 @@ export const translations = {
         Germany: "Niemcy",
         Netherlands: "Holandia",
         Croatia: "Chorwacja",
+        Malta: "Malta",
         Ireland: "Irlandia",
         UK: "Anglia",
         Turkey: "Turcja",
@@ -649,7 +653,9 @@ export const translations = {
         Mexico: "Meksyk",
         CostaRica: "Kostaryka",
         SouthAfrica: "RPA",
+        Tanzania: "Tanzania",
         SriLanka: "Sri Lanka",
+        Vietnam: "Wietnam",
         TurksandCaicos: "Turks and Caicos"
     }
 };
