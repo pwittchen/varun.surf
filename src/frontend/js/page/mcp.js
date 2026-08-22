@@ -1,4 +1,5 @@
 import * as toolsPage from '../common/toolsPage.js';
+import { t } from '../common/translations.js';
 
 // ============================================================================
 // MCP SERVER CONFIGURATION
@@ -33,11 +34,10 @@ function initMcpConfig() {
             if (!target) return;
             try {
                 await navigator.clipboard.writeText(target.textContent);
-                const original = btn.textContent;
-                btn.textContent = 'Copied!';
+                btn.textContent = t('mcpCopiedButton');
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.textContent = original;
+                    btn.textContent = t('mcpCopyButton');
                     btn.classList.remove('copied');
                 }, 1500);
             } catch (err) {

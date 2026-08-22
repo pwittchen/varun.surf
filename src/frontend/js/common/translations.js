@@ -106,6 +106,78 @@ export const translations = {
         footerMcp: "mcp",
         footerLlms: "llms.txt",
 
+        // Status page
+        statusPageTitle: "Status - VARUN.SURF",
+        statusLoading: "Loading...",
+        statusAllOperational: "All Systems Operational",
+        statusIssuesDetected: "System Issues Detected",
+        statusUnableToConnect: "Unable to Connect",
+        statusLastUpdated: "Last updated",
+        statusRefresh: "Refresh",
+        statusServiceInfoTitle: "Service Information",
+        statusVersionLabel: "Version",
+        statusUptimeLabel: "Uptime",
+        statusStartedLabel: "Started",
+        statusSpotsLabel: "Spots",
+        statusCountriesLabel: "Countries",
+        statusLiveStationsLabel: "Live Stations",
+        statusUnknownVersion: "unknown",
+        statusUptimeHistoryTitle: "Uptime History",
+        statusUptimeSuffix: "uptime",
+        statusNoHistory: "No history available",
+        statusOperational: "Operational",
+        statusDegradedOrDown: "Degraded/Down",
+        statusDown: "Down",
+        statusApiEndpointsTitle: "API Endpoints",
+        statusChecking: "checking...",
+        statusEndpointOperational: "operational",
+        statusEndpointUnreachable: "unreachable",
+        statusEndpointError: "error",
+        // {n} is filled in with the number of days / hours / minutes covered
+        statusPeriodDaysOne: "Last {n} day",
+        statusPeriodDays: "Last {n} days",
+        statusPeriodHoursOne: "Last {n} hour",
+        statusPeriodHours: "Last {n} hours",
+        statusPeriodMinutesOne: "Last {n} minute",
+        statusPeriodMinutes: "Last {n} minutes",
+
+        // Sources page
+        sourcesPageTitle: "Sources - VARUN.SURF",
+        sourcesDescription: "VARUN.SURF aggregates data from the external sources listed below. Forecast sources are health-checked live, spots and live station sources link to the original providers.",
+        sourcesSpotsTitle: "Spots Data Sources",
+        sourcesForecastsTitle: "Forecasts Sources",
+        sourcesLiveStationsTitle: "Live Stations Sources",
+        sourcesLoading: "loading...",
+        sourcesNone: "No sources available",
+
+        // MCP page
+        mcpPageTitle: "MCP Server - VARUN.SURF",
+        mcpOverviewTitle: "Overview",
+        mcpOverviewDescription: "VARUN.SURF exposes a <a href=\"https://modelcontextprotocol.io\" target=\"_blank\" rel=\"noopener noreferrer\">Model Context Protocol</a> server so AI assistants can look up kite spots, forecasts, and live wind conditions as tools. The server is public and requires no authentication.",
+        mcpEndpointLabel: "Endpoint (SSE)",
+        mcpInstallLabel: "Add to Claude Code",
+        mcpCopyButton: "Copy",
+        mcpCopiedButton: "Copied!",
+        mcpConfigurationTitle: "Configuration",
+        mcpConfigurationDescription: "For MCP clients configured through a JSON file, add the following entry to the <code>mcpServers</code> section.",
+        mcpJsonConfigLabel: "JSON config",
+        mcpToolsTitle: "Available Tools",
+        mcpToolListSpots: "Lists all kite spots tracked by varun.surf, grouped by country, with their Windguru spot IDs.",
+        mcpToolGetSpot: "Returns full details for a single spot: overview, current wind conditions, daily and hourly forecasts, and external links.",
+        mcpToolFindSpotByName: "Finds spots whose name contains the given query (case-insensitive).",
+        mcpToolListCountries: "Lists all countries with at least one kite spot and the number of spots per country.",
+        mcpToolGetSpotsByCountry: "Lists all kite spots in a country identified by its slug, e.g. <code>poland</code>.",
+        mcpToolGetStatus: "Returns a short service summary: number of spots, countries and active live weather stations.",
+        mcpLlmsTitle: "llms.txt",
+        mcpLlmsDescription: "If your AI assistant cannot speak MCP, the same data is available as plain Markdown. VARUN.SURF publishes an <a href=\"https://llmstxt.org\" target=\"_blank\" rel=\"noopener noreferrer\">llms.txt</a> file describing the service, its data sources and the Markdown endpoints listed below. All of them are public, need no session cookie and no authentication, and are free to fetch, crawl or index.",
+        mcpLlmsUrlLabel: "llms.txt",
+        mcpMarkdownEndpointsLabel: "Markdown endpoints",
+        mcpLlmsIndexDescription: "Service overview, data sources, API access and links to the Markdown endpoints below.",
+        mcpLlmsSpotsDescription: "Index of all kite spots with their countries and links to the per-spot documents.",
+        mcpLlmsSpotDescription: "Single spot: overview, current conditions, daily and hourly forecast, and external links.",
+        mcpLlmsCountriesDescription: "Index of all countries with the number of spots in each.",
+        mcpLlmsCountryDescription: "Spots in a single country, where the slug is the lowercased country name with spaces replaced by hyphens, e.g. <code>poland</code> or <code>czech-republic</code>.",
+
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Today",
         dayTomorrow: "Tomorrow",
@@ -439,6 +511,82 @@ export const translations = {
         footerMcp: "mcp",
         footerLlms: "llms.txt",
 
+        // Status page
+        statusPageTitle: "Status - VARUN.SURF",
+        statusLoading: "Wczytywanie...",
+        statusAllOperational: "Wszystkie systemy działają",
+        statusIssuesDetected: "Wykryto problemy z systemem",
+        statusUnableToConnect: "Brak połączenia",
+        statusLastUpdated: "Ostatnia aktualizacja",
+        statusRefresh: "Odśwież",
+        statusServiceInfoTitle: "Informacje o serwisie",
+        statusVersionLabel: "Wersja",
+        statusUptimeLabel: "Czas działania",
+        statusStartedLabel: "Uruchomiono",
+        statusSpotsLabel: "Spoty",
+        statusCountriesLabel: "Kraje",
+        statusLiveStationsLabel: "Stacje live",
+        statusUnknownVersion: "nieznana",
+        statusUptimeHistoryTitle: "Historia dostępności",
+        statusUptimeSuffix: "dostępności",
+        statusNoHistory: "Brak historii",
+        statusOperational: "Działa",
+        statusDegradedOrDown: "Awaria / niedostępny",
+        statusDown: "Niedostępny",
+        statusApiEndpointsTitle: "Endpointy API",
+        statusChecking: "sprawdzanie...",
+        statusEndpointOperational: "działa",
+        statusEndpointUnreachable: "niedostępny",
+        statusEndpointError: "błąd",
+        // {n} to liczba dni / godzin / minut; formy "One" i "Few" jak w
+        // headerStats: 1 bierze liczbę pojedynczą, 2-4 (poza 12-14) formę "few"
+        statusPeriodDaysOne: "Ostatni {n} dzień",
+        statusPeriodDaysFew: "Ostatnie {n} dni",
+        statusPeriodDays: "Ostatnie {n} dni",
+        statusPeriodHoursOne: "Ostatnia {n} godzina",
+        statusPeriodHoursFew: "Ostatnie {n} godziny",
+        statusPeriodHours: "Ostatnie {n} godzin",
+        statusPeriodMinutesOne: "Ostatnia {n} minuta",
+        statusPeriodMinutesFew: "Ostatnie {n} minuty",
+        statusPeriodMinutes: "Ostatnie {n} minut",
+
+        // Sources page
+        sourcesPageTitle: "Źródła - VARUN.SURF",
+        sourcesDescription: "VARUN.SURF zbiera dane z zewnętrznych źródeł wymienionych poniżej. Dostępność źródeł prognoz jest sprawdzana na bieżąco, a źródła spotów i stacji live prowadzą do oryginalnych dostawców.",
+        sourcesSpotsTitle: "Źródła danych o spotach",
+        sourcesForecastsTitle: "Źródła prognoz",
+        sourcesLiveStationsTitle: "Źródła stacji live",
+        sourcesLoading: "wczytywanie...",
+        sourcesNone: "Brak dostępnych źródeł",
+
+        // MCP page
+        mcpPageTitle: "Serwer MCP - VARUN.SURF",
+        mcpOverviewTitle: "Przegląd",
+        mcpOverviewDescription: "VARUN.SURF udostępnia serwer <a href=\"https://modelcontextprotocol.io\" target=\"_blank\" rel=\"noopener noreferrer\">Model Context Protocol</a>, dzięki któremu asystenci AI mogą korzystać z kite spotów, prognoz i aktualnych warunków wiatrowych jak z narzędzi. Serwer jest publiczny i nie wymaga uwierzytelniania.",
+        mcpEndpointLabel: "Endpoint (SSE)",
+        mcpInstallLabel: "Dodaj do Claude Code",
+        mcpCopyButton: "Kopiuj",
+        mcpCopiedButton: "Skopiowano!",
+        mcpConfigurationTitle: "Konfiguracja",
+        mcpConfigurationDescription: "W klientach MCP konfigurowanych plikiem JSON dodaj poniższy wpis do sekcji <code>mcpServers</code>.",
+        mcpJsonConfigLabel: "Konfiguracja JSON",
+        mcpToolsTitle: "Dostępne narzędzia",
+        mcpToolListSpots: "Zwraca listę wszystkich kite spotów śledzonych przez varun.surf, pogrupowanych według krajów, wraz z ich identyfikatorami Windguru.",
+        mcpToolGetSpot: "Zwraca pełne informacje o jednym spocie: opis, aktualne warunki wiatrowe, prognozy dzienne i godzinowe oraz linki zewnętrzne.",
+        mcpToolFindSpotByName: "Wyszukuje spoty, których nazwa zawiera podaną frazę (bez rozróżniania wielkości liter).",
+        mcpToolListCountries: "Zwraca listę wszystkich krajów z co najmniej jednym kite spotem oraz liczbę spotów w każdym z nich.",
+        mcpToolGetSpotsByCountry: "Zwraca listę kite spotów w kraju wskazanym przez jego slug, np. <code>poland</code>.",
+        mcpToolGetStatus: "Zwraca krótkie podsumowanie serwisu: liczbę spotów, krajów i aktywnych stacji pogodowych live.",
+        mcpLlmsTitle: "llms.txt",
+        mcpLlmsDescription: "Jeśli Twój asystent AI nie obsługuje MCP, te same dane są dostępne jako zwykły Markdown. VARUN.SURF publikuje plik <a href=\"https://llmstxt.org\" target=\"_blank\" rel=\"noopener noreferrer\">llms.txt</a> opisujący serwis, jego źródła danych i wymienione poniżej endpointy Markdown. Wszystkie są publiczne, nie wymagają ciasteczka sesji ani uwierzytelniania i można je swobodnie pobierać, indeksować i przeszukiwać.",
+        mcpLlmsUrlLabel: "llms.txt",
+        mcpMarkdownEndpointsLabel: "Endpointy Markdown",
+        mcpLlmsIndexDescription: "Opis serwisu, źródła danych, dostęp do API i linki do endpointów Markdown wymienionych poniżej.",
+        mcpLlmsSpotsDescription: "Spis wszystkich kite spotów wraz z krajami i linkami do dokumentów poszczególnych spotów.",
+        mcpLlmsSpotDescription: "Pojedynczy spot: opis, aktualne warunki, prognoza dzienna i godzinowa oraz linki zewnętrzne.",
+        mcpLlmsCountriesDescription: "Spis wszystkich krajów wraz z liczbą spotów w każdym z nich.",
+        mcpLlmsCountryDescription: "Spoty w jednym kraju, gdzie slug to nazwa kraju małymi literami ze spacjami zamienionymi na myślniki, np. <code>poland</code> lub <code>czech-republic</code>.",
+
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Dzisiaj",
         dayTomorrow: "Jutro",
@@ -670,4 +818,46 @@ export const translations = {
 
 export function t(key) {
     return translations[state.getLanguage()][key] || translations.en[key] || key;
+}
+
+// Polish nouns take three forms: one ("1 godzina"), few for counts ending in
+// 2-4 except 12-14 ("3 godziny"), and many for the rest ("5 godzin"). The base
+// key carries the "many" form, `${key}One` and `${key}Few` the other two, and a
+// missing variant falls back to the base - which is how English gets by with
+// just the singular and the plural.
+export function plural(count, key) {
+    const table = translations[state.getLanguage()] || translations.en;
+    const variant = suffix => (table[key + suffix] !== undefined ? key + suffix : key);
+
+    if (count === 1) {
+        return t(variant('One'));
+    }
+    if (state.getLanguage() !== 'pl') {
+        return t(key);
+    }
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    const isFew = lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14);
+    return t(isFew ? variant('Few') : key);
+}
+
+// Fills in every element naming its copy with data-i18n (plain text) or
+// data-i18n-html (markup, for the entries carrying links or <code>). Pages that
+// keep their wording in HTML use this instead of listing element ids one by one;
+// it covers the <title> too, so the browser tab follows the language switch.
+export function applyStaticTranslations(root = document) {
+    root.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+    });
+    root.querySelectorAll('[data-i18n-html]').forEach(el => {
+        el.innerHTML = t(el.dataset.i18nHtml);
+    });
+}
+
+// Locale for dates and numbers, following the language switch rather than the
+// machine the page happens to run on - otherwise an English page picks up the
+// OS locale and prints Polish month names. en-GB keeps the 24h clock and
+// day-first dates the forecast tables use everywhere else.
+export function locale() {
+    return state.getLanguage() === 'pl' ? 'pl-PL' : 'en-GB';
 }

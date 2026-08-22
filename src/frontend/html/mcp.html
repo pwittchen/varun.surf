@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>MCP Server - VARUN.SURF</title>
+    <title data-i18n="mcpPageTitle">MCP Server - VARUN.SURF</title>
     <meta name="description"
           content="Model Context Protocol server configuration for VARUN.SURF - kite spots, forecasts and live wind conditions as AI assistant tools">
     <meta name="robots" content="noindex, nofollow">
@@ -27,8 +27,8 @@
         <main class="status-page">
             <div class="status-container">
                 <div class="status-card">
-                    <h3>Overview</h3>
-                    <p class="mcp-description">
+                    <h3 data-i18n="mcpOverviewTitle">Overview</h3>
+                    <p class="mcp-description" data-i18n-html="mcpOverviewDescription">
                         VARUN.SURF exposes a
                         <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">
                             Model Context Protocol
@@ -39,79 +39,79 @@
                     </p>
                     <div class="mcp-info-grid">
                         <div class="mcp-info-row">
-                            <div class="mcp-info-label">Endpoint (SSE)</div>
+                            <div class="mcp-info-label" data-i18n="mcpEndpointLabel">Endpoint (SSE)</div>
                             <div class="mcp-code">
                                 <code id="mcp-endpoint-url">-</code>
-                                <button class="mcp-copy-btn" data-copy-target="mcp-endpoint-url" type="button">Copy</button>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-endpoint-url" type="button" data-i18n="mcpCopyButton">Copy</button>
                             </div>
                         </div>
                         <div class="mcp-info-row">
-                            <div class="mcp-info-label">Add to Claude Code</div>
+                            <div class="mcp-info-label" data-i18n="mcpInstallLabel">Add to Claude Code</div>
                             <div class="mcp-code">
                                 <code id="mcp-install-cmd">-</code>
-                                <button class="mcp-copy-btn" data-copy-target="mcp-install-cmd" type="button">Copy</button>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-install-cmd" type="button" data-i18n="mcpCopyButton">Copy</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="status-card">
-                    <h3>Configuration</h3>
-                    <p class="mcp-description">
+                    <h3 data-i18n="mcpConfigurationTitle">Configuration</h3>
+                    <p class="mcp-description" data-i18n-html="mcpConfigurationDescription">
                         For MCP clients configured through a JSON file, add the following
                         entry to the <code>mcpServers</code> section.
                     </p>
                     <div class="mcp-info-grid">
                         <div class="mcp-info-row">
-                            <div class="mcp-info-label">JSON config</div>
+                            <div class="mcp-info-label" data-i18n="mcpJsonConfigLabel">JSON config</div>
                             <div class="mcp-code mcp-code-block">
                                 <pre><code id="mcp-json-config">-</code></pre>
-                                <button class="mcp-copy-btn" data-copy-target="mcp-json-config" type="button">Copy</button>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-json-config" type="button" data-i18n="mcpCopyButton">Copy</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="status-card" id="mcp-tools-card">
-                    <h3>Available Tools</h3>
+                    <h3 data-i18n="mcpToolsTitle">Available Tools</h3>
                     <div class="mcp-tools-list">
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">list_spots</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolListSpots">
                                 Lists all kite spots tracked by varun.surf, grouped by country,
                                 with their Windguru spot IDs.
                             </span>
                         </div>
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">get_spot</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolGetSpot">
                                 Returns full details for a single spot: overview, current wind
                                 conditions, daily and hourly forecasts, and external links.
                             </span>
                         </div>
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">find_spot_by_name</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolFindSpotByName">
                                 Finds spots whose name contains the given query (case-insensitive).
                             </span>
                         </div>
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">list_countries</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolListCountries">
                                 Lists all countries with at least one kite spot and the number
                                 of spots per country.
                             </span>
                         </div>
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">get_spots_by_country</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolGetSpotsByCountry">
                                 Lists all kite spots in a country identified by its slug,
                                 e.g. <code>poland</code>.
                             </span>
                         </div>
                         <div class="mcp-tool">
                             <code class="mcp-tool-name">get_status</code>
-                            <span class="mcp-tool-description">
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolGetStatus">
                                 Returns a short service summary: number of spots, countries
                                 and active live weather stations.
                             </span>
@@ -120,8 +120,8 @@
                 </div>
 
                 <div class="status-card" id="mcp-llms-card">
-                    <h3>llms.txt</h3>
-                    <p class="mcp-description">
+                    <h3 data-i18n="mcpLlmsTitle">llms.txt</h3>
+                    <p class="mcp-description" data-i18n-html="mcpLlmsDescription">
                         If your AI assistant cannot speak MCP, the same data is available as
                         plain Markdown. VARUN.SURF publishes an
                         <a href="https://llmstxt.org" target="_blank" rel="noopener noreferrer">
@@ -133,45 +133,45 @@
                     </p>
                     <div class="mcp-info-grid">
                         <div class="mcp-info-row">
-                            <div class="mcp-info-label">llms.txt</div>
+                            <div class="mcp-info-label" data-i18n="mcpLlmsUrlLabel">llms.txt</div>
                             <div class="mcp-code">
                                 <code id="mcp-llms-url">-</code>
-                                <button class="mcp-copy-btn" data-copy-target="mcp-llms-url" type="button">Copy</button>
+                                <button class="mcp-copy-btn" data-copy-target="mcp-llms-url" type="button" data-i18n="mcpCopyButton">Copy</button>
                             </div>
                         </div>
                         <div class="mcp-info-row">
-                            <div class="mcp-info-label">Markdown endpoints</div>
+                            <div class="mcp-info-label" data-i18n="mcpMarkdownEndpointsLabel">Markdown endpoints</div>
                             <div class="mcp-tools-list">
                                 <div class="mcp-tool">
                                     <code class="mcp-tool-name">/llms.txt</code>
-                                    <span class="mcp-tool-description">
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsIndexDescription">
                                         Service overview, data sources, API access and links
                                         to the Markdown endpoints below.
                                     </span>
                                 </div>
                                 <div class="mcp-tool">
                                     <code class="mcp-tool-name">/llms/spots.md</code>
-                                    <span class="mcp-tool-description">
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsSpotsDescription">
                                         Index of all kite spots with their countries and links
                                         to the per-spot documents.
                                     </span>
                                 </div>
                                 <div class="mcp-tool">
                                     <code class="mcp-tool-name">/llms/spots/{wgId}.md</code>
-                                    <span class="mcp-tool-description">
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsSpotDescription">
                                         Single spot: overview, current conditions, daily and
                                         hourly forecast, and external links.
                                     </span>
                                 </div>
                                 <div class="mcp-tool">
                                     <code class="mcp-tool-name">/llms/countries.md</code>
-                                    <span class="mcp-tool-description">
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsCountriesDescription">
                                         Index of all countries with the number of spots in each.
                                     </span>
                                 </div>
                                 <div class="mcp-tool">
                                     <code class="mcp-tool-name">/llms/countries/{slug}.md</code>
-                                    <span class="mcp-tool-description">
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsCountryDescription">
                                         Spots in a single country, where the slug is the
                                         lowercased country name with spaces replaced by hyphens,
                                         e.g. <code>poland</code> or <code>czech-republic</code>.

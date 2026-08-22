@@ -730,18 +730,6 @@ function populateCountryDropdown(data) {
     setupDropdownEvents();
 }
 
-// Polish nouns take the "few" form for counts ending in 2-4, except 12-14
-// ("102 spoty" but "105 spotów" and "112 spotów")
-function pluralizedLabel(count, key) {
-    if (state.getLanguage() !== 'pl') {
-        return translations.t(key);
-    }
-    const lastDigit = count % 10;
-    const lastTwoDigits = count % 100;
-    const isFew = lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14);
-    return translations.t(isFew ? `${key}Few` : key);
-}
-
 // Spots reporting live data from a weather station. Mirrors the backend's
 // countLiveStations(): any of wind / gusts / direction present is enough.
 function countLiveStations(data) {
@@ -768,9 +756,9 @@ function updateHeaderStats(spotsCount, countriesCount, stationsCount) {
         return;
     }
 
-    const spotsLabel = pluralizedLabel(spotsCount, 'headerStatsSpots');
-    const countriesLabel = pluralizedLabel(countriesCount, 'headerStatsCountries');
-    const stationsLabel = pluralizedLabel(stationsCount, 'headerStatsStations');
+    const spotsLabel = translations.plural(spotsCount, 'headerStatsSpots');
+    const countriesLabel = translations.plural(countriesCount, 'headerStatsCountries');
+    const stationsLabel = translations.plural(stationsCount, 'headerStatsStations');
     const stationsTooltip = translations.t('headerStatsStationsTooltip');
 
     headerStats.innerHTML =

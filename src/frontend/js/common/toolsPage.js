@@ -38,6 +38,12 @@ const MODAL_HTML_IDS = [
     'appInfoDevText'
 ];
 
+// Copy each page renders itself (status readouts, source rows, copy buttons)
+// cannot come from data-i18n, so a page hands over a callback that redraws it
+// from whatever it last fetched. Called once on load too, which is what turns
+// the placeholders in the HTML into the current language.
+let onLanguageChange = null;
+
 function markCurrentPage() {
     const path = window.location.pathname.replace(/\/+$/, '') || '/';
     const current = document.querySelector(`#sideMenu .sidebar-link[href="${path}"]`);
@@ -48,6 +54,9 @@ function markCurrentPage() {
 
 function updateTranslations() {
     const t = translations.t;
+
+    document.documentElement.lang = state.getLanguage();
+    translations.applyStaticTranslations();
 
     MODAL_TEXT_IDS.forEach(id => {
         const el = document.getElementById(id);
@@ -75,6 +84,10 @@ function updateTranslations() {
     const languageToggle = document.getElementById('languageToggle');
     if (languageToggle) {
         languageToggle.title = t('languageToggleTooltip');
+    }
+
+    if (onLanguageChange) {
+        onLanguageChange(t);
     }
 }
 
@@ -124,8 +137,12 @@ function setupInfoModal() {
 }
 
 // Build the chrome and wire it up. Call first thing on load, before the page
-// fills in its own content.
-export function setup() {
+// fills in its own content. `options.onLanguageChange` is a callback the page
+// uses to redraw the copy it renders itself; it runs once here and again on
+// every language switch.
+export function setup(options = {}) {
+    onLanguageChange = options.onLanguageChange || null;
+
     state.applyTheme(state.getTheme());
 
     appShell.renderSidebar();

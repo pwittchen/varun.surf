@@ -209,6 +209,8 @@ DOM Manipulation (vanilla JS)
 - `fetchMetricsHistory()` - Get historical data for charts
 - `checkEndpoint(url)` - Health check for individual endpoints
 - `renderMetricsCharts()` - Canvas-based charts for metrics history
+- `renderAll()` - Redraw every section from the payload it was last given,
+  handed to `toolsPage.setup()` as the language-change callback
 - Password authentication via HTTP Basic (`Authorization: Basic ...`, see `page/metrics.js`)
 - Auto-refresh with 30s interval
 
@@ -304,6 +306,15 @@ DOM Manipulation (vanilla JS)
 
 ### Core JavaScript Modules
 
+#### `toolsPage.js` - Shared Wiring for the Status / Sources / MCP / Logs / Metrics Pages
+`setup(options)` renders the shared chrome (sidebar, minimal header, modals),
+marks the current page in the sidebar and wires theme, language and the
+calculator. Copy held in the markup is translated through `data-i18n` /
+`data-i18n-html`; copy a page renders itself (status readouts, source rows, copy
+buttons) comes back through `options.onLanguageChange`, a callback run once on
+load and again on every language switch. Pages keep the payload they last
+fetched so the callback can redraw without waiting for the next refresh.
+
 #### `state.js` - Centralized State Management
 Exports functions for all localStorage/sessionStorage operations.
 
@@ -337,6 +348,20 @@ function t(key) {
 - Fallback mechanism: PL → EN → key
 - Dynamic UI updates on language change
 - Covers all UI text, errors, labels, tooltips
+
+**Helpers alongside `t()`**:
+- `applyStaticTranslations(root = document)` - fills every element carrying
+  `data-i18n` (text) or `data-i18n-html` (markup, for copy with links or
+  `<code>`) from the table. The `<title>` carries one too, so the browser tab
+  follows the language switch. Pages keeping their wording in HTML use this
+  instead of listing element ids one by one.
+- `plural(count, key)` - Polish takes three forms, so the base key holds the
+  "many" form and `${key}One` / `${key}Few` the other two (few = counts ending
+  in 2-4 except 12-14). A missing variant falls back to the base key, which is
+  how English gets by with just the singular and the plural.
+- `locale()` - `pl-PL` or `en-GB`, for `toLocaleString()` and friends. It
+  follows the language switch rather than the machine the page runs on;
+  otherwise an English page prints Polish month names on a Polish desktop.
 
 #### `page/index.js` - Dashboard Logic
 **State Management**:
