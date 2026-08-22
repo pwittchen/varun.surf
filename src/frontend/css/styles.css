@@ -668,7 +668,8 @@ body.sidebar-collapsed .sidebar-label {
     display: none;
 }
 
-/* Text labels the mobile drawer owns are redundant in the sidebar rows */
+/* The sidebar rows carry their own labels; these spans stay hidden everywhere,
+   the drawer included — there each entry is an icon in a three-across grid. */
 .side-menu .info-label,
 .side-menu .map-label {
     display: none !important;
@@ -6066,7 +6067,9 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         min-width: 0 !important;
     }
 
-    .view-toggle {
+    /* The grid/list switch is a desktop affordance — mobile is always a list.
+       The list button stays: there it is the way back to the spots list. */
+    .view-toggle:not(#listViewBtn) {
         display: none !important;
     }
 
@@ -6180,14 +6183,19 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         opacity: 1;
     }
 
-    /* Two rows of three icons in the mobile drawer:
-       row 1: language, theme, favorites; row 2: firing sort, map, calculator */
+    /* Three rows of three icons in the mobile drawer:
+       row 1: language, theme, favorites
+       row 2: list, map, calculator   — where the spots list is shown
+       row 3: live stations, firing sort, info — the two filters plus about */
     #languageToggle,
     #themeToggle,
     #favoritesToggle,
-    .firing-toggle,
+    #listViewBtn,
     .map-toggle,
-    #kiteSizeToggle {
+    #kiteSizeToggle,
+    .live-stations-toggle,
+    .firing-toggle,
+    .info-toggle {
         flex: 0 0 calc((100% - 24px) / 3);
         width: auto;
         min-width: 0;
@@ -6197,44 +6205,28 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         padding: 10px 14px;
     }
 
-    #languageToggle  { order: 1; }
-    #themeToggle     { order: 2; }
-    #favoritesToggle { order: 3; }
-    .firing-toggle   { order: 4; }
-    .map-toggle      { order: 5; }
-    #kiteSizeToggle  { order: 6; }
-
-    /* Map button shows only its icon inside the grid */
-    .map-toggle .map-label {
-        display: none;
-    }
-
-    .info-toggle {
-        width: 100%;
-        max-width: 300px;
-        flex: 0 0 100%;
-        order: 7;
-        display: flex;
-        justify-content: flex-start;
-        padding: 10px 14px;
-    }
-
-    .info-toggle .info-label {
-        display: inline;
-    }
+    #languageToggle       { order: 1; }
+    #themeToggle          { order: 2; }
+    #favoritesToggle      { order: 3; }
+    #listViewBtn          { order: 4; }
+    .map-toggle           { order: 5; }
+    #kiteSizeToggle       { order: 6; }
+    .live-stations-toggle { order: 7; }
+    .firing-toggle        { order: 8; }
+    .info-toggle          { order: 9; }
 
     .search-container {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 8;
+        order: 10;
     }
 
     .dropdown-container {
         width: 100%;
         max-width: 300px;
         flex: 0 0 100%;
-        order: 9;
+        order: 11;
     }
 
     #modelDropdownContainer {

@@ -69,7 +69,13 @@ export function setup() {
         goToSpotsList();
     });
 
+    // Mirrors the main page: in the mobile drawer the list entry is the way back
+    // to the plain spots list, so it drops the two filters the drawer can set.
     onClick('listViewBtn', () => {
+        if (window.innerWidth <= 929) {
+            state.setFiringSort(false);
+            state.setLiveStationsOnly(false);
+        }
         state.setDesktopViewMode('list');
         goToSpotsList();
     });

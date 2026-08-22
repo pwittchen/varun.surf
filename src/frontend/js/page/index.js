@@ -2244,6 +2244,28 @@ function setupLiveStationsToggle() {
     });
 }
 
+// Switch both drawer filters off without rendering: the caller that clears them
+// (the list entry) re-renders once on its own.
+function clearListFilters() {
+    firingSortEnabled = false;
+    state.setFiringSort(false);
+    const firingBtn = document.getElementById('firingSortToggle');
+    if (firingBtn) {
+        firingBtn.classList.remove('active');
+    }
+
+    showOnlyLiveStations = false;
+    state.setLiveStationsOnly(false);
+    const liveBtn = document.getElementById('liveStationsToggle');
+    if (liveBtn) {
+        liveBtn.classList.remove('active');
+    }
+    const liveCheckbox = document.getElementById('liveStationsFilter');
+    if (liveCheckbox) {
+        liveCheckbox.checked = false;
+    }
+}
+
 function setupColumnToggle() {
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
@@ -2302,7 +2324,15 @@ function setupColumnToggle() {
         }
     }
 
-    listViewBtn.addEventListener('click', () => switchToView('list'));
+    // In the mobile drawer the list entry is the only way back to the plain
+    // spots list, so it also drops the filters the drawer can set. On desktop
+    // it stays what it has always been: the grid/list switch.
+    listViewBtn.addEventListener('click', () => {
+        if (isMobileView()) {
+            clearListFilters();
+        }
+        switchToView('list');
+    });
     gridViewBtn.addEventListener('click', () => switchToView('grid'));
 
     // Handle viewport resize
@@ -2991,10 +3021,15 @@ function setupMapToggle() {
     if (!mapToggle) return;
 
     mapToggle.addEventListener('click', () => {
-        if (isMapView) {
-            hideMapView();
-        } else {
+        if (!isMapView) {
             showMapView();
+            return;
+        }
+        // In the mobile drawer the map entry reads as a plain link, not a
+        // switch: a second tap keeps the map, and the list entry is the way
+        // back. On desktop the entry still toggles.
+        if (!isMobileView()) {
+            hideMapView();
         }
     });
 }

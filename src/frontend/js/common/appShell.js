@@ -78,7 +78,7 @@ const SIDEBAR_HTML = `
             </svg>
             <span class="sidebar-label" id="firingSortToggleSidebarLabel">Firing now</span>
         </button>
-        <button class="theme-toggle live-stations-toggle desktop-only sidebar-item" id="liveStationsToggle" title="Live stations only">
+        <button class="theme-toggle live-stations-toggle sidebar-item" id="liveStationsToggle" title="Live stations only">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="2.75"/>
                 <path d="M8.11,7.05a1.25,1.25,0,0,1,0,1.77,4.5,4.5,0,0,0,0,6.36,1.25,1.25,0,0,1-1.77,1.77,7,7,0,0,1,0-9.9A1.25,1.25,0,0,1,8.11,7.05Z"/>
