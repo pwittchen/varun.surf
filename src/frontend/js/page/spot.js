@@ -1735,21 +1735,25 @@ function initOsmSatelliteMap() {
     });
     layerSwitcher.addTo(osmSatelliteMap);
 
-    // Add reset view control to recenter on spot
-    const resetViewControl = map.createResetViewControl({
-        lat: currentSpot.coordinates.lat,
-        lon: currentSpot.coordinates.lon
-    });
-    resetViewControl.addTo(osmSatelliteMap);
-
     // Create a custom red marker icon using common module
     const markerIcon = map.createMarkerIcon('custom-marker-red');
 
     // Add marker at spot location with custom icon
-    L.marker([currentSpot.coordinates.lat, currentSpot.coordinates.lon], { icon: markerIcon })
+    const spotMarker = L.marker([currentSpot.coordinates.lat, currentSpot.coordinates.lon], { icon: markerIcon })
         .addTo(osmSatelliteMap)
         .bindPopup(`<b>${currentSpot.name}</b>`)
         .openPopup();
+
+    // Add reset view control to recenter on spot. Recentering is how you get back
+    // here after roaming the map, so the crosshair reopens the popup as well -
+    // otherwise you land on the spot with nothing naming it.
+    const resetViewControl = map.createResetViewControl({
+        lat: currentSpot.coordinates.lat,
+        lon: currentSpot.coordinates.lon,
+        zoom: DEFAULT_SPOT_MAP_ZOOM,
+        onReset: () => spotMarker.openPopup()
+    });
+    resetViewControl.addTo(osmSatelliteMap);
 }
 
 // ============================================================================
