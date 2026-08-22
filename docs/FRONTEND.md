@@ -50,6 +50,7 @@ varun.surf/
 │   │       ├── sources.js         # Data sources page logic
 │   │       ├── metrics.js         # Metrics dashboard logic
 │   │       ├── logs.js            # Logs dashboard logic
+│   │       ├── embed.js           # Embeddable spot widget logic
 │   │       ├── tv.js              # TV view logic
 │   │       └── mcp.js             # MCP server page logic
 │   ├── html/                      # HTML templates
@@ -265,13 +266,28 @@ DOM Manipulation (vanilla JS)
 
 **JavaScript Logic** (`page/logs.js`)
 
-#### 8. Embed Widget (`embed.html`)
+#### 8. Embed Widget (`embed.html` + `page/embed.js`)
 **URL Pattern**:
 - `/embed` - Embeddable single-spot widget for external sites
 
 **Features**:
-- Compact spot card with live conditions or forecast
-- Query parameters: `spotId`, `theme` (dark/light), `view` (conditions/forecast), `lang` (en/pl)
+- Compact spot card with live conditions, forecast or a map of the spot
+- Query parameters: `spotId`, `theme` (dark/light), `view` (conditions/forecast/map),
+  `lang` (en/pl), `mapStyle` (satellite/light/dark, map view only)
+- The map view carries the same interpolated wind field the site's maps paint
+  (colour wash + animated particles, shared from `common/map.js`), with the spot
+  marked and named on it. Leaflet is loaded on demand, so the other two views
+  stay plain markup
+- Under that map sits the same forecast slider the site's maps carry
+  (`map.createForecastTimeline`), stepping the field through the next five days
+  off `/api/v1/wind?hours=120`. Its labels come from the app's dictionary in the
+  language the widget was embedded with, passed in as `translate` - the app's own
+  language lives in localStorage, which a third-party iframe may not touch and
+  which belongs to the visitor's use of the site, not to this widget
+- Its snippet asks for a 560px iframe (500px for the other views), the room the
+  map and the slider need under the shared header and footer
+- Its markup, styles and dictionary are its own: a widget running inside somebody
+  else's page cannot assume anything of the app is loaded
 - Embed code with these options is generated from the embed modal on the spot page
 
 #### 9. TV View (`tv.html`)
@@ -1054,6 +1070,7 @@ None required (vanilla JS, modern browsers only).
    - `js/page/index.js` - Dashboard logic
    - `js/page/spot.js` - Single spot logic
    - `js/page/status.js` - Status page logic
+   - `js/page/embed.js` - Embeddable widget logic
    - `html/index.html` - Dashboard template
    - `html/spot.html` - Spot page template
    - `html/status.html` - Status page template

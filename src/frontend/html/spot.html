@@ -146,6 +146,7 @@
                         <div class="dropdown-menu" id="embedViewDropdownMenu" role="listbox">
                             <div class="dropdown-option selected" data-value="conditions" data-label-key="embedViewConditionsLabel">Current Conditions</div>
                             <div class="dropdown-option" data-value="forecast" data-label-key="embedViewForecastLabel">Forecast</div>
+                            <div class="dropdown-option" data-value="map" data-label-key="embedViewMapLabel">Map</div>
                         </div>
                     </div>
 
@@ -168,6 +169,20 @@
                         <div class="dropdown-menu" id="embedLanguageDropdownMenu" role="listbox">
                             <div class="dropdown-option selected" data-value="en" data-label-key="embedLanguageEnLabel">English</div>
                             <div class="dropdown-option" data-value="pl" data-label-key="embedLanguagePlLabel">Polish</div>
+                        </div>
+                    </div>
+
+                    <!-- Only the map view has a map to style, so this one appears with it,
+                         on a row of its own under the options every view has -->
+                    <div class="dropdown-container embed-dropdown" id="embedMapStyleDropdownContainer" hidden>
+                        <button class="dropdown-button" id="embedMapStyleDropdown" type="button" aria-haspopup="listbox" aria-expanded="false">
+                            <span id="embedMapStyleDropdownText">Satellite</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="embedMapStyleDropdownMenu" role="listbox">
+                            <div class="dropdown-option selected" data-value="satellite" data-label-key="embedMapStyleSatelliteLabel">Satellite</div>
+                            <div class="dropdown-option" data-value="light" data-label-key="embedMapStyleLightLabel">Light Map</div>
+                            <div class="dropdown-option" data-value="dark" data-label-key="embedMapStyleDarkLabel">Dark Map</div>
                         </div>
                     </div>
                 </div>

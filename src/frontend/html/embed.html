@@ -293,6 +293,230 @@
             font-size: 16px;
         }
 
+        /* Map View */
+        .varun-map-frame {
+            position: relative;
+            height: 320px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .varun-embed-widget[data-theme="light"] .varun-map-frame {
+            background: #f1f5f9;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .varun-map-frame {
+            background: #2d3748;
+        }
+
+        .varun-map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* The marker dot, same shape the maps on the site use */
+        .varun-map-marker {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            background-color: #ef4444;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+        }
+
+        /* The spot name rides with the marker: satellite tiles carry no labels,
+           so without it the map is a patch of coast that could be anywhere. */
+        .leaflet-tooltip.varun-map-label {
+            padding: 3px 8px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(17, 24, 39, 0.82);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+        }
+
+        .leaflet-tooltip.varun-map-label::before {
+            display: none;
+        }
+
+        /* The wind field's animated pass draws onto its own canvas over the tiles */
+        .wind-particle-layer {
+            position: absolute;
+            left: 0;
+            top: 0;
+            pointer-events: none;
+        }
+
+        /* The field is interpolated between spots, not measured everywhere it is
+           painted, and a widget on somebody else's page has to say so itself. */
+        .varun-map-note {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 500;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(17, 24, 39, 0.72);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        /* Forecast slider under the map: the same component the site's maps carry,
+           painted in the widget's own palette - a page on somebody else's site
+           doesn't load the app's stylesheet. */
+        .varun-map-view {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .map-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .map-timeline-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .map-timeline-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            opacity: 0.55;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .map-timeline-selection {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .map-timeline-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #3b82f6;
+            white-space: nowrap;
+            /* Holds its width as the hour ticks over, so the arrows don't shuffle */
+            min-width: 8.5em;
+            text-align: center;
+        }
+
+        /* Hour-by-hour steps, for the precision a 120-stop slider can't be dragged to */
+        .map-timeline-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: none;
+            border-radius: 4px;
+            background: transparent;
+            color: inherit;
+            opacity: 0.75;
+            cursor: pointer;
+        }
+
+        .map-timeline-step:hover:not(:disabled) {
+            opacity: 1;
+        }
+
+        .map-timeline-step:disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        .map-timeline-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            margin: 6px 0 2px;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .varun-embed-widget[data-theme="light"] .map-timeline-range {
+            background: #d5dbe3;
+        }
+
+        .varun-embed-widget[data-theme="dark"] .map-timeline-range {
+            background: #4b5563;
+        }
+
+        .map-timeline-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 2px solid currentColor;
+            cursor: grab;
+        }
+
+        .map-timeline-range::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 2px solid currentColor;
+            cursor: grab;
+        }
+
+        /* Labels are absolutely placed so each one sits under the slider stop it
+           selects; the side margin matches half the thumb, which is where the
+           travel of the thumb centre actually starts and ends. */
+        .map-timeline-ticks {
+            position: relative;
+            height: 16px;
+            margin: 0 8px;
+        }
+
+        .map-timeline-tick {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+            padding: 0 2px;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 16px;
+            color: inherit;
+            opacity: 0.55;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .map-timeline-tick:hover {
+            opacity: 1;
+        }
+
+        .map-timeline-tick.active {
+            color: #3b82f6;
+            opacity: 1;
+        }
+
         /* Footer */
         .varun-footer {
             padding: 12px 16px;
@@ -355,408 +579,6 @@
         </div>
     </div>
 
-    <script>
-        (function() {
-            // Parse URL parameters
-            const params = new URLSearchParams(window.location.search);
-            const spotId = params.get('spotId');
-            const paramTheme = (params.get('theme') || 'dark').toLowerCase();
-            const theme = paramTheme === 'light' ? 'light' : 'dark';
-            const rawView = (params.get('view') || 'conditions').toLowerCase();
-            const view = rawView === 'forecast' ? 'forecast' : 'conditions';
-            const paramLang = (params.get('lang') || 'en').toLowerCase();
-            const lang = paramLang === 'pl' ? 'pl' : 'en';
-
-            const translations = {
-                en: {
-                    loadingSpotData: 'Loading spot data...',
-                    windSpeedLabel: 'Wind Speed',
-                    gustsLabel: 'Gusts',
-                    directionLabel: 'Direction',
-                    temperatureLabel: 'Temperature',
-                    precipitationLabel: 'Precipitation',
-                    timeHeader: 'Time',
-                    windHeader: 'Wind',
-                    gustsHeader: 'Gusts',
-                    dirHeader: 'Dir',
-                    tempHeader: 'Temp',
-                    noData: 'No data available',
-                    missingSpotId: 'Missing spotId parameter',
-                    spotNotFound: 'Spot not found',
-                    failedToLoad: 'Failed to load spot data',
-                    dataProvidedBy: 'Data provided by',
-                    liveDataLabel: 'Live data',
-                    estimatedFromForecastLabel: 'Estimated from forecast'
-                },
-                pl: {
-                    loadingSpotData: 'Ładowanie danych spotu...',
-                    windSpeedLabel: 'Prędkość wiatru',
-                    gustsLabel: 'Porywy',
-                    directionLabel: 'Kierunek',
-                    temperatureLabel: 'Temperatura',
-                    precipitationLabel: 'Opady',
-                    timeHeader: 'Czas',
-                    windHeader: 'Wiatr',
-                    gustsHeader: 'Porywy',
-                    dirHeader: 'Kier.',
-                    tempHeader: 'Temp.',
-                    noData: 'Brak danych',
-                    missingSpotId: 'Brak parametru spotId',
-                    spotNotFound: 'Nie znaleziono spotu',
-                    failedToLoad: 'Nie udało się załadować danych spotu',
-                    dataProvidedBy: 'Dane dostarcza',
-                    liveDataLabel: 'Dane na żywo',
-                    estimatedFromForecastLabel: 'Szacowane z prognozy'
-                }
-            };
-
-            // Country names in Polish, keyed by the English name with spaces removed
-            // (same convention as translations.js used by the main app)
-            const countriesPl = {
-                Poland: 'Polska',
-                CzechRepublic: 'Czechy',
-                Austria: 'Austria',
-                Belgium: 'Belgia',
-                Switzerland: 'Szwajcaria',
-                Latvia: 'Łotwa',
-                Lithuania: 'Litwa',
-                Estonia: 'Estonia',
-                Denmark: 'Dania',
-                Sweden: 'Szwecja',
-                Norway: 'Norwegia',
-                Iceland: 'Islandia',
-                Spain: 'Hiszpania',
-                Portugal: 'Portugalia',
-                Italy: 'Włochy',
-                Greece: 'Grecja',
-                France: 'Francja',
-                Germany: 'Niemcy',
-                Netherlands: 'Holandia',
-                Croatia: 'Chorwacja',
-                Malta: 'Malta',
-                Ireland: 'Irlandia',
-                UK: 'Anglia',
-                Turkey: 'Turcja',
-                Morocco: 'Maroko',
-                Egypt: 'Egipt',
-                CapeVerde: 'Cabo Verde',
-                Mauritius: 'Mauritius',
-                Brazil: 'Brazylia',
-                Peru: 'Peru',
-                Chile: 'Chile',
-                USA: 'USA',
-                Namibia: 'Namibia',
-                Mexico: 'Meksyk',
-                CostaRica: 'Kostaryka',
-                SouthAfrica: 'RPA',
-                Tanzania: 'Tanzania',
-                SriLanka: 'Sri Lanka',
-                Vietnam: 'Wietnam',
-                TurksandCaicos: 'Turks and Caicos'
-            };
-
-            function t(key) {
-                const dict = translations[lang] || translations.en;
-                return dict[key] || translations.en[key] || key;
-            }
-
-            function translateCountry(country) {
-                if (!country || lang !== 'pl') {
-                    return country || '';
-                }
-                return countriesPl[country.replace(/\s+/g, '')] || country;
-            }
-            const apiBase = (window.location && window.location.origin && window.location.origin.startsWith('http'))
-                ? window.location.origin.replace(/\/$/, '')
-                : 'https://varun.surf';
-
-            // Set theme
-            const widget = document.getElementById('varunWidget');
-            widget.setAttribute('data-theme', theme);
-            document.documentElement.lang = lang;
-
-            const widgetContent = document.getElementById('widgetContent');
-            if (widgetContent) {
-                widgetContent.innerHTML = `<div class="varun-loading">${t('loadingSpotData')}</div>`;
-            }
-
-            const footer = document.getElementById('varunFooter');
-            if (footer) {
-                footer.innerHTML = `${t('dataProvidedBy')} <a href="https://varun.surf" target="_blank" rel="noopener noreferrer">VARUN.SURF</a>`;
-            }
-
-            if (!spotId) {
-                showError(t('missingSpotId'));
-                return;
-            }
-
-            // Fetch spot data
-            fetchSpotData(spotId);
-
-            function fetchSpotData(id) {
-                fetch(`${apiBase}/api/v1/spots/${id}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('spotNotFound');
-                        }
-                        return response.json();
-                    })
-                    .then(spot => {
-                        displaySpot(spot);
-                    })
-                    .catch(error => {
-                        const key = error && translations.en[error.message] ? error.message : 'failedToLoad';
-                        showError(t(key));
-                    });
-            }
-
-            function displaySpot(spot) {
-                const spotName = document.getElementById('spotName');
-                const spotCountry = document.getElementById('spotCountry');
-                const widgetContent = document.getElementById('widgetContent');
-
-                if (spotName) {
-                    const spotLink = document.createElement('a');
-                    spotLink.href = `${apiBase}/spot/${encodeURIComponent(spotId)}`;
-                    spotLink.target = '_blank';
-                    spotLink.rel = 'noopener noreferrer';
-                    spotLink.textContent = spot.name;
-                    spotName.innerHTML = '';
-                    spotName.appendChild(spotLink);
-                }
-                spotCountry.textContent = translateCountry(spot.country);
-
-                if (view === 'conditions') {
-                    displayCurrentConditions(spot, widgetContent);
-                } else {
-                    displayForecastVertical(spot, widgetContent);
-                }
-            }
-
-            function displayCurrentConditions(spot, container) {
-                let data = null;
-                let isRealTime = false;
-
-                // Prefer current conditions if available and valid, fallback to nearest forecast
-                if (spot.currentConditions &&
-                    spot.currentConditions.wind != null &&
-                    spot.currentConditions.wind >= 0) {
-                    data = {
-                        wind: spot.currentConditions.wind,
-                        gusts: spot.currentConditions.gusts,
-                        direction: spot.currentConditions.direction,
-                        temp: spot.currentConditions.temp,
-                        precipitation: 0 // Current conditions don't have precipitation
-                    };
-                    isRealTime = true;
-                } else if (spot.forecastHourly && spot.forecastHourly.length > 0) {
-                    // Use current hour forecast as fallback
-                    const currentHourForecast = getCurrentOrNextForecast(spot.forecastHourly);
-                    if (currentHourForecast) {
-                        data = {
-                            wind: currentHourForecast.wind,
-                            gusts: currentHourForecast.gusts,
-                            direction: currentHourForecast.direction,
-                            temp: currentHourForecast.temp,
-                            precipitation: sanitizeNumber(currentHourForecast.precipitation, 0)
-                        };
-                        isRealTime = false;
-                    }
-                }
-
-                if (!data) {
-                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
-                    return;
-                }
-
-                const avgWind = getAverageWind(data.wind, data.gusts);
-                let windClass = 'weak';
-                if (avgWind >= 12 && avgWind < 18) windClass = 'moderate';
-                else if (avgWind >= 18 && avgWind <= 25) windClass = 'strong';
-                else if (avgWind > 25) windClass = 'extreme';
-
-                const arrow = getWindArrow(data.direction);
-                const dataSourceLabel = isRealTime ? t('liveDataLabel') : t('estimatedFromForecastLabel');
-                const dataSource = `<div style="font-size: 11px; opacity: 0.6; margin-top: 8px;">${dataSourceLabel}</div>`;
-
-            container.innerHTML = `
-                    <div class="varun-current-conditions">
-                        <div class="varun-wind-main ${windClass}">
-                            <div class="varun-wind-speed ${windClass}">${data.wind} kts</div>
-                            <div class="varun-wind-label">${t('windSpeedLabel')}</div>
-                            ${dataSource}
-                        </div>
-                        <div class="varun-conditions-grid">
-                            <div class="varun-condition-item">
-                                <div class="varun-condition-label">${t('gustsLabel')}</div>
-                                <div class="varun-condition-value">${data.gusts} kts</div>
-                            </div>
-                            <div class="varun-condition-item">
-                                <div class="varun-condition-label">${t('directionLabel')}</div>
-                                <div class="varun-condition-value">${arrow} ${data.direction}</div>
-                            </div>
-                            <div class="varun-condition-item">
-                                <div class="varun-condition-label">${t('temperatureLabel')}</div>
-                                <div class="varun-condition-value">${data.temp}°C</div>
-                            </div>
-                            <div class="varun-condition-item">
-                                <div class="varun-condition-label">${t('precipitationLabel')}</div>
-                                <div class="varun-condition-value">${data.precipitation ?? 0} mm</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            function displayForecastVertical(spot, container) {
-                const forecastData = spot.forecastHourly || spot.forecast || [];
-
-                if (forecastData.length === 0) {
-                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
-                    return;
-                }
-
-                // Filter to show only future forecasts starting from current hour
-                const futureForecasts = filterFutureForecasts(forecastData);
-
-                if (futureForecasts.length === 0) {
-                    container.innerHTML = `<div class="varun-error">${t('noData')}</div>`;
-                    return;
-                }
-
-                // Show next 8 hours of forecast
-                const limitedForecast = futureForecasts.slice(0, 8);
-
-                let tableHtml = `
-                    <table class="varun-forecast-table">
-                        <thead>
-                            <tr>
-                                <th>${t('timeHeader')}</th>
-                                <th>${t('windHeader')}</th>
-                                <th>${t('gustsHeader')}</th>
-                                <th>${t('dirHeader')}</th>
-                                <th>${t('tempHeader')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                limitedForecast.forEach(forecast => {
-                    const time = formatTime(forecast.date);
-                    const arrow = getWindArrow(forecast.direction);
-                    const windClass = getWindClassFromValues(forecast.wind, forecast.gusts);
-                    const windText = `${forecast.wind} kts`;
-                    const gustText = `${forecast.gusts} kts`;
-                    tableHtml += `
-                        <tr class="${windClass}">
-                            <td><strong>${time}</strong></td>
-                            <td class="varun-forecast-wind ${windClass}">${windText}</td>
-                            <td class="varun-forecast-gusts ${windClass}">${gustText}</td>
-                            <td>${arrow} ${forecast.direction}</td>
-                            <td>${forecast.temp}°C</td>
-                        </tr>
-                    `;
-                });
-
-                tableHtml += `
-                        </tbody>
-                    </table>
-                `;
-
-                container.innerHTML = tableHtml;
-            }
-
-            function formatTime(dateStr) {
-                if (!dateStr) return '';
-                const parts = dateStr.split(' ');
-                if (parts.length >= 5) {
-                    return parts[4]; // HH:MM
-                }
-                return dateStr;
-            }
-
-            function getWindArrow(direction) {
-                const arrows = {
-                    'N': '↓', 'NE': '↙', 'E': '←', 'SE': '↖',
-                    'S': '↑', 'SW': '↗', 'W': '→', 'NW': '↘'
-                };
-                return arrows[direction] || '•';
-            }
-
-            function sanitizeNumber(value, fallback = 0) {
-                const parsed = Number(value);
-                return Number.isFinite(parsed) ? parsed : fallback;
-            }
-
-            function getAverageWind(wind, gusts) {
-                return (sanitizeNumber(wind) + sanitizeNumber(gusts)) / 2;
-            }
-
-            function getWindClassFromValues(wind, gusts) {
-                const avgWind = getAverageWind(wind, gusts);
-                if (avgWind < 12) return 'varun-wind-weak';
-                if (avgWind < 18) return 'varun-wind-moderate';
-                if (avgWind <= 25) return 'varun-wind-strong';
-                return 'varun-wind-extreme';
-            }
-
-            /**
-             * Parse forecast date string to Date object
-             * Expected format: "Day Mon DD YYYY HH:MM:SS GMT+OFFSET (ZONE)"
-             * Example: "Mon Nov 30 2025 14:00:00 GMT+0100 (CET)"
-             */
-            function parseForecastDate(dateStr) {
-                if (!dateStr) return null;
-                try {
-                    // Try to parse the date directly
-                    const parsed = new Date(dateStr);
-                    if (!isNaN(parsed.getTime())) {
-                        return parsed;
-                    }
-                    return null;
-                } catch (e) {
-                    return null;
-                }
-            }
-
-            /**
-             * Filter forecasts to only include future hours (from current hour onwards)
-             */
-            function filterFutureForecasts(forecasts) {
-                const now = new Date();
-                const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
-
-                return forecasts.filter(forecast => {
-                    const forecastDate = parseForecastDate(forecast.date);
-                    if (!forecastDate) return false;
-                    return forecastDate >= currentHour;
-                });
-            }
-
-            /**
-             * Get the forecast for current or next hour
-             */
-            function getCurrentOrNextForecast(forecasts) {
-                const now = new Date();
-                const currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0);
-
-                // Find forecast for current hour or next available hour
-                for (const forecast of forecasts) {
-                    const forecastDate = parseForecastDate(forecast.date);
-                    if (forecastDate && forecastDate >= currentHour) {
-                        return forecast;
-                    }
-                }
-
-                // Fallback to first forecast if no future forecast found
-                return forecasts.length > 0 ? forecasts[0] : null;
-            }
-
-            function showError(message) {
-                const widgetContent = document.getElementById('widgetContent');
-                widgetContent.innerHTML = `<div class="varun-error">${message}</div>`;
-            }
-        })();
-    </script>
+    <script type="module" src="../js/page/embed.js"></script>
 </body>
 </html>

@@ -74,6 +74,7 @@ async function bundleJavaScript(): Promise<Map<string, string>> {
     join(FRONTEND_DIR, "js/page/mcp.js"),
     join(FRONTEND_DIR, "js/page/metrics.js"),
     join(FRONTEND_DIR, "js/page/logs.js"),
+    join(FRONTEND_DIR, "js/page/embed.js"),
     join(FRONTEND_DIR, "js/page/tv.js"),
   ];
 
@@ -237,6 +238,10 @@ async function processHTML(
     html = html.replace(
       /src="\.\.\/js\/page\/logs\.js"/g,
       `src="${jsMap.get("logs") || "/assets/logs.js"}"`
+    );
+    html = html.replace(
+      /src="\.\.\/js\/page\/embed\.js"/g,
+      `src="${jsMap.get("embed") || "/assets/embed.js"}"`
     );
     html = html.replace(
       /src="\.\.\/js\/page\/tv\.js"/g,

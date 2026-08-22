@@ -748,7 +748,7 @@ Implemented features (complete):
   (heatmap + animated particles), layer switcher and an hourly forecast timeline
   (the whole forecast run on a desktop, five days on a phone)
 - Sidebar navigation shared by every page, with a mobile drawer
-- Embeddable spot widget (/embed) with language selection
+- Embeddable spot widget (/embed) with conditions, forecast or map view (satellite/light/dark, wind field, 5-day forecast slider) and language selection
 - TV view (/tv) for a full-screen spot display
 - SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
 - MCP server exposing the spot data as tools (/mcp/sse)

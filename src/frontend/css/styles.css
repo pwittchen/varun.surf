@@ -5127,6 +5127,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 12px;
 }
 
+/* The map style joins the row only for the map view, so it takes a row of its
+   own rather than leaving a hole in the row of options every view has. */
+#embedMapStyleDropdownContainer {
+    grid-column: 1 / -1;
+}
+
 .embed-dropdown .dropdown-button {
     width: 100%;
     justify-content: space-between;
@@ -5136,8 +5142,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 8px;
 }
 
-/* Three buttons on one row leave the longest labels little slack; truncate
-   rather than let a label push the arrow out of the button. */
+/* Three or four buttons on one row leave the longest labels little slack;
+   truncate rather than let a label push the arrow out of the button. */
 .embed-dropdown .dropdown-button > span:first-child {
     overflow: hidden;
     text-overflow: ellipsis;

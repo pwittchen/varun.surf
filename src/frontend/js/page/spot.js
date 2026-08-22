@@ -47,6 +47,8 @@ let selectedModel = 'gfs';
 let embedViewSelection = 'conditions';
 let embedThemeSelection = 'dark';
 let embedLanguageSelection = 'en';
+// Only read by the map view; satellite is what the widget falls back to anyway
+let embedMapStyleSelection = 'satellite';
 
 // Selected data source ('forecast' or 'liveData')
 let selectedDataSource = 'forecast';
@@ -509,13 +511,31 @@ function closeEmbedModal() {
 }
 
 function buildEmbedUrl(theme, view) {
-    return `${routing.getBaseUrl()}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
+    const url = `${routing.getBaseUrl()}/embed?spotId=${currentSpotId}&theme=${theme}&view=${view}&lang=${embedLanguageSelection}`;
+    // The other views have no map to style, so their snippet stays as short as it was
+    return view === 'map' ? `${url}&mapStyle=${embedMapStyleSelection}` : url;
+}
+
+// The map style only means something for the map view, so its dropdown comes and
+// goes with it rather than sitting there doing nothing.
+function updateEmbedMapStyleVisibility() {
+    const container = document.getElementById('embedMapStyleDropdownContainer');
+    if (container) {
+        container.hidden = embedViewSelection !== 'map';
+    }
 }
 
 // Generate embed code based on configuration
+// The map view stacks a 320px map and the forecast slider under the same header
+// and footer as the other two, so its snippet asks for the extra room rather than
+// handing out an iframe that clips its own slider.
+const EMBED_HEIGHTS = { map: 560 };
+const EMBED_DEFAULT_HEIGHT = 500;
+
 function generateEmbedCode() {
     const embedUrl = buildEmbedUrl(embedThemeSelection, embedViewSelection);
-    return `<iframe src="${embedUrl}" width="100%" height="500" frameborder="0" style="border-radius: 12px; max-width: 600px;"></iframe>`;
+    const height = EMBED_HEIGHTS[embedViewSelection] || EMBED_DEFAULT_HEIGHT;
+    return `<iframe src="${embedUrl}" width="100%" height="${height}" frameborder="0" style="border-radius: 12px; max-width: 600px;"></iframe>`;
 }
 
 // The preview frame is narrower than the widget wants to be tall: the widget is
@@ -596,6 +616,8 @@ function updateEmbedCode() {
     if (!currentSpotId) {
         return;
     }
+
+    updateEmbedMapStyleVisibility();
 
     const embedCode = generateEmbedCode();
     const embedCodeTextarea = document.getElementById('embedCode');
@@ -705,6 +727,15 @@ const embedDropdownConfigs = [
         getSelection: () => embedViewSelection,
         setSelection: (value) => {
             embedViewSelection = value;
+        }
+    },
+    {
+        buttonId: 'embedMapStyleDropdown',
+        menuId: 'embedMapStyleDropdownMenu',
+        textId: 'embedMapStyleDropdownText',
+        getSelection: () => embedMapStyleSelection,
+        setSelection: (value) => {
+            embedMapStyleSelection = value;
         }
     },
     {

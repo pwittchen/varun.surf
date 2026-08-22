@@ -1520,22 +1520,23 @@ function isSameDay(a, b) {
 /**
  * Day part of a step label: "today", "tomorrow" or a weekday with its date.
  * @param {Date} date - Parsed forecast date
+ * @param {function} translate - Key to localized label
  * @returns {string} Localized day label
  */
-function timelineDayLabel(date) {
+function timelineDayLabel(date, translate) {
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     if (isSameDay(date, today)) {
-        return translations.t('dayToday');
+        return translate('dayToday');
     }
     if (isSameDay(date, tomorrow)) {
-        return translations.t('dayTomorrow');
+        return translate('dayTomorrow');
     }
 
-    const weekday = translations.t(WEEKDAY_TRANSLATION_KEYS[date.getDay()]);
-    const month = translations.t(MONTH_TRANSLATION_KEYS[date.getMonth()]);
+    const weekday = translate(WEEKDAY_TRANSLATION_KEYS[date.getDay()]);
+    const month = translate(MONTH_TRANSLATION_KEYS[date.getMonth()]);
     return `${weekday} ${date.getDate()} ${month}`;
 }
 
@@ -1574,6 +1575,8 @@ function timelineDaySteps(dates) {
  * @param {Array<string>} options.hours - Forecast timestamps, one per hourly step
  * @param {number} [options.initialStep=0] - Step selected on creation
  * @param {function} [options.onChange] - Called with the new step once it settles
+ * @param {function} [options.translate] - Key to localized label; defaults to the
+ *   app's own dictionary, which the embed widget replaces with its own language
  * @returns {{element:HTMLElement, refreshLabels:function, destroy:function}|null}
  *   Null when there is nothing to step through
  */
@@ -1582,7 +1585,8 @@ export function createForecastTimeline(options) {
         container,
         hours,
         initialStep = 0,
-        onChange = null
+        onChange = null,
+        translate = translations.t
     } = options;
 
     const grid = Array.isArray(hours) ? hours : [];
@@ -1683,10 +1687,10 @@ export function createForecastTimeline(options) {
      */
     const stepLabel = (target) => {
         if (target < 1) {
-            return translations.t('timelineNow');
+            return translate('timelineNow');
         }
         const stepDate = dates[target - 1];
-        return `${timelineDayLabel(stepDate)} ${timelineHourLabel(stepDate)}`;
+        return `${timelineDayLabel(stepDate, translate)} ${timelineHourLabel(stepDate)}`;
     };
 
     /**
@@ -1697,10 +1701,10 @@ export function createForecastTimeline(options) {
      */
     const tickLabel = (target) => {
         if (target < 1) {
-            return translations.t('timelineNow');
+            return translate('timelineNow');
         }
         const tickDate = dates[target - 1];
-        const weekday = translations.t(WEEKDAY_TRANSLATION_KEYS[tickDate.getDay()]);
+        const weekday = translate(WEEKDAY_TRANSLATION_KEYS[tickDate.getDay()]);
         return steps > TIMELINE_TICK_DATE_AFTER_HOURS
             ? `${weekday} ${tickDate.getDate()}`
             : weekday;
@@ -1708,14 +1712,14 @@ export function createForecastTimeline(options) {
 
     const refreshLabels = () => {
         const selectedLabel = stepLabel(step);
-        title.textContent = translations.t('timelineTitle');
+        title.textContent = translate('timelineTitle');
         value.textContent = selectedLabel;
-        range.setAttribute('aria-label', translations.t('timelineTitle'));
+        range.setAttribute('aria-label', translate('timelineTitle'));
         range.setAttribute('aria-valuetext', selectedLabel);
-        prevButton.title = translations.t('timelinePrevHour');
-        prevButton.setAttribute('aria-label', translations.t('timelinePrevHour'));
-        nextButton.title = translations.t('timelineNextHour');
-        nextButton.setAttribute('aria-label', translations.t('timelineNextHour'));
+        prevButton.title = translate('timelinePrevHour');
+        prevButton.setAttribute('aria-label', translate('timelinePrevHour'));
+        nextButton.title = translate('timelineNextHour');
+        nextButton.setAttribute('aria-label', translate('timelineNextHour'));
 
         tickButtons.forEach(tick => {
             const tickStep = Number(tick.dataset.step);

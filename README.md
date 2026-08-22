@@ -294,7 +294,8 @@ Skill definitions are located in `.claude/skills/`.
 - link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)
 - dynamic weather forecast model selector (40+ Windguru models, auto-discovered per spot)
-- embeddable HTML widget with current conditions and forecast for the spot
+- embeddable HTML widget with current conditions, forecast or a map with the wind field
+  and a 5-day forecast slider for the spot
 - session cookie authentication for API access (prevents direct API scraping without visiting the site)
 - hero section with random spot photo, name/location, and slogan in PL and EN
 - automatic language detection from browser settings
