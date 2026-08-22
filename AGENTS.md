@@ -742,9 +742,9 @@ Implemented features (complete):
 - Hero section with random spot photo, name/location, and slogan (EN/PL)
 - Dynamic multi-model forecast support (40+ Windguru models)
 - Automatic language detection from browser settings
-- EN/PL translations across every page, the status, sources and MCP pages
-  included (markup copy via `data-i18n`, rendered copy via the
-  `toolsPage.setup({onLanguageChange})` callback)
+- EN/PL translations across every page, the status, sources, MCP, logs and
+  metrics pages included (markup copy via `data-i18n`, rendered copy via
+  the `toolsPage.setup({onLanguageChange})` callback)
 - Stale live conditions indicators (yellow for outdated data, >=1 hour old)
 - Fallback weather station mechanism (automatic switch when primary returns stale data)
 - Interactive wind map: marker clustering, wind arrows, wind field overlay

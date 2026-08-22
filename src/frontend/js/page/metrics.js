@@ -1,4 +1,5 @@
 import * as toolsPage from '../common/toolsPage.js';
+import { t, plural, locale, applyStaticTranslations } from '../common/translations.js';
 
 // ============================================================================
 // STATE
@@ -9,6 +10,13 @@ let refreshInterval = null;
 const REFRESH_INTERVAL_MS = 5000;
 const SESSION_CREDENTIALS_KEY = 'metrics_credentials';
 const METRICS_USERNAME = 'admin';
+
+// Kept so a language switch redraws what is on screen rather than waiting for
+// the next 5s refresh - or forever, when auto-refresh is paused
+let lastMetrics = null;
+let lastUpdatedAt = null;
+let loginFormVisible = false;
+let loginErrorKey = null;
 
 // History data for charts (keep last 60 data points = 5 minutes of data)
 const MAX_HISTORY_POINTS = 60;
@@ -42,33 +50,44 @@ function clearCredentials() {
     sessionStorage.removeItem(SESSION_CREDENTIALS_KEY);
 }
 
+// The form carries data-i18n, so a language switch retranslates it in place and
+// leaves whatever the user has already typed alone
 function showLoginForm() {
     // Stop auto-refresh when showing login form
     stopAutoRefresh();
     autoRefreshEnabled = false;
+    loginFormVisible = true;
+    loginErrorKey = null;
 
     const container = document.querySelector('.status-container');
     container.innerHTML = `
         <div class="status-card">
-            <h3>Authentication Required</h3>
+            <h3 data-i18n="toolsAuthRequired">Authentication Required</h3>
             <form id="login-form" class="metrics-login-form">
                 <div class="metrics-login-field">
-                    <label for="password">Password</label>
+                    <label for="password" data-i18n="toolsPasswordLabel">Password</label>
                     <input type="password" id="password" name="password" autocomplete="current-password" required>
                 </div>
                 <div id="login-error" class="metrics-login-error"></div>
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary" data-i18n="toolsLoginButton">Login</button>
             </form>
         </div>
     `;
+    applyStaticTranslations(container);
 
     document.getElementById('login-form').addEventListener('submit', handleLogin);
+}
+
+function renderLoginError() {
+    const errorEl = document.getElementById('login-error');
+    if (errorEl) {
+        errorEl.textContent = loginErrorKey ? t(loginErrorKey) : '';
+    }
 }
 
 async function handleLogin(e) {
     e.preventDefault();
     const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('login-error');
 
     try {
         const credentials = btoa(`${METRICS_USERNAME}:${password}`);
@@ -80,14 +99,13 @@ async function handleLogin(e) {
         if (response.ok) {
             storeCredentials(password);
             window.location.reload();
-        } else if (response.status === 401) {
-            errorEl.textContent = 'Invalid password';
-        } else {
-            errorEl.textContent = 'Authentication failed';
+            return;
         }
+        loginErrorKey = response.status === 401 ? 'toolsInvalidPassword' : 'toolsAuthFailed';
     } catch (error) {
-        errorEl.textContent = 'Authentication failed';
+        loginErrorKey = 'toolsAuthFailed';
     }
+    renderLoginError();
 }
 
 // ============================================================================
@@ -166,7 +184,7 @@ function formatBytes(bytes) {
 
 function formatNumber(num) {
     if (num === null || num === undefined || isNaN(num)) return '-';
-    return Math.round(num).toLocaleString();
+    return Math.round(num).toLocaleString(locale());
 }
 
 function formatDecimal(num, decimals = 1) {
@@ -190,7 +208,7 @@ function formatDuration(seconds) {
 function formatTimestamp(timestamp) {
     if (!timestamp || timestamp <= 0) return '-';
     const date = new Date(timestamp);
-    return date.toLocaleTimeString();
+    return date.toLocaleTimeString(locale());
 }
 
 function formatMsDuration(ms) {
@@ -206,6 +224,32 @@ function formatMsDuration(ms) {
 // ============================================================================
 // UI UPDATES
 // ============================================================================
+
+// Appends one point to each chart series. Separate from the rendering below,
+// which also runs on a language switch and must not move the charts along.
+function recordJvmHistory(jvm) {
+    cpuHistory.process.push(jvm.cpuUsage || 0);
+    cpuHistory.system.push(jvm.systemCpuUsage || 0);
+    if (cpuHistory.process.length > MAX_HISTORY_POINTS) {
+        cpuHistory.process.shift();
+        cpuHistory.system.shift();
+    }
+
+    // Store RAM in history (in MB for readability)
+    ramHistory.used.push((jvm.heapUsed || 0) / (1024 * 1024));
+    ramHistory.max.push((jvm.heapMax || 1) / (1024 * 1024));
+    if (ramHistory.used.length > MAX_HISTORY_POINTS) {
+        ramHistory.used.shift();
+        ramHistory.max.shift();
+    }
+
+    threadsHistory.live.push(jvm.threadsLive || 0);
+    threadsHistory.daemon.push(jvm.threadsDaemon || 0);
+    if (threadsHistory.live.length > MAX_HISTORY_POINTS) {
+        threadsHistory.live.shift();
+        threadsHistory.daemon.shift();
+    }
+}
 
 function updateJvmMetrics(jvm) {
     // Heap memory
@@ -226,34 +270,10 @@ function updateJvmMetrics(jvm) {
     document.getElementById('cpu-value').textContent = `${formatDecimal(cpuUsage)}%`;
     updateMiniChart('cpu-chart', cpuUsage);
 
-    // Store CPU in history
-    cpuHistory.process.push(cpuUsage);
-    cpuHistory.system.push(jvm.systemCpuUsage || 0);
-    if (cpuHistory.process.length > MAX_HISTORY_POINTS) {
-        cpuHistory.process.shift();
-        cpuHistory.system.shift();
-    }
-
-    // Store RAM in history (in MB for readability)
-    ramHistory.used.push(heapUsed / (1024 * 1024));
-    ramHistory.max.push(heapMax / (1024 * 1024));
-    if (ramHistory.used.length > MAX_HISTORY_POINTS) {
-        ramHistory.used.shift();
-        ramHistory.max.shift();
-    }
-
     // Threads
     document.getElementById('threads-value').textContent = formatNumber(jvm.threadsLive);
     document.getElementById('threads-detail').textContent =
-        `peak: ${formatNumber(jvm.threadsPeak)} | daemon: ${formatNumber(jvm.threadsDaemon)}`;
-
-    // Store threads in history
-    threadsHistory.live.push(jvm.threadsLive || 0);
-    threadsHistory.daemon.push(jvm.threadsDaemon || 0);
-    if (threadsHistory.live.length > MAX_HISTORY_POINTS) {
-        threadsHistory.live.shift();
-        threadsHistory.daemon.shift();
-    }
+        `${t('metricsPeak')}: ${formatNumber(jvm.threadsPeak)} | ${t('metricsDaemon')}: ${formatNumber(jvm.threadsDaemon)}`;
 
     // Uptime
     document.getElementById('jvm-uptime').textContent = formatDuration(jvm.uptimeSeconds);
@@ -263,7 +283,8 @@ function updateJvmMetrics(jvm) {
     const gcTotalTime = jvm.gcPauseTime?.totalTimeMs || 0;
     const gcAvgTime = jvm.gcPauseTime?.meanMs || 0;
     document.getElementById('gc-count').textContent = formatNumber(gcCount);
-    document.getElementById('gc-time').textContent = `total: ${formatDecimal(gcTotalTime, 0)} ms | avg: ${formatDecimal(gcAvgTime, 1)} ms`;
+    document.getElementById('gc-time').textContent =
+        `${t('metricsTotal')}: ${formatDecimal(gcTotalTime, 0)} ms | ${t('metricsAvg')}: ${formatDecimal(gcAvgTime, 1)} ms`;
 }
 
 function updateMiniChart(elementId, value) {
@@ -302,30 +323,38 @@ function updateMiniChart(elementId, value) {
     `;
 }
 
+// "12 failed" / "12 błędów" - the count drives the Polish noun form
+function formatFailures(count) {
+    const failures = count || 0;
+    return `${formatNumber(failures)} ${plural(failures, 'metricsFailedLabel')}`;
+}
+
+function formatAverage(meanMs) {
+    const duration = formatMsDuration(meanMs);
+    return `${t('metricsAvg')}: ${duration.value} ${duration.unit}`;
+}
+
 function updateFetchingMetrics(counters, timers) {
     // Forecasts
     document.getElementById('forecast-total').textContent = formatNumber(counters.forecastsTotal);
     document.getElementById('forecast-success').textContent = formatNumber(counters.forecastsSuccess);
-    document.getElementById('forecast-failure').textContent = `${formatNumber(counters.forecastsFailure)} failed`;
-    const forecastDuration = formatMsDuration(timers.forecastsDuration?.meanMs);
+    document.getElementById('forecast-failure').textContent = formatFailures(counters.forecastsFailure);
     document.getElementById('forecast-duration').textContent =
-        `avg: ${forecastDuration.value} ${forecastDuration.unit}`;
+        formatAverage(timers.forecastsDuration?.meanMs);
 
     // Conditions
     document.getElementById('conditions-total').textContent = formatNumber(counters.conditionsTotal);
     document.getElementById('conditions-success').textContent = formatNumber(counters.conditionsSuccess);
-    document.getElementById('conditions-failure').textContent = `${formatNumber(counters.conditionsFailure)} failed`;
-    const conditionsDuration = formatMsDuration(timers.conditionsDuration?.meanMs);
+    document.getElementById('conditions-failure').textContent = formatFailures(counters.conditionsFailure);
     document.getElementById('conditions-duration').textContent =
-        `avg: ${conditionsDuration.value} ${conditionsDuration.unit}`;
+        formatAverage(timers.conditionsDuration?.meanMs);
 
     // AI
     document.getElementById('ai-total').textContent = formatNumber(counters.aiTotal);
     document.getElementById('ai-success').textContent = formatNumber(counters.aiSuccess);
-    document.getElementById('ai-failure').textContent = `${formatNumber(counters.aiFailure)} failed`;
-    const aiDuration = formatMsDuration(timers.aiDuration?.meanMs);
+    document.getElementById('ai-failure').textContent = formatFailures(counters.aiFailure);
     document.getElementById('ai-duration').textContent =
-        `avg: ${aiDuration.value} ${aiDuration.unit}`;
+        formatAverage(timers.aiDuration?.meanMs);
 }
 
 function updateCacheMetrics(gauges) {
@@ -454,9 +483,8 @@ function drawCpuHistoryChart() {
     // Draw X-axis time labels
     ctx.fillStyle = textColor;
     ctx.textAlign = 'center';
-    const now = new Date();
-    ctx.fillText('now', canvas.width - padding.right, canvas.height - 5);
-    ctx.fillText('-5min', padding.left, canvas.height - 5);
+    ctx.fillText(t('metricsChartNow'), canvas.width - padding.right, canvas.height - 5);
+    ctx.fillText(t('metricsChartFiveMinutesAgo'), padding.left, canvas.height - 5);
 }
 
 function drawRamHistoryChart() {
@@ -544,8 +572,8 @@ function drawRamHistoryChart() {
     // Draw X-axis time labels
     ctx.fillStyle = textColor;
     ctx.textAlign = 'center';
-    ctx.fillText('now', canvas.width - padding.right, canvas.height - 5);
-    ctx.fillText('-5min', padding.left, canvas.height - 5);
+    ctx.fillText(t('metricsChartNow'), canvas.width - padding.right, canvas.height - 5);
+    ctx.fillText(t('metricsChartFiveMinutesAgo'), padding.left, canvas.height - 5);
 }
 
 function drawThreadsHistoryChart() {
@@ -631,33 +659,52 @@ function drawThreadsHistoryChart() {
     // Draw X-axis time labels
     ctx.fillStyle = textColor;
     ctx.textAlign = 'center';
-    ctx.fillText('now', canvas.width - padding.right, canvas.height - 5);
-    ctx.fillText('-5min', padding.left, canvas.height - 5);
+    ctx.fillText(t('metricsChartNow'), canvas.width - padding.right, canvas.height - 5);
+    ctx.fillText(t('metricsChartFiveMinutesAgo'), padding.left, canvas.height - 5);
 }
 
 // ============================================================================
 // MAIN REFRESH FUNCTION
 // ============================================================================
 
+// Draw the metrics already held. Called after every fetch and again on a
+// language switch, so it reads the cached payload rather than taking one.
+function renderMetrics() {
+    if (!lastMetrics) {
+        return;
+    }
+    const data = lastMetrics;
+
+    updateJvmMetrics(data.jvm || {});
+    updateFetchingMetrics(data.counters || {}, data.timers || {});
+    updateCacheMetrics(data.gauges || {});
+    updateHttpServerMetrics(data.httpClient || {}, data.counters || {});
+    updateHttpClientMetrics(data.httpClient || {});
+
+    drawCpuHistoryChart();
+    drawRamHistoryChart();
+    drawThreadsHistoryChart();
+}
+
+function renderLastUpdated() {
+    const el = document.getElementById('last-updated');
+    if (!el) {
+        return;
+    }
+    const time = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString(locale()) : '-';
+    el.textContent = `${t('statusLastUpdated')}: ${time}`;
+}
+
 async function refreshMetrics() {
     try {
-        const data = await fetchMetrics();
+        lastMetrics = await fetchMetrics();
 
-        // Update all sections
-        updateJvmMetrics(data.jvm || {});
-        updateFetchingMetrics(data.counters || {}, data.timers || {});
-        updateCacheMetrics(data.gauges || {});
-        updateHttpServerMetrics(data.httpClient || {}, data.counters || {});
-        updateHttpClientMetrics(data.httpClient || {});
+        // Moves the charts along, so it runs once per fetch
+        recordJvmHistory(lastMetrics.jvm || {});
+        renderMetrics();
 
-        // Draw history charts
-        drawCpuHistoryChart();
-        drawRamHistoryChart();
-        drawThreadsHistoryChart();
-
-        // Update last updated time
-        document.getElementById('last-updated').textContent =
-            'Last updated: ' + new Date().toLocaleTimeString();
+        lastUpdatedAt = new Date();
+        renderLastUpdated();
 
     } catch (error) {
         console.error('Error fetching metrics:', error);
@@ -668,24 +715,35 @@ async function refreshMetrics() {
 // AUTO-REFRESH CONTROLS
 // ============================================================================
 
-function toggleAutoRefresh() {
-    autoRefreshEnabled = !autoRefreshEnabled;
+function renderAutoRefreshControls() {
     const button = document.getElementById('toggle-refresh');
     const statusEl = document.getElementById('refresh-status');
     const dotEl = document.querySelector('.metrics-refresh-dot');
+    if (!button || !statusEl || !dotEl) {
+        return;
+    }
 
     if (autoRefreshEnabled) {
-        button.textContent = 'Pause Auto-Refresh';
-        statusEl.textContent = 'Auto-refresh: 5s';
+        button.textContent = t('toolsPauseAutoRefresh');
+        statusEl.textContent = t('toolsAutoRefreshInterval');
         dotEl.classList.remove('paused');
         dotEl.classList.add('status-dot-up');
         dotEl.classList.remove('status-dot-down');
-        startAutoRefresh();
     } else {
-        button.textContent = 'Resume Auto-Refresh';
-        statusEl.textContent = 'Auto-refresh: paused';
+        button.textContent = t('toolsResumeAutoRefresh');
+        statusEl.textContent = t('toolsAutoRefreshPaused');
         dotEl.classList.add('paused');
         dotEl.classList.remove('status-dot-up');
+    }
+}
+
+function toggleAutoRefresh() {
+    autoRefreshEnabled = !autoRefreshEnabled;
+    renderAutoRefreshControls();
+
+    if (autoRefreshEnabled) {
+        startAutoRefresh();
+    } else {
         stopAutoRefresh();
     }
 }
@@ -736,8 +794,19 @@ window.addEventListener('resize', () => {
 // INITIALIZATION
 // ============================================================================
 
+// Everything this page renders itself, redrawn from what it last held
+function renderAll() {
+    if (loginFormVisible) {
+        renderLoginError();
+        return;
+    }
+    renderAutoRefreshControls();
+    renderLastUpdated();
+    renderMetrics();
+}
+
 async function initializeMetrics() {
-    toolsPage.setup();
+    toolsPage.setup({ onLanguageChange: renderAll });
 
     document.getElementById('toggle-refresh').addEventListener('click', toggleAutoRefresh);
 

@@ -1,4 +1,5 @@
 import * as toolsPage from '../common/toolsPage.js';
+import { t, plural, locale, applyStaticTranslations } from '../common/translations.js';
 
 // ============================================================================
 // STATE
@@ -11,6 +12,11 @@ const SESSION_CREDENTIALS_KEY = 'logs_credentials';
 const LOGS_USERNAME = 'admin';
 
 let allLogs = [];
+// Kept so a language switch redraws what is on screen rather than waiting for
+// the next 5s refresh - or forever, when auto-refresh is paused
+let lastUpdatedAt = null;
+let loginFormVisible = false;
+let loginErrorKey = null;
 
 // ============================================================================
 // AUTHENTICATION
@@ -31,32 +37,43 @@ function clearCredentials() {
     sessionStorage.removeItem(SESSION_CREDENTIALS_KEY);
 }
 
+// The form carries data-i18n, so a language switch retranslates it in place and
+// leaves whatever the user has already typed alone
 function showLoginForm() {
     stopAutoRefresh();
     autoRefreshEnabled = false;
+    loginFormVisible = true;
+    loginErrorKey = null;
 
     const container = document.querySelector('.status-container');
     container.innerHTML = `
         <div class="status-card">
-            <h3>Authentication Required</h3>
+            <h3 data-i18n="toolsAuthRequired">Authentication Required</h3>
             <form id="login-form" class="metrics-login-form">
                 <div class="metrics-login-field">
-                    <label for="password">Password</label>
+                    <label for="password" data-i18n="toolsPasswordLabel">Password</label>
                     <input type="password" id="password" name="password" autocomplete="current-password" required>
                 </div>
                 <div id="login-error" class="metrics-login-error"></div>
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary" data-i18n="toolsLoginButton">Login</button>
             </form>
         </div>
     `;
+    applyStaticTranslations(container);
 
     document.getElementById('login-form').addEventListener('submit', handleLogin);
+}
+
+function renderLoginError() {
+    const errorEl = document.getElementById('login-error');
+    if (errorEl) {
+        errorEl.textContent = loginErrorKey ? t(loginErrorKey) : '';
+    }
 }
 
 async function handleLogin(e) {
     e.preventDefault();
     const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('login-error');
 
     try {
         const credentials = btoa(`${LOGS_USERNAME}:${password}`);
@@ -68,14 +85,13 @@ async function handleLogin(e) {
         if (response.ok) {
             storeCredentials(password);
             window.location.reload();
-        } else if (response.status === 401) {
-            errorEl.textContent = 'Invalid password';
-        } else {
-            errorEl.textContent = 'Authentication failed';
+            return;
         }
+        loginErrorKey = response.status === 401 ? 'toolsInvalidPassword' : 'toolsAuthFailed';
     } catch (error) {
-        errorEl.textContent = 'Authentication failed';
+        loginErrorKey = 'toolsAuthFailed';
     }
+    renderLoginError();
 }
 
 // ============================================================================
@@ -105,10 +121,12 @@ async function fetchLogs() {
 // FORMATTERS
 // ============================================================================
 
+// Log timestamps stay on the 24h clock in both languages - they line up in a
+// column and sit next to millisecond precision
 function formatTimestamp(timestamp) {
     if (!timestamp) return '-';
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('en-GB', {
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
@@ -150,15 +168,15 @@ function renderLogs(logs) {
     const logsCount = document.getElementById('logs-count');
 
     if (!logs || logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="logs-empty">No logs to display</td></tr>';
-        logsCount.textContent = '0 logs';
+        tbody.innerHTML = `<tr><td colspan="4" class="logs-empty">${t('logsEmpty')}</td></tr>`;
+        logsCount.textContent = `0 ${plural(0, 'logsCountLabel')}`;
         return;
     }
 
     // Sort logs by timestamp descending (newest first)
     const sortedLogs = [...logs].sort((a, b) => b.timestamp - a.timestamp);
 
-    logsCount.textContent = `${sortedLogs.length} logs`;
+    logsCount.textContent = `${sortedLogs.length} ${plural(sortedLogs.length, 'logsCountLabel')}`;
 
     tbody.innerHTML = sortedLogs.map(log => `
         <tr class="logs-row ${getLevelClass(log.level)}">
@@ -195,13 +213,22 @@ function filterLogs() {
 // MAIN REFRESH FUNCTION
 // ============================================================================
 
+function renderLastUpdated() {
+    const el = document.getElementById('last-updated');
+    if (!el) {
+        return;
+    }
+    const time = lastUpdatedAt ? lastUpdatedAt.toLocaleTimeString(locale()) : '-';
+    el.textContent = `${t('statusLastUpdated')}: ${time}`;
+}
+
 async function refreshLogs() {
     try {
         allLogs = await fetchLogs();
         filterLogs();
 
-        document.getElementById('last-updated').textContent =
-            'Last updated: ' + new Date().toLocaleTimeString();
+        lastUpdatedAt = new Date();
+        renderLastUpdated();
 
     } catch (error) {
         console.error('Error fetching logs:', error);
@@ -212,24 +239,35 @@ async function refreshLogs() {
 // AUTO-REFRESH CONTROLS
 // ============================================================================
 
-function toggleAutoRefresh() {
-    autoRefreshEnabled = !autoRefreshEnabled;
+function renderAutoRefreshControls() {
     const button = document.getElementById('toggle-refresh');
     const statusEl = document.getElementById('refresh-status');
     const dotEl = document.querySelector('.logs-refresh-dot');
+    if (!button || !statusEl || !dotEl) {
+        return;
+    }
 
     if (autoRefreshEnabled) {
-        button.textContent = 'Pause Auto-Refresh';
-        statusEl.textContent = 'Auto-refresh: 5s';
+        button.textContent = t('toolsPauseAutoRefresh');
+        statusEl.textContent = t('toolsAutoRefreshInterval');
         dotEl.classList.remove('paused');
         dotEl.classList.add('status-dot-up');
         dotEl.classList.remove('status-dot-down');
-        startAutoRefresh();
     } else {
-        button.textContent = 'Resume Auto-Refresh';
-        statusEl.textContent = 'Auto-refresh: paused';
+        button.textContent = t('toolsResumeAutoRefresh');
+        statusEl.textContent = t('toolsAutoRefreshPaused');
         dotEl.classList.add('paused');
         dotEl.classList.remove('status-dot-up');
+    }
+}
+
+function toggleAutoRefresh() {
+    autoRefreshEnabled = !autoRefreshEnabled;
+    renderAutoRefreshControls();
+
+    if (autoRefreshEnabled) {
+        startAutoRefresh();
+    } else {
         stopAutoRefresh();
     }
 }
@@ -252,8 +290,19 @@ function stopAutoRefresh() {
 // INITIALIZATION
 // ============================================================================
 
+// Everything this page renders itself, redrawn from what it last held
+function renderAll() {
+    if (loginFormVisible) {
+        renderLoginError();
+        return;
+    }
+    renderAutoRefreshControls();
+    renderLastUpdated();
+    filterLogs();
+}
+
 async function initializeLogs() {
-    toolsPage.setup();
+    toolsPage.setup({ onLanguageChange: renderAll });
 
     const toggleButton = document.getElementById('toggle-refresh');
     if (toggleButton) {

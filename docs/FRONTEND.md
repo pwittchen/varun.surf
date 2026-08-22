@@ -266,7 +266,13 @@ DOM Manipulation (vanilla JS)
 - Auto-refresh every 5 seconds
 - Same HTTP Basic authentication as the metrics dashboard
 
-**JavaScript Logic** (`page/logs.js`)
+**JavaScript Logic** (`page/logs.js`):
+- `renderAll()` - Redraw the auto-refresh controls, the timestamp and the log
+  table from what the page last held, handed to `toolsPage.setup()` as the
+  language-change callback. `metrics.js` carries the same pair; both keep the
+  login form translated in place (it renders with `data-i18n`, so a switch
+  leaves a half-typed password alone) and remember the error as a key rather
+  than a sentence
 
 #### 8. Embed Widget (`embed.html` + `page/embed.js`)
 **URL Pattern**:
@@ -351,10 +357,11 @@ function t(key) {
 
 **Helpers alongside `t()`**:
 - `applyStaticTranslations(root = document)` - fills every element carrying
-  `data-i18n` (text) or `data-i18n-html` (markup, for copy with links or
-  `<code>`) from the table. The `<title>` carries one too, so the browser tab
-  follows the language switch. Pages keeping their wording in HTML use this
-  instead of listing element ids one by one.
+  `data-i18n` (text), `data-i18n-html` (markup, for copy with links or
+  `<code>`) or `data-i18n-placeholder` (input placeholders) from the table. The
+  `<title>` carries one too, so the browser tab follows the language switch.
+  Pages keeping their wording in HTML use this instead of listing element ids
+  one by one.
 - `plural(count, key)` - Polish takes three forms, so the base key holds the
   "many" form and `${key}One` / `${key}Few` the other two (few = counts ending
   in 2-4 except 12-14). A missing variant falls back to the base key, which is

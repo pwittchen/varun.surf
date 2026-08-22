@@ -505,9 +505,9 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Hero section with random spot photo, name/location, and slogan (EN/PL)
 - [x] Dynamic multi-model forecast support (40+ Windguru models)
 - [x] Automatic language detection from browser settings
-- [x] EN/PL translations across every page, the status, sources and MCP pages
-      included (markup copy via `data-i18n`, rendered copy via the
-      `toolsPage.setup({onLanguageChange})` callback)
+- [x] EN/PL translations across every page, the status, sources, MCP, logs and
+      metrics pages included (markup copy via `data-i18n`, rendered copy via
+      the `toolsPage.setup({onLanguageChange})` callback)
 - [x] Stale live conditions indicators (yellow for outdated data)
 - [x] Fallback weather station mechanism
 - [x] Interactive wind map with marker clustering, wind arrows, a wind field

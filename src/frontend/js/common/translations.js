@@ -178,6 +178,83 @@ export const translations = {
         mcpLlmsCountriesDescription: "Index of all countries with the number of spots in each.",
         mcpLlmsCountryDescription: "Spots in a single country, where the slug is the lowercased country name with spaces replaced by hyphens, e.g. <code>poland</code> or <code>czech-republic</code>.",
 
+        // Shared by the logs and metrics dashboards
+        toolsAutoRefreshInterval: "Auto-refresh: 5s",
+        toolsAutoRefreshPaused: "Auto-refresh: paused",
+        toolsPauseAutoRefresh: "Pause Auto-Refresh",
+        toolsResumeAutoRefresh: "Resume Auto-Refresh",
+        toolsAuthRequired: "Authentication Required",
+        toolsPasswordLabel: "Password",
+        toolsLoginButton: "Login",
+        toolsInvalidPassword: "Invalid password",
+        toolsAuthFailed: "Authentication failed",
+
+        // Logs page
+        logsPageTitle: "Logs - VARUN.SURF",
+        logsLevelLabel: "Level:",
+        logsAllLevels: "ALL",
+        logsSearchLabel: "Search:",
+        logsSearchPlaceholder: "Filter logs...",
+        logsCountLabelOne: "log",
+        logsCountLabel: "logs",
+        logsTimeHeader: "Time",
+        logsLevelHeader: "Level",
+        logsLoggerHeader: "Logger",
+        logsMessageHeader: "Message",
+        logsEmpty: "No logs to display",
+
+        // Metrics page
+        metricsPageTitle: "Metrics - VARUN.SURF",
+        metricsJvmTitle: "JVM Performance",
+        metricsHeapMemory: "Heap Memory",
+        metricsCpuUsage: "CPU Usage",
+        metricsThreads: "Threads",
+        metricsUptime: "Uptime",
+        metricsGcPauses: "GC Pauses",
+        metricsPeak: "peak",
+        metricsDaemon: "daemon",
+        metricsTotal: "total",
+        metricsAvg: "avg",
+        metricsFetchingTitle: "Data Fetching",
+        metricsForecasts: "Forecasts",
+        metricsConditions: "Conditions",
+        metricsAiAnalysis: "AI Analysis",
+        metricsFailedLabel: "failed",
+        metricsCacheTitle: "Cache Status",
+        metricsSpots: "Spots",
+        metricsCountries: "Countries",
+        metricsForecastsCached: "Forecasts Cached",
+        metricsConditionsCached: "Conditions Cached",
+        metricsLastForecastFetch: "Last Forecast Fetch:",
+        metricsLastConditionsFetch: "Last Conditions Fetch:",
+        metricsHttpServerTitle: "HTTP Server (Incoming)",
+        metricsTotalRequests: "Total Requests",
+        metricsAvgResponseTime: "Avg Response Time",
+        metricsMaxResponseTime: "Max Response Time",
+        metricsTotalTime: "Total Time",
+        metricsRequestsLabel: "requests",
+        metricsHttpClientTitle: "HTTP Client (Outgoing)",
+        metricsActiveRequests: "Active Requests",
+        metricsSuccessRate: "Success Rate",
+        metricsFailedRequests: "Failed Requests",
+        metricsAvgRequestTime: "Avg Request Time",
+        metricsMaxRequestTime: "Max Request Time",
+        metricsAvgConnectTime: "Avg Connect Time",
+        metricsAvgDnsTime: "Avg DNS Time",
+        metricsConnectionsAcquired: "Connections Acquired",
+        metricsConnectionsReleased: "Connections Released",
+        metricsCpuHistoryTitle: "CPU Usage History",
+        metricsProcessCpu: "Process CPU",
+        metricsSystemCpu: "System CPU",
+        metricsMemoryHistoryTitle: "Memory Usage History",
+        metricsHeapUsed: "Heap Used",
+        metricsHeapMax: "Heap Max",
+        metricsThreadsHistoryTitle: "Threads History",
+        metricsLiveThreads: "Live Threads",
+        metricsDaemonThreads: "Daemon Threads",
+        metricsChartNow: "now",
+        metricsChartFiveMinutesAgo: "-5min",
+
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Today",
         dayTomorrow: "Tomorrow",
@@ -587,6 +664,86 @@ export const translations = {
         mcpLlmsCountriesDescription: "Spis wszystkich krajów wraz z liczbą spotów w każdym z nich.",
         mcpLlmsCountryDescription: "Spoty w jednym kraju, gdzie slug to nazwa kraju małymi literami ze spacjami zamienionymi na myślniki, np. <code>poland</code> lub <code>czech-republic</code>.",
 
+        // Shared by the logs and metrics dashboards
+        toolsAutoRefreshInterval: "Auto-odświeżanie: 5 s",
+        toolsAutoRefreshPaused: "Auto-odświeżanie: wstrzymane",
+        toolsPauseAutoRefresh: "Wstrzymaj odświeżanie",
+        toolsResumeAutoRefresh: "Wznów odświeżanie",
+        toolsAuthRequired: "Wymagane uwierzytelnienie",
+        toolsPasswordLabel: "Hasło",
+        toolsLoginButton: "Zaloguj",
+        toolsInvalidPassword: "Nieprawidłowe hasło",
+        toolsAuthFailed: "Uwierzytelnianie nie powiodło się",
+
+        // Logs page
+        logsPageTitle: "Logi - VARUN.SURF",
+        logsLevelLabel: "Poziom:",
+        logsAllLevels: "WSZYSTKIE",
+        logsSearchLabel: "Szukaj:",
+        logsSearchPlaceholder: "Filtruj logi...",
+        logsCountLabelOne: "log",
+        logsCountLabelFew: "logi",
+        logsCountLabel: "logów",
+        logsTimeHeader: "Czas",
+        logsLevelHeader: "Poziom",
+        logsLoggerHeader: "Logger",
+        logsMessageHeader: "Wiadomość",
+        logsEmpty: "Brak logów do wyświetlenia",
+
+        // Metrics page
+        metricsPageTitle: "Metryki - VARUN.SURF",
+        metricsJvmTitle: "Wydajność JVM",
+        metricsHeapMemory: "Pamięć sterty",
+        metricsCpuUsage: "Użycie CPU",
+        metricsThreads: "Wątki",
+        metricsUptime: "Czas działania",
+        metricsGcPauses: "Pauzy GC",
+        metricsPeak: "szczyt",
+        metricsDaemon: "demony",
+        metricsTotal: "łącznie",
+        metricsAvg: "śr.",
+        metricsFetchingTitle: "Pobieranie danych",
+        metricsForecasts: "Prognozy",
+        metricsConditions: "Warunki",
+        metricsAiAnalysis: "Analiza AI",
+        metricsFailedLabelOne: "błąd",
+        metricsFailedLabelFew: "błędy",
+        metricsFailedLabel: "błędów",
+        metricsCacheTitle: "Stan pamięci podręcznej",
+        metricsSpots: "Spoty",
+        metricsCountries: "Kraje",
+        metricsForecastsCached: "Prognozy w cache",
+        metricsConditionsCached: "Warunki w cache",
+        metricsLastForecastFetch: "Ostatnie pobranie prognoz:",
+        metricsLastConditionsFetch: "Ostatnie pobranie warunków:",
+        metricsHttpServerTitle: "Serwer HTTP (przychodzące)",
+        metricsTotalRequests: "Wszystkie żądania",
+        metricsAvgResponseTime: "Śr. czas odpowiedzi",
+        metricsMaxResponseTime: "Maks. czas odpowiedzi",
+        metricsTotalTime: "Łączny czas",
+        metricsRequestsLabel: "żądań",
+        metricsHttpClientTitle: "Klient HTTP (wychodzące)",
+        metricsActiveRequests: "Aktywne żądania",
+        metricsSuccessRate: "Skuteczność",
+        metricsFailedRequests: "Nieudane żądania",
+        metricsAvgRequestTime: "Śr. czas żądania",
+        metricsMaxRequestTime: "Maks. czas żądania",
+        metricsAvgConnectTime: "Śr. czas połączenia",
+        metricsAvgDnsTime: "Śr. czas DNS",
+        metricsConnectionsAcquired: "Pobrane połączenia",
+        metricsConnectionsReleased: "Zwolnione połączenia",
+        metricsCpuHistoryTitle: "Historia użycia CPU",
+        metricsProcessCpu: "CPU procesu",
+        metricsSystemCpu: "CPU systemu",
+        metricsMemoryHistoryTitle: "Historia użycia pamięci",
+        metricsHeapUsed: "Użyta sterta",
+        metricsHeapMax: "Maks. sterta",
+        metricsThreadsHistoryTitle: "Historia wątków",
+        metricsLiveThreads: "Aktywne wątki",
+        metricsDaemonThreads: "Wątki demony",
+        metricsChartNow: "teraz",
+        metricsChartFiveMinutesAgo: "-5 min",
+
         // Days of the week (short forms as they appear in the forecast)
         dayToday: "Dzisiaj",
         dayTomorrow: "Jutro",
@@ -841,16 +998,20 @@ export function plural(count, key) {
     return t(isFew ? variant('Few') : key);
 }
 
-// Fills in every element naming its copy with data-i18n (plain text) or
-// data-i18n-html (markup, for the entries carrying links or <code>). Pages that
-// keep their wording in HTML use this instead of listing element ids one by one;
-// it covers the <title> too, so the browser tab follows the language switch.
+// Fills in every element naming its copy with data-i18n (plain text),
+// data-i18n-html (markup, for the entries carrying links or <code>) or
+// data-i18n-placeholder (input placeholders). Pages that keep their wording in
+// HTML use this instead of listing element ids one by one; it covers the <title>
+// too, so the browser tab follows the language switch.
 export function applyStaticTranslations(root = document) {
     root.querySelectorAll('[data-i18n]').forEach(el => {
         el.textContent = t(el.dataset.i18n);
     });
     root.querySelectorAll('[data-i18n-html]').forEach(el => {
         el.innerHTML = t(el.dataset.i18nHtml);
+    });
+    root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
     });
 }
 
