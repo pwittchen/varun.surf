@@ -1459,12 +1459,30 @@ const MONTH_TRANSLATION_KEYS = [
     'monthJul', 'monthAug', 'monthSep', 'monthOct', 'monthNov', 'monthDec'
 ];
 
+// How far the slider under a map reaches, asked of /api/v1/wind and trimmed there
+// to the hours the forecast actually holds. A phone gets the five days it has
+// always stepped through - a longer grid crowds day marks into a strip that has no
+// room for them, and triples what a cellular connection pays for. Anything wider
+// walks the whole run Windguru publishes, roughly sixteen days.
+export const TIMELINE_HOURS_COMPACT = 5 * 24;
+export const TIMELINE_HOURS_FULL = 16 * 24;
+
 // Marks under the slider name whole days rather than hours - one per hour would
-// be an unreadable smear at this resolution. A day whose mark would land this
-// close to the previous one (as a fraction of the slider) is dropped instead of
-// printed on top of it; that happens to today, whose remaining hours start right
-// next to "now".
-const TIMELINE_TICK_MIN_GAP = 0.07;
+// be an unreadable smear at this resolution. A day whose mark would land closer
+// than a label's width to the one before it is dropped instead of printed on top
+// of it; that happens to today, whose remaining hours start right next to "now",
+// and to every other day of a sixteen-day grid in a narrow panel. Measuring the
+// slider rather than counting steps is what lets the same grid show every day
+// under a wide map and every second day beside a spot card.
+const TIMELINE_TICK_MIN_GAP_PX = 46;
+
+// Stands in when the slider is measured before it has been laid out (a map built
+// behind a hidden tab) - narrow enough that the labels can't collide.
+const TIMELINE_TICK_FALLBACK_WIDTH_PX = 480;
+
+// Past a week the weekday names come round again, so the marks on a longer grid
+// carry the day of the month to tell the two Saturdays apart.
+const TIMELINE_TICK_DATE_AFTER_HOURS = 7 * 24;
 
 // Hour each day is marked at: midday reads as "that day" better than midnight,
 // and the nearest available hour is used when the grid doesn't reach it.
@@ -1548,8 +1566,8 @@ function timelineDaySteps(dates) {
  *
  * Steps run 0..hours.length: step 0 is "now" and every later step is one hour of
  * the shared forecast grid. Dragging the slider only moves its labels; the map is
- * rebuilt once the drag ends, so a swipe across five days doesn't repaint the
- * interpolated field a hundred times over.
+ * rebuilt once the drag ends, so a swipe across the whole forecast doesn't repaint
+ * the interpolated field a few hundred times over.
  *
  * @param {object} options - Configuration options
  * @param {HTMLElement} options.container - Element the slider is appended to
@@ -1626,13 +1644,20 @@ export function createForecastTimeline(options) {
     const ticks = document.createElement('div');
     ticks.className = 'map-timeline-ticks';
 
+    element.appendChild(head);
+    element.appendChild(range);
+    element.appendChild(ticks);
+    container.appendChild(element);
+
     // "Now" plus one mark per day, dropping any that would print on top of the
-    // one before it
+    // one before it. The gap is measured against the slider as it now stands on
+    // the page, so a long grid thins its marks only where the room runs out.
+    const minGap = TIMELINE_TICK_MIN_GAP_PX / (ticks.clientWidth || TIMELINE_TICK_FALLBACK_WIDTH_PX);
     const tickSteps = [0];
     let lastPosition = 0;
     timelineDaySteps(dates).forEach(({ step: dayStep }) => {
         const position = dayStep / steps;
-        if (position - lastPosition < TIMELINE_TICK_MIN_GAP) {
+        if (position - lastPosition < minGap) {
             return;
         }
         tickSteps.push(dayStep);
@@ -1651,11 +1676,6 @@ export function createForecastTimeline(options) {
         return tick;
     });
 
-    element.appendChild(head);
-    element.appendChild(range);
-    element.appendChild(ticks);
-    container.appendChild(element);
-
     /**
      * Full label for a step: "now", or the day and hour it points at.
      * @param {number} target - Timeline step
@@ -1670,7 +1690,8 @@ export function createForecastTimeline(options) {
     };
 
     /**
-     * Short label under the slider: a weekday abbreviation, or "now" for step 0.
+     * Short label under the slider: a weekday abbreviation - with the day of the
+     * month once the grid runs past a week - or "now" for step 0.
      * @param {number} target - Timeline step
      * @returns {string} Localized label
      */
@@ -1678,7 +1699,11 @@ export function createForecastTimeline(options) {
         if (target < 1) {
             return translations.t('timelineNow');
         }
-        return translations.t(WEEKDAY_TRANSLATION_KEYS[dates[target - 1].getDay()]);
+        const tickDate = dates[target - 1];
+        const weekday = translations.t(WEEKDAY_TRANSLATION_KEYS[tickDate.getDay()]);
+        return steps > TIMELINE_TICK_DATE_AFTER_HOURS
+            ? `${weekday} ${tickDate.getDate()}`
+            : weekday;
     };
 
     const refreshLabels = () => {

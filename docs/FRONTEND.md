@@ -118,7 +118,8 @@ API Calls (Fetch with credentials: 'same-origin')
     ├─→ GET /api/v1/spots (all spots, requires SESSION cookie)
     ├─→ GET /api/v1/spots/{id} (single spot with history)
     ├─→ GET /api/v1/spots/{id}/{model} (GFS or IFS)
-    ├─→ GET /api/v1/wind (hourly wind for every spot on one grid, for the maps)
+    ├─→ GET /api/v1/wind?hours=N (hourly wind for every spot on one grid, for the
+    │       maps: the whole forecast run on a desktop, five days on a phone)
     ├─→ GET /api/v1/forecast/{wgId} (one spot's full hourly forecast)
     ├─→ GET /api/v1/sponsors (main sponsors)
     ├─→ GET /api/v1/status, /status/history, /status/sources

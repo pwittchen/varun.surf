@@ -11,6 +11,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,12 +48,23 @@ public class HourlyForecastMapper {
     // genuinely missing tail stays visibly missing rather than being invented.
     private static final int MAX_FILL_HOURS = 2;
 
+    // The far end of a run belongs to whichever spots' forecasts reach furthest -
+    // here it was five hours drawn from a handful of spots out of two hundred, which
+    // is a map of nothing. The grid ends at the last hour this share of the spots on
+    // it still has wind for.
+    private static final double MIN_TAIL_COVERAGE = 0.5;
+
     /**
      * Wind for every spot, on one shared grid.
      *
+     * The requested span is an upper bound, not a promise: the grid ends where the
+     * forecast stops covering the map. A caller can therefore ask for more hours
+     * than the forecast reaches - which is how the map asks for "everything there
+     * is" - without the slider growing a tail of hours that draw nothing.
+     *
      * @param hourlyBySpotId hourly forecasts per Windguru spot id
      * @param start          first hour of the grid
-     * @param hours          number of hours the grid spans
+     * @param hours          most hours the grid may span
      * @return the timeline, with spots that have nothing on the grid left out
      */
     public WindTimeline toWindTimeline(Map<Integer, List<Forecast>> hourlyBySpotId, LocalDateTime start, int hours) {
@@ -61,16 +73,31 @@ public class HourlyForecastMapper {
         }
 
         final LocalDateTime gridStart = start.truncatedTo(ChronoUnit.HOURS);
-        final List<WindTimeline.SpotWind> spots = new ArrayList<>(hourlyBySpotId.size());
+        final Map<Integer, Forecast[]> alignedBySpotId = new LinkedHashMap<>(hourlyBySpotId.size());
+        final int[] spotsPerHour = new int[hours];
 
-        hourlyBySpotId.forEach((spotId, forecasts) -> {
-            Forecast[] slots = alignToGrid(forecasts, gridStart, hours);
-            if (slots != null) {
-                spots.add(toSpotWind(spotId, slots));
+        for (Map.Entry<Integer, List<Forecast>> entry : hourlyBySpotId.entrySet()) {
+            Forecast[] slots = alignToGrid(entry.getValue(), gridStart, hours);
+            if (slots == null) {
+                continue;
             }
-        });
+            alignedBySpotId.put(entry.getKey(), slots);
+            for (int hour = 0; hour < hours; hour++) {
+                if (slots[hour] != null) {
+                    spotsPerHour[hour]++;
+                }
+            }
+        }
 
-        return new WindTimeline(buildGrid(gridStart, hours), spots);
+        final int span = coveredHours(spotsPerHour, alignedBySpotId.size());
+        if (span < 1) {
+            return WindTimeline.EMPTY;
+        }
+
+        final List<WindTimeline.SpotWind> spots = new ArrayList<>(alignedBySpotId.size());
+        alignedBySpotId.forEach((spotId, slots) -> spots.add(toSpotWind(spotId, slots, span)));
+
+        return new WindTimeline(buildGrid(gridStart, span), spots);
     }
 
     /**
@@ -174,12 +201,26 @@ public class HourlyForecastMapper {
         }
     }
 
-    private WindTimeline.SpotWind toSpotWind(int spotId, Forecast[] slots) {
-        final Integer[] wind = new Integer[slots.length];
-        final Integer[] gusts = new Integer[slots.length];
-        final Integer[] direction = new Integer[slots.length];
+    /**
+     * How many hours of the grid are worth serving: everything up to the last hour
+     * most of the spots still have a forecast for. Zero when none of them do.
+     */
+    private int coveredHours(int[] spotsPerHour, int spots) {
+        final double covered = spots * MIN_TAIL_COVERAGE;
+        for (int hour = spotsPerHour.length - 1; hour >= 0; hour--) {
+            if (spotsPerHour[hour] > 0 && spotsPerHour[hour] >= covered) {
+                return hour + 1;
+            }
+        }
+        return 0;
+    }
 
-        for (int hour = 0; hour < slots.length; hour++) {
+    private WindTimeline.SpotWind toSpotWind(int spotId, Forecast[] slots, int hours) {
+        final Integer[] wind = new Integer[hours];
+        final Integer[] gusts = new Integer[hours];
+        final Integer[] direction = new Integer[hours];
+
+        for (int hour = 0; hour < hours; hour++) {
             Forecast forecast = slots[hour];
             if (forecast == null) {
                 continue;

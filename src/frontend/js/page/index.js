@@ -2613,7 +2613,12 @@ function ensureMapTimeline() {
         return;
     }
 
-    mapTimelineRequest = api.fetchWindTimeline().then(timeline => {
+    // The grid is fetched once per session, so the width decided here is the one
+    // the slider keeps - a phone that later becomes a desktop window (rotated
+    // tablet) steps through five days until the next page load.
+    const timelineHours = isMobileView() ? map.TIMELINE_HOURS_COMPACT : map.TIMELINE_HOURS_FULL;
+
+    mapTimelineRequest = api.fetchWindTimeline(timelineHours).then(timeline => {
         const index = weather.indexWindTimeline(timeline);
         if (index.hours.length === 0 || index.bySpotId.size === 0) {
             // Nothing to step through - leave the map on "now" and let a later

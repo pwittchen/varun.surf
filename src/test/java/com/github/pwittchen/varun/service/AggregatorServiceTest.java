@@ -1053,6 +1053,39 @@ class AggregatorServiceTest {
         assertThat(forecastCache.get(123).daily()).isEqualTo(gfsDaily);
     }
 
+    @Test
+    void shouldServeTheWindTimelineOverTheRequestedSpan() {
+        // given a forecast that runs twenty days out
+        @SuppressWarnings("unchecked")
+        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
+                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
+        forecastCache.put(123, new ForecastData(List.of(), Map.of(ForecastModel.GFS, hourlyRun(20 * 24))));
+
+        // then the default span is the five days a phone-sized slider can address
+        assertThat(aggregatorService.getWindTimeline().hours()).hasSize(5 * 24);
+
+        // and a wider screen gets as many hours as it asks for
+        assertThat(aggregatorService.getWindTimeline(10 * 24).hours()).hasSize(10 * 24);
+
+        // however much that is - the grid is capped at the sixteen days the forecast runs
+        assertThat(aggregatorService.getWindTimeline(40 * 24).hours()).hasSize(16 * 24);
+    }
+
+    /**
+     * Hourly forecasts on whole hours starting at the current one, in the shape the
+     * timeline mapper parses.
+     */
+    private List<Forecast> hourlyRun(int hours) {
+        var formatter = java.time.format.DateTimeFormatter
+                .ofPattern("EEE dd MMM yyyy HH:mm", java.util.Locale.ENGLISH);
+        var start = java.time.LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.HOURS);
+        var forecasts = new ArrayList<Forecast>(hours);
+        for (int hour = 0; hour < hours; hour++) {
+            forecasts.add(new Forecast(start.plusHours(hour).format(formatter), 12, 16, "NW", 15, 0, 0, 1013));
+        }
+        return forecasts;
+    }
+
     private Spot createTestSpotWithLocation(int wgId, String name) {
         var spot = createTestSpot(wgId, name);
         return new Spot(

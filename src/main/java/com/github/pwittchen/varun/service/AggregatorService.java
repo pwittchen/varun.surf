@@ -90,9 +90,15 @@ public class AggregatorService {
     private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
 
-    // How far the map's hourly wind timeline reaches. Matched to the five days
-    // the daily forecast covers, which is as far as the map is worth stepping.
+    // How far the map's hourly wind timeline reaches when the caller doesn't say.
+    // Matched to the five days the daily forecast covers, which is as much as a
+    // phone-sized slider has room to step through.
     private static final int WIND_TIMELINE_HOURS = 5 * 24;
+
+    // Ceiling on a requested grid: Windguru's GFS export runs roughly sixteen days
+    // out, and the grid is trimmed to the hours the forecast actually holds anyway,
+    // so this only bounds how much work a caller can ask for.
+    private static final int MAX_WIND_TIMELINE_HOURS = 16 * 24;
 
     // Concurrency limits
     private static final int FORECAST_SEMAPHORE_PERMITS = 32;
@@ -248,6 +254,18 @@ public class AggregatorService {
      * time (and stripped from the all-spots response, being far too large).
      */
     public WindTimeline getWindTimeline() {
+        return getWindTimeline(WIND_TIMELINE_HOURS);
+    }
+
+    /**
+     * The same timeline over a caller-chosen span, so a wide screen can step
+     * through the whole run the forecast holds while a phone keeps paying for the
+     * few days its slider can address. The grid never runs past the forecast, so
+     * asking for more hours than exist costs nothing but returns nothing either.
+     *
+     * @param hours how many hours to lay out, clamped to a sane span
+     */
+    public WindTimeline getWindTimeline(int hours) {
         final Map<Integer, List<Forecast>> hourlyBySpotId = new HashMap<>();
         forecastCache.forEach((spotId, data) -> {
             List<Forecast> hourly = data.hourly(ForecastModel.GFS);
@@ -256,7 +274,8 @@ public class AggregatorService {
             }
         });
 
-        return hourlyForecastMapper.toWindTimeline(hourlyBySpotId, LocalDateTime.now(), WIND_TIMELINE_HOURS);
+        final int gridHours = Math.max(1, Math.min(MAX_WIND_TIMELINE_HOURS, hours));
+        return hourlyForecastMapper.toWindTimeline(hourlyBySpotId, LocalDateTime.now(), gridHours);
     }
 
     /**

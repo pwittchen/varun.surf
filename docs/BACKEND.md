@@ -115,10 +115,11 @@
     -> triggers async fetchForecastsForAllModels(id)
     -> returns Mono<Spot>
 
-  GET /api/v1/wind
-    -> SpotsController.wind()
-    -> AggregatorService.getWindTimeline() [hourly GFS forecasts of every spot]
-    -> HourlyForecastMapper projects them onto one 120-hour grid
+  GET /api/v1/wind?hours=N
+    -> SpotsController.wind(hours)
+    -> AggregatorService.getWindTimeline(hours) [hourly GFS forecasts of every spot]
+    -> HourlyForecastMapper projects them onto one shared grid
+       [N hours, default 120, capped at 16 days and trimmed to the forecast]
     -> returns Mono<WindTimeline>
 
   GET /api/v1/forecast/{wgId}
@@ -462,12 +463,19 @@ Spots:
     - Triggers async discovery of all forecast models if not cached
     - Response: Mono<Spot>
 
-  GET /api/v1/wind
-    - Returns hourly wind for every spot on one shared 120-hour grid
+  GET /api/v1/wind?hours=N
+    - Returns hourly wind for every spot on one shared time grid
     - Feeds the map's forecast timeline: /api/v1/spots strips forecastHourly,
       which would be megabytes across ~230 spots
+    - hours: how far the grid reaches (default 120, capped at 16 days). A desktop
+      map asks for the whole forecast run, a phone for the five days its slider
+      has room for, and neither pays for the other's payload
+    - The grid ends where the forecast stops covering most spots, so asking for
+      more hours than exist returns what there is - not a tail of empty hours
+      drawn from the handful of spots whose forecast reaches furthest
     - Per spot: wind, gusts and direction as arrays parallel to the grid, with
-      direction as an index into WindTimeline.DIRECTIONS (~30 KB gzipped)
+      direction as an index into WindTimeline.DIRECTIONS (~30 KB gzipped for 120
+      hours, ~90 KB for a full run)
     - Samples are held forward across the three-hourly stride the forecast drops
       to after ~3 days; wider gaps stay null
     - Response: Mono<WindTimeline>
@@ -625,7 +633,7 @@ src/main/java/com/github/pwittchen/varun/
 │   │   ├── ForecastModel.java (enum: 40+ models - GFS, IFS, ICON, etc.)
 │   │   ├── ForecastWg.java
 │   │   ├── HourlyForecast.java           # One spot's hourly forecast on the shared grid
-│   │   ├── WindTimeline.java             # All spots' wind on one 120-hour grid
+│   │   ├── WindTimeline.java             # All spots' wind on one shared hourly grid
 │   │   └── IcmGrid.java                  # ICM meteogram grid coordinates
 │   ├── live/                             # Live conditions
 │   │   ├── CurrentConditions.java

@@ -241,13 +241,17 @@ chatClient.prompt().user(prompt)
 - `GET /api/v1/spots/{id}/{model}` - Single spot with model selection
   - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
   - Triggers async model discovery if not cached
-- `GET /api/v1/wind` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
+- `GET /api/v1/wind?hours=N` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
   - `/api/v1/spots` strips `forecastHourly` (megabytes across ~230 spots), so the
     map's forecast timeline reads this instead
-  - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto a 120-hour
-    grid and emits wind/gusts/direction as parallel arrays (~30 KB gzipped);
-    samples are held forward across the three-hourly stride the forecast drops to
-    after ~3 days
+  - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto one shared
+    grid and emits wind/gusts/direction as parallel arrays (~30 KB gzipped for 120
+    hours); samples are held forward across the three-hourly stride the forecast
+    drops to after ~3 days
+  - `hours` says how far the grid reaches (default 120, capped at 16 days): a
+    desktop map asks for the whole forecast run, a phone for the five days its
+    slider has room for. The grid ends where the forecast stops covering most
+    spots, so an over-long request returns what there is
 - `GET /api/v1/forecast/{wgId}` - One spot's full hourly forecast (Mono<ResponseEntity<HourlyForecast>>)
   - Same grid, but every field: wind, gusts, direction, temp, rain, cloud,
     pressure and waves. A single spot can afford what the all-spots timeline
@@ -742,6 +746,7 @@ Implemented features (complete):
 - Fallback weather station mechanism (automatic switch when primary returns stale data)
 - Interactive wind map: marker clustering, wind arrows, wind field overlay
   (heatmap + animated particles), layer switcher and an hourly forecast timeline
+  (the whole forecast run on a desktop, five days on a phone)
 - Sidebar navigation shared by every page, with a mobile drawer
 - Embeddable spot widget (/embed) with language selection
 - TV view (/tv) for a full-screen spot display

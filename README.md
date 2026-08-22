@@ -289,6 +289,7 @@ Skill definitions are located in `.claude/skills/`.
 - additional TV-friendly view for the single spot
 - map of the spot (Open Street Maps, zoomed in on the spot)
 - wind field overlay on the maps (heatmap and animated wind particles) with an hourly forecast timeline
+  stepping through the whole forecast run on a desktop, five days on a phone
 - sidebar navigation shared by every page, with a mobile drawer
 - link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)

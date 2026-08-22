@@ -67,11 +67,17 @@ export async function fetchSpot(spotId, model = null) {
  * of hours, which is what the map's forecast slider steps through. Per-spot
  * hourly forecasts are stripped from the spots response, so the map reads this
  * instead.
+ * @param {number} [hours] - How far the grid should reach; the server trims it to
+ *   the hours the forecast holds, and serves its own default span when omitted
  * @returns {Promise<{hours: Array<string>, spots: Array<object>}>} Timeline (empty on error)
  */
-export async function fetchWindTimeline() {
+export async function fetchWindTimeline(hours) {
+    const url = Number.isFinite(hours) && hours > 0
+        ? `${API_ENDPOINT_WIND}?hours=${Math.round(hours)}`
+        : API_ENDPOINT_WIND;
+
     try {
-        const response = await fetch(API_ENDPOINT_WIND, { credentials: 'same-origin' });
+        const response = await fetch(url, { credentials: 'same-origin' });
 
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);

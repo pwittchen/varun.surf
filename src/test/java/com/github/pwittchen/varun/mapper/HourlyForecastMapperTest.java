@@ -33,13 +33,63 @@ class HourlyForecastMapperTest {
     }
 
     @Test
-    void shouldBuildHourlyGridOfRequestedLength() {
+    void shouldBuildHourlyGridUpToTheRequestedLength() {
         WindTimeline timeline = mapper.toWindTimeline(
-                Map.of(1, List.of(forecastAt(START, 12, 16, "NW"))), START, 4);
+                Map.of(1, List.of(
+                        forecastAt(START, 12, 16, "NW"),
+                        forecastAt(START.plusHours(3), 20, 26, "SW")
+                )), START, 4);
 
         assertThat(timeline.hours()).hasSize(4);
         assertThat(timeline.hours().getFirst()).isEqualTo("Tue 28 Oct 2025 14:00");
         assertThat(timeline.hours().getLast()).isEqualTo("Tue 28 Oct 2025 17:00");
+    }
+
+    @Test
+    void shouldEndTheGridWhereTheForecastEnds() {
+        // asking for more hours than the forecast reaches is how the map asks for
+        // everything there is, and must not grow a tail of hours that draw nothing
+        WindTimeline timeline = mapper.toWindTimeline(
+                Map.of(1, List.of(forecastAt(START, 12, 16, "NW"))), START, 240);
+
+        // the lone sample stands for its own hour and the two after it
+        assertThat(timeline.hours()).hasSize(3);
+        assertThat(timeline.hours().getLast()).isEqualTo("Tue 28 Oct 2025 16:00");
+        assertThat(timeline.spots().getFirst().wind()).containsExactly(12, 12, 12).inOrder();
+    }
+
+    @Test
+    void shouldEndTheGridWhereTheForecastStopsCoveringMostSpots() {
+        // the very last hours of a run belong to whichever few spots reach furthest,
+        // and a map drawn from those alone shows next to nothing
+        Map<Integer, List<Forecast>> hourly = new java.util.LinkedHashMap<>();
+        for (int spot = 1; spot <= 9; spot++) {
+            hourly.put(spot, List.of(forecastAt(START, 12, 16, "N")));
+        }
+        hourly.put(10, List.of(forecastAt(START, 12, 16, "N"), forecastAt(START.plusHours(12), 20, 26, "S")));
+
+        WindTimeline timeline = mapper.toWindTimeline(hourly, START, 240);
+
+        // the lone long-running spot doesn't stretch the grid past the other nine
+        assertThat(timeline.hours()).hasSize(3);
+        assertThat(timeline.spots()).hasSize(10);
+    }
+
+    @Test
+    void shouldStretchTheGridToTheLongestForecastOnIt() {
+        WindTimeline timeline = mapper.toWindTimeline(
+                Map.of(
+                        1, List.of(forecastAt(START, 12, 16, "N")),
+                        2, List.of(forecastAt(START, 12, 16, "N"), forecastAt(START.plusHours(6), 20, 26, "S"))
+                ), START, 240);
+
+        assertThat(timeline.hours()).hasSize(9);
+        // the shorter spot keeps its length, padded with the hours it says nothing about
+        WindTimeline.SpotWind shorter = timeline.spots().stream()
+                .filter(spot -> spot.wgId() == 1)
+                .findFirst()
+                .orElseThrow();
+        assertThat(shorter.wind()).containsExactly(12, 12, 12, null, null, null, null, null, null).inOrder();
     }
 
     @Test
@@ -129,11 +179,12 @@ class HourlyForecastMapperTest {
     }
 
     @Test
-    void shouldSkipSpotsWithoutHourlyForecasts() {
+    void shouldReturnEmptyTimelineWhenNoSpotHasAnythingOnTheGrid() {
+        // no spot on the grid means no hours worth stepping through either
         WindTimeline timeline = mapper.toWindTimeline(Map.of(1, List.of()), START, 3);
 
         assertThat(timeline.spots()).isEmpty();
-        assertThat(timeline.hours()).hasSize(3);
+        assertThat(timeline.hours()).isEmpty();
     }
 
     @Test

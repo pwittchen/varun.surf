@@ -1811,7 +1811,9 @@ function loadWindMapSpots() {
 }
 
 /**
- * Load the hourly wind grid the slider steps through, once per session.
+ * Load the hourly wind grid the slider steps through, once per session. The whole
+ * forecast run: this map is built for the desktop layout only, so its slider has
+ * the room the compact grid exists for.
  * @returns {Promise<object>} Indexed timeline (empty when the request fails)
  */
 function loadWindMapTimeline() {
@@ -1819,7 +1821,7 @@ function loadWindMapTimeline() {
         return Promise.resolve(windMapTimelineIndex);
     }
     if (!windMapTimelineRequest) {
-        windMapTimelineRequest = api.fetchWindTimeline()
+        windMapTimelineRequest = api.fetchWindTimeline(map.TIMELINE_HOURS_FULL)
             .then(timeline => weather.indexWindTimeline(timeline));
     }
     return windMapTimelineRequest;

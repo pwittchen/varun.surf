@@ -161,15 +161,20 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /api/v1/spots` - all spots with cached data
      - `GET /api/v1/spots/{id}` - single spot (GFS, triggers async IFS fetch)
      - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
-     - `GET /api/v1/wind` - hourly wind for every spot on one shared time grid
+     - `GET /api/v1/wind?hours=N` - hourly wind for every spot on one shared time grid
      - `GET /api/v1/forecast/{wgId}` - one spot's full hourly forecast on the same grid (404 when unknown)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
    - `/api/v1/spots` strips `forecastHourly` (too large for ~230 spots), so the
      map's forecast timeline reads `/api/v1/wind` instead: `HourlyForecastMapper`
-     projects every spot's hourly GFS forecast onto one 120-hour grid and emits
-     wind/gusts/direction as parallel arrays (~30 KB gzipped)
+     projects every spot's hourly GFS forecast onto one shared grid and emits
+     wind/gusts/direction as parallel arrays (~30 KB gzipped for 120 hours)
+   - `hours` says how far the grid should reach (default 120, capped at 16 days):
+     a desktop map asks for the whole forecast run, a phone for the five days its
+     slider has room for, and neither pays for the other's payload. The grid ends
+     where the forecast stops covering most spots, so an over-long request is
+     answered with what there is rather than a tail of empty hours
 
 7. **StatusController** (`controller/StatusController.java`)
    - REST API endpoints:
@@ -504,6 +509,7 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Fallback weather station mechanism
 - [x] Interactive wind map with marker clustering, wind arrows, a wind field
       overlay (heatmap + animated particles) and an hourly forecast timeline
+      (the whole forecast run on a desktop, five days on a phone)
 - [x] Sidebar navigation shared by every page, with a mobile drawer
 - [x] Embeddable spot widget (/embed) with language selection
 - [x] TV view (/tv) for a full-screen spot display

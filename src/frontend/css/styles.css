@@ -5567,7 +5567,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     text-align: center;
 }
 
-/* Hour-by-hour steps, for the precision a 120-stop slider can't be dragged to */
+/* Hour-by-hour steps, for the precision a several-hundred-stop slider can't be
+   dragged to */
 .map-timeline-step {
     display: flex;
     align-items: center;

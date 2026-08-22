@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,11 +39,19 @@ public class SpotsController {
      * forecast timeline steps through. Kept apart from the spots response, whose
      * per-spot hourly forecasts are stripped precisely because serving them for
      * the whole database at once would be megabytes.
+     *
+     * The optional {@code hours} parameter says how far the grid should reach: a
+     * desktop map asks for the whole forecast run, a phone for the few days its
+     * slider can address, and neither pays for the other's payload. The grid is
+     * trimmed to the hours the forecast actually holds, so an over-long request is
+     * answered with what there is.
      */
     @GetMapping("wind")
-    public Mono<WindTimeline> wind() {
+    public Mono<WindTimeline> wind(@RequestParam(value = "hours", required = false) Integer hours) {
         metrics.incrementWindRequestCounter();
-        return Mono.fromSupplier(aggregatorService::getWindTimeline);
+        return Mono.fromSupplier(() -> hours == null
+                ? aggregatorService.getWindTimeline()
+                : aggregatorService.getWindTimeline(hours));
     }
 
     /**

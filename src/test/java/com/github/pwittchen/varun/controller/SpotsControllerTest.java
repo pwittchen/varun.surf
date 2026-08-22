@@ -465,7 +465,7 @@ class SpotsControllerTest {
         );
         when(aggregatorService.getWindTimeline()).thenReturn(timeline);
 
-        StepVerifier.create(controller.wind())
+        StepVerifier.create(controller.wind(null))
                 .assertNext(result -> {
                     assertThat(result.hours()).hasSize(2);
                     assertThat(result.spots()).hasSize(1);
@@ -478,10 +478,26 @@ class SpotsControllerTest {
     }
 
     @Test
+    void shouldReturnWindTimelineOfTheRequestedLength() {
+        WindTimeline timeline = new WindTimeline(
+                List.of("Tue 28 Oct 2025 14:00"),
+                List.of(new WindTimeline.SpotWind(500760, List.of(12), List.of(16), List.of(5)))
+        );
+        when(aggregatorService.getWindTimeline(384)).thenReturn(timeline);
+
+        StepVerifier.create(controller.wind(384))
+                .assertNext(result -> assertThat(result.hours()).hasSize(1))
+                .verifyComplete();
+
+        verify(aggregatorService, times(1)).getWindTimeline(384);
+        verify(aggregatorService, never()).getWindTimeline();
+    }
+
+    @Test
     void shouldReturnEmptyWindTimelineWhenNoForecastsAreCached() {
         when(aggregatorService.getWindTimeline()).thenReturn(new WindTimeline(List.of(), List.of()));
 
-        StepVerifier.create(controller.wind())
+        StepVerifier.create(controller.wind(null))
                 .assertNext(result -> {
                     assertThat(result.hours()).isEmpty();
                     assertThat(result.spots()).isEmpty();
