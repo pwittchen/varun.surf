@@ -519,6 +519,25 @@ function initLanguage() {
         // Update kite size calculator modal content
         calculator.updateTranslations(translations.t);
 
+        // Update the hero banner close button and its confirmation modal
+        const heroClose = document.getElementById('heroClose');
+        if (heroClose) {
+            heroClose.title = translations.t('heroCloseTooltip');
+        }
+
+        [
+            'heroCloseModalTitle',
+            'heroCloseModalQuestion',
+            'heroCloseModalHint',
+            'heroCloseModalCancel',
+            'heroCloseModalConfirm'
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = translations.t(id);
+            }
+        });
+
         // Update AI modal disclaimer
         const aiDisclaimer = document.querySelector('#aiModal .modal-disclaimer');
         if (aiDisclaimer) {
@@ -925,11 +944,20 @@ function closeIcmModal() {
     icmImage.src = '';
 }
 
+function openHeroCloseModal() {
+    modals.openModal('heroCloseModal');
+}
+
+function closeHeroCloseModal() {
+    modals.closeModal('heroCloseModal');
+}
+
 function setupModals() {
     const modalConfigs = [
         { modalId: 'aiModal', closeButtonId: 'modalClose', closeCallback: closeAIModal },
         { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
-        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal }
+        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal },
+        { modalId: 'heroCloseModal', closeButtonId: 'heroCloseModalClose', closeCallback: closeHeroCloseModal }
     ];
 
     modals.setupModals(modalConfigs);
@@ -2988,20 +3016,22 @@ function initHeroSection() {
 
     updateHeroToggleUI(isVisible);
 
-    heroToggle.addEventListener('click', () => {
-        const current = state.getHeroVisible();
-        const newState = !current;
-        state.setHeroVisible(newState);
-        updateHeroToggleUI(newState);
+    function applyHeroVisible(visible) {
+        state.setHeroVisible(visible);
+        updateHeroToggleUI(visible);
 
         if (isMapView) return;
 
-        if (newState && globalWeatherData.length > 0) {
+        if (visible && globalWeatherData.length > 0) {
             renderHeroSection();
             heroSection.style.display = '';
         } else {
             heroSection.style.display = 'none';
         }
+    }
+
+    heroToggle.addEventListener('click', () => {
+        applyHeroVisible(!state.getHeroVisible());
     });
 
     const heroRefresh = document.getElementById('heroRefresh');
@@ -3011,6 +3041,26 @@ function initHeroSection() {
                 renderHeroSection();
             }
         });
+    }
+
+    // The X on the photo hides the banner for good, so it asks first - and the
+    // dialog is where the sidebar button that brings it back is named.
+    const heroClose = document.getElementById('heroClose');
+    if (heroClose) {
+        heroClose.addEventListener('click', openHeroCloseModal);
+    }
+
+    const heroCloseConfirm = document.getElementById('heroCloseModalConfirm');
+    if (heroCloseConfirm) {
+        heroCloseConfirm.addEventListener('click', () => {
+            closeHeroCloseModal();
+            applyHeroVisible(false);
+        });
+    }
+
+    const heroCloseCancel = document.getElementById('heroCloseModalCancel');
+    if (heroCloseCancel) {
+        heroCloseCancel.addEventListener('click', closeHeroCloseModal);
     }
 }
 

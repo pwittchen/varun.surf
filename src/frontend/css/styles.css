@@ -2165,6 +2165,48 @@ body.index-page .header-title {
     color: var(--accent-primary);
 }
 
+/* A confirmation asks one question, so it stays narrower than the modals that
+   carry a whole page of content. */
+.modal-confirm {
+    max-width: 440px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-button-secondary {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
+    color: var(--text-primary);
+}
+
+.modal-button-secondary:hover {
+    background: var(--overlay-light);
+}
+
+.modal-button-primary {
+    background: var(--gradient-active);
+    border: 1px solid var(--accent-primary);
+    color: var(--text-white);
+}
+
+.modal-button-primary:hover {
+    background: var(--gradient-header);
+}
+
 .modal-disclaimer {
     margin-top: 16px;
     padding: 12px;
@@ -5944,10 +5986,11 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     fill: var(--accent-primary);
 }
 
-.hero-refresh {
+/* The two controls sitting on the photo - refresh on the right, close on the
+   left - share one look; only the corner they anchor to differs. */
+.hero-action {
     position: absolute;
     top: 24px;
-    right: 24px;
     background: rgba(0, 0, 0, 0.55);
     border: none;
     color: #ffffff;
@@ -5964,12 +6007,20 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     z-index: 2;
 }
 
-.hero-refresh svg {
+.hero-action svg {
     fill: #ffffff;
 }
 
-.hero-refresh:hover {
+.hero-action:hover {
     background: rgba(0, 0, 0, 0.75);
+}
+
+.hero-refresh {
+    right: 24px;
+}
+
+.hero-close {
+    left: 24px;
 }
 
 

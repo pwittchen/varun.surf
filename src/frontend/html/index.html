@@ -355,7 +355,12 @@
             <div class="hero-overlay">
                 <div class="hero-slogan" id="heroSlogan"></div>
             </div>
-            <button class="hero-refresh" id="heroRefresh" title="Show another spot">
+            <button class="hero-action hero-close" id="heroClose" title="Hide banner">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                    <path d="M13.414,12l6.293-6.293a1,1,0,0,0-1.414-1.414L12,10.586,5.707,4.293A1,1,0,0,0,4.293,5.707L10.586,12,4.293,18.293a1,1,0,1,0,1.414,1.414L12,13.414l6.293,6.293a1,1,0,0,0,1.414-1.414Z"/>
+                </svg>
+            </button>
+            <button class="hero-action hero-refresh" id="heroRefresh" title="Show another spot">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
                     <path d="M12,2a10.032,10.032,0,0,1,7.122,3H16a1,1,0,0,0-1,1h0a1,1,0,0,0,1,1h4.143A1.858,1.858,0,0,0,22,5.143V1a1,1,0,0,0-1-1h0a1,1,0,0,0-1,1V3.078A11.981,11.981,0,0,0,.05,10.9a1.007,1.007,0,0,0,1,1.1h0a.982.982,0,0,0,.989-.878A10.014,10.014,0,0,1,12,2Z"/>
                     <path d="M22.951,12a.982.982,0,0,0-.989.878A10.014,10.014,0,0,1,12,22a10.032,10.032,0,0,1-7.122-3H8a1,1,0,0,0,1-1H9a1,1,0,0,0-1-1H3.857A1.858,1.858,0,0,0,2,18.857V23a1,1,0,0,0,1,1H3a1,1,0,0,0,1-1V20.922A11.981,11.981,0,0,0,23.95,13.1a1.007,1.007,0,0,0-1-1.1Z"/>
@@ -413,6 +418,26 @@
         <div class="modal-content">
             <div class="icm-image-container">
                 <img id="icmImage" src="" alt="ICM Forecast" class="icm-forecast-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirming the hero banner is about to be hidden -->
+<div class="modal-overlay" id="heroCloseModal">
+    <div class="modal modal-confirm">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span id="heroCloseModalTitle">Hide banner</span>
+            </div>
+            <button class="modal-close" id="heroCloseModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p class="modal-intro" id="heroCloseModalQuestion">Do you really want to hide the banner with the spot photo?</p>
+            <div class="modal-disclaimer" id="heroCloseModalHint">You can bring it back any time with the Banner button in the menu on the left.</div>
+            <div class="modal-actions">
+                <button class="modal-button modal-button-secondary" id="heroCloseModalCancel">Cancel</button>
+                <button class="modal-button modal-button-primary" id="heroCloseModalConfirm">Hide banner</button>
             </div>
         </div>
     </div>
