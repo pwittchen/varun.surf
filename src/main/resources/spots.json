@@ -908,6 +908,557 @@
     }
   },
   {
+    "name": "Jezioro Jamno",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/10315",
+    "windguruFallbackUrl": "https://www.windguru.cz/1349463",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.268300,16.083600",
+    "spotInfo": {
+      "type": "Coastal lagoon, shallow flat water (brackish)",
+      "bestWind": "NW, N, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Grassy and sandy shore at Unieście; wide shallows you can walk out into",
+      "hazards": "Muddy and weedy bottom in places; reed belts along most of the shore; fishing nets and poles on the water; south wind is offshore; sailing dinghies and motorboats in summer; water level and clarity change quickly after rain",
+      "season": "April-October",
+      "description": "Jamno is a shallow coastal lagoon behind the dune belt at Mielno, roughly 9 km long and separated from the Baltic by a narrow spit. Average depth is around 1.4 m, so most of the lake is standing depth and the water stays flat even in strong wind, which is why it is one of the busiest learning and freestyle venues on the Polish coast. The usual launches are at Unieście on the north shore and at Łabusz and Mielenko on the west side, all of them wide enough to rig comfortably. Reeds, fishing gear and a soft bottom are the main things to watch, and a southerly is straight offshore across the whole lagoon."
+    },
+    "spotInfoPL": {
+      "type": "Przybrzeżna laguna, płytka płaska woda (woda słonawa)",
+      "bestWind": "NW, N, W, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Trawiasty i piaszczysty brzeg w Unieściu; szerokie płycizny, po których można wejść daleko w wodę",
+      "hazards": "Miejscami muliste i zarośnięte dno; pasy trzcin wzdłuż większości brzegu; sieci i tyczki rybackie na wodzie; wiatr z południa wieje od brzegu; latem żaglówki i motorówki; poziom i przejrzystość wody szybko zmieniają się po deszczu",
+      "season": "Kwiecień-Październik",
+      "description": "Jamno to płytka przybrzeżna laguna za pasem wydm w Mielnie, długa na około 9 km i oddzielona od Bałtyku wąską mierzeją. Średnia głębokość to około 1,4 m, więc na większości akwenu można stanąć, a woda pozostaje płaska nawet przy mocnym wietrze - dlatego jest to jedno z najbardziej obleganych miejsc do nauki i freestyle'u na polskim wybrzeżu. Typowe wejścia to Unieście na brzegu północnym oraz Łabusz i Mielenko od zachodu, wszystkie na tyle szerokie, że da się wygodnie rozłożyć sprzęt. Uważać trzeba głównie na trzciny, sprzęt rybacki i miękkie dno, a wiatr z południa wieje od brzegu przez całą szerokość laguny."
+    }
+  },
+  {
+    "name": "Dźwirzyno",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/3436",
+    "windguruFallbackUrl": "https://www.windguru.cz/1349082",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.148054,15.397541",
+    "spotInfo": {
+      "type": "Coastal lagoon (Resko Przymorskie), shallow flat water (brackish)",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy and grassy shore on the east side of the lake, next to the kite schools",
+      "hazards": "Soft muddy bottom in places; reeds; current near the channel that connects the lake to the sea; fishing nets; very crowded in July and August; south and southeast wind blows off the land",
+      "season": "April-October",
+      "description": "Resko Przymorskie is a shallow lagoon just behind the beach at Dźwirzyno, a short drive west of Kołobrzeg, connected to the Baltic by a narrow channel. Depth over most of the lake sits between knee and chest height, so it is flat, forgiving water with plenty of room downwind - one of the best places in Poland to learn. Several schools operate from the eastern shore and the launch is wide and clean, but it fills up quickly in high season. Keep away from the outflow channel, where current and boat traffic combine, and remember that the beach and open sea are only a few hundred metres north if you want waves instead."
+    },
+    "spotInfoPL": {
+      "type": "Przybrzeżna laguna (Resko Przymorskie), płytka płaska woda (woda słonawa)",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "8-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysty i trawiasty brzeg od wschodniej strony jeziora, przy szkołach kite",
+      "hazards": "Miejscami miękkie, muliste dno; trzciny; prąd przy kanale łączącym jezioro z morzem; sieci rybackie; bardzo tłoczno w lipcu i sierpniu; wiatr z południa i południowego wschodu wieje od lądu",
+      "season": "Kwiecień-Październik",
+      "description": "Resko Przymorskie to płytka laguna tuż za plażą w Dźwirzynie, kawałek na zachód od Kołobrzegu, połączona z Bałtykiem wąskim kanałem. Na większości akwenu woda sięga od kolan do klatki piersiowej, więc jest płasko i wybaczająco, z dużą przestrzenią na zawietrznej - to jedno z najlepszych miejsc do nauki w Polsce. Od wschodniego brzegu działa kilka szkół, wejście jest szerokie i czyste, ale w szczycie sezonu robi się bardzo ciasno. Trzymaj się z dala od kanału odpływowego, gdzie prąd łączy się z ruchem łodzi, a jeśli chcesz fal, plaża i otwarte morze są tylko kilkaset metrów na północ."
+    }
+  },
+  {
+    "name": "Kąty Rybackie",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/97766",
+    "windguruFallbackUrl": "https://www.windguru.cz/147047",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.355000,19.224100",
+    "spotInfo": {
+      "type": "Lagoon (Vistula Lagoon), shallow flat water (brackish)",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-23°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy lagoon beach with a wide grassy strip behind it",
+      "hazards": "Fishing boats and nets - Kąty Rybackie is a working fishing port; soft muddy bottom with patches of weed; wind from the southwest blows straight offshore across the lagoon; shallow water warms fast and grows algae in late summer; parking fills up in season",
+      "season": "April-October",
+      "description": "Kąty Rybackie sits on the Vistula Spit with the Baltic on one side and the Vistula Lagoon on the other, and it is the lagoon side that makes it a kite spot: shallow, flat, brackish water where you can stand a long way out. It is the natural complement to Krynica Morska further up the spit and to Kadyny on the opposite shore, working best on wind from the northern and eastern sector that blows onshore across the lagoon. The village is an active fishing port, so nets, poles and boat traffic are part of the picture, and a southwesterly here is straight offshore with a very wide stretch of water downwind."
+    },
+    "spotInfoPL": {
+      "type": "Zalew (Zalew Wiślany), płytka płaska woda (woda słonawa)",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-23°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża od strony zalewu z szerokim trawiastym pasem za nią",
+      "hazards": "Łodzie i sieci rybackie - Kąty Rybackie to czynny port rybacki; miękkie, muliste dno z płatami roślinności; wiatr z południowego zachodu wieje prosto od brzegu przez cały zalew; płytka woda szybko się nagrzewa i późnym latem zakwita; parking zapełnia się w sezonie",
+      "season": "Kwiecień-Październik",
+      "description": "Kąty Rybackie leżą na Mierzei Wiślanej, z Bałtykiem po jednej stronie i Zalewem Wiślanym po drugiej - i to właśnie strona zalewowa czyni z nich spot kite: płytka, płaska, słonawa woda, po której można iść bardzo daleko. To naturalne uzupełnienie Krynicy Morskiej dalej na mierzei i Kadyn na przeciwległym brzegu; najlepiej działa przy wietrze z sektora północnego i wschodniego, który wieje w stronę brzegu. Wieś jest czynnym portem rybackim, więc sieci, tyczki i ruch łodzi to stały element krajobrazu, a wiatr z południowego zachodu wieje tu prosto od brzegu, z bardzo szerokim akwenem na zawietrznej."
+    }
+  },
+  {
+    "name": "Hel",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/693430",
+    "windguruFallbackUrl": "https://www.windguru.cz/1032235",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.606300,18.803100",
+    "spotInfo": {
+      "type": "Bay of Puck, flat water to light chop; open sea on the other side of the spit",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "5-21°C",
+      "experience": "Intermediate",
+      "launch": "Sandy beach on the bay side, south of the town",
+      "hazards": "Ferry and fishing boat traffic in and out of Hel port; nature protection at the Cypel Helski tip, including a grey seal haul-out area where access is restricted; deeper water than at Chałupy or Jastarnia; military and port zones marked on shore",
+      "season": "April-October",
+      "description": "Hel closes out the peninsula that already gives varun.surf Chałupy, Kuźnica, Jastarnia and Jurata, and it rides differently from all of them. The bay narrows and deepens toward the tip, so instead of the standing-depth flats further west you get proper deep water with a short chop, better suited to riders who are already comfortable getting back upwind on their own. The town side is close to the fishing and ferry port, so watch the shipping lane, and the very tip at Cypel Helski is protected - seals haul out there and access is restricted, so stay clear of the marked zone."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Pucka, płaska woda z lekkim zafalowaniem; otwarte morze po drugiej stronie mierzei",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "5-21°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczysta plaża od strony zatoki, na południe od miasta",
+      "hazards": "Ruch promów i kutrów wchodzących do portu w Helu; ochrona przyrody na Cyplu Helskim, w tym miejsce wypoczynku fok szarych z ograniczonym dostępem; głębsza woda niż w Chałupach czy Jastarni; oznaczone strefy portowe i wojskowe na brzegu",
+      "season": "Kwiecień-Październik",
+      "description": "Hel domyka półwysep, z którego varun.surf ma już Chałupy, Kuźnicę, Jastarnię i Juratę, i pływa się tu inaczej niż na każdym z nich. Zatoka zwęża się i pogłębia w stronę cypla, więc zamiast płycizn, na których dalej na zachód można stanąć, mamy prawdziwie głęboką wodę z krótkim zafalowaniem - lepszą dla osób, które pewnie wracają pod wiatr o własnych siłach. Strona miejska sąsiaduje z portem rybackim i promowym, więc trzeba uważać na tor wodny, a sam cypel jest objęty ochroną - wypoczywają tam foki i obowiązuje ograniczenie dostępu, więc omijaj oznaczoną strefę."
+    }
+  },
+  {
+    "name": "Zalew Zegrzyński",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/347",
+    "windguruFallbackUrl": "https://www.windguru.cz/1107216",
+    "windfinderUrl": "https://www.windfinder.com/forecast/zalew_zegrzynski",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=52.437000,21.024700",
+    "spotInfo": {
+      "type": "Reservoir, deep flat water with chop (freshwater)",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "8-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy and grassy beaches around Nieporęt, the wild beach and the sailing port area",
+      "hazards": "Heavy motorboat, yacht and dinghy traffic - this is Warsaw's main sailing water; gusty, shifty wind off the tree line and buildings on shore; water is deep with no standing depth; swimming zones and marina approaches are off limits; extremely crowded on summer weekends",
+      "season": "April-October",
+      "description": "Zegrze is the home water for everyone kiting out of Warsaw, a large reservoir on the Narew about half an hour north of the city with several launches around Nieporęt. Wind from the western sector has the longest fetch and works best, but the surrounding trees make it gusty near shore and the water is deep everywhere, so this is not a place to learn. The bigger issue is traffic: the reservoir is packed with sailing clubs, dinghies and motorboats, and the marked swimming and marina zones have to be respected. Pick a weekday or an early evening and it turns into a genuinely good session spot within reach of the capital."
+    },
+    "spotInfoPL": {
+      "type": "Zbiornik zaporowy, głęboka płaska woda z zafalowaniem (słodka woda)",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "8-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczyste i trawiaste plaże w okolicach Nieporętu, dzika plaża i teren portu jachtowego",
+      "hazards": "Duży ruch motorówek, jachtów i łódek - to główny akwen żeglarski Warszawy; porywisty, zmienny wiatr od linii drzew i zabudowań na brzegu; woda jest głęboka, nigdzie nie da się stanąć; strefy kąpielowe i podejścia do przystani są wyłączone; w letnie weekendy skrajnie tłoczno",
+      "season": "Kwiecień-Październik",
+      "description": "Zegrze to domowy akwen wszystkich kiterów z Warszawy - duży zbiornik na Narwi, pół godziny na północ od miasta, z kilkoma wejściami w okolicach Nieporętu. Najlepiej działa wiatr z sektora zachodniego, który ma tu najdłuższy rozbieg, ale otaczające drzewa robią przy brzegu podmuchy, a woda jest wszędzie głęboka, więc to nie jest miejsce do nauki. Większym problemem jest ruch: na zalewie roi się od klubów żeglarskich, łódek i motorówek, a oznaczone strefy kąpielowe i podejścia do portów trzeba respektować. Wybierz dzień powszedni albo wczesny wieczór, a spot zamienia się w naprawdę dobre miejsce na sesję w zasięgu stolicy."
+    }
+  },
+  {
+    "name": "Jezioro Nyskie",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/226204",
+    "windguruFallbackUrl": "https://www.windguru.cz/154",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.462700,17.276000",
+    "spotInfo": {
+      "type": "Reservoir, flat water with chop (freshwater)",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-24°C",
+      "experience": "Intermediate",
+      "launch": "Sandy and grassy shore around Skorochów on the north side",
+      "hazards": "Water level changes a lot through the season and can leave muddy flats; gusty wind close to the tree line; sailing and windsurfing traffic; shallow, weedy patches; long walk to the water when the reservoir is drawn down",
+      "season": "April-October",
+      "description": "Jezioro Nyskie is one of the two big Opole-region reservoirs that carry the local scene along with Turawa, sitting just east of Otmuchów on the same chain of the Nysa Kłodzka. It is wide open to the western sector with a decent fetch, and the water is flat with a short chop when it blows properly. Skorochów on the north shore is the usual base, with room to rig on grass and sand. Being a flood-control reservoir, the level moves through the season - after a drawdown the shoreline can retreat a long way and leave soft mud, so it is worth checking conditions before driving out."
+    },
+    "spotInfoPL": {
+      "type": "Zbiornik zaporowy, płaska woda z zafalowaniem (słodka woda)",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-24°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczysty i trawiasty brzeg w okolicach Skorochowa od strony północnej",
+      "hazards": "Poziom wody mocno zmienia się w sezonie i potrafi odsłonić muliste płycizny; porywisty wiatr blisko linii drzew; ruch żeglarski i windsurfingowy; płytkie, zarośnięte miejsca; przy niskim stanie wody długie dojście do brzegu",
+      "season": "Kwiecień-Październik",
+      "description": "Jezioro Nyskie to jeden z dwóch dużych zbiorników Opolszczyzny, na których - obok Turawy - opiera się lokalna scena; leży tuż na wschód od Otmuchowa, na tym samym ciągu Nysy Kłodzkiej. Jest szeroko otwarte na sektor zachodni i ma przyzwoity rozbieg, a woda jest płaska z krótkim zafalowaniem, gdy porządnie zawieje. Bazą jest zwykle Skorochów na brzegu północnym, gdzie jest miejsce na rozłożenie sprzętu na trawie i piasku. To zbiornik przeciwpowodziowy, więc poziom wody zmienia się w ciągu sezonu - po zrzucie linia brzegowa potrafi cofnąć się bardzo daleko i odsłonić miękkie muły, dlatego warto sprawdzić warunki przed wyjazdem."
+    }
+  },
+  {
+    "name": "Jezioro Otmuchowskie",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/192576",
+    "windguruFallbackUrl": "https://www.windguru.cz/154",
+    "windfinderUrl": "https://www.windfinder.com/forecast/jezioro_otmuchowskie",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.460000,17.100000",
+    "spotInfo": {
+      "type": "Reservoir, flat water with chop (freshwater)",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-24°C",
+      "experience": "Intermediate",
+      "launch": "Sandy beaches and grassy banks on the north shore near Otmuchów and Sarnowice",
+      "hazards": "Strongly varying water level; muddy and weedy bottom in the shallows; gusty wind near the shoreline trees; sailing and windsurfing traffic; algae blooms in hot spells",
+      "season": "April-October",
+      "description": "Otmuchowskie is the upstream half of the Opole reservoir pair, a few kilometres west of Jezioro Nyskie and just as exposed to the western sector. It is slightly smaller and slightly shallower than its neighbour, which keeps the water flatter in strong wind, and the north shore near Otmuchów has beaches with easy access and room to rig. As with Nyskie, the level swings with flood management, so the amount of usable shoreline changes through the season and shallow bays can turn muddy. Both lakes make a natural pair with Turawa for anyone chasing wind in the southwest of the country."
+    },
+    "spotInfoPL": {
+      "type": "Zbiornik zaporowy, płaska woda z zafalowaniem (słodka woda)",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-24°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczyste plaże i trawiaste brzegi od północy, w okolicach Otmuchowa i Sarnowic",
+      "hazards": "Mocno zmienny poziom wody; muliste i zarośnięte dno na płyciznach; porywisty wiatr przy nadbrzeżnych drzewach; ruch żeglarski i windsurfingowy; zakwity glonów w upały",
+      "season": "Kwiecień-Październik",
+      "description": "Otmuchowskie to górna połowa opolskiej pary zbiorników, kilka kilometrów na zachód od Jeziora Nyskiego i równie odsłonięta na sektor zachodni. Jest nieco mniejsze i płytsze od sąsiada, przez co woda przy mocnym wietrze pozostaje płaska, a północny brzeg w okolicach Otmuchowa ma plaże z łatwym dojazdem i miejscem na rozłożenie sprzętu. Podobnie jak na Nyskim poziom wody zmienia się w rytmie gospodarki przeciwpowodziowej, więc ilość użytecznej linii brzegowej waha się w sezonie, a płytkie zatoki potrafią zamulić. Oba jeziora tworzą naturalną parę z Turawą dla wszystkich polujących na wiatr na południowym zachodzie kraju."
+    }
+  },
+  {
+    "name": "Niegocin",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/19269",
+    "windguruFallbackUrl": "https://www.windguru.cz/244595",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.013400,21.741200",
+    "spotInfo": {
+      "type": "Lake, deep flat water with chop (freshwater)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Beaches and grassy banks at Wilkasy and around Giżycko on the north shore",
+      "hazards": "Extremely heavy sailing traffic - Niegocin is the busiest yachting water in Masuria; deep water with no standing depth; gusty, shifty wind off the wooded shoreline; swimming zones and marina approaches are closed to kites; watch for the Giżycko rail and road bridge area",
+      "season": "May-October",
+      "description": "Niegocin is the main lake of the Great Masurian Lakes and the first Masurian entry on varun.surf, sitting right on the doorstep of Giżycko with easy access at Wilkasy. It is a big, deep lake with a good fetch on westerlies and it builds a real chop rather than flat water, so it rewards riders who are already comfortable in deep water. The catch is that this is Poland's busiest sailing water: in July and August the lake is full of yachts, and kiting has to fit around them, away from marina approaches and marked swimming areas. Spring and September are far quieter and often windier."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, głęboka płaska woda z zafalowaniem (słodka woda)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Plaże i trawiaste brzegi w Wilkasach i wokół Giżycka od strony północnej",
+      "hazards": "Ogromny ruch żeglarski - Niegocin to najbardziej ruchliwy akwen jachtowy na Mazurach; głęboka woda, nigdzie nie da się stanąć; porywisty, zmienny wiatr od zalesionego brzegu; strefy kąpielowe i podejścia do portów są zamknięte dla latawców; uwaga na rejon mostu kolejowego i drogowego w Giżycku",
+      "season": "Maj-Październik",
+      "description": "Niegocin to główne jezioro Krainy Wielkich Jezior Mazurskich i pierwszy mazurski wpis na varun.surf, leżący tuż przy Giżycku, z wygodnym dojściem w Wilkasach. To duże, głębokie jezioro z dobrym rozbiegiem przy wiatrach zachodnich; buduje realne zafalowanie zamiast płaskiej wody, więc premiuje osoby czujące się pewnie na głębokim. Haczyk polega na tym, że to najbardziej zatłoczony akwen żeglarski w Polsce: w lipcu i sierpniu jezioro jest pełne jachtów, a kite musi się między nie wpasować, z dala od podejść do portów i wyznaczonych kąpielisk. Wiosna i wrzesień są dużo spokojniejsze i często bardziej wietrzne."
+    }
+  },
+  {
+    "name": "Śniardwy",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/417",
+    "windguruFallbackUrl": "https://www.windguru.cz/136191",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=53.766839,21.846361",
+    "spotInfo": {
+      "type": "Lake, open water with real chop and small waves (freshwater)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy and grassy shore at Nowe Guty on the eastern side",
+      "hazards": "The largest lake in Poland - long fetch builds short, steep waves and it is easy to end up far from shore; deep water; sailing traffic in season; weed beds; few facilities and limited rescue, so self-rescue skills are essential; wind can drop suddenly a long way out",
+      "season": "May-October",
+      "description": "Śniardwy is the biggest lake in Poland, over 100 km² of open water, and it behaves more like a small sea than a Masurian lake: with a westerly running the length of it, the fetch is long enough to build short, steep waves. Nowe Guty on the eastern side is the usual launch, with space on grass and sand and less sailing traffic than Giżycko. This is a spot for riders who can look after themselves - the shoreline is remote, help is far away, and once you are out on the open lake there is nothing to hide behind if the wind shifts or dies."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, otwarta woda z realnym zafalowaniem i małymi falami (słodka woda)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysty i trawiasty brzeg w Nowych Gutach od strony wschodniej",
+      "hazards": "Największe jezioro w Polsce - długi rozbieg buduje krótkie, strome fale i łatwo wypłynąć bardzo daleko od brzegu; głęboka woda; ruch żeglarski w sezonie; łąki roślinności podwodnej; mało infrastruktury i ograniczony ratunek, więc umiejętność samodzielnego ratowania się jest niezbędna; wiatr potrafi nagle spaść daleko od brzegu",
+      "season": "Maj-Październik",
+      "description": "Śniardwy to największe jezioro w Polsce, ponad 100 km² otwartej wody, i zachowuje się bardziej jak małe morze niż mazurskie jezioro: przy wietrze zachodnim wiejącym wzdłuż akwenu rozbieg wystarcza, by zbudować krótkie, strome fale. Typowym wejściem są Nowe Guty od wschodu, z miejscem na trawie i piasku oraz mniejszym ruchem żeglarskim niż w Giżycku. To spot dla osób, które poradzą sobie same - brzeg jest bezludny, pomoc daleko, a na otwartym jeziorze nie ma się gdzie schować, gdy wiatr się przekręci albo zgaśnie."
+    }
+  },
+  {
+    "name": "Ustka",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/250015",
+    "windguruFallbackUrl": "https://www.windguru.cz/29641",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ustka",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.588500,16.842000",
+    "spotInfo": {
+      "type": "Open sea, shorebreak and waves",
+      "bestWind": "NW, N, W, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach east and west of the port",
+      "hazards": "Port entrance and breakwaters in the middle of the beach - stay well clear; groynes; strong shorebreak in onshore wind; swimmers and lifeguarded zones in July and August; rip currents near the piers",
+      "season": "May-September",
+      "description": "Ustka fills the long gap between Łeba and Kołobrzeg on the middle coast, with wide beaches on both sides of the fishing and yacht port. It is an open Baltic wave spot: onshore northwesterlies build a proper shorebreak and short, punchy waves, and there is enough beach to find space away from the crowds outside high season. The port channel with its breakwaters splits the beach in two and is the main thing to plan around, along with the guarded swimming zones in midsummer. Head east toward Ustka East for a quieter, less built-up launch."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, przybój i fale",
+      "bestWind": "NW, N, W, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża na wschód i zachód od portu",
+      "hazards": "Wejście do portu i falochrony pośrodku plaży - trzymaj bezpieczny dystans; ostrogi; mocny przybój przy wietrze od morza; kąpiący się i strzeżone kąpieliska w lipcu i sierpniu; prądy rozrywające przy molach",
+      "season": "Maj-Wrzesień",
+      "description": "Ustka wypełnia długą lukę między Łebą a Kołobrzegiem na środkowym wybrzeżu, z szerokimi plażami po obu stronach portu rybackiego i jachtowego. To otwarty bałtycki spot falowy: wiatry z północnego zachodu budują porządny przybój i krótkie, ostre fale, a poza szczytem sezonu plaży starcza, by znaleźć miejsce z dala od tłumu. Kanał portowy z falochronami dzieli plażę na dwie części i to wokół niego trzeba planować sesję, obok strzeżonych kąpielisk w pełni lata. Na wschód, w stronę Ustki Wschodniej, jest spokojniej i mniej zabudowy."
+    }
+  },
+  {
+    "name": "Rowy",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/48014",
+    "windguruFallbackUrl": "https://www.windguru.cz/250015",
+    "windfinderUrl": "https://www.windfinder.com/forecast/rowy",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.659200,17.050500",
+    "spotInfo": {
+      "type": "Open sea, shorebreak and waves",
+      "bestWind": "NW, N, W",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide, empty sandy beach on either side of the village",
+      "hazards": "Słowiński National Park borders the beach to the west - kiting and access are restricted inside the park, check the boundary before rigging; shorebreak and rip currents; no lifeguards outside the guarded season; small harbour entrance; long walk from parking",
+      "season": "May-September",
+      "description": "Rowy sits between Ustka and Łeba on the edge of Słowiński National Park, with a small fishing harbour and some of the emptiest beach on the middle coast. Onshore wind from the northwest gives a clean shorebreak and short waves, and outside July and August you can often ride here with almost nobody around. The park boundary just west of the village is the thing to get right: access and activity inside are restricted, so stay on the eastern side. Lake Gardno sits directly behind the dunes but is inside the park and is not a kite venue."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, przybój i fale",
+      "bestWind": "NW, N, W",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka, pusta piaszczysta plaża po obu stronach miejscowości",
+      "hazards": "Słowiński Park Narodowy graniczy z plażą od zachodu - wstęp i pływanie są tam ograniczone, sprawdź granicę przed rozłożeniem sprzętu; przybój i prądy rozrywające; brak ratowników poza sezonem strzeżonym; wejście do małego portu; długie dojście z parkingu",
+      "season": "Maj-Wrzesień",
+      "description": "Rowy leżą między Ustką a Łebą, na skraju Słowińskiego Parku Narodowego, z małym portem rybackim i jedną z najbardziej pustych plaż środkowego wybrzeża. Wiatr od morza z północnego zachodu daje czysty przybój i krótkie fale, a poza lipcem i sierpniem często można tu pływać niemal w samotności. Kluczowa sprawa to granica parku tuż na zachód od miejscowości: wstęp i aktywność są tam ograniczone, więc trzymaj się strony wschodniej. Jezioro Gardno leży zaraz za wydmami, ale znajduje się w parku i nie jest miejscem do kitesurfingu."
+    }
+  },
+  {
+    "name": "Darłówko",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/4861",
+    "windguruFallbackUrl": "https://www.windguru.cz/688993",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.432911,16.389370",
+    "spotInfo": {
+      "type": "Open sea, shorebreak and waves",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach on both the east and west side of the port channel",
+      "hazards": "Busy port entrance with long breakwaters splitting the beach - keep well upwind or downwind of it; groynes; ferry and fishing boat traffic; guarded swimming zones and crowds in July and August; shorebreak in strong onshore wind",
+      "season": "May-September",
+      "description": "Darłówko is the beach resort at the mouth of the Wieprza, split in two by a port channel with a lifting footbridge, and it gives the coast between Kołobrzeg and Ustka a proper wave option. Northerly and northwesterly wind blows onshore into a wide sandy beach with a short, punchy shorebreak; the west side is generally quieter than the east. The working port is the main constraint - the entrance channel and its breakwaters carry real traffic, so plan your riding area around it and stay outside the guarded swimming zones in high summer."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, przybój i fale",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża po wschodniej i zachodniej stronie kanału portowego",
+      "hazards": "Ruchliwe wejście do portu z długimi falochronami dzielącymi plażę - trzymaj się wyraźnie z dala; ostrogi; ruch promów i kutrów; strzeżone kąpieliska i tłumy w lipcu i sierpniu; przybój przy mocnym wietrze od morza",
+      "season": "Maj-Wrzesień",
+      "description": "Darłówko to nadmorska dzielnica u ujścia Wieprzy, przecięta kanałem portowym z podnoszoną kładką, dająca wybrzeżu między Kołobrzegiem a Ustką porządną opcję falową. Wiatr z północy i północnego zachodu wieje w stronę szerokiej piaszczystej plaży z krótkim, ostrym przybojem; strona zachodnia jest zwykle spokojniejsza od wschodniej. Głównym ograniczeniem jest czynny port - kanał wejściowy i falochrony mają realny ruch, więc trzeba zaplanować wokół nich strefę pływania i trzymać się poza strzeżonymi kąpieliskami w pełni sezonu."
+    }
+  },
+  {
+    "name": "Mechelinki",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/18879",
+    "windguruFallbackUrl": "https://www.windguru.cz/9961",
+    "windfinderUrl": "https://www.windfinder.com/forecast/mechelinki",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.610600,18.515800",
+    "spotInfo": {
+      "type": "Bay of Puck, shallow flat water",
+      "bestWind": "N, NE, E, SE, S",
+      "waterTemp": "5-21°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach with a shallow, sandy entry",
+      "hazards": "The Mechelińskie Łąki nature reserve lies immediately north of the beach and is closed - do not launch, land or ride into it; stones and boulders in the shallows; swimmers in summer; limited parking; west wind is offshore and blows straight out into the bay",
+      "season": "April-October",
+      "description": "Mechelinki is the closest shallow-water spot to Gdynia, on the southern arm of Puck Bay just below Rewa. The water is sandy and standing depth a long way out, which makes it a genuinely easy place to ride, and the fetch across the bay to the north and east gives clean flat conditions. The constraint that defines this spot is the Mechelińskie Łąki reserve directly to the north: it is a protected bird area, closed to entry, so the usable beach is limited and riders need to stay south of it. West wind is offshore here with the whole bay downwind."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Pucka, płytka płaska woda",
+      "bestWind": "N, NE, E, SE, S",
+      "waterTemp": "5-21°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża z płytkim, piaszczystym wejściem",
+      "hazards": "Rezerwat Mechelińskie Łąki leży tuż na północ od plaży i jest zamknięty - nie startuj, nie ląduj i nie wpływaj w jego obręb; kamienie i głazy na płyciznach; kąpiący się latem; ograniczony parking; wiatr z zachodu wieje od brzegu, prosto w głąb zatoki",
+      "season": "Kwiecień-Październik",
+      "description": "Mechelinki to najbliższy Gdyni spot na płytkiej wodzie, na południowym ramieniu Zatoki Puckiej, tuż poniżej Rewy. Dno jest piaszczyste, a woda sięga do pasa jeszcze bardzo daleko od brzegu, co czyni to miejsce naprawdę łatwym; rozbieg przez zatokę od północy i wschodu daje czyste, płaskie warunki. Ograniczeniem definiującym ten spot jest rezerwat Mechelińskie Łąki tuż na północ: to chroniony teren ptasi z zakazem wstępu, więc użyteczna plaża jest krótka i trzeba trzymać się na południe od niego. Wiatr z zachodu wieje tu od brzegu, z całą zatoką na zawietrznej."
+    }
+  },
+  {
+    "name": "Osłonino",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1109711",
+    "windguruFallbackUrl": "https://www.windguru.cz/442797",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.668200,18.468400",
+    "spotInfo": {
+      "type": "Bay of Puck, shallow flat water",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-21°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Narrow beach below the cliff, with grass above it",
+      "hazards": "Stones and boulders in the shallows - boots are worth having; the cliff behind the beach makes westerly wind turbulent and unreliable; narrow launch area that fills quickly; Nadmorski Landscape Park rules apply; reed beds toward Rzucewo",
+      "season": "April-October",
+      "description": "Osłonino sits on the western shore of Puck Bay between Rzucewo and Rewa, a quieter alternative to the busy spots at Rewa and Puck with the same shallow, flat inner-bay water. Wind from the northern and eastern sector comes across the bay clean and onshore, which is what makes the spot work; a westerly has to come over the cliff behind the beach and turns rotory and unreliable. The launch is narrow and stony in places, so it suits smaller numbers rather than a crowd, and it pairs naturally with Rewa and Mewia Rewa a few kilometres south."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Pucka, płytka płaska woda",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-21°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Wąska plaża pod klifem, z trawą powyżej",
+      "hazards": "Kamienie i głazy na płyciznach - warto mieć buty; klif za plażą sprawia, że wiatr z zachodu jest turbulentny i nieprzewidywalny; wąskie miejsce startu, które szybko się zapełnia; obowiązują zasady Nadmorskiego Parku Krajobrazowego; trzcinowiska w stronę Rzucewa",
+      "season": "Kwiecień-Październik",
+      "description": "Osłonino leży na zachodnim brzegu Zatoki Puckiej, między Rzucewem a Rewą - to spokojniejsza alternatywa dla zatłoczonych spotów w Rewie i Pucku, z tą samą płytką, płaską wodą wewnętrznej zatoki. Wiatr z sektora północnego i wschodniego dociera przez zatokę czysty i w stronę brzegu, i to właśnie na nim spot działa; wiatr z zachodu musi przejść nad klifem za plażą i robi się wirowy oraz zawodny. Miejsce startu jest wąskie i miejscami kamieniste, więc pasuje raczej dla kilku osób niż dla tłumu, a naturalnie łączy się z Rewą i Mewią Rewą kilka kilometrów na południe."
+    }
+  },
+  {
+    "name": "Gdańsk Górki Zachodnie",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1340901",
+    "windguruFallbackUrl": "https://www.windguru.cz/920801",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.371000,18.768900",
+    "spotInfo": {
+      "type": "Open sea (Gulf of Gdańsk), chop and small waves",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "5-21°C",
+      "experience": "Intermediate",
+      "launch": "Wide sandy beach west of the Wisła Śmiała mouth",
+      "hazards": "Wisła Śmiała river mouth with current and a marked shipping channel into the marina - stay clear; groynes and old wooden piles; swimmers and guarded zones in summer; sailing club traffic from the National Sailing Centre; drifting debris after heavy rain",
+      "season": "April-October",
+      "description": "Górki Zachodnie is Gdańsk's own kite beach, on the western bank of the Wisła Śmiała next to the National Sailing Centre, and the first Gulf of Gdańsk entry on varun.surf. It is open sea rather than sheltered bay water, so a northerly builds chop and small waves, and there is a long stretch of beach running west toward Stogi with room to spread out. The river mouth is the thing to respect: it carries current, boat traffic and a marked channel into the marina, and after heavy rain it pushes debris out into the riding area."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze (Zatoka Gdańska), zafalowanie i małe fale",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "5-21°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Szeroka piaszczysta plaża na zachód od ujścia Wisły Śmiałej",
+      "hazards": "Ujście Wisły Śmiałej z prądem i oznakowanym torem wodnym do mariny - trzymaj się z dala; ostrogi i stare drewniane pale; kąpiący się i strzeżone kąpieliska latem; ruch klubowy z Narodowego Centrum Żeglarstwa; niesione przez rzekę śmieci i konary po ulewach",
+      "season": "Kwiecień-Październik",
+      "description": "Górki Zachodnie to własna plaża kite Gdańska, na zachodnim brzegu Wisły Śmiałej przy Narodowym Centrum Żeglarstwa, i pierwszy wpis z Zatoki Gdańskiej na varun.surf. To otwarte morze, a nie osłonięta woda zatokowa, więc wiatr z północy buduje zafalowanie i małe fale, a plaża ciągnie się długim pasem na zachód w stronę Stogów, dając miejsce, by się rozproszyć. Ujście rzeki wymaga szacunku: niesie prąd, ruch łodzi i oznakowany tor wodny do mariny, a po ulewach wypycha w strefę pływania niesione śmieci."
+    }
+  },
+  {
+    "name": "Sobieszewo",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1343207",
+    "windguruFallbackUrl": "https://www.windguru.cz/1019911",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.355000,18.836400",
+    "spotInfo": {
+      "type": "Open sea (Gulf of Gdańsk), chop and small waves",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "5-21°C",
+      "experience": "Intermediate",
+      "launch": "Wide, quiet sandy beach with dune access paths",
+      "hazards": "Two strict nature reserves bound the island beach - Ptasi Raj to the west and Mewia Łacha to the east, both closed to kiting; Mewia Łacha is a grey seal haul-out and breeding area, keep well away; long walk from the car parks over the dunes; no lifeguards outside the guarded season; shorebreak in strong onshore wind",
+      "season": "April-October",
+      "description": "Sobieszewo Island gives Gdańsk a far quieter beach than Górki Zachodnie, a long empty stretch of sand between two bird reserves with dune paths leading over from the village. Northerly wind blows onshore into chop and small waves, and outside high summer the beach is close to deserted. What defines the spot is what surrounds it: Ptasi Raj at the western end and Mewia Łacha at the eastern end are strictly protected, closed to entry and home to a well-known grey seal colony, so the usable beach is the middle section and riders must stay firmly inside it."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze (Zatoka Gdańska), zafalowanie i małe fale",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "5-21°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Szeroka, spokojna piaszczysta plaża z zejściami przez wydmy",
+      "hazards": "Plażę wyspy zamykają dwa ścisłe rezerwaty - Ptasi Raj od zachodu i Mewia Łacha od wschodu, oba wyłączone z pływania; Mewia Łacha to miejsce odpoczynku i rozrodu fok szarych, trzymaj się daleko; długie dojście z parkingów przez wydmy; brak ratowników poza sezonem strzeżonym; przybój przy mocnym wietrze od morza",
+      "season": "Kwiecień-Październik",
+      "description": "Wyspa Sobieszewska daje Gdańskowi dużo spokojniejszą plażę niż Górki Zachodnie - długi, pusty pas piasku między dwoma rezerwatami ptasimi, z zejściami przez wydmy od strony wsi. Wiatr z północy wieje w stronę brzegu, budując zafalowanie i małe fale, a poza pełnią lata plaża bywa niemal bezludna. Spot definiuje to, co go otacza: Ptasi Raj od zachodu i Mewia Łacha od wschodu są ściśle chronione, zamknięte dla wstępu i stanowią dom znanej kolonii fok szarych, więc użyteczna jest tylko środkowa część plaży i trzeba się jej trzymać."
+    }
+  },
+  {
+    "name": "Dziwnów",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/1028155",
+    "windguruFallbackUrl": "https://www.windguru.cz/17208",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.030600,14.751700",
+    "spotInfo": {
+      "type": "Open sea, shorebreak and waves",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach east of the port, toward Dziwnówek",
+      "hazards": "Dziwna river mouth and port entrance with breakwaters - keep well clear of the channel; groynes; strong shorebreak in onshore wind; guarded swimming zones and heavy holiday crowds in July and August; rescue station traffic",
+      "season": "May-September",
+      "description": "Dziwnów sits where the Dziwna reaches the Baltic, giving the western coast a sea-side option to go with Wrzosowo's flat water on Kamień Lagoon just behind it. The beach running east toward Dziwnówek is wide and sandy, and an onshore northwesterly builds a solid shorebreak with short waves. The port channel and its breakwaters cut the beach on the western side and carry real boat traffic, so the usable riding area is east of them; in July and August the whole strip is a busy holiday beach, which pushes sessions to early morning or the shoulder season."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, przybój i fale",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża na wschód od portu, w stronę Dziwnówka",
+      "hazards": "Ujście Dziwny i wejście do portu z falochronami - trzymaj się z dala od kanału; ostrogi; mocny przybój przy wietrze od morza; strzeżone kąpieliska i duże tłumy wczasowiczów w lipcu i sierpniu; ruch łodzi ratowniczych",
+      "season": "Maj-Wrzesień",
+      "description": "Dziwnów leży tam, gdzie Dziwna wpada do Bałtyku, dając zachodniemu wybrzeżu opcję morską do pary z płaską wodą Wrzosowa na Zalewie Kamieńskim tuż za nim. Plaża ciągnąca się na wschód w stronę Dziwnówka jest szeroka i piaszczysta, a wiatr z północnego zachodu buduje solidny przybój z krótkimi falami. Kanał portowy z falochronami przecina plażę od zachodu i ma realny ruch łodzi, więc użyteczna strefa pływania leży na wschód od niego; w lipcu i sierpniu cały pas to zatłoczona plaża wczasowa, co przesuwa sesje na wczesny ranek albo poza szczyt sezonu."
+    }
+  },
+  {
+    "name": "Białogóra",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/792017",
+    "windguruFallbackUrl": "https://www.windguru.cz/1240388",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.831000,17.954800",
+    "spotInfo": {
+      "type": "Open sea, wave spot with shorebreak",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach at the main dune entrance, reached by a path from the village",
+      "hazards": "Powerful shorebreak in strong onshore wind - launching and landing is the hard part; rip currents; no lifeguards outside the short guarded season; long walk from the car park through the dunes; Nadmorski Landscape Park rules apply, stay on marked paths; almost no infrastructure",
+      "season": "May-October",
+      "description": "Białogóra is one of the better-known wave beaches on the Polish coast, a quiet stretch between Dębki and Lubiatowo backed by dunes and forest with a single main path down to the water. When a northerly swell lines up it produces the kind of shorebreak and waves that riders drive across the country for, but that same shorebreak is what makes the launch demanding and puts this firmly in advanced territory. There is essentially nothing here beyond a seasonal beach bar, no rescue outside the guarded weeks, and the walk in from the car park is long enough that you commit to the session."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, spot falowy z przybojem",
+      "bestWind": "N, NW, NE",
+      "waterTemp": "6-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża przy głównym zejściu przez wydmy, ścieżką od wsi",
+      "hazards": "Potężny przybój przy mocnym wietrze od morza - najtrudniejszy jest start i lądowanie; prądy rozrywające; brak ratowników poza krótkim sezonem strzeżonym; długie dojście z parkingu przez wydmy; obowiązują zasady Nadmorskiego Parku Krajobrazowego, trzymaj się wyznaczonych ścieżek; praktycznie zero infrastruktury",
+      "season": "Maj-Październik",
+      "description": "Białogóra to jedna z lepiej znanych plaż falowych polskiego wybrzeża - spokojny odcinek między Dębkami a Lubiatowem, osłonięty wydmami i lasem, z jednym głównym zejściem do wody. Gdy ułoży się fala z północy, powstają tu warunki, dla których ludzie jeżdżą przez pół kraju, ale ten sam przybój sprawia, że start jest wymagający i stawia spot wyraźnie w kategorii zaawansowanej. Poza sezonowym barem na plaży nie ma tu w zasadzie nic, ratunku poza tygodniami strzeżonymi brak, a dojście z parkingu jest na tyle długie, że wejście do wody to decyzja na całą sesję."
+    }
+  },
+  {
+    "name": "Lubiatowo",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/924364",
+    "windguruFallbackUrl": "https://www.windguru.cz/1133594",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.814100,17.848500",
+    "spotInfo": {
+      "type": "Open sea, wave spot with shorebreak",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "6-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at the Lubiatowo and Kopalino dune entrances",
+      "hazards": "Shorebreak on strong onshore wind; rip currents; no lifeguards outside the guarded season; long walk from the forest car parks; Nadmorski Landscape Park rules apply; minimal infrastructure and no rescue nearby",
+      "season": "May-October",
+      "description": "Lubiatowo, together with neighbouring Kopalino, is the quieter half of the wave stretch that runs from Dębki through Białogóra, backed by pine forest with dune paths down to a wide, empty beach. The waves are usually a touch smaller and more forgiving than at Białogóra a few kilometres east, which makes it a good place to start riding Baltic swell without taking on the heaviest shorebreak. Infrastructure is minimal - forest car parks, a walk in, and very little else - so bring what you need and be prepared to handle a problem yourself."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze, spot falowy z przybojem",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "6-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy zejściach przez wydmy w Lubiatowie i Kopalinie",
+      "hazards": "Przybój przy mocnym wietrze od morza; prądy rozrywające; brak ratowników poza sezonem strzeżonym; długie dojście z leśnych parkingów; obowiązują zasady Nadmorskiego Parku Krajobrazowego; minimalna infrastruktura i brak ratunku w pobliżu",
+      "season": "Maj-Październik",
+      "description": "Lubiatowo, razem z sąsiednim Kopalinem, to spokojniejsza połowa falowego odcinka ciągnącego się od Dębek przez Białogórę - sosnowy las, ścieżki przez wydmy i szeroka, pusta plaża. Fale są zwykle odrobinę mniejsze i bardziej wybaczające niż w Białogórze kilka kilometrów na wschód, więc to dobre miejsce, by zacząć pływać w bałtyckiej fali bez mierzenia się z najcięższym przybojem. Infrastruktura jest szczątkowa - leśne parkingi, dojście pieszo i niewiele poza tym - więc weź ze sobą wszystko, czego potrzebujesz, i licz się z tym, że problem trzeba będzie rozwiązać samemu."
+    }
+  },
+  {
     "name": "Podersdorf",
     "country": "Austria",
     "windguruUrl": "https://www.windguru.cz/859182",
