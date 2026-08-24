@@ -871,6 +871,7 @@ function setupEmbedModal() {
 // Open app information modal
 function openAppInfoModal() {
     modals.openModal('appInfoModal');
+    appShell.loadAppVersion();
 }
 
 // Close app information modal

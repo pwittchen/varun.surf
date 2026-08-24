@@ -6,6 +6,8 @@
 // in place, the others hand the mode over and navigate back to it.
 // ============================================================================
 
+import * as api from './api.js';
+
 const SIDEBAR_HTML = `
 <div class="sidebar-brand" id="sidebarBrand">
     <img src="/logo.png" alt="VARUN.SURF Logo" class="header-logo" id="headerLogo">
@@ -180,6 +182,7 @@ const MODALS_HTML = `
             <div class="modal-title">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: white; vertical-align: middle;"><path d="M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z"/></svg>
                 <span id="appInfoModalTitle">About VARUN.SURF</span>
+                <span class="modal-title-version" id="appInfoModalVersion"></span>
             </div>
             <button class="modal-close" id="appInfoModalClose">&times;</button>
         </div>
@@ -299,6 +302,32 @@ export function renderSidebar() {
         header.after(aside);
     } else {
         document.body.insertBefore(aside, document.body.firstChild);
+    }
+}
+
+// The running version, shown greyed out next to the about modal's title. Asked
+// for the first time the modal opens rather than on load: a page that never
+// opens it never pays for the request, and the answer is the same all session.
+let appVersion = null;
+
+export async function loadAppVersion() {
+    const el = document.getElementById('appInfoModalVersion');
+    if (!el) {
+        return;
+    }
+    if (appVersion) {
+        el.textContent = appVersion;
+        return;
+    }
+    try {
+        const status = await api.fetchStatus();
+        if (!status.version) {
+            return;
+        }
+        appVersion = status.version.startsWith('v') ? status.version : `v${status.version}`;
+        el.textContent = appVersion;
+    } catch (error) {
+        console.error('Error fetching app version:', error);
     }
 }
 

@@ -2087,6 +2087,15 @@ body.index-page .header-title {
     gap: 8px;
 }
 
+/* Running version next to the about modal's title: present for whoever looks
+   for it, quiet enough not to read as part of the heading. */
+.modal-title-version {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0;
+}
+
 .modal-close {
     background: transparent;
     border: none;

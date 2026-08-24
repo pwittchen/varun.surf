@@ -132,7 +132,10 @@ function setupInfoModal() {
 
     const infoToggle = document.getElementById('infoToggle');
     if (infoToggle) {
-        infoToggle.addEventListener('click', () => modals.openModal('appInfoModal'));
+        infoToggle.addEventListener('click', () => {
+            modals.openModal('appInfoModal');
+            appShell.loadAppVersion();
+        });
     }
 }
 

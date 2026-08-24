@@ -898,6 +898,7 @@ function setupDropdown() {
 
 function openAppInfoModal() {
     modals.openModal('appInfoModal');
+    appShell.loadAppVersion();
 }
 
 function closeAppInfoModal() {
