@@ -1314,6 +1314,35 @@
     }
   },
   {
+    "name": "Rzucewo",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/442797",
+    "windguruFallbackUrl": "https://www.windguru.cz/1109711",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.686600,18.466100",
+    "spotInfo": {
+      "type": "Bay of Puck, shallow flat water",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-21°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Narrow sandy beach with a small wooden pier (molo), grass behind it",
+      "hazards": "Reed beds along the shore and stones in the shallows toward Osłonino - boots are worth having; a small wooden pier splits the beach, keep clear when launching and landing; westerly wind is offshore, crossing the village and the wooded grounds of Rzucewo Castle before it turns unreliable; Nadmorski Landscape Park rules apply on this shore; limited parking, no lifeguard",
+      "season": "April-October",
+      "description": "Rzucewo is a quiet village on the western shore of Puck Bay, between Osłonino a couple of kilometres south and the town of Puck a few kilometres north, inside the Nadmorski Landscape Park. The bay here is shallow and flat with standing depth a long way out, and wind from the northern through south-eastern sector runs cleanly across the water onto a narrow sandy beach marked by a small wooden pier; a westerly has to cross the village and the wooded grounds of Rzucewo Castle first and turns unreliable. It's a low-key alternative to the busier launches at Osłonino, Rewa and Puck, with reed beds along parts of the shoreline worth watching for when picking a line in or out."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Pucka, płytka płaska woda",
+      "bestWind": "N, NE, E, SE",
+      "waterTemp": "5-21°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Wąska piaszczysta plaża z niewielkim drewnianym molo, za nią trawa",
+      "hazards": "Trzcinowiska wzdłuż brzegu i kamienie na płyciznach w stronę Osłonina - warto mieć buty; niewielkie drewniane molo dzieli plażę, trzymaj się z dala przy starcie i lądowaniu; wiatr z zachodu wieje od brzegu, przechodząc nad wioską i zalesionym terenem zamku w Rzucewie, i staje się zawodny; na tym brzegu obowiązują zasady Nadmorskiego Parku Krajobrazowego; ograniczony parking, brak ratownika",
+      "season": "Kwiecień-Październik",
+      "description": "Rzucewo to spokojna wieś na zachodnim brzegu Zatoki Puckiej, między Osłoninem kilka kilometrów na południe a miastem Puck kilka kilometrów na północ, na terenie Nadmorskiego Parku Krajobrazowego. Zatoka jest tu płytka i płaska, woda sięga do pasa jeszcze daleko od brzegu, a wiatr z sektora od północnego po południowo-wschodni dociera czysto przez wodę na wąską piaszczystą plażę z niewielkim drewnianym molo; wiatr z zachodu musi najpierw przejść nad wioską i zalesionym terenem zamku w Rzucewie i robi się zawodny. To spokojniejsza alternatywa dla bardziej zatłoczonych miejsc startu w Osłoninie, Rewie i Pucku, z trzcinowiskami wzdłuż części brzegu, na które warto uważać przy wyborze trasy wejścia i wyjścia."
+    }
+  },
+  {
     "name": "Gdańsk Górki Zachodnie",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/1340901",
