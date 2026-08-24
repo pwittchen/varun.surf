@@ -3790,6 +3790,308 @@
     }
   },
   {
+    "name": "Wulfener Hals",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/269911",
+    "windguruFallbackUrl": "https://www.windguru.cz/48157",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_wulfener_hals",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4058,11.1777",
+    "spotInfo": {
+      "type": "Baltic Sea, sheltered bay and shallow inland lagoon",
+      "bestWind": "NW, E",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at the campsite / surf school",
+      "hazards": "Kiting on the inner lagoon (Burger Binnensee) is lesson-only 10:00-18:00, free riding only after 18:00; open Baltic side can be crowded with stronger current near the Fehmarnsund",
+      "season": "April-October",
+      "description": "Fehmarn's best-known kite base, home to one of Germany's largest surf schools, with a big flat-water lagoon and the open Baltic coast side by side. Best wind is NW or E; SW is blocked by the campsite.",
+      "llmComment": "The Burger Binnensee lagoon itself is windsurfing/SUP-only and lesson-only for kiters between 10:00 and 18:00 - free kiting on the lagoon only opens up in the evening after 18:00, so during the day independent kiters ride the open Baltic side east of the campsite instead."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, osłonięta zatoka i płytka laguna śródlądowa",
+      "bestWind": "NW, E",
+      "waterTemp": "10-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy kempingu / szkole surfingu",
+      "hazards": "Kitesurfing na wewnętrznej lagunie (Burger Binnensee) dostępny tylko w ramach zajęć w godz. 10:00-18:00, wolna jazda dopiero po 18:00; strona otwartego Bałtyku bywa zatłoczona i ma silniejszy prąd w pobliżu cieśniny Fehmarnsund",
+      "season": "Kwiecień-Październik",
+      "description": "Najbardziej znana baza kitesurfingowa na Fehmarn, siedziba jednej z największych szkół surfingu w Niemczech, z dużą płaską laguną i otwartym wybrzeżem Bałtyku obok siebie. Najlepszy wiatr to NW lub E; SW jest zasłaniany przez kemping.",
+      "llmComment": "Sama laguna Burger Binnensee jest zarezerwowana dla windsurfingu/SUP, a dla kiterów dostępna tylko w ramach kursu w godz. 10:00-18:00 - wolne kitowanie na lagunie jest możliwe dopiero wieczorem po 18:00, dlatego w ciągu dnia niezależni kiterzy jeżdżą po otwartej stronie Bałtyku na wschód od kempingu."
+    }
+  },
+  {
+    "name": "Grüner Brink",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48162",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_gruener_brink",
+    "webcamUrl": "https://fehmarn.me/webcam.jpg",
+    "locationUrl": "https://www.google.com/maps?q=54.5084,11.1929",
+    "spotInfo": {
+      "type": "Baltic Sea, natural shallow bay",
+      "bestWind": "N, NE, NW",
+      "waterTemp": "9-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Natural sandy beach, designated sport zone",
+      "hazards": "Nature reserve (NSG) - kiting only allowed in the designated sport zone east of the guarded bathing area; the bathing zone and everything west of it, on land and in the water, is strictly off-limits; rigging/launching only on the meadow behind the dyke bridge; submerged rocks further out; seasonal bird-nesting closures enforced by rangers and the DLRG",
+      "season": "April-October",
+      "description": "A wide, unspoiled natural beach on the edge of a bird reserve in the north of the island, considered one of Fehmarn's most reliable spots for north and northeast wind. Stay inside the marked sport zone - the reserve and bathing area rules are strictly enforced.",
+      "llmComment": "This is Fehmarn's most consistent north/northeast-wind spot, but it sits right against the Grüner Brink nature reserve: kiting is only legal in the signed sport zone east of the bathing area, the reserve to the west (including the water in front of it) is off-limits, and rigging/launching outside the sport zone on the meadow is banned. Respecting the markings matters - there have been official pushes for a total kiting ban here."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, naturalna płytka zatoka",
+      "bestWind": "N, NE, NW",
+      "waterTemp": "9-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Naturalna plaża piaszczysta, wyznaczona strefa sportowa",
+      "hazards": "Obszar rezerwatu przyrody (NSG) - kitesurfing dozwolony wyłącznie w wyznaczonej strefie sportowej na wschód od strzeżonej plaży kąpielowej; strefa kąpielowa i wszystko na zachód od niej, na lądzie i na wodzie, jest całkowicie zakazane; start i rozkładanie sprzętu tylko na łące za mostkiem na wale; podwodne kamienie dalej od brzegu; sezonowe zamknięcia w okresie lęgowym ptaków egzekwowane przez strażników i DLRG",
+      "season": "Kwiecień-Październik",
+      "description": "Szeroka, dzika plaża na skraju rezerwatu ptaków w północnej części wyspy, uznawana za jeden z najbardziej niezawodnych spotów na Fehmarn przy wietrze z N i NE. Należy trzymać się wyznaczonej strefy sportowej - zasady dotyczące strefy kąpielowej i rezerwatu są ściśle egzekwowane.",
+      "llmComment": "To najbardziej stabilny spot na Fehmarn przy wietrze z N/NE, ale sąsiaduje bezpośrednio z rezerwatem przyrody Grüner Brink: kitesurfing jest legalny wyłącznie w oznaczonej strefie sportowej na wschód od plaży kąpielowej, rezerwat na zachód (łącznie z wodą przed nim) jest zakazany, a start/rozłożenie sprzętu poza strefą sportową na łące jest zabronione. Przestrzeganie oznaczeń ma znaczenie - były już oficjalne naciski na całkowity zakaz kitesurfingu w tym miejscu."
+    }
+  },
+  {
+    "name": "Gold",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48174",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/gold",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4248,11.0977",
+    "spotInfo": {
+      "type": "Baltic Sea, shallow standing bay",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "12-21°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach below the dyke, paid parking about 300m away",
+      "hazards": "Offshore and gusty in east wind due to the wind shadow from the dunes; can get crowded with beginners on good days",
+      "season": "April-October",
+      "description": "One of Fehmarn's most popular beginner spots on the west side of the Orther Reede, with a huge standing-depth area rarely deeper than 1.5m. A dedicated kite zone lies about 200m along the dyke from the windsurf area. Works in every wind direction except east."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, płytka zatoka ze stanowiskiem",
+      "bestWind": "N, NW, W, SW, S",
+      "waterTemp": "12-21°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża poniżej wału, płatny parking około 300 m dalej",
+      "hazards": "Wiatr odlądowy i porywisty przy wietrze wschodnim z powodu osłony wydm; w dobre dni bywa zatłoczony przez początkujących",
+      "season": "Kwiecień-Październik",
+      "description": "Jeden z najpopularniejszych spotów dla początkujących na Fehmarn, po zachodniej stronie zatoki Orther Reede, z ogromnym obszarem, gdzie rzadko głębiej niż 1,5 m. Wydzielona strefa dla kiterów znajduje się około 200 m wzdłuż wału od miejsca dla windsurferów. Działa przy każdym kierunku wiatru poza wschodnim."
+    }
+  },
+  {
+    "name": "Orth",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48170",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_orth_east",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4463,11.0512",
+    "spotInfo": {
+      "type": "Baltic Sea, sheltered bay on both sides of the harbour",
+      "bestWind": "S, SE, SW, W",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach either side of the small harbour/marina",
+      "hazards": "Boat traffic in and out of the harbour and marina; choose the east or west bay depending on wind direction",
+      "season": "April-October",
+      "description": "A small yacht harbour on the northwest tip of the Orther Reede bay with a standing-depth area on each side, considered one of Germany's best south/west-wind spots. The east bay works best with an easterly component, the west bay with west to northwest wind.",
+      "llmComment": "Orth has two separate riding areas either side of the harbour mole: the east bay (Orth East) is the pick for OSO/SO/SSO/S/SSW wind, the west bay for W/NW - choose the side the wind is actually blowing into, not just the nearest parking."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, osłonięta zatoka po obu stronach portu",
+      "bestWind": "S, SE, SW, W",
+      "waterTemp": "10-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża po obu stronach niewielkiego portu/mariny",
+      "hazards": "Ruch łodzi wpływających i wypływających z portu i mariny; wybór wschodniej lub zachodniej zatoki zależy od kierunku wiatru",
+      "season": "Kwiecień-Październik",
+      "description": "Mały port jachtowy na północno-zachodnim krańcu zatoki Orther Reede z płytką zatoką po każdej stronie, uznawany za jeden z najlepszych niemieckich spotów przy wietrze z S/W. Wschodnia zatoka działa najlepiej przy wietrze ze składową wschodnią, zachodnia przy wietrze z W do NW.",
+      "llmComment": "Orth ma dwa oddzielne obszary do jazdy po obu stronach mola portowego: wschodnią zatokę (Orth East) wybieraj przy wietrze OSO/SO/SSO/S/SSW, a zachodnią przy W/NW - wybieraj stronę, w którą faktycznie wieje wiatr, a nie najbliższy parking."
+    }
+  },
+  {
+    "name": "Flügge",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48169",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fluegger_strand",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4540,11.0077",
+    "spotInfo": {
+      "type": "Baltic Sea, choppy",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "9-19°C",
+      "experience": "Intermediate",
+      "launch": "Sandy/pebbly beach in front of the Flügger Strand campsite",
+      "hazards": "Choppy water, some stones on the beach, close to the campsite's swimming area in high season",
+      "season": "April-October",
+      "description": "A chop-to-small-wave spot on the south coast right in front of the Flügger Strand campsite, covering wind from southwest through northwest - a useful complement to the more sheltered spots nearby."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, kabizna fala",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "9-19°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczysto-kamienista plaża przed kempingiem Flügger Strand",
+      "hazards": "Wzburzona, kabizna woda, miejscami kamienie na plaży, bliskość strefy kąpielowej kempingu w sezonie",
+      "season": "Kwiecień-Październik",
+      "description": "Spot z kabizną falą na południowym wybrzeżu, bezpośrednio przed kempingiem Flügger Strand, obejmujący wiatr od SW do NW - dobre uzupełnienie pobliskich, bardziej osłoniętych spotów."
+    }
+  },
+  {
+    "name": "Katharinenhof",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/91424",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/katharinenhof",
+    "webcamUrl": "https://www.camping-katharinenhof.de/webcam/aktuell/aktuell2.jpg",
+    "locationUrl": "https://www.google.com/maps?q=54.4352,11.2800",
+    "spotInfo": {
+      "type": "Baltic Sea, shallow standing area",
+      "bestWind": "S, SE, SW",
+      "waterTemp": "9-19°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach at the Katharinenhof campsite, through a strip of coastal forest",
+      "hazards": "Swimmers close to shore in high season; beach reached via a short walk through the campsite's forest strip",
+      "season": "April-October",
+      "description": "A quieter standing-depth spot on the south coast between Burgtiefe and Staberhuk, based at a campsite with its own kite station. Works well with southerly wind and picks up small waves when the wind turns onshore."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, płytkie stanowisko",
+      "bestWind": "S, SE, SW",
+      "waterTemp": "9-19°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża przy kempingu Katharinenhof, dojście przez pas nadmorskiego lasu",
+      "hazards": "Kąpiący się blisko brzegu w sezonie; dojście do plaży krótkim spacerem przez pas leśny kempingu",
+      "season": "Kwiecień-Październik",
+      "description": "Spokojniejszy spot ze stanowiskiem na południowym wybrzeżu między Burgtiefe a Staberhuk, przy kempingu z własną stacją kitesurfingową. Dobrze działa przy wietrze południowym, a przy wietrze onshore pojawiają się niewielkie fale."
+    }
+  },
+  {
+    "name": "Bojendorf",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48166",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_bojendorf",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.4902,11.0180",
+    "spotInfo": {
+      "type": "Baltic Sea, waves",
+      "bestWind": "S, SW, N",
+      "waterTemp": "8-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy/pebbly beach below the dyke, or via Strandcamping Wallnau",
+      "hazards": "Rocks and pebbles at the waterline, current pulling to the right, low height barrier at the free car park (campsite access avoids it), gets uncomfortably choppy in west wind",
+      "season": "April-October",
+      "description": "A west-coast wave spot near Strandcamping Wallnau, sheltered by offshore sandbanks that soften the shorebreak. Best with south to southwest wind, with waves up to 2m; also works in north wind."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, fale",
+      "bestWind": "S, SW, N",
+      "waterTemp": "8-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysto-kamienista plaża poniżej wału lub przez Strandcamping Wallnau",
+      "hazards": "Kamienie i otoczaki przy linii wody, prąd znoszący w prawo, niski szlaban na darmowym parkingu (dojazd przez kemping go omija), przy wietrze zachodnim robi się nieprzyjemnie kabizna",
+      "season": "Kwiecień-Październik",
+      "description": "Spot z falą na zachodnim wybrzeżu w pobliżu Strandcamping Wallnau, osłonięty przez podwodne ławice piasku, które łagodzą załamanie fali przy brzegu. Najlepszy przy wietrze z S do SW, z falami do 2 m; działa też przy wietrze północnym."
+    }
+  },
+  {
+    "name": "Altenteil",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48164",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_altenteil",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.5306,11.0895",
+    "spotInfo": {
+      "type": "Baltic Sea, waves",
+      "bestWind": "NW, W, NE, E",
+      "waterTemp": "8-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach about 200m over the dyke from the free car park / campsite",
+      "hazards": "Crowded free car park in summer, sandbanks and current, the adjacent Markelsdorfer Huk headland is a nature reserve - do not go ashore there",
+      "season": "April-October",
+      "description": "One of the Baltic's best wave spots, on the north coast just east of the Markelsdorfer Huk headland. WNW to NW wind is sideshore and produces clean, well-organised waves up to 3m breaking on offshore sandbanks; NE and E also reach the spot unobstructed. Pure W/WSW is blanketed flat by the headland.",
+      "llmComment": "Altenteil is sheltered from pure W/WSW by the Markelsdorfer Huk headland, which flattens the water on that wind - the wave really comes alive from WNW through NW. If the wind swings further round to NW and starts feeling too onshore/messy here, Westermarkelsdorf on the far side of the headland often has the cleaner wave instead."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, fale",
+      "bestWind": "NW, W, NE, E",
+      "waterTemp": "8-19°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża około 200 m przez wał od darmowego parkingu / kempingu",
+      "hazards": "Latem zatłoczony darmowy parking, ławice piasku i prąd, sąsiedni cypel Markelsdorfer Huk to rezerwat przyrody - nie wolno na niego wchodzić",
+      "season": "Kwiecień-Październik",
+      "description": "Jeden z najlepszych spotów falowych na Bałtyku, na północnym wybrzeżu tuż na wschód od cypla Markelsdorfer Huk. Wiatr od WNW do NW wieje sideshore i daje czyste, dobrze uformowane fale do 3 m łamiące się na podwodnych ławicach; NE i E również docierają na spot bez przeszkód. Przy czystym W/WSW cypel całkowicie zasłania wiatr i robi się płasko.",
+      "llmComment": "Altenteil jest osłonięty od czystego W/WSW przez cypel Markelsdorfer Huk, co przy tym kierunku spłaszcza wodę - fala naprawdę ożywa dopiero od WNW do NW. Jeśli wiatr skręci mocniej w stronę NW i zrobi się tu zbyt onshore/chaotycznie, po drugiej stronie cypla, w Westermarkelsdorf, często jest wtedy czystsza fala."
+    }
+  },
+  {
+    "name": "Westermarkelsdorf (Markelsdorfer Huk)",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/48165",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/westermarkelsdorf",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.5275,11.0584",
+    "spotInfo": {
+      "type": "Baltic Sea, waves, exposed headland",
+      "bestWind": "SW, W",
+      "waterTemp": "8-18°C",
+      "experience": "Advanced",
+      "launch": "Free car park/dyke at the lighthouse, rig on grass or the dyke",
+      "hazards": "Strong current and large, dangerous waves on big-wind days, especially right at the headland where waves bend around the point; a submerged concrete block sits offshore; part of the adjoining land is a nature reserve",
+      "season": "April-October",
+      "description": "An exposed wave spot below the lighthouse at Fehmarn's northwest tip, best with southwest to west wind. On big days the waves wrap around the headland and get bigger but also more dangerous, with a strong current - experienced riders only.",
+      "llmComment": "When the wind swings round to NW it comes almost straight onshore here and gets messy - Altenteil, just around the headland to the east, is usually the better call once the wind passes west into northwest."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, fale, eksponowany cypel",
+      "bestWind": "SW, W",
+      "waterTemp": "8-18°C",
+      "experience": "Zaawansowany",
+      "launch": "Darmowy parking/wał przy latarni morskiej, rozłożenie na trawie lub wale",
+      "hazards": "Silny prąd i duże, niebezpieczne fale przy mocnym wietrze, zwłaszcza dokładnie przy cyplu, gdzie fale zakrzywiają się wokół przylądka; podwodny betonowy blok tuż przy brzegu; część przyległego lądu to rezerwat przyrody",
+      "season": "Kwiecień-Październik",
+      "description": "Eksponowany spot falowy poniżej latarni morskiej na północno-zachodnim krańcu Fehmarn, najlepszy przy wietrze od SW do W. W dni z mocnym wiatrem fale owijają się wokół cypla i rosną, ale stają się też bardziej niebezpieczne, z silnym prądem - tylko dla doświadczonych.",
+      "llmComment": "Gdy wiatr skręca w stronę NW, wieje tutaj niemal czysto onshore i robi się chaotycznie - Altenteil, tuż za cyplem na wschód, jest zwykle lepszym wyborem, gdy wiatr przechodzi przez zachodni w kierunku północno-zachodniego."
+    }
+  },
+  {
+    "name": "Gammendorf (Niobe)",
+    "country": "Germany",
+    "windguruUrl": "https://www.windguru.cz/500806",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/fehmarn_niobe",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.5182,11.1533",
+    "spotInfo": {
+      "type": "Baltic Sea, waves, rocky",
+      "bestWind": "NW",
+      "waterTemp": "8-18°C",
+      "experience": "Advanced",
+      "launch": "Coarse-sand beach at the free car park near the Niobe memorial / campsite",
+      "hazards": "No standing area - drifts quickly into fishing nets or open water; rocky, fast-shelving entry; unsuitable for beginners; the adjoining Grüner Brink nature reserve is closed 1 April-30 September - do not enter",
+      "season": "April-October",
+      "description": "A wave spot on the north coast between Altenteil and Grüner Brink, named after a memorial to the sailing ship Niobe which sank nearby in 1932. Turns into a wave spot in strong northwest wind; a quieter, less crowded alternative to Grüner Brink but with less consistent conditions.",
+      "llmComment": "Niobe has no standing area at all, so a rider who gets into trouble drifts straight into the fishing nets to one side or out to open water - this is strictly an advanced spot despite looking like a relaxed alternative to the busier Grüner Brink nearby."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, fale, kamieniste dno",
+      "bestWind": "NW",
+      "waterTemp": "8-18°C",
+      "experience": "Zaawansowany",
+      "launch": "Gruboziarnista piaszczysta plaża przy darmowym parkingu koło pomnika Niobe / kempingu",
+      "hazards": "Brak stanowiska - szybki znos w sieci rybackie lub na otwartą wodę; kamieniste, szybko opadające wejście do wody; nieodpowiedni dla początkujących; sąsiedni rezerwat przyrody Grüner Brink zamknięty od 1 kwietnia do 30 września - wstęp zabroniony",
+      "season": "Kwiecień-Październik",
+      "description": "Spot falowy na północnym wybrzeżu między Altenteil a Grüner Brink, nazwany od pomnika żaglowca szkolnego Niobe, który zatonął w pobliżu w 1932 roku. Przy silnym wietrze z NW zamienia się w spot falowy; spokojniejsza, mniej zatłoczona alternatywa dla Grüner Brink, ale o mniej stabilnych warunkach.",
+      "llmComment": "Niobe nie ma w ogóle stanowiska, więc kiter, który wpadnie w kłopoty, od razu znosi go w sieci rybackie z jednej strony lub na otwartą wodę - to zdecydowanie spot dla zaawansowanych, mimo że z pozoru wygląda na spokojną alternatywę dla bardziej zatłoczonego pobliskiego Grüner Brink."
+    }
+  },
+  {
     "name": "Kitespot Farø",
     "country": "Denmark",
     "windguruUrl": "https://www.windguru.cz/137343",
@@ -3845,6 +4147,223 @@
       "hazards": "Falochrony i mola portowe po obu stronach wejścia do portu; unikać plaż przy kredowych klifach (kierunek Møns Klint) — strome zbocza, wąska plaża, niebezpieczna przy wietrze onshore; brak stałej pomocy na plaży",
       "season": "Kwiecień-Październik",
       "description": "Klintholm Strand to najlepszy spot kitesurfingowy na wyspie Møn, położony na południu Bałtyku. Łagodnie opadająca piaszczysta plaża umożliwia łatwe wejście do wody po obu stronach falochronu portowego. Wiatry z zachodniego i południowo-zachodniego sektora generują chop oraz małe i średnie fale na piaszczystych ławicach. Na miejscu działa lokalna szkoła surfingu z kawiarnią, co czyni ten spot przyjaznym dla początkujących, choć zaleca się przybycie z pomocnikiem ze względu na brak stałej asysty na plaży."
+    }
+  },
+  {
+    "name": "Kegnæs / Drejet – Lillehav",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48067",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hoerup_hav",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.855040,9.991842",
+    "spotInfo": {
+      "type": "Isthmus lagoon (Lillehav) with flat water + Flensburg Fjord with small waves",
+      "bestWind": "NW, E, SE",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced (Lillehav for beginners, Fjord side for advanced)",
+      "launch": "Grass/sandy dam (isthmus); parking at Drejby Strandcamping or free at the south end of the dam",
+      "hazards": "Stones and shallow sandbanks (marked with buoys in SW wind), stronger current and quickly deepening water on the Fjord side, boat traffic, other kiters and swimmers, gusty wind where it crosses the peninsula",
+      "season": "April-October",
+      "description": "A double spot on the narrow isthmus connecting the island of Als to the Kegnæs peninsula in Southern Denmark. Lillehav, on the inside of the dam, is a shallow, flat-water lagoon with waist-deep water far from shore and land on three sides, ideal for beginners, while the Flensburg Fjord side outside the dam offers small waves for more advanced riders. One of the most popular kite spots in Southern Jutland, with a kite school based on site.",
+      "llmComment": "Two spots in one - pick Lillehav (inside the dam) for flat, waist-deep water in NW/E/SE winds, or switch to the Flensburg Fjord side outside the dam for small-wave riding when the wind blows onshore from the SE."
+    },
+    "spotInfoPL": {
+      "type": "Laguna na przesmyku (Lillehav) z płaską wodą + Fiord Flensburski z małymi falami",
+      "bestWind": "NW, E, SE",
+      "waterTemp": "8-20°C",
+      "experience": "Od początkującego do zaawansowanego (Lillehav dla początkujących, strona fiordu dla zaawansowanych)",
+      "launch": "Trawiasto-piaszczysta grobla (przesmyk); parking przy Drejby Strandcamping lub bezpłatny na południowym końcu grobli",
+      "hazards": "Kamienie i płytkie mielizny (oznaczone bojami przy wietrze z SW), silniejszy prąd i szybko pogłębiająca się woda po stronie fiordu, ruch łodzi, inni kiterzy i pływacy, porywisty wiatr w miejscu, gdzie przecina półwysep",
+      "season": "Kwiecień-Październik",
+      "description": "Podwójny spot na wąskim przesmyku łączącym wyspę Als z półwyspem Kegnæs w Południowej Danii. Lillehav, po wewnętrznej stronie grobli, to płytka, płaska laguna z wodą sięgającą do pasa daleko od brzegu i lądem z trzech stron - idealna dla początkujących, natomiast strona Fiordu Flensburskiego po zewnętrznej stronie grobli oferuje małe fale dla bardziej zaawansowanych riderów. Jedno z najpopularniejszych miejsc do kitesurfingu w Południowym Jutlandii, ze szkołą kitesurfingu na miejscu.",
+      "llmComment": "Dwa spoty w jednym - wybierz Lillehav (wewnątrz grobli) dla płaskiej wody sięgającej do pasa przy wietrze z NW/E/SE, albo przejdź na stronę Fiordu Flensburskiego na zewnątrz grobli, aby pojeździć na małych falach, gdy wiatr wieje od morza z kierunku SE."
+    }
+  },
+  {
+    "name": "Dueodde",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/36075",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bornholm_dueodde",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.991798,15.074295",
+    "spotInfo": {
+      "type": "Baltic Sea, wide sandy beach with wave breaks, scattered reefs offshore",
+      "bestWind": "SE, S, SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Vast fine white-sand beach; park at Fyrvejen or Skrokkegårds and walk 500-800m down a boardwalk through the dunes (best conditions on the western side, toward the lighthouse)",
+      "hazards": "Scattered offshore reefs and stones, strong current pulling around the point in W/SW swell, gusty and turbulent wind off the pine woods when it blows more from the NW, long walk back to the car park",
+      "season": "April-October",
+      "description": "Bornholm's flagship spot, on the island's southernmost tip inside the Dueodde nature reserve: 10km of the finest white sand in Denmark and the most reliably onshore wind on the island, since almost anything between southeast and northwest blows straight in off the open Baltic. The best waves and strongest current come with a west to southwest wind wrapping around the point, while a northwest wind turns gustier as it crosses the pine-covered dunes - many kiters then shift a few kilometres up the coast to Jomfrugård or across to Balka instead.",
+      "llmComment": "Bornholm is small and almost round, so each coast only fires on its own wind sector - Dueodde, at the southern tip, is unusually forgiving because it catches nearly everything from SE through S and SW to NW; treat a wind direction outside that arc (a hard E or N) as a no-go here even if the forecast speed looks fine, and favour W/SW for the cleanest waves."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, szeroka piaszczysta plaża z falami, rozproszone rafy przy brzegu",
+      "bestWind": "SE, S, SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Rozległa plaża z bardzo drobnym białym piaskiem; parking przy Fyrvejen lub Skrokkegårds i 500-800 m spacer kładką przez wydmy (najlepsze warunki po zachodniej stronie, w kierunku latarni morskiej)",
+      "hazards": "Rozproszone rafy i kamienie przy brzegu, silny prąd okrążający cypel przy fali z W/SW, porywisty i turbulentny wiatr znad sosnowego lasu przy kierunku bardziej z NW, długi powrót do parkingu",
+      "season": "Kwiecień-Październik",
+      "description": "Flagowy spot Bornholmu, na najdalej wysuniętym na południe cyplu wyspy, w rezerwacie przyrody Dueodde: 10 km najdrobniejszego białego piasku w Danii i najbardziej niezawodny wiatr od morza na całej wyspie, ponieważ niemal wszystko pomiędzy SE a NW wieje wprost z otwartego Bałtyku. Najlepsze fale i najsilniejszy prąd towarzyszą wiatrowi z W-SW, opływającemu cypel, natomiast wiatr z NW robi się bardziej porywisty, przecinając zalesione wydmy - wtedy wielu kiterów przenosi się kilka kilometrów dalej na Jomfrugård albo na Balka.",
+      "llmComment": "Bornholm jest mały i niemal okrągły, więc każde wybrzeże działa tylko przy swoim sektorze wiatru - Dueodde, na południowym cyplu, jest wyjątkowo wybaczające, bo łapie niemal wszystko od SE przez S i SW aż po NW; kierunek spoza tego zakresu (twarde E lub N) traktuj jako spot nie do jazdy, nawet jeśli prędkość w prognozie wygląda dobrze, a przy W/SW spodziewaj się najczystszych fal."
+    }
+  },
+  {
+    "name": "Balka Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48096",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.035298,15.109976",
+    "spotInfo": {
+      "type": "Baltic Sea, wide sandy beach, shallow and mostly flat with small waves in a NE wind",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide, gently shelving sandy beach with a wooden ramp from the car park on Frederiksvej; toilets and mini-golf nearby, bus routes 7 and 8 stop about 100m away",
+      "hazards": "Swimmers and families in the shallows, busiest in July, mostly sheltered from westerly winds so it can go light when other coasts are firing",
+      "season": "April-October",
+      "description": "The island's most popular beginner spot, on the south coast between Nexø and Snogebæk: shallow, sandy and mostly flat, with easy standing depth far from shore. A wind between SSE and NE is onshore here, with the cleanest small waves coming from the NE; a kite school and rental base operate on site in summer, and the sheltered water makes it the natural choice when Dueodde or Boderne are too powered by a westerly.",
+      "llmComment": "Balka only comes alive with wind from the SE-through-NE quadrant - it sits in the lee of the rest of the island on anything with west in it, so a forecast showing strong SW or W here usually means Dueodde or Boderne, further along the south coast, are the better call instead."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, szeroka piaszczysta plaża, płytka i w większości płaska, małe fale przy wietrze z NE",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Szeroka, łagodnie opadająca piaszczysta plaża z drewnianą rampą od parkingu przy Frederiksvej; w pobliżu toalety i mini-golf, przystanki autobusów linii 7 i 8 ok. 100 m od plaży",
+      "hazards": "Pływający i rodziny na płyciźnie, największy ruch w lipcu, plaża w dużej mierze osłonięta od wiatrów zachodnich, więc może być za słabo, gdy inne wybrzeża mają wiatr",
+      "season": "Kwiecień-Październik",
+      "description": "Najpopularniejszy spot dla początkujących na wyspie, na południowym wybrzeżu między Nexø a Snogebæk: płytki, piaszczysty i w większości płaski, z wodą sięgającą do pasa daleko od brzegu. Wiatr pomiędzy SSE a NE wieje tu od morza, a najczystsze małe fale pojawiają się przy NE; latem działa tu szkoła kitesurfingu z wypożyczalnią sprzętu, a osłonięta woda sprawia, że jest to naturalny wybór, gdy Dueodde czy Boderne mają za dużo mocy przy wietrze zachodnim.",
+      "llmComment": "Balka ożywa tylko przy wietrze z sektora SE-NE - przy każdym kierunku z komponentem zachodnim leży w zacisznym cieniu reszty wyspy, więc prognoza pokazująca tu silne SW lub W zwykle oznacza, że lepszym wyborem będzie Dueodde albo Boderne, dalej na południowym wybrzeżu."
+    }
+  },
+  {
+    "name": "Boderne",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48094",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.022604,14.904657",
+    "spotInfo": {
+      "type": "Baltic Sea, sandy beach with scattered stones, waves, small harbour at one end",
+      "bestWind": "SE, S, SW, W",
+      "waterTemp": "5-20°C",
+      "experience": "Intermediate",
+      "launch": "Sandy beach starting at Boderne's small harbour, backed by pine forest; reasonable parking by the harbour, bus route 8 stops about 500m away",
+      "hazards": "Abrupt drop-off from shallow to deep water close to shore, scattered stones, rocks around the harbour wall",
+      "season": "April-October",
+      "description": "A quieter, more sporty alternative to Dueodde on Bornholm's south coast, roughly midway between Rønne and the southern tip: a fine sandy beach backed by forest, with a small harbour at one end. Everything from west through southwest to southeast is onshore, with a west wind producing the cleanest waves as they wrap around the harbour wall; watch the water depth, since it deepens abruptly not far from the beach.",
+      "llmComment": "Wind sector rules here as everywhere on Bornholm - Boderne wants W-SW-S-SE, the same broad arc as Dueodde a few kilometres further along the coast, so on a day with wind outside that window this spot and Dueodde will both be flat while Balka or Sandvig may be working instead."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, piaszczysta plaża z rozproszonymi kamieniami, fale, mała przystań na jednym końcu",
+      "bestWind": "SE, S, SW, W",
+      "waterTemp": "5-20°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczysta plaża zaczynająca się przy małej przystani w Boderne, w otoczeniu sosnowego lasu; przyzwoity parking przy przystani, przystanek autobusu linii 8 ok. 500 m od plaży",
+      "hazards": "Gwałtowne przejście z płytkiej na głęboką wodę blisko brzegu, rozproszone kamienie, skały wokół falochronu przystani",
+      "season": "Kwiecień-Październik",
+      "description": "Spokojniejsza, bardziej sportowa alternatywa dla Dueodde na południowym wybrzeżu Bornholmu, mniej więcej w połowie drogi między Rønne a południowym cyplem wyspy: piaszczysta plaża w otoczeniu lasu, z małą przystanią na jednym końcu. Wszystko od W przez SW po SE wieje tu od morza, a najczystsze fale daje wiatr zachodni, opływający falochron przystani; uważaj na głębokość - woda pogłębia się gwałtownie niedaleko brzegu.",
+      "llmComment": "Podobnie jak wszędzie na Bornholmie, tu też decyduje sektor wiatru - Boderne potrzebuje W-SW-S-SE, czyli tego samego szerokiego zakresu co Dueodde kilka kilometrów dalej wzdłuż wybrzeża, więc przy wietrze spoza tego okna oba te spoty będą płaskie, podczas gdy Balka albo Sandvig mogą akurat działać."
+    }
+  },
+  {
+    "name": "Jomfrugård Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48095",
+    "windguruFallbackUrl": "https://www.windguru.cz/500782",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.9930,15.0400",
+    "spotInfo": {
+      "type": "Baltic Sea, narrow sandy beach with scattered stones and overhanging trees in places",
+      "bestWind": "S, SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Intermediate",
+      "launch": "Narrow sandy beach reached by parking at the southern end of Udegårdsvejen, off Strandmarksvejen; part of the same long strand as Dueodde, a few kilometres to its west",
+      "hazards": "Stones in places, beach narrows to a tree-lined strip in sections, clothing-optional stretch at the western end",
+      "season": "April-October",
+      "description": "The western continuation of the Dueodde strand, running between Bakkerne Bådehavn and the Dueodde lighthouse, with a narrower, tree-lined shoreline in places. It handles a northwesterly better than Dueodde itself, which turns gusty off the dunes in that direction, making Jomfrugård the local switch spot when the wind swings more to the NW.",
+      "llmComment": "Locals shift here from Dueodde specifically when the wind goes more northwesterly, since the dunes and pines right at Dueodde make NW gusty and turbulent while this stretch, a little further along the curve of the coast, stays cleaner; for S/SW/W it rides much the same as Dueodde next door."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, wąska piaszczysta plaża z rozproszonymi kamieniami i miejscami nawisającymi drzewami",
+      "bestWind": "S, SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Wąska piaszczysta plaża, dojazd z parkingiem na południowym końcu Udegårdsvejen, przy Strandmarksvejen; część tego samego długiego pasa plaży co Dueodde, kilka kilometrów na zachód",
+      "hazards": "Miejscami kamienie, plaża miejscami zwęża się do wąskiego, zadrzewionego paska, odcinek na zachodnim krańcu bez obowiązku stroju kąpielowego",
+      "season": "Kwiecień-Październik",
+      "description": "Zachodnia kontynuacja plaży Dueodde, ciągnąca się między Bakkerne Bådehavn a latarnią morską Dueodde, miejscami węższa i bardziej zadrzewiona. Lepiej niż samo Dueodde radzi sobie z wiatrem z NW, który przy latarni robi się porywisty nad wydmami - dlatego Jomfrugård jest lokalnym miejscem zmiany, gdy wiatr skręca bardziej na NW.",
+      "llmComment": "Miejscowi przenoszą się tu z Dueodde konkretnie wtedy, gdy wiatr skręca bardziej na NW, bo wydmy i sosny tuż przy Dueodde robią ten kierunek porywistym i turbulentnym, a ten odcinek, nieco dalej wzdłuż linii wybrzeża, zostaje czystszy; przy S/SW/W jeździ się tu podobnie jak na sąsiednim Dueodde."
+    }
+  },
+  {
+    "name": "Sandvig",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48097",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.289881,14.777958",
+    "spotInfo": {
+      "type": "Baltic Sea, small sandy beach at the foot of the Hammerknuden cliffs, choppy short waves",
+      "bestWind": "NW, N, NE, E, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Intermediate",
+      "launch": "Small sandy beach (around 300m) with a promenade, at Bornholm's northern tip below the Hammershus/Hammerknuden cliffs; parking and access from Strandpromenaden",
+      "hazards": "Wind chop and short waves up to about 1m, currents and seaweed near the cliffs, rocks around the headland, small and crowded in high season",
+      "season": "April-October",
+      "description": "Bornholm's northernmost kite spot, tucked at the foot of the dramatic Hammerknuden cliffs near Hammershus. The shape of the coast means it works with wind from anywhere between NW and SE, while a westerly is largely blocked by the headland; conditions are typically choppy rather than glassy, with short wind waves up to about a metre.",
+      "llmComment": "Sandvig is the only spot on this list that fires on a northerly or easterly component - useful as the pick when the rest of the island's south- and west-facing coasts (Dueodde, Boderne, Jomfrugård, Antoinette) are all blocked by wind from that quadrant, but it goes flat and blocked itself as soon as the wind turns westerly."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, mała piaszczysta plaża u podnóża klifów Hammerknuden, krótka, poszarpana fala",
+      "bestWind": "NW, N, NE, E, SE",
+      "waterTemp": "5-20°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Mała piaszczysta plaża (ok. 300 m) z promenadą, na północnym cyplu Bornholmu poniżej klifów Hammershus/Hammerknuden; parking i dojście od Strandpromenaden",
+      "hazards": "Krótka, poszarpana fala do ok. 1 m, prądy i wodorosty przy klifach, skały wokół cypla, mała i zatłoczona plaża w wysokim sezonie",
+      "season": "Kwiecień-Październik",
+      "description": "Najbardziej wysunięty na północ spot kitesurfingowy na Bornholmie, schowany u podnóża malowniczych klifów Hammerknuden obok Hammershus. Kształt wybrzeża sprawia, że działa przy wietrze z niemal każdego kierunku między NW a SE, natomiast wiatr zachodni jest w dużej mierze blokowany przez cypel; warunki są zwykle bardziej poszarpane niż gładkie, z krótką falą wiatrową do ok. metra.",
+      "llmComment": "Sandvig to jedyny spot z tej listy, który działa przy komponencie północnym lub wschodnim - przydatny wybór, gdy reszta południowo- i zachodnio-skierowanych wybrzeży wyspy (Dueodde, Boderne, Jomfrugård, Antoinette) jest zablokowana przez wiatr z tego sektora, ale sam robi się płaski i zasłonięty, gdy tylko wiatr skręci na zachodni."
+    }
+  },
+  {
+    "name": "Antoinette Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/500781",
+    "windguruFallbackUrl": "https://www.windguru.cz/11331",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.120342,14.699453",
+    "spotInfo": {
+      "type": "Baltic Sea, long sandy beach with dunes",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Long, wide sandy beach with dunes running north from Rønne toward Hasle; access and parking from Antoinettevej, Haslevej, Nyker Strandvej or Havvej",
+      "hazards": "Larger stones near the waterline, sudden waves from the wake of the Rønne-Ystad ferries, strong undertow in a strong onshore wind, clothing-optional stretch at the northern end",
+      "season": "April-October",
+      "description": "A long, west-facing sandy beach running north from Rønne, Bornholm's capital, sometimes called Nordstranden. With over 2.5km of open sand and dunes it has plenty of room even on a busy day, and takes wind from southwest through west to north-northwest - the sector that leaves the rest of the island's south and east coast becalmed.",
+      "llmComment": "No dedicated Windguru station covers this beach, so the linked forecast is for Bornholm as a whole rather than this stretch specifically - treat the speed as indicative and cross-check the direction against the SW-NNW window this west-facing coast actually needs before heading out."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, długa piaszczysta plaża z wydmami",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "5-20°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Długa, szeroka piaszczysta plaża z wydmami, ciągnąca się na północ od Rønne w stronę Hasle; dojazd i parkingi od Antoinettevej, Haslevej, Nyker Strandvej lub Havvej",
+      "hazards": "Większe kamienie przy linii wody, nagłe fale od kilwateru promów Rønne-Ystad, silny prąd wsteczny przy silnym wietrze od morza, odcinek na północnym krańcu bez obowiązku stroju kąpielowego",
+      "season": "Kwiecień-Październik",
+      "description": "Długa, skierowana na zachód piaszczysta plaża ciągnąca się na północ od Rønne, stolicy Bornholmu, czasem nazywana Nordstranden. Ponad 2,5 km otwartego piasku i wydm daje dużo miejsca nawet w tłoczny dzień, a wiatr od SW przez W po NNW wieje tu od morza - to sektor, przy którym reszta południowego i wschodniego wybrzeża wyspy stoi bez wiatru.",
+      "llmComment": "Ta plaża nie ma własnej stacji Windguru, więc podana prognoza dotyczy całego Bornholmu, a nie konkretnie tego odcinka - traktuj prędkość orientacyjnie i zawsze sprawdzaj, czy kierunek mieści się w oknie SW-NNW, którego potrzebuje to skierowane na zachód wybrzeże, zanim pojedziesz na spot."
     }
   },
   {
