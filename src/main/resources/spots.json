@@ -10252,5 +10252,98 @@
       "description": "Śródlądowy zbiornik w regionie Lauragais między Tuluzą a Carcassonne, w naturalnym korytarzu wiatrowym łączącym Atlantyk ze Morzem Śródziemnym. Ukształtowanie terenu tworzy efekt venturiego i wiatr zwykle wpada tu z siłą 25-30 węzłów, a stacje pomiarowe nierzadko pokazują ponad 45. Działa głównie przy wietrze południowo-wschodnim; tramontana z północnego zachodu z trudem wchodzi czysto i przybywa mocno zaburzona przez rzeźbę terenu. Płaska woda, brak martwej fali i pływów — to rekompensata za wiatr, który jest wszystkim, tylko nie gładki.",
       "llmComment": "Nie ufaj tu prognozie: efekt venturiego sprawia, że wiatr na wodzie jest rutynowo znacznie silniejszy niż wskazuje jakikolwiek model, miejscowi radzą zawsze zakładać więcej niż zapowiedziano, a stacje regularnie pokazują powyżej 45 węzłów. Weź mały latawiec. Drugim haczykiem jest start — możliwy wyłącznie z prywatnego terenu zajazdu Le Cathare, grunt opada w stronę wody, więc latawiec bywa podrywany, a martwe drzewa wzdłuż brzegu utrudniają wejście. Poziom wody zmienia się w ciągu sezonu, a wraz z nim pojawiają się i znikają zatopione drzewa; jezioro pełni też funkcję zbiornika dla samolotów gaśniczych."
     }
+  },
+  {
+    "name": "Walensee (Tiefenwinkel)",
+    "country": "Switzerland",
+    "windguruUrl": "https://www.windguru.cz/37709",
+    "windguruFallbackUrl": "https://www.windguru.cz/244046",
+    "windfinderUrl": "https://www.windfinder.com/forecast/walensee",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.1151,9.1860",
+    "spotInfo": {
+      "type": "Deep alpine lake between cliffs, flat water to chop",
+      "bestWind": "W (thermal), S (Föhn)",
+      "waterTemp": "8-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Gravel beach with a small rigging meadow at Tiefenwinkel near Mühlehorn, next to the big car park at the Seerestaurant",
+      "hazards": "Gusty wind that channels and accelerates along the rock faces, Föhn is violently gusty and for experienced riders only, steep shores with little room to land, deep and cold water, sailing and boat traffic, launching is banned in the Seez delta at the Walenstadt end of the lake",
+      "season": "May-September",
+      "description": "Walensee is a fjord-like lake squeezed between the Churfirsten and the Glarus Alps, and the mountains channel the wind straight down its axis. Tiefenwinkel near Mühlehorn is the friendliest launch on the lake: a large car park, a small meadow for rigging and a gravel beach with a clean entry, with a lake restaurant right at the spot. It works with the afternoon westerly thermal, with plain west wind and with Föhn, and the wind is usually a touch stronger along the rock wall. Waves stay smaller here than further east at Murg.",
+      "llmComment": "The mountains channel the wind down the lake, so gridded models under-forecast the afternoon westerly thermal - on a sunny summer day a light W forecast still means a session. The thermal builds through the afternoon and fades around sunset, so name the afternoon window rather than a daily average. A S forecast here means Föhn: strong and violently gusty, which is a warning rather than a kite-size recommendation. The wind accelerates along the cliffs so gusts run well above the average, the shoreline is steep with little room to land, and the water is deep and cold (8-22°C), so a wetsuit is needed all season."
+    },
+    "spotInfoPL": {
+      "type": "Głębokie alpejskie jezioro między klifami, płaska woda do chopu",
+      "bestWind": "W (termika), S (fen)",
+      "waterTemp": "8-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Żwirowa plaża z niewielką łąką do rozkładania sprzętu w Tiefenwinkel koło Mühlehorn, przy dużym parkingu obok Seerestaurant",
+      "hazards": "Porywisty wiatr kanalizowany i przyspieszany wzdłuż ścian skalnych, fen jest gwałtownie porywisty i tylko dla doświadczonych, strome brzegi z niewielką ilością miejsca do lądowania, głęboka i zimna woda, ruch żaglówek i łodzi, zakaz startu w delcie rzeki Seez po stronie Walenstadt",
+      "season": "Maj-Wrzesień",
+      "description": "Walensee to jezioro o fiordowym charakterze, ściśnięte między masywem Churfirsten a Alpami Glarneńskimi, a góry kanalizują wiatr wzdłuż jego osi. Tiefenwinkel koło Mühlehorn to najprzyjaźniejsze wejście na tym jeziorze: duży parking, niewielka łąka do rozkładania sprzętu i żwirowa plaża z czystym wejściem do wody, a przy samym spocie działa restauracja. Spot pracuje na popołudniowej termice z zachodu, na zwykłym zachodnim wietrze oraz na fenie, a przy ścianie skalnej wieje zwykle nieco mocniej. Fala jest tu mniejsza niż dalej na wschód w Murg.",
+      "llmComment": "Góry kanalizują wiatr wzdłuż jeziora, więc modele siatkowe zaniżają popołudniową termikę z zachodu - w słoneczny letni dzień słaba prognoza z W i tak oznacza sesję. Termika narasta w ciągu popołudnia i zanika około zachodu słońca, więc podawaj popołudniowe okno zamiast średniej dobowej. Prognoza z S oznacza tutaj fen: silny i gwałtownie porywisty, co jest ostrzeżeniem, a nie powodem do polecania rozmiaru latawca. Wiatr przyspiesza wzdłuż klifów, więc porywy są wyraźnie wyższe od średniej, brzeg jest stromy i mało jest miejsca do lądowania, a woda głęboka i zimna (8-22°C), więc pianka jest potrzebna przez cały sezon."
+    }
+  },
+  {
+    "name": "Sihlsee",
+    "country": "Switzerland",
+    "windguruUrl": "https://www.windguru.cz/321198",
+    "windguruFallbackUrl": "https://www.windguru.cz/281694",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sihlsee_euthal",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.1150,8.7990",
+    "spotInfo": {
+      "type": "Shallow pre-alpine reservoir, flat water",
+      "bestWind": "N, NE (thermal)",
+      "waterTemp": "6-20°C",
+      "experience": "Advanced (hydrofoil and light-wind gear)",
+      "launch": "The rented club meadow (Kitewiese) of Kitesurfclub Sihlsee between Willerzell and Euthal - the only place where starting and landing is allowed; free car park south of the meadow, day ticket 10 CHF or 60 CHF per year paid on the spot",
+      "hazards": "A pure light-wind spot: 6-12 kts is normal and a kite in the water usually means swimming back, so self-rescue skills are mandatory and beginners have no business here; the launch sits in a slight wind shadow and reads 7-8 kts when Euthal measures 10; Bise (E), west wind and Föhn are onshore and very gusty and not rideable; kiting is banned in the Euthal bay and inside the buoyed zone on the far shore, with fishing areas closed in spring; keep 150 m from the shore, the bridges and fishing boats",
+      "season": "April-October",
+      "description": "Sihlsee is a shallow reservoir at about 890 m near Einsiedeln and one of the purest light-wind spots in the Alps: flat water, a wide open lake and a mountain backdrop, ridden almost exclusively on hydrofoils with foil kites of 13-18 m². Kitesurfclub Sihlsee has rented a launch meadow between Willerzell and Euthal since 2015 and it is the only legal place to start and land, with riding allowed in the northern and middle part of the lake. The thermal arrives fairly reliably but always thin, and in early summer it can be over by 13:30, so being rigged by noon matters.",
+      "llmComment": "This is a foil-only light-wind spot: 6-12 kts is the normal working range, so never call 8 kts unrideable here - that is a session on a 15-18 m foil kite and a hydrofoil, and much above 15 kts is already a big day. Only wind from northern directions works; Bise (E), W and Föhn (S) are onshore and gusty and should be flagged as not rideable whatever the speed. The thermal starts early and in early summer can be finished by 13:30, so name the late-morning to early-afternoon window; autumn often carries more wind than spring. The launch sits in a wind shadow and reads a few knots below the open lake, and a kite that drops usually means a swim back, so keep the recommendation to experienced foilers."
+    },
+    "spotInfoPL": {
+      "type": "Płytki zbiornik przedalpejski, płaska woda",
+      "bestWind": "N, NE (termika)",
+      "waterTemp": "6-20°C",
+      "experience": "Zaawansowany (hydrofoil i sprzęt na słaby wiatr)",
+      "launch": "Wynajmowana łąka klubowa (Kitewiese) Kitesurfclub Sihlsee między Willerzell a Euthal - jedyne miejsce, gdzie wolno startować i lądować; bezpłatny parking na południe od łąki, bilet dzienny 10 CHF lub 60 CHF za rok płatne na miejscu",
+      "hazards": "Spot czysto słabowiatrowy: 6-12 węzłów to norma, a latawiec w wodzie zwykle oznacza powrót wpław, więc umiejętność autoratownictwa jest obowiązkowa, a początkujący nie mają tu czego szukać; startowisko leży w lekkim zawietrzu i pokazuje 7-8 węzłów, gdy w Euthal mierzone jest 10; bise (E), wiatr zachodni i fen są dopychające, bardzo porywiste i nie nadają się do pływania; obowiązuje zakaz kite w zatoce Euthal i w strefie oznaczonej bojami po drugiej stronie jeziora, a wiosną dochodzą zamknięte obszary wędkarskie; trzymaj 150 m od brzegu, mostów i łodzi rybackich",
+      "season": "Kwiecień-Październik",
+      "description": "Sihlsee to płytki zbiornik na wysokości około 890 m koło Einsiedeln i jeden z najczystszych spotów słabowiatrowych w Alpach: płaska woda, szerokie otwarte jezioro i górskie tło, a pływa się tu niemal wyłącznie na hydrofoilu z latawcami matowymi 13-18 m². Kitesurfclub Sihlsee od 2015 roku wynajmuje łąkę startową między Willerzell a Euthal i jest to jedyne legalne miejsce do startu i lądowania, a pływać można w północnej i środkowej części jeziora. Termika przychodzi dość niezawodnie, ale zawsze na styk, a wczesnym latem potrafi się skończyć o 13:30, więc warto być gotowym przed południem.",
+      "llmComment": "To spot wyłącznie foilowy i słabowiatrowy: 6-12 węzłów to normalny zakres pracy, więc nigdy nie określaj tu 8 węzłów jako niepływalnych - to sesja na macie 15-18 m i hydrofoilu, a wyraźnie powyżej 15 węzłów to już duży dzień. Działa wyłącznie wiatr z kierunków północnych; bise (E), W i fen (S) są dopychające i porywiste, więc oznaczaj je jako nienadające się do pływania niezależnie od prędkości. Termika zaczyna się wcześnie, a wczesnym latem może się skończyć o 13:30, więc podawaj okno od późnego przedpołudnia do wczesnego popołudnia; jesienią wieje często mocniej niż wiosną. Startowisko leży w zawietrzu i pokazuje kilka węzłów mniej niż otwarte jezioro, a upuszczony latawiec zwykle oznacza powrót wpław, więc kieruj rekomendację do doświadczonych foilowców."
+    }
+  },
+  {
+    "name": "Lago di Montespluga",
+    "country": "Italy",
+    "windguruUrl": "https://www.windguru.cz/793138",
+    "windguruFallbackUrl": "https://www.windguru.cz/984210",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.4845,9.3350",
+    "spotInfo": {
+      "type": "High-alpine hydroelectric reservoir at 1900 m, flat water",
+      "bestWind": "N (NE to NW), S thermal in early spring",
+      "waterTemp": "5-12°C",
+      "experience": "Advanced",
+      "launch": "Grass and gravel shore reached from the SS36 about halfway between the village of Montespluga and the dams, some 50 m below the road; park in the village",
+      "hazards": "Altitude of about 1900 m - thin air gives noticeably less power, so take one size up; glacial meltwater at 5-12°C means a full wetsuit even in August; the reservoir level swings widely and uncovers rocks and mud; the N wind is gusty near the village; no school, no rescue and no infrastructure of any kind; the lake is a working hydroelectric reservoir and a well-known grayling fishery, so check local rules before rigging; the Splügen pass road is closed in winter",
+      "season": "July-September (water), December-March (snowkite)",
+      "description": "Lago di Montespluga is a reservoir at about 1900 m in Val Chiavenna just below the Splügen pass, closed off to the south by two dams and ringed by grazing pastures where horses roam. It is best known as one of the main snowkite spots of the central Alps, but in summer the frozen lake turns into turquoise water and the northerly, frequent and often above 20 kts, blows straight down the basin. There is no infrastructure whatsoever: a remote, self-supported spot for experienced riders, and the reason it appears in the FLYSURFER film 'Kite the Alps'.",
+      "llmComment": "Two things dominate here. Altitude: the lake sits at about 1900 m, where thin air gives roughly 15-20 percent less power, so recommend one kite size up from the sea-level equivalent. Water: 5-12°C glacial meltwater all season, so a full wetsuit is mandatory even in midsummer. The working wind is from N, usually between NE and NW, often above 20 kts and gusty near the village; an early-spring S wind is thermal. From December to March this is a snowkite spot, not a water spot. On water it is remote with no rescue and no school, so keep recommendations conservative and mention that the reservoir level and local rules should be checked before travelling."
+    },
+    "spotInfoPL": {
+      "type": "Wysokogórski zbiornik zaporowy na 1900 m, płaska woda",
+      "bestWind": "N (od NE do NW), wiosną termika z S",
+      "waterTemp": "5-12°C",
+      "experience": "Zaawansowany",
+      "launch": "Trawiasto-żwirowy brzeg schodzący z drogi SS36 mniej więcej w połowie odległości między wsią Montespluga a zaporami, około 50 m poniżej drogi; parking we wsi",
+      "hazards": "Wysokość około 1900 m - rzadsze powietrze daje wyraźnie mniej mocy, więc bierz latawiec o rozmiar większy; lodowcowa woda 5-12°C wymaga pełnej pianki nawet w sierpniu; poziom zbiornika mocno się waha i odsłania kamienie oraz muł; wiatr z N jest porywisty w pobliżu wsi; brak szkoły, ratownictwa i jakiejkolwiek infrastruktury; jezioro to czynny zbiornik hydroenergetyczny i znany łowisko lipieni, więc sprawdź lokalne przepisy przed rozłożeniem sprzętu; droga przez przełęcz Splügen jest zimą zamknięta",
+      "season": "Lipiec-Wrzesień (woda), Grudzień-Marzec (snowkite)",
+      "description": "Lago di Montespluga to zbiornik na wysokości około 1900 m w Val Chiavenna, tuż pod przełęczą Splügen, zamknięty od południa dwiema zaporami i otoczony pastwiskami, po których chodzą konie. Znany jest przede wszystkim jako jeden z głównych spotów snowkite w Alpach Centralnych, ale latem zamarznięte jezioro zmienia się w turkusową wodę, a częsty północny wiatr, nierzadko powyżej 20 węzłów, wieje wzdłuż całej niecki. Infrastruktury nie ma tu żadnej: to odległy, samowystarczalny spot dla doświadczonych, i to właśnie on pojawia się w filmie FLYSURFER 'Kite the Alps'.",
+      "llmComment": "Decydują tu dwie rzeczy. Wysokość: jezioro leży na około 1900 m, gdzie rzadsze powietrze daje mniej więcej 15-20 procent mniej mocy, więc polecaj latawiec o rozmiar większy niż na poziomie morza. Woda: lodowcowa, 5-12°C przez cały sezon, więc pełna pianka jest obowiązkowa nawet w pełni lata. Wiatr roboczy jest z N, zwykle między NE a NW, często powyżej 20 węzłów i porywisty w pobliżu wsi; wczesną wiosną zdarza się termika z S. Od grudnia do marca to spot snowkite'owy, a nie wodny. Na wodzie jest odludny, bez ratownictwa i bez szkoły, więc formułuj rekomendacje ostrożnie i wspominaj o sprawdzeniu poziomu zbiornika oraz lokalnych przepisów przed wyjazdem."
+    }
   }
 ]
