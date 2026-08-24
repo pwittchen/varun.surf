@@ -100,6 +100,14 @@
     --gradient-active: #0e5d70;
     --gradient-header: #0e5d70;
 
+    /* Accent button fill. Deliberately NOT --accent-primary: that cyan is tuned
+       to carry text and icons *on* a dark surface, and white text sitting on it
+       lands at ~2.1:1 — unreadable. These are the darkened accents that hold
+       white text at AA (7.4:1 here, 5.3:1 on hover). */
+    --button-accent-bg: #0e5d70;
+    --button-accent-hover: #14758d;
+    --button-success-bg: #157f3c;
+
     /* Shadows (hairline-first: surfaces are defined by borders, not elevation) */
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24);
     --shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.32);
@@ -238,6 +246,13 @@
     --gradient-button-hover: #f4f4f2;
     --gradient-active: #0891b2;
     --gradient-header: #0891b2;
+
+    /* Accent button fill — same reasoning as the dark theme: the plain accent
+       holds white text at only 3.7:1, so the button darkens it (5.4:1, and
+       7.2:1 on hover, which deepens rather than lightens on a light ground). */
+    --button-accent-bg: #0e7490;
+    --button-accent-hover: #0b5f78;
+    --button-success-bg: #047857;
 
     /* Shadows */
     --shadow-card: 0 1px 2px rgba(15, 15, 15, 0.05);
@@ -822,7 +837,7 @@ body.index-page .header-title {
     border: 1px solid var(--border-secondary);
     color: var(--text-secondary);
     padding: 12px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-size: 0.9rem;
     font-weight: 500;
     display: flex;
@@ -1240,36 +1255,123 @@ body.index-page .header-title {
     letter-spacing: 0.02em;
 }
 
-/* Generic Button Styles */
-.btn {
-    padding: 10px 18px;
+/* ---------------------------------------------------------------------------
+   Unified button system
+   ---------------------------------------------------------------------------
+   Every action button on the site — whatever its page called it — is this one
+   flat control: the 36px box, 6px radius and hairline border the header
+   controls (.theme-toggle, .dropdown-button, .search-input) already sit in.
+   No gradients, no elevation, no press transforms; a button is a rectangle
+   that changes its fill.
+
+   Two variants, and only two:
+     neutral (default) — surface fill + hairline border, for anything reversible
+     accent  (primary) — the one action a dialog or form exists to perform
+
+   Both carry a 1px border so the two sit at exactly the same height when they
+   share a row. The per-page family names (.modal-button, .calc-button,
+   .mcp-copy-btn, .embed-copy-button) are kept as aliases on these same rules,
+   so the markup and the JS hooks that select them are untouched — they are
+   spellings of one button, not buttons of their own. */
+.btn,
+.modal-button,
+.calc-button,
+.mcp-copy-btn,
+.embed-copy-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid transparent;
     border-radius: var(--radius-md);
-    font-size: 0.9375rem;
+    font-family: inherit;
+    font-size: 0.9rem;
     font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
     text-decoration: none;
-    border: none;
     cursor: pointer;
-    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
-    display: inline-block;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
 }
 
-.btn-primary {
-    background: var(--accent-primary);
+/* Neutral: the default a bare .btn gets, so a button is never unstyled */
+.btn,
+.btn-secondary,
+.modal-button-secondary,
+.mcp-copy-btn {
+    background: var(--gradient-button);
+    border-color: var(--border-secondary);
+    color: var(--text-primary);
+}
+
+.btn:hover,
+.btn-secondary:hover,
+.modal-button-secondary:hover,
+.mcp-copy-btn:hover {
+    background: var(--gradient-button-hover);
+    border-color: var(--border-hover);
+}
+
+/* Accent: flat fill, no border of its own colour to thicken the edge. The fill
+   is --button-accent-bg, not the raw accent, so the white label clears AA in
+   both themes — see the token note. */
+.btn-primary,
+.modal-button-primary,
+.calc-button,
+.embed-copy-button {
+    background: var(--button-accent-bg);
+    border-color: var(--button-accent-bg);
     color: var(--text-white);
 }
 
-.btn-primary:hover {
-    background: var(--accent-hover);
+.btn-primary:hover,
+.modal-button-primary:hover,
+.calc-button:hover,
+.embed-copy-button:hover {
+    background: var(--button-accent-hover);
+    border-color: var(--button-accent-hover);
 }
 
-.btn-secondary {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-primary);
+.btn:disabled,
+.modal-button:disabled,
+.calc-button:disabled,
+.mcp-copy-btn:disabled,
+.embed-copy-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
-.btn-secondary:hover {
-    background: var(--bg-tertiary);
+/* Sizes. Small is the row-inline button: a copy control beside a code line, a
+   refresh beside a timestamp, where a full 36px would tower over its row. */
+.btn-small,
+.mcp-copy-btn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.8125rem;
+}
+
+/* Icon-only: square, so it matches .theme-toggle in a row of controls */
+.btn-icon {
+    width: 36px;
+    padding: 0;
+}
+
+.btn-small.btn-icon {
+    width: 28px;
+}
+
+.btn-icon svg {
+    display: block;
+}
+
+/* Full width: forms and dialogs where the button spans its container */
+.btn-block,
+.calc-button,
+.embed-copy-button,
+.metrics-login-form .btn {
+    width: 100%;
 }
 
 
@@ -2187,34 +2289,8 @@ body.index-page .header-title {
     margin-top: 20px;
 }
 
-.modal-button {
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.modal-button-secondary {
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-secondary);
-    color: var(--text-primary);
-}
-
-.modal-button-secondary:hover {
-    background: var(--overlay-light);
-}
-
-.modal-button-primary {
-    background: var(--gradient-active);
-    border: 1px solid var(--accent-primary);
-    color: var(--text-white);
-}
-
-.modal-button-primary:hover {
-    background: var(--gradient-header);
-}
+/* .modal-button / -secondary / -primary: see the unified button system in
+   section 7 — the dialog buttons carry no look of their own. */
 
 .modal-disclaimer {
     margin-top: 16px;
@@ -2628,15 +2704,19 @@ body.index-page .header-title {
     margin-bottom: 8px;
 }
 
+/* The calculator's fields sit in the same 36px control box as the button
+   underneath them, so the dialog reads as one stack rather than tall fields
+   over a short button. */
 .calc-input {
     width: 100%;
+    height: 36px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+    padding: 0 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
 }
 
 .calc-input:focus {
@@ -2647,14 +2727,15 @@ body.index-page .header-title {
 
 .calc-select {
     width: 100%;
+    height: 36px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-secondary);
     color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 0.95rem;
+    padding: 0 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: border-color .15s ease, box-shadow .15s ease;
 }
 
 .calc-select:focus {
@@ -2663,22 +2744,10 @@ body.index-page .header-title {
     box-shadow: 0 0 0 3px var(--overlay-accent);
 }
 
+/* Fill and box come from the unified button system in section 7; the
+   calculator only owns the gap between the last field and the button. */
 .calc-button {
-    width: 100%;
-    background: var(--gradient-active);
-    border: 1px solid var(--accent-primary);
-    color: var(--text-white);
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
     margin-top: 10px;
-}
-
-.calc-button:hover {
-    background: var(--gradient-header);
 }
 
 .calc-result {
@@ -4382,22 +4451,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 16px;
 }
 
-.btn-small {
-    padding: 6px 12px;
-    font-size: 0.75rem;
-}
-
-.btn-icon {
-    padding: 6px 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-icon svg {
-    display: block;
-}
-
 .status-indicator {
     display: flex;
     align-items: center;
@@ -4724,20 +4777,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     align-self: center;
 }
 
+/* Box and fill come from the unified button system in section 7 (small size);
+   only its placement in the code row and the copied confirmation are local.
+   The row stretches its children, so the fixed-height button needs to be told
+   to sit on the same centre line as the code it copies. */
 .mcp-copy-btn {
-    background: var(--card-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: 4px;
-    padding: 4px 12px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, border-color 0.2s;
-}
-
-.mcp-copy-btn:hover {
-    border-color: var(--text-secondary);
+    align-self: center;
 }
 
 .mcp-copy-btn.copied {
@@ -5089,10 +5134,6 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     width: 100%;
 }
 
-.metrics-login-form .btn {
-    width: 100%;
-}
-
 .metrics-login-field {
     display: flex;
     flex-direction: column;
@@ -5277,40 +5318,19 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     margin-bottom: 10px;
 }
 
-.embed-copy-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 8px;
-    height: 40px;
-    padding: 0 20px;
-    background: var(--accent-primary);
-    color: var(--text-white);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.embed-copy-button:hover {
-    background: var(--accent-hover);
-}
-
-.embed-copy-button:active {
-    transform: scale(0.98);
-}
-
+/* Box and fill come from the unified button system in section 7; only the icon
+   and the copied confirmation are local. */
 .embed-copy-icon {
     width: 16px;
     height: 16px;
     fill: currentColor;
 }
 
+/* Same contrast problem as the accent fill: the status green is a text colour,
+   too light to carry a white label. */
 .embed-copy-button.copied {
-    background: var(--success-color);
+    background: var(--button-success-bg);
+    border-color: var(--button-success-bg);
 }
 
 
@@ -6005,7 +6025,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: #ffffff;
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     display: flex;
     align-items: center;
