@@ -1600,6 +1600,518 @@
     }
   },
   {
+    "name": "Nida",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/64979",
+    "windfinderUrl": "https://www.windfinder.com/forecast/nida_neringa",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.312000,21.010000",
+    "spotInfo": {
+      "type": "Curonian Spit - lagoon flat water and Baltic Sea waves",
+      "bestWind": "E, SE, NE (lagoon), W, SW, NW (sea)",
+      "waterTemp": "8-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy lagoon shore near the harbour, or the sea beach across the dunes",
+      "hazards": "Gusty offshore wind on the lagoon in westerlies, shorebreak on the sea side, national park restrictions",
+      "season": "May-October",
+      "description": "Nida sits near the southern end of the Curonian Spit with the Baltic Sea on one side and the shallow Curonian Lagoon on the other, so on most days you can choose between waves and flat water. Easterlies turn the lagoon into a flat-water playground, while westerlies are cross-shore on the sea beach. The whole spit is a national park, so launch from the marked beaches and stay off the dunes.",
+      "llmComment": "Nida lies on a narrow spit with two shores. W-SW winds are cross-shore on the Baltic beach but offshore and gusty over the dunes on the lagoon side; E-SE winds do the exact opposite. A gridded model reports one wind for both shores, so read the direction before judging the spot."
+    },
+    "spotInfoPL": {
+      "type": "Mierzeja Kurońska - płaska woda na zalewie i fale na Bałtyku",
+      "bestWind": "E, SE, NE (zalew), W, SW, NW (morze)",
+      "waterTemp": "8-21°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysty brzeg zalewu przy porcie lub plaża morska za wydmami",
+      "hazards": "Porywisty wiatr offshore na zalewie przy zachodnich kierunkach, przybój od strony morza, ograniczenia parku narodowego",
+      "season": "Maj-Październik",
+      "description": "Nida leży w południowej części Mierzei Kurońskiej, z Bałtykiem po jednej stronie i płytkim Zalewem Kurońskim po drugiej, więc w większość dni można wybrać między falą a płaską wodą. Wiatry wschodnie zamieniają zalew w płaską taflę, a zachodnie wieją bocznie na plaży morskiej. Cała mierzeja to park narodowy - startuj z oznaczonych plaż i nie wchodź na wydmy.",
+      "llmComment": "Nida leży na wąskiej mierzei z dwoma brzegami. Wiatry W-SW są boczne na plaży bałtyckiej, ale offshore i porywiste nad wydmami od strony zalewu; wiatry E-SE działają dokładnie odwrotnie. Model siatkowy podaje jeden wiatr dla obu brzegów, więc najpierw sprawdź kierunek."
+    }
+  },
+  {
+    "name": "Juodkrantė",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/208177",
+    "windfinderUrl": "https://www.windfinder.com/forecast/juodkrante",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.544500,21.121500",
+    "spotInfo": {
+      "type": "Lagoon (Curonian Lagoon), shallow flat water",
+      "bestWind": "E, SE, NE, S",
+      "waterTemp": "10-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy and grassy lagoon shore next to the marina",
+      "hazards": "Offshore westerlies, boat traffic near the harbour, national park rules",
+      "season": "May-September",
+      "description": "Juodkrantė is the quiet Curonian Spit village halfway between Klaipėda and Nida. The lagoon shore north of the marina is shallow, standable and flat, which makes it a calm alternative to the busier eastern-shore kite centres when the wind has any east in it."
+    },
+    "spotInfoPL": {
+      "type": "Laguna (Zalew Kuroński), płytka płaska woda",
+      "bestWind": "E, SE, NE, S",
+      "waterTemp": "10-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysto-trawiasty brzeg zalewu obok mariny",
+      "hazards": "Wiatry zachodnie wiejące od brzegu, ruch łodzi przy porcie, zasady parku narodowego",
+      "season": "Maj-Wrzesień",
+      "description": "Juodkrantė to spokojna wioska na Mierzei Kurońskiej w połowie drogi między Kłajpedą a Nidą. Brzeg zalewu na północ od mariny jest płytki, stawalny i płaski, co czyni go spokojną alternatywą dla zatłoczonych spotów na wschodnim brzegu, gdy wiatr ma choć trochę wschodu."
+    }
+  },
+  {
+    "name": "Pervalka",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/134412",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.415000,21.096500",
+    "spotInfo": {
+      "type": "Lagoon (Curonian Lagoon), shallow flat water",
+      "bestWind": "E, NE, SE, S",
+      "waterTemp": "10-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy shore by the small harbour and the lighthouse",
+      "hazards": "Shallow sandbanks, offshore westerlies, remote spot with no rescue",
+      "season": "May-September",
+      "description": "Pervalka is the smallest village on the Curonian Spit, a handful of houses around a tiny harbour on the lagoon. The water in front of it is knee to waist deep over a long stretch, and there is nobody there - a proper empty flat-water spot when the wind blows from the lagoon side."
+    },
+    "spotInfoPL": {
+      "type": "Laguna (Zalew Kuroński), płytka płaska woda",
+      "bestWind": "E, NE, SE, S",
+      "waterTemp": "10-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysty brzeg przy małym porcie i latarni",
+      "hazards": "Płytkie łachy, wiatry zachodnie wiejące od brzegu, odludzie bez ratownictwa",
+      "season": "Maj-Wrzesień",
+      "description": "Pervalka to najmniejsza wioska na Mierzei Kurońskiej - kilka domów wokół maleńkiego portu nad zalewem. Woda przed nią sięga do kolan lub pasa na długim odcinku i praktycznie nikogo tu nie ma. Prawdziwie pusty spot płaskiej wody, gdy wieje od strony zalewu."
+    }
+  },
+  {
+    "name": "Kintai",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/1027422",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.424300,21.248000",
+    "spotInfo": {
+      "type": "Lagoon (Curonian Lagoon), shallow flat fresh water",
+      "bestWind": "SW, W, WNW, NW",
+      "waterTemp": "10-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sand next to the Kintai marina",
+      "hazards": "Shallow muddy bottom, reeds, deeper water and boat traffic in the harbour channel",
+      "season": "April-October",
+      "description": "Kintai is an old fishing village on the eastern shore of the Curonian Lagoon and one of Lithuania's main kite centres alongside Svencelė and Dreverna. The prevailing westerlies blow cross-shore over kilometres of shallow, standable fresh water, and on strong days locals ride the 9 km downwinder across the lagoon to the Curonian Spit."
+    },
+    "spotInfoPL": {
+      "type": "Laguna (Zalew Kuroński), płytka płaska woda słodka",
+      "bestWind": "SW, W, WNW, NW",
+      "waterTemp": "10-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piasek obok mariny w Kintai",
+      "hazards": "Płytkie muliste dno, trzciny, głębsza woda i ruch łodzi w kanale portowym",
+      "season": "Kwiecień-Październik",
+      "description": "Kintai to stara wioska rybacka na wschodnim brzegu Zalewu Kurońskiego i jeden z głównych ośrodków kite na Litwie, obok Svencelė i Drewerny. Dominujące wiatry zachodnie wieją bocznie przez kilometry płytkiej, stawalnej wody słodkiej, a przy mocnym wietrze miejscowi robią 9-kilometrowy downwind przez zalew na Mierzeję Kurońską."
+    }
+  },
+  {
+    "name": "Melnragė (Klaipėda)",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/155188",
+    "windfinderUrl": "https://www.windfinder.com/forecast/klaipeda",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.736100,21.085800",
+    "spotInfo": {
+      "type": "Baltic Sea, sandy beach with shorebreak",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach north of the port breakwaters",
+      "hazards": "Shorebreak, current near the piers, shipping channel to the south, crowded in summer",
+      "season": "April-October",
+      "description": "Melnragė is Klaipėda's city beach, a wide strip of sand just north of the port entrance and the closest sea riding for anyone based in the city. Westerlies come in cross-onshore and build a quick shorebreak; stay well clear of the breakwaters and the shipping channel south of the spot."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, piaszczysta plaża z przybojem",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "8-21°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża na północ od falochronów portu",
+      "hazards": "Przybój, prąd przy molach, tor wodny na południu, tłok latem",
+      "season": "Kwiecień-Październik",
+      "description": "Melnragė to miejska plaża Kłajpedy - szeroki pas piasku tuż na północ od wejścia do portu i najbliższy spot morski dla mieszkańców miasta. Wiatry zachodnie wieją bocznie na brzeg i szybko budują przybój. Trzymaj się z dala od falochronów i toru wodnego na południe od spotu."
+    }
+  },
+  {
+    "name": "Giruliai",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/64972",
+    "windfinderUrl": "https://www.windfinder.com/forecast/giruliai",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.770700,21.079000",
+    "spotInfo": {
+      "type": "Baltic Sea, sandy beach",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach below the pine forest, steep steps from the car park",
+      "hazards": "Shorebreak, stones in places, limited space in high water",
+      "season": "April-October",
+      "description": "Giruliai is the quieter beach a few kilometres north of Melnragė, backed by pine forest and reached by wooden stairs from the parking area. Same westerly swell as Klaipėda but far fewer people - the local choice when the city beach is packed."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, piaszczysta plaża",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-21°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża pod lasem sosnowym, strome schody z parkingu",
+      "hazards": "Przybój, miejscami kamienie, mało miejsca przy wysokiej wodzie",
+      "season": "Kwiecień-Październik",
+      "description": "Giruliai to spokojniejsza plaża kilka kilometrów na północ od Melnragė, otoczona lasem sosnowym, z drewnianymi schodami z parkingu. Ta sama zachodnia fala co w Kłajpedzie, ale znacznie mniej ludzi - wybór miejscowych, gdy plaża miejska jest zatłoczona."
+    }
+  },
+  {
+    "name": "Kauno marios",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/66047",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kauno_marios_samylai",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=54.860600,24.150800",
+    "spotInfo": {
+      "type": "Reservoir, fresh water",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "12-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grass and gravel banks near Samylai and Rumšiškės",
+      "hazards": "Gusty wind close to the wooded shores, deep water, no rescue service",
+      "season": "April-October",
+      "description": "Kauno marios is Lithuania's largest reservoir and the main inland spot for riders from Kaunas and Vilnius. The lake is long and open to the prevailing westerlies, but it is deep and the shores are wooded, so the wind is gustier than on the coast and a body of water this size deserves respect."
+    },
+    "spotInfoPL": {
+      "type": "Zalew, woda słodka",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "12-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Trawiaste i żwirowe brzegi przy Samylai i Rumšiškės",
+      "hazards": "Porywisty wiatr blisko zalesionych brzegów, głęboka woda, brak ratownictwa",
+      "season": "Kwiecień-Październik",
+      "description": "Kauno marios to największy zalew na Litwie i główny spot śródlądowy dla kiterów z Kowna i Wilna. Akwen jest długi i otwarty na dominujące wiatry zachodnie, ale głęboki, a brzegi porasta las, więc wiatr jest bardziej porywisty niż nad morzem. Akwen tej wielkości wymaga ostrożności."
+    }
+  },
+  {
+    "name": "Rėkyva",
+    "country": "Lithuania",
+    "windguruUrl": "https://www.windguru.cz/60001",
+    "windfinderUrl": "https://www.windfinder.com/forecast/rekyva_lake_zolynas",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=55.865400,23.319200",
+    "spotInfo": {
+      "type": "Lake, shallow fresh water",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "12-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sand on the northern shore, right next to Šiauliai",
+      "hazards": "Shallow peaty bottom, reeds, gusty wind near the tree line",
+      "season": "April-October, snowkiting in winter",
+      "description": "Lake Rėkyva on the edge of Šiauliai is the main kite spot in northern Lithuania - a big, shallow, wide-open lake with flat water and no salt. It freezes in most winters, which makes it one of the country's better snowkiting venues too."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płytka woda słodka",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "12-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piasek na północnym brzegu, tuż przy Szawlach",
+      "hazards": "Płytkie torfowe dno, trzciny, porywisty wiatr przy linii drzew",
+      "season": "Kwiecień-Październik, snowkiting zimą",
+      "description": "Jezioro Rėkyva na skraju Szawli to główny spot kitesurfingowy północnej Litwy - duże, płytkie i szeroko otwarte jezioro z płaską wodą bez soli. W większość zim zamarza, więc jest też jednym z lepszych miejsc do snowkitingu w kraju."
+    }
+  },
+  {
+    "name": "Liepāja",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/556726",
+    "windfinderUrl": "https://www.windfinder.com/forecast/marina_liepaja",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.485300,20.997800",
+    "spotInfo": {
+      "type": "Baltic Sea, sandy beach",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Wide sandy beach south-west of the centre, next to the local kite club",
+      "hazards": "Shorebreak and longshore current, breakwaters, swimmers in high summer",
+      "season": "April-November",
+      "description": "Liepāja calls itself the city where the wind is born, and it is Latvia's kitesurfing capital. The main beach south-west of the centre is home to the local kite club and works in the westerlies that dominate the Kurzeme coast. Waves build fast in strong W wind; the water between the breakwaters stays calmer."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, piaszczysta plaża",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Szeroka piaszczysta plaża na południowy zachód od centrum, przy lokalnym klubie kite",
+      "hazards": "Przybój i prąd przybrzeżny, falochrony, plażowicze w pełni lata",
+      "season": "Kwiecień-Listopad",
+      "description": "Lipawa nazywa siebie miastem, w którym rodzi się wiatr, i jest kitesurfingową stolicą Łotwy. Główna plaża na południowy zachód od centrum to siedziba lokalnego klubu kite, działająca przy wiatrach zachodnich dominujących na wybrzeżu Kurlandii. Przy mocnym W szybko rośnie fala, a woda między falochronami pozostaje spokojniejsza."
+    }
+  },
+  {
+    "name": "Liepājas ezers",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/79814",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.496600,21.039800",
+    "spotInfo": {
+      "type": "Lake, very shallow flat fresh water",
+      "bestWind": "W, SW, N, S",
+      "waterTemp": "10-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Reedy grass shore on the northern side of the lake",
+      "hazards": "Very shallow muddy bottom, reeds, no rescue",
+      "season": "April-October, snowkiting in winter",
+      "description": "Liepājas ezers is the flat-water alternative sitting right behind the Liepāja sea beach - a large, extremely shallow lake with butter-flat water. Same wind as the coast, no waves at all, which makes it the local freestyle and learning ground whenever the sea is too rough.",
+      "llmComment": "The lake sits about two kilometres inland from the Liepāja sea beach and shares its wind, but never its swell. Whatever the forecast says about waves, this spot is flat."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, bardzo płytka płaska woda słodka",
+      "bestWind": "W, SW, N, S",
+      "waterTemp": "10-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawiasty brzeg z trzcinami po północnej stronie jeziora",
+      "hazards": "Bardzo płytkie muliste dno, trzciny, brak ratownictwa",
+      "season": "Kwiecień-Październik, snowkiting zimą",
+      "description": "Liepājas ezers to alternatywa płaskiej wody tuż za morską plażą Lipawy - duże, wyjątkowo płytkie jezioro z idealnie gładką taflą. Ten sam wiatr co na wybrzeżu, zero fali, więc miejscowi jeżdżą tu freestyle i uczą się, gdy morze jest zbyt wzburzone.",
+      "llmComment": "Jezioro leży około dwóch kilometrów w głąb lądu od morskiej plaży w Lipawie i ma ten sam wiatr, ale nigdy falę. Cokolwiek prognoza mówi o falach, ten spot jest płaski."
+    }
+  },
+  {
+    "name": "Pāvilosta",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/255",
+    "windfinderUrl": "https://www.windfinder.com/forecast/pavilosta",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.888900,21.182500",
+    "spotInfo": {
+      "type": "Baltic Sea, waves and chop",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach on both sides of the river mouth",
+      "hazards": "Shorebreak, current at the river mouth, breakwaters",
+      "season": "April-November",
+      "description": "Pāvilosta is Latvia's best-known wave spot, a small fishing harbour on the Kurzeme coast that has carried the country's windsurf and kite scene for decades. Autumn depressions bring head-high Baltic waves; in lighter wind the beach north of the harbour is a straightforward freeride spot."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, fale i chop",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "8-20°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża po obu stronach ujścia rzeki",
+      "hazards": "Przybój, prąd przy ujściu rzeki, falochrony",
+      "season": "Kwiecień-Listopad",
+      "description": "Pāvilosta to najbardziej znany falowy spot Łotwy - mały port rybacki na wybrzeżu Kurlandii, który od dekad niesie krajową scenę windsurfingową i kitesurfingową. Jesienne niże przynoszą bałtyckie fale na wysokość głowy, a przy słabszym wietrze plaża na północ od portu to zwykły spot freeride'owy."
+    }
+  },
+  {
+    "name": "Ventspils",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/362",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ventspils",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.387800,21.532800",
+    "spotInfo": {
+      "type": "Baltic Sea, wide sandy beach",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "8-20°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Designated windsurf and kite section of the Blue Flag beach south of the port",
+      "hazards": "Shipping channel to the north, swimming zones, shorebreak in strong W",
+      "season": "April-October",
+      "description": "Ventspils has the most organised beach infrastructure in Latvia: a dedicated windsurfing and kitesurfing zone on the long sandy beach south of the port, with parking, showers, toilets and a campsite right behind the dune. Keep well south of the harbour entrance."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, szeroka piaszczysta plaża",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "8-20°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Wydzielona strefa windsurfingowo-kitesurfingowa na plaży Blue Flag na południe od portu",
+      "hazards": "Tor wodny na północy, strefy kąpielowe, przybój przy mocnym W",
+      "season": "Kwiecień-Październik",
+      "description": "Ventspils ma najlepiej zorganizowaną infrastrukturę plażową na Łotwie: wydzieloną strefę dla windsurfingu i kitesurfingu na długiej piaszczystej plaży na południe od portu, z parkingiem, prysznicami, toaletami i kempingiem tuż za wydmą. Trzymaj się z dala od wejścia do portu."
+    }
+  },
+  {
+    "name": "Jūrmala (Pumpuri)",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/99824",
+    "windfinderUrl": "https://www.windfinder.com/forecast/jurmala_pumpuri",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.959900,23.737200",
+    "spotInfo": {
+      "type": "Gulf of Riga, shallow sandy beach",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "10-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long, wide sandy beach",
+      "hazards": "Very busy beach in summer, swimming zones, shallow sandbars",
+      "season": "May-September",
+      "description": "Jūrmala's 25 km of white sand is the closest riding to Riga, and Pumpuri is the section local kiters use. The Gulf of Riga stays shallow far offshore, so the water is flat to choppy even when it blows hard. Expect company on any sunny summer day."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Ryska, płytka piaszczysta plaża",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "10-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Długa, szeroka piaszczysta plaża",
+      "hazards": "Bardzo tłoczna plaża latem, strefy kąpielowe, płytkie łachy",
+      "season": "Maj-Wrzesień",
+      "description": "25 kilometrów białego piasku w Jurmale to najbliższy spot dla Rygi, a Pumpuri to odcinek używany przez miejscowych kiterów. Zatoka Ryska pozostaje płytka daleko od brzegu, więc woda jest płaska lub choppy nawet przy mocnym wietrze. W słoneczny letni dzień można liczyć na towarzystwo."
+    }
+  },
+  {
+    "name": "Engure",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/1593",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.160200,23.223200",
+    "spotInfo": {
+      "type": "Gulf of Riga, shallow sandy beach",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "10-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach near the fishing harbour",
+      "hazards": "Stones in the shallows in places, harbour traffic, quiet area with no rescue",
+      "season": "May-October",
+      "description": "Engure sits halfway up the Gulf of Riga coast between Jūrmala and Kolka: a shallow sandy beach with a small fishing harbour and a fraction of Jūrmala's crowds. Ķesterciems and Ragaciems just down the road give the same conditions if the parking here is full."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Ryska, płytka piaszczysta plaża",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "10-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy porcie rybackim",
+      "hazards": "Miejscami kamienie w płytkiej wodzie, ruch w porcie, spokojna okolica bez ratownictwa",
+      "season": "Maj-Październik",
+      "description": "Engure leży w połowie wybrzeża Zatoki Ryskiej, między Jurmalą a Kolką: płytka piaszczysta plaża z małym portem rybackim i ułamkiem tłumów z Jurmali. Ķesterciems i Ragaciems kawałek dalej dają te same warunki, gdy zabraknie tu miejsca na parkingu."
+    }
+  },
+  {
+    "name": "Roja",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/61888",
+    "windfinderUrl": "https://www.windfinder.com/forecast/roja",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.505700,22.804400",
+    "spotInfo": {
+      "type": "Gulf of Riga, shallow sandy beach",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "10-23°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach north of the fishing harbour",
+      "hazards": "Boulders in the shallows, harbour entrance, remote area with no rescue",
+      "season": "May-October",
+      "description": "Roja is a fishing town on the northern stretch of the Gulf of Riga coast, with a wide shallow beach either side of the harbour. Northerly and north-westerly winds have the whole gulf as fetch here, and outside July the beach is essentially empty."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Ryska, płytka piaszczysta plaża",
+      "bestWind": "N, NW, W, NE",
+      "waterTemp": "10-23°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża na północ od portu rybackiego",
+      "hazards": "Głazy w płytkiej wodzie, wejście do portu, odludzie bez ratownictwa",
+      "season": "Maj-Październik",
+      "description": "Roja to miasteczko rybackie na północnym odcinku wybrzeża Zatoki Ryskiej, z szeroką płytką plażą po obu stronach portu. Wiatry północne i północno-zachodnie mają tu do dyspozycji całą zatokę, a poza lipcem plaża jest praktycznie pusta."
+    }
+  },
+  {
+    "name": "Kolkasrags",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/254",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kolka",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.756500,22.599900",
+    "spotInfo": {
+      "type": "Cape where the Gulf of Riga meets the open Baltic",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "8-20°C",
+      "experience": "Advanced",
+      "launch": "Sand and shingle on either side of the cape",
+      "hazards": "Strong current and colliding swell off the tip, shifting sandbanks, submerged posts, no rescue",
+      "season": "May-October",
+      "description": "Kolkasrags is the point where the Gulf of Riga meets the open Baltic, and on a windy day you can watch the two seas collide off the tip. Whichever side is in the lee gives flat water while the other gets waves, only a few hundred metres apart - but the current off the cape is serious and this is not a place to ride alone.",
+      "llmComment": "Kolkasrags is a sharp cape with two coasts facing roughly west and east. The same forecast wind is onshore on one side and offshore on the other, and the sandbank off the tip generates strong current whenever it blows."
+    },
+    "spotInfoPL": {
+      "type": "Przylądek, gdzie Zatoka Ryska spotyka otwarty Bałtyk",
+      "bestWind": "W, NW, N, SW",
+      "waterTemp": "8-20°C",
+      "experience": "Zaawansowany",
+      "launch": "Piasek i żwir po obu stronach przylądka",
+      "hazards": "Silny prąd i zderzające się fale przy cyplu, ruchome łachy, zatopione pale, brak ratownictwa",
+      "season": "Maj-Październik",
+      "description": "Kolkasrags to miejsce, w którym Zatoka Ryska spotyka otwarty Bałtyk - przy wietrze widać, jak dwa morza zderzają się przy cyplu. Strona zawietrzna daje płaską wodę, druga fale, a dzieli je kilkaset metrów. Prąd przy przylądku jest jednak poważny i nie jest to miejsce na samotną sesję.",
+      "llmComment": "Kolkasrags to ostry przylądek z dwoma brzegami zwróconymi mniej więcej na zachód i wschód. Ten sam prognozowany wiatr jest onshore po jednej stronie i offshore po drugiej, a łacha przy cyplu generuje silny prąd zawsze, gdy wieje."
+    }
+  },
+  {
+    "name": "Lilaste",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/33420",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.181000,24.356200",
+    "spotInfo": {
+      "type": "Coastal lake and sea beach side by side",
+      "bestWind": "W, SW, N, NW",
+      "waterTemp": "12-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sand on the shore of Lilastes ezers, sea beach a few hundred metres away",
+      "hazards": "Shallow lake with reeds and gusty wind near the tree line, shorebreak on the sea side",
+      "season": "May-October, snowkiting in winter",
+      "description": "Lilaste, 30 km north of Riga, is the local flat-water lake: a shallow coastal lake separated from the Gulf of Riga by a narrow strip of dunes and pines. You can walk from butter-flat water to the sea beach in a few minutes and pick whichever suits the day.",
+      "llmComment": "Two water bodies a few hundred metres apart: the shallow lake behind the dunes is always flat, the sea beach in front of them takes the gulf chop. The forecast covers both."
+    },
+    "spotInfoPL": {
+      "type": "Przybrzeżne jezioro i plaża morska obok siebie",
+      "bestWind": "W, SW, N, NW",
+      "waterTemp": "12-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piasek nad jeziorem Lilastes ezers, plaża morska kilkaset metrów dalej",
+      "hazards": "Płytkie jezioro z trzcinami i porywistym wiatrem przy linii drzew, przybój od strony morza",
+      "season": "Maj-Październik, snowkiting zimą",
+      "description": "Lilaste, 30 km na północ od Rygi, to lokalne jezioro płaskiej wody - płytki akwen przybrzeżny oddzielony od Zatoki Ryskiej wąskim pasem wydm i sosen. W kilka minut przejdziesz od idealnie gładkiej tafli na plażę morską i wybierzesz to, co pasuje na dany dzień.",
+      "llmComment": "Dwa akweny oddalone o kilkaset metrów: płytkie jezioro za wydmami jest zawsze płaskie, plaża morska przed nimi zbiera chop z zatoki. Prognoza obejmuje oba."
+    }
+  },
+  {
+    "name": "Pape",
+    "country": "Latvia",
+    "windguruUrl": "https://www.windguru.cz/4867",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.163100,21.034700",
+    "spotInfo": {
+      "type": "Coastal lagoon and empty sea beach, nature reserve",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "10-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at Pape village, lagoon shore behind the dunes",
+      "hazards": "Nature reserve restrictions, shallow muddy lagoon, remote with no rescue",
+      "season": "May-October",
+      "description": "Pape sits close to the Lithuanian border, where Papes ezers - a big, shallow coastal lagoon - lies behind the dunes of a deserted Baltic beach. Flat water on the lagoon, waves on the sea, and almost nobody around. The whole area is a nature reserve, so check the local access rules before rigging."
+    },
+    "spotInfoPL": {
+      "type": "Przybrzeżna laguna i pusta plaża morska, rezerwat przyrody",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "10-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy wiosce Pape, brzeg laguny za wydmami",
+      "hazards": "Ograniczenia rezerwatu przyrody, płytka mulista laguna, odludzie bez ratownictwa",
+      "season": "Maj-Październik",
+      "description": "Pape leży blisko granicy z Litwą, gdzie Papes ezers - duża, płytka laguna przybrzeżna - rozciąga się za wydmami bezludnej bałtyckiej plaży. Płaska woda na lagunie, fale na morzu i niemal nikogo dookoła. Cały obszar jest rezerwatem przyrody, więc przed rozłożeniem sprzętu sprawdź lokalne zasady wstępu."
+    }
+  },
+  {
     "name": "Häädemeeste",
     "country": "Estonia",
     "windguruUrl": "https://www.windguru.cz/872453",
@@ -1653,6 +2165,288 @@
       "hazards": "Zimna woda na początku i końcu sezonu, glony, skały przy niektórych miejscach startu",
       "season": "Maj-Wrzesień",
       "description": "Hiiumaa to estoński raj kitesurfingowy oferujący zarówno warunki falowe, jak i płaską wodę w zależności od wybrzeża. Ristna na zachodzie słynie z czystych bałtyckich fal, a zatoka Luidja zapewnia osłoniętą płaską wodę dla freestyle'u i początkujących. Stałe wiatry, piękna przyroda i mały tłok czynią z niej jedno z najlepszych bałtyckich miejsc na kite."
+    }
+  },
+  {
+    "name": "Pärnu",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/550295",
+    "windfinderUrl": "https://www.windfinder.com/forecast/parnu",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=58.373900,24.496500",
+    "spotInfo": {
+      "type": "Gulf of Riga, shallow sandy bay",
+      "bestWind": "W, SW, S",
+      "waterTemp": "10-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Wide sandy city beach with room to rig and a big car park",
+      "hazards": "Crowded in summer, swimming zones and the pier, very shallow far out",
+      "season": "May-September",
+      "description": "Pärnu is Estonia's summer capital and its busiest kite beach: a long, shallow sandy bay that stays waist-deep hundreds of metres out, which makes it the country's natural teaching ground. It works best in W, SW and S winds, and the local surf centre and schools sit right on the sand."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka Ryska, płytka piaszczysta zatoka",
+      "bestWind": "W, SW, S",
+      "waterTemp": "10-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Szeroka miejska plaża z miejscem na rozłożenie sprzętu i dużym parkingiem",
+      "hazards": "Tłok latem, strefy kąpielowe i molo, bardzo płytko daleko od brzegu",
+      "season": "Maj-Wrzesień",
+      "description": "Parnawa to letnia stolica Estonii i najbardziej ruchliwa plaża kite w kraju: długa, płytka piaszczysta zatoka, w której woda sięga pasa jeszcze setki metrów od brzegu, co czyni ją naturalnym miejscem do nauki. Najlepiej działa przy wiatrach W, SW i S, a lokalne centrum surfingowe i szkoły stoją bezpośrednio na plaży."
+    }
+  },
+  {
+    "name": "Vääna-Jõesuu",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/147611",
+    "windfinderUrl": "https://www.windfinder.com/forecast/vaana_joesuu",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=59.433200,24.365500",
+    "spotInfo": {
+      "type": "Baltic Sea, sandy beach with chop and small waves",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at the river mouth, 25 km west of Tallinn",
+      "hazards": "Shorebreak, stones in the shallows, current at the river mouth",
+      "season": "April-October",
+      "description": "Vääna-Jõesuu is the go-to sea spot for Tallinn riders - half an hour from the city, wide open to the west and rough enough to be rated intermediate. The beach is broad and sandy, and westerlies build proper little Baltic waves in front of it."
+    },
+    "spotInfoPL": {
+      "type": "Morze Bałtyckie, piaszczysta plaża z chopem i małymi falami",
+      "bestWind": "W, SW, NW",
+      "waterTemp": "10-21°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy ujściu rzeki, 25 km na zachód od Tallina",
+      "hazards": "Przybój, kamienie w płytkiej wodzie, prąd przy ujściu rzeki",
+      "season": "Kwiecień-Październik",
+      "description": "Vääna-Jõesuu to podstawowy morski spot kiterów z Tallina - pół godziny od miasta, szeroko otwarty na zachód i na tyle wymagający, że oceniany jest jako średniozaawansowany. Plaża jest szeroka i piaszczysta, a wiatry zachodnie budują przed nią porządne małe bałtyckie fale."
+    }
+  },
+  {
+    "name": "Kakumäe",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/671289",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kakumae",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=59.450100,24.575900",
+    "spotInfo": {
+      "type": "Sheltered bay, flat to choppy water",
+      "bestWind": "SW, W, S",
+      "waterTemp": "12-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach in the bay next to the Kakumäe surf club",
+      "hazards": "Stones in the shallows, moored boats near the marina, gusty wind behind the buildings",
+      "season": "May-October",
+      "description": "Kakumäe is Tallinn's in-town kite beach: a shallow bay on the western side of the city with a surf club on the sand and a marina next door. Sheltered from the open sea swell, so the water stays flat to choppy while the wind still gets through."
+    },
+    "spotInfoPL": {
+      "type": "Osłonięta zatoka, woda od płaskiej do choppy",
+      "bestWind": "SW, W, S",
+      "waterTemp": "12-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża w zatoce obok klubu surfingowego Kakumäe",
+      "hazards": "Kamienie w płytkiej wodzie, zacumowane łodzie przy marinie, porywisty wiatr za zabudowaniami",
+      "season": "Maj-Październik",
+      "description": "Kakumäe to miejska plaża kite w Tallinie: płytka zatoka po zachodniej stronie miasta z klubem surfingowym na piasku i mariną obok. Osłonięta od fali z otwartego morza, więc woda pozostaje płaska lub lekko choppy, a wiatr i tak dochodzi."
+    }
+  },
+  {
+    "name": "Pirita",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/402228",
+    "windfinderUrl": "https://www.windfinder.com/forecast/pirita",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=59.478200,24.835400",
+    "spotInfo": {
+      "type": "Bay, long sandy beach",
+      "bestWind": "NW, N, NE, W",
+      "waterTemp": "12-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long sandy beach next to Pirita marina",
+      "hazards": "Swimmers and sailing traffic from the marina, shallow sandbars, summer beach rules",
+      "season": "May-September",
+      "description": "Pirita is Tallinn's main city beach, a long sand strip beside the Olympic sailing harbour and a short bus ride from the old town. Northerly winds come in onshore across Tallinn Bay; in high summer the beach is shared with swimmers, so ride at the quieter ends."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, długa piaszczysta plaża",
+      "bestWind": "NW, N, NE, W",
+      "waterTemp": "12-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża przy marinie Pirita",
+      "hazards": "Plażowicze i ruch żeglarski z mariny, płytkie łachy, letnie zasady na plaży",
+      "season": "Maj-Wrzesień",
+      "description": "Pirita to główna plaża miejska Tallina - długi pas piasku przy olimpijskim porcie żeglarskim, kilka przystanków autobusowych od starówki. Wiatry północne wieją na brzeg przez Zatokę Tallińską, a w pełni lata plażę dzieli się z kąpiącymi, więc lepiej startować z jej spokojniejszych końców."
+    }
+  },
+  {
+    "name": "Stroomi",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/209280",
+    "windfinderUrl": "https://www.windfinder.com/forecast/stroomi",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=59.443100,24.684100",
+    "spotInfo": {
+      "type": "Bay, shallow sandy beach",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "12-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy city beach with a surf club right on the sand",
+      "hazards": "Stones in the shallows, swimmers, gusty wind behind the tree line",
+      "season": "May-September",
+      "description": "Stroomi is the closest kite beach to central Tallinn, a shallow sandy bay in the north of the city with a surf club on the beach. Best in northerlies straight off the bay; the park behind the sand makes the wind gustier in southerly directions."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płytka piaszczysta plaża",
+      "bestWind": "N, NW, NE, W",
+      "waterTemp": "12-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Miejska piaszczysta plaża z klubem surfingowym bezpośrednio na piasku",
+      "hazards": "Kamienie w płytkiej wodzie, plażowicze, porywisty wiatr za linią drzew",
+      "season": "Maj-Wrzesień",
+      "description": "Stroomi to najbliższa centrum Tallina plaża kite - płytka piaszczysta zatoka w północnej części miasta z klubem surfingowym na plaży. Najlepiej działa przy wiatrach północnych prosto z zatoki; park za plażą sprawia, że przy kierunkach południowych wiatr jest porywisty."
+    }
+  },
+  {
+    "name": "Mändjala",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/63301",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=58.211600,22.322500",
+    "spotInfo": {
+      "type": "Shallow sandy bay, flat water",
+      "bestWind": "S, SW, W, SE",
+      "waterTemp": "12-23°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Fine sandy beach backed by pines, easy parking",
+      "hazards": "Very shallow, stones further out, seaweed after storms",
+      "season": "May-September",
+      "description": "Mändjala, a few kilometres west of Kuressaare, is Saaremaa's easiest beach: shallow, sandy and flat, and one of the warmest patches of water in Estonia by late summer. Together with neighbouring Nasva it is the island's beginner and freestyle base."
+    },
+    "spotInfoPL": {
+      "type": "Płytka piaszczysta zatoka, płaska woda",
+      "bestWind": "S, SW, W, SE",
+      "waterTemp": "12-23°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Drobnopiaszczysta plaża otoczona sosnami, łatwy parking",
+      "hazards": "Bardzo płytko, kamienie dalej od brzegu, glony po sztormach",
+      "season": "Maj-Wrzesień",
+      "description": "Mändjala, kilka kilometrów na zachód od Kuressaare, to najłatwiejsza plaża na Sarema: płytka, piaszczysta i płaska, a późnym latem jedna z najcieplejszych wód w Estonii. Razem z sąsiednią Nasvą stanowi wyspiarską bazę dla początkujących i freestyle'u."
+    }
+  },
+  {
+    "name": "Sõrve",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/180141",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=57.909800,22.055400",
+    "spotInfo": {
+      "type": "Cape, flat water on one side and waves on the other",
+      "bestWind": "E, SE, S, SW, W",
+      "waterTemp": "10-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sand and shingle by the lighthouse at the tip of the peninsula",
+      "hazards": "Strong current off the tip, stones, remote with no rescue",
+      "season": "May-October",
+      "description": "Sõrve sääre is the long finger of land at the southern end of Saaremaa, with a lighthouse on the very tip. Flat water on the lee side, open Baltic on the other, and an angle that works whichever way the wind turns - but the current off the point is strong and there is nobody around to help.",
+      "llmComment": "A narrow cape with coasts facing east and west. The same wind is offshore and flat on one side, onshore and wavy on the other; the tip itself runs strong current whenever it blows."
+    },
+    "spotInfoPL": {
+      "type": "Przylądek, płaska woda z jednej strony i fale z drugiej",
+      "bestWind": "E, SE, S, SW, W",
+      "waterTemp": "10-21°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piasek i żwir przy latarni na samym cyplu półwyspu",
+      "hazards": "Silny prąd przy cyplu, kamienie, odludzie bez ratownictwa",
+      "season": "Maj-Październik",
+      "description": "Sõrve sääre to długi jęzor lądu na południowym krańcu Sarema, z latarnią na samym czubku. Płaska woda po stronie zawietrznej, otwarty Bałtyk po drugiej i kąt, który działa niezależnie od kierunku wiatru - ale prąd przy cyplu jest silny, a w pobliżu nie ma nikogo do pomocy.",
+      "llmComment": "Wąski przylądek z brzegami zwróconymi na wschód i zachód. Ten sam wiatr jest offshore i płaski po jednej stronie, onshore i falowy po drugiej; przy samym cyplu zawsze przy wietrze płynie silny prąd."
+    }
+  },
+  {
+    "name": "Ööri",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/814462",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=58.147500,22.221000",
+    "spotInfo": {
+      "type": "Shallow bay, flat water",
+      "bestWind": "SW, W, NW, S",
+      "waterTemp": "12-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sand on the bay shore, home of the Saaremaa surf club",
+      "hazards": "Very shallow with stones and reeds, remote with no rescue",
+      "season": "May-September",
+      "description": "Ööri on Saaremaa's south-western shore is the local surf club's flat-water bay: shallow, sheltered from open-sea swell and wide open to the prevailing south-westerlies. One of the island's most reliable spots when the coast is too rough."
+    },
+    "spotInfoPL": {
+      "type": "Płytka zatoka, płaska woda",
+      "bestWind": "SW, W, NW, S",
+      "waterTemp": "12-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piasek na brzegu zatoki, siedziba klubu surfingowego Saaremaa",
+      "hazards": "Bardzo płytko, kamienie i trzciny, odludzie bez ratownictwa",
+      "season": "Maj-Wrzesień",
+      "description": "Ööri na południowo-zachodnim brzegu Sarema to zatoka płaskiej wody lokalnego klubu surfingowego: płytka, osłonięta od fali z otwartego morza i szeroko otwarta na dominujące wiatry południowo-zachodnie. Jeden z najpewniejszych spotów wyspy, gdy na wybrzeżu jest zbyt wzburzone."
+    }
+  },
+  {
+    "name": "Võrtsjärv",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/692681",
+    "windfinderUrl": "https://www.windfinder.com/forecast/trepimaee_voertsjaerv",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=58.386100,26.130900",
+    "spotInfo": {
+      "type": "Lake, shallow fresh water",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "12-24°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Grass and sand at Rannu-Jõesuu on the eastern shore",
+      "hazards": "Shallow muddy bottom, reeds, gusty wind near the shoreline trees",
+      "season": "April-October, snowkiting in winter",
+      "description": "Võrtsjärv is Estonia's largest inland lake and the country's main freshwater kite spot, an hour from Tartu. It is flat all the way across with enough fetch for real wind, and it freezes reliably enough to be a snowkiting venue in winter."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, płytka woda słodka",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "12-24°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Trawa i piasek w Rannu-Jõesuu na wschodnim brzegu",
+      "hazards": "Płytkie muliste dno, trzciny, porywisty wiatr przy drzewach nad brzegiem",
+      "season": "Kwiecień-Październik, snowkiting zimą",
+      "description": "Võrtsjärv to największe jezioro śródlądowe Estonii i główny krajowy spot na słodkiej wodzie, godzinę drogi od Tartu. Tafla jest płaska na całej szerokości, rozbieg wystarcza na porządny wiatr, a zimą jezioro zamarza na tyle regularnie, że służy jako miejsce do snowkitingu."
+    }
+  },
+  {
+    "name": "Kihnu",
+    "country": "Estonia",
+    "windguruUrl": "https://www.windguru.cz/180126",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kihnu",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=58.147000,23.964600",
+    "spotInfo": {
+      "type": "Island, shallow bays and open sea",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "10-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy and stony shores around the island, reached by ferry from Munalaid",
+      "hazards": "Stones, exposed shores in strong wind, ferry timetable, no rescue",
+      "season": "May-September",
+      "description": "Kihnu is a small island in the Gulf of Riga with a UNESCO-listed culture of its own and a coastline that offers a lee shore in almost any wind direction. Riders come for the emptiness - shallow bays, no crowds, and a ferry ride that keeps it that way."
+    },
+    "spotInfoPL": {
+      "type": "Wyspa, płytkie zatoki i otwarte morze",
+      "bestWind": "W, SW, NW, S",
+      "waterTemp": "10-23°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczyste i kamieniste brzegi wokół wyspy, dojazd promem z Munalaid",
+      "hazards": "Kamienie, odsłonięte brzegi przy mocnym wietrze, rozkład promów, brak ratownictwa",
+      "season": "Maj-Wrzesień",
+      "description": "Kihnu to mała wyspa na Zatoce Ryskiej z własną kulturą wpisaną na listę UNESCO i linią brzegową dającą osłonięty brzeg przy niemal każdym kierunku wiatru. Kiterzy przyjeżdżają tu po pustkę - płytkie zatoki, brak tłumów i prom, który utrzymuje ten stan."
     }
   },
   {
