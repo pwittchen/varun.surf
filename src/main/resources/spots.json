@@ -89,7 +89,7 @@
     "windguruUrl": "https://www.windguru.cz/4165",
     "windfinderUrl": "https://www.windfinder.com/forecast/cypel",
     "webcamUrl": "https://www.wiatrkadyny.pl/rewa",
-    "locationUrl": "https://maps.app.goo.gl/SJS6gR7Xxv14WwY86",
+    "locationUrl": "https://www.google.com/maps?q=54.640300,18.515600",
     "spotInfo": {
       "type": "Sand spit, lagoon, flat water",
       "bestWind": "W, NW, N, NE, E",
@@ -1001,7 +1001,7 @@
     "windguruFallbackUrl": "https://www.windguru.cz/1032235",
     "windfinderUrl": "",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=54.606300,18.803100",
+    "locationUrl": "https://www.google.com/maps?q=54.592600,18.811300",
     "spotInfo": {
       "type": "Bay of Puck, flat water to light chop; open sea on the other side of the spit",
       "bestWind": "W, SW, NW, N",
