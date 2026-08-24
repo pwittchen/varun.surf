@@ -3523,7 +3523,7 @@
     "windguruUrl": "https://www.windguru.cz/258",
     "windfinderUrl": "https://www.windfinder.com/forecast/leucate-plage",
     "webcamUrl": "",
-    "locationUrl": "https://www.google.com/maps?q=42.932784,3.035639",
+    "locationUrl": "https://www.google.com/maps?q=42.901787,3.053298",
     "spotInfo": {
       "type": "Lagoon & sea",
       "bestWind": "Tramontane N, Marin SE",
@@ -9159,6 +9159,1098 @@
       "hazards": "LIMIT LICZBY OSÓB: maksymalnie 10 kiterów na wodzie jednocześnie; obowiązkowe zgłoszenie się w recepcji i zapoznanie z regulaminem przed wypłynięciem; częste podmuchy wiatru; trzeba bezwzględnie pozostać w wyznaczonej strefie kite pokazanej na miejscu, inaczej spot może zostać zamknięty",
       "season": "Kwiecień-Wrzesień",
       "description": "Elburg to niewielka, wygodna strefa kite nad Veluwemeer dla riderów, którzy nie mają czasu jechać na większe spoty we Flevoland, położona tuż przy parku wypoczynkowym. Dostęp do tego miejsca to przywilej, a nie oczywistość: każdy musi zgłosić się w recepcji, zapoznać się z ulotką i trzymać się wyznaczonej strefy, przy ścisłym limicie 10 osób na wodzie jednocześnie. Malutka plaża oraz pobliskie słupy i przyczepy kempingowe wykluczają start z lądu, więc kitesurfing zaczyna się i kończy w wodzie, a porywisty wiatr od okolicznego terenu premiuje riderów, którzy mają już solidne umiejętności kontroli latawca i samodzielnego startu."
+    }
+  },
+  {
+    "name": "Dunkerque – Malo-les-Bains",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/85184",
+    "windguruFallbackUrl": "https://www.windguru.cz/48344",
+    "windfinderUrl": "https://www.windfinder.com/forecast/dunkerque",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.056715,2.428056",
+    "spotInfo": {
+      "type": "Sea, chop at low tide and waves at high tide (North Sea)",
+      "bestWind": "NW, N, NE, SW",
+      "waterTemp": "5-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Huge sandy beach along the Digue Nicolas II next to the Station Nautique des Dunes de Flandre; park between the Malo-Terminus lifeguard post and the eastern end of the dike at Leffrinckoucke rather than in the town centre",
+      "hazards": "Three stone groynes offshore and a marked wreck east of the sailing base; three blockhouses at the foot of the dunes towards Belgium; lamp posts along the promenade cut into the launch area at high tide on big tidal coefficients; WSW is offshore with a strong drift; wind shadow behind the seafront buildings in WSW and NNW; kite zone limited to 500 m west of the Terminus post from 1 July to 31 August; beach shared with cyclists, land yachts and landboarders all year",
+      "season": "Year-round, best September-May",
+      "description": "The reference spot of the Hauts-de-France and home of the Dunkerque Flysurfing Club, founded in 1999. The beach runs for kilometres and dries out completely at low tide, so there is always room to rig even on a crowded day. The water is short chop at low tide and turns into waves as the tide fills in, which makes the same wind feel like two different spots depending on the hour. The coast continues east through Leffrinckoucke to Bray-Dunes, so on a busy or badly angled day you can simply drive a few kilometres and launch somewhere better.",
+      "llmComment": "Tide, not wind, decides what this spot is: flat chop over the drying sand at low water, a proper wave beach against the dike at high water. The venue is not one beach but a 15 km strip - Malo, Leffrinckoucke and Bray-Dunes - and locals pick the section that suits the day's wind angle. East of the Leffrinckoucke dike, in the dune area by the blockhouses, kiting is unrestricted all year, which is the answer when the July-August zoning shrinks Malo to a 500 m box. Treat any WSW forecast with suspicion: it is offshore here and the drift out to the shipping lanes is serious."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala przy odpływie i fale przy przypływie (Morze Północne)",
+      "bestWind": "NW, N, NE, SW",
+      "waterTemp": "5-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Ogromna piaszczysta plaża wzdłuż Digue Nicolas II, przy Station Nautique des Dunes de Flandre; parkuj między posterunkiem ratowników Malo-Terminus a wschodnim krańcem wału w Leffrinckoucke, nie w centrum miasta",
+      "hazards": "Trzy kamienne ostrogi w wodzie i oznakowany wrak na wschód od bazy żeglarskiej; trzy bunkry u podnóża wydm w stronę Belgii; latarnie wzdłuż promenady zabierają miejsce do startu przy pełni morza i wysokich współczynnikach pływu; WSW jest odlądowy z silnym znoszeniem; zawietrze za zabudową nadmorską przy WSW i NNW; strefa kite ograniczona do 500 m na zachód od posterunku Terminus od 1 lipca do 31 sierpnia; plaża przez cały rok dzielona z rowerzystami, żaglowozami i landboardami",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Referencyjny spot regionu Hauts-de-France i siedziba Dunkerque Flysurfing Club, założonego w 1999 roku. Plaża ciągnie się kilometrami i przy odpływie odsłania się całkowicie, więc miejsca do rozłożenia sprzętu nie brakuje nawet w tłoczny dzień. Woda to krótka fala przy odpływie, która wraz z przypływem zamienia się w prawdziwe fale — ten sam wiatr daje więc dwa różne spoty w zależności od godziny. Wybrzeże biegnie dalej na wschód przez Leffrinckoucke aż do Bray-Dunes, więc w gorszy dzień wystarczy przejechać kilka kilometrów i wypłynąć w lepszym miejscu.",
+      "llmComment": "To pływ, a nie wiatr, decyduje, czym jest ten spot: płaska, krótka fala nad odsłoniętym piaskiem przy odpływie i regularne fale pod wałem przy przypływie. To nie jest jedna plaża, tylko 15-kilometrowy pas — Malo, Leffrinckoucke i Bray-Dunes — a miejscowi wybierają odcinek pasujący do kąta wiatru danego dnia. Na wschód od wału w Leffrinckoucke, w strefie wydmowej przy bunkrach, kite jest dozwolony bez ograniczeń przez cały rok, co jest odpowiedzią na letnie zawężenie Malo do 500-metrowej strefy. Prognozę WSW traktuj podejrzliwie: to wiatr odlądowy, a znoszenie w stronę torów wodnych jest poważne."
+    }
+  },
+  {
+    "name": "Bray-Dunes",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/260",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bray_dunes",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=51.081687,2.519971",
+    "spotInfo": {
+      "type": "Sea, flat to chop at low tide (North Sea)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "5-19°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide sandy beach straight off the seafront, easy parking; ride to the right-hand side facing the sea where there is the most room",
+      "hazards": "Posts marking the bathing zone in summer; blockhouses at the foot of the dunes; shallow water and sandbars at low tide; WSW turns offshore; beach shared with land yachts and walkers all year",
+      "season": "Year-round, best September-May",
+      "description": "The last French beach before the Belgian border and the easy-going end of the Dunkerque coast. The ideal wind runs from southwest (side-shore port tack) to northeast (side-shore starboard tack), so both halves of the wind rose work and the wind is almost always side or side-onshore. The beach is enormous, obstacle-free at low tide and shallow a long way out, which makes it one of the friendlier learning venues in northern France while still delivering proper autumn and winter storms for everyone else.",
+      "llmComment": "Bray-Dunes and Dunkerque-Malo share one forecast picture but not one beach: Bray-Dunes is 10 km further east, has far more space and much lighter summer zoning, so it is the fallback when Malo is boxed in or crowded. Wind quality is best when it stays side to side-on; on a clean NE, N or W day the water is very comfortable. Low tide gives shallow flats a long way out, high tide brings the water up towards the dunes and the blockhouses."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko do krótkiej fali przy odpływie (Morze Północne)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "5-19°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Szeroka piaszczysta plaża prosto z nadmorskiej promenady, łatwy parking; pływaj po prawej stronie plaży patrząc na morze, gdzie jest najwięcej miejsca",
+      "hazards": "Słupki wyznaczające strefę kąpielową latem; bunkry u podnóża wydm; płytka woda i łachy piasku przy odpływie; WSW staje się odlądowy; plaża przez cały rok dzielona z żaglowozami i spacerowiczami",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Ostatnia francuska plaża przed granicą z Belgią i najbardziej wyluzowany koniec wybrzeża Dunkierki. Idealny wiatr idzie od południowego zachodu (side-shore na lewym halsie) po północny wschód (side-shore na prawym halsie), więc obie połowy róży wiatrów działają, a wiatr jest niemal zawsze boczny lub boczno-dopychający. Plaża jest ogromna, przy odpływie wolna od przeszkód i płytka daleko od brzegu, co czyni ją jednym z przyjaźniejszych miejsc do nauki w północnej Francji — a jesienne i zimowe sztormy dostarczają mocnych warunków dla reszty.",
+      "llmComment": "Bray-Dunes i Dunkierka-Malo mają wspólną prognozę, ale nie wspólną plażę: Bray-Dunes leży 10 km dalej na wschód, ma znacznie więcej miejsca i dużo łagodniejsze letnie ograniczenia, więc jest alternatywą, gdy Malo jest zatłoczone lub zamknięte w wąskiej strefie. Jakość wiatru jest najlepsza, gdy pozostaje boczny lub boczno-dopychający; przy czystym NE, N lub W woda jest bardzo komfortowa. Odpływ daje płycizny daleko od brzegu, przypływ podnosi wodę pod wydmy i bunkry."
+    }
+  },
+  {
+    "name": "Sangatte – Blériot-Plage",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48350",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sangatte",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.945804,1.753713",
+    "spotInfo": {
+      "type": "Sea, long waves (English Channel)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "8-18°C",
+      "experience": "Advanced",
+      "launch": "Seafront parking at Blériot-Plage / Sangatte, sandy beach at the foot of the Cap Blanc-Nez cliffs",
+      "hazards": "Wooden groynes across the beach that are barely visible at high tide - walk the beach and mark them before launching; wind regularly overshoots the forecast and reaches 40 kts; strong tidal current; shipping lane offshore; no beach left at high tide on big coefficients",
+      "season": "September-May",
+      "description": "The windiest spot on the Côte d'Opale and the power-junkie end of it: 40 knots and more is a routine occurrence, and the wind here is systematically stronger than the forecast. It sits at the foot of the Cap Blanc-Nez cliffs, 8 km from Calais, and it is the finish line of the classic 12 km downwinder from Wissant. The waves are long and not very hollow, which makes it a genuine wave-riding venue rather than a chop spot, and southwest is the money direction, arriving side-onshore.",
+      "llmComment": "Size down. The cliffs of Cap Blanc-Nez accelerate the flow so the wind on the water regularly beats the gridded forecast by a wide margin, and 40 kts days are normal here rather than exceptional. The wooden groynes are the real danger: they are almost invisible once the tide covers them, so walk the beach at low water and note where they are before you fly a kite. In a solid SW this is the endpoint of the Wissant-Sangatte downwinder, which needs two cars and a plan, not improvisation."
+    },
+    "spotInfoPL": {
+      "type": "Morze, długie fale (kanał La Manche)",
+      "bestWind": "SW, W, NW, NE",
+      "waterTemp": "8-18°C",
+      "experience": "Zaawansowany",
+      "launch": "Parking przy nadmorskiej promenadzie w Blériot-Plage / Sangatte, piaszczysta plaża u podnóża klifów Cap Blanc-Nez",
+      "hazards": "Drewniane ostrogi w poprzek plaży, ledwo widoczne przy wysokiej wodzie — przejdź plażę i zapamiętaj ich położenie przed startem; wiatr regularnie przekracza prognozę i sięga 40 węzłów; silny prąd pływowy; tor wodny w pobliżu; przy wysokich współczynnikach pływu plaża znika całkowicie",
+      "season": "Wrzesień-Maj",
+      "description": "Najbardziej wietrzny spot Côte d'Opale i jego najmocniejszy koniec: 40 węzłów i więcej to tu rutyna, a wiatr jest systematycznie silniejszy niż prognoza. Leży u podnóża klifów Cap Blanc-Nez, 8 km od Calais, i stanowi metę klasycznego 12-kilometrowego downwindu z Wissant. Fale są długie i niezbyt strome, co czyni to miejsce prawdziwym spotem falowym, a nie chopowym. Południowy zachód to kierunek królewski, wchodzący bocznie z dopychaniem.",
+      "llmComment": "Zejdź z rozmiarem latawca. Klify Cap Blanc-Nez przyspieszają przepływ, więc wiatr na wodzie regularnie bije prognozę siatkową o dużą różnicę, a dni z 40 węzłami są tu normą, nie wyjątkiem. Prawdziwym zagrożeniem są drewniane ostrogi: po zalaniu przez pływ stają się niemal niewidoczne, więc przejdź plażę przy niskiej wodzie i zapamiętaj, gdzie są, zanim rozłożysz latawiec. Przy solidnym SW to meta downwindu Wissant–Sangatte, który wymaga dwóch samochodów i planu, a nie improwizacji."
+    }
+  },
+  {
+    "name": "Le Touquet",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48359",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_touquet",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.514217,1.579111",
+    "spotInfo": {
+      "type": "Sea and estuary, waves and flat water (English Channel)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Seafront beach north of the Aqualud, away from the bathing area; in an offshore E or NE the alternative is the Canche estuary north of town, provided there is enough water",
+      "hazards": "Almost no beach left at high tide, especially in the southern zone where the sea comes close to the buildings; long walk with the gear at low tide; strong tidal current on the ebb; S wind is disturbed by the Pointe de Berck; bathing zones off limits in July and August",
+      "season": "Year-round, best September-May",
+      "description": "A wide Belle Époque resort beach that has been a wind sports institution since the days of sand yachting. To ride on the sea side the wind needs to sit between southwest and northwest; a slightly west-leaning south is workable, a straight south is dirtied by the Pointe de Berck, and anything from the east means moving to the Canche estuary instead. The north end, in the Baie de Canche, has excellent flat water behind the sand spit with waves breaking in front of it - two very different sessions within one spot.",
+      "llmComment": "Plan around the tide, not the wind window. At high water the beach nearly vanishes, particularly in front of the town, and at low water you carry your gear a long way to reach the sea. The best waves come on W, SW or NW with an outgoing tide, but that is also when the current runs hardest. If the forecast is E or NE the seafront is offshore and unusable - the Canche estuary north of town is the answer, and it only works with enough water in it. Typical kite sizes are 7-9 m in winter and 10 m and up in summer."
+    },
+    "spotInfoPL": {
+      "type": "Morze i estuarium, fale i płaska woda (kanał La Manche)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "8-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plaża na północ od Aqualud, z dala od strefy kąpielowej; przy odlądowym E lub NE alternatywą jest estuarium Canche na północ od miasta, o ile jest w nim dość wody",
+      "hazards": "Przy pełni morza plaża praktycznie znika, zwłaszcza w części południowej, gdzie morze podchodzi pod zabudowę; długi marsz ze sprzętem przy odpływie; silny prąd pływowy przy odpływie; wiatr z S jest zaburzony przez Pointe de Berck; strefy kąpielowe wyłączone w lipcu i sierpniu",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Szeroka plaża kurortu z epoki belle époque, będąca instytucją sportów wiatrowych od czasów żaglowozów. Żeby pływać od strony morza, wiatr musi mieścić się między południowym zachodem a północnym zachodem; południowy z domieszką zachodu da się wykorzystać, czysty południowy jest brudzony przez Pointe de Berck, a wszystko ze wschodu oznacza przeniesienie się do estuarium Canche. Północny kraniec, w Baie de Canche, oferuje świetną płaską wodę za mierzeją i fale łamiące się przed nią — dwie zupełnie różne sesje w jednym miejscu.",
+      "llmComment": "Planuj wokół pływu, nie wokół okna wiatrowego. Przy pełni morza plaża niemal znika, szczególnie przed miastem, a przy odpływie niesiesz sprzęt bardzo daleko. Najlepsze fale przychodzą przy W, SW lub NW podczas opadającej wody, ale wtedy też prąd płynie najmocniej. Jeśli prognoza pokazuje E lub NE, plaża jest odlądowa i bezużyteczna — odpowiedzią jest estuarium Canche na północ od miasta, które działa tylko przy odpowiednim poziomie wody. Typowe rozmiary latawców to 7-9 m zimą i 10 m wzwyż latem."
+    }
+  },
+  {
+    "name": "Berck – Baie d'Authie",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48361",
+    "windguruFallbackUrl": "https://www.windguru.cz/1061",
+    "windfinderUrl": "https://www.windfinder.com/forecast/berck-sur-mer",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.408509,1.561862",
+    "spotInfo": {
+      "type": "Sea and bay, flat at low tide and open sea at high tide (English Channel)",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "La Grande Plage from Parking Terminus in a northerly or Parking Saint-Nicolas in a southerly; the Baie d'Authie is reached from the nautical base slipway at the end of rue des Raisins",
+      "hazards": "Shorebreak on entry at high tide; strong current in the Baie d'Authie, especially on the ebb; the nautical base slipway is unusable above roughly 7 m of tide with swell breaking on it; mussel bouchot farm near Parking Terminus; summer bathing zones in front of the town centres",
+      "season": "September-May",
+      "description": "Berck gives two different spots on one forecast. On the Grande Plage, low tide opens large harmless baïnes along the shore with flat water inside them - beginner-friendly and rideable for about two and a half hours - while high tide turns the same beach into open sea with 300 to 400 m of sand still left between the water and the dike. Around the corner, the Baie d'Authie is a bump-and-jump venue where small waves enter the bay and a west wind gets a cape effect that accelerates it. The sandbank alignment with the dominant southwest gives a 1.5 km run that makes it a known speed spot.",
+      "llmComment": "This is a tide spot before it is a wind spot. On the Grande Plage the low-tide baïnes are the flat-water window and last roughly two and a half hours; at high tide it becomes an open-sea beach with a shore break on entry, which is why it reads as intermediate-plus rather than beginner. In the Baie d'Authie the launch is the weak link: the nautical base slipway becomes unusable once the tide exceeds about 7 m and swell breaks on it, while below 8 m of water the bay fills with sandbanks that give long runs but carry a strong current. Choose the car park by wind direction - Terminus in a northerly, Saint-Nicolas in a southerly."
+    },
+    "spotInfoPL": {
+      "type": "Morze i zatoka, płasko przy odpływie i otwarte morze przy przypływie (kanał La Manche)",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "8-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "La Grande Plage z Parking Terminus przy wietrze północnym lub Parking Saint-Nicolas przy południowym; do Baie d'Authie dojście ze slipu bazy żeglarskiej na końcu rue des Raisins",
+      "hazards": "Przybój przy wejściu do wody podczas przypływu; silny prąd w Baie d'Authie, zwłaszcza przy odpływie; slip bazy żeglarskiej nie do użytku powyżej około 7 m pływu, gdy załamuje się na nim fala; hodowla omułków przy Parking Terminus; letnie strefy kąpielowe przed centrami miejscowości",
+      "season": "Wrzesień-Maj",
+      "description": "Berck daje dwa różne spoty na jednej prognozie. Na Grande Plage odpływ otwiera duże, nieszkodliwe baïnes wzdłuż brzegu z płaską wodą w środku — przyjazne początkującym i pływalne przez jakieś dwie i pół godziny — podczas gdy przypływ zamienia tę samą plażę w otwarte morze, wciąż z 300-400 m piasku między wodą a wałem. Za rogiem Baie d'Authie to teren bump-and-jump, gdzie do zatoki wchodzą małe fale, a wiatr zachodni dostaje efekt przylądka, który go przyspiesza. Ustawienie łach piasku względem dominującego SW daje 1,5-kilometrowy tor, który uczynił z tego miejsca znany spot prędkościowy.",
+      "llmComment": "To spot pływowy, zanim jest spotem wiatrowym. Na Grande Plage baïnes przy niskiej wodzie to okno płaskiej wody trwające około dwóch i pół godziny; przy pełni morza plaża staje się otwartym morzem z przybojem przy wejściu, dlatego poziom to raczej średniozaawansowany plus niż początkujący. W Baie d'Authie słabym punktem jest wejście do wody: slip bazy żeglarskiej przestaje działać, gdy pływ przekracza około 7 m i załamuje się na nim fala, natomiast poniżej 8 m wody zatoka wypełnia się łachami dającymi długie tory, ale niosącymi silny prąd. Parking dobieraj według kierunku wiatru — Terminus przy północnym, Saint-Nicolas przy południowym."
+    }
+  },
+  {
+    "name": "Le Crotoy – Baie de Somme",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/162",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_crotoy",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.216569,1.624047",
+    "spotInfo": {
+      "type": "Bay, flat to light chop (Baie de Somme)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "6-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Beach at Le Crotoy, launching at high tide only; the beach is small when the water is up and everyone rigs at once",
+      "hazards": "The sea retreats several hundred metres at low tide, giving a window of roughly 2 h on small coefficients and 4 h on big ones; kitesurfing is banned inside the Baie de Somme nature reserve - do not pass the yellow buoys; riding in front of the built-up seafront is also banned; slowly uncovering sandbanks on the ebb; E, SE and NE are offshore and strongly discouraged; busy at weekends and in summer",
+      "season": "Year-round, best March-October",
+      "description": "A large, shallow, flat-to-slightly-choppy body of water at the mouth of the Baie de Somme, about two and a quarter hours from Paris and one of the friendliest flat-water venues in northern France. The relative flatness suits both learning and freestyle practice. The best directions are southwest, west or northwest; in a northwesterly the wind blows towards the head of the bay, which is the reassuring option if something goes wrong. North and south are less advisable, with irregular wind and stronger current.",
+      "llmComment": "You ride here at high tide or not at all - the sea withdraws several hundred metres, leaving a window of about 2 hours on small tidal coefficients and up to 4 hours on big ones, with a recommended coefficient between 60 and 90. The Baie de Somme is a national nature reserve with birds and seals, and kitesurfing inside it is forbidden: the yellow buoys mark the boundary and they are enforced. The launch is the pinch point, since the high-tide beach is small and everyone hits the water in the same half hour. The local school alternates between Cayeux-sur-Mer at low tide and Le Crotoy at high tide, which is the pattern to copy."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płasko do lekkiej fali (Baie de Somme)",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "6-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Plaża w Le Crotoy, start wyłącznie przy wysokiej wodzie; przy pełni morza plaża jest niewielka i wszyscy rozkładają się naraz",
+      "hazards": "Przy odpływie morze cofa się o kilkaset metrów, dając okno około 2 h przy niskich współczynnikach pływu i 4 h przy wysokich; kitesurfing jest zakazany w rezerwacie przyrody Baie de Somme — nie wypływaj za żółte boje; zakaz pływania przed zabudowaną częścią nabrzeża; wolno odsłaniające się łachy piasku przy odpływie; E, SE i NE są odlądowe i zdecydowanie odradzane; tłoczno w weekendy i latem",
+      "season": "Cały rok, najlepiej Marzec-Październik",
+      "description": "Duży, płytki akwen o wodzie płaskiej lub lekko pofalowanej u ujścia Baie de Somme, jakieś dwie i ćwierć godziny od Paryża i jedno z najprzyjaźniejszych miejsc z płaską wodą w północnej Francji. Względna gładkość sprzyja zarówno nauce, jak i ćwiczeniu freestyle'u. Najlepsze kierunki to SW, W lub NW; przy północno-zachodnim wiatr wieje w stronę głębi zatoki, co jest uspokajającą opcją, gdy coś pójdzie nie tak. Wiatry N i S są mniej wskazane — nierówne, z silniejszym prądem.",
+      "llmComment": "Pływa się tu przy wysokiej wodzie albo wcale — morze cofa się o kilkaset metrów, zostawiając okno około 2 godzin przy niskich współczynnikach pływu i do 4 godzin przy wysokich, przy zalecanym współczynniku między 60 a 90. Baie de Somme to rezerwat przyrody z ptakami i fokami, a kitesurfing w jego granicach jest zakazany: żółte boje wyznaczają granicę i jest ona egzekwowana. Wąskim gardłem jest start, bo plaża przy wysokiej wodzie jest mała, a wszyscy wchodzą na wodę w tym samym półgodzinnym oknie. Miejscowa szkoła pracuje na przemian w Cayeux-sur-Mer przy odpływie i w Le Crotoy przy przypływie — to wzorzec do naśladowania."
+    }
+  },
+  {
+    "name": "Le Havre – Sainte-Adresse",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/208",
+    "windfinderUrl": "https://www.windfinder.com/forecast/le_havre",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.506199,0.071640",
+    "spotInfo": {
+      "type": "Sea, chop and waves (Seine estuary mouth)",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "8-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Shingle and sand beach below the Cap de la Hève at Sainte-Adresse, north of the Le Havre seafront promenade",
+      "hazards": "Pebble beach that is hard on gear and on landings; very little beach left at high tide; commercial shipping traffic into Le Havre offshore; strong tidal current at the Seine estuary mouth; wind shadow and turbulence from the Cap de la Hève cliff in a northerly",
+      "season": "September-May",
+      "description": "The city spot of Normandy, sitting where the Seine estuary opens into the Channel under the cliff of the Cap de la Hève. Westerly depressions deliver the wind and the water is chop turning to waves as the tide fills, with the long shingle beach of Sainte-Adresse giving the cleanest angle north of the busy Le Havre seafront. It is an urban, easy-access session rather than a wilderness one - which is the point, since the wind here arrives on short notice and the beach is ten minutes from the city centre.",
+      "llmComment": "This is a high-tide, cliff-shadowed spot: the beach is shingle rather than sand, so landings hurt and there is very little of it left when the water is up. The Cap de la Hève sits immediately north, so a northerly arrives turbulent and shadowed - the useful window is really SW through W to NW. The Seine estuary mouth carries a strong tidal current and heavy commercial shipping, so staying inshore of the traffic matters more here than at the open beaches further west."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i fale (ujście Sekwany)",
+      "bestWind": "SW, W, NW, N",
+      "waterTemp": "8-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Kamienisto-piaszczysta plaża pod Cap de la Hève w Sainte-Adresse, na północ od promenady Le Havre",
+      "hazards": "Otoczakowa plaża, nieprzyjazna dla sprzętu i lądowania; przy pełni morza zostaje bardzo mało plaży; ruch statków handlowych do portu Le Havre; silny prąd pływowy u ujścia Sekwany; zawietrze i turbulencje od klifu Cap de la Hève przy wietrze północnym",
+      "season": "Wrzesień-Maj",
+      "description": "Miejski spot Normandii, położony tam, gdzie ujście Sekwany otwiera się na kanał La Manche pod klifem Cap de la Hève. Wiatr przynoszą niże z zachodu, a woda to krótka fala przechodząca w fale wraz z przypływem; długa otoczakowa plaża Sainte-Adresse daje najczystszy kąt na północ od ruchliwej promenady Le Havre. To sesja miejska i łatwo dostępna, a nie wyprawa na odludzie — i o to chodzi, bo wiatr pojawia się tu z krótkim wyprzedzeniem, a plaża leży dziesięć minut od centrum.",
+      "llmComment": "To spot na wysoką wodę, ocieniony przez klif: plaża jest otoczakowa, a nie piaszczysta, więc lądowanie boli, a przy pełni morza zostaje jej niewiele. Cap de la Hève leży bezpośrednio na północ, więc wiatr północny przychodzi turbulentny i zawietrzny — użyteczne okno to realnie SW przez W do NW. Ujście Sekwany niesie silny prąd pływowy i intensywny ruch statków handlowych, więc trzymanie się bliżej brzegu niż tor wodny ma tu większe znaczenie niż na otwartych plażach dalej na zachód."
+    }
+  },
+  {
+    "name": "Ouistreham – Riva Bella",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/163",
+    "windfinderUrl": "https://www.windfinder.com/forecast/ouistreham",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.283771,-0.256162",
+    "spotInfo": {
+      "type": "Sea, flat at low tide and waves at high tide (Baie de Seine)",
+      "bestWind": "NE, N, NW, W",
+      "waterTemp": "8-19°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long flat sandy beach at Riva Bella west of the Orne canal entrance, with parking on the seafront",
+      "hazards": "Busy ferry and canal traffic at the Ouistreham lock entrance just to the east; strong lateral current with the tide; S wind is side-off; summer bathing zones; long walk to the water on big low tides",
+      "season": "Year-round, best March-November",
+      "description": "The closest sea to Caen and the most convenient spot in Calvados, with parking, showers and cafés right behind a wide sandy beach. The tide turns over every six hours and completely changes the water: waves at high tide, flat sand-bottom water at low tide with baïnes forming along the shore. A northeast is the beginner-friendly direction and a northwest gives the strongest, if gustier, sessions; a southerly is side-off and best avoided. Just east across the Orne, Merville-Franceville is the region's dedicated kite beach and the usual overflow.",
+      "llmComment": "Aim for a tidal coefficient of at least 70 - on small coefficients the water barely moves and the flat baïnes never form. The reference beach for kiting in Calvados is actually Merville-Franceville, just across the Orne estuary in the Baie de Sallenelles, which is the only beach in the department reserved for kitesurfing all year; Ouistreham itself is the convenient, infrastructure-heavy option and the two share one forecast. Keep clear of the canal entrance to the east, where the Portsmouth ferry and all the Caen canal traffic passes."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko przy odpływie i fale przy przypływie (Baie de Seine)",
+      "bestWind": "NE, N, NW, W",
+      "waterTemp": "8-19°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Długa, płaska piaszczysta plaża Riva Bella na zachód od wejścia do kanału Orne, z parkingiem przy promenadzie",
+      "hazards": "Intensywny ruch promów i jednostek przy śluzie Ouistreham tuż na wschodzie; silny prąd poprzeczny wraz z pływem; wiatr z S jest side-off; letnie strefy kąpielowe; długi marsz do wody przy dużych odpływach",
+      "season": "Cały rok, najlepiej Marzec-Listopad",
+      "description": "Najbliższe morze dla Caen i najwygodniejszy spot w Calvados — parking, prysznice i kawiarnie tuż za szeroką piaszczystą plażą. Pływ zmienia się co sześć godzin i całkowicie przeobraża wodę: fale przy przypływie, płaska woda nad piaszczystym dnem przy odpływie, z baïnes tworzącymi się wzdłuż brzegu. Północno-wschodni to kierunek przyjazny początkującym, północno-zachodni daje najmocniejsze, choć bardziej porywiste sesje; południowy jest side-off i lepiej go unikać. Tuż na wschód, za rzeką Orne, Merville-Franceville jest dedykowaną plażą kite'ową regionu i naturalnym przelewem.",
+      "llmComment": "Celuj we współczynnik pływu co najmniej 70 — przy niskich współczynnikach woda ledwo się rusza, a płaskie baïnes w ogóle się nie tworzą. Referencyjną plażą do kite'a w Calvados jest w rzeczywistości Merville-Franceville, po drugiej stronie ujścia Orne w Baie de Sallenelles, jedyna plaża w departamencie zarezerwowana dla kitesurfingu przez cały rok; samo Ouistreham to opcja wygodna i dobrze zagospodarowana, a oba miejsca dzielą jedną prognozę. Trzymaj się z dala od wejścia do kanału na wschodzie, gdzie przepływa prom do Portsmouth i cały ruch kanału do Caen."
+    }
+  },
+  {
+    "name": "Siouville-Hague",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/186",
+    "windfinderUrl": "https://www.windfinder.com/forecast/siouville",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.557978,-1.854344",
+    "spotInfo": {
+      "type": "Sea, waves (Atlantic swell on the west Cotentin)",
+      "bestWind": "W, SW, N",
+      "waterTemp": "9-17°C",
+      "experience": "Advanced",
+      "launch": "Wide sandy beach with parking behind the dune; the spot is enormous so there is room for everyone",
+      "hazards": "Devastating shorebreak, especially violent at low tide; powerful waves and currents on the exposed west Cotentin coast; strong tidal streams in the Alderney Race offshore; cold water year-round",
+      "season": "September-May",
+      "description": "The most respected wave spot in Normandy. Exposed straight to Atlantic swell on the west coast of the Cotentin, Siouville shows its best face in a west to southwest side-onshore, when the waves can be powerful and well formed, especially around mid-tide. In summer a north thermal turns it into a relaxed side-on starboard-tack session. The beach is huge, which keeps it uncrowded, but the combination of waves and current means it is a spot for confirmed and expert riders rather than a place to progress.",
+      "llmComment": "Mid-tide is the sweet spot: the waves are best formed then, and the shorebreak at low tide is genuinely dangerous rather than merely awkward. Two very different regimes share one forecast here - the winter and autumn W/SW depressions, which is when Siouville earns its wave reputation, and the summer north thermal, which is side-on starboard and far more relaxed. Water stays cold all year on this coast; locals ride a 5/3 with hood, boots and gloves in winter."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale (atlantycka martwa fala na zachodnim Cotentin)",
+      "bestWind": "W, SW, N",
+      "waterTemp": "9-17°C",
+      "experience": "Zaawansowany",
+      "launch": "Szeroka piaszczysta plaża z parkingiem za wydmą; spot jest ogromny, więc miejsca starcza dla wszystkich",
+      "hazards": "Druzgocący przybój, szczególnie gwałtowny przy odpływie; potężne fale i prądy na wystawionym zachodnim wybrzeżu Cotentin; silne prądy pływowe w Raz Blanchard; zimna woda przez cały rok",
+      "season": "Wrzesień-Maj",
+      "description": "Najbardziej ceniony spot falowy Normandii. Wystawiony wprost na atlantycką martwą falę na zachodnim wybrzeżu półwyspu Cotentin, Siouville pokazuje najlepsze oblicze przy zachodnim lub południowo-zachodnim wietrze bocznym z dopychaniem, gdy fale bywają potężne i dobrze uformowane, zwłaszcza wokół średniej wody. Latem termik z północy zamienia go w spokojną sesję side-on na prawym halsie. Plaża jest ogromna, więc nigdy nie jest tłoczno, ale połączenie fal i prądów sprawia, że to miejsce dla riderów doświadczonych, a nie do robienia postępów.",
+      "llmComment": "Średnia woda to najlepszy moment: fale są wtedy najlepiej uformowane, a przybój przy odpływie jest naprawdę niebezpieczny, a nie tylko niewygodny. Jedna prognoza obsługuje tu dwa zupełnie różne reżimy — jesienno-zimowe niże z W/SW, dzięki którym Siouville zasłużyło na falową renomę, oraz letni termik z północy, boczny na prawym halsie i znacznie spokojniejszy. Woda na tym wybrzeżu pozostaje zimna cały rok; miejscowi pływają zimą w piance 5/3 z kapturem, butami i rękawicami."
+    }
+  },
+  {
+    "name": "Barneville-Carteret",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48401",
+    "windfinderUrl": "https://www.windfinder.com/forecast/carteret",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.367801,-1.764703",
+    "spotInfo": {
+      "type": "Sea, chop and small waves (west Cotentin)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "9-17°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Barneville-Plage, a long sandy beach backed by dunes with parking at the seafront",
+      "hazards": "Strong tidal current at the Gerfleur estuary and around the Cap de Carteret; big tidal range; rocks at the northern end below the cape; summer bathing zones",
+      "season": "Year-round, best September-May",
+      "description": "One of the most popular spots on the Cotentin's west coast, with a grand setting under the Cap de Carteret and steady force 3 to 5 winds. The water is a little more technical than the wide-open beaches to the south, which is exactly why riders who want a challenge come here. Lower Normandy has the advantage that you can generally sail without watching the tide as closely as further up the Channel coast, so the usable window is long.",
+      "llmComment": "The cape at the north end is the local variable: it shelters and bends the wind in a northerly and puts rocks in the water at that end of the beach, so the clean sailing area is the southern two-thirds towards Barneville-Plage. The Gerfleur estuary between Barneville and Carteret runs a strong tidal stream on both the flood and the ebb. Compared with Siouville an hour north this is the softer option - chop and small waves rather than a serious wave spot."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i małe fale (zachodni Cotentin)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "9-17°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Barneville-Plage, długa piaszczysta plaża otoczona wydmami, z parkingiem przy promenadzie",
+      "hazards": "Silny prąd pływowy przy ujściu Gerfleur i wokół Cap de Carteret; duża amplituda pływów; skały na północnym krańcu pod przylądkiem; letnie strefy kąpielowe",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Jeden z najpopularniejszych spotów zachodniego wybrzeża Cotentin, z okazałą scenerią pod Cap de Carteret i stabilnym wiatrem 3-5 w skali Beauforta. Woda jest nieco bardziej techniczna niż na szerokich, otwartych plażach na południu — i właśnie dlatego przyjeżdżają tu riderzy szukający wyzwania. Dolna Normandia ma tę zaletę, że można tu pływać, nie pilnując pływu tak ściśle jak wyżej wzdłuż kanału, więc okno pływania jest długie.",
+      "llmComment": "Zmienną lokalną jest przylądek na północnym krańcu: przy wietrze północnym osłania i zakrzywia strumień, a w wodzie po tej stronie plaży leżą skały, więc czysty akwen to południowe dwie trzecie w stronę Barneville-Plage. Ujście Gerfleur między Barneville a Carteret niesie silny prąd pływowy zarówno przy przypływie, jak i odpływie. W porównaniu z Siouville godzinę na północ to opcja łagodniejsza — krótka fala i małe fale zamiast poważnego spotu falowego."
+    }
+  },
+  {
+    "name": "Keremma – Tréflez",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/194",
+    "windfinderUrl": "https://www.windfinder.com/forecast/keremma",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=48.643137,-4.252834",
+    "spotInfo": {
+      "type": "Sea, chop and waves (north Finistère)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "9-18°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Long wild sandy beach in front of the Keremma dunes, parking at the dune access tracks",
+      "hazards": "Rocks and reefs at both ends of the bay uncovered at low tide; strong tidal current along the north Finistère coast; protected dune site - stay on the marked paths and do not rig in the dune grass; no lifeguards outside high summer",
+      "season": "Year-round, best September-May",
+      "description": "A wide, wild beach in front of the protected Keremma dunes on the north coast of Finistère, and the reference kite venue of north Brittany alongside Lancieux and Saint-Michel-en-Grève. The bay faces north, so the prevailing west and southwest give side-shore conditions with chop and small waves, while a northerly turns it into an onshore wave beach. The setting is a nature site with no development at all, which is the attraction and also the constraint: everything is carry-in from the dune car parks.",
+      "llmComment": "This is a dune nature reserve, not a resort beach: park at the marked dune accesses, carry the gear in and keep off the dune vegetation. The bay is bounded by reefs at both ends that only show at low tide, so scout the water line before your first session. A north wind is fully onshore and puts waves on the beach; west and southwest are the side-shore working directions."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i fale (północny Finistère)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "9-18°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Długa, dzika piaszczysta plaża przed wydmami Keremma, parking przy drogach dojazdowych do wydm",
+      "hazards": "Skały i rafy na obu krańcach zatoki odsłaniane przy odpływie; silny prąd pływowy wzdłuż północnego wybrzeża Finistère; chroniony teren wydmowy — trzymaj się wyznaczonych ścieżek i nie rozkładaj sprzętu w trawie wydmowej; brak ratowników poza pełnią lata",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Szeroka, dzika plaża przed chronionymi wydmami Keremma na północnym wybrzeżu Finistère i referencyjny spot kite'owy północnej Bretanii, obok Lancieux i Saint-Michel-en-Grève. Zatoka zwrócona jest na północ, więc dominujące W i SW dają warunki boczne z krótką falą i małymi falami, a wiatr północny zamienia ją w plażę falową z wiatrem dopychającym. To teren przyrodniczy zupełnie pozbawiony zabudowy — w tym tkwi urok i zarazem ograniczenie: wszystko trzeba przynieść z parkingów przy wydmach.",
+      "llmComment": "To rezerwat wydmowy, a nie plaża kurortowa: parkuj przy oznaczonych zjazdach do wydm, przynieś sprzęt na piechotę i nie wchodź w roślinność wydmową. Zatokę zamykają rafy na obu krańcach, widoczne tylko przy odpływie, więc przed pierwszą sesją obejdź linię wody. Wiatr północny jest w pełni dopychający i stawia fale na plaży; W i SW to działające kierunki boczne."
+    }
+  },
+  {
+    "name": "Pentrez – Baie de Douarnenez",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48456",
+    "windfinderUrl": "https://www.windfinder.com/forecast/pentrez_beach",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=48.189526,-4.300772",
+    "spotInfo": {
+      "type": "Sea, chop and waves in a sheltered bay (Baie de Douarnenez)",
+      "bestWind": "W, SW, S, NW",
+      "waterTemp": "10-18°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long sandy beach at Pentrez with parking right behind it, plenty of room to rig at mid and low tide",
+      "hazards": "Big tidal range, very little beach left at high tide; rocks at the Saint-Nic end; wind shadow from the Ménez-Hom ridge in an easterly; shore break in a strong onshore",
+      "season": "Year-round, best April-October",
+      "description": "A long open beach on the north shore of the Baie de Douarnenez under the Ménez-Hom, one of Brittany's most reliable thermal hills. The bay is partly sheltered from the full Atlantic swell, so the water is chop and manageable waves rather than the heavy surf of the outer coast, which makes Pentrez a good all-levels alternative when La Torche is too big. West through south is the working sector and the beach is wide enough at mid tide for comfortable launching.",
+      "llmComment": "The Baie de Douarnenez filters the Atlantic swell, so this is the calmer sibling of La Torche 40 km south - the answer on a day when the outer coast is out of control. The Ménez-Hom ridge behind the beach blocks and turns any easterly component, so ignore E and NE forecasts here. High tide leaves very little beach, so plan the session for mid or low water."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i fale w osłoniętej zatoce (Baie de Douarnenez)",
+      "bestWind": "W, SW, S, NW",
+      "waterTemp": "10-18°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża w Pentrez z parkingiem tuż za nią, dużo miejsca do rozłożenia sprzętu przy średniej i niskiej wodzie",
+      "hazards": "Duża amplituda pływów, przy pełni morza zostaje bardzo mało plaży; skały po stronie Saint-Nic; zawietrze od grzbietu Ménez-Hom przy wietrze wschodnim; przybój przy silnym wietrze dopychającym",
+      "season": "Cały rok, najlepiej Kwiecień-Październik",
+      "description": "Długa, otwarta plaża na północnym brzegu Baie de Douarnenez pod Ménez-Hom, jednym z najpewniejszych wzgórz termicznych Bretanii. Zatoka jest częściowo osłonięta od pełnej atlantyckiej martwej fali, więc woda to krótka fala i umiarkowane fale, a nie ciężki surf zewnętrznego wybrzeża — dzięki temu Pentrez jest dobrą alternatywą dla wszystkich poziomów, gdy La Torche jest za duże. Sektor roboczy to zachód przez południe, a plaża przy średniej wodzie jest wystarczająco szeroka do wygodnego startu.",
+      "llmComment": "Baie de Douarnenez filtruje atlantycką martwą falę, więc to spokojniejszy brat La Torche leżącego 40 km na południe — odpowiedź na dzień, gdy zewnętrzne wybrzeże jest poza kontrolą. Grzbiet Ménez-Hom za plażą blokuje i skręca każdą składową wschodnią, więc prognozy E i NE można tu zignorować. Przy pełni morza plaży zostaje niewiele, więc planuj sesję na średnią lub niską wodę."
+    }
+  },
+  {
+    "name": "La Torche",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/218",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_torche",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.836658,-4.354351",
+    "spotInfo": {
+      "type": "Sea, powerful Atlantic waves (Baie d'Audierne)",
+      "bestWind": "S, SE, NW, W",
+      "waterTemp": "10-18°C",
+      "experience": "Advanced",
+      "launch": "Southern bay of Pors Carn, which has a designated kite zone in summer; extra parking at the southern end known as Le Petit Bois. Tronoën, 1 km north, is the usual kite alternative with a huge beach and no tide restriction",
+      "hazards": "Strong outgoing current against the point; the right-hand side of the bay is for accomplished wave riders only; rocks midway along the southern beach that are covered at high tide; wind shadows well offshore make the wind technical; heavy surfer traffic - kiters work around them; southern part off limits in summer",
+      "season": "September-May",
+      "description": "A legendary World Cup beach that Robby Naish called a really difficult spot. The bay is split in two by a pronounced rocky outcrop, from where you can watch double-mast-high waves roll in. Many depressions pass over this corner of Finistère, which makes it very reliable for wind - the best direction is south to southeast, and it is very windy in winter, while summer usually settles into a northwest thermal breeze. This is the surf spot of the area first and a kite spot second, so etiquette matters as much as skill.",
+      "llmComment": "If in doubt, do not ride La Torche itself - go to Tronoën, 1 km north, which is exposed west, works from north through west to south, has a huge beach and no tide restriction. That is what most kiters actually use. At La Torche proper, stick to the southern bay of Pors Carn; the right-hand side of the bay has the most radical surf and the most extreme current, especially near the jutting cliff. The rocks midway along the southern beach are the main hazard because they are covered at high tide. The wind here is genuinely technical, with serious wind shadows far offshore, and local reports say the nearby wind station reads noticeably lower than the actual wind on site. Le Letty at Bénodet is the flat-water backup: a small high-tide lagoon."
+    },
+    "spotInfoPL": {
+      "type": "Morze, potężne fale atlantyckie (Baie d'Audierne)",
+      "bestWind": "S, SE, NW, W",
+      "waterTemp": "10-18°C",
+      "experience": "Zaawansowany",
+      "launch": "Południowa zatoka Pors Carn z wyznaczoną latem strefą kite; dodatkowy parking na południowym krańcu, zwany Le Petit Bois. Tronoën, 1 km na północ, to typowa alternatywa kite'owa z ogromną plażą i bez ograniczeń pływowych",
+      "hazards": "Silny prąd wychodzący przy cyplu; prawa strona zatoki tylko dla wprawnych riderów falowych; skały w połowie długości południowej plaży, zalewane przy wysokiej wodzie; zawietrza daleko od brzegu czynią wiatr technicznym; duży ruch surferów — kiterzy muszą się do nich dostosować; południowa część zamknięta latem",
+      "season": "Wrzesień-Maj",
+      "description": "Legendarna plaża Pucharu Świata, którą Robby Naish nazwał naprawdę trudnym spotem. Zatokę dzieli na dwie części wyrazisty skalny występ, z którego można obserwować fale wysokości podwójnego masztu. Nad ten zakątek Finistère przechodzi wiele niżów, co czyni go bardzo pewnym pod względem wiatru — najlepszy kierunek to południowy i południowo-wschodni, a zimą wieje bardzo mocno; latem zwykle ustala się bryza termiczna z północnego zachodu. To przede wszystkim spot surfowy, a dopiero potem kite'owy, więc kultura na wodzie liczy się tu tak samo jak umiejętności.",
+      "llmComment": "W razie wątpliwości nie pływaj na samym La Torche — jedź do Tronoën, 1 km na północ, wystawionego na zachód, działającego od północy przez zachód po południe, z ogromną plażą i bez ograniczeń pływowych. To właśnie tam pływa większość kiterów. Na samym La Torche trzymaj się południowej zatoki Pors Carn; prawa strona zatoki ma najbardziej radykalny surf i najsilniejszy prąd, zwłaszcza przy wystającym klifie. Głównym zagrożeniem są skały w połowie południowej plaży, bo przy wysokiej wodzie są zakryte. Wiatr jest tu naprawdę techniczny, z poważnymi zawietrzami daleko od brzegu, a lokalne relacje mówią, że pobliska stacja pomiarowa wskazuje zauważalnie mniej niż rzeczywisty wiatr na spocie. Le Letty w Bénodet to zapasowa opcja z płaską wodą: mała laguna działająca przy wysokiej wodzie."
+    }
+  },
+  {
+    "name": "Guidel – Plage de la Falaise",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48471",
+    "windguruFallbackUrl": "https://www.windguru.cz/174",
+    "windfinderUrl": "https://www.windfinder.com/forecast/guidel-plages",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.764316,-3.525926",
+    "spotInfo": {
+      "type": "Sea, waves and chop (south Brittany)",
+      "bestWind": "SW, S, SE, W",
+      "waterTemp": "11-19°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Plage de la Falaise at Guidel-Plages, long north-south facing beach with parking at the beach access",
+      "hazards": "Strong currents at the mouth of the Laïta river just west of the beach; rocks at the northern end; summer bathing zones and surfer traffic; medium to long west and southwest swell",
+      "season": "Year-round, best September-May",
+      "description": "The main kite beach of the Lorient coast, on long north-south facing sand between the Laïta estuary and Fort-Bloqué. It works from southwest through to southeast and delivers a medium to long westerly and southwesterly swell, which makes it a freeride and wave venue rather than a flat-water one. Fort-Bloqué, a few kilometres east at Ploemeur, covers the west-to-south sector when Guidel is too shadowed or too crowded.",
+      "llmComment": "The Laïta estuary immediately west of the beach runs a serious current on the ebb - keep east of it. Guidel and Fort-Bloqué at Ploemeur share one forecast and split the wind rose between them: Guidel works SW through SE, Fort-Bloqué covers W through S, so on a marginal angle it is worth driving the few kilometres between them."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale i krótka fala (południowa Bretania)",
+      "bestWind": "SW, S, SE, W",
+      "waterTemp": "11-19°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Plage de la Falaise w Guidel-Plages, długa plaża o osi północ-południe, z parkingiem przy zejściu na plażę",
+      "hazards": "Silne prądy u ujścia rzeki Laïta tuż na zachód od plaży; skały na północnym krańcu; letnie strefy kąpielowe i ruch surferów; średnia i długa martwa fala z zachodu i południowego zachodu",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Główna plaża kite'owa wybrzeża Lorient, na długim, zorientowanym północ-południe piasku między ujściem Laïty a Fort-Bloqué. Działa od południowego zachodu po południowy wschód i dostarcza średniej oraz długiej martwej fali z zachodu i południowego zachodu, co czyni ją miejscem do freeride'u i pływania w falach, a nie po płaskiej wodzie. Fort-Bloqué, kilka kilometrów na wschód w Ploemeur, obsługuje sektor od zachodu po południe, gdy Guidel jest zbyt zawietrzne lub zatłoczone.",
+      "llmComment": "Ujście Laïty bezpośrednio na zachód od plaży niesie przy odpływie poważny prąd — trzymaj się na wschód od niego. Guidel i Fort-Bloqué w Ploemeur dzielą jedną prognozę i rozdzielają między siebie różę wiatrów: Guidel działa od SW po SE, Fort-Bloqué od W po S, więc przy granicznym kącie warto przejechać dzielące je kilka kilometrów."
+    }
+  },
+  {
+    "name": "La Turballe – Pen Bron",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48503",
+    "windfinderUrl": "https://www.windfinder.com/forecast/port-de-la-turballe",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=47.303543,-2.512598",
+    "spotInfo": {
+      "type": "Sea, waves and beach break (Loire-Atlantique)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "11-20°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Pen Bron, a west-facing beach between the salt marshes and the pine forest at the southern end of La Turballe's 11 km of sand; Plage des Bretons near the harbour is the alternative",
+      "hazards": "The beach can disappear completely at the public car parks on a big tidal coefficient; heavy shore break at high tide; waves breaking right at the water's edge on Plage des Bretons make entry tricky; salt marsh nature area behind the dune",
+      "season": "Year-round, best September-May",
+      "description": "A wild, uncrowded wave spot facing due west between salt marshes and pine forest, and the best-known of La Turballe's eleven kilometres of beach. In a west or southwest it is a fine session in the middle of nature, with freeride and bump-and-jump conditions running north to the Pointe de Pen Bron and a solid shore break at high tide. Marked depressions produce a disorganised beach break that is good for jumping in a southwest or northwest.",
+      "llmComment": "Two beaches, one forecast, opposite characters. Pen Bron faces due west and is rideable for beginners at low tide on big coefficients but has a heavy shore break when the water is up - and the beach at the public car parks can vanish entirely on a big coefficient. Plage des Bretons near the harbour is harder, with waves breaking right at the shoreline, except in a slightly northerly wind, when the harbour wall shelters the water and it goes completely flat even when it is blowing hard. Check the tidal coefficient before choosing which one to drive to."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale i beach break (Loire-Atlantique)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "11-20°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Pen Bron, plaża zwrócona na zachód między solniskami a lasem sosnowym na południowym krańcu 11 km piasku La Turballe; alternatywą jest Plage des Bretons przy porcie",
+      "hazards": "Przy wysokim współczynniku pływu plaża przy publicznych parkingach może zniknąć całkowicie; ciężki przybój przy wysokiej wodzie; fale łamiące się tuż przy brzegu na Plage des Bretons utrudniają wejście do wody; teren przyrodniczy solnisk za wydmą",
+      "season": "Cały rok, najlepiej Wrzesień-Maj",
+      "description": "Dziki, mało uczęszczany spot falowy zwrócony wprost na zachód, między solniskami a lasem sosnowym — najbardziej znany odcinek jedenastu kilometrów plaż La Turballe. Przy wietrze zachodnim lub południowo-zachodnim to świetna sesja w otoczeniu przyrody, z warunkami freeride i bump-and-jump ciągnącymi się na północ do Pointe de Pen Bron oraz solidnym przybojem przy wysokiej wodzie. Wyraźne niże tworzą nieuporządkowany beach break dobry do skakania przy SW lub NW.",
+      "llmComment": "Dwie plaże, jedna prognoza, przeciwne charaktery. Pen Bron patrzy wprost na zachód i przy odpływie z wysokim współczynnikiem nadaje się dla początkujących, ale przy wysokiej wodzie ma ciężki przybój — a plaża przy publicznych parkingach potrafi wtedy zniknąć zupełnie. Plage des Bretons przy porcie jest trudniejsza, z falami łamiącymi się tuż przy linii brzegu, z wyjątkiem lekko północnego wiatru, gdy falochron portu osłania akwen i woda robi się zupełnie płaska nawet przy mocnym wietrze. Sprawdź współczynnik pływu, zanim zdecydujesz, na którą pojechać."
+    }
+  },
+  {
+    "name": "Saint-Jean-de-Monts",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/190",
+    "windfinderUrl": "https://www.windfinder.com/forecast/saint_jean_de_monts",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.802007,-2.116357",
+    "spotInfo": {
+      "type": "Sea, short wind swell (Vendée)",
+      "bestWind": "W, NW, S, SW",
+      "waterTemp": "11-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Long flat sandy beach, rideable at all tides with room to launch even on big coefficients; parking, tide board and toilets at the sailing school",
+      "hazards": "Kitesurfing forbidden from 1 June to 30 August; noticeable lateral current with the tide; the estacade pier splits the beach - in a W or NW ride to its left facing the sea, in a S or SW to its right; beach users always have priority; windsurfers and surfers to the right of the pier",
+      "season": "September-May",
+      "description": "One of the longest and flattest beaches in the Vendée, rideable at every state of the tide, which is rare on this coast. The swell is wind swell: short, with a fairly low period, and it disappears on the ebb and builds again on the flood. It is an uncrowded freeride, foil, wingfoil and landkite venue with the pier as the only landmark to organise around. Nearby authorised spots are La Davière, Pont d'Yeu and Notre-Dame-de-Monts.",
+      "llmComment": "The summer ban is absolute here: no kitesurfing from 1 June to 30 August, which turns this into an off-season spot. The estacade pier decides which half of the beach to use - to port of it facing the sea in a W or NW, to starboard in a S or SW. Waves build on the flood and vanish on the ebb, so the tide picks the character of the session even though the beach itself is rideable at all states."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala wiatrowa (Wandea)",
+      "bestWind": "W, NW, S, SW",
+      "waterTemp": "11-21°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Długa, płaska piaszczysta plaża, pływalna przy każdym stanie pływu, z miejscem do startu nawet przy wysokich współczynnikach; parking, tablica pływów i toalety przy szkole żeglarskiej",
+      "hazards": "Kitesurfing zakazany od 1 czerwca do 30 sierpnia; wyraźny prąd poprzeczny wraz z pływem; molo estacade dzieli plażę — przy W lub NW pływaj po jego lewej stronie patrząc na morze, przy S lub SW po prawej; plażowicze zawsze mają pierwszeństwo; windsurferzy i surferzy po prawej stronie molo",
+      "season": "Wrzesień-Maj",
+      "description": "Jedna z najdłuższych i najbardziej płaskich plaż Wandei, pływalna przy każdym stanie pływu, co na tym wybrzeżu jest rzadkością. Fala to fala wiatrowa: krótka, o dość niskim okresie, znikająca przy odpływie i budująca się przy przypływie. To mało zatłoczone miejsce do freeride'u, foila, wingfoila i landkite'a, z molem jako jedynym punktem orientacyjnym. Pobliskie dozwolone spoty to La Davière, Pont d'Yeu i Notre-Dame-de-Monts.",
+      "llmComment": "Letni zakaz jest tu bezwzględny: żadnego kitesurfingu od 1 czerwca do 30 sierpnia, co czyni z tego spotu miejsce poza sezonem. Molo estacade decyduje, której połowy plaży używać — na lewo od niego patrząc na morze przy W lub NW, na prawo przy S lub SW. Fale rosną przy przypływie i znikają przy odpływie, więc to pływ nadaje charakter sesji, choć sama plaża jest pływalna przy każdym stanie wody."
+    }
+  },
+  {
+    "name": "La Tranche-sur-Mer",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/721",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_tranche_sur_mer_pays_de_la_loire_france",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.360831,-1.477649",
+    "spotInfo": {
+      "type": "Sea, chop (Vendée)",
+      "bestWind": "SW, W, S",
+      "waterTemp": "11-21°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Several beach accesses along the coastal boulevard, with a marked kite zone outside the bathing season",
+      "hazards": "Baïnes and cross-shore currents - you need to read the beach; summer bathing zones enforced; short choppy water that shakes the board; shared with wingfoilers and surfers on the marked zones",
+      "season": "April-October",
+      "description": "One of the Vendée's best-known wind venues, working in the southwest, west and south sectors in a useful range of roughly 12 to 28 knots. The water is choppy - a short chop that rattles the board rather than a real wave - and the recommended level is intermediate: you should be able to ride upwind and manage your kite on your own. Kitesurf, wingfoil and surf all share the water according to the locally marked zones.",
+      "llmComment": "The usable window is narrower than the beach suggests: roughly force 4 to 7 from SW, W or S, and April to October. Baïnes and the cross-shore currents they produce are the local hazard, so read the beach at low water before launching. There is a marked kite zone outside the bathing season; in season the bathing zones take priority and must be respected."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala (Wandea)",
+      "bestWind": "SW, W, S",
+      "waterTemp": "11-21°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Kilka zejść na plażę wzdłuż nadmorskiego bulwaru, z oznakowaną strefą kite poza sezonem kąpielowym",
+      "hazards": "Baïnes i prądy poprzeczne — trzeba umieć czytać plażę; letnie strefy kąpielowe są egzekwowane; krótka, szarpiąca deskę fala; akwen dzielony z wingfoilerami i surferami według oznakowanych stref",
+      "season": "Kwiecień-Październik",
+      "description": "Jeden z najbardziej znanych wietrznych spotów Wandei, działający w sektorach południowo-zachodnim, zachodnim i południowym w użytecznym zakresie mniej więcej 12-28 węzłów. Woda jest choppy — krótka fala szarpiąca deską, a nie prawdziwa fala — a zalecany poziom to średniozaawansowany: trzeba umieć płynąć pod wiatr i samodzielnie panować nad latawcem. Kitesurfing, wingfoil i surfing dzielą akwen zgodnie z lokalnie oznakowanymi strefami.",
+      "llmComment": "Okno użyteczności jest węższe, niż sugeruje wygląd plaży: mniej więcej 4-7 w skali Beauforta z SW, W lub S, od kwietnia do października. Lokalnym zagrożeniem są baïnes i tworzone przez nie prądy poprzeczne, więc przed startem przeczytaj plażę przy niskiej wodzie. Poza sezonem kąpielowym obowiązuje oznakowana strefa kite; w sezonie pierwszeństwo mają strefy kąpielowe i trzeba ich przestrzegać."
+    }
+  },
+  {
+    "name": "Île de Ré – La Couarde",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48552",
+    "windguruFallbackUrl": "https://www.windguru.cz/500948",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_couarde_sur_mer_ile_de_re",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.200538,-1.400280",
+    "spotInfo": {
+      "type": "Sea, flat to chop over sand (Île de Ré)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "11-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Long south-facing sandy beach at La Couarde-sur-Mer, wide and shallow at mid and low tide, parking behind the dune",
+      "hazards": "Large tidal range with a long walk to the water at low tide; oyster beds and rock platforms at the ends of the beach; summer bathing zones on the busiest beaches; strong current in the Pertuis Breton on spring tides",
+      "season": "April-October",
+      "description": "The classic kite beach of the Île de Ré, on the sheltered southern shore where the sand runs out shallow for hundreds of metres and the water stays flat to lightly choppy in the prevailing westerlies. The island's flat, treeless landscape means clean wind almost everywhere, and the beach is long enough that even a busy summer weekend leaves space. La Couarde is the main venue; Rivedoux at the bridge end and Le Bois-Plage cover other angles.",
+      "llmComment": "Tide sets the session: at low water the sand runs out several hundred metres and you walk, at mid tide it is shallow flat water almost everywhere. The Pertuis Breton between the island and the mainland runs a strong current on spring tides, so watch the drift if you head offshore. Oyster beds and rocky platforms sit at the ends of the beach rather than in the middle, which is why the local advice is to stay in the central stretch."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko do krótkiej fali nad piaskiem (Île de Ré)",
+      "bestWind": "W, SW, NW, N",
+      "waterTemp": "11-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża zwrócona na południe w La Couarde-sur-Mer, szeroka i płytka przy średniej i niskiej wodzie, parking za wydmą",
+      "hazards": "Duża amplituda pływów i długi marsz do wody przy odpływie; ławice ostryg i skalne platformy na krańcach plaży; letnie strefy kąpielowe na najbardziej obleganych plażach; silny prąd w Pertuis Breton przy pływach syzygijnych",
+      "season": "Kwiecień-Październik",
+      "description": "Klasyczna plaża kite'owa Île de Ré, na osłoniętym południowym brzegu, gdzie piasek ciągnie się płytko przez setki metrów, a woda przy dominujących wiatrach zachodnich pozostaje płaska lub lekko pofalowana. Płaski, bezdrzewny krajobraz wyspy daje czysty wiatr niemal wszędzie, a plaża jest na tyle długa, że nawet w tłoczny letni weekend zostaje miejsce. La Couarde to główny akwen; Rivedoux przy moście i Le Bois-Plage obsługują inne kąty.",
+      "llmComment": "To pływ decyduje o sesji: przy niskiej wodzie piasek ciągnie się kilkaset metrów i trzeba iść, przy średniej wodzie niemal wszędzie jest płytka, płaska woda. Pertuis Breton między wyspą a lądem niesie przy pływach syzygijnych silny prąd, więc pilnuj znoszenia, jeśli oddalasz się od brzegu. Ławice ostryg i skalne platformy leżą na krańcach plaży, a nie w jej środku — dlatego lokalna rada to trzymać się środkowego odcinka."
+    }
+  },
+  {
+    "name": "Châtelaillon-Plage",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48530",
+    "windfinderUrl": "https://www.windfinder.com/forecast/chatelaillon-plage",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=46.081396,-1.087750",
+    "spotInfo": {
+      "type": "Bay, flat to light chop over sand (Charente-Maritime)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "11-22°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide open 3 km sandy bay with plenty of room to launch and land, side-shore from the left of the beach",
+      "hazards": "Kitesurfing forbidden from 15 June to 15 September; oyster beds on the left-hand side - do not pass them at mid and low tide; mud to cross before reaching deeper water on big tidal coefficients; sharp shells and crustaceans near the shoreline; protected zones near the sea wall",
+      "season": "March-October, outside the summer ban",
+      "description": "A large sandy bay just south of La Rochelle with a relaxed, family atmosphere and one of the friendliest learning venues on the Charente coast. The wind runs from northwest to southwest and arrives side-shore off the left of the beach, which makes the sailing stable and predictable, and summer thermals reach 20 to 25 knots. There is a long walk at low tide, and on big coefficients you cross mud before the water gets deep enough.",
+      "llmComment": "The summer ban from 15 June to 15 September is the single most important fact about this spot - plan around it and use the shoulder seasons. Do not pass the oyster beds on the left-hand side of the beach at mid and low tide; they are the main injury risk here, along with sharp shells near the waterline. On big tidal coefficients there is mud to cross before the water gets deep enough to ride."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płasko do lekkiej fali nad piaskiem (Charente-Maritime)",
+      "bestWind": "NW, W, SW",
+      "waterTemp": "11-22°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Szeroka, otwarta piaszczysta zatoka o długości 3 km, z dużą przestrzenią do startu i lądowania, wiatr boczny od lewej strony plaży",
+      "hazards": "Kitesurfing zakazany od 15 czerwca do 15 września; ławice ostryg po lewej stronie — nie wypływaj za nie przy średniej i niskiej wodzie; przy wysokich współczynnikach pływu trzeba przejść przez muł, zanim woda zrobi się głębsza; ostre muszle i skorupiaki przy brzegu; strefy chronione przy falochronie",
+      "season": "Marzec-Październik, poza letnim zakazem",
+      "description": "Duża piaszczysta zatoka tuż na południe od La Rochelle, o wyluzowanej, rodzinnej atmosferze i jedno z najprzyjaźniejszych miejsc do nauki na wybrzeżu Charente. Wiatr wieje od północnego zachodu po południowy zachód i wchodzi bocznie od lewej strony plaży, dzięki czemu pływanie jest stabilne i przewidywalne, a letnie termiki sięgają 20-25 węzłów. Przy odpływie czeka długi marsz, a przy wysokich współczynnikach pływu trzeba przejść przez muł, zanim woda zrobi się dość głęboka.",
+      "llmComment": "Najważniejszym faktem o tym spocie jest letni zakaz od 15 czerwca do 15 września — planuj wokół niego i korzystaj z sezonów przejściowych. Nie wypływaj za ławice ostryg po lewej stronie plaży przy średniej i niskiej wodzie; to główne ryzyko urazu, obok ostrych muszli przy linii wody. Przy wysokich współczynnikach pływu trzeba przejść przez muł, zanim woda zrobi się dość głęboka do pływania."
+    }
+  },
+  {
+    "name": "La Palmyre – Bonne Anse",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48535",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_palmyre",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=45.688651,-1.189202",
+    "spotInfo": {
+      "type": "Sheltered bay, flat to light chop (Gironde estuary)",
+      "bestWind": "S, SW, W, NW",
+      "waterTemp": "11-22°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Footpath from the car park down to the bay; the launch and landing zone is marked by orange buoys",
+      "hazards": "The bay dries out extensively at low tide - ride only on the rising tide; strong current, pushing south on the ebb and north on the flood; oyster beds; swimmers in summer; very crowded kite zone in July and August",
+      "season": "April-October",
+      "description": "A horseshoe-shaped bay on the Arvert peninsula facing the Gironde estuary, sheltered from Atlantic swell by the sand spit, with flat to slightly choppy water over a sandy bottom. South and southwest are the optimal directions and arrive cross-onshore with manageable chop of 20 to 50 cm; the whole window from southeast round to northwest works. At mid tide it is standing depth throughout and the moderate northerly thermal usually fills in around 15 knots, which makes it genuinely beginner-friendly. Riders who want waves can go outside the bay.",
+      "llmComment": "Ride the rising tide, roughly two to three hours before high water. Bonne Anse dries out extensively at low tide and only fills from mid-flood, so a session planned on wind alone will find no water. The current follows the tide - south on the ebb, north on the flood - and the local rule is to ride with the wind opposed to the current. Oyster beds and summer swimmers are the other constraints, and the marked kite zone gets very crowded in July and August."
+    },
+    "spotInfoPL": {
+      "type": "Osłonięta zatoka, płasko do lekkiej fali (estuarium Żyrondy)",
+      "bestWind": "S, SW, W, NW",
+      "waterTemp": "11-22°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Ścieżka z parkingu w dół do zatoki; strefa startu i lądowania oznaczona pomarańczowymi bojami",
+      "hazards": "Zatoka w dużej części osusza się przy odpływie — pływaj wyłącznie przy przybierającej wodzie; silny prąd, spychający na południe przy odpływie i na północ przy przypływie; ławice ostryg; kąpiący się latem; bardzo zatłoczona strefa kite w lipcu i sierpniu",
+      "season": "Kwiecień-Październik",
+      "description": "Zatoka w kształcie podkowy na półwyspie Arvert, zwrócona ku estuarium Żyrondy, osłonięta od atlantyckiej martwej fali przez mierzeję, z wodą płaską lub lekko pofalowaną nad piaszczystym dnem. Południowy i południowo-zachodni to kierunki optymalne, wchodzące bocznie z dopychaniem, z falą 20-50 cm; działa całe okno od południowego wschodu po północny zachód. Przy średniej wodzie wszędzie można stanąć, a umiarkowany termik z północy zwykle wchodzi około 15 węzłów, co czyni to miejsce naprawdę przyjaznym dla początkujących. Kto chce fal, może wypłynąć poza zatokę.",
+      "llmComment": "Pływaj przy przybierającej wodzie, mniej więcej dwie-trzy godziny przed pełnią morza. Bonne Anse w dużej części osusza się przy odpływie i napełnia dopiero od połowy przypływu, więc sesja zaplanowana wyłącznie pod wiatr zastanie brak wody. Prąd podąża za pływem — na południe przy odpływie, na północ przy przypływie — a lokalna zasada mówi, by pływać z wiatrem przeciwnym do prądu. Pozostałe ograniczenia to ławice ostryg i letni kąpiący się, a oznakowana strefa kite bywa w lipcu i sierpniu bardzo zatłoczona."
+    }
+  },
+  {
+    "name": "Lac d'Hourtin-Carcans",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48559",
+    "windguruFallbackUrl": "https://www.windguru.cz/500971",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lac-d-hourtin-et-de-carcans",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=45.180627,-1.081558",
+    "spotInfo": {
+      "type": "Freshwater lake, flat water",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "12-25°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Wide sandy beaches with a dedicated kite zone on the east shore, marked by yellow buoys; two access points, Hourtin-Port and the Lacanau side",
+      "hazards": "Riding outside the buoyed zone is prohibited and usually fined, especially in summer; shallow water near shore - foilers walk about 200 m out depending on the lake level; swimmers and sailing club traffic in high season",
+      "season": "April-October",
+      "description": "The largest natural freshwater lake in France, 18 km² of calm water behind the Médoc dunes, and one of the easiest places on the Atlantic coast to learn. Wide beaches give safe rigging areas, the summer thermals are steady at 2 to 5 Beaufort and there is no swell, no tide and no current. The riding zone is set by prefectoral decree and marked with yellow buoys; Hourtin-Port is the recommended access for beginners and families, and the Lacanau side is the alternative.",
+      "llmComment": "The riding zone is legally defined and enforced: yellow buoys mark it, and riding outside is prohibited and usually penalised, especially in summer. This is the flat-water, no-tide answer to the Médoc ocean beaches an hour west, which need a good level and impose a 300 m offset from the bathing zones in high season. Depth is the practical limit - foilers walk roughly 200 m out before there is enough water, and how far depends on the lake level that year."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro słodkowodne, płaska woda",
+      "bestWind": "W, NW, SW, N",
+      "waterTemp": "12-25°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Szerokie piaszczyste plaże z dedykowaną strefą kite na wschodnim brzegu, oznaczoną żółtymi bojami; dwa punkty dostępu — Hourtin-Port i strona Lacanau",
+      "hazards": "Pływanie poza strefą wyznaczoną bojami jest zabronione i zwykle karane, zwłaszcza latem; płytka woda przy brzegu — foilowcy idą około 200 m w zależności od poziomu jeziora; kąpiący się i ruch klubu żeglarskiego w sezonie",
+      "season": "Kwiecień-Październik",
+      "description": "Największe naturalne jezioro słodkowodne we Francji — 18 km² spokojnej wody za wydmami Médoc i jedno z najłatwiejszych miejsc do nauki na wybrzeżu atlantyckim. Szerokie plaże dają bezpieczne miejsce do rozkładania sprzętu, letnie termiki są stabilne na poziomie 2-5 w skali Beauforta, a martwej fali, pływu i prądu nie ma wcale. Strefa pływania jest ustalona dekretem prefekta i oznaczona żółtymi bojami; Hourtin-Port to zalecane wejście dla początkujących i rodzin, a strona Lacanau to alternatywa.",
+      "llmComment": "Strefa pływania jest zdefiniowana prawnie i egzekwowana: wyznaczają ją żółte boje, a pływanie poza nią jest zabronione i zwykle karane, szczególnie latem. To odpowiedź z płaską wodą i bez pływów na oceaniczne plaże Médoc godzinę na zachód, które wymagają dobrego poziomu i narzucają 300 m odsunięcia od stref kąpielowych w sezonie. Praktycznym ograniczeniem jest głębokość — foilowcy idą jakieś 200 m, zanim będzie dość wody, a dokładnie ile, zależy od poziomu jeziora w danym roku."
+    }
+  },
+  {
+    "name": "Lac de Lacanau",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/192",
+    "windfinderUrl": "https://www.windfinder.com/forecast/etang_de_lacanau_lacanau-ville",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=45.003747,-1.132241",
+    "spotInfo": {
+      "type": "Freshwater lake, flat water",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "12-25°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy lake beaches at Le Moutchic on the east shore, with a marked channel out to the riding area",
+      "hazards": "A prefectoral decree defines the riding and teaching zones - sailing outside them is forbidden; alios (hardpan sandstone shelves) close to shore; swimmers and the sailing school in the channel; shallow water in a dry summer",
+      "season": "April-October",
+      "description": "The flat-water school of the Médoc, a warm shallow lake behind the dunes 45 minutes from Bordeaux and half an hour from Cap Ferret. It works in northwest, west, southwest and south, and a dedicated channel has been laid out so riders can reach the riding zone without crossing the swimming area. Riding north of the beach avoids the alios shelves and gets stronger, more regular wind. Since the Cap Ferret peninsula lost its kite school, this is where most of the region's teaching happens.",
+      "llmComment": "The riding zone and the teaching zone are set by prefectoral decree and there is a marked channel out to the water - use it rather than crossing the swimming area. Two local details decide the quality of the session: ride north of the main beach, which avoids the alios shelves near shore and picks up stronger, more regular wind, and check the lake level in a dry summer. This is the standard fallback for Cap Ferret and the Bassin d'Arcachon, 30 to 45 minutes away outside peak traffic."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro słodkowodne, płaska woda",
+      "bestWind": "NW, W, SW, S",
+      "waterTemp": "12-25°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczyste plaże jeziorne w Le Moutchic na wschodnim brzegu, z oznakowanym korytarzem wyjściowym do strefy pływania",
+      "hazards": "Dekret prefekta wyznacza strefę pływania i strefę szkoleniową — pływanie poza nimi jest zabronione; alios (twarde piaskowcowe półki) blisko brzegu; kąpiący się i szkoła żeglarska w korytarzu; płytka woda podczas suchego lata",
+      "season": "Kwiecień-Październik",
+      "description": "Szkoła płaskiej wody regionu Médoc — ciepłe, płytkie jezioro za wydmami, 45 minut od Bordeaux i pół godziny od Cap Ferret. Działa przy NW, W, SW i S, a wytyczony korytarz pozwala riderom dotrzeć do strefy pływania bez przecinania kąpieliska. Pływanie na północ od plaży omija półki alios i łapie mocniejszy, bardziej regularny wiatr. Odkąd półwysep Cap Ferret stracił szkołę kite'ową, to tutaj odbywa się większość szkoleń w regionie.",
+      "llmComment": "Strefa pływania i strefa szkoleniowa są ustalone dekretem prefekta, a do wody prowadzi oznakowany korytarz — korzystaj z niego, zamiast przecinać kąpielisko. O jakości sesji decydują dwa lokalne szczegóły: pływaj na północ od głównej plaży, co omija półki alios przy brzegu i łapie mocniejszy, bardziej regularny wiatr, oraz sprawdź poziom jeziora podczas suchego lata. To standardowa alternatywa dla Cap Ferret i Basenu Arcachon, oddalona o 30-45 minut poza szczytem ruchu."
+    }
+  },
+  {
+    "name": "Cap Ferret – Le Grand Crohot",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/4168",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cap_ferret",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=44.798849,-1.234363",
+    "spotInfo": {
+      "type": "Ocean beach, Atlantic waves and shore break",
+      "bestWind": "N, NW, S, SW",
+      "waterTemp": "12-23°C",
+      "experience": "Advanced",
+      "launch": "Le Grand Crohot, a wide dune-backed ocean beach on the Lège-Cap Ferret peninsula with a large car park behind the dune",
+      "hazards": "Powerful Atlantic shore break and baïnes with strong rip currents; no kite school left on the peninsula, so no local rescue cover; summer bathing zones require a 300 m offset; the beach is unpatrolled outside July and August",
+      "season": "September-June",
+      "description": "The ocean side of the Lège-Cap Ferret peninsula, where the Landes dune coast meets the entrance of the Bassin d'Arcachon. This is a genuine Atlantic beach break with baïnes, rips and a heavy shore break rather than a sheltered venue, and since the peninsula's kite school closed there is no local structure to fall back on. Riders who want flat water head inland to Lacanau lake, 30 to 45 minutes away, or to the Bassin d'Arcachon itself, which sails well but is heavily tide-dependent.",
+      "llmComment": "There is no kite school and no local safety net left on the peninsula, so this is a self-reliant spot. Getting out through the shore break is the hard part, and the baïnes that make the beach dangerous for swimmers produce strong rips that will carry you out. The Bassin d'Arcachon on the other side of the peninsula is the flat alternative but is strongly tide-dependent; Lacanau lake, 30 to 45 minutes inland outside peak traffic, is the reliable no-swell option."
+    },
+    "spotInfoPL": {
+      "type": "Plaża oceaniczna, fale atlantyckie i przybój",
+      "bestWind": "N, NW, S, SW",
+      "waterTemp": "12-23°C",
+      "experience": "Zaawansowany",
+      "launch": "Le Grand Crohot, szeroka oceaniczna plaża za wydmami na półwyspie Lège-Cap Ferret, z dużym parkingiem za wydmą",
+      "hazards": "Potężny atlantycki przybój i baïnes z silnymi prądami powrotnymi; na półwyspie nie ma już szkoły kite'owej, więc brak lokalnego zaplecza ratunkowego; letnie strefy kąpielowe wymagają odsunięcia o 300 m; poza lipcem i sierpniem plaża jest niestrzeżona",
+      "season": "Wrzesień-Czerwiec",
+      "description": "Oceaniczna strona półwyspu Lège-Cap Ferret, gdzie wydmowe wybrzeże Landes spotyka wejście do Basenu Arcachon. To prawdziwy atlantycki beach break z baïnes, prądami powrotnymi i ciężkim przybojem, a nie osłonięty akwen — a odkąd zamknięto tutejszą szkołę kite'ową, nie ma lokalnej struktury, na której można się oprzeć. Kto chce płaskiej wody, jedzie w głąb lądu nad jezioro Lacanau, 30-45 minut drogi, albo na sam Basen Arcachon, na którym pływa się dobrze, ale bardzo zależnie od pływu.",
+      "llmComment": "Na półwyspie nie ma już szkoły kite'owej ani lokalnej siatki bezpieczeństwa, więc to spot dla samodzielnych. Najtrudniejsze jest wyjście przez przybój, a baïnes, które czynią plażę groźną dla kąpiących się, tworzą silne prądy wynoszące w morze. Basen Arcachon po drugiej stronie półwyspu to płaska alternatywa, ale mocno zależna od pływu; jezioro Lacanau, 30-45 minut w głąb lądu poza szczytem ruchu, to pewna opcja bez martwej fali."
+    }
+  },
+  {
+    "name": "Hendaye",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48576",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hendaye",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.372743,-1.773662",
+    "spotInfo": {
+      "type": "Sea, Atlantic waves and chop (Basque coast)",
+      "bestWind": "W, NW, N",
+      "waterTemp": "12-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Northern end of the 3 km beach towards the casino and Les Deux Jumeaux, away from the bathing zones; the boundaries are informal and respected by locals",
+      "hazards": "Kitesurfing forbidden on the beach during the summer season; powerful Atlantic waves and shore break; the beach narrows sharply at high tide, shrinking the landing area; currents around the Spanish border rocks and from the Bidassoa estuary; a southerly is offshore, gusty and accelerated by the Pyrenees - locals call the spot treacherous in a south",
+      "season": "September-June",
+      "description": "The southernmost kite spot on the French Atlantic coast, on a 3 km beach at the mouth of the Bidassoa on the Spanish border. It is the only Basque beach without cliffs, which makes it the most accessible spot on that coast, and it faces west-southwest. The prevailing winds are west to northwest and the north thermal is reliable on summer afternoons. The sheltered Baie de Txingudi behind the beach gives calmer water suited to less experienced riders.",
+      "llmComment": "Never trust a south wind here. The Pyrenees accelerate it, it comes offshore, and it turns unstable and gusty near the cliffs on the Spanish side - locals describe the spot as genuinely treacherous in a southerly. Kitesurfing on the beach is banned during the summer season, as it is on all patrolled beaches in high season. The kite zone sits at the northern end towards the casino and Les Deux Jumeaux, self-organised with informal boundaries rather than official buoys. The Baie de Txingudi behind the beach is the sheltered fallback, and Socoa at Saint-Jean-de-Luz, partly protected by breakwaters, is gentler than Anglet."
+    },
+    "spotInfoPL": {
+      "type": "Morze, fale atlantyckie i krótka fala (wybrzeże baskijskie)",
+      "bestWind": "W, NW, N",
+      "waterTemp": "12-22°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Północny kraniec 3-kilometrowej plaży w stronę kasyna i Les Deux Jumeaux, z dala od stref kąpielowych; granice są nieformalne i respektowane przez miejscowych",
+      "hazards": "Kitesurfing zakazany na plaży w sezonie letnim; potężne fale atlantyckie i przybój; przy pełni morza plaża mocno się zwęża, ograniczając miejsce do lądowania; prądy wokół skał przy granicy hiszpańskiej i od ujścia Bidassoa; wiatr południowy jest odlądowy, porywisty i przyspieszany przez Pireneje — miejscowi nazywają ten spot przy S bardzo zdradliwym",
+      "season": "Wrzesień-Czerwiec",
+      "description": "Najbardziej wysunięty na południe spot kite'owy francuskiego wybrzeża atlantyckiego, na 3-kilometrowej plaży u ujścia Bidassoa przy granicy z Hiszpanią. To jedyna baskijska plaża bez klifów, co czyni ją najbardziej dostępnym miejscem tego wybrzeża; jest zwrócona na zachód-południowy zachód. Dominują wiatry od zachodu po północny zachód, a termik z północy jest niezawodny w letnie popołudnia. Osłonięta Baie de Txingudi za plażą daje spokojniejszą wodę, odpowiednią dla mniej doświadczonych.",
+      "llmComment": "Nigdy nie ufaj tu wiatrowi południowemu. Pireneje go przyspieszają, wchodzi odlądowo i robi się niestabilny oraz porywisty przy klifach po stronie hiszpańskiej — miejscowi opisują spot przy S jako naprawdę zdradliwy. Kitesurfing na plaży jest zakazany w sezonie letnim, tak jak na wszystkich strzeżonych plażach w szczycie sezonu. Strefa kite znajduje się na północnym krańcu w stronę kasyna i Les Deux Jumeaux, samoorganizująca się, z nieformalnymi granicami zamiast oficjalnych boi. Baie de Txingudi za plażą to osłonięta alternatywa, a Socoa w Saint-Jean-de-Luz, częściowo chronione falochronami, jest łagodniejsze niż Anglet."
+    }
+  },
+  {
+    "name": "La Franqui – Les Coussoules",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48586",
+    "windguruFallbackUrl": "https://www.windguru.cz/500998",
+    "windfinderUrl": "https://www.windfinder.com/forecast/la_franqui",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=42.941971,3.031681",
+    "spotInfo": {
+      "type": "Sea, flat in Tramontane and waves in Marin",
+      "bestWind": "NW (Tramontane), SE (Marin)",
+      "waterTemp": "12-25°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Park at La Franqui next to Camping des Coussoules; the secured kite launch zone is 300 m further along the beach, in front of the lifeguard station, with the windsurf zone upwind of it",
+      "hazards": "The Tramontane is offshore and pushes riders out to sea - solid upwind ability required; extremely turbulent on the first days of a wind cycle, especially in cold weather; very shallow near shore with sandbars; the sea floods part of the beach when the wind gets too strong; oyster beds on the lagoon side; motor vehicles banned on the beach and parking beyond the signage is monitored; from 15 June to 15 September kiting is only allowed in front of the KSL clubhouse and in the Grazel",
+      "season": "Year-round, best March-June and September-November",
+      "description": "One of the great Tramontane spots of southern France, on a huge obstacle-free beach inside a nature park south of Leucate. The Tramontane blows more than 300 days a year from the northwest, offshore, often very strong and gusty, and when it really kicks in it can power up past 40 knots - flat, fast water and a freeride and freestyle playground. The southeast Marin is the gentler alternative, coming in onshore with waves that are more regular here than elsewhere on the coast because Cap Leucate shelters the bay from open-sea swell.",
+      "llmComment": "The Tramontane here is offshore. That single fact governs the spot: beginners have no business on the water unsupervised and should use the Étang du Grazel or the lagoon instead, and everyone else needs to be able to ride upwind reliably. The first days of a wind cycle, before the Tramontane is fully established, are extremely turbulent, especially in cold weather - if it does not feel right on the beach, it will not feel right on the water. KSL, the local club, runs a gear-repatriation assistance scheme and safety cover from April to November for offshore days. Summer zoning from 15 June to 15 September restricts kiting to the area in front of the KSL clubhouse and the Grazel, and the exact perimeter is set by municipal decree each year. The access road floods and is full of potholes after heavy rain; the alternative is to walk in along the beach from La Franqui village."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko przy Tramontanie i fale przy Marin",
+      "bestWind": "NW (Tramontana), SE (Marin)",
+      "waterTemp": "12-25°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Parking w La Franqui obok Camping des Coussoules; zabezpieczona strefa startu kite leży 300 m dalej wzdłuż plaży, przed stanowiskiem ratowników, ze strefą windsurfingową po nawietrznej",
+      "hazards": "Tramontana jest odlądowa i spycha riderów w morze — konieczna pewna umiejętność pływania pod wiatr; skrajnie turbulentna w pierwszych dniach cyklu wiatrowego, zwłaszcza przy zimnej pogodzie; bardzo płytko przy brzegu, z łachami piasku; przy zbyt silnym wietrze morze zalewa część plaży; ławice ostryg od strony laguny; zakaz wjazdu pojazdów na plażę, a parkowanie poza oznakowaniem jest kontrolowane; od 15 czerwca do 15 września kite dozwolony wyłącznie przed klubem KSL i w Grazel",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Jeden z wielkich spotów tramontany w południowej Francji, na ogromnej, wolnej od przeszkód plaży w parku przyrodniczym na południe od Leucate. Tramontana wieje ponad 300 dni w roku z północnego zachodu, odlądowo, często bardzo mocno i porywiście, a gdy naprawdę ruszy, potrafi przekroczyć 40 węzłów — płaska, szybka woda i plac zabaw dla freeride'u i freestyle'u. Południowo-wschodni Marin to łagodniejsza alternatywa, wchodząca dopychająco z falami, które są tu bardziej regularne niż gdzie indziej na wybrzeżu, bo Cap Leucate osłania zatokę od martwej fali z pełnego morza.",
+      "llmComment": "Tramontana jest tu odlądowa. Ten jeden fakt rządzi całym spotem: początkujący nie mają czego szukać samodzielnie na wodzie i powinni korzystać z Étang du Grazel albo laguny, a reszta musi pewnie płynąć pod wiatr. Pierwsze dni cyklu wiatrowego, zanim tramontana się ustabilizuje, są skrajnie turbulentne, zwłaszcza przy zimnej pogodzie — jeśli na plaży coś się nie zgadza, na wodzie będzie gorzej. KSL, lokalny klub, prowadzi program pomocy w odzyskiwaniu sprzętu i zabezpieczenie ratownicze od kwietnia do listopada na dni z wiatrem odlądowym. Letnie strefowanie od 15 czerwca do 15 września ogranicza kite do obszaru przed klubem KSL i Grazel, a dokładny perymetr ustala co roku dekret gminny. Droga dojazdowa po ulewach zalewa się i jest pełna dziur; alternatywą jest dojście plażą z miejscowości La Franqui."
+    }
+  },
+  {
+    "name": "Canet-en-Roussillon",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48579",
+    "windguruFallbackUrl": "https://www.windguru.cz/5191",
+    "windfinderUrl": "https://www.windfinder.com/forecast/canet",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=42.683971,3.035436",
+    "spotInfo": {
+      "type": "Sea, chop and waves with clean kickers off the dike",
+      "bestWind": "N, NW (Tramontane), E, SE (thermal)",
+      "waterTemp": "12-25°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Pont des Basses, between Canet-en-Roussillon and Saint-Cyprien, near the fishermen's village on the sea side; Port Cipriano at the northern entrance of Saint-Cyprien is the second zone. Both are official FFVL zones",
+      "hazards": "The étang behind the beach is off limits; a municipal decree regulates the kite zone on the beach and at sea in season; very heavy rider traffic in summer; Tramontane can be gusty close to shore",
+      "season": "Year-round",
+      "description": "The main kite venue of the Pyrénées-Orientales, with a big open playground at Pont des Basses that works in every wind orientation. A constant, regular thermal blows from March to September, usually from the east or southeast in summer, while winter depressions and a Tramontane at 40 km/h and more keep the spot alive year-round. The dike generates clean waves that riders use as kickers, which is part of why it reads as beginner-friendly in summer and much more serious in a winter blow.",
+      "llmComment": "Two official FFVL zones split the spot: Pont des Basses between Canet and Saint-Cyprien, near the fishermen's village on the sea side, and Port Cipriano at the north entrance of Saint-Cyprien. The étang behind the beach is off limits entirely. In summer the wind is usually an E/SE thermal, which is onshore and forgiving; in winter it is the Tramontane, which is much stronger and gusty near the shore. A municipal decree fixes the zones in season and it changes from year to year."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i fale z czystymi kickerami przy falochronie",
+      "bestWind": "N, NW (Tramontana), E, SE (termik)",
+      "waterTemp": "12-25°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Pont des Basses, między Canet-en-Roussillon a Saint-Cyprien, przy wiosce rybackiej od strony morza; Port Cipriano przy północnym wjeździe do Saint-Cyprien to druga strefa. Obie są oficjalnymi strefami FFVL",
+      "hazards": "Laguna za plażą jest wyłączona z pływania; dekret gminny reguluje strefę kite na plaży i na morzu w sezonie; bardzo duży ruch riderów latem; tramontana bywa porywista blisko brzegu",
+      "season": "Cały rok",
+      "description": "Główny akwen kite'owy departamentu Pyrénées-Orientales, z dużym otwartym placem zabaw w Pont des Basses, który działa przy każdej orientacji wiatru. Od marca do września wieje stały, regularny termik, latem zwykle ze wschodu lub południowego wschodu, a zimowe niże i tramontana powyżej 40 km/h utrzymują spot przy życiu przez cały rok. Falochron generuje czyste fale, których riderzy używają jako kickerów — dlatego latem spot uchodzi za przyjazny początkującym, a przy zimowym wietrze jest znacznie poważniejszy.",
+      "llmComment": "Spot dzieli się na dwie oficjalne strefy FFVL: Pont des Basses między Canet a Saint-Cyprien, przy wiosce rybackiej od strony morza, oraz Port Cipriano przy północnym wjeździe do Saint-Cyprien. Laguna za plażą jest całkowicie wyłączona. Latem wiatr to zwykle termik E/SE, dopychający i wyrozumiały; zimą to tramontana, znacznie mocniejsza i porywista blisko brzegu. Dekret gminny ustala strefy w sezonie i zmienia się on z roku na rok."
+    }
+  },
+  {
+    "name": "Cap d'Agde – Richelieu",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48593",
+    "windguruFallbackUrl": "https://www.windguru.cz/48594",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cap_agde",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.274052,3.503218",
+    "spotInfo": {
+      "type": "Sea, flat between the groynes and waves in a southerly",
+      "bestWind": "W, N (Tramontane), S",
+      "waterTemp": "13-25°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Eastern end of Plage Richelieu; most schools work in open water with boat support because the harbour wall makes beach launching awkward for less experienced riders",
+      "hazards": "The harbour wall at the eastern end of the beach makes launching sketchy for beginners and intermediates; narrowly spaced groynes at La Tamarissière; the Tramontane is gusty near shore; summer bathing zones and heavy tourist traffic",
+      "season": "Year-round, best March-June and September-November",
+      "description": "The Hérault's best-known coastal venue, with the volcanic headland of the Cap on one side and a long run of groyne-protected sand on the other. A southerly generates decent waves, a westerly is ideal for freestyle because the groynes flatten the water, and the northerly Tramontane gets gusty near the shore but gives advanced riders great cross-shore conditions in open water towards Marseillan-Plage. The whole coast averages around 300 days a year with wind at force 4 or more.",
+      "llmComment": "The groynes are the defining feature: they flatten the water in a westerly, which is why this is a freestyle spot in that direction, but they are narrowly spaced at La Tamarissière and make it hard work for beginners. The Tramontane is gusty close to shore here and only really becomes good once you get out into open water towards Marseillan-Plage, which is why the schools use boat support. A southerly is the wave direction."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko między ostrogami i fale przy wietrze południowym",
+      "bestWind": "W, N (Tramontana), S",
+      "waterTemp": "13-25°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Wschodni kraniec Plage Richelieu; większość szkół pracuje na otwartej wodzie z asekuracją łodzi, bo falochron portu utrudnia start z plaży mniej doświadczonym",
+      "hazards": "Falochron portu na wschodnim krańcu plaży czyni start ryzykownym dla początkujących i średniozaawansowanych; gęsto rozstawione ostrogi w La Tamarissière; tramontana jest porywista blisko brzegu; letnie strefy kąpielowe i duży ruch turystyczny",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Najbardziej znany nadmorski akwen departamentu Hérault, z wulkanicznym cyplem Cap po jednej stronie i długim pasem piasku chronionym ostrogami po drugiej. Wiatr południowy generuje przyzwoite fale, zachodni jest idealny do freestyle'u, bo ostrogi wygładzają wodę, a północna tramontana bywa porywista przy brzegu, ale daje zaawansowanym riderom świetne warunki boczne na otwartej wodzie w stronę Marseillan-Plage. Całe to wybrzeże ma średnio około 300 dni w roku z wiatrem 4 w skali Beauforta lub silniejszym.",
+      "llmComment": "Cechą definiującą są ostrogi: przy wietrze zachodnim wygładzają wodę, dlatego w tym kierunku jest to spot freestyle'owy, ale w La Tamarissière są gęsto rozstawione i utrudniają życie początkującym. Tramontana jest tu porywista blisko brzegu i robi się naprawdę dobra dopiero na otwartej wodzie w stronę Marseillan-Plage — dlatego szkoły korzystają z asekuracji łodzią. Wiatr południowy to kierunek falowy."
+    }
+  },
+  {
+    "name": "Marseillan – Étang de Thau",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/500980",
+    "windguruFallbackUrl": "https://www.windguru.cz/48595",
+    "windfinderUrl": "https://www.windfinder.com/forecast/etang_de_thau_marseillan",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.318982,3.536398",
+    "spotInfo": {
+      "type": "Lagoon, flat and shallow water",
+      "bestWind": "NW (Tramontane), N (Mistral)",
+      "waterTemp": "10-27°C",
+      "experience": "Intermediate",
+      "launch": "Western end of the Étang de Thau near Marseillan village and the Noilly Prat house, at Les Onglous by the canal mouth",
+      "hazards": "Natura 2000 zone with oyster beds nearby - stay clear of the tables; historically a windsurf lagoon with no official kite zone, so respect local arrangements; the Tramontane comes off the land and is gusty near the shore; shallow water and mud in places",
+      "season": "Year-round",
+      "description": "France's second-largest lagoon and one of the places in the country where you can get the most sessions per year. The Étang de Thau is huge, shallow and flat, very well exposed to both the Tramontane and the Mistral, and it never carries swell. Several schools run boat-based lessons from the Marseillan end, and the same body of water serves the better-known windsurf spots at Pont-Levis and Maldormir on the far shore.",
+      "llmComment": "This is a Natura 2000 lagoon with commercial oyster tables, and historically it has been a windsurf venue rather than a kite one - kiters have tended to use Maldormir or Sète instead, while a local association has been working since 2018 towards an official kite zone at Marseillan. Check the current arrangement locally before rigging. The water is dead flat with no swell at all, which is the whole appeal: it is the flat-water answer when Cap d'Agde 10 km away is breaking."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska i płytka woda",
+      "bestWind": "NW (Tramontana), N (Mistral)",
+      "waterTemp": "10-27°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Zachodni kraniec Étang de Thau w pobliżu miejscowości Marseillan i domu Noilly Prat, przy Les Onglous u wylotu kanału",
+      "hazards": "Obszar Natura 2000 z ławicami ostryg w pobliżu — trzymaj się z dala od stołów hodowlanych; historycznie laguna windsurfingowa bez oficjalnej strefy kite, więc respektuj lokalne ustalenia; tramontana wchodzi od lądu i jest porywista przy brzegu; miejscami płytko i muliście",
+      "season": "Cały rok",
+      "description": "Druga co do wielkości laguna Francji i jedno z miejsc w kraju, gdzie można zaliczyć najwięcej sesji w roku. Étang de Thau jest ogromna, płytka i płaska, świetnie wystawiona zarówno na tramontanę, jak i mistral, i nigdy nie niesie martwej fali. Kilka szkół prowadzi zajęcia z łodzi od strony Marseillan, a ten sam akwen obsługuje lepiej znane spoty windsurfingowe Pont-Levis i Maldormir na przeciwległym brzegu.",
+      "llmComment": "To laguna Natura 2000 z komercyjnymi stołami ostrygowymi, historycznie raczej windsurfingowa niż kite'owa — kiterzy zwykle korzystali z Maldormir albo Sète, a lokalne stowarzyszenie od 2018 roku zabiega o oficjalną strefę kite w Marseillan. Sprawdź aktualne ustalenia na miejscu przed rozłożeniem sprzętu. Woda jest zupełnie płaska, bez żadnej martwej fali, i w tym tkwi cały urok: to odpowiedź z płaską wodą, gdy w Cap d'Agde 10 km dalej łamie."
+    }
+  },
+  {
+    "name": "Carnon – Petit Travers",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48599",
+    "windguruFallbackUrl": "https://www.windguru.cz/500985",
+    "windfinderUrl": "https://www.windfinder.com/forecast/plage_du_petit_travers_carnon",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.546934,3.988408",
+    "spotInfo": {
+      "type": "Sea, chop and small waves",
+      "bestWind": "SW, W, S (thermal), N, NW (Tramontane)",
+      "waterTemp": "12-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Petit Travers and Grand Travers, the undeveloped dune beaches between Carnon and La Grande-Motte, with car parks along the coast road",
+      "hazards": "The Tramontane is offshore here and pushes riders out to sea; heavy tourist crowds in summer; speed limited to 5 knots inside the 300 m coastal band except in designated zones; bathing zones in season",
+      "season": "Year-round, best April-October",
+      "description": "The official at-sea kite spot for the Montpellier area, managed by the local club on the undeveloped dune beaches between Carnon and La Grande-Motte. The southwest thermal is the reliable summer engine and gives clean side-onshore riding; in a Tramontane from the north or northwest the wind is offshore, which is why schools use a boat to reach the 10 km flat stretch between Palavas and Frontignan instead. Palavas itself has no dedicated kite zone on the beach, so Petit Travers is where the Montpellier riders actually go.",
+      "llmComment": "Direction decides everything here. A SW thermal is side-onshore and the reason this beach works; the N/NW Tramontane is offshore and pushes riders out to sea, which is when the schools switch to boat access on the flat water between Palavas and Frontignan. Petit Travers and Grand Travers are the official at-sea spots managed by the local clubs, and Palavas-les-Flots, 5 km west, has no kite zone on the beach at all despite being the better-known name."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i małe fale",
+      "bestWind": "SW, W, S (termik), N, NW (Tramontana)",
+      "waterTemp": "12-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Petit Travers i Grand Travers, niezabudowane plaże wydmowe między Carnon a La Grande-Motte, z parkingami wzdłuż drogi nadmorskiej",
+      "hazards": "Tramontana jest tu odlądowa i spycha riderów w morze; duże tłumy turystów latem; prędkość ograniczona do 5 węzłów w pasie 300 m od brzegu poza wyznaczonymi strefami; strefy kąpielowe w sezonie",
+      "season": "Cały rok, najlepiej Kwiecień-Październik",
+      "description": "Oficjalny morski spot kite'owy okolic Montpellier, zarządzany przez lokalny klub, na niezabudowanych plażach wydmowych między Carnon a La Grande-Motte. Południowo-zachodni termik to niezawodny letni silnik dający czyste pływanie bocznie z dopychaniem; przy tramontanie z północy lub północnego zachodu wiatr jest odlądowy — dlatego szkoły dowożą wtedy łodzią na 10-kilometrowy płaski akwen między Palavas a Frontignan. Samo Palavas nie ma dedykowanej strefy kite na plaży, więc riderzy z Montpellier jeżdżą właśnie do Petit Travers.",
+      "llmComment": "O wszystkim decyduje tu kierunek. Termik z SW jest boczny z dopychaniem i to dzięki niemu ta plaża działa; tramontana z N/NW jest odlądowa i spycha riderów w morze — wtedy szkoły przechodzą na dowóz łodzią na płaską wodę między Palavas a Frontignan. Petit Travers i Grand Travers to oficjalne spoty morskie zarządzane przez lokalne kluby, a Palavas-les-Flots, 5 km na zachód, mimo lepiej znanej nazwy nie ma w ogóle strefy kite na plaży."
+    }
+  },
+  {
+    "name": "Saintes-Maries-de-la-Mer",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48605",
+    "windfinderUrl": "https://www.windfinder.com/forecast/saintes_maries_de_la_mer",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.451592,4.427720",
+    "spotInfo": {
+      "type": "Sea, chop and waves on an open Camargue beach",
+      "bestWind": "N, NW (Mistral), S, SE",
+      "waterTemp": "11-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Long open sand beaches east and west of the town, with parking along the coast road; the eastern beaches are the quieter option",
+      "hazards": "The Mistral is offshore to side-off on this stretch and can be violent; Camargue nature reserve and bird nesting areas behind the beach - keep to the sand; summer bathing zones in front of town; long featureless coast with no rescue outside the resort area",
+      "season": "Year-round, best March-June and September-November",
+      "description": "The Camargue's best-known beach town, with kilometres of open sand either side of it and the Mistral funnelling down the Rhône delta behind. The north and northwest Mistral is the dominant wind and delivers the strong, flat-water speed days the region is known for, while a southerly puts waves on the beach. Wide-open space and very little development make it a Camargue session in the proper sense - the neighbouring wilderness beaches of Beauduc and Plage Napoléon share the same wind system.",
+      "llmComment": "The Mistral runs offshore to side-off along this beach, so a strong Mistral day here demands solid upwind ability and a plan, not just a big appetite. The coast either side of town is a protected Camargue nature area with bird nesting grounds; stay on the sand and off the dunes and lagoons. Beauduc, 20 km east, and Plage Napoléon, 40 km east, are the other two beaches on this same delta wind system, and locals move between them depending on the exact wind angle."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i fale na otwartej plaży Camargue",
+      "bestWind": "N, NW (Mistral), S, SE",
+      "waterTemp": "11-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Długie, otwarte piaszczyste plaże na wschód i zachód od miasteczka, z parkingami przy drodze nadmorskiej; plaże wschodnie są spokojniejszą opcją",
+      "hazards": "Mistral jest na tym odcinku odlądowy do side-off i bywa gwałtowny; rezerwat przyrody Camargue i lęgowiska ptaków za plażą — trzymaj się piasku; letnie strefy kąpielowe przed miastem; długie, jednostajne wybrzeże bez służb ratowniczych poza strefą kurortu",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Najbardziej znane nadmorskie miasteczko Camargue, z kilometrami otwartego piasku po obu stronach i mistralem schodzącym doliną delty Rodanu. Mistral z północy i północnego zachodu to wiatr dominujący, dający mocne, płaskie dni prędkościowe, z których region słynie, a wiatr południowy stawia fale na plaży. Ogromna przestrzeń i niemal zerowa zabudowa czynią z tego prawdziwą sesję w Camargue — sąsiednie dzikie plaże Beauduc i Plage Napoléon dzielą ten sam system wiatrowy.",
+      "llmComment": "Mistral wieje wzdłuż tej plaży odlądowo do side-off, więc mocny dzień mistralowy wymaga tu pewnego pływania pod wiatr i planu, a nie tylko apetytu. Wybrzeże po obu stronach miasteczka to chroniony obszar przyrodniczy Camargue z lęgowiskami ptaków; trzymaj się piasku, z dala od wydm i lagun. Beauduc 20 km na wschód i Plage Napoléon 40 km na wschód to dwie pozostałe plaże tego samego deltowego systemu wiatrowego, a miejscowi przemieszczają się między nimi zależnie od dokładnego kąta wiatru."
+    }
+  },
+  {
+    "name": "Plage Napoléon – Port-Saint-Louis",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48608",
+    "windfinderUrl": "https://www.windfinder.com/forecast/plage_napoleon",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.356414,4.886358",
+    "spotInfo": {
+      "type": "Sea, chop and speed water; flat shallow bay nearby at Carteau",
+      "bestWind": "N, NW (Mistral), S, SE",
+      "waterTemp": "11-26°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Huge sandy beach with room to rig and move around on land without risk; a marked speed enclave 2 km long by 800 m wide is set aside for speed runs. Small car park at the beach entrance, prohibited in summer but tolerated off season",
+      "hazards": "The Mistral is strong and gusty here, amplified by the Rhône valley venturi; anything outside the SW-to-NE window pushes you offshore unless you have solid upwind ability; waves in a S or SE can get big during heavy blows; La Gracieuse is closed to land yachts from mid-June to mid-September for bird nesting; FFVL licence mandatory",
+      "season": "Year-round, best March-June and September-November",
+      "description": "One of the largest beaches in the Camargue, about 10 km of sand between the Rhône estuary and the Gulf of Fos, and the home town of speed world champion Alexandre Caizergues. The north-northwest Mistral is the dominant wind - regular, often very strong and amplified by the venturi of the Rhône valley, which is what makes the legendary speed conditions. Ultra-laminar southerly days without rain also deliver exceptional sessions, and surfkite riders find nice waves in a south or southeast.",
+      "llmComment": "Sailing is possible from SW through N to NE; anything else pushes you offshore unless your upwind is genuinely solid. In a Mistral this is the beach to be on. Carteau, the enclosed bay on the other side of town, is the flat-water alternative - ultra-flat, standing depth over long distances and ideal for progression or freestyle - but it is best in a SE onshore, and in a Mistral the wind there is side-off and more irregular. The FFVL licence is mandatory and can be bought on site. To get there: through Port-Saint-Louis-du-Rhône, past the port, across the blue lifting bridge, then follow signs for Plage Napoléon for 6 km."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótka fala i woda prędkościowa; obok płytka, płaska zatoka Carteau",
+      "bestWind": "N, NW (Mistral), S, SE",
+      "waterTemp": "11-26°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Ogromna piaszczysta plaża z miejscem do rozłożenia sprzętu i swobodnego poruszania się po lądzie; wydzielona enklawa prędkościowa o wymiarach 2 km na 800 m. Mały parking przy wjeździe na plażę, latem zakazany, poza sezonem tolerowany",
+      "hazards": "Mistral jest tu silny i porywisty, wzmocniony efektem venturiego doliny Rodanu; wszystko poza oknem od SW przez N do NE spycha w morze, o ile nie pływasz pewnie pod wiatr; fale przy S lub SE potrafią mocno urosnąć podczas silnych wiatrów; La Gracieuse zamknięta dla żaglowozów od połowy czerwca do połowy września ze względu na lęgi ptaków; licencja FFVL obowiązkowa",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Jedna z największych plaż Camargue — około 10 km piasku między ujściem Rodanu a Zatoką Fos — i rodzinne miasto mistrza świata w prędkości Alexandre'a Caizergues'a. Mistral z północy i północnego zachodu to wiatr dominujący: regularny, często bardzo silny i wzmocniony efektem venturiego doliny Rodanu, co daje legendarne warunki prędkościowe. Ultralaminarne dni z wiatrem południowym bez deszczu również dostarczają wyjątkowych sesji, a riderzy surfkite znajdują ładne fale przy S lub SE.",
+      "llmComment": "Pływać można od SW przez N po NE; wszystko inne spycha w morze, o ile pływanie pod wiatr nie jest naprawdę pewne. Przy mistralu to jest ta plaża. Carteau, zamknięta zatoka po drugiej stronie miasta, to alternatywa z płaską wodą — ultrapłaska, z możliwością stania na długich dystansach, idealna do robienia postępów i freestyle'u — ale najlepsza przy dopychającym SE; przy mistralu wiatr jest tam side-off i bardziej nierówny. Licencja FFVL jest obowiązkowa i można ją kupić na miejscu. Dojazd: przez Port-Saint-Louis-du-Rhône, obok portu, przez niebieski most zwodzony, potem 6 km za znakami Plage Napoléon."
+    }
+  },
+  {
+    "name": "Étang de Berre – Le Jaï",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/334",
+    "windfinderUrl": "https://www.windfinder.com/forecast/marignane_provence_alpes_cote_d_azur_france",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.407733,5.153442",
+    "spotInfo": {
+      "type": "Lagoon, chop that builds fast above 20 knots",
+      "bestWind": "NW, N (Mistral), W, SW (thermal)",
+      "waterTemp": "10-27°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Marked kite zone on the Étang de Berre side of the Jaï sand strip, with a roughly 50-space car park giving direct beach access; the launch area is a mix of sand and grass about 40 m wide",
+      "hazards": "Predictable but dangerous gusts; the Mistral can exceed 50 knots with violent gusts; rocks along the beach and a stone wall behind the launch - land and launch with your feet in the water; the Bolmon side is a nature reserve and off limits; dubious water quality; offshore in a southerly",
+      "season": "Year-round, best March-June and September-November",
+      "description": "A 5 km sand strip 250 m wide between the Étang de Berre and the Étang de Bolmon, and one of the windiest places in Provence with around 250 windy days a year. It sits at the end of the natural corridor formed by the Rhône valley, where the Mistral is channelled and accelerates, so 30 knots and more is not rare. In summer a reliable southwest thermal takes over, blowing moderately across the warm lagoon - less powerful than the Mistral but almost clockwork in July and August, and a favourite with foilers.",
+      "llmComment": "The Mistral here is fully onshore because the beach faces northwest, which is what makes it rideable at strengths that would be unmanageable on an offshore beach - but it can exceed 50 knots with extremely violent gusts, and the water goes very choppy above about 20 knots with disorganised crossed kickers. Launch and land with your feet in the water: the stone wall behind the launch zone is what riders hit during ground handling in an onshore. The Bolmon side of the strip is a nature reserve and kiting there is forbidden - stay on the Étang de Berre side. If you cannot ride upwind you will be pushed continuously towards the bank and into the restricted zones; Port-Saint-Louis is the place to learn instead. Spring and autumn have the best conditions and the fewest people."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, krótka fala szybko rosnąca powyżej 20 węzłów",
+      "bestWind": "NW, N (Mistral), W, SW (termik)",
+      "waterTemp": "10-27°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Oznakowana strefa kite od strony Étang de Berre na piaszczystej mierzei Jaï, z parkingiem na około 50 miejsc i bezpośrednim dostępem do plaży; miejsce startu to mieszanka piasku i trawy o szerokości około 40 m",
+      "hazards": "Przewidywalne, ale niebezpieczne szkwały; mistral potrafi przekroczyć 50 węzłów z gwałtownymi porywami; skały wzdłuż plaży i kamienny mur za strefą startu — startuj i ląduj stojąc w wodzie; strona Bolmon to rezerwat przyrody i jest wyłączona; wątpliwa jakość wody; wiatr południowy jest odlądowy",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Pięciokilometrowa, 250-metrowej szerokości mierzeja między Étang de Berre a Étang de Bolmon i jedno z najbardziej wietrznych miejsc Prowansji, z około 250 wietrznymi dniami w roku. Leży u wylotu naturalnego korytarza doliny Rodanu, gdzie mistral jest kanalizowany i przyspiesza, więc 30 węzłów i więcej to nie rzadkość. Latem przejmuje niezawodny termik z południowego zachodu, wiejący umiarkowanie nad ciepłą laguną — słabszy od mistralu, ale w lipcu i sierpniu niemal zegarowy i uwielbiany przez foilowców.",
+      "llmComment": "Mistral jest tu w pełni dopychający, bo plaża zwrócona jest na północny zachód — i właśnie dlatego da się tu pływać przy sile, która na plaży odlądowej byłaby nie do opanowania — ale potrafi przekroczyć 50 węzłów z bardzo gwałtownymi porywami, a woda powyżej mniej więcej 20 węzłów robi się bardzo choppy, z nieuporządkowanymi krzyżującymi się kickerami. Startuj i ląduj stojąc w wodzie: to kamienny mur za strefą startu jest tym, w co riderzy uderzają podczas manewrów na lądzie przy wietrze dopychającym. Strona Bolmon mierzei to rezerwat przyrody i kite jest tam zabroniony — trzymaj się strony Étang de Berre. Jeśli nie umiesz płynąć pod wiatr, będziesz stale spychany na brzeg i w strefy zamknięte; do nauki lepiej pojechać do Port-Saint-Louis. Wiosna i jesień dają najlepsze warunki i najmniej ludzi."
+    }
+  },
+  {
+    "name": "Six-Fours – Brutal Beach",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/824",
+    "windfinderUrl": "https://www.windfinder.com/forecast/six_fours_brutal_beach",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.111047,5.811707",
+    "spotInfo": {
+      "type": "Sea, short powerful waves over a sandy bottom",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "13-26°C",
+      "experience": "Advanced",
+      "launch": "Plage de Bonnegrâce, a 1.2 km gravel beach along the promenade next to the harbour; the launch is between two breakwaters",
+      "hazards": "Kitesurfing forbidden in summer - wingfoil remains possible; intense shore break in a southwest; a bar to get through with weakened wind behind the breakwater on the way out; busy beach; for experienced riders only when it builds",
+      "season": "September-June",
+      "description": "The wave spot of the Toulon area, 13 km from the city on the gravel beach of Bonnegrâce with a sandy bottom that will not surprise a foil. Southwest is the money direction but west and northwest both work well, and the biggest waves are generated by a strong Tramontane in the western Mediterranean or a strong westerly; the best-shaped waves come on a northwest and roll towards the eastern breakwater. The waves are short but powerful, with a well-established side-onshore wind in a Mistral.",
+      "llmComment": "Kitesurfing is banned here in summer - wingfoiling is still allowed, which is worth knowing before making the drive. Getting out is the technical part: there is a bar to cross and the wind is weakened behind the breakwater on the way through, so the exit is harder than the riding. In a southwest the shore break is intense. The best-shaped waves roll towards the eastern breakwater on a northwest."
+    },
+    "spotInfoPL": {
+      "type": "Morze, krótkie i mocne fale nad piaszczystym dnem",
+      "bestWind": "SW, W, NW",
+      "waterTemp": "13-26°C",
+      "experience": "Zaawansowany",
+      "launch": "Plage de Bonnegrâce, 1,2-kilometrowa żwirowa plaża wzdłuż promenady obok portu; wejście do wody między dwoma falochronami",
+      "hazards": "Kitesurfing zakazany latem — wingfoil nadal dozwolony; intensywny przybój przy wietrze południowo-zachodnim; do pokonania bariera fal, z osłabionym wiatrem za falochronem podczas wychodzenia; zatłoczona plaża; przy większych falach tylko dla doświadczonych",
+      "season": "Wrzesień-Czerwiec",
+      "description": "Falowy spot okolic Tulonu, 13 km od miasta, na żwirowej plaży Bonnegrâce z piaszczystym dnem, które nie zaskoczy foila. Południowy zachód to kierunek królewski, ale zachód i północny zachód też działają dobrze; największe fale generuje silna tramontana w zachodniej części Morza Śródziemnego albo mocny wiatr zachodni, a najlepiej uformowane fale przychodzą przy północnym zachodzie i toczą się w stronę wschodniego falochronu. Fale są krótkie, ale mocne, a przy mistralu wiatr jest boczny z dopychaniem i dobrze ustabilizowany.",
+      "llmComment": "Kitesurfing jest tu latem zakazany — wingfoil nadal wolno, o czym warto wiedzieć przed wyjazdem. Techniczną częścią jest wyjście: trzeba pokonać barierę fal, a wiatr za falochronem po drodze słabnie, więc wypłynięcie jest trudniejsze niż samo pływanie. Przy wietrze południowo-zachodnim przybój jest intensywny. Najlepiej uformowane fale toczą się w stronę wschodniego falochronu przy północnym zachodzie."
+    }
+  },
+  {
+    "name": "Piantarella – Bonifacio",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/17",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bonifacio",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=41.374493,9.218001",
+    "spotInfo": {
+      "type": "Lagoon behind a sandbank, flat shallow turquoise water",
+      "bestWind": "E, NE, W",
+      "waterTemp": "14-27°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "From the small jetty; there is no real beach, or you walk 500 m along the coast towards the Spérone golf course",
+      "hazards": "Do not cross the sandbank between the beach and the Île Piana without checking the depth first - the banks move; the Bouches de Bonifacio outside the lagoon carry impressive swell and should never be sailed alone; the spot is wind-shadowed in a Mistral; many anchored boats and severe overcrowding in July and August; a northerly means staying near the shore and a southerly is essentially unrideable",
+      "season": "April-October, best June, July and September",
+      "description": "An iconic lagoon at the southern tip of Corsica facing the Lavezzi islands, where a sandbank links the Île Piana to the shore and creates a protected turquoise pool you can stand in almost everywhere. Bonifacio is one of the windiest places in Europe, with wind more than 300 days a year and over 190 days above force 4; the dominant winds are west-southwest and east-northeast. East and northeast is the kite direction, most frequent in summer thanks to thermals reinforced by the Corsica-Sardinia venturi, arriving side-on to side-shore over extra-flat water.",
+      "llmComment": "East and northeast is the direction that makes this spot; a west is technical and wind-shadowed for kites, a north means staying close to shore (the local saying is exactly that), and a southerly is essentially unrideable. In a Mistral the lagoon is shadowed and the only option is to go out into the Bouches de Bonifacio, which should never be done alone. The sandbank between the beach and the Île Piana is the gateway to open water and it moves - check the depth on foot before crossing it the first time. July and August bring anchored boats and crowds that leave too little room for kites, and some schools declare the spot unusable then. Beginners should use the Ventilègne bridge nearby, where the west wind comes in clean."
+    },
+    "spotInfoPL": {
+      "type": "Laguna za łachą piasku, płaska i płytka turkusowa woda",
+      "bestWind": "E, NE, W",
+      "waterTemp": "14-27°C",
+      "experience": "Średniozaawansowany do zaawansowanego",
+      "launch": "Z małego pomostu; prawdziwej plaży tu nie ma, alternatywnie 500 m marszu wzdłuż wybrzeża w stronę pola golfowego Spérone",
+      "hazards": "Nie przekraczaj łachy między plażą a wyspą Piana bez wcześniejszego sprawdzenia głębokości — łachy się przemieszczają; Bouches de Bonifacio poza laguną niosą imponującą falę i nigdy nie należy tam pływać samemu; przy mistralu spot jest zawietrzny; mnóstwo zakotwiczonych łodzi i skrajny tłok w lipcu i sierpniu; przy wietrze północnym trzeba trzymać się brzegu, a przy południowym pływanie praktycznie nie wchodzi w grę",
+      "season": "Kwiecień-Październik, najlepiej Czerwiec, Lipiec i Wrzesień",
+      "description": "Ikoniczna laguna na południowym krańcu Korsyki, naprzeciw wysp Lavezzi, gdzie łacha piasku łączy wyspę Piana z brzegiem i tworzy osłonięty turkusowy basen, w którym niemal wszędzie można stanąć. Bonifacio to jedno z najbardziej wietrznych miejsc Europy — wiatr wieje ponad 300 dni w roku, a ponad 190 dni powyżej 4 w skali Beauforta; dominują wiatry z zachodu-południowego zachodu i wschodu-północnego wschodu. Wschód i północny wschód to kierunek kite'owy, najczęstszy latem dzięki termikom wzmocnionym efektem venturiego między Korsyką a Sardynią, wchodzący bocznie lub bocznie z dopychaniem nad ekstremalnie płaską wodą.",
+      "llmComment": "To wschód i północny wschód tworzą ten spot; zachód jest techniczny i zawietrzny dla kite'a, północ oznacza trzymanie się brzegu (dokładnie tak brzmi lokalne powiedzenie), a południe praktycznie wyklucza pływanie. Przy mistralu laguna jest zawietrzna i jedyną opcją jest wyjście w Bouches de Bonifacio, czego nigdy nie należy robić samemu. Łacha między plażą a wyspą Piana to brama na otwartą wodę i przemieszcza się — przed pierwszym przejściem sprawdź głębokość na piechotę. Lipiec i sierpień przynoszą zakotwiczone łodzie i tłumy, które nie zostawiają miejsca dla latawców, a niektóre szkoły uznają wtedy spot za nieużywalny. Początkujący powinni korzystać z pobliskiego mostu Ventilègne, gdzie wiatr zachodni wchodzi czysto."
+    }
+  },
+  {
+    "name": "Calvi",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/48648",
+    "windguruFallbackUrl": "https://www.windguru.cz/1527",
+    "windfinderUrl": "https://www.windfinder.com/forecast/calvi",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=42.567664,8.758870",
+    "spotInfo": {
+      "type": "Bay, flat to light chop backed by a pine forest",
+      "bestWind": "NE, E, W, SW",
+      "waterTemp": "13-26°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "The long sandy beach of the Calvi bay south of the citadel, backed by pines, with the sailing centre and beach clubs along it",
+      "hazards": "Wind shadow and turbulence from the mountains behind the bay in a westerly; anchored boats and ferry traffic at the northern end near the port; summer bathing zones and crowds; the Mistral arrives gusty after crossing Cap Corse",
+      "season": "April-October",
+      "description": "A wide sheltered bay in the Balagne with 4 km of sand backed by pine forest, and the gentlest of Corsica's well-known wind venues. The bay faces east-northeast, so the summer thermal comes in clean over flat to lightly choppy water, and the surrounding mountains keep the swell out. It is the family and progression end of Corsican kiting, in complete contrast to the technical lagoon at Piantarella in the far south.",
+      "llmComment": "The mountains behind the bay are the local variable: a westerly arrives turbulent and shadowed after crossing them, while the northeast thermal comes in clean over the water. Keep clear of the northern end near the port, where the Nice and Marseille ferries and the anchored boats are. This is the beginner-friendly Corsican option; Piantarella at Bonifacio, on the same island but 200 km south, is the technical one."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, płasko do lekkiej fali, w tle las sosnowy",
+      "bestWind": "NE, E, W, SW",
+      "waterTemp": "13-26°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Długa piaszczysta plaża zatoki Calvi na południe od cytadeli, z sosnami w tle, wzdłuż której działają centrum żeglarskie i kluby plażowe",
+      "hazards": "Zawietrze i turbulencje od gór za zatoką przy wietrze zachodnim; zakotwiczone łodzie i ruch promów na północnym krańcu przy porcie; letnie strefy kąpielowe i tłumy; mistral przychodzi porywisty po przejściu nad Cap Corse",
+      "season": "Kwiecień-Październik",
+      "description": "Szeroka, osłonięta zatoka w regionie Balagne z 4 km piasku i lasem sosnowym w tle — najłagodniejszy z dobrze znanych korsykańskich akwenów wiatrowych. Zatoka zwrócona jest na wschód-północny wschód, więc letni termik wchodzi czysto nad płaską lub lekko pofalowaną wodę, a otaczające góry zatrzymują martwą falę. To rodzinny i rozwojowy koniec korsykańskiego kite'a, całkowite przeciwieństwo technicznej laguny w Piantarelli na dalekim południu.",
+      "llmComment": "Zmienną lokalną są góry za zatoką: wiatr zachodni przychodzi po ich przekroczeniu turbulentny i zawietrzny, podczas gdy termik z północnego wschodu wchodzi czysto nad wodą. Trzymaj się z dala od północnego krańca przy porcie, gdzie stoją zakotwiczone łodzie i kursują promy do Nicei i Marsylii. To korsykańska opcja przyjazna początkującym; Piantarella w Bonifacio, na tej samej wyspie, ale 200 km na południe, to opcja techniczna."
+    }
+  },
+  {
+    "name": "Lac de la Ganguise",
+    "country": "France",
+    "windguruUrl": "https://www.windguru.cz/337",
+    "windguruFallbackUrl": "https://www.windguru.cz/349",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lac_ganguise",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=43.317872,1.805522",
+    "spotInfo": {
+      "type": "Freshwater reservoir, flat water",
+      "bestWind": "SE, NW",
+      "waterTemp": "8-26°C",
+      "experience": "Advanced",
+      "launch": "Only the private grounds of the Le Cathare inn allow launching; the launch area slopes down to the lake",
+      "hazards": "Very irregular wind with changes of direction and local wind shadows caused by the terrain; the sloping launch area lifts a kite unexpectedly; dead trees at the water's edge complicate getting in; variable water level with submerged trees; the lake is also a water reserve for firefighting aircraft; not suitable for beginners",
+      "season": "Year-round, best March-June and September-November",
+      "description": "An inland reservoir in the Lauragais between Toulouse and Carcassonne, in the natural wind corridor that links the Atlantic to the Mediterranean. The terrain creates a venturi and the wind is usually funnelled in at 25 to 30 knots, with the wind stations not uncommonly reading over 45. It works mainly in a southeast; the Tramontane from the northwest struggles to get in cleanly and arrives very disturbed by the relief. Flat water, no swell and no tide - the compensation for a wind that is anything but smooth.",
+      "llmComment": "Do not trust the forecast here: the venturi means the wind on the water is routinely far stronger than any model says, locals advise always anticipating more than announced, and the stations regularly read above 45 knots. Bring a small kite. The launch is the other catch - only the private grounds of the Le Cathare inn allow it, the ground slopes down to the water so the kite gets lifted, and dead trees along the shore complicate the entry. Water level varies through the season and submerged trees come and go with it, and the lake doubles as a water reserve for firefighting aircraft."
+    },
+    "spotInfoPL": {
+      "type": "Zbiornik słodkowodny, płaska woda",
+      "bestWind": "SE, NW",
+      "waterTemp": "8-26°C",
+      "experience": "Zaawansowany",
+      "launch": "Start możliwy wyłącznie z prywatnego terenu zajazdu Le Cathare; miejsce startu opada w stronę jeziora",
+      "hazards": "Bardzo nierówny wiatr ze zmianami kierunku i lokalnymi zawietrzami wynikającymi z ukształtowania terenu; pochyłe miejsce startu nieoczekiwanie podrywa latawiec; martwe drzewa przy brzegu utrudniają wejście do wody; zmienny poziom wody z zatopionymi drzewami; jezioro służy też jako zbiornik dla samolotów gaśniczych; nieodpowiednie dla początkujących",
+      "season": "Cały rok, najlepiej Marzec-Czerwiec i Wrzesień-Listopad",
+      "description": "Śródlądowy zbiornik w regionie Lauragais między Tuluzą a Carcassonne, w naturalnym korytarzu wiatrowym łączącym Atlantyk ze Morzem Śródziemnym. Ukształtowanie terenu tworzy efekt venturiego i wiatr zwykle wpada tu z siłą 25-30 węzłów, a stacje pomiarowe nierzadko pokazują ponad 45. Działa głównie przy wietrze południowo-wschodnim; tramontana z północnego zachodu z trudem wchodzi czysto i przybywa mocno zaburzona przez rzeźbę terenu. Płaska woda, brak martwej fali i pływów — to rekompensata za wiatr, który jest wszystkim, tylko nie gładki.",
+      "llmComment": "Nie ufaj tu prognozie: efekt venturiego sprawia, że wiatr na wodzie jest rutynowo znacznie silniejszy niż wskazuje jakikolwiek model, miejscowi radzą zawsze zakładać więcej niż zapowiedziano, a stacje regularnie pokazują powyżej 45 węzłów. Weź mały latawiec. Drugim haczykiem jest start — możliwy wyłącznie z prywatnego terenu zajazdu Le Cathare, grunt opada w stronę wody, więc latawiec bywa podrywany, a martwe drzewa wzdłuż brzegu utrudniają wejście. Poziom wody zmienia się w ciągu sezonu, a wraz z nim pojawiają się i znikają zatopione drzewa; jezioro pełni też funkcję zbiornika dla samolotów gaśniczych."
     }
   }
 ]
