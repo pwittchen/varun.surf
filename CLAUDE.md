@@ -489,6 +489,9 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Country-based filtering
 - [x] Search functionality, focused from anywhere with the "/" key (the field
       carries a "/" hint on the desktop layout)
+- [x] Header search on the single spot page (desktop only): with no list on the
+      page to filter it drops a list of matching spots and jumps to the one
+      picked, keyboard included; the spots list is fetched once on first focus
 - [x] Favorites system
 - [x] Custom spot ordering with drag-and-drop
 - [x] Dark/light theme

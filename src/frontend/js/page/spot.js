@@ -13,6 +13,7 @@ import * as appShell from '../common/appShell.js';
 import * as mainPageShortcuts from '../common/mainPageShortcuts.js';
 import * as sideMenu from '../common/sideMenu.js';
 import * as calculator from '../common/calculator.js';
+import * as spotSearch from '../common/spotSearch.js';
 
 // ============================================================================
 // GLOBAL STATE MANAGEMENT
@@ -3054,6 +3055,9 @@ function updateUITranslations() {
     // Update kite size calculator modal content
     calculator.updateTranslations(translations.t);
 
+    // Update the header spot search (placeholder, shortcut tooltip, result rows)
+    spotSearch.updateTranslations();
+
     // Update loading text
     const loadingMessage = document.getElementById('loadingMessage');
     if (loadingMessage && loadingMessage.style.display !== 'none') {
@@ -3524,5 +3528,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupHeaderNavigation();
     setupResizeHandler();
     setupModelDropdown();
+    spotSearch.setup();
     setupSpot();
 });

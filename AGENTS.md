@@ -723,6 +723,8 @@ Implemented features (complete):
 - External links (Windguru, Windfinder, ICM model, webcam)
 - Country-based filtering
 - Search functionality (by spot name), focused from anywhere with the "/" key
+- Header search on the single spot page (desktop only), which jumps straight to
+  another spot instead of filtering a list
 - Favorites system (localStorage-based)
 - Custom spot ordering with drag-and-drop
 - Dark/light theme toggle

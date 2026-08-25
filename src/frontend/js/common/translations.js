@@ -12,6 +12,9 @@ export const translations = {
         // Header
         searchPlaceholder: "Search spots...",
         searchShortcutTooltip: "Press / to search",
+        // Single spot page: the header search opens a list of spots to jump to
+        searchLoadingSpots: "Searching…",
+        searchNoResults: "No spots found",
         allCountries: "All",
         spotsCount: "spots",
         headerStatsSpots: "spots",
@@ -503,6 +506,9 @@ export const translations = {
         // Header
         searchPlaceholder: "Szukaj spotów...",
         searchShortcutTooltip: "Naciśnij /, aby wyszukać",
+        // Widok pojedynczego spotu: wyszukiwarka w nagłówku otwiera listę spotów
+        searchLoadingSpots: "Szukam…",
+        searchNoResults: "Nie znaleziono spotów",
         allCountries: "Wszystkie",
         spotsCount: "spotów",
         // Odmiana przez liczbę: 2-4 (poza 12-14) biorą formę "few" ("102 spoty"),

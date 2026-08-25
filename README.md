@@ -280,6 +280,7 @@ Skill definitions are located in `.claude/skills/`.
 - browsing details regarding different spots like description, windguru, windfinder and ICM forecast links, location and webcam
 - filtering spots by country
 - searching spots
+- searching for another spot straight from the single spot view (desktop), which jumps to the spot picked
 - possibility to add spots to favorites
 - organizing spots in the custom order with a drag and drop mechanism
 - dark/light theme

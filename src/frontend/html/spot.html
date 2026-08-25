@@ -40,6 +40,25 @@
                 <span id="langCode">EN</span>
             </button>
 
+            <!-- Jump to another spot without going back to the list. Desktop
+                 only: hidden by CSS on the drawer layout, where the header has
+                 no room for it -->
+            <div class="search-container spot-search-container" id="spotSearchContainer">
+                <input type="text"
+                       class="search-input"
+                       id="spotSearchInput"
+                       placeholder="Search spots..."
+                       autocomplete="off"
+                       role="combobox"
+                       aria-expanded="false"
+                       aria-autocomplete="list"
+                       aria-controls="spotSearchResults">
+                <button class="search-clear" id="spotSearchClear">✕</button>
+                <!-- Keyboard hint: "/" focuses the field, as on the main page -->
+                <kbd class="search-shortcut" aria-hidden="true">/</kbd>
+                <div class="dropdown-menu spot-search-results" id="spotSearchResults" role="listbox"></div>
+            </div>
+
             <!-- Forecast Model Dropdown -->
             <div class="dropdown-container" id="modelDropdownContainer">
                 <button class="dropdown-button" id="modelDropdown">

@@ -980,6 +980,60 @@ body.index-page .header-title {
     display: none;
 }
 
+/* ----------------------------------------------------------------------------
+   Single spot page: the same field, but with nothing on the page to filter it
+   opens a list of matching spots to jump to. Desktop only — on the drawer
+   layout the header has no room for it and the spots list is the way across.
+   ---------------------------------------------------------------------------- */
+@media (max-width: 929px) {
+    .spot-search-container {
+        display: none !important;
+    }
+}
+
+/* Wider than the field it hangs from: a spot name and its country need more
+   room than a query does, and the header's right edge is where it aligns */
+.spot-search-results {
+    left: auto;
+    right: 0;
+    min-width: 300px;
+}
+
+.spot-search-option {
+    justify-content: flex-start;
+}
+
+.spot-search-flag {
+    flex: 0 0 auto;
+    font-size: 1rem;
+}
+
+.spot-search-option .dropdown-option-name {
+    flex: 1 1 auto;
+}
+
+.spot-search-country {
+    flex: 0 0 auto;
+    color: var(--text-tertiary);
+    font-size: .78rem;
+}
+
+/* Keyboard highlight, the same surface the pointer hover paints */
+.spot-search-option.active {
+    background: var(--overlay-light);
+}
+
+/* "Searching..." / "No spots found": copy, not a choice */
+.spot-search-message {
+    color: var(--text-tertiary);
+    cursor: default;
+    justify-content: center;
+}
+
+.spot-search-message:hover {
+    background: transparent;
+}
+
 
 /* ============================================================================
    6. DROPDOWN COMPONENTS

@@ -40,6 +40,8 @@ varun.surf/
 │   │   │   ├── calculator.js      # Kite and board size calculator
 │   │   │   ├── toolsPage.js       # Tools page wiring
 │   │   │   ├── mainPageShortcuts.js # Keyboard shortcuts on the dashboard
+│   │   │   ├── search.js          # Spot search matching (shared by both search fields)
+│   │   │   ├── spotSearch.js      # Single spot page header search (jump to another spot)
 │   │   │   ├── weather.js         # Wind formatting and color coding
 │   │   │   ├── date.js            # Date and time helpers
 │   │   │   └── constants.js       # Shared constants
@@ -193,6 +195,13 @@ DOM Manipulation (vanilla JS)
 - Spot photo display (when available)
 - ICM meteogram link (for Poland/Czech Republic spots)
 - Dynamic forecast model selector (40+ Windguru models, populated from `availableModels`)
+- Header spot search (`common/spotSearch.js`), desktop only: with no list on the
+  page to filter, it opens a list of matching spots to jump straight to. Same
+  match as the main page's filter (name or country, diacritics folded, shared via
+  `common/search.js`), keyboard-driven (arrows, Enter, Escape) and focused from
+  anywhere with the "/" key. The spots list is fetched once on the first focus,
+  so a page nobody searches from never pays for it. Hidden on the drawer layout
+  (<=929px), where the header has no room for it
 - Auto-refresh every 60 seconds
 - Polling mechanism for IFS forecast availability
 
@@ -203,6 +212,7 @@ DOM Manipulation (vanilla JS)
 - `startBackgroundRefresh()` - Auto-refresh current conditions (60s)
 - `renderWindguruView()` - Horizontal forecast view
 - `renderConditionsChart()` - Canvas-based wind history chart
+- `spotSearch.setup()` / `spotSearch.updateTranslations()` - header spot search
 - Model selection persistence via `sessionStorage`
 
 #### 3. Status Page (`status.html`)
@@ -979,11 +989,18 @@ languageToggle.addEventListener('click', () => {
 - Selected country persists in `localStorage`
 
 ### 4. Search Functionality
-**Real-Time Search**:
-- Input text → filter spots by name (case-insensitive)
+**Real-Time Search** (main page):
+- Input text → filter spots by name or country (case-insensitive, diacritics folded)
 - Search works across filtered country results
 - Clear button (×) appears when text entered
 - No API calls (client-side filtering)
+
+**Jump Search** (single spot page, desktop only):
+- The same field, but with no list on the page it drops a list of matching spots
+  and navigates to the one picked (click, or arrows + Enter)
+- Matching is shared with the main page via `common/search.js`, so the same
+  typing finds the same spots on both
+- The spots list is fetched once, lazily, on the first focus of the field
 
 ### 5. Theme Switching
 **Dark/Light Mode**:

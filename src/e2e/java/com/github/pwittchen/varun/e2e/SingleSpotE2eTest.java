@@ -274,6 +274,75 @@ class SingleSpotE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should jump to another spot from the header search")
+    void shouldJumpToAnotherSpotFromTheHeaderSearch() {
+        // two names off the spots list: the first one is where the test starts,
+        // the second one is what it types into the header search
+        page.navigate(BASE_URL + "/");
+        waitForPageLoad();
+
+        Locator spotNames = page.locator("#spotsGrid .spot-card .spot-name");
+        spotNames.first().waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        String otherSpotName = spotNames.nth(1).textContent().trim();
+
+        spotNames.first().click();
+        page.waitForURL(url -> url.contains("/spot/"),
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
+        waitForPageLoad();
+        waitForSpotToLoad();
+        String openedSpotUrl = page.url();
+
+        // the slash reaches the field here too, as it does on the main page
+        page.evaluate("() => document.activeElement && document.activeElement.blur()");
+        page.keyboard().press("/");
+        page.waitForTimeout(200);
+
+        Locator search = page.locator("#spotSearchInput");
+        assertThat(search.evaluate("el => el === document.activeElement")).isEqualTo(true);
+        assertThat(search.inputValue()).isEmpty();
+
+        search.fill(otherSpotName);
+
+        Locator match = page
+            .locator("#spotSearchResults .spot-search-option",
+                new Page.LocatorOptions().setHasText(otherSpotName))
+            .first();
+        match.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        match.click();
+
+        page.waitForURL(url -> url.contains("/spot/") && !url.equals(openedSpotUrl),
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
+        waitForSpotToLoad();
+
+        assertThat(page.url()).isNotEqualTo(openedSpotUrl);
+        assertThat(page.locator("#spotContainer").textContent()).contains(otherSpotName);
+    }
+
+    @Test
+    @DisplayName("Should keep the header search off the mobile layout")
+    void shouldKeepHeaderSearchOffMobileLayout() {
+        navigateToSpotPage();
+        waitForSpotToLoad();
+
+        Locator search = page.locator("#spotSearchContainer");
+        assertThat(search.isVisible()).isTrue();
+
+        // the drawer layout has no room for it and the spots list is the way across
+        page.setViewportSize(390, 844);
+        page.waitForTimeout(500);
+        assertThat(search.isVisible()).isFalse();
+
+        page.locator("#hamburgerMenu").click();
+        page.waitForTimeout(500);
+        assertThat(search.isVisible()).isFalse();
+    }
+
+    @Test
     @DisplayName("Should change language on single spot page")
     void shouldChangeLanguageOnSingleSpotPage() {
         navigateToSpotPage();
