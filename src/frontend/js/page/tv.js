@@ -55,7 +55,7 @@ function displaySpot(spot) {
     }
     if (spotCountry) {
         const countryFlag = flags.getCountryFlag(spot.country);
-        const countryName = t(spot.country) || spot.country;
+        const countryName = t(spot.country.replace(/\s+/g, '')) || spot.country;
         spotCountry.textContent = `${countryFlag} ${countryName}`;
     }
     if (providerText) {
