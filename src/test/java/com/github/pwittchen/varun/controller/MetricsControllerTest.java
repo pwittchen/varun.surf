@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -65,7 +66,17 @@ public class MetricsControllerTest {
                     assertThat(metrics).containsKey("jvm");
                     assertThat(metrics).containsKey("httpClient");
                     assertThat(metrics).containsKey("timestamp");
+                    assertThat(metrics).containsKey("version");
                 })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnRunningVersion() {
+        ReflectionTestUtils.setField(controller, "version", "1.2.3");
+
+        StepVerifier.create(controller.metrics())
+                .assertNext(metrics -> assertThat(metrics.get("version")).isEqualTo("1.2.3"))
                 .verifyComplete();
     }
 

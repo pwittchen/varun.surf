@@ -4505,6 +4505,12 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-size: 0.875rem;
 }
 
+.status-version {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
 .status-info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,9 @@ public class MetricsController {
     private final MeterRegistry meterRegistry;
     private final MetricsHistoryService metricsHistoryService;
 
+    @Value("${spring.application.version:unknown}")
+    private String version;
+
     public MetricsController(MeterRegistry meterRegistry, MetricsHistoryService metricsHistoryService) {
         this.meterRegistry = meterRegistry;
         this.metricsHistoryService = metricsHistoryService;
@@ -36,6 +40,10 @@ public class MetricsController {
     @GetMapping("metrics")
     public Mono<Map<String, Object>> metrics() {
         Map<String, Object> result = new HashMap<>();
+
+        // Running version, so the metrics page can name the build the numbers
+        // below come from without asking the status endpoint as well
+        result.put("version", version);
 
         // Application gauges
         result.put("gauges", getGauges());

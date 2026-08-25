@@ -571,6 +571,7 @@ function drawThreadsHistoryChart() {
 // Draw the metrics already held. Called after every fetch and again on a
 // language switch, so it reads the cached payload rather than taking one.
 function renderMetrics() {
+    renderVersion();
     if (!lastMetrics) {
         return;
     }
@@ -585,6 +586,26 @@ function renderMetrics() {
     drawCpuHistoryChart();
     drawRamHistoryChart();
     drawThreadsHistoryChart();
+}
+
+// The running version, greyed out next to the refresh state. It rides along with
+// the metrics payload, so naming the build the numbers come from costs no extra
+// request - and it stays blank until the first one arrives.
+function renderVersion() {
+    const el = document.getElementById('app-version');
+    if (!el) {
+        return;
+    }
+    const version = lastMetrics?.version;
+    if (!version) {
+        el.textContent = '';
+        return;
+    }
+    if (version === 'unknown') {
+        el.textContent = t('statusUnknownVersion');
+        return;
+    }
+    el.textContent = version.startsWith('v') ? version : `v${version}`;
 }
 
 function renderLastUpdated() {
