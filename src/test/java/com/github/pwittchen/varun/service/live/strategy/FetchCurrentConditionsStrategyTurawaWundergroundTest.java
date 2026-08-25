@@ -38,6 +38,15 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
+    void shouldReturnFalseWithoutApiKey() {
+        // without a key the request could only come back unauthorized, so the spot
+        // shows no live conditions instead of failing once a minute
+        var withoutKey = new FetchCurrentConditionsStrategyTurawaWunderground(new OkHttpClient(), new Gson(), "");
+
+        assertThat(withoutKey.canProcess(SpotsJson.wgIdOf("Turawa Południe"))).isFalse();
+    }
+
+    @Test
     void shouldReturnFalseForOtherWgIds() {
         // the northern shore is served by the airmax station
         assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Północ"))).isFalse();

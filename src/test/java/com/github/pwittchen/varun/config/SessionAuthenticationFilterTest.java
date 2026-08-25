@@ -103,6 +103,59 @@ public class SessionAuthenticationFilterTest {
     }
 
     @Test
+    void shouldRejectApiAccessWithTamperedCookie() {
+        String sessionCookie = getSessionCookie();
+        String signature = sessionCookie.substring(sessionCookie.indexOf('.') + 1);
+
+        webTestClient.get()
+                .uri("/api/v1/spots")
+                .cookie("SESSION", "9999999999." + signature)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void shouldRejectApiAccessWithGarbageCookie() {
+        webTestClient.get()
+                .uri("/api/v1/spots")
+                .cookie("SESSION", "definitely-not-a-token")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void shouldIssueHttpOnlyCookieScopedToTheWholeSite() {
+        var result = webTestClient.get()
+                .uri("/")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(String.class);
+
+        ResponseCookie cookie = result.getResponseCookies().getFirst("SESSION");
+        assertThat(cookie).isNotNull();
+        assertThat(cookie.isHttpOnly()).isTrue();
+        assertThat(cookie.getPath()).isEqualTo("/");
+        assertThat(cookie.getSameSite()).isEqualTo("Lax");
+        // plain http in tests, so the cookie must not be marked Secure or the
+        // browser would drop it
+        assertThat(cookie.isSecure()).isFalse();
+    }
+
+    @Test
+    void shouldNotReissueCookieForVisitorAlreadyHoldingAFreshOne() {
+        String sessionCookie = getSessionCookie();
+
+        var result = webTestClient.get()
+                .uri("/")
+                .cookie("SESSION", sessionCookie)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(String.class);
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNull();
+    }
+
+    @Test
     void shouldInitializeSessionOnPageVisit() {
         var result = webTestClient.get()
                 .uri("/")

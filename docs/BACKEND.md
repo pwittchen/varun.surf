@@ -593,7 +593,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── NettyConfig.java                  # Netty HTTP client tuning
 │   ├── OkHttpClientConfig.java           # OkHttpClient bean configuration
 │   ├── SecurityConfig.java               # Spring Security (HTTP Basic + session filter)
-│   ├── SessionConfig.java                # SESSION cookie configuration
+│   ├── SessionTokenService.java          # signed stateless SESSION cookie token
 │   ├── SessionAuthenticationFilter.java  # Session-based API access gating
 │   ├── CacheControlFilter.java           # Cache-Control headers (cache busting)
 │   ├── LogAppenderConfig.java            # In-memory log appender

@@ -200,16 +200,28 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 10. **SessionAuthenticationFilter** (`config/SessionAuthenticationFilter.java`)
     - `WebFilter` registered in Spring Security filter chain (before authentication)
-    - Gates API access behind a session cookie:
-      - **Exempt paths** (no session required): `/api/v1/health`, `/actuator/**`, static assets
-      - **API paths** (`/api/v1/**`): requires valid initialized session, returns 401 without
-      - **Page visits** (all other paths): automatically creates and initializes session
-    - Works with `SessionConfig` for cookie configuration
+    - Gates API access behind the `SESSION` cookie:
+      - **Exempt paths** (no cookie required): `/api/v1/health`, `/actuator/**`, `/llms/**`, `/mcp/**`, static assets
+      - **API paths** (`/api/v1/**`): requires a valid token, returns 401 without
+      - **Page visits** (all other paths): issued a cookie, and reissued one once the
+        token is past its half-life so an active visitor is never cut off mid-visit
+    - Cookie: httpOnly, sameSite=Lax, path=/, and Secure only when `X-Forwarded-Proto`
+      says the visitor is on https (a Secure cookie over plain http is dropped, which
+      would break local runs and the e2e suite)
 
-11. **SessionConfig** (`config/SessionConfig.java`)
-    - Configures `CookieWebSessionIdResolver` bean
-    - Cookie settings: name=`SESSION`, maxAge=24h, httpOnly=true, sameSite=Lax, path=/
-    - Max age configurable via `app.session.max-age-seconds` (default: 86400)
+11. **SessionTokenService** (`config/SessionTokenService.java`)
+    - Mints and verifies the cookie value: `<expiry epoch second>.<base64url HMAC-SHA256>`
+    - Stateless by design, which fixes two things the in-memory `WebSession` had:
+      the store capped at 10 000 sessions and then failed every further page visit
+      (a trivial DoS), and a restart or blue-green swap logged every visitor out
+    - Secret from `app.session.secret` (`APP_SESSION_SECRET`). Left empty a random
+      one is generated at startup and a warning is logged: it works, but cookies do
+      not survive a restart and are not shared between blue and green
+    - Lifetime from `app.session.max-age-seconds` (default: 86400)
+    - Because nothing is stored server-side, `SecurityConfig` also pins
+      `NoOpServerSecurityContextRepository` and `NoOpServerRequestCache` - both
+      defaults reach for a `WebSession` on every request, read our token as an
+      unknown session id and answer with a cookie-clearing `Set-Cookie`
 
 12. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
@@ -327,8 +339,10 @@ app:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
     max-age-seconds: 86400      # SESSION cookie max age (24 hours)
+    secret: ${APP_SESSION_SECRET:}        # signs the SESSION cookie; random if unset
   wunderground:
-    api-key: ${WUNDERGROUND_API_KEY:...}  # Weather Underground PWS (Turawa South)
+    api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
+                                          # no default - the station is skipped without it
 
 spring:
   ai:
@@ -421,7 +435,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── CorsConfig.java
 │   ├── WebConfig.java
 │   ├── SecurityConfig.java    # Spring Security (HTTP Basic Auth + session filter)
-│   ├── SessionConfig.java     # SESSION cookie configuration
+│   ├── SessionTokenService.java # signed stateless SESSION cookie token
 │   ├── SessionAuthenticationFilter.java # Session-based API access gating
 │   ├── CacheControlFilter.java # Cache-Control headers (cache busting)
 │   ├── LogAppenderConfig.java # In-memory log appender
@@ -617,11 +631,16 @@ precision for tokens.
 
 16. **Session Cookie Authentication**:
     - All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie
-    - Visitors who load the frontend get a session cookie automatically (page visits initialize the session)
-    - Requests without a valid session receive HTTP 401 with an empty body
-    - Exempt paths: `/api/v1/health`, `/actuator/**`, static assets
-    - Cookie config: httpOnly, sameSite=Lax, 24h maxAge (configurable via `app.session.max-age-seconds`)
+    - Visitors who load the frontend get one automatically on any page visit
+    - Requests without a valid token receive HTTP 401 with an empty body
+    - Exempt paths: `/api/v1/health`, `/actuator/**`, `/llms/**`, `/mcp/**`, static assets
+    - The cookie is a stateless signed token, not a session id - see `SessionTokenService`
     - Runs as a `WebFilter` before Spring Security authentication (the logs still require HTTP Basic on top)
+    - This is a speed bump, not a wall: two requests get anyone a cookie, and
+      `/llms/**` and `/mcp/**` serve the same data without one. What actually limits
+      abuse is the rate limiting in `nginx/nginx.conf`
+    - The logs are **fail-closed**: with no `ANALYTICS_PASSWORD` set, `/api/v1/logs`
+      is denied outright rather than falling open to everyone holding a cookie
 
 17. **Cache Busting** (updates visible without waiting for the Cloudflare cache):
     - CSS, JS and the logo are content-hashed at build time into `/assets/<name>.<hash>.<ext>` (`build.ts`)

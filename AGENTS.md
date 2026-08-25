@@ -477,8 +477,10 @@ app:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
     max-age-seconds: 86400           # SESSION cookie max age (24 hours)
+    secret: ${APP_SESSION_SECRET:}   # signs the SESSION cookie; random if unset
   wunderground:
-    api-key: ${WUNDERGROUND_API_KEY:...}  # Weather Underground PWS (Turawa South)
+    api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
+                                          # no default - the station is skipped without it
 
 spring:
   ai:
@@ -510,7 +512,11 @@ management:
 ### Environment Variables
 - `OPENAI_API_KEY`: Required when AI analysis feature is enabled
 - `ANALYTICS_PASSWORD`: Optional password for the logs endpoint
-- `WUNDERGROUND_API_KEY`: Optional key for the Weather Underground PWS station (Turawa South)
+- `WUNDERGROUND_API_KEY`: Optional key for the Weather Underground PWS station (Turawa South).
+  Without it the station is skipped. No default is committed: this repository is public
+- `APP_SESSION_SECRET`: Optional secret signing the SESSION cookie. Without it a random one
+  is generated at startup, so cookies stop working after a restart and are not shared
+  between the blue and green containers
 - `CLOUDFLARE_ZONE_ID` / `CLOUDFLARE_API_TOKEN`: Optional, used by `deployment.sh` to purge the cache after deploy
 
 ## Build & Run Commands
@@ -619,7 +625,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── CorsConfig.java             # CORS configuration
 │   ├── WebConfig.java              # WebFlux configuration
 │   ├── SecurityConfig.java         # Spring Security (HTTP Basic Auth + session filter)
-│   ├── SessionConfig.java          # SESSION cookie configuration (24h, httpOnly, Lax)
+│   ├── SessionTokenService.java    # signed stateless SESSION cookie token (24h, httpOnly, Lax)
 │   ├── SessionAuthenticationFilter.java # Session-based API access gating (WebFilter)
 │   ├── LogAppenderConfig.java      # In-memory log appender configuration
 │   ├── CacheControlFilter.java     # Cache-Control headers (cache busting)
@@ -1020,7 +1026,7 @@ All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` c
 - `/actuator/**` - Prometheus scraping
 - Static assets (`.js`, `.css`, `.png`, `.ico`, `.svg`, `.webp`, `.woff2`, `.txt`, `.xml`, `.webmanifest`, `.html`, `.json`, `/assets/`, `/images/`)
 
-**Cookie Configuration** (`SessionConfig`):
+**Cookie Configuration** (`SessionTokenService` / `SessionAuthenticationFilter`):
 - Name: `SESSION`
 - Max age: 24 hours (configurable via `app.session.max-age-seconds`)
 - httpOnly: true

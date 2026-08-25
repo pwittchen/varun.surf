@@ -8,6 +8,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.Base64;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,15 +42,30 @@ public class SecurityConfigNoPasswordTest {
                 .expectStatus().isOk();
     }
 
+    // No password configured means nobody can authenticate, so the logs must stay
+    // shut rather than falling open to every visitor holding a session cookie.
     @Test
-    void shouldAllowAccessToLogsWithoutPasswordConfigured() {
+    void shouldRejectAccessToLogsWithoutPasswordConfigured() {
         String sessionCookie = getSessionCookie();
 
         webTestClient.get()
                 .uri("/api/v1/logs")
                 .cookie("SESSION", sessionCookie)
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void shouldRejectAccessToLogsWithCredentialsWhenNoPasswordConfigured() {
+        String sessionCookie = getSessionCookie();
+        String credentials = Base64.getEncoder().encodeToString("admin:anything".getBytes());
+
+        webTestClient.get()
+                .uri("/api/v1/logs")
+                .cookie("SESSION", sessionCookie)
+                .header("Authorization", "Basic " + credentials)
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
     @Test

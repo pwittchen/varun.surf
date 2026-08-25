@@ -110,6 +110,36 @@ To do that, follow the instructions below.
 - If you want to test the deployment locally, run `./deployment.sh dev` script.
 - To stop everything, run: `docker stop varun-app-blue-live varun-app-green-live varun-nginx`
 
+## api protection
+
+The data is public and the repository is public with it, so none of this tries to stop
+anyone from *reading* the API. It stops the API from being *abused* - hammered, or used
+as a free backend by someone else's app.
+
+- **rate limiting** (`nginx/nginx.conf`): 10 r/s per IP across `/api/v1/**` with a burst
+  of 30 (a page load fires several calls at once), and a stricter 1 r/s for the endpoints
+  that cost real work or real bytes - `/api/v1/wind`, `/llms/**`, `/mcp/**` and
+  `/api/v1/logs`, where the trickle is also what stops a brute force on the basic auth.
+  SSE connections are capped at 4 per client. Over the limit is a 429.
+- **real client address**: behind Cloudflare `$remote_addr` is the edge, so nginx trusts
+  `CF-Connecting-IP` from the Cloudflare ranges listed in the config. Without this every
+  visitor shares one rate-limit bucket. Refresh the ranges from
+  [cloudflare.com/ips](https://www.cloudflare.com/ips/) when they change. Note this
+  assumes traffic reaches nginx through Cloudflare: a client able to hit the origin port
+  directly could set the header itself.
+- **session cookie** (`SessionAuthenticationFilter`): a signed stateless token issued on
+  any page visit and required by `/api/v1/**`. It costs a scraper one extra request and
+  nothing more - `/llms/**` and `/mcp/**` serve the same data without it, by design.
+- **fail-closed logs**: with no `ANALYTICS_PASSWORD` set, `/api/v1/logs` is denied rather
+  than opened to everyone holding a cookie. Set the variable or the logs page stays dark.
+- **security headers**: `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
+  and HSTS are set by nginx. The CSP is deliberately `Content-Security-Policy-Report-Only`
+  - the frontend carries inline styles and scripts, so enforcing it as-is would break
+  pages. Watch the console for violations, tighten, then rename the header.
+
+The strongest lever is not in this repository: Cloudflare's *Bot Fight Mode* and WAF rate
+limiting rules filter automated traffic at the edge, before it reaches the VPS at all.
+
 ## cache busting
 
 Updated styles, scripts, and images are visible right after a deployment, without waiting for the

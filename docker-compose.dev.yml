@@ -38,6 +38,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=blue
       - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
+      - APP_SESSION_SECRET=${APP_SESSION_SECRET:-}
+      - WUNDERGROUND_API_KEY=${WUNDERGROUND_API_KEY:-}
 
   varun-app-green-live:
     build:
@@ -63,3 +65,5 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=green
       - ANALYTICS_PASSWORD=${ANALYTICS_PASSWORD:-}
+      - APP_SESSION_SECRET=${APP_SESSION_SECRET:-}
+      - WUNDERGROUND_API_KEY=${WUNDERGROUND_API_KEY:-}

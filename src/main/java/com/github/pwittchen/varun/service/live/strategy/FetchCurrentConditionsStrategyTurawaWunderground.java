@@ -48,9 +48,14 @@ public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurre
         this.apiKey = apiKey;
     }
 
+    /**
+     * Without an API key the request could only ever come back unauthorized, so the
+     * strategy stands down and the spot shows no live conditions rather than failing
+     * once a minute forever.
+     */
     @Override
     public boolean canProcess(int wgId) {
-        return wgId == TURAWA_SOUTH_WG_ID;
+        return wgId == TURAWA_SOUTH_WG_ID && apiKey != null && !apiKey.isBlank();
     }
 
     @Override
