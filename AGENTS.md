@@ -68,7 +68,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 **Purpose**: Central data orchestration and caching layer using Java 25 structured concurrency.
 
 **Scheduled Tasks** (run in parallel with `@Async`):
-- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~230 spots
+- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~730 spots
 - **Current Conditions**: Every 1 minute - real-time wind data
 - **ICM Meteograms**: Every 3 hours - Polish/Czech spots only (if feature enabled)
 - **AI Analysis**: Every 8 hours - LLM-powered summaries, EN and PL separately (if feature enabled)
@@ -169,7 +169,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 
 **Configuration**:
 - Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
-- Provider: OpenAI (gpt-4o-mini) - roughly $0.05 per pass over ~230 spots
+- Provider: OpenAI (gpt-4o-mini) - roughly $0.20 per pass over ~730 spots
 
 **Professional Prompt Engineering**:
 - System role: Professional kitesurfing weather analyst
@@ -242,12 +242,12 @@ chatClient.prompt().user(prompt)
   - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
   - Triggers async model discovery if not cached
 - `GET /api/v1/wind?hours=N` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
-  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~230 spots), so the
+  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~730 spots), so the
     map's forecast timeline reads this instead
   - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto one shared
-    grid and emits wind/gusts/direction as parallel arrays (~30 KB gzipped for 120
-    hours); samples are held forward across the three-hourly stride the forecast
-    drops to after ~3 days
+    grid and emits wind/gusts/direction as parallel arrays (roughly 100 KB gzipped
+    for 120 hours across the current spot list, growing with it); samples are held
+    forward across the three-hourly stride the forecast drops to after ~3 days
   - `hours` says how far the grid reaches (default 120, capped at 16 days): a
     desktop map asks for the whole forecast run, a phone for the five days its
     slider has room for. The grid ends where the forecast stops covering most
@@ -432,8 +432,8 @@ public record SpotInfo(
 
 ### Static Data: spots.json
 - **Location**: `src/main/resources/spots.json`
-- **Size**: ~230 kite spots across 32 countries
-- **Coverage**: Poland, Netherlands, France, Spain, Italy, Greece, Germany, Denmark, Austria, Portugal, Brazil, Egypt, South Africa, and more
+- **Size**: ~730 kite spots across 43 countries
+- **Coverage**: Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, Croatia and the Balkans, Lithuania/Latvia/Estonia, Sweden, Norway, the United Kingdom, Austria, Switzerland, Brazil, Egypt, South Africa, and more
 - **Content**: Each spot contains:
   - Basic info (id, name, country, coordinates)
   - URLs (Windguru, Windfinder, ICM, webcam)
@@ -739,7 +739,9 @@ Implemented features (complete):
 - MCP server page (/mcp) with endpoint, install command and JSON config
 - Health check history (90 data points, 1-minute intervals)
 - Session cookie authentication (API access gated behind SESSION cookie)
-- Hero section with random spot photo, name/location, and slogan (EN/PL)
+- Hero section with random spot photo, name/location, and slogan (EN/PL), closed
+  from the photo itself behind a confirmation modal that names the sidebar button
+  bringing it back
 - Dynamic multi-model forecast support (40+ Windguru models)
 - Automatic language detection from browser settings
 - EN/PL translations across every page, the status, sources, MCP, logs and
@@ -750,6 +752,10 @@ Implemented features (complete):
 - Interactive wind map: marker clustering, wind arrows, wind field overlay
   (heatmap + animated particles), layer switcher and an hourly forecast timeline
   (the whole forecast run on a desktop, five days on a phone)
+- Wind map popups carrying wind, gusts and direction for the hour the forecast
+  slider stands on, rewritten in place as it steps (the page's own spot included)
+- Running version shown next to the about modal title, fetched from
+  /api/v1/status the first time the modal opens and cached for the session
 - Sidebar navigation shared by every page, with a mobile drawer
 - Embeddable spot widget (/embed) with conditions, forecast or map view (satellite/light/dark, wind field, 5-day forecast slider) and language selection
 - TV view (/tv) for a full-screen spot display
@@ -766,10 +772,10 @@ Implemented features (complete):
 
 **Rationale for default-off**:
 1. **Limited value**: Weather data is already clear and numeric
-2. **Cost consideration**: at ~900 tokens per prompt, one pass over ~230 spots is
-   ~220k input tokens - roughly $0.05 per language pass on gpt-4o-mini
-3. **Monthly cost estimate**: single-digit dollars per month at the scheduled
-   8-hour interval in both languages (reasonable but optional)
+2. **Cost consideration**: at ~900 tokens per prompt, one pass over ~730 spots is
+   ~660k input tokens - roughly $0.20 per language pass on gpt-4o-mini
+3. **Monthly cost estimate**: low tens of dollars per month at the scheduled
+   8-hour interval in both languages, scaling with the spot list
 
 **How to enable**:
 ```yaml

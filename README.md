@@ -290,6 +290,8 @@ Skill definitions are located in `.claude/skills/`.
 - map of the spot (Open Street Maps, zoomed in on the spot)
 - wind field overlay on the maps (heatmap and animated wind particles) with an hourly forecast timeline
   stepping through the whole forecast run on a desktop, five days on a phone
+- map popups reading the wind, gusts and direction of the hour the forecast timeline stands on,
+  following it as it steps
 - sidebar navigation shared by every page, with a mobile drawer
 - link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)
@@ -297,7 +299,8 @@ Skill definitions are located in `.claude/skills/`.
 - embeddable HTML widget with current conditions, forecast or a map with the wind field
   and a 5-day forecast slider for the spot
 - session cookie authentication for API access (prevents direct API scraping without visiting the site)
-- hero section with random spot photo, name/location, and slogan in PL and EN
+- hero section with random spot photo, name/location, and slogan in PL and EN, hidden from the photo
+  itself and brought back with the Banner button in the sidebar
 - automatic language detection from browser settings
 - stale live conditions indicators (yellow for outdated data)
 - fallback weather station mechanism (automatic switch when primary returns stale data)

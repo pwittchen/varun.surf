@@ -166,10 +166,11 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
-   - `/api/v1/spots` strips `forecastHourly` (too large for ~230 spots), so the
+   - `/api/v1/spots` strips `forecastHourly` (too large for ~730 spots), so the
      map's forecast timeline reads `/api/v1/wind` instead: `HourlyForecastMapper`
      projects every spot's hourly GFS forecast onto one shared grid and emits
-     wind/gusts/direction as parallel arrays (~30 KB gzipped for 120 hours)
+     wind/gusts/direction as parallel arrays (roughly 100 KB gzipped for 120
+     hours across the current spot list, and it grows with it)
    - `hours` says how far the grid should reach (default 120, capped at 16 days):
      a desktop map asks for the whole forecast run, a phone for the five days its
      slider has room for, and neither pays for the other's payload. The grid ends
@@ -290,7 +291,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 ### spots.json
 - Location: `src/main/resources/spots.json`
-- Contains ~230 kite spots across 32 countries (Poland, Netherlands, France, Spain, Italy, Greece, Germany, Denmark, Brazil, Egypt, South Africa, etc.)
+- Contains ~730 kite spots across 43 countries (Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, the Balkans, the Baltics, Scandinavia, the UK, Brazil, Egypt, South Africa, etc.)
 - Each spot includes: location, URLs (Windguru, Windfinder, ICM, webcam), spot info (water type, best wind, hazards, season)
 - Loaded on startup by `JsonSpotsDataProvider`
 
@@ -502,7 +503,9 @@ src/main/java/com/github/pwittchen/varun/
 - [x] MCP server page (/mcp) with endpoint, install command and JSON config
 - [x] Health check history (90 data points, 1-minute intervals)
 - [x] Session cookie authentication (API access gated behind SESSION cookie)
-- [x] Hero section with random spot photo, name/location, and slogan (EN/PL)
+- [x] Hero section with random spot photo, name/location, and slogan (EN/PL),
+      closed from the photo itself behind a confirmation modal that names the
+      sidebar button bringing it back
 - [x] Dynamic multi-model forecast support (40+ Windguru models)
 - [x] Automatic language detection from browser settings
 - [x] EN/PL translations across every page, the status, sources, MCP, logs and
@@ -513,6 +516,10 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Interactive wind map with marker clustering, wind arrows, a wind field
       overlay (heatmap + animated particles) and an hourly forecast timeline
       (the whole forecast run on a desktop, five days on a phone)
+- [x] Wind map popups carrying wind, gusts and direction for the hour the
+      forecast slider stands on, rewritten in place as it steps
+- [x] Running version shown next to the about modal title (fetched from
+      /api/v1/status the first time the modal opens)
 - [x] Sidebar navigation shared by every page, with a mobile drawer
 - [x] Embeddable spot widget (/embed) with conditions, forecast or map view (satellite/light/dark, wind field, 5-day forecast slider) and language selection
 - [x] TV view (/tv) for a full-screen spot display
@@ -523,10 +530,10 @@ src/main/java/com/github/pwittchen/varun/
 
 The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
-2. Cost consideration: at ~900 tokens per prompt, one pass over ~230 spots is
-   ~220k input tokens, so roughly $0.05 per language pass on gpt-4o-mini
+2. Cost consideration: at ~900 tokens per prompt, one pass over ~730 spots is
+   ~660k input tokens, so roughly $0.20 per language pass on gpt-4o-mini
 3. Estimated monthly cost at the scheduled 8-hour interval in both languages:
-   single-digit dollars per month (reasonable but not essential)
+   low tens of dollars per month, and it scales with the spot list
 
 Note: the hourly block is ~48 daylight rows carrying every forecast variable,
 which makes a prompt of roughly 950 tokens for a coastal spot and 850 for an

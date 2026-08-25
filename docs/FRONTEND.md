@@ -143,7 +143,10 @@ DOM Manipulation (vanilla JS)
 - `/starred` - Favorites view
 
 **Features**:
-- Hero section with random spot photo, name/location, and slogan (EN/PL, toggleable)
+- Hero section with random spot photo, name/location, and slogan (EN/PL,
+  toggleable). Two actions sit on the photo: refresh draws another spot, the X
+  hides the banner - and because that is not obviously reversible, the X opens a
+  confirmation modal naming the sidebar Banner button that brings it back
 - Grid layout with spot cards (2 or 3 columns)
 - Country dropdown filter
 - Search functionality
@@ -151,7 +154,7 @@ DOM Manipulation (vanilla JS)
 - Drag-and-drop spot reordering
 - Auto-refresh every 60 seconds
 - Stale live conditions indicators (yellow pulsing dot for outdated data)
-- Modal overlays (AI analysis, spot info, ICM forecast, kite calculator)
+- Modal overlays (AI analysis, spot info, ICM forecast, kite calculator, hide-banner confirmation)
 
 **JavaScript Logic** (`page/index.js`):
 - `fetchWeatherData()` - Fetch all spots from API
@@ -172,6 +175,15 @@ DOM Manipulation (vanilla JS)
 - Real-time current conditions card with live indicator
 - Current conditions history chart (12-hour wind trend)
 - Embedded Google Maps (satellite view)
+- Wind map of the spot and its neighbours (`initSpotWindMap`): the shared wind
+  field, a layer switcher, a crosshair that recenters and reopens the spot's own
+  popup, and the forecast slider under it. Every popup - the page's own spot
+  included, its name plain text because linking a page to itself leads nowhere -
+  carries wind, gusts, direction and, off "now", the hour it describes. Stepping
+  the slider rewrites open popups in place instead of closing them; the
+  neighbour layer is rebuilt on zoom (clustering is in screen pixels), so
+  `map.findOpenSpotPopup` / `map.openSpotPopup` carry an open popup across the
+  rebuild
 - Spot photo display (when available)
 - ICM meteogram link (for Poland/Czech Republic spots)
 - Dynamic forecast model selector (40+ Windguru models, populated from `availableModels`)
@@ -311,6 +323,14 @@ DOM Manipulation (vanilla JS)
 > (map view), both wired in `WebConfig`.
 
 ### Core JavaScript Modules
+
+#### `appShell.js` - Shared Sidebar and Modal Markup
+`renderSidebar()` and `renderModals()` inject the chrome every page carries, so
+the sidebar and the about modal live in one place rather than in each page's
+markup. `loadAppVersion()` fills the greyed-out version span beside the about
+modal's title from `/api/v1/status`; it is called when the modal opens rather
+than on load - a page that never opens it never pays for the request - and the
+answer is memoized for the session.
 
 #### `toolsPage.js` - Shared Wiring for the Status / Sources / MCP / Logs / Metrics Pages
 `setup(options)` renders the shared chrome (sidebar, minimal header, modals),
@@ -525,7 +545,11 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 - **AI Modal**: LLM-generated forecast analysis
 - **ICM Modal**: ICM forecast image viewer
 - **Kite Size Modal**: Kite/board size calculator
-- **App Info Modal**: About page (contact, collaboration)
+- **App Info Modal**: About page (contact, collaboration), with the running
+  version greyed out next to its title
+- **Confirm Modal** (`.modal-confirm`): narrow dialog with a question, a hint and
+  an action row of one secondary and one primary button - used by the hero
+  banner's X
 
 **Structure**:
 ```html
@@ -611,7 +635,7 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 ### In-Memory State
 
 **Dashboard** (`page/index.js`):
-- `globalWeatherData`: Cached spot data (array of ~230 spots)
+- `globalWeatherData`: Cached spot data (array of ~730 spots)
 - `availableCountries`: Set of unique countries
 - `currentSearchQuery`: Active search term
 - `showingFavorites`: Boolean flag
@@ -675,7 +699,7 @@ window.addEventListener('popstate', (event) => {
    ↓
 2. fetchWeatherData() → GET /api/v1/spots
    ↓
-3. globalWeatherData = response (~230 spots)
+3. globalWeatherData = response (~730 spots)
    ↓
 4. populateCountryDropdown() (extract unique countries)
    ↓
@@ -740,6 +764,23 @@ window.addEventListener('popstate', (event) => {
 - Instant theme switching (no page reload)
 - Consistent color palette
 - Easy maintenance and customization
+
+### Buttons
+
+Every button in the app is one flat control: a 36px box on the `--radius-md`
+(6px) step of the radius scale, a 1px border, weight 500. `.modal-button`,
+`.calc-button`, `.mcp-copy-btn` and `.embed-copy-button` are aliases on the same
+rules rather than families of their own, so per-page markup and JS hooks select
+what they always did.
+
+Two variants, and only two: **neutral** (surface fill + hairline border) for
+anything reversible, **accent** (`.btn-primary`, `.modal-button-primary`) for the
+one action a dialog or form exists to perform. Both carry the border, so the two
+sit at the same height when they share a row.
+
+The accent fill is `--button-accent-bg` / `--button-accent-hover` (and
+`--button-success-bg` for confirmations), not the raw `--accent-primary`: white
+on the raw accent measured 2.1:1 in dark and 3.7:1 in light, below AA.
 
 ### Layout Systems
 
@@ -901,7 +942,9 @@ languageToggle.addEventListener('click', () => {
 - **Weather Data**: Day names, month names, table headers
 - **Error Messages**: All error states with localized text
 - **Modal Content**: Titles, descriptions, disclaimers
-- **Country Names**: Full list of 25+ countries
+- **Country Names**: Named list in `translations.js`, keyed by the country name
+  with its spaces removed (`CzechRepublic`). A country with no entry falls back
+  to that key, so a missing entry surfaces as a name without its spaces
 
 ## Features & Interactions
 
@@ -922,7 +965,7 @@ languageToggle.addEventListener('click', () => {
 
 ### 3. Country Filtering
 **Dropdown Behavior**:
-- Auto-populated from spot data (~230 spots → 32 countries)
+- Auto-populated from spot data (~730 spots → 43 countries)
 - Click country → filter spots + update URL (`/country/{name}`)
 - "All" option → show all spots + reset URL to `/`
 - Selected country persists in `localStorage`
