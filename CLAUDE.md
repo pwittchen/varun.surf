@@ -67,7 +67,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - Forecasts: every 3 hours (GFS model, daily + hourly)
      - Current conditions: every 1 minute
      - ICM meteograms: every 3 hours for Polish/Czech spots (if enabled)
-     - AI analysis: every 8 hours, EN and PL separately (if enabled)
+     - AI analysis: every 24 hours, EN and PL separately (if enabled)
    - Uses Java 25 StructuredTaskScope with virtual threads for concurrent execution
    - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI, 16 model discovery)
    - Maintains multiple in-memory caches (ConcurrentHashMap):
@@ -538,8 +538,8 @@ The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
 2. Cost consideration: at ~900 tokens per prompt, one pass over ~780 spots is
    ~660k input tokens, so roughly $0.20 per language pass on gpt-4o-mini
-3. Estimated monthly cost at the scheduled 8-hour interval in both languages:
-   low tens of dollars per month, and it scales with the spot list
+3. Estimated monthly cost at the scheduled 24-hour interval in both languages:
+   roughly $12 per month, and it scales with the spot list
 
 Note: the hourly block is ~48 daylight rows carrying every forecast variable,
 which makes a prompt of roughly 950 tokens for a coastal spot and 850 for an
@@ -571,7 +571,7 @@ precision for tokens.
 5. **Caching Strategy**:
    - Forecasts: 3-hour refresh cycle (scheduled)
    - Current conditions: 1-minute refresh cycle (scheduled)
-   - AI analysis: 8-hour refresh cycle (if enabled)
+   - AI analysis: 24-hour refresh cycle (if enabled)
    - Embedded maps: Lazy-loaded once, cached forever
    - Forecast models: On-demand discovery when single spot accessed, 3-hour TTL per spot
 

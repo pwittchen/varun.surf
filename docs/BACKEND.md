@@ -11,7 +11,7 @@
                                                                             |
                                        +-----------------------------------v-----------------------------------+
                                        |             AggregatorService (core orchestrator)                     |
-                         +-------------+  - schedules: forecasts (3h), conditions (1m), AI (8h)                |
+                         +-------------+  - schedules: forecasts (3h), conditions (1m), AI (24h)                |
                          |             |  - caches: spots, forecasts (40+ models), conditions, AI, maps        |
                          |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI) |
                          |             |  - uses Java 25 StructuredTaskScope for concurrent execution          |
@@ -70,7 +70,7 @@
                  -> strategy pattern: WiatrKadyny, Podersdorf, etc.
                  -> updates currentConditions{spotId -> CurrentConditions}
 
-  every 8h  -> fetchAiForecastAnalysisEn() + fetchAiForecastAnalysisPl() (if enabled via feature flag)
+  every 24h -> fetchAiForecastAnalysisEn() + fetchAiForecastAnalysisPl() (if enabled via feature flag)
                  -> uses StructuredTaskScope with virtual threads (separate scopes for EN and PL)
                  -> semaphore limits to 16 concurrent requests
                  -> for each Spot -> getHourlyForecast(wgId) [the spot's hourly forecast]
@@ -262,7 +262,7 @@ Sponsor
    - Multi-language support:
      - AiServiceEn: English prompts and analysis
      - AiServicePl: Polish prompts and analysis
-     - Both services run in parallel every 8 hours
+     - Both services run in parallel every 24 hours
      - Separate caches for each language
 
 5. ICM Meteogram Integration (Poland & Czech Republic only)
@@ -361,13 +361,13 @@ In-Memory Caches (ConcurrentHashMap):
   4. aiAnalysisEn: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in English
-     - Updated: every 8 hours (if enabled)
+     - Updated: every 24 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
   5. aiAnalysisPl: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in Polish
-     - Updated: every 8 hours (if enabled)
+     - Updated: every 24 hours (if enabled)
      - Conditional: only enabled if feature flag is true
 
   6. locationCoordinates: Map<Integer, Coordinates>

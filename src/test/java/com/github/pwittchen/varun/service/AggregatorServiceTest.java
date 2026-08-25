@@ -342,7 +342,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(0);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursEn();
 
         // then
         verify(aiServiceEn, never()).fetchAiAnalysis(any(), any());
@@ -361,7 +361,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(1);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursEn();
 
         // then
         verify(aiServiceEn).fetchAiAnalysis(any(), any());
@@ -426,7 +426,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(1);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursEn();
 
         // then
         verify(aiServiceEn).fetchAiAnalysis(any(), any());
@@ -442,7 +442,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(0);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursPl();
 
         // then
         verify(aiServicePl, never()).fetchAiAnalysis(any(), any());
@@ -461,7 +461,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(1);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursPl();
 
         // then
         verify(aiServicePl).fetchAiAnalysis(any(), any());
@@ -480,7 +480,7 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(1);
 
         // when
-        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursPl();
 
         // then
         verify(aiServicePl).fetchAiAnalysis(any(), any());
@@ -508,7 +508,7 @@ class AggregatorServiceTest {
         // when
         var aiThread = new Thread(() -> {
             try {
-                aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+                aggregatorService.fetchAiAnalysisEveryTwentyFourHoursPl();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -548,8 +548,8 @@ class AggregatorServiceTest {
         awaitSpotsLoaded(1);
 
         // when - fetch both languages
-        aggregatorService.fetchAiAnalysisEveryEightHoursEn();
-        aggregatorService.fetchAiAnalysisEveryEightHoursPl();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursEn();
+        aggregatorService.fetchAiAnalysisEveryTwentyFourHoursPl();
 
         // then - verify both are in caches
         @SuppressWarnings("unchecked")
@@ -591,7 +591,7 @@ class AggregatorServiceTest {
         // when
         var aiThread = new Thread(() -> {
             try {
-                aggregatorService.fetchAiAnalysisEveryEightHoursEn();
+                aggregatorService.fetchAiAnalysisEveryTwentyFourHoursEn();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

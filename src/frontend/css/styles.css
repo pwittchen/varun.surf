@@ -3139,7 +3139,8 @@ body.index-page .header-title {
     margin-bottom: 0;
 }
 
-/* One-line warning kept inside the card so it does not take over the layout */
+/* Warning kept inside the card, at a small size so the couple of lines it wraps
+   to do not take over the layout */
 .ai-analysis-card .ai-analysis-note {
     margin-top: 8px;
     font-size: 0.75rem;

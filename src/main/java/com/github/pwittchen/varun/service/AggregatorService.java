@@ -84,7 +84,7 @@ public class AggregatorService {
     // Scheduling intervals
     private static final long FORECAST_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;    // 3 hours
     private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
-    private static final long AI_FETCH_INTERVAL_MS = 8 * 60 * 60 * 1000;          // 8 hours
+    private static final long AI_FETCH_INTERVAL_MS = 24 * 60 * 60 * 1000;         // 24 hours
     private static final long AI_INITIAL_DELAY_MS = 5 * 60 * 1000;                // 5 minutes
     private static final long ICM_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;         // 3 hours
     private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
@@ -919,7 +919,7 @@ public class AggregatorService {
 
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
-    public void fetchAiAnalysisEveryEightHoursEn() throws FetchingForecastException {
+    public void fetchAiAnalysisEveryTwentyFourHoursEn() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis in EN");
             fetchAiForecastAnalysisEn();
@@ -930,7 +930,7 @@ public class AggregatorService {
 
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
-    public void fetchAiAnalysisEveryEightHoursPl() throws FetchingForecastException {
+    public void fetchAiAnalysisEveryTwentyFourHoursPl() throws FetchingForecastException {
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis in PL");
             fetchAiForecastAnalysisPl();

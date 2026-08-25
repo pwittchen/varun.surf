@@ -71,7 +71,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 - **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~780 spots
 - **Current Conditions**: Every 1 minute - real-time wind data
 - **ICM Meteograms**: Every 3 hours - Polish/Czech spots only (if feature enabled)
-- **AI Analysis**: Every 8 hours - LLM-powered summaries, EN and PL separately (if feature enabled)
+- **AI Analysis**: Every 24 hours - LLM-powered summaries, EN and PL separately (if feature enabled)
 
 **Java 25 StructuredTaskScope**:
 - Uses virtual threads via `Thread.ofVirtual().factory()`
@@ -778,8 +778,8 @@ Implemented features (complete):
 1. **Limited value**: Weather data is already clear and numeric
 2. **Cost consideration**: at ~900 tokens per prompt, one pass over ~780 spots is
    ~660k input tokens - roughly $0.20 per language pass on gpt-4o-mini
-3. **Monthly cost estimate**: low tens of dollars per month at the scheduled
-   8-hour interval in both languages, scaling with the spot list
+3. **Monthly cost estimate**: roughly $12 per month at the scheduled
+   24-hour interval in both languages, scaling with the spot list
 
 **How to enable**:
 ```yaml

@@ -245,7 +245,7 @@ public String fetch(String url) {
 // Current TTLs
 Forecasts:          3 hours (scheduled refresh)
 Current conditions: 1 minute (scheduled refresh)
-AI analysis:        8 hours (if enabled)
+AI analysis:        24 hours (if enabled)
 Embedded maps:      Forever (lazy-loaded once)
 IFS hourly:         3 hours (on-demand)
 ```
@@ -320,7 +320,7 @@ String result = sb.toString();
 ```java
 @Scheduled(fixedRate = 3 * 60 * 60 * 1000)  // Forecasts: every 3h
 @Scheduled(fixedRate = 60 * 1000)           // Conditions: every 1min
-@Scheduled(fixedRate = 8 * 60 * 60 * 1000)  // AI: every 8h (if enabled)
+@Scheduled(fixedRate = 24 * 60 * 60 * 1000) // AI: every 24h (if enabled)
 ```
 
 **Analysis points**:
