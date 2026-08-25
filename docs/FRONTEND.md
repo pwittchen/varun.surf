@@ -154,6 +154,10 @@ DOM Manipulation (vanilla JS)
 - Drag-and-drop spot reordering
 - Auto-refresh every 60 seconds
 - Stale live conditions indicators (yellow pulsing dot for outdated data)
+- Map view with three controls in the bottom-left corner: the spot visibility
+  toggle (markers and clusters on or off - hiding them leaves the wind field,
+  which lives on its own layer, alone on the map), the wind overlay switcher
+  (`off` / `field`) and the base layer switcher. Both choices are remembered
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator, hide-banner confirmation)
 
 **JavaScript Logic** (`page/index.js`):
@@ -344,7 +348,7 @@ fetched so the callback can redraw without waiting for the next refresh.
 #### `state.js` - Centralized State Management
 Exports functions for all localStorage/sessionStorage operations.
 
-**Storage Keys**: `THEME`, `TV_THEME`, `LANGUAGE`, `TV_LANGUAGE`, `FAVORITE_SPOTS`, `SHOWING_FAVORITES`, `SELECTED_COUNTRY`, `DESKTOP_VIEW_MODE`, `PREVIOUS_URL`, `FORECAST_VIEW_PREFERENCE`, `FILTER_WINDY_DAYS`, `FORECAST_MODEL` (sessionStorage), `HERO_VISIBLE`, `CALCULATOR_INPUTS`, `FIRING_SORT`, `LIVE_STATIONS_ONLY`, `WIND_OVERLAY_MODE`, `SIDEBAR_COLLAPSED`
+**Storage Keys**: `THEME`, `TV_THEME`, `LANGUAGE`, `TV_LANGUAGE`, `FAVORITE_SPOTS`, `SHOWING_FAVORITES`, `SELECTED_COUNTRY`, `DESKTOP_VIEW_MODE`, `PREVIOUS_URL`, `FORECAST_VIEW_PREFERENCE`, `FILTER_WINDY_DAYS`, `FORECAST_MODEL` (sessionStorage), `HERO_VISIBLE`, `CALCULATOR_INPUTS`, `FIRING_SORT`, `LIVE_STATIONS_ONLY`, `WIND_OVERLAY_MODE`, `MAP_SPOTS_VISIBLE`, `SIDEBAR_COLLAPSED`
 
 **Exported Functions**:
 - Theme: `getTheme()`, `setTheme()`, `applyTheme()`, `getCurrentTheme()`, `toggleTheme()`
@@ -623,7 +627,8 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 | `calculatorInputs` | JSON object | Remembered kite/board calculator inputs |
 | `firingSort` | string | `'true'` or `'false'` (sort by strongest wind) |
 | `liveStationsOnly` | string | `'true'` or `'false'` (show only spots with live stations) |
-| `windOverlayMode` | string | Wind overlay on the map: `'off'`, `'arrows'` or `'field'` (default) |
+| `windOverlayMode` | string | Wind overlay on the map: `'off'` or `'field'` (default) |
+| `mapSpotsVisible` | string | `'true'` (default) or `'false'` (map spot markers and clusters) |
 | `sidebarCollapsed` | string | `'true'` or `'false'` (sidebar state) |
 
 ### SessionStorage Keys

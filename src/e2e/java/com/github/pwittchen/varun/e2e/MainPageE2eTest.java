@@ -104,7 +104,7 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should cycle wind overlay field -> off -> arrows -> field")
+    @DisplayName("Should cycle wind overlay field -> off -> field")
     void shouldCycleWindOverlayModes() {
         navigateToMainPage();
         waitForSpotsToLoad();
@@ -129,7 +129,7 @@ class MainPageE2eTest extends BaseE2eTest {
 
         // Default mode is the field overlay: button active, both passes present
         // (colour wash + animated canvas), disclaimer visible.
-        // (Marker/arrow rendering depends on network-resolved coordinates, which are
+        // (Marker rendering depends on network-resolved coordinates, which are
         // not available in the sandboxed E2E run, so we assert the control mechanics.)
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("field");
         assertThat(overlayButton.getAttribute("class")).contains("active");
@@ -147,16 +147,6 @@ class MainPageE2eTest extends BaseE2eTest {
         assertThat(particleCanvas.count()).isEqualTo(0);
         assertThat(colourWash.count()).isEqualTo(0);
 
-        // Switch to arrows: option active, button active, no interpolation disclaimer
-        overlayButton.click();
-        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='arrows']").click();
-        page.waitForTimeout(300);
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("arrows");
-        assertThat(overlayButton.getAttribute("class")).contains("active");
-        assertThat(disclaimer.count()).isEqualTo(0);
-        assertThat(particleCanvas.count()).isEqualTo(0);
-        assertThat(colourWash.count()).isEqualTo(0);
-
         // Switch back to the field overlay: both passes come back together
         overlayButton.click();
         page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='field']").click();
@@ -164,6 +154,51 @@ class MainPageE2eTest extends BaseE2eTest {
         assertThat(activeOption.getAttribute("data-value")).isEqualTo("field");
         assertThat(overlayButton.getAttribute("class")).contains("active");
         assertThat(disclaimer.isVisible()).isTrue();
+        assertThat(particleCanvas.count()).isEqualTo(1);
+        assertThat(colourWash.count()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Should hide and show spots while the wind field stays on the map")
+    void shouldToggleSpotVisibility() {
+        navigateToMainPage();
+        waitForSpotsToLoad();
+
+        page.locator("#mapToggle").click();
+        Locator mapContainer = page.locator("#mapContainer");
+        mapContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        Locator spotsButton = page.locator(".leaflet-control-spots-toggle .layer-switcher-button");
+        spotsButton.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        Locator particleCanvas = page.locator("canvas.wind-particle-layer");
+        Locator colourWash = page.locator(".wind-field-layer");
+
+        // Spots are on by default, and the field overlay is the default mode
+        assertThat(spotsButton.getAttribute("class")).contains("active");
+        assertThat(spotsButton.getAttribute("aria-pressed")).isEqualTo("true");
+        assertThat(particleCanvas.count()).isEqualTo(1);
+        assertThat(colourWash.count()).isEqualTo(1);
+
+        // Hiding the spots leaves the wind field alone on the map
+        spotsButton.click();
+        page.waitForTimeout(300);
+        assertThat(spotsButton.getAttribute("class")).doesNotContain("active");
+        assertThat(spotsButton.getAttribute("aria-pressed")).isEqualTo("false");
+        assertThat(page.locator(".custom-marker-icon").count()).isEqualTo(0);
+        assertThat(page.locator(".map-cluster-icon").count()).isEqualTo(0);
+        assertThat(particleCanvas.count()).isEqualTo(1);
+        assertThat(colourWash.count()).isEqualTo(1);
+
+        // And bringing them back does not disturb the field either
+        spotsButton.click();
+        page.waitForTimeout(300);
+        assertThat(spotsButton.getAttribute("class")).contains("active");
+        assertThat(spotsButton.getAttribute("aria-pressed")).isEqualTo("true");
         assertThat(particleCanvas.count()).isEqualTo(1);
         assertThat(colourWash.count()).isEqualTo(1);
     }

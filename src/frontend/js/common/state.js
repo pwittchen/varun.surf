@@ -44,8 +44,11 @@ export const STORAGE_KEYS = {
     // Live-stations-only filter (main page)
     LIVE_STATIONS_ONLY: 'liveStationsOnly',
 
-    // Map wind overlay mode ('off' | 'arrows' | 'field')
+    // Map wind overlay mode ('off' | 'field')
     WIND_OVERLAY_MODE: 'windOverlayMode',
+
+    // Map spot markers and clusters shown or hidden
+    MAP_SPOTS_VISIBLE: 'mapSpotsVisible',
 
     // Sidebar collapsed to an icon rail (desktop / tablet)
     SIDEBAR_COLLAPSED: 'sidebarCollapsed'
@@ -205,10 +208,11 @@ export function setSidebarCollapsed(collapsed) {
 // MAP WIND OVERLAY MODE
 // ============================================================================
 
-const WIND_OVERLAY_MODES = ['off', 'arrows', 'field'];
+const WIND_OVERLAY_MODES = ['off', 'field'];
 
 // 'field' is also the fallback, which quietly migrates the 'heatmap' and
-// 'particles' values stored before the two were merged into one overlay.
+// 'particles' values stored before the two were merged into one overlay, and
+// the 'arrows' value stored before that mode was dropped.
 export function getWindOverlayMode() {
     const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
     return WIND_OVERLAY_MODES.includes(stored) ? stored : 'field';
@@ -217,6 +221,20 @@ export function getWindOverlayMode() {
 export function setWindOverlayMode(mode) {
     const value = WIND_OVERLAY_MODES.includes(mode) ? mode : 'off';
     localStorage.setItem(STORAGE_KEYS.WIND_OVERLAY_MODE, value);
+}
+
+// ============================================================================
+// MAP SPOT VISIBILITY
+// ============================================================================
+
+// The map opens with its spots on; hiding them is what leaves the wind field
+// alone on screen, and that choice is remembered between visits.
+export function getMapSpotsVisible() {
+    return localStorage.getItem(STORAGE_KEYS.MAP_SPOTS_VISIBLE) !== 'false';
+}
+
+export function setMapSpotsVisible(visible) {
+    localStorage.setItem(STORAGE_KEYS.MAP_SPOTS_VISIBLE, visible ? 'true' : 'false');
 }
 
 // ============================================================================

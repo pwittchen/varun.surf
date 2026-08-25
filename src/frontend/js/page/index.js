@@ -547,6 +547,7 @@ function initLanguage() {
         // Update map layer switcher labels
         map.updateLayerSwitcherLabels();
         map.updateWindOverlayLabels();
+        map.updateSpotsToggleLabels();
         map.updateForecastTimelineLabels();
         if (windOverlayDisclaimerEl) {
             windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
@@ -2592,7 +2593,8 @@ let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
-let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'arrows' | 'field'
+let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'field'
+let mapSpotsVisible = state.getMapSpotsVisible();
 let windOverlayDisclaimerEl = null;
 // Hourly slider under the map: 0 is now, later steps walk the forecast hour by
 // hour. The hours come from /api/v1/wind, which the spots response can't carry.
@@ -2601,7 +2603,7 @@ let mapTimelineIndex = null;
 let mapTimelineRequest = null;
 let mapForecastStep = 0;
 
-// Everything the map draws - dots, arrows, field, popups - reads its conditions
+// Everything the map draws - dots, field, popups - reads its conditions
 // through the timeline, so the whole map describes the selected hour at once.
 function getMapSpotConditions(spot) {
     const conditions = weather.getWindConditionsAtStep(spot, mapForecastStep, mapTimelineIndex);
@@ -2689,19 +2691,30 @@ function initMap() {
     });
     leafletMap.addControl(layerSwitcher);
 
-    // Add wind overlay control (off -> arrows -> field)
+    // Add wind overlay control (off -> field)
     const windOverlayControl = map.createWindOverlayControl({
         getMode: () => windOverlayMode,
         onModeChange: (newMode) => {
             windOverlayMode = newMode;
             state.setWindOverlayMode(newMode);
-            // Rebuild markers (dots hidden in arrows mode) and the overlay together.
             updateMapMarkers();
         }
     });
     leafletMap.addControl(windOverlayControl);
 
-    // Clustering is computed in screen pixels, so markers and arrows have to be
+    // Show/hide the spot markers and clusters. The wind overlay is a layer of
+    // its own, so hiding the spots leaves the field on the map by itself.
+    const spotsToggleControl = map.createSpotsToggleControl({
+        isVisible: () => mapSpotsVisible,
+        onToggle: (visible) => {
+            mapSpotsVisible = visible;
+            state.setMapSpotsVisible(visible);
+            updateMapMarkers();
+        }
+    });
+    leafletMap.addControl(spotsToggleControl);
+
+    // Clustering is computed in screen pixels, so the markers have to be
     // rebuilt whenever the zoom level changes.
     leafletMap.on('zoomend', () => {
         if (isMapView) {
@@ -2735,13 +2748,7 @@ function renderWindOverlay(spots) {
     // Drop the previous overlay contents (the container itself stays on the map)
     windOverlayLayer.clearLayers();
 
-    if (windOverlayMode === 'arrows') {
-        // Arrows double as spot markers with the same clickable popup as the dots.
-        windOverlayLayer.addLayer(
-            map.createWindArrowLayer(leafletMap, spots, getMapSpotConditions, buildSpotMarkerPopup)
-        );
-        ensureWindOverlayDisclaimer(false);
-    } else if (windOverlayMode === 'field') {
+    if (windOverlayMode === 'field') {
         // One overlay, two passes: the colour wash says how hard it blows, the
         // particles on top say where. Added in this order so the streaks stay
         // above the wash in the overlay pane.
@@ -2799,8 +2806,9 @@ function addMarkersToMap(spots) {
     // Done before the markers are built so clustering already sees the final zoom.
     fitMapToSpots(spots);
 
-    // In arrows mode the wind arrows act as the spot markers, so hide the dots.
-    if (windOverlayMode !== 'arrows') {
+    // Hidden spots leave the wind overlay - which lives on its own layer - as the
+    // only thing painted on the map.
+    if (mapSpotsVisible) {
         // Nearby spots collapse into a numbered bubble while the map is zoomed out.
         mapMarkerLayer.addLayer(
             map.createSpotMarkerLayer(leafletMap, spots, getMapSpotConditions, buildSpotMarkerPopup)
@@ -2885,7 +2893,7 @@ function showMapView() {
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     addMarkersToMap(filteredSpots);
 
-    // Render the active wind overlay (arrows/field) on top of markers
+    // Render the wind field overlay on top of the markers
     renderWindOverlay(filteredSpots);
 
     // Invalidate map size (needed for proper rendering)

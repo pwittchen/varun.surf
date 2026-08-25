@@ -749,9 +749,10 @@ Implemented features (complete):
   the `toolsPage.setup({onLanguageChange})` callback)
 - Stale live conditions indicators (yellow for outdated data, >=1 hour old)
 - Fallback weather station mechanism (automatic switch when primary returns stale data)
-- Interactive wind map: marker clustering, wind arrows, wind field overlay
-  (heatmap + animated particles), layer switcher and an hourly forecast timeline
-  (the whole forecast run on a desktop, five days on a phone)
+- Interactive wind map: marker clustering, wind field overlay (heatmap +
+  animated particles), a spot visibility toggle (hiding the markers and clusters
+  leaves the field alone on the map), layer switcher and an hourly forecast
+  timeline (the whole forecast run on a desktop, five days on a phone)
 - Wind map popups carrying wind, gusts and direction for the hour the forecast
   slider stands on, rewritten in place as it steps (the page's own spot included)
 - Running version shown next to the about modal title, fetched from

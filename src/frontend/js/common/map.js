@@ -319,9 +319,9 @@ export function createMarkerIcon(colorClass = '') {
 }
 
 // ============================================================================
-// WIND OVERLAY (arrows + interpolated field)
+// WIND OVERLAY (interpolated field)
 // Renders wind visualization from the app's own per-spot data (no external
-// map embeds). Modes: 'off' | 'arrows' | 'field'.
+// map embeds). Modes: 'off' | 'field'.
 //
 // The 'field' mode draws one overlay in two passes: a colour wash for how hard
 // it blows, and animated particles on top for where it blows. Both interpolate
@@ -329,10 +329,7 @@ export function createMarkerIcon(colorClass = '') {
 // the same patch of water.
 // ============================================================================
 
-export const WIND_OVERLAY_MODES = ['off', 'arrows', 'field'];
-
-// Upward-pointing arrow (north) used as the base glyph; rotated per wind direction.
-const WIND_ARROW_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2l6 9h-4v11h-4V11H6z"/></svg>';
+export const WIND_OVERLAY_MODES = ['off', 'field'];
 
 // Colour for no wind at all (< 5 kts): flat grey. Nothing is happening, so it
 // must not compete with the colours that mean something.
@@ -534,33 +531,6 @@ export function clusterPoints(map, points, options = {}) {
 }
 
 /**
- * Vector-average a set of wind directions, weighted by wind speed so the
- * stronger spots dominate the cluster arrow.
- * @param {Array<{wind:number, direction:string}>} samples - Wind samples
- * @returns {number|null} Averaged "wind from" bearing in degrees, or null
- */
-function averageWindBearing(samples) {
-    let x = 0;
-    let y = 0;
-
-    samples.forEach(sample => {
-        if (!CARDINAL_DIRECTIONS.includes(sample.direction)) {
-            return;
-        }
-        const rad = weather.getWindRotation(sample.direction) * Math.PI / 180;
-        const weight = Math.max(sample.wind, 0.1);
-        x += Math.sin(rad) * weight;
-        y += Math.cos(rad) * weight;
-    });
-
-    if (x === 0 && y === 0) {
-        return null;
-    }
-
-    return (Math.atan2(x, y) * 180 / Math.PI + 360) % 360;
-}
-
-/**
  * Average wind speed of a set of samples.
  * @param {Array<{wind:number}>} samples - Wind samples
  * @returns {number|null} Mean wind speed in knots, or null when there is none
@@ -733,95 +703,6 @@ export function openSpotPopup(group, wgId) {
     });
 
     return opened;
-}
-
-/**
- * Create a Leaflet layer group of wind arrows for the given spots.
- * Arrows point in the direction the wind blows toward (matching the app's
- * arrow glyphs) and are coloured by wind strength. When the map is zoomed out,
- * nearby spots collapse into a single averaged arrow badged with the number of
- * spots behind it. When a popup builder is provided the arrows act as clickable
- * spot markers (used when the dot markers are hidden); otherwise they render as
- * a non-interactive visual overlay.
- * @param {L.Map} map - Leaflet map instance
- * @param {Array} spots - Spot objects
- * @param {function} getConditions - Returns wind conditions for a spot
- * @param {function} [buildPopup] - Optional (spot) => popup HTML string
- * @returns {L.LayerGroup} Leaflet layer group
- */
-export function createWindArrowLayer(map, spots, getConditions, buildPopup) {
-    const group = L.layerGroup();
-    if (!Array.isArray(spots)) {
-        return group;
-    }
-
-    const interactive = typeof buildPopup === 'function';
-
-    const samples = [];
-    spots.forEach(spot => {
-        const sample = getWindSample(spot, getConditions);
-        if (sample) {
-            samples.push({ ...sample, spot });
-        }
-    });
-
-    clusterPoints(map, samples).forEach(cluster => {
-        // App convention: arrow points toward where the wind blows (N wind -> down),
-        // so rotate the north-pointing base glyph by 180deg from the "from" angle.
-        if (cluster.points.length === 1) {
-            const sample = cluster.points[0];
-            const windClass = weather.getMapWindClass(sample.wind);
-            const rotation = (weather.getWindRotation(sample.direction) + 180) % 360;
-
-            const icon = L.divIcon({
-                className: `wind-arrow-icon${interactive ? ' wind-arrow-interactive' : ''}`,
-                html: `<div class="wind-arrow-marker ${windClass}" style="transform: rotate(${rotation}deg)">${WIND_ARROW_SVG}</div>`,
-                iconSize: [26, 26],
-                iconAnchor: [13, 13]
-            });
-
-            const marker = L.marker([cluster.lat, cluster.lon], {
-                icon,
-                interactive,
-                keyboard: false
-            });
-
-            if (interactive) {
-                marker.bindPopup(buildPopup(sample.spot));
-            }
-
-            marker.addTo(group);
-            return;
-        }
-
-        const count = cluster.points.length;
-        const avgWind = averageWindSpeed(cluster.points);
-        const windClass = weather.getMapWindClass(avgWind);
-        const bearing = averageWindBearing(cluster.points);
-        const rotation = bearing === null ? 0 : (bearing + 180) % 360;
-        const arrowStyle = bearing === null ? '' : ` style="transform: rotate(${rotation.toFixed(1)}deg)"`;
-
-        const icon = L.divIcon({
-            className: `wind-arrow-icon${interactive ? ' wind-arrow-interactive' : ''} wind-arrow-cluster-icon`,
-            html: `<div class="wind-arrow-cluster ${windClass}">`
-                + `<div class="wind-arrow-marker ${windClass}"${arrowStyle}>${WIND_ARROW_SVG}</div>`
-                + `<span class="wind-arrow-cluster-count">${count}</span>`
-                + `</div>`,
-            iconSize: [34, 34],
-            iconAnchor: [17, 17]
-        });
-
-        const marker = L.marker([cluster.lat, cluster.lon], {
-            icon,
-            interactive: true,
-            title: clusterTitle(count),
-            keyboard: false
-        });
-        marker.on('click', () => zoomToCluster(map, cluster.points));
-        marker.addTo(group);
-    });
-
-    return group;
 }
 
 /**
@@ -1402,9 +1283,9 @@ const WIND_OVERLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
 
 /**
  * Create a Leaflet control that toggles the wind overlay mode
- * (off -> arrows -> field). Mirrors the layer switcher UI.
+ * (off -> field). Mirrors the layer switcher UI.
  * @param {object} options - Configuration options
- * @param {function} options.getMode - Returns current mode ('off'|'arrows'|'field')
+ * @param {function} options.getMode - Returns current mode ('off'|'field')
  * @param {function} options.onModeChange - Callback with the new mode
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
@@ -1418,7 +1299,6 @@ export function createWindOverlayControl(options) {
 
     const modeOptions = [
         { value: 'off', translationKey: 'windOverlayOff' },
-        { value: 'arrows', translationKey: 'windOverlayArrows' },
         { value: 'field', translationKey: 'windOverlayField' }
     ];
 
@@ -1487,6 +1367,62 @@ export function createWindOverlayControl(options) {
     });
 
     return new WindOverlayControl();
+}
+
+// SVG map-pin icon for the spot visibility button.
+const SPOTS_TOGGLE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+/**
+ * Create a Leaflet control that shows or hides the spot markers and their
+ * clusters. The wind overlay is a separate layer, so hiding the spots leaves
+ * the wind field alone on the map - which is the point: the interpolated field
+ * is easier to read once the markers stop covering it.
+ * @param {object} options - Configuration options
+ * @param {function} options.isVisible - Returns whether spots are shown
+ * @param {function} options.onToggle - Callback with the new visibility
+ * @param {string} [options.position='bottomleft'] - Control position
+ * @returns {L.Control} Leaflet control instance
+ */
+export function createSpotsToggleControl(options) {
+    const {
+        isVisible,
+        onToggle,
+        position = 'bottomleft'
+    } = options;
+
+    const SpotsToggleControl = L.Control.extend({
+        options: {
+            position: position
+        },
+
+        onAdd: function() {
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-spots-toggle');
+
+            const button = L.DomUtil.create('button', 'layer-switcher-button', container);
+            button.type = 'button';
+            button.innerHTML = SPOTS_TOGGLE_ICON;
+
+            const refresh = () => {
+                const visible = isVisible();
+                button.classList.toggle('active', visible);
+                button.title = translations.t(visible ? 'mapSpotsHide' : 'mapSpotsShow');
+                button.setAttribute('aria-pressed', visible ? 'true' : 'false');
+            };
+            refresh();
+
+            L.DomEvent.on(button, 'click', function(e) {
+                L.DomEvent.stopPropagation(e);
+                onToggle(!isVisible());
+                refresh();
+            });
+
+            L.DomEvent.disableClickPropagation(container);
+
+            return container;
+        }
+    });
+
+    return new SpotsToggleControl();
 }
 
 // ============================================================================
@@ -1852,5 +1788,17 @@ export function updateWindOverlayLabels() {
     });
     document.querySelectorAll('.leaflet-control-wind-overlay .layer-switcher-button').forEach(button => {
         button.title = translations.t('windOverlayTooltip');
+    });
+}
+
+/**
+ * Update the spot visibility button tooltip when language changes. The button
+ * carries its own state in the 'active' class, so what it offers to do next is
+ * read back from the page rather than passed in again.
+ */
+export function updateSpotsToggleLabels() {
+    document.querySelectorAll('.leaflet-control-spots-toggle .layer-switcher-button').forEach(button => {
+        const visible = button.classList.contains('active');
+        button.title = translations.t(visible ? 'mapSpotsHide' : 'mapSpotsShow');
     });
 }
