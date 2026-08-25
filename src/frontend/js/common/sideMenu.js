@@ -64,8 +64,7 @@ const SIDEBAR_LABEL_KEYS = {
     sidebarSectionView: 'sidebarSectionView',
     sidebarSectionFilters: 'sidebarSectionFilters',
     sidebarSectionTools: 'sidebarSectionTools',
-    sidebarSectionMore: 'sidebarSectionMore',
-    sidebarSectionAdmin: 'sidebarSectionAdmin'
+    sidebarSectionMore: 'sidebarSectionMore'
 };
 
 // Text labels next to the icon; visible only in the mobile drawer, where the

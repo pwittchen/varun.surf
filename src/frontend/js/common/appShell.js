@@ -145,15 +145,6 @@ const SIDEBAR_HTML = `
             </svg>
             <span class="sidebar-label" id="mcpLinkSidebarLabel">MCP</span>
         </a>
-        <a class="theme-toggle sidebar-link" id="githubLink" href="https://github.com/pwittchen/varun.surf" target="_blank" rel="noopener" title="Source code on GitHub">
-            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12,.3A12,12,0,0,0,8.2,23.7c.6.1.8-.3.8-.6s0-.9,0-2c-3.3.7-4-1.6-4-1.6a3.2,3.2,0,0,0-1.3-1.7c-1.1-.8.1-.8.1-.8a2.5,2.5,0,0,1,1.8,1.2,2.6,2.6,0,0,0,3.5,1,2.6,2.6,0,0,1,.8-1.6c-2.7-.3-5.5-1.3-5.5-5.9a4.6,4.6,0,0,1,1.2-3.2,4.3,4.3,0,0,1,.1-3.2s1-.3,3.3,1.2a11.3,11.3,0,0,1,6,0C17.3,5.1,18.3,5.4,18.3,5.4a4.3,4.3,0,0,1,.1,3.2,4.6,4.6,0,0,1,1.2,3.2c0,4.6-2.8,5.6-5.5,5.9a2.9,2.9,0,0,1,.8,2.2c0,1.6,0,2.9,0,3.3s.2.7.8.6A12,12,0,0,0,12,.3Z"/>
-            </svg>
-            <span class="sidebar-label" id="githubLinkSidebarLabel">GitHub</span>
-        </a>
-    </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionAdmin">Admin</div>
         <a class="theme-toggle sidebar-link" id="logsLink" href="/logs" title="Application logs">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect x="3" y="3.5" width="18" height="2.5" rx="1.25"/>
@@ -162,6 +153,12 @@ const SIDEBAR_HTML = `
                 <rect x="3" y="18.5" width="8.5" height="2.5" rx="1.25"/>
             </svg>
             <span class="sidebar-label" id="logsLinkSidebarLabel">Logs</span>
+        </a>
+        <a class="theme-toggle sidebar-link" id="githubLink" href="https://github.com/pwittchen/varun.surf" target="_blank" rel="noopener" title="Source code on GitHub">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12,.3A12,12,0,0,0,8.2,23.7c.6.1.8-.3.8-.6s0-.9,0-2c-3.3.7-4-1.6-4-1.6a3.2,3.2,0,0,0-1.3-1.7c-1.1-.8.1-.8.1-.8a2.5,2.5,0,0,1,1.8,1.2,2.6,2.6,0,0,0,3.5,1,2.6,2.6,0,0,1,.8-1.6c-2.7-.3-5.5-1.3-5.5-5.9a4.6,4.6,0,0,1,1.2-3.2,4.3,4.3,0,0,1,.1-3.2s1-.3,3.3,1.2a11.3,11.3,0,0,1,6,0C17.3,5.1,18.3,5.4,18.3,5.4a4.3,4.3,0,0,1,.1,3.2,4.6,4.6,0,0,1,1.2,3.2c0,4.6-2.8,5.6-5.5,5.9a2.9,2.9,0,0,1,.8,2.2c0,1.6,0,2.9,0,3.3s.2.7.8.6A12,12,0,0,0,12,.3Z"/>
+            </svg>
+            <span class="sidebar-label" id="githubLinkSidebarLabel">GitHub</span>
         </a>
     </div>
 </nav>
