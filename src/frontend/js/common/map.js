@@ -1282,82 +1282,47 @@ export function createWindParticleLayer(spots, getConditions) {
 const WIND_OVERLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3 12h15a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3 16h9a2.5 2.5 0 1 1-2.5 2.5"/></svg>';
 
 /**
- * Create a Leaflet control that toggles the wind overlay mode
- * (off -> field). Mirrors the layer switcher UI.
+ * Create a Leaflet control that shows or hides the wind field overlay. A plain
+ * on/off button rather than a dropdown, the same shape as the spot visibility
+ * toggle next to it: the overlay only ever had one mode, so a menu of one asked
+ * for two clicks to say what one click says.
  * @param {object} options - Configuration options
- * @param {function} options.getMode - Returns current mode ('off'|'field')
- * @param {function} options.onModeChange - Callback with the new mode
+ * @param {function} options.isVisible - Returns whether the overlay is drawn
+ * @param {function} options.onToggle - Callback with the new visibility
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
  */
 export function createWindOverlayControl(options) {
     const {
-        getMode,
-        onModeChange,
+        isVisible,
+        onToggle,
         position = 'bottomleft'
     } = options;
-
-    const modeOptions = [
-        { value: 'off', translationKey: 'windOverlayOff' },
-        { value: 'field', translationKey: 'windOverlayField' }
-    ];
 
     const WindOverlayControl = L.Control.extend({
         options: {
             position: position
         },
 
-        onAdd: function(map) {
+        onAdd: function() {
             const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-wind-overlay');
 
             const button = L.DomUtil.create('button', 'layer-switcher-button', container);
             button.type = 'button';
-            button.title = translations.t('windOverlayTooltip');
             button.innerHTML = WIND_OVERLAY_ICON;
-            if (getMode() !== 'off') {
-                button.classList.add('active');
-            }
 
-            const dropdown = L.DomUtil.create('div', 'layer-switcher-dropdown', container);
-            dropdown.style.display = 'none';
-
-            modeOptions.forEach(option => {
-                const optionEl = L.DomUtil.create('div', 'layer-switcher-option', dropdown);
-                optionEl.textContent = translations.t(option.translationKey);
-                optionEl.dataset.value = option.value;
-                optionEl.dataset.translationKey = option.translationKey;
-
-                if (option.value === getMode()) {
-                    optionEl.classList.add('active');
-                }
-
-                L.DomEvent.on(optionEl, 'click', function(e) {
-                    L.DomEvent.stopPropagation(e);
-
-                    dropdown.querySelectorAll('.layer-switcher-option').forEach(opt => {
-                        opt.classList.remove('active');
-                    });
-                    optionEl.classList.add('active');
-
-                    button.classList.toggle('active', option.value !== 'off');
-
-                    onModeChange(option.value);
-
-                    dropdown.style.display = 'none';
-                    button.classList.remove('open');
-                });
-            });
+            const refresh = () => {
+                const visible = isVisible();
+                button.classList.toggle('active', visible);
+                button.title = translations.t(visible ? 'windOverlayHide' : 'windOverlayShow');
+                button.setAttribute('aria-pressed', visible ? 'true' : 'false');
+            };
+            refresh();
 
             L.DomEvent.on(button, 'click', function(e) {
                 L.DomEvent.stopPropagation(e);
-                const isOpen = dropdown.style.display === 'block';
-                dropdown.style.display = isOpen ? 'none' : 'block';
-                button.classList.toggle('open', !isOpen);
-            });
-
-            L.DomEvent.on(map.getContainer(), 'click', function() {
-                dropdown.style.display = 'none';
-                button.classList.remove('open');
+                onToggle(!isVisible());
+                refresh();
             });
 
             L.DomEvent.disableClickPropagation(container);
@@ -1774,20 +1739,14 @@ export function updateForecastTimelineLabels() {
 }
 
 /**
- * Update wind overlay switcher labels when language changes.
+ * Update the wind overlay button tooltip when language changes. Like the spot
+ * visibility button, its state lives in the 'active' class, so what it offers
+ * to do next is read back from the page rather than passed in again.
  */
 export function updateWindOverlayLabels() {
-    const dropdowns = document.querySelectorAll('.leaflet-control-wind-overlay .layer-switcher-dropdown');
-    dropdowns.forEach(dropdown => {
-        dropdown.querySelectorAll('.layer-switcher-option').forEach(optionEl => {
-            const translationKey = optionEl.dataset.translationKey;
-            if (translationKey) {
-                optionEl.textContent = translations.t(translationKey);
-            }
-        });
-    });
     document.querySelectorAll('.leaflet-control-wind-overlay .layer-switcher-button').forEach(button => {
-        button.title = translations.t('windOverlayTooltip');
+        const visible = button.classList.contains('active');
+        button.title = translations.t(visible ? 'windOverlayHide' : 'windOverlayShow');
     });
 }
 

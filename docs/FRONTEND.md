@@ -156,8 +156,9 @@ DOM Manipulation (vanilla JS)
 - Stale live conditions indicators (yellow pulsing dot for outdated data)
 - Map view with three controls in the bottom-left corner: the spot visibility
   toggle (markers and clusters on or off - hiding them leaves the wind field,
-  which lives on its own layer, alone on the map), the wind overlay switcher
-  (`off` / `field`) and the base layer switcher. Both choices are remembered
+  which lives on its own layer, alone on the map), the wind field toggle (the
+  same on/off button, lit while the overlay is drawn) and the base layer
+  switcher. All three choices are remembered
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator, hide-banner confirmation)
 
 **JavaScript Logic** (`page/index.js`):

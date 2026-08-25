@@ -2593,7 +2593,7 @@ let mapBoundsInitialized = false;
 let mapTileLayer = null;
 let isMapView = false;
 let currentMapLayer = 'satellite'; // 'satellite', 'osm' or 'osmDark'
-let windOverlayMode = state.getWindOverlayMode(); // 'off' | 'field'
+let windOverlayVisible = state.getWindOverlayVisible();
 let mapSpotsVisible = state.getMapSpotsVisible();
 let windOverlayDisclaimerEl = null;
 // Hourly slider under the map: 0 is now, later steps walk the forecast hour by
@@ -2691,12 +2691,12 @@ function initMap() {
     });
     leafletMap.addControl(layerSwitcher);
 
-    // Add wind overlay control (off -> field)
+    // Show/hide the interpolated wind field
     const windOverlayControl = map.createWindOverlayControl({
-        getMode: () => windOverlayMode,
-        onModeChange: (newMode) => {
-            windOverlayMode = newMode;
-            state.setWindOverlayMode(newMode);
+        isVisible: () => windOverlayVisible,
+        onToggle: (visible) => {
+            windOverlayVisible = visible;
+            state.setWindOverlayVisible(visible);
             updateMapMarkers();
         }
     });
@@ -2748,7 +2748,7 @@ function renderWindOverlay(spots) {
     // Drop the previous overlay contents (the container itself stays on the map)
     windOverlayLayer.clearLayers();
 
-    if (windOverlayMode === 'field') {
+    if (windOverlayVisible) {
         // One overlay, two passes: the colour wash says how hard it blows, the
         // particles on top say where. Added in this order so the streaks stay
         // above the wash in the overlay pane.

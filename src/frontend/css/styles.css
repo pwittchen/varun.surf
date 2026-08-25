@@ -5831,20 +5831,23 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     color: var(--text-white);
 }
 
-/* Spot visibility toggle: a plain on/off button rather than a dropdown, so the
-   state it is in has to be visible on the button itself - lit while the spots
-   are on the map, plain once they are hidden and only the wind field is left. */
+/* Wind field and spot visibility toggles: plain on/off buttons rather than
+   dropdowns, so the state each is in has to be visible on the button itself -
+   lit while its layer is on the map, plain once it is hidden. */
+.leaflet-control-wind-overlay,
 .leaflet-control-spots-toggle {
     background: var(--leaflet-bg);
     border: 2px solid var(--leaflet-border);
     border-radius: 4px;
 }
 
+.leaflet-control-wind-overlay .layer-switcher-button.active,
 .leaflet-control-spots-toggle .layer-switcher-button.active {
     background: var(--leaflet-active);
     color: var(--text-white);
 }
 
+.leaflet-control-wind-overlay .layer-switcher-button.active:hover,
 .leaflet-control-spots-toggle .layer-switcher-button.active:hover {
     background: var(--leaflet-active);
 }

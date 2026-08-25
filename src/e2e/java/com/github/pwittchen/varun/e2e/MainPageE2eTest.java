@@ -104,8 +104,8 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should cycle wind overlay field -> off -> field")
-    void shouldCycleWindOverlayModes() {
+    @DisplayName("Should hide and show the wind field overlay")
+    void shouldToggleWindOverlay() {
         navigateToMainPage();
         waitForSpotsToLoad();
 
@@ -122,37 +122,34 @@ class MainPageE2eTest extends BaseE2eTest {
             .setTimeout(DEFAULT_TIMEOUT));
 
         Locator disclaimer = page.locator(".wind-overlay-disclaimer");
-        Locator activeOption = page.locator(".leaflet-control-wind-overlay .layer-switcher-option.active");
 
         Locator particleCanvas = page.locator("canvas.wind-particle-layer");
         Locator colourWash = page.locator(".wind-field-layer");
 
-        // Default mode is the field overlay: button active, both passes present
+        // The map opens with the field on: button lit, both passes present
         // (colour wash + animated canvas), disclaimer visible.
         // (Marker rendering depends on network-resolved coordinates, which are
         // not available in the sandboxed E2E run, so we assert the control mechanics.)
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("field");
         assertThat(overlayButton.getAttribute("class")).contains("active");
+        assertThat(overlayButton.getAttribute("aria-pressed")).isEqualTo("true");
         assertThat(disclaimer.isVisible()).isTrue();
         assertThat(particleCanvas.count()).isEqualTo(1);
         assertThat(colourWash.count()).isEqualTo(1);
 
-        // Switch to off: button not active, disclaimer and both passes removed
+        // Hide it: button not lit, disclaimer and both passes removed
         overlayButton.click();
-        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='off']").click();
         page.waitForTimeout(300);
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("off");
         assertThat(overlayButton.getAttribute("class")).doesNotContain("active");
+        assertThat(overlayButton.getAttribute("aria-pressed")).isEqualTo("false");
         assertThat(disclaimer.count()).isEqualTo(0);
         assertThat(particleCanvas.count()).isEqualTo(0);
         assertThat(colourWash.count()).isEqualTo(0);
 
-        // Switch back to the field overlay: both passes come back together
+        // Show it again: both passes come back together
         overlayButton.click();
-        page.locator(".leaflet-control-wind-overlay .layer-switcher-option[data-value='field']").click();
         page.waitForTimeout(300);
-        assertThat(activeOption.getAttribute("data-value")).isEqualTo("field");
         assertThat(overlayButton.getAttribute("class")).contains("active");
+        assertThat(overlayButton.getAttribute("aria-pressed")).isEqualTo("true");
         assertThat(disclaimer.isVisible()).isTrue();
         assertThat(particleCanvas.count()).isEqualTo(1);
         assertThat(colourWash.count()).isEqualTo(1);

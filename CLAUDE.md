@@ -514,9 +514,10 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Stale live conditions indicators (yellow for outdated data)
 - [x] Fallback weather station mechanism
 - [x] Interactive wind map with marker clustering, a wind field overlay
-      (heatmap + animated particles), a spot visibility toggle (hiding the
-      markers leaves the field alone on the map) and an hourly forecast timeline
-      (the whole forecast run on a desktop, five days on a phone)
+      (heatmap + animated particles) behind an on/off toggle, a matching spot
+      visibility toggle (hiding the markers leaves the field alone on the map)
+      and an hourly forecast timeline (the whole forecast run on a desktop,
+      five days on a phone)
 - [x] Wind map popups carrying wind, gusts and direction for the hour the
       forecast slider stands on, rewritten in place as it steps
 - [x] Running version shown next to the about modal title (fetched from

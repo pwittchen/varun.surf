@@ -205,22 +205,20 @@ export function setSidebarCollapsed(collapsed) {
 }
 
 // ============================================================================
-// MAP WIND OVERLAY MODE
+// MAP WIND OVERLAY VISIBILITY
 // ============================================================================
 
-const WIND_OVERLAY_MODES = ['off', 'field'];
-
-// 'field' is also the fallback, which quietly migrates the 'heatmap' and
-// 'particles' values stored before the two were merged into one overlay, and
-// the 'arrows' value stored before that mode was dropped.
-export function getWindOverlayMode() {
-    const stored = localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE);
-    return WIND_OVERLAY_MODES.includes(stored) ? stored : 'field';
+// The map opens with the wind field on, and that choice is remembered between
+// visits. Still written as the old mode string ('off' | 'field') so a visitor
+// who switched the overlay off before it became a plain toggle keeps it off;
+// anything else stored - 'heatmap' and 'particles' from before the two passes
+// were merged, 'arrows' from before that mode was dropped - reads as on.
+export function getWindOverlayVisible() {
+    return localStorage.getItem(STORAGE_KEYS.WIND_OVERLAY_MODE) !== 'off';
 }
 
-export function setWindOverlayMode(mode) {
-    const value = WIND_OVERLAY_MODES.includes(mode) ? mode : 'off';
-    localStorage.setItem(STORAGE_KEYS.WIND_OVERLAY_MODE, value);
+export function setWindOverlayVisible(visible) {
+    localStorage.setItem(STORAGE_KEYS.WIND_OVERLAY_MODE, visible ? 'field' : 'off');
 }
 
 // ============================================================================
