@@ -56,7 +56,9 @@ public class StatusController {
 
     private static final List<SourceDefinition> SPOTS_DATA_SOURCES = List.of(
             new SourceDefinition("Kitewetter", "https://www.kitewetter.at/", "kitewetter.at"),
-            new SourceDefinition("Nederlandse Kitesurf Vereniging", "https://kitesurfvereniging.nl/spotkaart/", "kitesurfvereniging.nl/spotkaart")
+            new SourceDefinition("Nederlandse Kitesurf Vereniging", "https://kitesurfvereniging.nl/spotkaart/", "kitesurfvereniging.nl/spotkaart"),
+            // http only: the host serves a certificate for another domain
+            new SourceDefinition("Dziobak", "http://www.dziobak.pl/", "dziobak.pl")
     );
 
     private final Instant startTime = Instant.now();

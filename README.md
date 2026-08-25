@@ -405,6 +405,7 @@ database itself:
 |--------|--------------|
 | [Kitewetter](https://www.kitewetter.at/) | Alpine kite spots in Austria |
 | [Nederlandse Kitesurf Vereniging](https://kitesurfvereniging.nl/spotkaart/) | Dutch kite spots, their access rules and local restrictions |
+| [Dziobak](http://www.dziobak.pl/) | Polish inland and Puck Bay spots, plus wind/wing/kite destinations abroad |
 
 The NKV spotkaart is maintained by a network of volunteer spot managers who keep Dutch kite spots
 open and safe — the local knowledge in the Netherlands entries comes from their work. Spots the
