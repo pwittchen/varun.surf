@@ -166,7 +166,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
-   - `/api/v1/spots` strips `forecastHourly` (too large for ~730 spots), so the
+   - `/api/v1/spots` strips `forecastHourly` (too large for ~780 spots), so the
      map's forecast timeline reads `/api/v1/wind` instead: `HourlyForecastMapper`
      projects every spot's hourly GFS forecast onto one shared grid and emits
      wind/gusts/direction as parallel arrays (roughly 100 KB gzipped for 120
@@ -291,7 +291,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 ### spots.json
 - Location: `src/main/resources/spots.json`
-- Contains ~730 kite spots across 43 countries (Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, the Balkans, the Baltics, Scandinavia, the UK, Brazil, Egypt, South Africa, etc.)
+- Contains ~780 kite spots across 43 countries (Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, the Balkans, the Baltics, Scandinavia, the UK, Brazil, Egypt, South Africa, etc.)
 - Each spot includes: location, URLs (Windguru, Windfinder, ICM, webcam), spot info (water type, best wind, hazards, season)
 - Loaded on startup by `JsonSpotsDataProvider`
 
@@ -531,7 +531,7 @@ src/main/java/com/github/pwittchen/varun/
 
 The AI forecast analysis is disabled by default because:
 1. Limited value for this specific use case
-2. Cost consideration: at ~900 tokens per prompt, one pass over ~730 spots is
+2. Cost consideration: at ~900 tokens per prompt, one pass over ~780 spots is
    ~660k input tokens, so roughly $0.20 per language pass on gpt-4o-mini
 3. Estimated monthly cost at the scheduled 8-hour interval in both languages:
    low tens of dollars per month, and it scales with the spot list

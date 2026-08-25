@@ -50,7 +50,7 @@
 ### Request/Update Flow
 ```
 [Application Startup]
-  -> JsonSpotsDataProvider loads spots.json (~730 spots)
+  -> JsonSpotsDataProvider loads spots.json (~780 spots)
   -> JsonSponsorsDataProvider loads sponsors.json
   -> AggregatorService.init() subscribes to spots
 
@@ -435,8 +435,8 @@ Error Handling:
   - Structured exception hierarchy (FetchingForecastException, etc.)
 
 Performance Characteristics:
-  - Startup: ~2-5 seconds (loads ~730 spots from JSON)
-  - Forecast fetch (all spots): ~730 spots at 32 concurrent, wall clock dominated
+  - Startup: ~2-5 seconds (loads ~780 spots from JSON)
+  - Forecast fetch (all spots): ~780 spots at 32 concurrent, wall clock dominated
     by the Windguru round trip (not re-measured since the spot list grew)
   - Current conditions fetch: ~3-5 seconds (fewer stations, 32 concurrent)
   - Single spot response: <50ms (cached data)
@@ -466,7 +466,7 @@ Spots:
   GET /api/v1/wind?hours=N
     - Returns hourly wind for every spot on one shared time grid
     - Feeds the map's forecast timeline: /api/v1/spots strips forecastHourly,
-      which would be megabytes across ~730 spots
+      which would be megabytes across ~780 spots
     - hours: how far the grid reaches (default 120, capped at 16 days). A desktop
       map asks for the whole forecast run, a phone for the five days its slider
       has room for, and neither pays for the other's payload
@@ -508,7 +508,7 @@ Health & Status:
         "uptime": "1d 2h 3m 4s",
         "uptimeSeconds": 93784,
         "startTime": "2025-01-26T10:00:00Z",
-        "spotsCount": 729,
+        "spotsCount": 782,
         "countriesCount": 43,
         "liveStations": 15
       }

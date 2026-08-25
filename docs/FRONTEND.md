@@ -641,7 +641,7 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 ### In-Memory State
 
 **Dashboard** (`page/index.js`):
-- `globalWeatherData`: Cached spot data (array of ~730 spots)
+- `globalWeatherData`: Cached spot data (array of ~780 spots)
 - `availableCountries`: Set of unique countries
 - `currentSearchQuery`: Active search term
 - `showingFavorites`: Boolean flag
@@ -705,7 +705,7 @@ window.addEventListener('popstate', (event) => {
    ↓
 2. fetchWeatherData() → GET /api/v1/spots
    ↓
-3. globalWeatherData = response (~730 spots)
+3. globalWeatherData = response (~780 spots)
    ↓
 4. populateCountryDropdown() (extract unique countries)
    ↓
@@ -971,7 +971,7 @@ languageToggle.addEventListener('click', () => {
 
 ### 3. Country Filtering
 **Dropdown Behavior**:
-- Auto-populated from spot data (~730 spots → 43 countries)
+- Auto-populated from spot data (~780 spots → 43 countries)
 - Click country → filter spots + update URL (`/country/{name}`)
 - "All" option → show all spots + reset URL to `/`
 - Selected country persists in `localStorage`

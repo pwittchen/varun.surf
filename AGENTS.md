@@ -68,7 +68,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 **Purpose**: Central data orchestration and caching layer using Java 25 structured concurrency.
 
 **Scheduled Tasks** (run in parallel with `@Async`):
-- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~730 spots
+- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~780 spots
 - **Current Conditions**: Every 1 minute - real-time wind data
 - **ICM Meteograms**: Every 3 hours - Polish/Czech spots only (if feature enabled)
 - **AI Analysis**: Every 8 hours - LLM-powered summaries, EN and PL separately (if feature enabled)
@@ -169,7 +169,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 
 **Configuration**:
 - Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
-- Provider: OpenAI (gpt-4o-mini) - roughly $0.20 per pass over ~730 spots
+- Provider: OpenAI (gpt-4o-mini) - roughly $0.20 per pass over ~780 spots
 
 **Professional Prompt Engineering**:
 - System role: Professional kitesurfing weather analyst
@@ -242,7 +242,7 @@ chatClient.prompt().user(prompt)
   - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
   - Triggers async model discovery if not cached
 - `GET /api/v1/wind?hours=N` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
-  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~730 spots), so the
+  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~780 spots), so the
     map's forecast timeline reads this instead
   - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto one shared
     grid and emits wind/gusts/direction as parallel arrays (roughly 100 KB gzipped
@@ -432,7 +432,7 @@ public record SpotInfo(
 
 ### Static Data: spots.json
 - **Location**: `src/main/resources/spots.json`
-- **Size**: ~730 kite spots across 43 countries
+- **Size**: ~780 kite spots across 43 countries
 - **Coverage**: Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, Croatia and the Balkans, Lithuania/Latvia/Estonia, Sweden, Norway, the United Kingdom, Austria, Switzerland, Brazil, Egypt, South Africa, and more
 - **Content**: Each spot contains:
   - Basic info (id, name, country, coordinates)
@@ -773,7 +773,7 @@ Implemented features (complete):
 
 **Rationale for default-off**:
 1. **Limited value**: Weather data is already clear and numeric
-2. **Cost consideration**: at ~900 tokens per prompt, one pass over ~730 spots is
+2. **Cost consideration**: at ~900 tokens per prompt, one pass over ~780 spots is
    ~660k input tokens - roughly $0.20 per language pass on gpt-4o-mini
 3. **Monthly cost estimate**: low tens of dollars per month at the scheduled
    8-hour interval in both languages, scaling with the spot list
