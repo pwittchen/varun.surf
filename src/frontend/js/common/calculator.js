@@ -5,6 +5,10 @@
 
 import * as modals from './modals.js';
 import * as state from './state.js';
+import { t } from './translations.js';
+
+// Key of the warning currently shown, so a language switch can rewrite it in place
+let shownWarningKey = null;
 
 /**
  * Calculate recommended kite size based on wind speed, rider weight, and skill level
@@ -104,43 +108,45 @@ export function calculateBoardSize(riderWeight, skillLevel) {
 }
 
 /**
- * Validate input and return warning message if invalid
+ * Validate input and return the translation key of the warning to show.
+ * The key rather than the wording, so the message follows the language switch
+ * and can be rewritten in place while the calculator stays open.
  * @param {number} windSpeed - Wind speed in knots
  * @param {number} riderWeight - Rider weight in kg
  * @param {string} skillLevel - Skill level
- * @returns {string|null} Warning message or null if valid
+ * @returns {string|null} Warning translation key or null if valid
  */
 export function validateInput(windSpeed, riderWeight, skillLevel) {
     if (!windSpeed || windSpeed < 5 || windSpeed > 50) {
-        return '⚠️ <strong>INVALID WIND SPEED</strong><br><br>Please enter a valid wind speed between 5 and 50 knots.';
+        return 'warningInvalidWindSpeed';
     }
 
     if (!riderWeight || riderWeight > 150) {
-        return '⚠️ <strong>INVALID RIDER WEIGHT</strong><br><br>Please enter a valid rider weight between 40 and 150 kg.';
+        return 'warningInvalidWeight';
     }
 
     if (riderWeight < 40) {
-        return '⚠️ <strong>WEIGHT TOO LOW</strong><br><br>Your weight is too low and riding may be dangerous. Kitesurfing requires sufficient body weight for control and safety.';
+        return 'warningWeightTooLow';
     }
 
     if (!skillLevel) {
-        return '⚠️ <strong>SKILL LEVEL REQUIRED</strong><br><br>Please select your skill level and conditions.';
+        return 'warningSkillLevelRequired';
     }
 
     if (riderWeight > 120) {
-        return '😉 Maybe you should lose some weight before going onto the water!';
+        return 'warningWeightTooHigh';
     }
 
     if (windSpeed > 40) {
-        return '⚠️ <strong>EXTREME CONDITIONS!</strong><br><br>Wind speeds above 40 knots are extremely dangerous. We strongly recommend NOT going onto the water in these conditions. Stay safe!';
+        return 'warningExtremeWind';
     }
 
     if (windSpeed < 12) {
-        return '💨 <strong>LOW WIND CONDITIONS</strong><br><br>There is not enough wind for riding with a regular setup. However, you could try going on a <strong>kite foil board</strong>, which works great in light wind conditions!';
+        return 'warningLowWind';
     }
 
     if (windSpeed < 15 && (skillLevel.includes('medium') || skillLevel.includes('large'))) {
-        return '🌊 <strong>INSUFFICIENT WIND FOR WAVE CONDITIONS</strong><br><br>Wind speed below 15 knots is not enough for riding in medium or large waves. Waves create additional resistance and you need more wind power to maintain speed and control. We recommend NOT going onto the water in these conditions.';
+        return 'warningInsufficientWindWaves';
     }
 
     return null;
@@ -236,6 +242,7 @@ export function setupKiteSizeCalculator(options = {}) {
         if (calcWarning) {
             calcWarning.style.display = 'none';
         }
+        shownWarningKey = null;
         const calcResult = document.getElementById('calcResult');
         if (calcResult) {
             calcResult.classList.remove('show');
@@ -274,14 +281,16 @@ export function setupKiteSizeCalculator(options = {}) {
             // Hide previous warnings and results
             calcWarning.style.display = 'none';
             calcResult.classList.remove('show');
+            shownWarningKey = null;
 
             // Remember the entered data for the next time the calculator is opened
             rememberInputs();
 
             // Validate input
-            const warning = validateInput(windSpeed, riderWeight, skillLevel);
-            if (warning) {
-                calcWarning.innerHTML = warning;
+            const warningKey = validateInput(windSpeed, riderWeight, skillLevel);
+            if (warningKey) {
+                shownWarningKey = warningKey;
+                calcWarning.innerHTML = t(warningKey);
                 calcWarning.style.display = 'block';
                 return;
             }
@@ -310,6 +319,13 @@ export function setupKiteSizeCalculator(options = {}) {
  * @param {function(string): string} t - Translation lookup
  */
 export function updateTranslations(t) {
+    // A warning left on screen follows the switch too, rather than staying in the
+    // language it was shown in
+    const calcWarning = document.getElementById('calcWarning');
+    if (calcWarning && shownWarningKey) {
+        calcWarning.innerHTML = t(shownWarningKey);
+    }
+
     const kiteSizeModalTitle = document.querySelector('#kiteSizeModal .modal-title span');
     if (kiteSizeModalTitle) {
         kiteSizeModalTitle.textContent = t('kiteSizeCalculatorTitle');
