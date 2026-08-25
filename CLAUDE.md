@@ -487,7 +487,8 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Forecasts updated every 3 hours
 - [x] Spot details: description, links (Windguru, Windfinder, ICM), location, webcam
 - [x] Country-based filtering
-- [x] Search functionality
+- [x] Search functionality, focused from anywhere with the "/" key (the field
+      carries a "/" hint on the desktop layout)
 - [x] Favorites system
 - [x] Custom spot ordering with drag-and-drop
 - [x] Dark/light theme

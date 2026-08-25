@@ -422,6 +422,13 @@ function initLanguage() {
             searchInput.placeholder = translations.t('searchPlaceholder');
         }
 
+        // The hint itself takes no pointer events, so the tooltip naming the
+        // shortcut hangs on the container the whole field lives in
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer) {
+            searchContainer.title = translations.t('searchShortcutTooltip');
+        }
+
         // Update tooltips
         sideMenu.updateTranslations(translations.t);
 
@@ -1750,6 +1757,32 @@ function setupSearch() {
         renderSpots(currentFilter, '');
         window.scrollTo(0, 0);
         searchInput.focus();
+    });
+
+    // "/" anywhere on the page jumps to the search field - the hint inside the
+    // field names the key. Ignored while another field has the focus (the slash
+    // is a character there), while a modifier is held (browser shortcuts win)
+    // and while a modal is open, where the key belongs to the modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) {
+            return;
+        }
+
+        const target = e.target;
+        if (target instanceof HTMLInputElement
+            || target instanceof HTMLTextAreaElement
+            || target instanceof HTMLSelectElement
+            || (target instanceof HTMLElement && target.isContentEditable)) {
+            return;
+        }
+
+        if (document.querySelector('.modal-overlay.active')) {
+            return;
+        }
+
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
     });
 
     // Clear search on an Escape key

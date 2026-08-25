@@ -329,6 +329,10 @@
                        placeholder="Search spots..."
                        autocomplete="off">
                 <button class="search-clear" id="searchClear">✕</button>
+                <!-- Keyboard hint: "/" focuses the field. Hidden by CSS while
+                     the input is focused or holds text (the clear button takes
+                     that corner), and on the mobile layout with no key to press -->
+                <kbd class="search-shortcut" id="searchShortcut" aria-hidden="true">/</kbd>
             </div>
             <div class="dropdown-container">
                 <button class="dropdown-button" id="dropdownButton">

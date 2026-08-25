@@ -418,6 +418,28 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should focus search input with the slash shortcut")
+    void shouldFocusSearchInputWithSlashShortcut() {
+        navigateToMainPage();
+        waitForSpotsToLoad();
+
+        Locator searchShortcut = page.locator("#searchShortcut");
+        assertThat(searchShortcut.isVisible()).isTrue();
+        assertThat(searchShortcut.textContent().trim()).isEqualTo("/");
+
+        page.evaluate("() => document.activeElement && document.activeElement.blur()");
+        page.keyboard().press("/");
+        page.waitForTimeout(200);
+
+        Locator searchInput = page.locator("#searchInput");
+        assertThat(searchInput.evaluate("el => el === document.activeElement")).isEqualTo(true);
+        // the slash focuses the field instead of being typed into it
+        assertThat(searchInput.inputValue()).isEmpty();
+        // and the hint gives way once the field is focused
+        assertThat(searchShortcut.isVisible()).isFalse();
+    }
+
+    @Test
     @DisplayName("Should toggle theme")
     void shouldToggleTheme() {
         navigateToMainPage();

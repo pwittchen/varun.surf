@@ -955,6 +955,31 @@ body.index-page .header-title {
     display: block;
 }
 
+/* The "/" hint sits where the clear button will be: the two never show at the
+   same time, since the hint gives way as soon as the field is focused or typed
+   into. Not clickable - it names the shortcut, the field itself is the target */
+.search-shortcut {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-secondary);
+    border-radius: var(--radius-sm);
+    color: var(--text-tertiary);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 3px 7px;
+}
+
+.search-input:focus ~ .search-shortcut,
+.search-input:not(:placeholder-shown) ~ .search-shortcut {
+    display: none;
+}
+
 
 /* ============================================================================
    6. DROPDOWN COMPONENTS
@@ -6265,6 +6290,11 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
         max-width: 300px;
         flex: 0 0 100%;
         order: 10;
+    }
+
+    /* No physical key to press on the drawer layout */
+    .search-shortcut {
+        display: none;
     }
 
     .dropdown-container {

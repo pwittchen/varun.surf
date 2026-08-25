@@ -149,7 +149,8 @@ DOM Manipulation (vanilla JS)
   confirmation modal naming the sidebar Banner button that brings it back
 - Grid layout with spot cards (2 or 3 columns)
 - Country dropdown filter
-- Search functionality
+- Search functionality, focused from anywhere with the "/" key (a "/" hint sits
+  in the field, giving way to the clear button once it is focused or typed into)
 - Favorites system (star icons)
 - Drag-and-drop spot reordering
 - Auto-refresh every 60 seconds

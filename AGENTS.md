@@ -722,7 +722,7 @@ Implemented features (complete):
 - Detailed spot information (description, water type, hazards, best season)
 - External links (Windguru, Windfinder, ICM model, webcam)
 - Country-based filtering
-- Search functionality (by spot name)
+- Search functionality (by spot name), focused from anywhere with the "/" key
 - Favorites system (localStorage-based)
 - Custom spot ordering with drag-and-drop
 - Dark/light theme toggle
