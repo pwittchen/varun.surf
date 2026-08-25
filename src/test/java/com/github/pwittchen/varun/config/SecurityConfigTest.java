@@ -51,34 +51,45 @@ public class SecurityConfigTest {
     }
 
     @Test
-    void shouldRequireAuthenticationForMetricsEndpoint() {
+    void shouldAllowAccessToMetricsEndpointWithoutPassword() {
         String sessionCookie = getSessionCookie();
 
         webTestClient.get()
                 .uri("/api/v1/metrics")
                 .cookie("SESSION", sessionCookie)
                 .exchange()
-                .expectStatus().isUnauthorized();
+                .expectStatus().isOk();
     }
 
     @Test
-    void shouldRequireAuthenticationForMetricsHistoryEndpoint() {
+    void shouldAllowAccessToMetricsHistoryEndpointWithoutPassword() {
         String sessionCookie = getSessionCookie();
 
         webTestClient.get()
                 .uri("/api/v1/metrics/history")
                 .cookie("SESSION", sessionCookie)
                 .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void shouldRequireAuthenticationForLogsEndpoint() {
+        String sessionCookie = getSessionCookie();
+
+        webTestClient.get()
+                .uri("/api/v1/logs")
+                .cookie("SESSION", sessionCookie)
+                .exchange()
                 .expectStatus().isUnauthorized();
     }
 
     @Test
-    void shouldAllowAccessToMetricsWithValidCredentials() {
+    void shouldAllowAccessToLogsWithValidCredentials() {
         String sessionCookie = getSessionCookie();
         String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
 
         webTestClient.get()
-                .uri("/api/v1/metrics")
+                .uri("/api/v1/logs")
                 .cookie("SESSION", sessionCookie)
                 .header("Authorization", "Basic " + credentials)
                 .exchange()
@@ -86,25 +97,12 @@ public class SecurityConfigTest {
     }
 
     @Test
-    void shouldAllowAccessToMetricsHistoryWithValidCredentials() {
+    void shouldRejectLogsAccessWithInvalidCredentials() {
         String sessionCookie = getSessionCookie();
-        String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
+        String credentials = Base64.getEncoder().encodeToString("admin:wrongpassword".getBytes());
 
         webTestClient.get()
-                .uri("/api/v1/metrics/history")
-                .cookie("SESSION", sessionCookie)
-                .header("Authorization", "Basic " + credentials)
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
-    void shouldRejectMetricsAccessWithInvalidCredentials() {
-        String sessionCookie = getSessionCookie();
-        String credentials = Base64.getEncoder().encodeToString("metrics:wrongpassword".getBytes());
-
-        webTestClient.get()
-                .uri("/api/v1/metrics")
+                .uri("/api/v1/logs")
                 .cookie("SESSION", sessionCookie)
                 .header("Authorization", "Basic " + credentials)
                 .exchange()
@@ -112,12 +110,12 @@ public class SecurityConfigTest {
     }
 
     @Test
-    void shouldRejectMetricsAccessWithInvalidUsername() {
+    void shouldRejectLogsAccessWithInvalidUsername() {
         String sessionCookie = getSessionCookie();
         String credentials = Base64.getEncoder().encodeToString("wronguser:testpassword123".getBytes());
 
         webTestClient.get()
-                .uri("/api/v1/metrics")
+                .uri("/api/v1/logs")
                 .cookie("SESSION", sessionCookie)
                 .header("Authorization", "Basic " + credentials)
                 .exchange()
@@ -136,6 +134,14 @@ public class SecurityConfigTest {
     void shouldRejectMetricsWithoutSession() {
         webTestClient.get()
                 .uri("/api/v1/metrics")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void shouldRejectLogsWithoutSession() {
+        webTestClient.get()
+                .uri("/api/v1/logs")
                 .exchange()
                 .expectStatus().isUnauthorized();
     }

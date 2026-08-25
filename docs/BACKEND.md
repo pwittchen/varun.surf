@@ -567,7 +567,7 @@ LLM-Friendly Markdown (PUBLIC, no SESSION cookie required):
   All /llms/** endpoints are exempted from the SESSION filter and referenced from /llms.txt,
   so they can be crawled or fetched by LLM tooling without going through the frontend.
 
-Metrics (HTTP Basic when app.analytics.password is set):
+Metrics (session cookie only - no password):
   GET /api/v1/metrics
     - Application metrics: gauges, counters, timers, JVM stats, HTTP client stats
     - Includes: spots total, cache sizes, fetch counts, memory usage, threads

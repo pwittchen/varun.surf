@@ -67,8 +67,8 @@ class SourcesPageE2eTest extends BaseE2eTest {
             .setTimeout(DEFAULT_TIMEOUT));
 
         assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
-            .isEqualTo(List.of("/status", "/sources", "/mcp",
-                "https://github.com/pwittchen/varun.surf", "/logs", "/metrics"));
+            .isEqualTo(List.of("/status", "/metrics", "/sources", "/mcp",
+                "https://github.com/pwittchen/varun.surf", "/logs"));
 
         Locator active = page.locator("#sideMenu [aria-current='page']");
         assertThat(active.count()).isEqualTo(1);

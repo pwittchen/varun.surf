@@ -41,6 +41,17 @@ public class SecurityConfigNoPasswordTest {
     }
 
     @Test
+    void shouldAllowAccessToLogsWithoutPasswordConfigured() {
+        String sessionCookie = getSessionCookie();
+
+        webTestClient.get()
+                .uri("/api/v1/logs")
+                .cookie("SESSION", sessionCookie)
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
     void shouldAllowAccessToPublicEndpoints() {
         String sessionCookie = getSessionCookie();
 

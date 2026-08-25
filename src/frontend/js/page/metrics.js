@@ -1,5 +1,5 @@
 import * as toolsPage from '../common/toolsPage.js';
-import { t, plural, locale, applyStaticTranslations } from '../common/translations.js';
+import { t, plural, locale } from '../common/translations.js';
 
 // ============================================================================
 // STATE
@@ -8,15 +8,11 @@ import { t, plural, locale, applyStaticTranslations } from '../common/translatio
 let autoRefreshEnabled = true;
 let refreshInterval = null;
 const REFRESH_INTERVAL_MS = 5000;
-const SESSION_CREDENTIALS_KEY = 'metrics_credentials';
-const METRICS_USERNAME = 'admin';
 
 // Kept so a language switch redraws what is on screen rather than waiting for
 // the next 5s refresh - or forever, when auto-refresh is paused
 let lastMetrics = null;
 let lastUpdatedAt = null;
-let loginFormVisible = false;
-let loginErrorKey = null;
 
 // History data for charts (keep last 60 data points = 5 minutes of data)
 const MAX_HISTORY_POINTS = 60;
@@ -34,97 +30,13 @@ const threadsHistory = {
 };
 
 // ============================================================================
-// AUTHENTICATION
-// ============================================================================
-
-function getStoredCredentials() {
-    return sessionStorage.getItem(SESSION_CREDENTIALS_KEY) || '';
-}
-
-function storeCredentials(password) {
-    const credentials = btoa(`${METRICS_USERNAME}:${password}`);
-    sessionStorage.setItem(SESSION_CREDENTIALS_KEY, credentials);
-}
-
-function clearCredentials() {
-    sessionStorage.removeItem(SESSION_CREDENTIALS_KEY);
-}
-
-// The form carries data-i18n, so a language switch retranslates it in place and
-// leaves whatever the user has already typed alone
-function showLoginForm() {
-    // Stop auto-refresh when showing login form
-    stopAutoRefresh();
-    autoRefreshEnabled = false;
-    loginFormVisible = true;
-    loginErrorKey = null;
-
-    const container = document.querySelector('.status-container');
-    container.innerHTML = `
-        <div class="status-card">
-            <h3 data-i18n="toolsAuthRequired">Authentication Required</h3>
-            <form id="login-form" class="metrics-login-form">
-                <div class="metrics-login-field">
-                    <label for="password" data-i18n="toolsPasswordLabel">Password</label>
-                    <input type="password" id="password" name="password" autocomplete="current-password" required>
-                </div>
-                <div id="login-error" class="metrics-login-error"></div>
-                <button type="submit" class="btn btn-primary" data-i18n="toolsLoginButton">Login</button>
-            </form>
-        </div>
-    `;
-    applyStaticTranslations(container);
-
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-}
-
-function renderLoginError() {
-    const errorEl = document.getElementById('login-error');
-    if (errorEl) {
-        errorEl.textContent = loginErrorKey ? t(loginErrorKey) : '';
-    }
-}
-
-async function handleLogin(e) {
-    e.preventDefault();
-    const password = document.getElementById('password').value;
-
-    try {
-        const credentials = btoa(`${METRICS_USERNAME}:${password}`);
-        const response = await fetch('/api/v1/metrics', {
-            headers: { 'Authorization': `Basic ${credentials}` },
-            credentials: 'same-origin'
-        });
-
-        if (response.ok) {
-            storeCredentials(password);
-            window.location.reload();
-            return;
-        }
-        loginErrorKey = response.status === 401 ? 'toolsInvalidPassword' : 'toolsAuthFailed';
-    } catch (error) {
-        loginErrorKey = 'toolsAuthFailed';
-    }
-    renderLoginError();
-}
-
-// ============================================================================
 // API
 // ============================================================================
 
+// The metrics endpoints are open to anyone holding a session cookie: only the
+// logs are password-protected.
 async function fetchMetrics() {
-    const credentials = getStoredCredentials();
-    const headers = {};
-    if (credentials) {
-        headers['Authorization'] = `Basic ${credentials}`;
-    }
-
-    const response = await fetch('/api/v1/metrics', { headers, credentials: 'same-origin' });
-    if (response.status === 401) {
-        clearCredentials();
-        showLoginForm();
-        throw new Error('Unauthorized');
-    }
+    const response = await fetch('/api/v1/metrics', { credentials: 'same-origin' });
     if (!response.ok) {
         throw new Error('Failed to fetch metrics');
     }
@@ -132,18 +44,7 @@ async function fetchMetrics() {
 }
 
 async function fetchMetricsHistory() {
-    const credentials = getStoredCredentials();
-    const headers = {};
-    if (credentials) {
-        headers['Authorization'] = `Basic ${credentials}`;
-    }
-
-    const response = await fetch('/api/v1/metrics/history', { headers, credentials: 'same-origin' });
-    if (response.status === 401) {
-        clearCredentials();
-        showLoginForm();
-        throw new Error('Unauthorized');
-    }
+    const response = await fetch('/api/v1/metrics/history', { credentials: 'same-origin' });
     if (!response.ok) {
         throw new Error('Failed to fetch metrics history');
     }
@@ -796,10 +697,6 @@ window.addEventListener('resize', () => {
 
 // Everything this page renders itself, redrawn from what it last held
 function renderAll() {
-    if (loginFormVisible) {
-        renderLoginError();
-        return;
-    }
     renderAutoRefreshControls();
     renderLastUpdated();
     renderMetrics();
@@ -819,10 +716,6 @@ async function initializeMetrics() {
         resizeCharts();
     } catch (error) {
         console.error('Error loading metrics history:', error);
-        // If unauthorized, the fetchMetricsHistory will show login form
-        if (error.message === 'Unauthorized') {
-            return;
-        }
     }
 
     // Initial load of current metrics

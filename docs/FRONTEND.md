@@ -268,7 +268,7 @@ DOM Manipulation (vanilla JS)
 **Features**:
 - Gauges, counters, timers, JVM and HTTP client metrics
 - Canvas-based charts from `/api/v1/metrics/history`
-- HTTP Basic authentication when `app.analytics.password` is set
+- No password: the session cookie every visitor gets is enough
 
 **JavaScript Logic** (`page/metrics.js`)
 
@@ -280,7 +280,8 @@ DOM Manipulation (vanilla JS)
 - Last 1000 log entries from the in-memory buffer
 - Level filtering (ERROR, WARN, INFO, DEBUG, TRACE) and text search
 - Auto-refresh every 5 seconds
-- Same HTTP Basic authentication as the metrics dashboard
+- HTTP Basic authentication when `app.analytics.password` is set (the only
+  password-protected page)
 
 **JavaScript Logic** (`page/logs.js`):
 - `renderAll()` - Redraw the auto-refresh controls, the timestamp and the log

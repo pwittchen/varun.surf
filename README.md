@@ -148,6 +148,8 @@ The app includes a custom metrics dashboard at [/metrics](https://varun.surf/met
 - **HTTP client metrics**: active/total/success/failed requests, connection stats, DNS/connect durations
 - **Wide/narrow view toggle**: expand to full width for better readability
 
+The metrics dashboard needs no password: it is open to any visitor of the site.
+
 ### built-in logs dashboard
 
 The app includes a logs dashboard at [/logs](https://varun.surf/logs) that displays:
@@ -162,7 +164,7 @@ Note: Logs are stored in memory only and are lost on application restart.
 
 **Configuration:**
 
-Both metrics and logs dashboards share the same credentials. Set your password in the `.env` file:
+The logs dashboard is the only password-protected one. Set your password in the `.env` file:
 ```
 ANALYTICS_PASSWORD=your-secure-password
 ```

@@ -47,7 +47,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/status/history (health check history, uptime %, latency)
     ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
-    ├─→ /api/v1/metrics (application metrics, password-protected)
+    ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
     └─→ /llms/*.md (LLM-friendly Markdown for spots and countries)
@@ -286,7 +286,7 @@ chatClient.prompt().user(prompt)
 **Purpose**: REST API endpoints for application metrics.
 
 **Endpoints**:
-- `GET /api/v1/metrics` - Full metrics (HTTP Basic when `app.analytics.password` is set)
+- `GET /api/v1/metrics` - Full metrics (session cookie only, no password)
 - `GET /api/v1/metrics/history` - Metrics history over time (60 points, sampled every 5s)
 
 **Metrics Exposed**:
@@ -474,7 +474,7 @@ app:
       vision:
         enabled: false           # ICM meteogram parsing feature flag (default: off)
   analytics:
-    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
+    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
     max-age-seconds: 86400           # SESSION cookie max age (24 hours)
   wunderground:
@@ -509,7 +509,7 @@ management:
 
 ### Environment Variables
 - `OPENAI_API_KEY`: Required when AI analysis feature is enabled
-- `ANALYTICS_PASSWORD`: Optional password for protected analytics endpoints (metrics and logs)
+- `ANALYTICS_PASSWORD`: Optional password for the logs endpoint
 - `WUNDERGROUND_API_KEY`: Optional key for the Weather Underground PWS station (Turawa South)
 - `CLOUDFLARE_ZONE_ID` / `CLOUDFLARE_API_TOKEN`: Optional, used by `deployment.sh` to purge the cache after deploy
 
@@ -983,7 +983,7 @@ The application includes comprehensive metrics collection:
 - `HttpClientMetricsEventListener` - tracks outgoing HTTP requests
 
 **Metrics API**:
-- `GET /api/v1/metrics` - full metrics snapshot (password-protected)
+- `GET /api/v1/metrics` - full metrics snapshot
 - `GET /api/v1/metrics/history` - historical metrics data
 - `MetricsHistoryService` - maintains rolling window of metrics snapshots
 
@@ -1002,7 +1002,7 @@ The application includes comprehensive metrics collection:
 **Password Protection**:
 - Set `ANALYTICS_PASSWORD` environment variable
 - Uses HTTP Basic Authentication (username: admin)
-- Protects both `/api/v1/metrics/**` and `/api/v1/logs/**` endpoints
+- Protects `/api/v1/logs/**` only; `/api/v1/metrics/**` is open to any session
 
 ### 10. Session Cookie Authentication
 All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie.
@@ -1192,7 +1192,7 @@ For comprehensive project documentation, refer to these additional files:
 
 **Access metrics and logs**:
 1. Set `ANALYTICS_PASSWORD` environment variable (optional but recommended)
-2. Call `GET /api/v1/metrics` or `GET /api/v1/logs` with Basic Auth (admin:password)
+2. Call `GET /api/v1/logs` with Basic Auth (admin:password); `GET /api/v1/metrics` needs the session only
 3. View Prometheus metrics at `/actuator/prometheus`
 4. Check `/api/v1/metrics/history` for historical data
 5. Filter logs by level: `GET /api/v1/logs?level=ERROR`
@@ -1242,7 +1242,7 @@ Add debug logging in `AggregatorService.java` to inspect cache contents.
 **Test external API calls**:
 Use unit tests with `MockWebServer` to simulate API responses.
 
-**View metrics** (session cookie + Basic Auth required):
+**View metrics** (session cookie required; Basic Auth only for the logs):
 ```bash
 # Get session cookie first (visit any page)
 curl -c cookies.txt http://localhost:8080/
@@ -1250,8 +1250,8 @@ curl -c cookies.txt http://localhost:8080/
 # Application status (with session)
 curl -b cookies.txt http://localhost:8080/api/v1/status
 
-# Full metrics (session + password)
-curl -b cookies.txt -u admin:yourpassword http://localhost:8080/api/v1/metrics
+# Full metrics (session only)
+curl -b cookies.txt http://localhost:8080/api/v1/metrics
 
 # Prometheus metrics (no session needed - actuator exempt)
 curl http://localhost:8080/actuator/prometheus

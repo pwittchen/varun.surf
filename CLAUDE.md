@@ -45,7 +45,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/status/history (health check history, uptime %, latency)
     ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
-    ├─→ /api/v1/metrics (application metrics, password-protected)
+    ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
     └─→ /llms/*.md (LLM-friendly Markdown for spots and countries)
@@ -187,7 +187,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 8. **MetricsController** (`controller/MetricsController.java`)
    - REST API endpoints:
-     - `GET /api/v1/metrics` - application metrics (password-protected)
+     - `GET /api/v1/metrics` - application metrics
      - `GET /api/v1/metrics/history` - metrics history over time (60 points, sampled every 5s)
    - Exposes gauges, counters, timers, JVM metrics, HTTP client metrics
 
@@ -324,7 +324,7 @@ app:
       vision:
         enabled: false          # ICM meteogram parsing disabled by default
   analytics:
-    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/metrics and /api/v1/logs
+    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
     max-age-seconds: 86400      # SESSION cookie max age (24 hours)
   wunderground:
@@ -593,7 +593,7 @@ precision for tokens.
 
 13. **Metrics & Monitoring**:
     - Prometheus metrics export at `/actuator/prometheus`
-    - Custom metrics endpoint at `/api/v1/metrics` (password-protected via `ANALYTICS_PASSWORD`)
+    - Custom metrics endpoint at `/api/v1/metrics` (no password, session cookie only)
     - Logs endpoint at `/api/v1/logs` (password-protected via `ANALYTICS_PASSWORD`)
     - Metrics history with rolling window via `MetricsHistoryService`
     - Custom metrics classes: `AggregatorServiceMetrics`, `SpotsControllerMetrics`, `HttpClientMetricsEventListener`
@@ -616,7 +616,7 @@ precision for tokens.
     - Requests without a valid session receive HTTP 401 with an empty body
     - Exempt paths: `/api/v1/health`, `/actuator/**`, static assets
     - Cookie config: httpOnly, sameSite=Lax, 24h maxAge (configurable via `app.session.max-age-seconds`)
-    - Runs as a `WebFilter` before Spring Security authentication (metrics/logs still require HTTP Basic on top)
+    - Runs as a `WebFilter` before Spring Security authentication (the logs still require HTTP Basic on top)
 
 17. **Cache Busting** (updates visible without waiting for the Cloudflare cache):
     - CSS, JS and the logo are content-hashed at build time into `/assets/<name>.<hash>.<ext>` (`build.ts`)

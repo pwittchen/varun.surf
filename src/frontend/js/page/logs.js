@@ -23,9 +23,7 @@ let loginErrorKey = null;
 // ============================================================================
 
 function getStoredCredentials() {
-    // Try logs-specific credentials first, then fall back to metrics credentials
-    return sessionStorage.getItem(SESSION_CREDENTIALS_KEY) ||
-           sessionStorage.getItem('metrics_credentials') || '';
+    return sessionStorage.getItem(SESSION_CREDENTIALS_KEY) || '';
 }
 
 function storeCredentials(password) {
