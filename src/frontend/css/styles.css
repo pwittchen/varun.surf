@@ -5842,8 +5842,17 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    across the bottom-left corner; it lives in the opposite corner container, so
    only raising that container clears it - a z-index on the control itself
    cannot cross the two stacking contexts. */
+/* The wind field and spot toggles sit in a row to the right of the layer
+   switcher rather than stacked above it: the switcher dropdown opens upwards,
+   and stacked it covered the two buttons the moment it was opened. Leaflet
+   inserts bottom-corner controls before their predecessors, so the DOM order is
+   the reverse of the order they were added in - row-reverse puts the switcher
+   back on the left with the toggles following it. */
 .leaflet-bottom.leaflet-left {
     z-index: 1001;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
 }
 
 .leaflet-control-layer-switcher {

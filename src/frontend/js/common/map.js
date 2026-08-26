@@ -235,6 +235,41 @@ export function createLayerSwitcher(options) {
 const RESET_VIEW_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><circle cx="12" cy="12" r="3"/></svg>';
 
 /**
+ * Lift the bottom-left controls onto the same line as the bottom-right ones.
+ * The attribution sits in the bottom-right corner underneath the reset view
+ * control, so the crosshair floats an attribution's height higher than the
+ * layer switcher opposite it. The attribution wraps to two lines in a narrow
+ * map, so the height it takes cannot be a constant in the stylesheet - it is
+ * measured here and followed with a ResizeObserver.
+ * @param {L.Map} map - The map whose corners should line up
+ * @returns {ResizeObserver|null} Observer to disconnect when the control goes
+ */
+function alignBottomLeftWithAttribution(map) {
+    const mapContainer = map.getContainer();
+    const corner = mapContainer.querySelector('.leaflet-bottom.leaflet-left');
+    const attribution = mapContainer.querySelector('.leaflet-control-attribution');
+
+    if (!corner || !attribution) {
+        return null;
+    }
+
+    // The corner is absolutely positioned at bottom: 0, so a bottom margin
+    // pushes it up - past the attribution and onto the crosshair's line.
+    const sync = () => {
+        corner.style.marginBottom = `${attribution.offsetHeight}px`;
+    };
+    sync();
+
+    if (typeof ResizeObserver !== 'function') {
+        return null;
+    }
+
+    const observer = new ResizeObserver(sync);
+    observer.observe(attribution);
+    return observer;
+}
+
+/**
  * Create a Leaflet control that recenters the map on the spot location
  * @param {object} options - Configuration options
  * @param {number} options.lat - Spot latitude
@@ -276,7 +311,19 @@ export function createResetViewControl(options) {
 
             L.DomEvent.disableClickPropagation(container);
 
+            // The crosshair rides above the attribution; the layer switcher in
+            // the opposite corner has to be lifted by the same amount to stay
+            // on its line.
+            this._attributionObserver = alignBottomLeftWithAttribution(map);
+
             return container;
+        },
+
+        onRemove: function() {
+            if (this._attributionObserver) {
+                this._attributionObserver.disconnect();
+                this._attributionObserver = null;
+            }
         }
     });
 
