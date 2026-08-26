@@ -103,9 +103,16 @@ tasks.withType(JavaExec).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
-}
 
-tasks.named('test') {
+    // The `test` profile turns the background fetching off, so a Spring context boots
+    // without resolving coordinates and forecasts for every spot over the network.
+    systemProperty 'spring.profiles.active', 'test'
+
+    // Test classes are handed to as many JVMs as the machine has cores to spare. The
+    // suite is a set of independent classes (MockWebServer picks a free port, Spring
+    // contexts use a random one), so nothing is shared between the forks.
+    maxParallelForks = Math.max(1, (Runtime.runtime.availableProcessors() / 2).intValue())
+
     finalizedBy jacocoTestReport
 }
 

@@ -115,6 +115,15 @@ public class AggregatorService {
     @Value("${app.feature.icm.vision.enabled}")
     private boolean icmVisionEnabled;
 
+    /**
+     * Every scheduled fetch and every startup warm-up hangs off this flag. Booting the application
+     * loads ~800 spots and immediately resolves coordinates and forecasts for all of them, which is
+     * exactly what a production instance should do and pure waste in a unit test: the test profile
+     * turns it off so a Spring context boots without touching the network.
+     */
+    @Value("${app.background.tasks.enabled:true}")
+    private boolean backgroundTasksEnabled = true;
+
     private final ConcurrentMap<Integer, Spot> spots;
     private final ConcurrentMap<Integer, ForecastData> forecastCache;
     private final ConcurrentMap<Integer, CurrentConditions> currentConditions;
@@ -207,6 +216,9 @@ public class AggregatorService {
      * visitor to warm the caches up.
      */
     private void warmUpSpots() {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         log.info("Warming up spots");
         spots.values().forEach(spot -> {
             spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
@@ -453,6 +465,9 @@ public class AggregatorService {
     }
 
     private void scheduleLocationCoordinatesFetch(final Spot spot) {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         locationCoordinatesFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
                 loadCoordinates(spot)
                         .subscribeOn(Schedulers.boundedElastic())
@@ -471,6 +486,9 @@ public class AggregatorService {
      * point costs a few HTTP calls, so it must never happen while serving a spot.
      */
     private void scheduleIcmUrlResolution(final Spot spot, final Coordinates coords) {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         if (!icmGridMapper.isCountrySupported(spot.country())) {
             return;
         }
@@ -539,6 +557,9 @@ public class AggregatorService {
     @Scheduled(fixedRate = FORECAST_FETCH_INTERVAL_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 5, backoff = @Backoff(delay = 3000))
     public void fetchForecastsEveryThreeHours() throws FetchingForecastException {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         log.info("Fetching forecasts");
         fetchForecasts();
     }
@@ -616,6 +637,9 @@ public class AggregatorService {
     @Scheduled(fixedRate = CONDITIONS_FETCH_INTERVAL_MS)
     @Retryable(retryFor = FetchingCurrentConditionsException.class, maxAttempts = 5, backoff = @Backoff(delay = 5000))
     public void fetchCurrentConditionsEveryOneMinute() throws FetchingCurrentConditionsException {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         log.info("Fetching current conditions");
         fetchCurrentConditions();
     }
@@ -684,6 +708,9 @@ public class AggregatorService {
      */
     @Scheduled(fixedRate = ICM_FETCH_INTERVAL_MS, initialDelay = ICM_INITIAL_DELAY_MS)
     public void fetchIcmForecastsEveryThreeHours() {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         if (!icmVisionEnabled) {
             log.info("Fetching ICM forecasts is DISABLED");
             return;
@@ -923,6 +950,9 @@ public class AggregatorService {
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryTwentyFourHoursEn() throws FetchingForecastException {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis in EN");
             fetchAiForecastAnalysisEn();
@@ -934,6 +964,9 @@ public class AggregatorService {
     @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
     @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
     public void fetchAiAnalysisEveryTwentyFourHoursPl() throws FetchingForecastException {
+        if (!backgroundTasksEnabled) {
+            return;
+        }
         if (aiForecastAnalysisEnabled) {
             log.info("Fetching AI forecast analysis in PL");
             fetchAiForecastAnalysisPl();

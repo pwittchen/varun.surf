@@ -1,0 +1,11 @@
+# Active for the `test` task only (see build.gradle). Layered on top of the main
+# application.yml, so everything not named here keeps its production value.
+app:
+  background:
+    tasks:
+      # A @SpringBootTest boots the whole application, which in production means
+      # resolving coordinates and fetching forecasts for every one of the ~800 spots
+      # over the network. Five test contexts doing that made the unit test suite
+      # spend most of its time waiting on Windguru and Google Maps, and made it
+      # slower every time a batch of spots was added.
+      enabled: false
