@@ -81,6 +81,27 @@ public class SessionAuthenticationFilterTest {
     }
 
     @Test
+    void shouldIssueSessionCookieOnMcpPageVisit() {
+        var result = webTestClient.get()
+                .uri("/mcp")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(String.class);
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNotNull();
+    }
+
+    @Test
+    void shouldNotIssueSessionCookieForMcpServerEndpoints() {
+        var result = webTestClient.get()
+                .uri("/mcp/message")
+                .exchange()
+                .returnResult(String.class);
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNull();
+    }
+
+    @Test
     void shouldAllowApiAccessWithValidSession() {
         String sessionCookie = getSessionCookie();
 

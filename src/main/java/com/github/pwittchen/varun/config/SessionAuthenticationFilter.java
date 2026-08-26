@@ -28,9 +28,15 @@ public class SessionAuthenticationFilter implements WebFilter {
     private static final List<String> EXEMPT_PATHS = List.of(
             "/api/v1/health",
             "/actuator",
-            "/llms",
-            "/mcp"
+            "/llms"
     );
+
+    /**
+     * The MCP server ({@code /mcp/sse}, {@code /mcp/message}) is public, but the exact
+     * {@code /mcp} path is the HTML page describing it and gets a cookie like any other
+     * page visit - otherwise the about modal's version lookup answers it with a 401.
+     */
+    private static final String MCP_SERVER_PATH_PREFIX = "/mcp/";
 
     private static final List<String> STATIC_ASSET_EXTENSIONS = List.of(
             ".js", ".css", ".png", ".ico", ".svg", ".webp",
@@ -104,6 +110,10 @@ public class SessionAuthenticationFilter implements WebFilter {
     }
 
     private boolean isExempt(String path) {
+        if (path.startsWith(MCP_SERVER_PATH_PREFIX)) {
+            return true;
+        }
+
         for (String exempt : EXEMPT_PATHS) {
             if (path.equals(exempt) || path.startsWith(exempt + "/")) {
                 return true;
