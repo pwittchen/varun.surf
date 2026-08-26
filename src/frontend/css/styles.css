@@ -683,6 +683,77 @@ body.sidebar-collapsed .sidebar-label {
     display: none;
 }
 
+/* ----------------------------------------------------------------------------
+   Switch rows (banner, favorites, firing now, live stations)
+
+   These four entries turn something on and off; the rest of the menu picks a
+   view or opens a page. Filling the row the same way for both said "this is
+   where you are" about a setting, so here the state moves into a switch on the
+   right and the row itself stays neutral.
+
+   Only in the expanded desktop sidebar: the collapsed rail has no room for a
+   switch and keeps the fill as its state, and at mobile widths the entries move
+   into the drawer, where they are icons in a grid — both untouched.
+   ---------------------------------------------------------------------------- */
+.sidebar-switch {
+    display: none;
+    flex: 0 0 auto;
+    width: 26px;
+    height: 15px;
+    border-radius: var(--radius-pill);
+    background: var(--border-hover);
+    transition: background 0.18s ease;
+}
+
+.sidebar-switch::after {
+    content: '';
+    display: block;
+    width: 11px;
+    height: 11px;
+    margin: 2px;
+    border-radius: 50%;
+    /* Fixed white in both themes: the knob rides a grey or a cyan track, never
+       the page background. */
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.18s ease;
+}
+
+body:not(.sidebar-collapsed) .side-menu .sidebar-toggle .sidebar-switch {
+    display: block;
+}
+
+/* The darkened accent rather than --accent-primary, for the same reason the
+   buttons use it: the plain cyan is tuned to carry text *on* a dark surface,
+   and the white knob riding on it all but disappears. */
+.side-menu .sidebar-toggle.active .sidebar-switch {
+    background: var(--button-accent-bg);
+}
+
+.side-menu .sidebar-toggle.active .sidebar-switch::after {
+    transform: translateX(11px);
+}
+
+/* With the switch carrying the state, the row reads like any other: neutral at
+   rest, accented under the pointer. */
+body:not(.sidebar-collapsed) .side-menu .theme-toggle.sidebar-toggle.active {
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+body:not(.sidebar-collapsed) .side-menu .theme-toggle.sidebar-toggle.active .icon {
+    fill: var(--text-secondary);
+}
+
+body:not(.sidebar-collapsed) .side-menu .theme-toggle.sidebar-toggle.active:hover {
+    background: var(--overlay-light);
+    color: var(--text-primary);
+}
+
+body:not(.sidebar-collapsed) .side-menu .theme-toggle.sidebar-toggle.active:hover .icon {
+    fill: var(--accent-primary);
+}
+
 /* The sidebar rows carry their own labels; these spans stay hidden everywhere,
    the drawer included — there each entry is an icon in a three-across grid. */
 .side-menu .info-label,

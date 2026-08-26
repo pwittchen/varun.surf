@@ -58,29 +58,32 @@ const SIDEBAR_HTML = `
             <span class="map-label" id="mapToggleLabel">Map</span>
             <span class="sidebar-label" id="mapToggleSidebarLabel">Map</span>
         </button>
-        <button class="theme-toggle hero-toggle desktop-only sidebar-item" id="heroToggle" title="Toggle hero banner">
+        <button class="theme-toggle hero-toggle desktop-only sidebar-item sidebar-toggle" id="heroToggle" role="switch" aria-checked="false" title="Toggle hero banner">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/>
                 <circle cx="16" cy="8" r="2"/>
             </svg>
             <span class="sidebar-label" id="heroToggleSidebarLabel">Banner</span>
+            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
     <div class="sidebar-section">
         <div class="sidebar-section-title" id="sidebarSectionFilters">Filters</div>
-        <button class="theme-toggle sidebar-item" id="favoritesToggle" title="View favorites">
+        <button class="theme-toggle sidebar-item sidebar-toggle" id="favoritesToggle" role="switch" aria-checked="false" title="View favorites">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
             </svg>
             <span class="sidebar-label" id="favoritesToggleSidebarLabel">Favorites</span>
+            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
-        <button class="theme-toggle firing-toggle sidebar-item" id="firingSortToggle" title="Sort by strongest wind now">
+        <button class="theme-toggle firing-toggle sidebar-item sidebar-toggle" id="firingSortToggle" role="switch" aria-checked="false" title="Sort by strongest wind now">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M12,23a7.5,7.5,0,0,1-5.138-12.963C8.204,8.774,11.5,6.5,11,.5c6,4,9,8,3,14,1,0,2.5,0,5-2.47a6.66,6.66,0,0,1,.5,2.5A7.5,7.5,0,0,1,12,23Z"/>
             </svg>
             <span class="sidebar-label" id="firingSortToggleSidebarLabel">Firing now</span>
+            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
-        <button class="theme-toggle live-stations-toggle sidebar-item" id="liveStationsToggle" title="Live stations only">
+        <button class="theme-toggle live-stations-toggle sidebar-item sidebar-toggle" id="liveStationsToggle" role="switch" aria-checked="false" title="Live stations only">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="2.75"/>
                 <path d="M8.11,7.05a1.25,1.25,0,0,1,0,1.77,4.5,4.5,0,0,0,0,6.36,1.25,1.25,0,0,1-1.77,1.77,7,7,0,0,1,0-9.9A1.25,1.25,0,0,1,8.11,7.05Z"/>
@@ -89,6 +92,7 @@ const SIDEBAR_HTML = `
                 <path d="M20.84,3.87a11.5,11.5,0,0,1,0,16.26,1.25,1.25,0,0,1-1.77-1.77,9,9,0,0,0,0-12.72,1.25,1.25,0,0,1,1.77-1.77Z"/>
             </svg>
             <span class="sidebar-label" id="liveStationsToggleSidebarLabel">Live stations</span>
+            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
     <div class="sidebar-section">

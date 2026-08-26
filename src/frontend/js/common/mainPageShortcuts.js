@@ -11,6 +11,7 @@
 
 import * as api from './api.js';
 import * as routing from './routing.js';
+import * as sideMenu from './sideMenu.js';
 import * as state from './state.js';
 
 function onClick(id, handler) {
@@ -47,6 +48,10 @@ export function goToSpotsList() {
 }
 
 export function setup() {
+    // No active state here, so no switches either: one stuck at "off" would
+    // claim a mode is off rather than say nothing about it.
+    sideMenu.dropSwitches();
+
     // The hero banner belongs to the main page only
     markDisabled('heroToggle');
 

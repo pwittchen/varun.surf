@@ -193,6 +193,44 @@ export function setupHints() {
     window.addEventListener('resize', hide);
 }
 
+// The four entries that switch a mode on and off (banner, favorites, firing
+// now, live stations) carry a switch in the expanded sidebar. Its state is the
+// `active` class the pages already toggle, so rather than teaching every call
+// site about it, the class is watched and mirrored onto aria-checked.
+function syncSwitch(btn) {
+    btn.setAttribute('aria-checked', btn.classList.contains('active') ? 'true' : 'false');
+}
+
+function setupSwitches() {
+    const toggles = document.querySelectorAll('.sidebar-toggle');
+    if (toggles.length === 0) {
+        return;
+    }
+
+    const observer = new MutationObserver(records => records.forEach(record => syncSwitch(record.target)));
+
+    toggles.forEach(btn => {
+        syncSwitch(btn);
+        observer.observe(btn, {attributes: true, attributeFilter: ['class']});
+    });
+}
+
+// Turn the switch rows back into plain entries. Called by the pages that hold
+// no spots list (see mainPageShortcuts): there the entries store a mode and
+// navigate back to the list, and never carry an active state — a switch stuck
+// at "off" would claim the mode is off, which the empty row never did.
+export function dropSwitches() {
+    document.querySelectorAll('.sidebar-toggle').forEach(btn => {
+        btn.classList.remove('sidebar-toggle');
+        btn.removeAttribute('role');
+        btn.removeAttribute('aria-checked');
+        const control = btn.querySelector('.sidebar-switch');
+        if (control) {
+            control.remove();
+        }
+    });
+}
+
 // Collapse switch: shrinks the sidebar to an icon rail and back. The state is
 // stored, so the sidebar opens the way it was left.
 function setupCollapse() {
@@ -239,6 +277,7 @@ export function setup() {
     const headerContent = document.querySelector('.header-content');
 
     setupCollapse();
+    setupSwitches();
     onResize(syncCollapsed);
 
     if (!sideMenu || !headerContent) {
