@@ -629,14 +629,26 @@ function showLoadingMessage() {
 // filling in. This polls the pass and says how much of it has landed, rather than
 // leaving a page of spots with no forecast looking like the finished article.
 
+// A page opened during a cold start can easily beat the sweep to it - the first
+// scheduled pass starts a few seconds after the server does - so an initial
+// "nothing running" is not an answer, it is an answer that has not happened yet.
+// The watch keeps asking through this many idle replies before concluding the
+// server is simply warm and there is nothing to wait for.
+const FORECAST_PROGRESS_IDLE_POLLS = 12;
+
 let forecastProgressTimer = null;
 let forecastSweepWasRunning = false;
+let forecastProgressIdlePolls = 0;
 
 function renderForecastProgress(progress) {
     const container = document.getElementById('forecastProgress');
     if (!container) {
         return;
     }
+
+    // Drives the skeleton sweep too: a placeholder shimmers while the server is
+    // fetching, and sits still once it has stopped and the spot still has nothing.
+    document.body.classList.toggle('forecasts-loading', !!(progress && progress.inProgress));
 
     if (!progress || !progress.inProgress || progress.total <= 0) {
         container.hidden = true;
@@ -659,17 +671,23 @@ async function pollForecastProgress() {
 
     if (progress && progress.inProgress) {
         forecastSweepWasRunning = true;
+        forecastProgressIdlePolls = 0;
         return;
     }
-
-    stopForecastProgressWatch();
 
     // The pass finished while the page was open, so what is on screen predates the
     // forecasts it published: pull them in silently instead of waiting out the
     // minute until the next background refresh.
     if (forecastSweepWasRunning) {
         forecastSweepWasRunning = false;
+        stopForecastProgressWatch();
         refreshDataInBackground();
+        return;
+    }
+
+    forecastProgressIdlePolls += 1;
+    if (forecastProgressIdlePolls >= FORECAST_PROGRESS_IDLE_POLLS) {
+        stopForecastProgressWatch();
     }
 }
 
@@ -677,6 +695,7 @@ function startForecastProgressWatch() {
     if (forecastProgressTimer !== null) {
         return;
     }
+    forecastProgressIdlePolls = 0;
     pollForecastProgress();
     forecastProgressTimer = setInterval(pollForecastProgress, constants.FORECAST_PROGRESS_POLL_INTERVAL);
 }
@@ -1052,6 +1071,53 @@ function setupModals() {
 // SPOT CARD CREATION AND RENDERING
 // ============================================================================
 
+// A daily forecast is five entries (WeatherForecastMapper.DAYS) and the card drops
+// the "Today" row, which the readout above the table already carries. The
+// placeholder stands in for exactly those rows, so a card is the same height with
+// or without its forecast.
+const FORECAST_CARD_ROWS = 4;
+
+// A placeholder wears the classes of the value it stands in for, so it inherits
+// that element's font size and line-height and ends up exactly as tall. This is
+// not cosmetic: in the three-column grid .wind-arrow is 1rem against 0.75rem
+// cells, so the arrow alone decides how tall a forecast row and the "now" readout
+// are, and a placeholder built out of plain spans came up 15px short over a card.
+// &nbsp; rather than an empty element: without content there is no line box to
+// take the height from.
+function skeletonBlock(classNames = '') {
+    return `<span class="${classNames} skeleton-text">&nbsp;</span>`;
+}
+
+// Column order matches the header: date, wind, gusts, direction, temp, rain and
+// the optional wave column.
+const DIRECTION_COLUMN_INDEX = 3;
+
+function skeletonForecastRows(columnCount) {
+    const cells = Array.from({length: columnCount}, (_, column) => {
+        if (column === 0) {
+            return '<td><strong class="skeleton-text">&nbsp;</strong></td>';
+        }
+        return `<td>${skeletonBlock(column === DIRECTION_COLUMN_INDEX ? 'wind-arrow' : '')}</td>`;
+    }).join('');
+
+    return `<tr class="skeleton-row">${cells}</tr>`.repeat(FORECAST_CARD_ROWS);
+}
+
+// Mirrors the .spot-now markup element for element, for the same reason.
+function skeletonNowReadout() {
+    return `
+                <div class="spot-now spot-now-skeleton">
+                    <div class="now-main">${skeletonBlock('now-wind skeleton-now-wind')}</div>
+                    <div class="now-dir">
+                        ${skeletonBlock('wind-arrow now-arrow skeleton-now-arrow')}
+                        ${skeletonBlock('now-dir-label skeleton-now-dir')}
+                    </div>
+                    ${skeletonBlock('now-temp skeleton-now-temp')}
+                    <div class="now-badge">${skeletonBlock('now-forecast-badge skeleton-now-badge')}</div>
+                </div>
+            `;
+}
+
 function createSpotCard(spot) {
     const card = document.createElement('div');
     card.className = 'spot-card';
@@ -1117,6 +1183,12 @@ function createSpotCard(spot) {
         });
     }
 
+    // Nothing has arrived for this spot yet, so the card holds the space its rows
+    // will take rather than collapsing and pushing the grid around when they land.
+    if (forecastRows === '') {
+        forecastRows = skeletonForecastRows(hasWaveData ? 7 : 6);
+    }
+
     // Prominent "now" readout (live conditions if available, otherwise forecast-for-now).
     // Promoted above the forecast table so the current wind is the primary, glanceable read.
     let nowReadout = '';
@@ -1159,6 +1231,8 @@ function createSpotCard(spot) {
                     <div class="now-badge">${badge}</div>
                 </div>
             `;
+    } else {
+        nowReadout = skeletonNowReadout();
     }
 
     // Check if a spot is favorited
@@ -1248,7 +1322,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
     // If we already have data and not forcing refresh, use cached data
     if (globalWeatherData.length > 0 && !forceRefresh) {
         const filteredSpots = filterSpots(globalWeatherData, filter, searchQuery);
-        displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
+        displaySpots(filteredSpots, spotsGrid, searchQuery);
         if (!heroInitialized) {
             renderHeroSection();
         }
@@ -1267,7 +1341,7 @@ async function renderSpots(filter = 'all', searchQuery = '', skipDelay = false, 
         populateCountryDropdown(data);
 
         const filteredSpots = filterSpots(data, filter, searchQuery);
-        displaySpots(filteredSpots, spotsGrid, filter, searchQuery);
+        displaySpots(filteredSpots, spotsGrid, searchQuery);
         if (!heroInitialized) {
             renderHeroSection();
         }
@@ -1420,12 +1494,16 @@ function createListRow(spot) {
             : '-';
         row.appendChild(rainCell);
     } else {
-        // No conditions available
-        for (let i = 0; i < 5; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.textContent = '-';
-            row.appendChild(emptyCell);
-        }
+        // Nothing has arrived for this spot yet. Placeholders rather than dashes:
+        // a dash reads as "no wind here", which is a forecast of its own.
+        ['list-wind', 'list-gust', 'list-direction', 'list-temp', 'list-rain'].forEach(className => {
+            const cell = document.createElement('div');
+            cell.className = className;
+            // The direction cell carries the arrow, which is the tallest glyph in
+            // the row, so its placeholder wears the class and keeps the row height
+            cell.innerHTML = skeletonBlock(className === 'list-direction' ? 'wind-arrow' : '');
+            row.appendChild(cell);
+        });
     }
 
     // Country column
@@ -1679,7 +1757,11 @@ function applySavedOrder(spots, savedOrder, keyOf) {
     return [...spots.filter(spot => !orderedSet.has(spot)), ...ordered];
 }
 
-function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
+// Spots with no forecast yet are rendered like any other, as cards and rows of
+// placeholders. They used to be held back behind a spinner while every one of
+// them was empty, which is most of a cold start - and the spinner said nothing
+// about which spots there were, then swapped the whole grid in at once.
+function displaySpots(filteredSpots, spotsGrid, searchQuery) {
     cancelLazyRendering();
     spotsGrid.innerHTML = '';
     if (filteredSpots.length === 0) {
@@ -1696,59 +1778,38 @@ function displaySpots(filteredSpots, spotsGrid, filter, searchQuery) {
                         </div>
                     </div>
                 `;
-    } else {
-        // Check if all spots have empty forecasts
-        const allForecastsEmpty = filteredSpots.every(spot =>
-            !spot.forecast || spot.forecast.length === 0
-        );
+    } else if (currentViewMode === 'list') {
+        // Explicit column sort wins; otherwise default to "firing now" when enabled
+        let sortedSpots = listSortColumn
+            ? sortSpots(filteredSpots, listSortColumn, listSortDirection)
+            : (firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots);
 
-        if (allForecastsEmpty) {
-            spotsGrid.innerHTML = `
-                    <div class="loading-message">
-                        <div class="loading-spinner"></div>
-                        <span class="loading-text">${translations.t('loadingText')}</span>
-                    </div>
-                `;
-            // Retry loading after 5 seconds
-            setTimeout(() => {
-                renderSpots(filter, searchQuery, false, true);
-            }, 5000);
-        } else {
-            // Check current view mode and render accordingly
-            if (currentViewMode === 'list') {
-                // Explicit column sort wins; otherwise default to "firing now" when enabled
-                let sortedSpots = listSortColumn
-                    ? sortSpots(filteredSpots, listSortColumn, listSortDirection)
-                    : (firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots);
-
-                // Saved manual order only applies when not sorting by firing/column
-                if (!listSortColumn && !firingSortEnabled) {
-                    sortedSpots = applySavedOrder(
-                        sortedSpots,
-                        state.getListOrder(currentFilter, currentSearchQuery),
-                        spot => String(spot.wgId)
-                    );
-                }
-
-                // Render list view
-                spotsGrid.appendChild(createListHeader());
-                renderSpotsIncrementally(spotsGrid, sortedSpots, createListRow);
-            } else {
-                // Render grid view; "firing now" default ordering unless disabled
-                let gridSpots = firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots;
-
-                // Saved manual card order only applies when firing sort is off
-                if (!firingSortEnabled) {
-                    gridSpots = applySavedOrder(
-                        gridSpots,
-                        state.getSpotOrder(gridColumnMode(spotsGrid), currentFilter, currentSearchQuery),
-                        spot => spot.name
-                    );
-                }
-
-                renderSpotsIncrementally(spotsGrid, gridSpots, createSpotCard);
-            }
+        // Saved manual order only applies when not sorting by firing/column
+        if (!listSortColumn && !firingSortEnabled) {
+            sortedSpots = applySavedOrder(
+                sortedSpots,
+                state.getListOrder(currentFilter, currentSearchQuery),
+                spot => String(spot.wgId)
+            );
         }
+
+        // Render list view
+        spotsGrid.appendChild(createListHeader());
+        renderSpotsIncrementally(spotsGrid, sortedSpots, createListRow);
+    } else {
+        // Render grid view; "firing now" default ordering unless disabled
+        let gridSpots = firingSortEnabled ? sortByFiringNow(filteredSpots) : filteredSpots;
+
+        // Saved manual card order only applies when firing sort is off
+        if (!firingSortEnabled) {
+            gridSpots = applySavedOrder(
+                gridSpots,
+                state.getSpotOrder(gridColumnMode(spotsGrid), currentFilter, currentSearchQuery),
+                spot => spot.name
+            );
+        }
+
+        renderSpotsIncrementally(spotsGrid, gridSpots, createSpotCard);
     }
 }
 
@@ -2121,6 +2182,17 @@ function replaceRenderedCards(spotsGrid, freshSpots) {
         const updatedSpot = spotName && freshByName.get(spotName.textContent);
         if (updatedSpot) {
             card.replaceWith(createSpotCard(updatedSpot));
+        }
+    });
+
+    // List view renders rows rather than cards and needs the same treatment: on a
+    // cold start every row is placeholders, and without this they stay that way.
+    // Safe to swap the nodes out - the row drag handlers are delegated to the grid.
+    const freshByWgId = new Map(freshSpots.map(spot => [String(spot.wgId), spot]));
+    spotsGrid.querySelectorAll('.list-row').forEach(row => {
+        const updatedSpot = freshByWgId.get(row.dataset.spotId);
+        if (updatedSpot) {
+            row.replaceWith(createListRow(updatedSpot));
         }
     });
 

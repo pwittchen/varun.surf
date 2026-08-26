@@ -62,6 +62,12 @@
     --border-secondary: #26292e;
     --border-hover: #3a3e45;
 
+    /* Skeleton placeholders: a block that reads against the card, and the sheen
+       that sweeps across it. Not the border hairlines - those are tuned to be
+       barely visible, which is the opposite of what a placeholder wants. */
+    --skeleton-base: #23262a;
+    --skeleton-sheen: #33373d;
+
     /* Accent Colors (wind/water cyan — distinct from green "firing" status) */
     --accent-primary: #22c3e6;
     --accent-secondary: #0e8aa8;
@@ -227,6 +233,9 @@
     --border-primary: #ebebe8;
     --border-secondary: #e0e0dc;
     --border-hover: #c7c6c0;
+
+    --skeleton-base: #e6e6e2;
+    --skeleton-sheen: #f4f4f2;
 
     /* Accent Colors (cyan matching the dark theme identity, darkened for contrast on white) */
     --accent-primary: #0891b2;
@@ -2768,6 +2777,87 @@ body.index-page .header-title {
     border-radius: 2px;
     background: var(--accent-primary);
     transition: width .4s ease;
+}
+
+/* ----------------------------------------------------------------------------
+   Skeleton placeholders
+   A spot whose forecast has not arrived yet keeps the shape of one that has: the
+   same "now" readout, the same four forecast rows, the same height, with every
+   number replaced by a block. Two things ride on that - the grid does not reflow
+   as the forecast sweep fills spots in one by one, and no card grows under the
+   pointer while it is being read.
+   The block takes its height from the line box it sits in (hence the &nbsp; and
+   the transparent colour), so a placeholder is exactly as tall as the value it
+   stands in for, in every font size the card is rendered at.
+   ---------------------------------------------------------------------------- */
+.skeleton-text {
+    display: inline-block;
+    width: 70%;
+    min-width: 2ch;
+    border-radius: 4px;
+    background: var(--skeleton-base);
+    color: transparent;
+    user-select: none;
+    /* Baseline, not middle: the placeholder has to sit in the line box the way
+       the text it replaces did, or the row it is in changes height. */
+    vertical-align: baseline;
+}
+
+/* The sweep runs only while the server is actually fetching. Off the sweep a
+   spot with no forecast is not loading - it has none - and a placeholder that
+   kept shimmering would promise data that is never coming. */
+body.forecasts-loading .skeleton-text {
+    background: linear-gradient(
+        90deg,
+        var(--skeleton-base) 25%,
+        var(--skeleton-sheen) 37%,
+        var(--skeleton-base) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+    from {
+        background-position: 100% 50%;
+    }
+    to {
+        background-position: 0 50%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.forecasts-loading .skeleton-text {
+        animation: none;
+    }
+}
+
+/* The date column carries a word, the rest carry short numbers */
+.weather-table .skeleton-row td:first-child .skeleton-text {
+    width: 85%;
+}
+
+/* Widths in ch, so the readout keeps its proportions at either card size. Height
+   is left to the classes each placeholder shares with the value it replaces. */
+.skeleton-now-wind {
+    width: 5.5ch;
+}
+
+.skeleton-now-arrow {
+    width: 1.2ch;
+    min-width: 0;
+}
+
+.skeleton-now-dir {
+    width: 3ch;
+}
+
+.skeleton-now-temp {
+    width: 4ch;
+}
+
+.skeleton-now-badge {
+    width: 6ch;
 }
 
 /* Loading Message */
