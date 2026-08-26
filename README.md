@@ -361,7 +361,9 @@ Both paths are public (no session cookie required), same as `/llms/*.md`.
 |------|-------------|
 | `list_spots` | Markdown index of all kite spots, grouped by country |
 | `get_spot` | Full spot details (overview, current conditions, daily/hourly forecast, links) by Windguru spot ID (`wgId`) |
+| `get_wind_forecast` | Hour-by-hour wind, gusts and direction for one spot (`wgId`), optionally limited to a number of hours and a minimum wind speed |
 | `find_spot_by_name` | Search spots by case-insensitive substring match |
+| `find_windy_spots` | Scan every spot's hourly wind at once for the ones reaching a given wind speed, optionally within one country |
 | `list_countries` | List all countries with spot counts |
 | `get_spots_by_country` | List spots in a country by slug (e.g. `poland`, `czech-republic`) |
 | `get_status` | Quick summary of spots / countries / live stations counts |
@@ -419,11 +421,23 @@ These endpoints are **not** gated by the session cookie (unlike `/api/v1/**`) an
 |----------|-------------|
 | `GET /llms/spots.md` | Index of all kite spots with links to per-spot documents and a list of countries |
 | `GET /llms/spots/{wgId}.md` | Full spot document: overview, current conditions (when available), daily/hourly forecast, links |
+| `GET /llms/spots/{wgId}/wind.md` | One spot's wind hour by hour: wind, gusts and direction, with the windiest hour called out |
+| `GET /llms/wind.md` | Every spot reaching a given wind speed in the hours ahead, strongest first |
 | `GET /llms/countries.md` | Index of all countries with spot counts |
 | `GET /llms/countries/{slug}.md` | Spots available in the given country |
 
 The country `{slug}` is the lowercased country name with spaces replaced by hyphens (e.g. `poland`, `czech-republic`).
 All responses are served as `text/markdown; charset=UTF-8` and use the same in-memory caches as the JSON API.
+
+The two wind documents read the same grid-aligned hourly forecast `/api/v1/forecast/{wgId}` and
+`/api/v1/wind` serve, and take optional query parameters:
+
+| Endpoint | Parameters |
+|----------|------------|
+| `/llms/spots/{wgId}/wind.md` | `hours` (ahead, default 72), `minWind` (knots, default: list every hour) |
+| `/llms/wind.md` | `minWind` (knots, default 12), `hours` (ahead, default 24), `country` (name or slug), `limit` (default 20, max 100) |
+
+An unknown spot or country answers 404; a span longer than the forecast reaches is trimmed to what there is.
 
 ## data sources
 

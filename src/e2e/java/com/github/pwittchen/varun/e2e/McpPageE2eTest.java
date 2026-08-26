@@ -68,11 +68,13 @@ class McpPageE2eTest extends BaseE2eTest {
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(tools.count()).isEqualTo(6);
+        assertThat(tools.count()).isEqualTo(8);
         assertThat(tools.allTextContents()).containsExactly(
             "list_spots",
             "get_spot",
+            "get_wind_forecast",
             "find_spot_by_name",
+            "find_windy_spots",
             "list_countries",
             "get_spots_by_country",
             "get_status"
@@ -109,6 +111,8 @@ class McpPageE2eTest extends BaseE2eTest {
             "/llms.txt",
             "/llms/spots.md",
             "/llms/spots/{wgId}.md",
+            "/llms/spots/{wgId}/wind.md",
+            "/llms/wind.md",
             "/llms/countries.md",
             "/llms/countries/{slug}.md"
         );

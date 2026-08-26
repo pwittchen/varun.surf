@@ -90,9 +90,25 @@
                             </span>
                         </div>
                         <div class="mcp-tool">
+                            <code class="mcp-tool-name">get_wind_forecast</code>
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolGetWindForecast">
+                                Returns the hour-by-hour wind forecast for a single spot: wind, gusts
+                                and direction for every hour, with the windiest hour and the kiteable
+                                ones called out.
+                            </span>
+                        </div>
+                        <div class="mcp-tool">
                             <code class="mcp-tool-name">find_spot_by_name</code>
                             <span class="mcp-tool-description" data-i18n-html="mcpToolFindSpotByName">
                                 Finds spots whose name contains the given query (case-insensitive).
+                            </span>
+                        </div>
+                        <div class="mcp-tool">
+                            <code class="mcp-tool-name">find_windy_spots</code>
+                            <span class="mcp-tool-description" data-i18n-html="mcpToolFindWindySpots">
+                                Searches every spot at once for the ones reaching a given wind speed
+                                in the hours ahead, with the windy hours, peak wind, gusts and
+                                direction.
                             </span>
                         </div>
                         <div class="mcp-tool">
@@ -161,6 +177,21 @@
                                     <span class="mcp-tool-description" data-i18n-html="mcpLlmsSpotDescription">
                                         Single spot: overview, current conditions, daily and
                                         hourly forecast, and external links.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/spots/{wgId}/wind.md</code>
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsSpotWindDescription">
+                                        Hour-by-hour wind, gusts and direction for a single spot.
+                                        Query parameters: <code>hours</code> and <code>minWind</code>.
+                                    </span>
+                                </div>
+                                <div class="mcp-tool">
+                                    <code class="mcp-tool-name">/llms/wind.md</code>
+                                    <span class="mcp-tool-description" data-i18n-html="mcpLlmsWindDescription">
+                                        Every spot reaching a given wind speed in the hours ahead,
+                                        strongest first. Query parameters: <code>minWind</code>,
+                                        <code>hours</code>, <code>country</code> and <code>limit</code>.
                                     </span>
                                 </div>
                                 <div class="mcp-tool">

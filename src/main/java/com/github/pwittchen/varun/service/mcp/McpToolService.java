@@ -1,6 +1,7 @@
 package com.github.pwittchen.varun.service.mcp;
 
 import com.github.pwittchen.varun.controller.LlmController;
+import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.service.AggregatorService;
 import org.springframework.ai.tool.annotation.Tool;
@@ -10,10 +11,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class McpToolService {
+
+    // How far ahead find_windy_spots asks the grid to reach when the caller names
+    // no span. Everything else about the two wind tools - the defaults, the floor,
+    // the layout - lives with the Markdown they share with the /llms endpoints.
+    private static final int DEFAULT_WINDY_SPOTS_HOURS = 24;
 
     private final AggregatorService aggregatorService;
 
@@ -119,6 +126,73 @@ public class McpToolService {
     }
 
     @Tool(
+            name = "get_wind_forecast",
+            description = "Get the hour-by-hour wind forecast for a single kite spot identified by its "
+                    + "Windguru spot ID (wgId). Returns a Markdown table with wind speed, gusts and wind "
+                    + "direction for every hour, starting at the current hour, plus a summary naming the "
+                    + "windiest hour and the kiteable windows. Use this instead of get_spot when the "
+                    + "question is about when it will blow and how strongly, rather than about the spot itself."
+    )
+    public String getWindForecast(
+            @ToolParam(description = "Windguru spot ID (integer wgId), e.g. 500760 for Jastarnia")
+            int wgId,
+            @ToolParam(required = false, description =
+                    "How many hours ahead to return. Defaults to 72, and is capped by how far the forecast reaches.")
+            Integer hours,
+            @ToolParam(required = false, description =
+                    "Only report hours with at least this wind speed in knots. Omit to get every hour.")
+            Integer minWind
+    ) {
+        Optional<Spot> match = aggregatorService.getSpotById(wgId);
+        if (match.isEmpty()) {
+            return "No spot found for wgId=" + wgId
+                    + ". Use list_spots or find_spot_by_name to discover available spots.";
+        }
+
+        return LlmController.renderWindForecast(
+                match.get(),
+                aggregatorService.getHourlyForecast(wgId).orElse(null),
+                hours,
+                minWind
+        );
+    }
+
+    @Tool(
+            name = "find_windy_spots",
+            description = "Find the kite spots that will have wind in the hours ahead, across every spot at once. "
+                    + "Scans the shared hourly wind grid and returns a Markdown table of the spots whose forecast "
+                    + "reaches the given wind speed, with the hours the window runs over, the peak wind and gusts, "
+                    + "and the wind direction at the peak. Use this to answer 'where should I go' questions instead "
+                    + "of calling get_spot spot by spot."
+    )
+    public String findWindySpots(
+            @ToolParam(required = false, description =
+                    "Minimum wind speed in knots a spot must reach to be reported. Defaults to 12.")
+            Integer minWind,
+            @ToolParam(required = false, description =
+                    "How many hours ahead to scan. Defaults to 24, and is capped by how far the forecast reaches.")
+            Integer hours,
+            @ToolParam(required = false, description =
+                    "Only look at spots in this country, by name or slug, e.g. 'Poland' or 'czech-republic'. "
+                            + "Omit to scan every country.")
+            String country,
+            @ToolParam(required = false, description =
+                    "How many spots to report, strongest wind first. Defaults to 20, at most 100.")
+            Integer limit
+    ) {
+        final Map<Integer, Spot> spotsByWgId =
+                LlmController.spotsByWgId(aggregatorService.getSpots(), country);
+        if (country != null && !country.isBlank() && spotsByWgId.isEmpty()) {
+            return "No country found for '" + country + "'. Use list_countries to see available countries.";
+        }
+
+        final WindTimeline timeline = aggregatorService.getWindTimeline(
+                hours == null ? DEFAULT_WINDY_SPOTS_HOURS : Math.max(1, hours));
+
+        return LlmController.renderWindySpots(timeline, spotsByWgId, minWind, hours, country, limit);
+    }
+
+    @Tool(
             name = "get_status",
             description = "Get a short summary of the varun.surf service: number of spots, countries, "
                     + "and active live weather stations currently reporting wind."
@@ -135,4 +209,5 @@ public class McpToolService {
                 liveStations == 1 ? "station is" : "stations are"
         );
     }
+
 }

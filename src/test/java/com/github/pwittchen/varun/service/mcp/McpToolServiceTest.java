@@ -1,5 +1,8 @@
 package com.github.pwittchen.varun.service.mcp;
 
+import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
+import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.model.spot.SpotInfo;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -156,6 +159,164 @@ class McpToolServiceTest {
         String result = service.getStatus();
 
         assertThat(result).contains("1 live weather station is currently reporting");
+    }
+
+    @Test
+    void shouldReturnHourlyWindForecastForSpot() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(new HourlyForecast(
+                500760,
+                List.of(
+                        forecastAt("Fri 26 Aug 2026 12:00", 14, 19, "W"),
+                        forecastAt("Fri 26 Aug 2026 13:00", 21, 27, "NW")
+                )
+        )));
+
+        String result = service.getWindForecast(500760, null, null);
+
+        assertThat(result).startsWith("# Wind forecast for Jastarnia, Poland (wgId=500760)");
+        assertThat(result).contains("Windiest hour: Fri 26 Aug 2026 13:00 at 21 kts, gusting 27 kts from NW.");
+        assertThat(result).contains("Hours at or above 12 kts: 2 of 2.");
+        assertThat(result).contains("| Fri 26 Aug 2026 12:00 | 14 | 19 | W |");
+        assertThat(result).contains("| Fri 26 Aug 2026 13:00 | 21 | 27 | NW |");
+    }
+
+    @Test
+    void shouldLimitWindForecastHoursAndFilterByMinWind() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(new HourlyForecast(
+                500760,
+                List.of(
+                        forecastAt("Fri 26 Aug 2026 12:00", 8, 11, "W"),
+                        forecastAt("Fri 26 Aug 2026 13:00", 18, 24, "NW"),
+                        forecastAt("Fri 26 Aug 2026 14:00", 25, 31, "N")
+                )
+        )));
+
+        String result = service.getWindForecast(500760, 2, 15);
+
+        assertThat(result).contains("2 hours ahead");
+        assertThat(result).contains("Only hours with wind of at least 15 kts are listed.");
+        assertThat(result).contains("| Fri 26 Aug 2026 13:00 | 18 | 24 | NW |");
+        assertThat(result).doesNotContain("12:00 | 8");
+        assertThat(result).doesNotContain("14:00");
+    }
+
+    @Test
+    void shouldSayNoHourReachesTheRequestedWind() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(new HourlyForecast(
+                500760,
+                List.of(forecastAt("Fri 26 Aug 2026 12:00", 6, 9, "W"))
+        )));
+
+        String result = service.getWindForecast(500760, null, 20);
+
+        assertThat(result).contains("No hour in this window reaches 20 kts.");
+    }
+
+    @Test
+    void shouldReportMissingSpotForWindForecast() {
+        when(aggregatorService.getSpotById(123)).thenReturn(Optional.empty());
+
+        String result = service.getWindForecast(123, null, null);
+
+        assertThat(result).contains("No spot found for wgId=123");
+    }
+
+    @Test
+    void shouldReportEmptyWindForecastForKnownSpot() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760))
+                .thenReturn(Optional.of(new HourlyForecast(500760, List.of())));
+
+        String result = service.getWindForecast(500760, null, null);
+
+        assertThat(result).contains("No hourly wind forecast cached yet for Jastarnia, Poland (wgId=500760).");
+    }
+
+    @Test
+    void shouldFindWindySpotsAcrossTheGrid() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        String result = service.findWindySpots(null, null, null, null);
+
+        assertThat(result).startsWith("# Spots with at least 12 kts in the next 3 hours");
+        assertThat(result).contains("Grid: Fri 26 Aug 2026 12:00 to Fri 26 Aug 2026 14:00");
+        assertThat(result).contains("Scanned 2 spots.");
+        assertThat(result).contains("2 spots match, showing 2.");
+        // Podersdorf peaks at 24 kts, Jastarnia at 18, so the stronger spot comes first
+        assertThat(result.indexOf("Podersdorf")).isLessThan(result.indexOf("Jastarnia"));
+        assertThat(result).contains(
+                "| Jastarnia | Poland | 500760 | Fri 26 Aug 2026 13:00 | Fri 26 Aug 2026 14:00 | 2 | 18 | 24 | NW |");
+    }
+
+    @Test
+    void shouldFilterWindySpotsByCountryAndMinWind() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        String result = service.findWindySpots(20, null, "poland", null);
+
+        assertThat(result).contains("Scanned 1 spot in poland.");
+        assertThat(result).contains("No spot reaches 20 kts in this window.");
+        assertThat(result).doesNotContain("Podersdorf");
+    }
+
+    @Test
+    void shouldCapTheNumberOfWindySpotsReported() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        String result = service.findWindySpots(null, null, null, 1);
+
+        assertThat(result).contains("2 spots match, showing 1.");
+        assertThat(result).contains("Podersdorf");
+        assertThat(result).doesNotContain("| Jastarnia |");
+    }
+
+    @Test
+    void shouldReportUnknownCountryWhenSearchingForWindySpots() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+
+        String result = service.findWindySpots(null, null, "atlantis", null);
+
+        assertThat(result).contains("No country found for 'atlantis'");
+    }
+
+    @Test
+    void shouldReportEmptyTimelineWhenNothingIsCached() {
+        when(aggregatorService.getWindTimeline(24)).thenReturn(WindTimeline.EMPTY);
+
+        String result = service.findWindySpots(null, null, null, null);
+
+        assertThat(result).contains("No wind forecast is cached yet.");
+    }
+
+    private WindTimeline sampleTimeline() {
+        return new WindTimeline(
+                List.of("Fri 26 Aug 2026 12:00", "Fri 26 Aug 2026 13:00", "Fri 26 Aug 2026 14:00"),
+                List.of(
+                        // 6 kts is below the floor, so the window starts at 13:00
+                        new WindTimeline.SpotWind(500760,
+                                java.util.Arrays.asList(6, 18, 15),
+                                java.util.Arrays.asList(9, 24, 21),
+                                java.util.Arrays.asList(6, 7, 7)),
+                        new WindTimeline.SpotWind(859182,
+                                java.util.Arrays.asList(24, null, 12),
+                                java.util.Arrays.asList(30, null, 16),
+                                java.util.Arrays.asList(4, null, 4))
+                )
+        );
+    }
+
+    private Forecast forecastAt(String date, double wind, double gusts, String direction) {
+        return new Forecast(date, wind, gusts, direction, 20, 0, 10, 1015);
     }
 
     private List<Spot> sampleSpots() {

@@ -1,6 +1,8 @@
 package com.github.pwittchen.varun.controller;
 
 import com.github.pwittchen.varun.model.forecast.Forecast;
+import com.github.pwittchen.varun.model.forecast.HourlyForecast;
+import com.github.pwittchen.varun.model.forecast.WindTimeline;
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.model.map.Coordinates;
 import com.github.pwittchen.varun.model.spot.Spot;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -180,6 +183,186 @@ class LlmControllerTest {
     }
 
     @Test
+    void shouldRenderHourlyWindForecastForSpot() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(new HourlyForecast(
+                500760,
+                List.of(
+                        forecastAt("Fri 26 Aug 2026 12:00", 14, 19, "W"),
+                        forecastAt("Fri 26 Aug 2026 13:00", 21, 27, "NW")
+                )
+        )));
+
+        Mono<ResponseEntity<String>> result = controller.spotWind(500760, null, null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    String body = response.getBody();
+                    assertThat(body).isNotNull();
+                    assertThat(body).startsWith("# Wind forecast for Jastarnia, Poland (wgId=500760)");
+                    assertThat(body).contains(
+                            "Windiest hour: Fri 26 Aug 2026 13:00 at 21 kts, gusting 27 kts from NW.");
+                    assertThat(body).contains("Hours at or above 12 kts: 2 of 2.");
+                    assertThat(body).contains("| Fri 26 Aug 2026 12:00 | 14 | 19 | W |");
+                    assertThat(body).contains("[Spot details](/llms/spots/500760.md)");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldTrimWindForecastToRequestedHoursAndMinWind() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760)).thenReturn(Optional.of(new HourlyForecast(
+                500760,
+                List.of(
+                        forecastAt("Fri 26 Aug 2026 12:00", 8, 11, "W"),
+                        forecastAt("Fri 26 Aug 2026 13:00", 18, 24, "NW"),
+                        forecastAt("Fri 26 Aug 2026 14:00", 25, 31, "N")
+                )
+        )));
+
+        Mono<ResponseEntity<String>> result = controller.spotWind(500760, 2, 15);
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    String body = response.getBody();
+                    assertThat(body).isNotNull();
+                    assertThat(body).contains("2 hours ahead");
+                    assertThat(body).contains("Only hours with wind of at least 15 kts are listed.");
+                    assertThat(body).contains("| Fri 26 Aug 2026 13:00 | 18 | 24 | NW |");
+                    assertThat(body).doesNotContain("14:00");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReportEmptyWindForecastForKnownSpot() {
+        Spot spot = spotFor("Jastarnia", "Poland", 500760);
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.getHourlyForecast(500760))
+                .thenReturn(Optional.of(new HourlyForecast(500760, List.of())));
+
+        Mono<ResponseEntity<String>> result = controller.spotWind(500760, null, null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> assertThat(response.getBody())
+                        .contains("No hourly wind forecast cached yet for Jastarnia, Poland (wgId=500760)."))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturn404ForWindForecastOfUnknownSpot() {
+        when(aggregatorService.getSpotById(999999)).thenReturn(Optional.empty());
+
+        Mono<ResponseEntity<String>> result = controller.spotWind(999999, null, null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldRenderWindySpotsAcrossTheGrid() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        Mono<ResponseEntity<String>> result = controller.wind(null, null, null, null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    String body = response.getBody();
+                    assertThat(body).isNotNull();
+                    assertThat(body).startsWith("# Spots with at least 12 kts in the next 3 hours");
+                    assertThat(body).contains("Grid: Fri 26 Aug 2026 12:00 to Fri 26 Aug 2026 14:00");
+                    assertThat(body).contains("Scanned 2 spots.");
+                    assertThat(body).contains("2 spots match, showing 2.");
+                    // Podersdorf peaks at 24 kts, Jastarnia at 18, so the stronger spot comes first
+                    assertThat(body.indexOf("Podersdorf")).isLessThan(body.indexOf("Jastarnia"));
+                    assertThat(body).contains("| Jastarnia | Poland | 500760 | Fri 26 Aug 2026 13:00 "
+                            + "| Fri 26 Aug 2026 14:00 | 2 | 18 | 24 | NW |");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldFilterWindySpotsByCountryAndMinWind() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        Mono<ResponseEntity<String>> result = controller.wind(20, null, "poland", null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    String body = response.getBody();
+                    assertThat(body).isNotNull();
+                    assertThat(body).contains("Scanned 1 spot in poland.");
+                    assertThat(body).contains("No spot reaches 20 kts in this window.");
+                    assertThat(body).doesNotContain("Podersdorf");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldCapTheNumberOfWindySpotsRendered() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(sampleTimeline());
+
+        Mono<ResponseEntity<String>> result = controller.wind(null, null, null, 1);
+
+        StepVerifier.create(result)
+                .assertNext(response -> {
+                    String body = response.getBody();
+                    assertThat(body).isNotNull();
+                    assertThat(body).contains("2 spots match, showing 1.");
+                    assertThat(body).doesNotContain("| Jastarnia |");
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturn404ForWindSearchInUnknownCountry() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+
+        Mono<ResponseEntity<String>> result = controller.wind(null, null, "atlantis", null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReportEmptyWindTimelineWhenNothingIsCached() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getWindTimeline(24)).thenReturn(WindTimeline.EMPTY);
+
+        Mono<ResponseEntity<String>> result = controller.wind(null, null, null, null);
+
+        StepVerifier.create(result)
+                .assertNext(response -> assertThat(response.getBody())
+                        .contains("No wind forecast is cached yet."))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldLinkTheWindDocumentFromTheSpotsIndexAndSpotPage() {
+        when(aggregatorService.getSpots()).thenReturn(sampleSpots());
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(fullySpecifiedSpot()));
+
+        StepVerifier.create(controller.spotsIndex())
+                .assertNext(body -> assertThat(body).contains("[Where it will blow](/llms/wind.md)"))
+                .verifyComplete();
+
+        StepVerifier.create(controller.spot(500760))
+                .assertNext(response -> assertThat(response.getBody())
+                        .contains("[Hour-by-hour wind forecast](/llms/spots/500760/wind.md)"))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldConvertCountryWithSpacesToSlug() {
         assertThat(LlmController.toSlug("Czech Republic")).isEqualTo("czech-republic");
         assertThat(LlmController.toSlug("United Kingdom")).isEqualTo("united-kingdom");
@@ -191,6 +374,27 @@ class LlmControllerTest {
                 spotFor("Jastarnia", "Poland", 500760),
                 spotFor("Podersdorf", "Austria", 859182)
         );
+    }
+
+    private WindTimeline sampleTimeline() {
+        return new WindTimeline(
+                List.of("Fri 26 Aug 2026 12:00", "Fri 26 Aug 2026 13:00", "Fri 26 Aug 2026 14:00"),
+                List.of(
+                        // 6 kts is below the floor, so the window starts at 13:00
+                        new WindTimeline.SpotWind(500760,
+                                Arrays.asList(6, 18, 15),
+                                Arrays.asList(9, 24, 21),
+                                Arrays.asList(6, 7, 7)),
+                        new WindTimeline.SpotWind(859182,
+                                Arrays.asList(24, null, 12),
+                                Arrays.asList(30, null, 16),
+                                Arrays.asList(4, null, 4))
+                )
+        );
+    }
+
+    private Forecast forecastAt(String date, double wind, double gusts, String direction) {
+        return new Forecast(date, wind, gusts, direction, 20, 0, 10, 1015);
     }
 
     private Spot spotFor(String name, String country, int wgId) {

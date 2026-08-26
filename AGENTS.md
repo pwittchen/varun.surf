@@ -50,7 +50,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
-    └─→ /llms/*.md (LLM-friendly Markdown for spots and countries)
+    └─→ /llms/*.md (LLM-friendly Markdown for spots, countries and wind)
     ↓
 AggregatorService (orchestrates with Java 25 StructuredTaskScope)
     ├─→ ForecastService ─→ Windguru API (GFS & IFS models)
@@ -332,8 +332,18 @@ chatClient.prompt().user(prompt)
 **Endpoints**:
 - `GET /llms/spots.md` - All spots with live conditions and forecast summary
 - `GET /llms/spots/{id}.md` - Single spot with its full hourly forecast
+- `GET /llms/spots/{id}/wind.md` - One spot's wind hour by hour; query parameters
+  `hours` (default 72) and `minWind` (knots, default: every hour)
+- `GET /llms/wind.md` - Every spot reaching a given wind speed in the hours ahead,
+  strongest first; query parameters `minWind` (default 12), `hours` (default 24),
+  `country` (name or slug) and `limit` (default 20, max 100)
 - `GET /llms/countries.md` - Country index
 - `GET /llms/countries/{slug}.md` - Spots in one country
+
+The wind documents render the same grid-aligned hourly data `/api/v1/forecast/{wgId}`
+and `/api/v1/wind` serve. `LlmController.renderWindForecast` and
+`renderWindySpots` are static and shared with the `get_wind_forecast` and
+`find_windy_spots` MCP tools, so both surfaces stay identical.
 
 **Notes**:
 - Rendered from the AggregatorService caches, no session cookie required
@@ -355,6 +365,12 @@ chatClient.prompt().user(prompt)
 
 **Tools**:
 - `list_spots`, `get_spot`, `find_spot_by_name`
+- `get_wind_forecast` - one spot's grid-aligned hourly wind, gusts and direction
+  (the data behind `/api/v1/forecast/{wgId}`), optionally trimmed to a span and a
+  minimum wind speed
+- `find_windy_spots` - every spot's hourly wind at once (the data behind
+  `/api/v1/wind`), reduced to the spots that reach a given wind speed, with the
+  hours, peak wind, gusts and direction; optionally scoped to one country
 - `list_countries`, `get_spots_by_country`, `get_status`
 
 **Configuration**:

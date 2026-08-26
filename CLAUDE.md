@@ -48,7 +48,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
-    └─→ /llms/*.md (LLM-friendly Markdown for spots and countries)
+    └─→ /llms/*.md (LLM-friendly Markdown for spots, countries and wind)
     ↓
 AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
     ├─→ ForecastService → Windguru micro API (GFS & IFS models)
@@ -232,8 +232,14 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
    - Serves LLM-friendly Markdown (`text/markdown`) under `/llms`:
      - `GET /llms/spots.md` - all spots with live conditions and forecast summary
      - `GET /llms/spots/{id}.md` - single spot with full hourly forecast
+     - `GET /llms/spots/{id}/wind.md` - one spot's wind hour by hour (`hours`, `minWind`)
+     - `GET /llms/wind.md` - every spot reaching a wind speed in the hours ahead
+       (`minWind`, `hours`, `country`, `limit`)
      - `GET /llms/countries.md` - country index
      - `GET /llms/countries/{slug}.md` - spots in one country
+   - The two wind documents and the `get_wind_forecast` / `find_windy_spots` MCP tools
+     share one renderer: the static `renderWindForecast` / `renderWindySpots` methods
+     here, over the same grid `/api/v1/forecast/{wgId}` and `/api/v1/wind` serve
    - Rendered from the AggregatorService caches, no session cookie required
 
 14. **SeoController** (`controller/SeoController.java`)
@@ -243,8 +249,14 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /sitemap.xml` - sitemap covering all spots and countries
 
 15. **McpToolService** (`service/mcp/McpToolService.java`, `config/McpConfig.java`)
-   - Exposes the spot data as MCP tools: `list_spots`, `get_spot`, `find_spot_by_name`,
-     `list_countries`, `get_spots_by_country`, `get_status`
+   - Exposes the spot data as MCP tools: `list_spots`, `get_spot`, `get_wind_forecast`,
+     `find_spot_by_name`, `find_windy_spots`, `list_countries`, `get_spots_by_country`,
+     `get_status`
+   - `get_wind_forecast` and `find_windy_spots` serve the same grid-aligned wind
+     `/api/v1/forecast/{wgId}` and `/api/v1/wind` do, rendered as Markdown: one spot
+     hour by hour, and every spot at once filtered by wind speed. The hourly table
+     in `get_spot` is capped at 24 entries and answers "what is this spot like";
+     these two answer "when will it blow" and "where should I go"
    - Registered as a `ToolCallbackProvider` in `McpConfig`; see the MCP section of README.md
 
 ### Data Model

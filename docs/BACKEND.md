@@ -132,7 +132,8 @@
     -> SponsorsController.mainSponsors()
     -> returns Flux<Sponsor>
 
-  GET /llms/spots.md | /llms/spots/{id}.md | /llms/countries.md | /llms/countries/{slug}.md
+  GET /llms/spots.md | /llms/spots/{id}.md | /llms/spots/{id}/wind.md | /llms/wind.md
+      | /llms/countries.md | /llms/countries/{slug}.md
     -> LlmController renders Markdown from AggregatorService caches
     -> no SESSION cookie required (path is exempt in SessionAuthenticationFilter)
     -> returns text/markdown; charset=UTF-8
@@ -555,6 +556,25 @@ LLM-Friendly Markdown (PUBLIC, no SESSION cookie required):
     - Returns 404 if spot id is unknown
     - Content-Type: text/markdown; charset=UTF-8
 
+  GET /llms/spots/{wgId}/wind.md?hours=&minWind=
+    - One spot's wind hour by hour on the grid-aligned forecast (the data behind
+      /api/v1/forecast/{wgId}): wind, gusts and direction per hour, with a summary
+      naming the windiest hour and how many hours reach 12 kts
+    - hours: how far ahead to report (default 72, trimmed to what the forecast holds)
+    - minWind: knots below which hours are left out (default: every hour is listed)
+    - Returns 404 if spot id is unknown
+    - Content-Type: text/markdown; charset=UTF-8
+
+  GET /llms/wind.md?minWind=&hours=&country=&limit=
+    - Every spot reaching a given wind speed in the hours ahead, strongest first
+      (the data behind /api/v1/wind): first and last windy hour, how many hours
+      are windy, peak wind and gusts, and the direction at the peak
+    - minWind: knots a spot must reach (default 12)
+    - hours: how far ahead to scan (default 24, trimmed to the grid)
+    - country: name or slug to restrict the search to; 404 when it matches nothing
+    - limit: how many spots to list (default 20, capped at 100)
+    - Content-Type: text/markdown; charset=UTF-8
+
   GET /llms/countries.md
     - Index of all countries with spot counts and links to per-country markdown
 
@@ -566,6 +586,10 @@ LLM-Friendly Markdown (PUBLIC, no SESSION cookie required):
 
   All /llms/** endpoints are exempted from the SESSION filter and referenced from /llms.txt,
   so they can be crawled or fetched by LLM tooling without going through the frontend.
+
+  The two wind documents are rendered by static methods on LlmController
+  (renderWindForecast, renderWindySpots) that McpToolService also calls for its
+  get_wind_forecast and find_windy_spots tools, so both surfaces render identically.
 
 Metrics (session cookie only - no password):
   GET /api/v1/metrics

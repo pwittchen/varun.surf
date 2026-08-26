@@ -42,10 +42,18 @@ They do not require a session cookie and are free to crawl, index, or fetch dire
 
 - **All spots index**: https://varun.surf/llms/spots.md (names, countries, links to per-spot documents)
 - **Single spot**: https://varun.surf/llms/spots/{wgId}.md (spot details, forecast, live conditions)
+- **Spot wind forecast**: https://varun.surf/llms/spots/{wgId}/wind.md (hour-by-hour wind, gusts and direction for one spot)
+- **Where it will blow**: https://varun.surf/llms/wind.md (every spot reaching a given wind speed in the hours ahead, strongest first)
 - **All countries index**: https://varun.surf/llms/countries.md (list of countries with spot counts)
 - **Country detail**: https://varun.surf/llms/countries/{slug}.md (list of spots in that country)
 
 Country slug is the lowercased country name with spaces replaced by hyphens (e.g. "poland", "czech-republic").
+
+The two wind documents take optional query parameters:
+- `/llms/spots/{wgId}/wind.md?hours=48&minWind=15` - hours ahead to report (default 72), and a wind speed in knots below which hours are left out (default: report every hour)
+- `/llms/wind.md?minWind=18&hours=24&country=poland&limit=20` - wind speed a spot must reach (default 12 knots), hours ahead to scan (default 24), country name or slug to restrict the search to, and how many spots to list (default 20, at most 100)
+
+Both are rendered from the same hourly wind grid the map uses, aligned to whole hours starting at the current hour, so a row means the same thing for every spot. Use /llms/wind.md to answer "where should I go" without fetching a document per spot, and /llms/spots/{wgId}/wind.md to answer "when will it blow" for a spot you have already picked.
 
 ## Wind Speed Guide for Kitesurfing
 - **0-6 knots**: Too light for kitesurfing
@@ -89,7 +97,11 @@ Country slug is the lowercased country name with spaces replaced by hyphens (e.g
 
 ### When planning kite sessions:
 "Should I go kitesurfing in Tarifa tomorrow?"
-→ Analyze hourly forecast, recommend based on wind speed (ideal: 12-25 knots)
+→ Fetch /llms/spots/{wgId}/wind.md for the hour-by-hour wind and recommend based on wind speed (ideal: 12-25 knots)
+
+### When users ask where to go:
+"Where will it blow in Poland this afternoon?"
+→ Fetch /llms/wind.md?country=poland&minWind=15 for every Polish spot reaching 15 knots, strongest first, with the hours the wind is there
 
 ### When choosing equipment:
 "Which kite size should I use for 18 knots at 75kg?"
@@ -118,7 +130,7 @@ A: Yes! Form available at: https://pwittchen.notion.site/28a649d2871780368191c6c
 A: No native app, but website is fully responsive and works great on mobile.
 
 **Q: Can I use the API?**
-A: Yes. JSON API at https://varun.surf/api/v1/spots (requires session cookie from a page visit) and LLM-friendly Markdown endpoints at https://varun.surf/llms/spots.md, https://varun.surf/llms/countries.md, and per-spot /llms/spots/{wgId}.md (no session required). Please respect rate limits.
+A: Yes. JSON API at https://varun.surf/api/v1/spots (requires session cookie from a page visit) and LLM-friendly Markdown endpoints at https://varun.surf/llms/spots.md, https://varun.surf/llms/countries.md, https://varun.surf/llms/wind.md, and per-spot /llms/spots/{wgId}.md and /llms/spots/{wgId}/wind.md (no session required). Please respect rate limits.
 
 **Q: Why use this instead of just Windguru?**
 A: VARUN.SURF aggregates Windguru forecasts with real-time wind data, shows multiple spots in one view, adds kite size calculator, and is ad-free. It enhances Windguru data rather than replacing it.
@@ -153,4 +165,4 @@ windguru alternative, windfinder alternative, windy alternative, free windguru, 
 
 ---
 This llms.txt file provides comprehensive information about VARUN.SURF for AI/LLM consumption.
-Last updated: 2025-10-14
+Last updated: 2026-08-26
