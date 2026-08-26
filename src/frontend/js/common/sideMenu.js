@@ -61,6 +61,7 @@ const SIDEBAR_LABEL_KEYS = {
     githubLinkSidebarLabel: 'sidebarGithub',
     logsLinkSidebarLabel: 'sidebarLogs',
     metricsLinkSidebarLabel: 'sidebarMetrics',
+    sidebarSectionAppearance: 'sidebarSectionAppearance',
     sidebarSectionView: 'sidebarSectionView',
     sidebarSectionFilters: 'sidebarSectionFilters',
     sidebarSectionTools: 'sidebarSectionTools',

@@ -48,6 +48,7 @@ export const translations = {
 
         // Sidebar (section headings + short row labels; the full sentence
         // stays in the tooltips above)
+        sidebarSectionAppearance: "Appearance",
         sidebarSectionView: "View",
         sidebarSectionFilters: "Filters",
         sidebarSectionTools: "Tools",
@@ -555,6 +556,7 @@ export const translations = {
 
         // Sidebar (section headings + short row labels; the full sentence
         // stays in the tooltips above)
+        sidebarSectionAppearance: "Wygląd",
         sidebarSectionView: "Widok",
         sidebarSectionFilters: "Filtry",
         sidebarSectionTools: "Narzędzia",

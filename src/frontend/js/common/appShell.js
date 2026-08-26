@@ -22,11 +22,22 @@ const SIDEBAR_HTML = `
             <span class="info-label" id="infoToggleLabel">Info</span>
             <span class="sidebar-label" id="infoToggleSidebarLabel">Info</span>
         </button>
+    </div>
+    <div class="sidebar-section">
+        <div class="sidebar-section-title" id="sidebarSectionAppearance">Appearance</div>
         <button class="theme-toggle sidebar-item" id="themeToggle" title="Toggle theme">
             <svg class="icon theme-icon" id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>
             </svg>
             <span class="sidebar-label" id="themeToggleSidebarLabel">Theme</span>
+        </button>
+        <button class="theme-toggle hero-toggle desktop-only sidebar-item sidebar-toggle" id="heroToggle" role="switch" aria-checked="false" title="Toggle hero banner">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/>
+                <circle cx="16" cy="8" r="2"/>
+            </svg>
+            <span class="sidebar-label" id="heroToggleSidebarLabel">Banner</span>
+            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
     <div class="sidebar-section">
@@ -57,14 +68,6 @@ const SIDEBAR_HTML = `
             </svg>
             <span class="map-label" id="mapToggleLabel">Map</span>
             <span class="sidebar-label" id="mapToggleSidebarLabel">Map</span>
-        </button>
-        <button class="theme-toggle hero-toggle desktop-only sidebar-item sidebar-toggle" id="heroToggle" role="switch" aria-checked="false" title="Toggle hero banner">
-            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0ZM5,2H19a3,3,0,0,1,3,3V19a2.951,2.951,0,0,1-.3,1.285l-9.163-9.163a5,5,0,0,0-7.072,0L2,14.586V5A3,3,0,0,1,5,2ZM5,22a3,3,0,0,1-3-3V17.414l4.878-4.878a3,3,0,0,1,4.244,0L20.285,21.7A2.951,2.951,0,0,1,19,22Z"/>
-                <circle cx="16" cy="8" r="2"/>
-            </svg>
-            <span class="sidebar-label" id="heroToggleSidebarLabel">Banner</span>
-            <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
     <div class="sidebar-section">
