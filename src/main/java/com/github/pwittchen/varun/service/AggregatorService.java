@@ -85,7 +85,10 @@ public class AggregatorService {
     private static final long FORECAST_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;    // 3 hours
     private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
     private static final long AI_FETCH_INTERVAL_MS = 24 * 60 * 60 * 1000;         // 24 hours
-    private static final long AI_INITIAL_DELAY_MS = 5 * 60 * 1000;                // 5 minutes
+    // The analysis is written from a spot's hourly forecast and a spot with none
+    // gets no analysis at all, so this waits out the startup forecast sweep across
+    // the whole spot list rather than burning a daily pass on a half-filled cache.
+    private static final long AI_INITIAL_DELAY_MS = 15 * 60 * 1000;               // 15 minutes
     private static final long ICM_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;         // 3 hours
     private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
