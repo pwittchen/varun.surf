@@ -56,6 +56,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -63,7 +64,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
@@ -595,8 +598,12 @@ public class AggregatorService {
         // Deliberately not a fail-fast scope. A pass over the whole spot list takes minutes, and
         // aborting all of it because one spot's Windguru export timed out threw that work away and
         // left the cache untouched - then @Retryable started the same minutes-long pass over again.
-        // Failures are counted and logged per spot instead, and everything that did arrive stays.
+        // Failures are counted and logged per spot instead, everything that did arrive stays, and
+        // the spots that failed get one more attempt once the rest of the pass is through.
         try (var scope = openScope("forecast")) {
+            // The spots whose fetch threw, retried once the rest of the pass is through.
+            final Queue<Spot> failedSpots = new ConcurrentLinkedQueue<>();
+
             spots.values().forEach(spot -> scope.fork(() -> {
                 forecastLimiter.acquire();
                 try {
@@ -609,6 +616,7 @@ public class AggregatorService {
                     return Pair.with(cacheId, data);
                 } catch (Exception e) {
                     recordForecastFetchFailure(spot, total, e);
+                    failedSpots.add(spot);
                     throw e;
                 } finally {
                     forecastLimiter.release();
@@ -622,6 +630,8 @@ public class AggregatorService {
                 metricsService.incrementForecastFetchFailureCounter();
                 throw new FetchingForecastException(e.getMessage());
             }
+
+            retryFailedForecasts(failedSpots);
 
             long elapsedMs = (System.nanoTime() - startTime) / 1_000_000;
             log.info("Forecasts fetched: {} of {} spots in {} ms ({} failed, cache holds {})",
@@ -642,23 +652,84 @@ public class AggregatorService {
      * served ~800 spots with no forecast at all for the length of a whole sweep.
      */
     private void publishForecast(final Spot spot, final ForecastData data, final int total) {
+        cacheForecast(spot, data);
+        logForecastFetchProgress(total);
+    }
+
+    /**
+     * @return whether the spot's forecast made it into the cache; an export that came back with
+     * nothing is counted as empty and cached as nothing, which is neither a success nor a failure
+     */
+    private boolean cacheForecast(final Spot spot, final ForecastData data) {
         int cacheId = spot.wgId();
         if (data == null || data.daily().isEmpty()) {
             forecastFetchEmpty.incrementAndGet();
             log.debug("No forecast data for spot {} ({}, forecastWgId: {})", cacheId, spot.name(), spot.forecastWgId());
-        } else {
-            // Merge instead of overwrite, so the models fetched outside this cycle (ICM, on-demand
-            // Windguru models) survive the periodic GFS refresh.
-            forecastCache.merge(cacheId, data, AggregatorService::mergeForecastData);
-            spots.computeIfPresent(cacheId, (_, cached) -> Optional
-                    .ofNullable(forecastCache.get(cacheId))
-                    .map(merged -> cached.withForecasts(merged.daily(), Collections.emptyList()))
-                    .orElse(cached));
-            forecastFetchSucceeded.incrementAndGet();
-            log.debug("Fetched forecast for spot {} ({}): {} daily entries, {} models",
-                    cacheId, spot.name(), data.daily().size(), data.hourly().size());
+            return false;
         }
-        logForecastFetchProgress(total);
+        // Merge instead of overwrite, so the models fetched outside this cycle (ICM, on-demand
+        // Windguru models) survive the periodic GFS refresh.
+        forecastCache.merge(cacheId, data, AggregatorService::mergeForecastData);
+        spots.computeIfPresent(cacheId, (_, cached) -> Optional
+                .ofNullable(forecastCache.get(cacheId))
+                .map(merged -> cached.withForecasts(merged.daily(), Collections.emptyList()))
+                .orElse(cached));
+        forecastFetchSucceeded.incrementAndGet();
+        log.debug("Fetched forecast for spot {} ({}): {} daily entries, {} models",
+                cacheId, spot.name(), data.daily().size(), data.hourly().size());
+        return true;
+    }
+
+    /**
+     * One more attempt at the spots whose fetch threw, made once the rest of the pass is through.
+     * A sweep hits a third-party export several hundred times and a handful of those time out or
+     * come back malformed on any given run; without a second attempt those spots keep a forecast
+     * three hours old - or none at all, on a freshly started instance - until the next sweep.
+     *
+     * <p>The retry belongs to the same pass rather than being a new one: a spot that answers on the
+     * second attempt stops counting as a failure, one that fails again is left exactly as it was,
+     * and the totals the status page reads keep adding up. It shares the same semaphore, so it
+     * never fetches harder than the pass it follows.
+     */
+    private void retryFailedForecasts(final Collection<Spot> failedSpots) {
+        if (failedSpots.isEmpty()) {
+            return;
+        }
+
+        final int attempted = failedSpots.size();
+        final AtomicInteger recovered = new AtomicInteger();
+        log.info("Retrying forecasts for {} spots that failed in this pass", attempted);
+
+        try (var scope = openScope("forecastRetry")) {
+            failedSpots.forEach(spot -> scope.fork(() -> {
+                forecastLimiter.acquire();
+                try {
+                    var data = forecastService.getForecastData(spot.forecastWgId()).block();
+                    // The spot is no longer a failure however the retry turned out: it either
+                    // carries a forecast now or answered with nothing, which is counted as empty.
+                    forecastFetchFailed.decrementAndGet();
+                    if (cacheForecast(spot, data)) {
+                        recovered.incrementAndGet();
+                    }
+                    return Pair.with(spot.wgId(), data);
+                } catch (Exception e) {
+                    log.warn("Retry failed for spot {} ({}, forecastWgId: {}): {}",
+                            spot.wgId(), spot.name(), spot.forecastWgId(), e.getMessage());
+                    throw e;
+                } finally {
+                    forecastLimiter.release();
+                }
+            }));
+
+            scope.join();
+        } catch (Exception e) {
+            // A retry that falls over leaves the pass exactly where it was, so it is logged and
+            // nothing more: the spots it could not recover keep the forecast they already had.
+            log.error("Error while retrying failed forecasts", e);
+        }
+
+        log.info("Retried forecasts for {} spots: {} recovered, {} still failing",
+                attempted, recovered.get(), forecastFetchFailed.get());
     }
 
     private void recordForecastFetchFailure(final Spot spot, final int total, final Exception e) {

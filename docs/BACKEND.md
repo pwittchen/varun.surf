@@ -537,6 +537,9 @@ Health & Status:
     - How far the running (or last) forecast sweep got. The sweep covers the whole
       spot list and publishes spot by spot, so a freshly started instance serves
       spots without a forecast for as long as it lasts
+    - A spot whose fetch threw gets one more attempt once the rest of the sweep is
+      through, counted into the same pass: a spot that answers the second time moves
+      from "failed" to "fetched" (or "empty"), one that fails again stays failed
     - Response: {"inProgress": true, "total": 782, "completed": 310, "fetched": 308,
                  "empty": 2, "failed": 0, "cached": 308, "startedAt": ..., "finishedAt": ...,
                  "elapsedMs": 8123}

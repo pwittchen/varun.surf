@@ -43,6 +43,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -286,6 +287,73 @@ class AggregatorServiceTest {
         assertThat(progress.failed()).isEqualTo(1);
         assertThat(progress.cached()).isEqualTo(1);
         assertThat(spotsCache().get(456).forecast()).isEqualTo(daily);
+        // one attempt in the pass, one in the retry that follows it
+        verify(forecastService, times(2)).getForecastData(123);
+    }
+
+    /**
+     * A handful of exports time out on any given pass. Retrying them once the pass is through is
+     * what keeps those spots from carrying a three-hour-old forecast - or none at all, on a freshly
+     * started instance - until the next sweep.
+     */
+    @Test
+    void shouldRetrySpotsThatFailedOnceThePassIsThrough() throws FetchingForecastException {
+        // given
+        var flaky = createTestSpot(123, "Flaky Spot");
+        var working = createTestSpot(456, "Working Spot");
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+        var forecastData = new ForecastData(daily, Map.of());
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(flaky, working));
+        when(forecastService.getForecastData(123))
+                .thenReturn(Mono.error(new RuntimeException("API Error")))
+                .thenReturn(Mono.just(forecastData));
+        when(forecastService.getForecastData(456)).thenReturn(Mono.just(forecastData));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(2);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then - the retry recovers the spot, and the pass counts it as fetched rather than failed
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.total()).isEqualTo(2);
+        assertThat(progress.completed()).isEqualTo(2);
+        assertThat(progress.fetched()).isEqualTo(2);
+        assertThat(progress.failed()).isEqualTo(0);
+        assertThat(progress.cached()).isEqualTo(2);
+        assertThat(spotsCache().get(123).forecast()).isEqualTo(daily);
+        verify(forecastService, times(2)).getForecastData(123);
+    }
+
+    /**
+     * The retry is an attempt, not a promise: a spot that answers with nothing the second time
+     * stops being a failure without becoming a fetch, so the counters still add up to the pass.
+     */
+    @Test
+    void shouldCountARetriedSpotThatReturnsNothingAsEmpty() throws FetchingForecastException {
+        // given
+        var flaky = createTestSpot(123, "Flaky Spot");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(flaky));
+        when(forecastService.getForecastData(123))
+                .thenReturn(Mono.error(new RuntimeException("API Error")))
+                .thenReturn(Mono.just(new ForecastData(List.of(), Map.of())));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.completed()).isEqualTo(1);
+        assertThat(progress.fetched()).isEqualTo(0);
+        assertThat(progress.empty()).isEqualTo(1);
+        assertThat(progress.failed()).isEqualTo(0);
+        assertThat(progress.cached()).isEqualTo(0);
     }
 
     /**
