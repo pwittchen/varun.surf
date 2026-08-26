@@ -69,6 +69,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.StructuredTaskScope.Joiner;
 import java.util.concurrent.StructuredTaskScope.Subtask;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -102,6 +104,10 @@ public class AggregatorService {
     // out, and the grid is trimmed to the hours the forecast actually holds anyway,
     // so this only bounds how much work a caller can ask for.
     private static final int MAX_WIND_TIMELINE_HOURS = 16 * 24;
+
+    // A pass covers hundreds of spots, so one line per spot would bury everything else in the log.
+    // One line per this many keeps the sweep followable at INFO; the per-spot lines are at DEBUG.
+    private static final int FORECAST_PROGRESS_LOG_EVERY = 50;
 
     // Concurrency limits
     private static final int FORECAST_SEMAPHORE_PERMITS = 32;
@@ -155,6 +161,16 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
     private final ConcurrentMap<Integer, Disposable> icmUrlResolutionSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
+
+    // Progress of the forecast sweep, read by /api/v1/status/forecast
+    private final AtomicBoolean forecastFetchInProgress = new AtomicBoolean();
+    private final AtomicInteger forecastFetchTotal = new AtomicInteger();
+    private final AtomicInteger forecastFetchCompleted = new AtomicInteger();
+    private final AtomicInteger forecastFetchSucceeded = new AtomicInteger();
+    private final AtomicInteger forecastFetchEmpty = new AtomicInteger();
+    private final AtomicInteger forecastFetchFailed = new AtomicInteger();
+    private volatile long forecastFetchStartedAtMs;
+    private volatile long forecastFetchFinishedAtMs;
 
     public AggregatorService(
             SpotsDataProvider spotsDataProvider,
@@ -573,24 +589,31 @@ public class AggregatorService {
     public void fetchForecasts() throws FetchingForecastException {
         metricsService.incrementForecastFetchCounter();
         var startTime = System.nanoTime();
+        final int total = spots.size();
+        beginForecastFetchProgress(total);
 
-        try (var scope = openFailFastScopeForecast()) {
-            var tasks = spots
-                    .values()
-                    .stream()
-                    .map(spot -> scope.fork(() -> {
-                        forecastLimiter.acquire();
-                        try {
-                            // Use forecastWgId() for fetching (extracts ID from fallback URL if needed)
-                            // but use wgId() for caching (unique deterministic ID for the spot)
-                            int forecastId = spot.forecastWgId();
-                            int cacheId = spot.wgId();
-                            return Pair.with(cacheId, forecastService.getForecastData(forecastId).block());
-                        } finally {
-                            forecastLimiter.release();
-                        }
-                    }))
-                    .toList();
+        // Deliberately not a fail-fast scope. A pass over the whole spot list takes minutes, and
+        // aborting all of it because one spot's Windguru export timed out threw that work away and
+        // left the cache untouched - then @Retryable started the same minutes-long pass over again.
+        // Failures are counted and logged per spot instead, and everything that did arrive stays.
+        try (var scope = openScope("forecast")) {
+            spots.values().forEach(spot -> scope.fork(() -> {
+                forecastLimiter.acquire();
+                try {
+                    // Use forecastWgId() for fetching (extracts ID from fallback URL if needed)
+                    // but use wgId() for caching (unique deterministic ID for the spot)
+                    int forecastId = spot.forecastWgId();
+                    int cacheId = spot.wgId();
+                    var data = forecastService.getForecastData(forecastId).block();
+                    publishForecast(spot, data, total);
+                    return Pair.with(cacheId, data);
+                } catch (Exception e) {
+                    recordForecastFetchFailure(spot, total, e);
+                    throw e;
+                } finally {
+                    forecastLimiter.release();
+                }
+            }));
 
             try {
                 scope.join();
@@ -600,32 +623,123 @@ public class AggregatorService {
                 throw new FetchingForecastException(e.getMessage());
             }
 
-            log.info("Forecasts fetched");
-            updateSpotsAndForecasts(tasks);
+            long elapsedMs = (System.nanoTime() - startTime) / 1_000_000;
+            log.info("Forecasts fetched: {} of {} spots in {} ms ({} failed, cache holds {})",
+                    forecastFetchSucceeded.get(), total, elapsedMs, forecastFetchFailed.get(), forecastCache.size());
             metricsService.incrementForecastFetchSuccessCounter();
             metricsService.updateLastForecastFetchTimestamp();
             updateMetricsGauges();
         } finally {
+            endForecastFetchProgress();
             metricsService.recordForecastFetchDuration(startTime);
         }
     }
 
-    private void updateSpotsAndForecasts(List<Subtask<Pair<Integer, ForecastData>>> tasks) {
-        Map<Integer, ForecastData> newForecasts = tasks
-                .stream()
-                .map(Subtask::get)
-                .filter(pair -> pair.getValue1() != null && !pair.getValue1().daily().isEmpty())
-                .collect(Collectors.toMap(Pair::getValue0, Pair::getValue1));
+    /**
+     * Puts one spot's forecast into the cache as soon as it arrives rather than collecting every
+     * result and writing them in one batch at the end of the pass. The batch write meant nothing
+     * was readable until the slowest spot in the list finished, so a freshly started instance
+     * served ~800 spots with no forecast at all for the length of a whole sweep.
+     */
+    private void publishForecast(final Spot spot, final ForecastData data, final int total) {
+        int cacheId = spot.wgId();
+        if (data == null || data.daily().isEmpty()) {
+            forecastFetchEmpty.incrementAndGet();
+            log.debug("No forecast data for spot {} ({}, forecastWgId: {})", cacheId, spot.name(), spot.forecastWgId());
+        } else {
+            // Merge instead of overwrite, so the models fetched outside this cycle (ICM, on-demand
+            // Windguru models) survive the periodic GFS refresh.
+            forecastCache.merge(cacheId, data, AggregatorService::mergeForecastData);
+            spots.computeIfPresent(cacheId, (_, cached) -> Optional
+                    .ofNullable(forecastCache.get(cacheId))
+                    .map(merged -> cached.withForecasts(merged.daily(), Collections.emptyList()))
+                    .orElse(cached));
+            forecastFetchSucceeded.incrementAndGet();
+            log.debug("Fetched forecast for spot {} ({}): {} daily entries, {} models",
+                    cacheId, spot.name(), data.daily().size(), data.hourly().size());
+        }
+        logForecastFetchProgress(total);
+    }
 
-        // Merge instead of overwrite, so the models fetched outside this cycle (ICM, on-demand
-        // Windguru models) survive the periodic GFS refresh.
-        newForecasts.forEach((spotId, data) -> forecastCache.merge(spotId, data, AggregatorService::mergeForecastData));
+    private void recordForecastFetchFailure(final Spot spot, final int total, final Exception e) {
+        forecastFetchFailed.incrementAndGet();
+        log.warn("Failed to fetch forecast for spot {} ({}, forecastWgId: {}): {}",
+                spot.wgId(), spot.name(), spot.forecastWgId(), e.getMessage());
+        logForecastFetchProgress(total);
+    }
 
-        spots.replaceAll((_, spot) -> Optional
-                .ofNullable(forecastCache.get(spot.wgId()))
-                .map(data -> spot.withForecasts(data.daily(), Collections.emptyList()))
-                .orElse(spot)
+    private void logForecastFetchProgress(final int total) {
+        int done = forecastFetchCompleted.incrementAndGet();
+        if (done % FORECAST_PROGRESS_LOG_EVERY != 0 && done != total) {
+            return;
+        }
+        long elapsedMs = System.currentTimeMillis() - forecastFetchStartedAtMs;
+        log.info("Fetching forecasts: {}/{} spots ({}%) - {} with data, {} empty, {} failed, {} s elapsed",
+                done, total, total == 0 ? 100 : done * 100 / total,
+                forecastFetchSucceeded.get(), forecastFetchEmpty.get(), forecastFetchFailed.get(),
+                elapsedMs / 1000);
+    }
+
+    private void beginForecastFetchProgress(final int total) {
+        forecastFetchTotal.set(total);
+        forecastFetchCompleted.set(0);
+        forecastFetchSucceeded.set(0);
+        forecastFetchEmpty.set(0);
+        forecastFetchFailed.set(0);
+        forecastFetchStartedAtMs = System.currentTimeMillis();
+        forecastFetchInProgress.set(true);
+    }
+
+    private void endForecastFetchProgress() {
+        forecastFetchInProgress.set(false);
+        forecastFetchFinishedAtMs = System.currentTimeMillis();
+    }
+
+    /**
+     * How far the running (or last) forecast pass got. A pass takes minutes and publishes spot by
+     * spot, so the frontend reads this to say how much of the list already carries a forecast
+     * instead of showing a list that silently fills itself in.
+     */
+    public ForecastFetchProgress getForecastFetchProgress() {
+        boolean inProgress = forecastFetchInProgress.get();
+        long startedAt = forecastFetchStartedAtMs;
+        long finishedAt = forecastFetchFinishedAtMs;
+        long elapsedMs = startedAt == 0 ? 0 : (inProgress ? System.currentTimeMillis() : finishedAt) - startedAt;
+        return new ForecastFetchProgress(
+                inProgress,
+                forecastFetchTotal.get(),
+                forecastFetchCompleted.get(),
+                forecastFetchSucceeded.get(),
+                forecastFetchEmpty.get(),
+                forecastFetchFailed.get(),
+                forecastCache.size(),
+                startedAt,
+                finishedAt,
+                elapsedMs
         );
+    }
+
+    /**
+     * @param inProgress whether a pass is running right now
+     * @param total      spots the running (or last) pass set out to fetch
+     * @param completed  spots it has finished with, however they turned out
+     * @param fetched    spots that came back with a forecast
+     * @param empty      spots that answered with nothing to cache
+     * @param failed     spots whose fetch threw
+     * @param cached     spots the forecast cache holds, this pass and every earlier one
+     */
+    public record ForecastFetchProgress(
+            boolean inProgress,
+            int total,
+            int completed,
+            int fetched,
+            int empty,
+            int failed,
+            int cached,
+            long startedAt,
+            long finishedAt,
+            long elapsedMs
+    ) {
     }
 
     private static ForecastData mergeForecastData(ForecastData existing, ForecastData fresh) {
@@ -1039,15 +1153,6 @@ public class AggregatorService {
         } finally {
             metricsService.recordAiFetchDuration(startTime);
         }
-    }
-
-    private static <T> StructuredTaskScope<T, Void> openFailFastScopeForecast() {
-        return StructuredTaskScope.open(
-                Joiner.awaitAllSuccessfulOrThrow(),
-                configuration -> configuration
-                        .withName("forecast")
-                        .withThreadFactory(Thread.ofVirtual().factory())
-        );
     }
 
     private static <T> StructuredTaskScope<T, Void> openScope(String name) {

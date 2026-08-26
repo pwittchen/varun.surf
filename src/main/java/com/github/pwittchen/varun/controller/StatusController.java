@@ -102,6 +102,16 @@ public class StatusController {
         ));
     }
 
+    /**
+     * How far the forecast sweep got. It runs over the whole spot list and publishes spot by spot,
+     * so a freshly started instance serves spots without a forecast for as long as the pass lasts -
+     * this is what lets the page say so instead of looking simply empty.
+     */
+    @GetMapping("status/forecast")
+    public Mono<AggregatorService.ForecastFetchProgress> forecastProgress() {
+        return Mono.just(aggregatorService.getForecastFetchProgress());
+    }
+
     @GetMapping("status/history")
     public Mono<Map<String, Object>> healthHistory() {
         List<HealthCheckResult> history = healthHistoryService.getHistory();

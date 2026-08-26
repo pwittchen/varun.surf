@@ -2717,6 +2717,59 @@ body.index-page .header-title {
     line-height: 1.5;
 }
 
+/* Forecast sweep progress */
+.forecast-progress {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 12px 16px;
+    margin: 0 0 16px;
+}
+
+.forecast-progress[hidden] {
+    display: none;
+}
+
+.forecast-progress-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: .85rem;
+    color: var(--text-secondary);
+}
+
+.forecast-progress-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-primary);
+    border-top: 2px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+
+.forecast-progress-count {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+}
+
+.forecast-progress-track {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-primary);
+    overflow: hidden;
+}
+
+.forecast-progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    background: var(--accent-primary);
+    transition: width .4s ease;
+}
+
 /* Loading Message */
 .loading-message {
     background: var(--bg-secondary);

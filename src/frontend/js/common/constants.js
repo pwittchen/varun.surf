@@ -7,6 +7,9 @@ export const AUTO_REFRESH_INTERVAL = 60 * 1000;      // 1 minute
 export const FORECAST_POLL_INTERVAL = 5000;          // 5 seconds
 export const FORECAST_TIMEOUT_MS = 30000;            // 30 seconds
 export const BACKGROUND_REFRESH_INTERVAL = 60000;    // 1 minute
+// How often the main page asks how far the server's forecast sweep got. The sweep
+// runs for minutes and publishes spot by spot, so the count moves the whole time.
+export const FORECAST_PROGRESS_POLL_INTERVAL = 5000; // 5 seconds
 
 // Theme switch glyphs, swapped in place when the theme changes (the button
 // shows the theme it switches to)

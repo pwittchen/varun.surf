@@ -328,6 +328,10 @@ export const translations = {
         forecastTimeout: "Connection timed out while waiting for forecast data. Please try again later.",
         // Shown inside the forecast model dropdown while models are discovered
         loadingModels: "Loading…",
+        // Shown while the server is still fetching forecasts for the spot list
+        forecastProgressTitle: "Loading forecasts",
+        forecastProgressSpots: "spots",
+        forecastProgressSpotsOne: "spot",
 
         // Favorites
         noFavoritesTitle: "No Favorites Yet",
@@ -838,6 +842,11 @@ export const translations = {
         forecastTimeout: "Przekroczono czas oczekiwania na dane prognozy. Spróbuj ponownie później.",
         // Shown inside the forecast model dropdown while models are discovered
         loadingModels: "Wczytywanie…",
+        // Shown while the server is still fetching forecasts for the spot list
+        forecastProgressTitle: "Pobieram prognozy",
+        forecastProgressSpots: "spotów",
+        forecastProgressSpotsOne: "spotu",
+        forecastProgressSpotsFew: "spotów",
 
         // Favorites
         noFavoritesTitle: "Brak ulubionych",

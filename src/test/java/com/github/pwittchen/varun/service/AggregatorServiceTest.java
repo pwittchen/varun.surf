@@ -253,20 +253,98 @@ class AggregatorServiceTest {
         assertThat(result.get().forecast()).isEqualTo(spot.forecast());
     }
 
+    /**
+     * A pass covers the whole spot list and takes minutes, so one spot whose export fails must not
+     * take the rest of the pass down with it - that used to discard every forecast already fetched
+     * and hand a minutes-long retry to @Retryable.
+     */
     @Test
-    void shouldThrowExceptionWhenForecastFetchFails() {
+    void shouldKeepTheRestOfThePassWhenOneSpotFails() throws FetchingForecastException {
+        // given
+        var failing = createTestSpot(123, "Failing Spot");
+        var working = createTestSpot(456, "Working Spot");
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+        var hourly = List.of(new Forecast("Mon 01 Jan 2025 01:00", 9.0, 11.0, "N", 14.0, 0.1, 0, 0));
+        var forecastData = new ForecastData(daily, Map.of(ForecastModel.GFS, hourly));
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(failing, working));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.error(new RuntimeException("API Error")));
+        when(forecastService.getForecastData(456)).thenReturn(Mono.just(forecastData));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(2);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.inProgress()).isFalse();
+        assertThat(progress.total()).isEqualTo(2);
+        assertThat(progress.completed()).isEqualTo(2);
+        assertThat(progress.fetched()).isEqualTo(1);
+        assertThat(progress.failed()).isEqualTo(1);
+        assertThat(progress.cached()).isEqualTo(1);
+        assertThat(spotsCache().get(456).forecast()).isEqualTo(daily);
+    }
+
+    /**
+     * The frontend reads this while a pass runs, which is when the numbers are least settled.
+     */
+    @Test
+    void shouldReportForecastFetchProgressAfterASuccessfulPass() throws FetchingForecastException {
         // given
         var spot = createTestSpot(123, "Test Spot");
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+        var forecastData = new ForecastData(daily, Map.of());
 
         when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(forecastService.getForecastData(123)).thenReturn(Mono.error(new RuntimeException("API Error")));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.just(forecastData));
 
         aggregatorService.init();
         awaitSpotsLoaded(1);
 
-        // when/then
-        assertThatThrownBy(() -> aggregatorService.fetchForecastsEveryThreeHours())
-                .isInstanceOf(FetchingForecastException.class);
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.inProgress()).isFalse();
+        assertThat(progress.total()).isEqualTo(1);
+        assertThat(progress.completed()).isEqualTo(1);
+        assertThat(progress.fetched()).isEqualTo(1);
+        assertThat(progress.empty()).isEqualTo(0);
+        assertThat(progress.failed()).isEqualTo(0);
+        assertThat(progress.cached()).isEqualTo(1);
+        assertThat(progress.startedAt()).isGreaterThan(0);
+        assertThat(progress.finishedAt()).isGreaterThanOrEqualTo(progress.startedAt());
+    }
+
+    /**
+     * A spot whose export comes back with nothing is neither a success nor a failure: nothing is
+     * cached for it, and the pass carries on.
+     */
+    @Test
+    void shouldCountSpotsThatReturnNoForecastAsEmpty() throws FetchingForecastException {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.just(new ForecastData(List.of(), Map.of())));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.completed()).isEqualTo(1);
+        assertThat(progress.empty()).isEqualTo(1);
+        assertThat(progress.fetched()).isEqualTo(0);
+        assertThat(progress.failed()).isEqualTo(0);
+        assertThat(progress.cached()).isEqualTo(0);
     }
 
     @Test

@@ -533,6 +533,14 @@ Health & Status:
       StructuredTaskScope, the rest are static definitions
     - Response: {"forecastSources": [...], "liveStationSources": [...], "spotsDataSources": [...]}
 
+  GET /api/v1/status/forecast
+    - How far the running (or last) forecast sweep got. The sweep covers the whole
+      spot list and publishes spot by spot, so a freshly started instance serves
+      spots without a forecast for as long as it lasts
+    - Response: {"inProgress": true, "total": 782, "completed": 310, "fetched": 308,
+                 "empty": 2, "failed": 0, "cached": 308, "startedAt": ..., "finishedAt": ...,
+                 "elapsedMs": 8123}
+
 SEO (server-rendered, no SESSION cookie required):
   GET /spot/{id}
     - Spot page with meta tags for crawlers and link previews

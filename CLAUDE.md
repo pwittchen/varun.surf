@@ -45,6 +45,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/status/history (health check history, uptime %, latency)
     ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
+    ├─→ /api/v1/status/forecast (how far the running forecast sweep got)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
@@ -183,6 +184,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /api/v1/status` - detailed status (version, uptime, spots/countries/live stations count)
      - `GET /api/v1/status/history` - health check history with uptime % and average latency
      - `GET /api/v1/status/sources` - forecast, live station and spots data sources (forecast sources pinged live)
+     - `GET /api/v1/status/forecast` - progress of the forecast sweep (spots done, fetched, empty, failed, cached)
    - Returns application status and statistics
 
 8. **MetricsController** (`controller/MetricsController.java`)

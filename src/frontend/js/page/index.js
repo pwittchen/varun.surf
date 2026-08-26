@@ -473,6 +473,13 @@ function initLanguage() {
             loadingText.textContent = translations.t('loadingText');
         }
 
+        // The forecast sweep banner is written from a live count, so it is redrawn
+        // rather than translated in place
+        const forecastProgress = document.getElementById('forecastProgress');
+        if (forecastProgress && !forecastProgress.hidden) {
+            pollForecastProgress();
+        }
+
         // Update app info modal content
         const appInfoModalTitle = document.getElementById('appInfoModalTitle');
         if (appInfoModalTitle) {
@@ -611,6 +618,74 @@ function showLoadingMessage() {
                     <span class="loading-text">${translations.t('loadingText')}</span>
                 </div>
             `;
+}
+
+// ============================================================================
+// FORECAST SWEEP PROGRESS
+// ============================================================================
+
+// The server fetches forecasts for the whole spot list in one pass that takes minutes
+// and publishes them spot by spot, so a list loaded while it runs is real but still
+// filling in. This polls the pass and says how much of it has landed, rather than
+// leaving a page of spots with no forecast looking like the finished article.
+
+let forecastProgressTimer = null;
+let forecastSweepWasRunning = false;
+
+function renderForecastProgress(progress) {
+    const container = document.getElementById('forecastProgress');
+    if (!container) {
+        return;
+    }
+
+    if (!progress || !progress.inProgress || progress.total <= 0) {
+        container.hidden = true;
+        return;
+    }
+
+    const done = Math.min(progress.completed, progress.total);
+    const percent = Math.round((done / progress.total) * 100);
+    const spots = translations.plural(progress.total, 'forecastProgressSpots');
+
+    document.getElementById('forecastProgressTitle').textContent = translations.t('forecastProgressTitle');
+    document.getElementById('forecastProgressCount').textContent = `${done} / ${progress.total} ${spots}`;
+    document.getElementById('forecastProgressBar').style.width = `${percent}%`;
+    container.hidden = false;
+}
+
+async function pollForecastProgress() {
+    const progress = await api.fetchForecastProgress();
+    renderForecastProgress(progress);
+
+    if (progress && progress.inProgress) {
+        forecastSweepWasRunning = true;
+        return;
+    }
+
+    stopForecastProgressWatch();
+
+    // The pass finished while the page was open, so what is on screen predates the
+    // forecasts it published: pull them in silently instead of waiting out the
+    // minute until the next background refresh.
+    if (forecastSweepWasRunning) {
+        forecastSweepWasRunning = false;
+        refreshDataInBackground();
+    }
+}
+
+function startForecastProgressWatch() {
+    if (forecastProgressTimer !== null) {
+        return;
+    }
+    pollForecastProgress();
+    forecastProgressTimer = setInterval(pollForecastProgress, constants.FORECAST_PROGRESS_POLL_INTERVAL);
+}
+
+function stopForecastProgressWatch() {
+    if (forecastProgressTimer !== null) {
+        clearInterval(forecastProgressTimer);
+        forecastProgressTimer = null;
+    }
 }
 
 function showErrorMessage(error) {
@@ -3256,4 +3331,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMainSponsors();
     initHeroSection();
     handleStarredURL();
+    startForecastProgressWatch();
 });

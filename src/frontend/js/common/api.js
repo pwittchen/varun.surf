@@ -133,6 +133,31 @@ export async function fetchStatus() {
 }
 
 /**
+ * Fetch how far the server's forecast sweep got. The sweep runs over the whole spot
+ * list and publishes spot by spot, so a freshly started instance serves spots without
+ * a forecast for as long as it lasts.
+ * @returns {Promise<{inProgress: boolean, total: number, completed: number, fetched: number,
+ *   empty: number, failed: number, cached: number, elapsedMs: number}|null>} null on error
+ */
+export async function fetchForecastProgress() {
+    try {
+        const response = await fetch(`${API_ENDPOINT_STATUS}/forecast`, {
+            cache: 'no-store',
+            credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching forecast progress:', error);
+        return null;
+    }
+}
+
+/**
  * Check endpoint health with latency measurement
  * @param {string} endpoint - The endpoint to check
  * @returns {Promise<{ok: boolean, status: number|null, latency: number|null, error: string|null}>}

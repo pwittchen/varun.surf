@@ -47,6 +47,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/status (system status, uptime, counts)
     ├─→ /api/v1/status/history (health check history, uptime %, latency)
     ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
+    ├─→ /api/v1/status/forecast (how far the running forecast sweep got)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
@@ -281,6 +282,10 @@ chatClient.prompt().user(prompt)
   check timestamp, and whether the app is currently healthy
 - `GET /api/v1/status/sources` - Data sources: forecast sources (pinged live in a
   StructuredTaskScope), live station sources, and spots data sources
+- `GET /api/v1/status/forecast` - How far the forecast sweep got: whether one is
+  running, and how many spots it has completed, fetched, found empty and failed.
+  The sweep publishes spot by spot, so the main page reads this to say the list is
+  still filling in rather than looking finished
 
 #### 8. MetricsController (`controller/MetricsController.java`)
 **Purpose**: REST API endpoints for application metrics.
