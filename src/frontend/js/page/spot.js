@@ -3104,6 +3104,7 @@ function initLanguage() {
 
     if (languageToggle && langCode) {
         langCode.textContent = savedLang.toUpperCase();
+        appShell.updateLanguageSwitch(savedLang);
 
         languageToggle.addEventListener('click', () => {
             // Toggle between EN and PL only
@@ -3112,6 +3113,7 @@ function initLanguage() {
             currentLanguage = newLang;
             embedLanguageSelection = newLang;
             langCode.textContent = newLang.toUpperCase();
+            appShell.updateLanguageSwitch(newLang);
             state.setLanguage(newLang);
 
             // Update UI translations

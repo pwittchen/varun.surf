@@ -81,6 +81,8 @@ function updateTranslations() {
         langCode.textContent = t('langCode');
     }
 
+    appShell.updateLanguageSwitch(state.getLanguage());
+
     const languageToggle = document.getElementById('languageToggle');
     if (languageToggle) {
         languageToggle.title = t('languageToggleTooltip');

@@ -1414,6 +1414,102 @@ body.index-page .header-title {
     letter-spacing: 0.02em;
 }
 
+/* The two-language track belongs to the desktop header alone; in the mobile
+   drawer the control stays the globe + code button it has always been. */
+.lang-track {
+    display: none;
+}
+
+/* ----------------------------------------------------------------------------
+   Language switch (desktop header)
+
+   A globe next to "EN" left it to the visitor to work out that the other
+   language exists at all, and which of the two the code named. Here both
+   languages are on screen at once and the one in use carries the fill, so the
+   control reads as a two-state switch: EN or PL, this or that.
+
+   Still the same single button — a click flips the language whichever half it
+   lands on — so nothing that listens for it has to know about the halves.
+   ---------------------------------------------------------------------------- */
+@media (min-width: 930px) {
+    #languageToggle {
+        position: relative;
+        min-width: 0;
+        /* The 1px the button's own border leaves, so the filled half sits flush
+           inside it rather than floating in a ring of background */
+        padding: 3px;
+        gap: 0;
+    }
+
+    /* The labels say what the globe said, and say it in words */
+    #languageToggle .icon {
+        display: none;
+    }
+
+    /* The pages write the current language in here on every switch, and it is
+       what names the button to a screen reader. Out of the layout, not out of
+       the tree. */
+    #languageToggle #langCode {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .lang-track {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    /* The state: a filled half sliding between the two labels */
+    .lang-track::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        border-radius: var(--radius-sm);
+        /* The darkened accent, for the reason the buttons use it: the plain
+           cyan cannot hold white text (~2.1:1), and this is a label made of
+           two letters — there is nothing else on it to read. */
+        background: var(--button-accent-bg);
+        transition: transform 0.18s ease;
+    }
+
+    #languageToggle[data-lang="pl"] .lang-track::before {
+        transform: translateX(100%);
+    }
+
+    .lang-option {
+        position: relative;
+        z-index: 1;
+        width: 34px;
+        line-height: 28px;
+        text-align: center;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        transition: color 0.18s ease;
+    }
+
+    #languageToggle[data-lang="en"] .lang-option[data-lang="en"],
+    #languageToggle[data-lang="pl"] .lang-option[data-lang="pl"] {
+        color: var(--text-white);
+    }
+
+    /* Only the half a click would move you to answers the pointer; the one
+       already filled stays as it is. */
+    #languageToggle[data-lang="en"]:hover .lang-option[data-lang="pl"],
+    #languageToggle[data-lang="pl"]:hover .lang-option[data-lang="en"] {
+        color: var(--text-primary);
+    }
+}
+
 /* ---------------------------------------------------------------------------
    Unified button system
    ---------------------------------------------------------------------------

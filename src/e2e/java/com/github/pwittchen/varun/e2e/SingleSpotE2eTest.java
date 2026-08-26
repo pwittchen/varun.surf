@@ -358,5 +358,8 @@ class SingleSpotE2eTest extends BaseE2eTest {
 
         String newLang = langCode.textContent();
         assertThat(newLang).isNotEqualTo(initialLang);
+        // The desktop switch fills the half of the language in use, so the two
+        // have to agree on which one that is
+        assertThat(languageToggle.getAttribute("data-lang")).isEqualTo(newLang.toLowerCase());
     }
 }

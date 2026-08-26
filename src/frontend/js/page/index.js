@@ -448,6 +448,8 @@ function initLanguage() {
             langCode.textContent = translations.t('langCode');
         }
 
+        appShell.updateLanguageSwitch(state.getLanguage());
+
         // Update footer
         footer.updateFooter(translations.t);
 
