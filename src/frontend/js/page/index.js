@@ -202,7 +202,11 @@ function toggleFavorite(spotName) {
 
     // If showing favorites, re-render to reflect changes
     if (showingFavorites) {
-        renderFavorites();
+        if (isMapView) {
+            updateMapMarkers();
+        } else {
+            renderFavorites();
+        }
     }
 }
 
@@ -285,28 +289,49 @@ async function renderFavorites() {
     }
 }
 
+// Turning favorites on means the same thing wherever it happens: the country
+// filter is dropped, so every starred spot shows up whatever country was picked.
+function enterFavoritesMode() {
+    showingFavorites = true;
+    state.setShowingFavorites(true);
+
+    const favoritesButton = document.getElementById('favoritesToggle');
+    if (favoritesButton) {
+        favoritesButton.classList.add('active');
+    }
+
+    currentFilter = 'all';
+    state.setSelectedCountry('all');
+    updateSelectedCountryLabel('all');
+    document.querySelectorAll('.dropdown-option').forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.country === 'all');
+    });
+}
+
 function setupFavorites() {
     const favoritesButton = document.getElementById('favoritesToggle');
 
     favoritesButton.addEventListener('click', () => {
+        // The map has no grid to fall back to: the star filters the markers
+        // where they are and the map stays on screen, URL included.
         if (isMapView) {
-            hideMapView({ skipRender: true });
+            if (showingFavorites) {
+                showingFavorites = false;
+                state.setShowingFavorites(false);
+                favoritesButton.classList.remove('active');
+                updatePageTitle(currentFilter);
+            } else {
+                enterFavoritesMode();
+                document.title = `${translations.t('favoritesToggleTooltip')} - VARUN.SURF`;
+            }
+            updateMapMarkers();
+            return;
         }
 
         if (showingFavorites) {
             exitFavoritesMode();
         } else {
-            // Enter favorites mode
-            state.setShowingFavorites(true);
-
-            // Reset country filter to "all"
-            currentFilter = 'all';
-            state.setSelectedCountry('all');
-            updateSelectedCountryLabel('all');
-            const dropdownOptions = document.querySelectorAll('.dropdown-option');
-            dropdownOptions.forEach(opt => {
-                opt.classList.toggle('selected', opt.dataset.country === 'all');
-            });
+            enterFavoritesMode();
 
             // Update URL to /starred
             updateUrlForStarred();
@@ -1846,8 +1871,7 @@ function setupSearch() {
 
         // Deselect favorites if searching
         if (showingFavorites && value.trim() !== '') {
-            showingFavorites = false;
-            document.getElementById('favoritesToggle').classList.remove('active');
+            exitFavoritesMode({ skipRender: true, skipScroll: true });
         }
 
         // Clear existing timeout
@@ -2262,6 +2286,12 @@ function stopAutoRefresh() {
 
 function handlePopState() {
     window.addEventListener('popstate', () => {
+        // The map keeps its own URL and its own favorites filter - a history
+        // step back onto it leaves the star where the user put it
+        if (routing.isMapUrl() && isMapView) {
+            return;
+        }
+
         // Check if we're navigating to /starred
         if (routing.isStarredUrl()) {
             if (!showingFavorites) {
@@ -2276,6 +2306,7 @@ function handlePopState() {
                 showingFavorites = false;
                 state.setShowingFavorites(false);
                 document.getElementById('favoritesToggle').classList.remove('active');
+                updateMapMarkers();
             }
 
             // Check if there's a country in URL
@@ -2699,6 +2730,10 @@ function handleMapRoute() {
     renderSpots(savedCountry, '', true)
         .then(() => {
             updatePageTitle(savedCountry);
+            // A map reloaded with the star still on comes back filtered
+            if (state.getShowingFavorites()) {
+                enterFavoritesMode();
+            }
             showMapView();
             startAutoRefresh();
         })
@@ -3005,10 +3040,6 @@ function fitMapToSpots(spots) {
 }
 
 function showMapView() {
-    if (showingFavorites) {
-        exitFavoritesMode({ skipRender: true, skipScroll: true });
-    }
-
     isMapView = true;
     const spotsGrid = document.getElementById('spotsGrid');
     const mapContainer = document.getElementById('mapContainer');
@@ -3050,7 +3081,7 @@ function showMapView() {
 
     // Add markers for filtered spots
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
-    addMarkersToMap(filteredSpots);
+    addMarkersToMap(onlyFavorites(filteredSpots));
 
     // Render the wind field overlay on top of the markers
     renderWindOverlay(filteredSpots);
@@ -3154,12 +3185,22 @@ function hideMapView(options = {}) {
     }
 
 
-    // Restore previous URL
-    routing.pushUrl(routing.buildCountryUrl(currentFilter));
+    // Restore previous URL - with the star still on, that is the starred view
+    // rather than the country grid the map was opened from
+    if (showingFavorites) {
+        routing.pushStarredUrl();
+        document.title = `${translations.t('favoritesToggleTooltip')} - VARUN.SURF`;
+    } else {
+        routing.pushUrl(routing.buildCountryUrl(currentFilter));
+    }
 
     // Re-render spots to clear any filter changes
     if (!skipRender) {
-        renderSpots(currentFilter, currentSearchQuery, true);
+        if (showingFavorites) {
+            renderFavorites();
+        } else {
+            renderSpots(currentFilter, currentSearchQuery, true);
+        }
     }
 }
 
@@ -3356,8 +3397,20 @@ function updateMapMarkers() {
     if (!isMapView) return;
 
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
-    addMarkersToMap(filteredSpots);
+    // Only the markers follow the favorites filter: a wind field interpolated
+    // from a handful of starred spots would say nothing about the weather.
+    addMarkersToMap(onlyFavorites(filteredSpots));
     renderWindOverlay(filteredSpots);
+}
+
+// The favorites filter, as the map applies it - the identity outside favorites mode.
+function onlyFavorites(spots) {
+    if (!showingFavorites) {
+        return spots;
+    }
+
+    const favorites = state.getFavorites();
+    return spots.filter(spot => favorites.includes(spot.name));
 }
 
 // ============================================================================
