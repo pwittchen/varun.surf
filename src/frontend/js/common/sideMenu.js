@@ -215,22 +215,6 @@ function setupSwitches() {
     });
 }
 
-// Turn the switch rows back into plain entries. Called by the pages that hold
-// no spots list (see mainPageShortcuts): there the entries store a mode and
-// navigate back to the list, and never carry an active state — a switch stuck
-// at "off" would claim the mode is off, which the empty row never did.
-export function dropSwitches() {
-    document.querySelectorAll('.sidebar-toggle').forEach(btn => {
-        btn.classList.remove('sidebar-toggle');
-        btn.removeAttribute('role');
-        btn.removeAttribute('aria-checked');
-        const control = btn.querySelector('.sidebar-switch');
-        if (control) {
-            control.remove();
-        }
-    });
-}
-
 // Collapse switch: shrinks the sidebar to an icon rail and back. The state is
 // stored, so the sidebar opens the way it was left.
 function setupCollapse() {
