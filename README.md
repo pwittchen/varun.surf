@@ -10,6 +10,9 @@ see it online at: https://varun.surf
 
 [![screenshot](screenshot.png)](https://varun.surf)
 
+[![screenshot-2](screenshot-2.png)](https://varun.surf)
+
+
 ## tech stack overview
 
 - **infra**: Docker, Docker Compose, Nginx, GitHub, GitHub Actions, GHCR, Cloudflare, SeoHost, Mikrus
