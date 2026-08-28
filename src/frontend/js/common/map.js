@@ -27,20 +27,12 @@ const TILE_CONFIGS = {
             attribution: OSM_ATTRIBUTION,
             maxZoom: 19
         }
-    },
-    osmDark: {
-        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        options: {
-            attribution: `${OSM_ATTRIBUTION} &copy; <a href="https://carto.com/attributions">CARTO</a>`,
-            subdomains: 'abcd',
-            maxZoom: 20
-        }
     }
 };
 
 /**
  * Get tile layer configuration for a given layer type
- * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
+ * @param {string} layerType - 'satellite' or 'osm'
  * @returns {object} Configuration object with url and options
  */
 export function getMapTileConfig(layerType) {
@@ -53,7 +45,7 @@ export function getMapTileConfig(layerType) {
 
 /**
  * Create a tile layer for a Leaflet map
- * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
+ * @param {string} layerType - 'satellite' or 'osm'
  * @returns {L.TileLayer} Leaflet tile layer
  */
 export function createTileLayer(layerType) {
@@ -65,7 +57,7 @@ export function createTileLayer(layerType) {
  * Update the tile layer on a map
  * @param {L.Map} map - Leaflet map instance
  * @param {L.TileLayer|null} currentTileLayer - Current tile layer (will be removed)
- * @param {string} layerType - 'satellite', 'osm' or 'osmDark'
+ * @param {string} layerType - 'satellite' or 'osm'
  * @returns {L.TileLayer} The new tile layer that was added
  */
 export function updateTileLayer(map, currentTileLayer, layerType) {
@@ -139,7 +131,7 @@ const LAYER_SWITCHER_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 /**
  * Create a Leaflet layer switcher control
  * @param {object} options - Configuration options
- * @param {function} options.getCurrentLayer - Function that returns current layer type ('satellite', 'osm' or 'osmDark')
+ * @param {function} options.getCurrentLayer - Function that returns current layer type ('satellite' or 'osm')
  * @param {function} options.onLayerChange - Callback when layer is changed, receives new layer type
  * @param {string} [options.position='bottomleft'] - Control position
  * @returns {L.Control} Leaflet control instance
@@ -172,8 +164,7 @@ export function createLayerSwitcher(options) {
             // Create dropdown options with translation keys
             const layerOptions = [
                 { value: 'satellite', translationKey: 'mapLayerSatellite' },
-                { value: 'osm', translationKey: 'mapLayerOsm' },
-                { value: 'osmDark', translationKey: 'mapLayerOsmDark' }
+                { value: 'osm', translationKey: 'mapLayerOsm' }
             ];
 
             layerOptions.forEach(option => {

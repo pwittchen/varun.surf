@@ -20,7 +20,9 @@ const view = ['forecast', 'map'].includes(rawView) ? rawView : 'conditions';
 const paramLang = (params.get('lang') || 'en').toLowerCase();
 const lang = paramLang === 'pl' ? 'pl' : 'en';
 const rawMapStyle = (params.get('mapStyle') || 'satellite').toLowerCase();
-const mapStyle = ['light', 'dark'].includes(rawMapStyle) ? rawMapStyle : 'satellite';
+// Widgets embedded before the dark basemap was dropped still carry mapStyle=dark;
+// an unknown style falls back to satellite rather than to a blank map.
+const mapStyle = rawMapStyle === 'light' ? 'light' : 'satellite';
 
 const translations = {
     en: {
@@ -360,8 +362,7 @@ function displayForecastVertical(spot, container) {
 // spot page it links to show the same world.
 const MAP_TILE_LAYERS = {
     satellite: 'satellite',
-    light: 'osm',
-    dark: 'osmDark'
+    light: 'osm'
 };
 
 // Credit lines kept to one row: the site's full Esri notice wraps twice in a
@@ -369,8 +370,7 @@ const MAP_TILE_LAYERS = {
 // source the tiles come from.
 const MAP_ATTRIBUTIONS = {
     satellite: 'Tiles &copy; Esri',
-    light: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    dark: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    light: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 };
 
 // Close enough that the spot itself is readable - a wider view of a lake spot

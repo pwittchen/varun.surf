@@ -310,7 +310,7 @@ DOM Manipulation (vanilla JS)
 **Features**:
 - Compact spot card with live conditions, forecast or a map of the spot
 - Query parameters: `spotId`, `theme` (dark/light), `view` (conditions/forecast/map),
-  `lang` (en/pl), `mapStyle` (satellite/light/dark, map view only)
+  `lang` (en/pl), `mapStyle` (satellite/light, map view only)
 - The map view carries the same interpolated wind field the site's maps paint
   (colour wash + animated particles, shared from `common/map.js`), with the spot
   marked and named on it. Leaflet is loaded on demand, so the other two views

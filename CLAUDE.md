@@ -555,7 +555,7 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Running version shown next to the about modal title (fetched from
       /api/v1/status the first time the modal opens)
 - [x] Sidebar navigation shared by every page, with a mobile drawer
-- [x] Embeddable spot widget (/embed) with conditions, forecast or map view (satellite/light/dark, wind field, 5-day forecast slider) and language selection
+- [x] Embeddable spot widget (/embed) with conditions, forecast or map view (satellite/light, wind field, 5-day forecast slider) and language selection
 - [x] TV view (/tv) for a full-screen spot display
 - [x] SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
 - [x] MCP server exposing the spot data as tools (/mcp/sse)
