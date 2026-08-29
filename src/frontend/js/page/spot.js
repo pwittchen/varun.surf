@@ -32,6 +32,21 @@ let currentErrorText = '';
 // Loading state tracking
 let currentLoadingKey = 'loadingSpotData';
 
+// Which on-demand generations are in flight, remembered here rather than in the
+// DOM: the card is rebuilt from scratch on every background refresh (once a
+// minute), so a spinner living only in the markup would vanish mid-generation and
+// the button would come back offering to buy the same thing again.
+//
+// Keys are `${wgId}:${language}` for analyses - the two languages are separate
+// generations - and plain wgIds for ICM forecasts.
+const aiAnalysisGenerating = new Set();
+const icmForecastGenerating = new Set();
+
+// The last failed generation per spot, so the card can say so instead of silently
+// showing the button again. Cleared as soon as another attempt starts.
+const aiAnalysisErrors = new Map();
+const icmForecastErrors = new Map();
+
 // Polling and refresh interval IDs
 let forecastPollIntervalId = null;
 let forecastTimeoutId = null;
@@ -379,6 +394,119 @@ function getAiAnalysisForCurrentLanguage(spot) {
 }
 
 // ============================================================================
+// ON-DEMAND GENERATION (AI ANALYSIS AND ICM FORECAST)
+//
+// Neither is produced in the background any more: each costs an LLM call, so a
+// visitor asks for one and the server holds the result for 24 hours. While one is
+// running the button is replaced by a spinner, and once the result is in, the
+// button is gone for the rest of the day.
+// ============================================================================
+
+// The two sides of this feature name the same spot differently: the route hands
+// over a string (currentSpotId comes straight out of the URL) while the spot
+// object carries a number. Set and Map compare keys by identity, so mixing the two
+// silently loses every lookup - the spinner would never come up. Everything below
+// goes through here first.
+function spotKey(wgId) {
+    return Number(wgId);
+}
+
+function aiAnalysisKey(wgId) {
+    return `${spotKey(wgId)}:${getCurrentLanguageCode()}`;
+}
+
+function isAiAnalysisGenerating(wgId) {
+    return aiAnalysisGenerating.has(aiAnalysisKey(wgId));
+}
+
+function isIcmForecastGenerating(wgId) {
+    return icmForecastGenerating.has(spotKey(wgId));
+}
+
+// Whether the spot already carries an ICM forecast, which is what takes the
+// generate button away. The server publishes it as another entry in the model
+// list, and drops it from there once it expires.
+function hasIcmForecast(spot) {
+    return Array.isArray(spot?.availableModels)
+        && spot.availableModels.some(model => model.key === 'icm');
+}
+
+async function requestAiAnalysis(wgId) {
+    const key = aiAnalysisKey(wgId);
+    if (aiAnalysisGenerating.has(key)) {
+        return;
+    }
+
+    aiAnalysisGenerating.add(key);
+    aiAnalysisErrors.delete(spotKey(wgId));
+
+    // Redraw straight away so the button gives way to the spinner without waiting
+    // for the next background refresh to come round.
+    if (currentSpot) {
+        displaySpot(currentSpot);
+    }
+
+    try {
+        const updatedSpot = await api.generateAiAnalysis(wgId, getCurrentLanguageCode());
+        aiAnalysisGenerating.delete(key);
+        displaySpot(updatedSpot);
+    } catch (error) {
+        console.error('Failed to generate AI analysis:', error);
+        aiAnalysisGenerating.delete(key);
+        aiAnalysisErrors.set(spotKey(wgId), true);
+        if (currentSpot) {
+            displaySpot(currentSpot);
+        }
+    }
+}
+
+async function requestIcmForecast(wgId) {
+    const key = spotKey(wgId);
+    if (icmForecastGenerating.has(key)) {
+        return;
+    }
+
+    icmForecastGenerating.add(key);
+    icmForecastErrors.delete(key);
+
+    if (currentSpot) {
+        displaySpot(currentSpot);
+    }
+
+    try {
+        const updatedSpot = await api.generateIcmForecast(wgId);
+        icmForecastGenerating.delete(key);
+        displaySpot(updatedSpot);
+        // displaySpot only refreshes the dropdown from the spot it was handed, and
+        // the point of the whole exercise is the new entry in it.
+        if (updatedSpot && updatedSpot.availableModels) {
+            updateModelDropdownOptions(updatedSpot.availableModels);
+        }
+    } catch (error) {
+        console.error('Failed to generate ICM forecast:', error);
+        icmForecastGenerating.delete(key);
+        icmForecastErrors.set(key, true);
+        if (currentSpot) {
+            displaySpot(currentSpot);
+        }
+    }
+}
+
+// Wires the two generate buttons up after every card rebuild. The markup is thrown
+// away and rewritten each time, so the listeners have to go back on with it.
+function setupOnDemandGenerationButtons() {
+    const analysisButton = document.getElementById('generateAiAnalysisButton');
+    if (analysisButton && currentSpotId) {
+        analysisButton.addEventListener('click', () => openAiGenerateModal());
+    }
+
+    const icmButton = document.getElementById('generateIcmForecastButton');
+    if (icmButton && currentSpotId) {
+        icmButton.addEventListener('click', () => openIcmGenerateModal());
+    }
+}
+
+// ============================================================================
 // MODAL FUNCTIONS
 // ============================================================================
 
@@ -477,6 +605,63 @@ function openIcmModal(spotName, icmUrl) {
 // Close ICM forecast modal
 function closeIcmModal() {
     modals.closeModal('icmModal');
+}
+
+// Ask before spending a model call on the analysis. Same guard as the ICM one
+// below, for the same reason: the click is what costs money, so it should never
+// be an accident.
+function openAiGenerateModal() {
+    updateAiGenerateModalTranslations();
+    modals.openModal('aiGenerateModal');
+}
+
+function closeAiGenerateModal() {
+    modals.closeModal('aiGenerateModal');
+}
+
+function updateAiGenerateModalTranslations() {
+    updateConfirmModalTranslations([
+        'aiGenerateModalTitle',
+        'aiGenerateModalQuestion',
+        'aiGenerateModalHint',
+        'aiGenerateModalCancel',
+        'aiGenerateModalConfirm'
+    ]);
+}
+
+// Ask before spending a vision call on the meteogram, and say where the result
+// will turn up - the forecast lands in the model dropdown rather than in the card
+// the button sits in, which is not obvious from the button alone.
+function openIcmGenerateModal() {
+    updateAiGenerateModalTranslations();
+    updateIcmGenerateModalTranslations();
+    modals.openModal('icmGenerateModal');
+}
+
+function updateIcmGenerateModalTranslations() {
+    updateConfirmModalTranslations([
+        'icmGenerateModalTitle',
+        'icmGenerateModalQuestion',
+        'icmGenerateModalHint',
+        'icmGenerateModalCancel',
+        'icmGenerateModalConfirm'
+    ]);
+}
+
+// The confirmation modals' copy is rendered rather than marked up with data-i18n,
+// so it has to be refreshed both before one opens and on a language change. Every
+// element id doubles as its translation key.
+function updateConfirmModalTranslations(elementIds) {
+    elementIds.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = translations.t(elementId);
+        }
+    });
+}
+
+function closeIcmGenerateModal() {
+    modals.closeModal('icmGenerateModal');
 }
 
 const embedDropdownRegistry = [];
@@ -2586,9 +2771,15 @@ function createSpotCard(spot) {
 
     const aiAnalysisText = getAiAnalysisForCurrentLanguage(spot);
 
+    // Three states in one slot, in this order: an analysis that is still valid, a
+    // generation already running, or the button offering to start one. The card is
+    // rebuilt every minute by the background refresh, so which of the three shows
+    // is derived from the data and the in-memory sets - never from what the
+    // previous render left in the DOM.
     let aiAnalysisCardHtml = '';
-    if (isDesktopView && aiAnalysisText) {
-        aiAnalysisCardHtml = `
+    if (isDesktopView) {
+        if (aiAnalysisText) {
+            aiAnalysisCardHtml = `
                 <div class="ai-analysis-card">
                     <div class="info-label">${translations.t('aiAnalysisTitle')}</div>
                     <div class="ai-analysis">
@@ -2597,6 +2788,72 @@ function createSpotCard(spot) {
                     <div class="ai-analysis-note">${translations.t('aiDisclaimer')}</div>
                 </div>
             `;
+        } else if (isAiAnalysisGenerating(spot.wgId)) {
+            // No heading in either of the two states below: there is no analysis to
+            // label yet, and the button and the spinner both already say what they
+            // are. The heading arrives with the text it belongs to.
+            aiAnalysisCardHtml = `
+                <div class="ai-analysis-card">
+                    <div class="ai-analysis-generating">
+                        <span class="ai-analysis-spinner" aria-hidden="true"></span>
+                        <span>${translations.t('generatingAiAnalysis')}</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            const error = aiAnalysisErrors.get(spotKey(spot.wgId));
+            aiAnalysisCardHtml = `
+                <div class="ai-analysis-card">
+                    <div class="ai-analysis-generate">
+                        <button type="button" class="ondemand-generate-button ai-analysis-generate-button" id="generateAiAnalysisButton">
+                            ${translations.t('generateAiAnalysisButton')}
+                        </button>
+                        ${error ? `<span class="ai-analysis-error">${translations.t('generateAiAnalysisError')}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // ========================================================================
+    // BUILD ICM GENERATION CONTROL (its own row under the AI analysis)
+    //
+    // Only for spots the ICM grid actually covers, and only until one has been
+    // read: once the forecast is in the model dropdown the button has nothing left
+    // to offer, so both it and the spinner disappear.
+    //
+    // Desktop only, like the analysis above it - both are paid generations sitting
+    // under a map that a phone does not render at all.
+    // ========================================================================
+
+    // Shown in live-data mode too: the button used to sit in the forecast filter
+    // row, which that mode hides wholesale, but the forecast it produces lands in
+    // the model dropdown either way - so tying it to the mode would only make it
+    // vanish for no reason a visitor could see.
+    let icmGenerateHtml = '';
+    if (isDesktopView && spot.icmUrl && !hasIcmForecast(spot)) {
+        if (isIcmForecastGenerating(spot.wgId)) {
+            icmGenerateHtml = `
+                <div class="icm-generate-card">
+                    <div class="icm-generate-container">
+                        <span class="icm-generate-spinner" aria-hidden="true"></span>
+                        <span class="icm-generate-status">${translations.t('generatingIcmForecast')}</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            const error = icmForecastErrors.get(spotKey(spot.wgId));
+            icmGenerateHtml = `
+                <div class="icm-generate-card">
+                    <div class="icm-generate-container">
+                        <button type="button" class="ondemand-generate-button icm-generate-button" id="generateIcmForecastButton">
+                            ${translations.t('generateIcmForecastButton')}
+                        </button>
+                        ${error ? `<span class="icm-generate-error">${translations.t('generateIcmForecastError')}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
     }
 
     // ========================================================================
@@ -2671,6 +2928,7 @@ function createSpotCard(spot) {
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
                         ${aiAnalysisCardHtml}
+                        ${icmGenerateHtml}
                         ${isDesktopView ? `
                         <div class="forecast-tabs-container">
                             <div class="forecast-tabs">
@@ -2824,6 +3082,9 @@ function displaySpot(spot) {
 
         // Setup media tabs if available
         setupSpotMediaTabs();
+
+        // Setup the on-demand generate buttons (AI analysis, ICM forecast)
+        setupOnDemandGenerationButtons();
     }
 
     // Update model dropdown with available models from backend
@@ -2995,6 +3256,8 @@ function updateUITranslations() {
         aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
     }
 
+    updateIcmGenerateModalTranslations();
+
     const aiModalTitle = document.getElementById('aiModalTitle');
     if (aiModalTitle && currentSpot) {
         aiModalTitle.textContent = `${currentSpot.name} - ${translations.t('aiAnalysisTitle')}`;
@@ -3138,11 +3401,43 @@ function setupModals() {
         { modalId: 'infoModal', closeButtonId: 'infoModalClose', closeCallback: closeInfoModal },
         { modalId: 'aiModal', closeButtonId: 'aiModalClose', closeCallback: closeAIModal },
         { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal },
+        { modalId: 'aiGenerateModal', closeButtonId: 'aiGenerateModalClose', closeCallback: closeAiGenerateModal },
+        { modalId: 'icmGenerateModal', closeButtonId: 'icmGenerateModalClose', closeCallback: closeIcmGenerateModal },
         { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
         { modalId: 'embedModal', closeButtonId: 'embedModalClose', closeCallback: closeEmbedModal }
     ];
 
     modals.setupModals(modalConfigs);
+
+    const aiGenerateCancel = document.getElementById('aiGenerateModalCancel');
+    if (aiGenerateCancel) {
+        aiGenerateCancel.addEventListener('click', closeAiGenerateModal);
+    }
+
+    const aiGenerateConfirm = document.getElementById('aiGenerateModalConfirm');
+    if (aiGenerateConfirm) {
+        aiGenerateConfirm.addEventListener('click', () => {
+            closeAiGenerateModal();
+            if (currentSpotId) {
+                requestAiAnalysis(currentSpotId);
+            }
+        });
+    }
+
+    const icmGenerateCancel = document.getElementById('icmGenerateModalCancel');
+    if (icmGenerateCancel) {
+        icmGenerateCancel.addEventListener('click', closeIcmGenerateModal);
+    }
+
+    const icmGenerateConfirm = document.getElementById('icmGenerateModalConfirm');
+    if (icmGenerateConfirm) {
+        icmGenerateConfirm.addEventListener('click', () => {
+            closeIcmGenerateModal();
+            if (currentSpotId) {
+                requestIcmForecast(currentSpotId);
+            }
+        });
+    }
 }
 
 // ============================================================================

@@ -39,6 +39,8 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/spots (all spots with forecasts)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (single spot with GFS or IFS forecast)
+    ├─→ POST /api/v1/spots/{id}/analysis (on-demand AI analysis, cached 24h)
+    ├─→ POST /api/v1/spots/{id}/icm (on-demand ICM meteogram reading, cached 24h)
     ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
     ├─→ /api/v1/forecast/{wgId} (one spot's full hourly forecast: wind, temp, rain, cloud, pressure, waves)
     ├─→ /api/v1/sponsors (sponsors and main sponsors)
@@ -64,18 +66,22 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 ### Key Components
 
 1. **AggregatorService** (`service/AggregatorService.java`)
-   - Central orchestrator with multiple scheduled tasks:
+   - Central orchestrator with scheduled tasks:
      - Forecasts: every 3 hours (GFS model, daily + hourly)
      - Current conditions: every 1 minute
-     - ICM meteograms: every 3 hours for Polish/Czech spots (if enabled)
-     - AI analysis: every 24 hours, EN and PL separately (if enabled)
+     - Expired on-demand data eviction: every 1 hour
+   - Nothing calls an LLM on a timer. The AI analysis and the ICM meteogram
+     reading are the only two paid operations, and both are generated only when a
+     visitor presses a button - see On-Demand Generation below
    - Uses Java 25 StructuredTaskScope with virtual threads for concurrent execution
-   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI, 16 model discovery)
+   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 model discovery)
    - Maintains multiple in-memory caches (ConcurrentHashMap):
      - forecastCache: Map<Integer, ForecastData(daily, Map<ForecastModel, List<Forecast>>)>
      - currentConditions: Map<Integer, CurrentConditions>
      - currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>> (12h history)
-     - aiAnalysisEn/aiAnalysisPl: Map<Integer, String> (language-specific)
+     - aiAnalysisEn/aiAnalysisPl: Map<Integer, String> (language-specific, 24h TTL)
+     - aiAnalysisEnCreatedAt/aiAnalysisPlCreatedAt/icmForecastCreatedAt: Map<Integer, Long>
+       (when each on-demand result was generated, which is what makes it expire)
      - hourlyForecastCacheTimestamps: Map<Integer, Long> (3h TTL)
      - locationCoordinates: Map<Integer, Coordinates>
      - icmUrls: Map<Integer, String> (resolved ICM meteogram URLs)
@@ -164,6 +170,11 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
      - `GET /api/v1/wind?hours=N` - hourly wind for every spot on one shared time grid
      - `GET /api/v1/forecast/{wgId}` - one spot's full hourly forecast on the same grid (404 when unknown)
+     - `POST /api/v1/spots/{id}/analysis?lang=en|pl` - writes the spot's AI analysis and
+       answers with the spot carrying it (404 unknown spot, 503 when it could not be written)
+     - `POST /api/v1/spots/{id}/icm` - reads the spot's ICM meteogram through the vision
+       model and answers with the spot carrying ICM among its `availableModels`
+       (404 unknown spot, 503 when no grid point, feature off, or nothing was read)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
@@ -526,7 +537,12 @@ src/main/java/com/github/pwittchen/varun/
 - [x] 2-column / 3-column view toggle
 - [x] Mobile-friendly UI
 - [x] Kite and board size calculator
-- [x] AI forecast analysis (optional, disabled by default, supports EN/PL)
+- [x] AI forecast analysis (optional, disabled by default, supports EN/PL),
+      generated on demand from a button under the spot map and valid for 24 hours
+- [x] ICM forecast generated on demand from a button under the AI analysis,
+      valid for 24 hours, appearing in the model dropdown once it is read
+- [x] Both on-demand buttons sit behind a confirmation modal and are desktop only,
+      since each click spends a model call
 - [x] Prometheus metrics export (/actuator/prometheus)
 - [x] Custom metrics dashboard (/api/v1/metrics)
 - [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
@@ -560,20 +576,41 @@ src/main/java/com/github/pwittchen/varun/
 - [x] SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
 - [x] MCP server exposing the spot data as tools (/mcp/sse)
 
-## AI Analysis Feature (Experimental)
+## On-Demand Generation (AI Analysis and ICM Forecast)
 
-The AI forecast analysis is disabled by default because:
-1. Limited value for this specific use case
-2. Cost consideration: at ~900 tokens per prompt, one pass over ~780 spots is
-   ~660k input tokens, so roughly $0.20 per language pass on gpt-4o-mini
-3. Estimated monthly cost at the scheduled 24-hour interval in both languages:
-   roughly $12 per month, and it scales with the spot list
+These are the only two operations that cost money per call, and neither runs on a
+timer. Both used to sweep the whole spot list - a daily AI pass in two languages
+over ~780 spots, and an ICM meteogram reading every three hours for every Polish
+and Czech spot - which spent almost the entire budget on spots nobody opened that
+day.
 
-Note: the hourly block is ~48 daylight rows carrying every forecast variable,
-which makes a prompt of roughly 950 tokens for a coastal spot and 850 for an
-inland one (no wave columns). Lower `AiService.DETAILED_HOURS`, raise
-`COARSE_STRIDE`, or narrow the `FIRST_DAY_HOUR`/`LAST_DAY_HOUR` window to trade
-precision for tokens.
+Both are now triggered by a button on the single spot page (desktop only, under
+the map), generated once, and held for 24 hours:
+
+- `AggregatorService.generateAiAnalysis(wgId, language)` and
+  `generateIcmForecast(wgId)` are the only paths that reach a model
+- `hasValidAiAnalysis` / `hasValidIcmForecast` gate them: a result still inside its
+  day is served from the cache without a call, so a reload or a second visitor is
+  free
+- Concurrent callers for the same spot share one generation (`aiAnalysisInFlight`,
+  `icmForecastInFlight` hold a `.cache()`d Mono), so a windy Saturday does not buy
+  the same paragraph several times over
+- `evictExpiredOnDemandData()` runs hourly and drops what has outlived its day.
+  Validity is also checked on read, so an expired result stops being served
+  immediately rather than at the next sweep - and an expired ICM forecast is taken
+  back out of the spot's `availableModels`
+- `fetchForecastsForAllModels` no longer forks an ICM vision task; opening a Polish
+  spot used to pay for a meteogram reading on its own
+
+Cost, per generation on gpt-4o-mini: an analysis prompt is ~2200 input tokens (EN)
+or ~2500 (PL) plus ~120 output; an ICM meteogram is a 630x780 image, which is
+25 501 image tokens (2833 base + 4 tiles x 5667) plus ~1200 output. The bill is
+therefore proportional to how many spots people actually open, not to the size of
+the spot list.
+
+Note: the hourly block is ~48 daylight rows carrying every forecast variable.
+Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
+`FIRST_DAY_HOUR`/`LAST_DAY_HOUR` window to trade precision for tokens.
 
 ## Important Notes for AI Assistants
 
@@ -599,7 +636,7 @@ precision for tokens.
 5. **Caching Strategy**:
    - Forecasts: 3-hour refresh cycle (scheduled)
    - Current conditions: 1-minute refresh cycle (scheduled)
-   - AI analysis: 24-hour refresh cycle (if enabled)
+   - AI analysis and ICM forecast: generated on demand, 24-hour TTL, evicted hourly
    - Embedded maps: Lazy-loaded once, cached forever
    - Forecast models: On-demand discovery when single spot accessed, 3-hour TTL per spot
 
@@ -607,18 +644,21 @@ precision for tokens.
 
 7. **External Dependencies**: Code relies on third-party APIs (Windguru, weather stations, Google Maps, LLMs). Network failures are expected and handled gracefully with timeouts, retries, and empty fallbacks.
 
-8. **Scheduling**: Data fetching is automated via `@Scheduled` annotations with `@Async` execution. Multiple scheduled tasks run in parallel. Frontend shows cached data.
+8. **Scheduling**: Data fetching is automated via `@Scheduled` annotations with `@Async` execution. Multiple scheduled tasks run in parallel. Frontend shows cached data. Nothing scheduled calls an LLM.
 
 9. **Cardinal Direction Mapping**: `WeatherForecastMapper` converts degrees (0-360) to cardinal directions (N, NE, E, SE, S, SW, W, NW) with ±22.5° tolerance.
 
 10. **AI Analysis**:
     - Disabled by default via feature flag
+    - Generated on demand only, never on a schedule - see On-Demand Generation above
     - Language-specific services: `AiServiceEn` and `AiServicePl`
     - Streams content with Spring AI ChatClient
     - Supports optional per-spot context via `SpotInfo.llmComment`, taken from the
       `SpotInfo` matching the analysis language (`spotInfo` / `spotInfoPL`)
     - Professional kitesurfing analyst with kite size recommendations
-    - 15s timeout, 3 retries, 1s delay between stream chunks
+    - 15s timeout between stream chunks, 3 retries. There is deliberately no delay
+      between chunks: a visitor is waiting on the result, and one added second per
+      chunk would outlast the proxy before the paragraph arrived
 
 11. **Error Handling**: Uses `@Retryable` with exponential backoff, `@Recover` fallback methods, and reactive error operators (`onErrorResume`, `onErrorReturn`).
 
@@ -630,6 +670,12 @@ precision for tokens.
     - Logs endpoint at `/api/v1/logs` (password-protected via `ANALYTICS_PASSWORD`)
     - Metrics history with rolling window via `MetricsHistoryService`
     - Custom metrics classes: `AggregatorServiceMetrics`, `SpotsControllerMetrics`, `HttpClientMetricsEventListener`
+    - On-demand generation is counted apart from the scheduled fetches, under
+      "On-demand Data Fetching" on the metrics page: `varun.ondemand.ai.*` and
+      `varun.ondemand.icm.*` (total/success/failure plus a duration timer) count
+      generations, so their totals are the LLM call counts the bill is made of,
+      while `varun.api.analysis.requests` and `varun.api.icm.requests` count the
+      button presses - the gap between the two is what the 24h cache saved
 
 14. **Logs System**:
     - In-memory log buffer via `LogsService` (last 1000 entries)

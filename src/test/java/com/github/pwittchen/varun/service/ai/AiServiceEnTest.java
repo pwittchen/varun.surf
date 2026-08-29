@@ -166,12 +166,9 @@ class AiServiceEnTest {
         var spot = createSpot("Hel", "Poland");
         mockChatResponse("Part1", "Part2", "Part3");
 
-        // when & then
-        // the 3 chunks are emitted at 1s, 2s and 3s by delayElements(), so awaiting 5s is enough.
-        // awaiting longer would push virtual time past the 15s timeout() deadline of the last chunk
-        // and let the timeout fire before completion is observed, which makes the test flaky.
-        StepVerifier.withVirtualTime(() -> aiServiceEn.fetchAiAnalysis(spot, createHourlyForecast()))
-                .thenAwait(Duration.ofSeconds(5))
+        // when & then - the chunks arrive as fast as the model emits them, so there
+        // is no virtual time to wind forward any more
+        StepVerifier.create(aiServiceEn.fetchAiAnalysis(spot, createHourlyForecast()))
                 .expectNext("Part1Part2Part3")
                 .verifyComplete();
     }

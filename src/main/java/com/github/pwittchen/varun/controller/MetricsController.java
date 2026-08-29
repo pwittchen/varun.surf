@@ -93,14 +93,21 @@ public class MetricsController {
         counters.put("conditionsSuccess", getCounterValue("varun.fetch.conditions.success"));
         counters.put("conditionsFailure", getCounterValue("varun.fetch.conditions.failure"));
 
-        // AI counters
-        counters.put("aiTotal", getCounterValue("varun.fetch.ai.total"));
-        counters.put("aiSuccess", getCounterValue("varun.fetch.ai.success"));
-        counters.put("aiFailure", getCounterValue("varun.fetch.ai.failure"));
+        // On-demand generation counters. One per spot rather than per sweep, so the
+        // totals are the LLM call counts the bill is made of; the request counters
+        // below carry the button presses, cache hits included.
+        counters.put("aiAnalysisTotal", getCounterValue("varun.ondemand.ai.total"));
+        counters.put("aiAnalysisSuccess", getCounterValue("varun.ondemand.ai.success"));
+        counters.put("aiAnalysisFailure", getCounterValue("varun.ondemand.ai.failure"));
+        counters.put("icmAnalysisTotal", getCounterValue("varun.ondemand.icm.total"));
+        counters.put("icmAnalysisSuccess", getCounterValue("varun.ondemand.icm.success"));
+        counters.put("icmAnalysisFailure", getCounterValue("varun.ondemand.icm.failure"));
 
         // API request counters
         counters.put("apiSpotsRequests", getCounterValue("varun.api.spots.requests"));
         counters.put("apiSpotRequests", getCounterValue("varun.api.spot.requests"));
+        counters.put("apiAiAnalysisRequests", getCounterValue("varun.api.analysis.requests"));
+        counters.put("apiIcmAnalysisRequests", getCounterValue("varun.api.icm.requests"));
 
         return counters;
     }
@@ -110,7 +117,8 @@ public class MetricsController {
 
         timers.put("forecastsDuration", getTimerStats("varun.fetch.forecasts.duration"));
         timers.put("conditionsDuration", getTimerStats("varun.fetch.conditions.duration"));
-        timers.put("aiDuration", getTimerStats("varun.fetch.ai.duration"));
+        timers.put("aiAnalysisDuration", getTimerStats("varun.ondemand.ai.duration"));
+        timers.put("icmAnalysisDuration", getTimerStats("varun.ondemand.icm.duration"));
 
         return timers;
     }

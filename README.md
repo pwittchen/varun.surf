@@ -123,7 +123,11 @@ as a free backend by someone else's app.
   of 30 (a page load fires several calls at once), and a stricter 1 r/s for the endpoints
   that cost real work or real bytes - `/api/v1/wind`, `/llms/**`, `/mcp/**` and
   `/api/v1/logs`, where the trickle is also what stops a brute force on the basic auth.
-  SSE connections are capped at 4 per client. Over the limit is a 429.
+  The two on-demand generation endpoints (`/api/v1/spots/{id}/analysis` and
+  `/api/v1/spots/{id}/icm`) get their own 20 r/m: they are the only requests that spend
+  money, and at the general api rate one client could walk the whole spot list and run
+  up the OpenAI bill in minutes. They also get a longer proxy timeout, since the visitor
+  is waiting on a model. SSE connections are capped at 4 per client. Over the limit is a 429.
 - **real client address**: behind Cloudflare `$remote_addr` is the edge, so nginx trusts
   `CF-Connecting-IP` from the Cloudflare ranges listed in the config. Without this every
   visitor shares one rate-limit bucket. Refresh the ranges from
@@ -204,7 +208,7 @@ ANALYTICS_PASSWORD=your-secure-password
 
 ## ai forecast analysis
 
-It's possible to enable AI/LLM in the app, so the forecast for each spot will get an AI-generated comment.
+It's possible to enable AI/LLM in the app, so a spot can get an AI-generated comment on its forecast.
 If you want to use AI in the app, configure OpenAI API key in the `application.yml`.
 
 An exemplary docker command to run the app with enabled AI analysis:
@@ -215,14 +219,18 @@ docker run -p 8080:8080 varun-surf \
     --spring.ai.openai.api-key=your-api-key-here
 ```
 
+Nothing is generated in the background. The analysis is written only when someone
+presses "generate AI analysis" on a spot page, and then held for 24 hours - so a
+reload, or a second visitor on the same spot that day, costs nothing. The same
+applies to the ICM forecast, which is read off the meteogram image by a vision
+model from its own button.
+
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
-so I disabled it by default.
-Another interesting thing is the fact that performing 74 calls to OpenAI with gpt-4o-mini model
-used around 31k tokens and costs $0.01, so If I would like to trigger AI analysis
-for my current configuration with this AI provider every six hours
-(4 times in 24h = 120 times in 30 days = 8880 req. / month), I'd spent around \$1.2 (~4.35 PLN)
-for monthly OpenAI usage, which is reasonable price because coffee in my local coffee shop costs more.
-Nevertheless, more advanced analysis, more tokens or stronger model, should increase the price.
+so I disabled it by default. It also used to run on a timer - a daily pass over every spot in two languages, plus an
+ICM meteogram reading every three hours for each Polish and Czech spot - which spent most of the budget on spots
+nobody opened that day. On-demand generation ties the cost to what people actually look at, and stops it growing
+with the spot list. A single analysis is roughly 2.2-2.5k input tokens on gpt-4o-mini; reading an ICM meteogram is
+far more expensive, because the image alone is ~25k tokens.
 
 ## architecture
 
@@ -320,7 +328,8 @@ Skill definitions are located in `.claude/skills/`.
 - possibility to switch between a list view and a grid view
 - mobile-friendly UI
 - kite and board size calculator
-- AI forecast analysis
+- AI forecast analysis, generated on demand from a button under the spot map and valid for 24 hours
+- ICM forecast generated on demand from a button under the AI analysis, valid for 24 hours
 - single spot view with hourly forecast (in horizontal and vertical view)
 - additional TV-friendly view for the single spot
 - map of the spot (Open Street Maps, zoomed in on the spot)

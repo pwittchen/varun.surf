@@ -250,12 +250,31 @@ function updateFetchingMetrics(counters, timers) {
     document.getElementById('conditions-duration').textContent =
         formatAverage(timers.conditionsDuration?.meanMs);
 
-    // AI
-    document.getElementById('ai-total').textContent = formatNumber(counters.aiTotal);
-    document.getElementById('ai-success').textContent = formatNumber(counters.aiSuccess);
-    document.getElementById('ai-failure').textContent = formatFailures(counters.aiFailure);
-    document.getElementById('ai-duration').textContent =
-        formatAverage(timers.aiDuration?.meanMs);
+}
+
+// On-demand generation: an AI analysis or an ICM meteogram reading, each paid for
+// per call. The request rows carry the button presses including the ones the
+// day-long cache answered, so the gap between them and the totals is the saving.
+function updateOnDemandMetrics(counters, timers) {
+    document.getElementById('ai-analysis-total').textContent = formatNumber(counters.aiAnalysisTotal);
+    document.getElementById('ai-analysis-success').textContent = formatNumber(counters.aiAnalysisSuccess);
+    document.getElementById('ai-analysis-failure').textContent = formatFailures(counters.aiAnalysisFailure);
+    document.getElementById('ai-analysis-duration').textContent =
+        formatAverage(timers.aiAnalysisDuration?.meanMs);
+    document.getElementById('ai-analysis-requests').textContent =
+        formatRequests(counters.apiAiAnalysisRequests);
+
+    document.getElementById('icm-analysis-total').textContent = formatNumber(counters.icmAnalysisTotal);
+    document.getElementById('icm-analysis-success').textContent = formatNumber(counters.icmAnalysisSuccess);
+    document.getElementById('icm-analysis-failure').textContent = formatFailures(counters.icmAnalysisFailure);
+    document.getElementById('icm-analysis-duration').textContent =
+        formatAverage(timers.icmAnalysisDuration?.meanMs);
+    document.getElementById('icm-analysis-requests').textContent =
+        formatRequests(counters.apiIcmAnalysisRequests);
+}
+
+function formatRequests(requests) {
+    return `${t('metricsRequestsLabel')}: ${formatNumber(requests)}`;
 }
 
 function updateCacheMetrics(gauges) {
@@ -579,6 +598,7 @@ function renderMetrics() {
 
     updateJvmMetrics(data.jvm || {});
     updateFetchingMetrics(data.counters || {}, data.timers || {});
+    updateOnDemandMetrics(data.counters || {}, data.timers || {});
     updateCacheMetrics(data.gauges || {});
     updateHttpServerMetrics(data.httpClient || {}, data.counters || {});
     updateHttpClientMetrics(data.httpClient || {});

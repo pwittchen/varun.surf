@@ -2,7 +2,6 @@ package com.github.pwittchen.varun.service;
 
 import com.github.pwittchen.varun.config.CacheControlFilter;
 import com.github.pwittchen.varun.data.spots.SpotsDataProvider;
-import com.github.pwittchen.varun.exception.FetchingAiForecastAnalysisException;
 import com.github.pwittchen.varun.exception.FetchingCurrentConditionsException;
 import com.github.pwittchen.varun.exception.FetchingForecastException;
 import com.github.pwittchen.varun.exception.FetchingForecastModelsException;
@@ -48,6 +47,7 @@ import org.springframework.util.DigestUtils;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -74,7 +75,7 @@ import java.util.concurrent.StructuredTaskScope.Joiner;
 import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 @Service
@@ -89,14 +90,22 @@ public class AggregatorService {
     // Scheduling intervals
     private static final long FORECAST_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;    // 3 hours
     private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
-    private static final long AI_FETCH_INTERVAL_MS = 24 * 60 * 60 * 1000;         // 24 hours
-    // The analysis is written from a spot's hourly forecast and a spot with none
-    // gets no analysis at all, so this waits out the startup forecast sweep across
-    // the whole spot list rather than burning a daily pass on a half-filled cache.
-    private static final long AI_INITIAL_DELAY_MS = 15 * 60 * 1000;               // 15 minutes
-    private static final long ICM_FETCH_INTERVAL_MS = 3 * 60 * 60 * 1000;         // 3 hours
-    private static final long ICM_INITIAL_DELAY_MS = 60 * 1000;                   // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
+
+    // The AI analysis and the ICM meteogram reading are the only two things here
+    // that cost money per call, and both used to run on a timer over the whole spot
+    // list: a daily pass in two languages over ~800 spots, and a meteogram read
+    // every three hours for every Polish and Czech spot. That spent the bulk of the
+    // budget on spots nobody opened that day. Both are now generated only when a
+    // visitor asks for one, and the result is held for a day - long enough that a
+    // popular spot is paid for once, short enough that the text never trails the
+    // forecast by more than a day.
+    private static final long ON_DEMAND_TTL_MS = 24 * 60 * 60 * 1000;             // 24 hours
+
+    // How often expired analyses and meteogram forecasts are dropped. Validity is
+    // checked on read anyway, so this only reclaims the memory of what nobody came
+    // back for; hourly keeps the caches from holding a day of stale text.
+    private static final long ON_DEMAND_EVICTION_INTERVAL_MS = 60 * 60 * 1000;    // 1 hour
 
     // How far the map's hourly wind timeline reaches when the caller doesn't say.
     // Matched to the five days the daily forecast covers, which is as much as a
@@ -115,7 +124,6 @@ public class AggregatorService {
     // Concurrency limits
     private static final int FORECAST_SEMAPHORE_PERMITS = 32;
     private static final int CONDITIONS_SEMAPHORE_PERMITS = 32;
-    private static final int AI_SEMAPHORE_PERMITS = 16;
     private static final int DISCOVERY_SEMAPHORE_PERMITS = 16;
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
@@ -139,6 +147,12 @@ public class AggregatorService {
     private final ConcurrentMap<Integer, EvictingQueue<CurrentConditions>> currentConditionsHistory;
     private final ConcurrentMap<Integer, String> aiAnalysisEn;
     private final ConcurrentMap<Integer, String> aiAnalysisPl;
+    // When each on-demand result was generated, which is what makes it expire. Kept
+    // beside the value rather than inside it so the analysis caches stay plain
+    // strings for everything that only reads them.
+    private final ConcurrentMap<Integer, Long> aiAnalysisEnCreatedAt;
+    private final ConcurrentMap<Integer, Long> aiAnalysisPlCreatedAt;
+    private final ConcurrentMap<Integer, Long> icmForecastCreatedAt;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, Coordinates> locationCoordinates;
     private final ConcurrentMap<Integer, String> icmUrls;
@@ -159,11 +173,17 @@ public class AggregatorService {
     private Disposable spotsDisposable;
     private final Semaphore forecastLimiter = new Semaphore(FORECAST_SEMAPHORE_PERMITS);
     private final Semaphore currentConditionsLimiter = new Semaphore(CONDITIONS_SEMAPHORE_PERMITS);
-    private final Semaphore aiLimiter = new Semaphore(AI_SEMAPHORE_PERMITS);
     private final Semaphore discoveryLimiter = new Semaphore(DISCOVERY_SEMAPHORE_PERMITS);
     private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
     private final ConcurrentMap<Integer, Disposable> icmUrlResolutionSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
+
+    // A windy Saturday puts several visitors on the same spot within seconds of each
+    // other, and each of them clicking "generate" would buy the same paragraph again.
+    // The first call publishes its Mono here and everyone who arrives while it is
+    // still running subscribes to that one instead of starting a second.
+    private final ConcurrentMap<String, Mono<String>> aiAnalysisInFlight;
+    private final ConcurrentMap<Integer, Mono<Boolean>> icmForecastInFlight;
 
     // Progress of the forecast sweep, read by /api/v1/status/forecast
     private final AtomicBoolean forecastFetchInProgress = new AtomicBoolean();
@@ -193,6 +213,11 @@ public class AggregatorService {
         this.currentConditionsHistory = new ConcurrentHashMap<>();
         this.aiAnalysisEn = new ConcurrentHashMap<>();
         this.aiAnalysisPl = new ConcurrentHashMap<>();
+        this.aiAnalysisEnCreatedAt = new ConcurrentHashMap<>();
+        this.aiAnalysisPlCreatedAt = new ConcurrentHashMap<>();
+        this.icmForecastCreatedAt = new ConcurrentHashMap<>();
+        this.aiAnalysisInFlight = new ConcurrentHashMap<>();
+        this.icmForecastInFlight = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.locationCoordinatesFetchSubscriptions = new ConcurrentHashMap<>();
         this.icmUrlResolutionSubscriptions = new ConcurrentHashMap<>();
@@ -416,7 +441,12 @@ public class AggregatorService {
             // frontend treat the model list as complete and stop waiting for the remaining models,
             // so only the default model is exposed until discovery completes.
             Stream<ForecastModel> discoveredModels = data.hourly().keySet().stream()
-                    .filter(m -> !data.hourly(m).isEmpty());
+                    .filter(m -> !data.hourly(m).isEmpty())
+                    // ICM is generated on demand and expires after a day. The eviction
+                    // sweep drops it from the cache hourly, so between expiry and the
+                    // next sweep the dropdown would still offer a forecast the frontend
+                    // treats as gone.
+                    .filter(m -> m != ForecastModel.ICM_METEO || hasValidIcmForecast(spot.wgId()));
             if (!hourlyForecastCacheTimestamps.containsKey(spot.wgId())) {
                 discoveredModels = discoveredModels.filter(m -> m == ForecastModel.GFS);
             }
@@ -446,13 +476,17 @@ public class AggregatorService {
             enrichedSpot = enrichedSpot.withCurrentConditionsHistory(new ArrayList<>(conditionsHistory));
         }
 
+        // Only while it is still inside its day: an expired analysis is dropped by
+        // the eviction sweep, but a spot read between expiry and the next sweep must
+        // not carry it either, or the generate button would stay hidden behind text
+        // the frontend already considers stale.
         var analysisEn = aiAnalysisEn.get(spot.wgId());
-        if (analysisEn != null) {
+        if (analysisEn != null && hasValidAiAnalysis(spot.wgId(), "en")) {
             enrichedSpot = enrichedSpot.withAiAnalysisEn(analysisEn);
         }
 
         var analysisPl = aiAnalysisPl.get(spot.wgId());
-        if (analysisPl != null) {
+        if (analysisPl != null && hasValidAiAnalysis(spot.wgId(), "pl")) {
             enrichedSpot = enrichedSpot.withAiAnalysisPl(analysisPl);
         }
 
@@ -887,72 +921,6 @@ public class AggregatorService {
         }
     }
 
-    /**
-     * Keeps ICM meteogram forecasts warm for every Polish/Czech spot. Without it ICM data appears
-     * only for spots someone has already opened, because it is otherwise fetched on demand.
-     */
-    @Scheduled(fixedRate = ICM_FETCH_INTERVAL_MS, initialDelay = ICM_INITIAL_DELAY_MS)
-    public void fetchIcmForecastsEveryThreeHours() {
-        if (!backgroundTasksEnabled) {
-            return;
-        }
-        if (!icmVisionEnabled) {
-            log.info("Fetching ICM forecasts is DISABLED");
-            return;
-        }
-        log.info("Fetching ICM forecasts");
-        fetchIcmForecasts();
-    }
-
-    @Async
-    public void fetchIcmForecasts() {
-        List<Spot> icmSpots = spots
-                .values()
-                .stream()
-                .filter(spot -> icmGridMapper.isCountrySupported(spot.country()))
-                .toList();
-
-        if (icmSpots.isEmpty()) {
-            log.info("No spots covered by the ICM grid");
-            return;
-        }
-
-        try (var scope = openScope("icmForecasts")) {
-            var tasks = icmSpots
-                    .stream()
-                    .map(spot -> scope.fork(() -> {
-                        discoveryLimiter.acquire();
-                        try {
-                            int spotId = spot.wgId();
-                            Optional<String> icmUrl = resolveIcmUrl(spotId, spot);
-                            if (icmUrl.isEmpty()) {
-                                return Pair.with(spotId, Optional.<List<Forecast>>empty());
-                            }
-                            return Pair.with(spotId, fetchIcmForecast(icmUrl.get()));
-                        } finally {
-                            discoveryLimiter.release();
-                        }
-                    }))
-                    .toList();
-
-            try {
-                scope.join();
-            } catch (Exception e) {
-                log.error("Error while fetching ICM forecasts", e);
-                return;
-            }
-
-            long updated = tasks
-                    .stream()
-                    .filter(task -> task.state() == Subtask.State.SUCCESS)
-                    .map(Subtask::get)
-                    .filter(pair -> updateIcmForecast(pair.getValue0(), pair.getValue1()))
-                    .count();
-
-            log.info("ICM forecasts fetched for {} of {} spots", updated, icmSpots.size());
-        }
-    }
-
     private Optional<List<Forecast>> fetchIcmForecast(String icmUrl) {
         return icmForecastVisionService
                 .extractForecastFromMeteogram(icmUrl)
@@ -1021,24 +989,11 @@ public class AggregatorService {
                         }))
                         .toList());
 
-                // Fork ICM vision task for Polish/Czech spots when enabled
-                if (icmVisionEnabled && spot != null) {
-                    Optional<String> icmUrl = resolveIcmUrl(spotId, spot);
-                    if (icmUrl.isPresent()) {
-                        log.info("Forking ICM vision task for spot {} with URL {}", spotId, icmUrl.get());
-                        tasks.add(scope.fork(() -> {
-                            discoveryLimiter.acquire();
-                            try {
-                                Map<ForecastModel, List<Forecast>> hourlyMap = fetchIcmForecast(icmUrl.get())
-                                        .<Map<ForecastModel, List<Forecast>>>map(f -> Map.of(ForecastModel.ICM_METEO, f))
-                                        .orElseGet(Map::of);
-                                return Pair.with(ForecastModel.ICM_METEO, new ForecastData(List.of(), hourlyMap));
-                            } finally {
-                                discoveryLimiter.release();
-                            }
-                        }));
-                    }
-                }
+                // ICM is deliberately not fetched here. Reading a meteogram costs a
+                // vision call, and this runs on every spot anyone opens - which used
+                // to buy one for every Polish and Czech spot a visitor merely looked
+                // at. It is generated only when someone asks for it by name, through
+                // generateIcmForecast.
 
                 try {
                     scope.join();
@@ -1132,98 +1087,252 @@ public class AggregatorService {
         log.info("Spot {} - fetched {} models: {}", spotId, fetchedModelKeys.size(), fetchedModelKeys);
     }
 
-    @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
-    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
-    public void fetchAiAnalysisEveryTwentyFourHoursEn() throws FetchingForecastException {
-        if (!backgroundTasksEnabled) {
-            return;
+    // ========================================================================
+    // ON-DEMAND GENERATION (AI ANALYSIS AND ICM METEOGRAM)
+    //
+    // Both cost an LLM call per spot, so neither runs on a timer any more. A
+    // visitor asks for one, it is generated once, and it stays valid for a day.
+    // ========================================================================
+
+    /**
+     * Whether this spot already carries an analysis in this language that is still
+     * inside its day-long lifetime.
+     *
+     * The frontend hides its generate button on the strength of this, and the
+     * endpoint refuses to spend a second call while it holds - which is what keeps
+     * a reloaded page, or a second visitor, from paying for the same paragraph.
+     */
+    public boolean hasValidAiAnalysis(int wgId, String language) {
+        return isOnDemandEntryValid(aiAnalysisCreatedAt(language).get(wgId));
+    }
+
+    /**
+     * Whether this spot's ICM meteogram has been read within the last day.
+     */
+    public boolean hasValidIcmForecast(int wgId) {
+        return isOnDemandEntryValid(icmForecastCreatedAt.get(wgId));
+    }
+
+    /**
+     * Generates one spot's AI analysis, or hands back the one already cached.
+     *
+     * A spot whose analysis is still valid never reaches the model: the cached text
+     * is returned as it is. Concurrent callers for the same spot and language share
+     * a single generation rather than each starting their own.
+     *
+     * @return the analysis, or an empty Mono when the spot is unknown, the feature
+     * is switched off, or the model returned nothing to say
+     */
+    public Mono<String> generateAiAnalysis(int wgId, String language) {
+        if (!spots.containsKey(wgId)) {
+            return Mono.empty();
         }
-        if (aiForecastAnalysisEnabled) {
-            log.info("Fetching AI forecast analysis in EN");
-            fetchAiForecastAnalysisEn();
-        } else {
-            log.info("Fetching AI forecast analysis (EN) is DISABLED");
+
+        if (!aiForecastAnalysisEnabled) {
+            log.info("AI forecast analysis is DISABLED, skipping generation for spot {}", wgId);
+            return Mono.empty();
         }
-    }
 
-    @Scheduled(fixedRate = AI_FETCH_INTERVAL_MS, initialDelay = AI_INITIAL_DELAY_MS)
-    @Retryable(retryFor = FetchingForecastException.class, maxAttempts = 2, backoff = @Backoff(delay = 7000))
-    public void fetchAiAnalysisEveryTwentyFourHoursPl() throws FetchingForecastException {
-        if (!backgroundTasksEnabled) {
-            return;
+        ConcurrentMap<Integer, String> cache = aiAnalysisCache(language);
+        if (hasValidAiAnalysis(wgId, language)) {
+            log.info("AI analysis for spot {} ({}) is still valid, serving the cached one", wgId, language);
+            return Mono.justOrEmpty(cache.get(wgId));
         }
-        if (aiForecastAnalysisEnabled) {
-            log.info("Fetching AI forecast analysis in PL");
-            fetchAiForecastAnalysisPl();
-        } else {
-            log.info("Fetching AI forecast analysis (PL) is DISABLED");
+
+        String key = wgId + ":" + languageCode(language);
+        return aiAnalysisInFlight
+                .computeIfAbsent(key, _ -> generateAiAnalysisOnce(wgId, language)
+                        .doFinally(_ -> aiAnalysisInFlight.remove(key))
+                        .cache());
+    }
+
+    private Mono<String> generateAiAnalysisOnce(int wgId, String language) {
+        AiService aiService = isPolish(language) ? aiServicePl : aiServiceEn;
+        ConcurrentMap<Integer, String> cache = aiAnalysisCache(language);
+        String languageCode = languageCode(language);
+        AtomicLong startedAt = new AtomicLong();
+
+        return Mono
+                .fromCallable(() -> spots.get(wgId))
+                .flatMap(spot -> {
+                    // The spots held here carry the daily rows only (hourly forecasts
+                    // are deliberately not kept on them), so the hourly forecast comes
+                    // from the same source /api/v1/forecast/{wgId} serves - which is
+                    // what lets the summary name hours instead of days.
+                    HourlyForecast hourly = getHourlyForecast(wgId)
+                            .orElseGet(() -> new HourlyForecast(wgId, List.of()));
+                    return aiService.fetchAiAnalysis(spot, hourly);
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnSubscribe(_ -> {
+                    startedAt.set(System.currentTimeMillis());
+                    log.info("Generating AI analysis for spot {} ({})", wgId, languageCode);
+                    metricsService.incrementAiAnalysisCounter();
+                })
+                .filter(analysis -> analysis != null && !analysis.isBlank())
+                .doOnNext(analysis -> {
+                    cache.put(wgId, analysis);
+                    aiAnalysisCreatedAt(language).put(wgId, System.currentTimeMillis());
+                    log.info("AI analysis for spot {} ({}) generated", wgId, languageCode);
+                    metricsService.incrementAiAnalysisSuccessCounter();
+                })
+                .onErrorResume(error -> {
+                    log.warn("Failed to generate AI analysis for spot {} ({})", wgId, languageCode, error);
+                    return Mono.empty();
+                })
+                // One failure per generation, counted in one place: an error and a
+                // model with nothing to say both end here, and both look the same to
+                // the visitor - the button came back with nothing to show for it.
+                .switchIfEmpty(Mono.<String>fromRunnable(metricsService::incrementAiAnalysisFailureCounter))
+                // Timed in doFinally rather than off an emitted element, so a
+                // generation that failed still lands in the timer - otherwise the
+                // average would only ever describe the calls that worked.
+                .doFinally(_ -> metricsService.recordAiAnalysisDuration(
+                        System.currentTimeMillis() - startedAt.get()));
+    }
+
+    /**
+     * Reads one spot's ICM meteogram through the vision model and merges the result
+     * into its cached forecasts, where it shows up as another entry in the model
+     * dropdown. Held for a day like the analysis, and shared between concurrent
+     * callers the same way.
+     *
+     * @return true when the spot now carries an ICM forecast, false when it could
+     * not be produced (no grid point, feature off, or the model read nothing)
+     */
+    public Mono<Boolean> generateIcmForecast(int wgId) {
+        Spot spot = spots.get(wgId);
+        if (spot == null) {
+            return Mono.just(false);
         }
+
+        if (!icmVisionEnabled) {
+            log.info("ICM vision is DISABLED, skipping generation for spot {}", wgId);
+            return Mono.just(false);
+        }
+
+        if (!icmGridMapper.isCountrySupported(spot.country())) {
+            return Mono.just(false);
+        }
+
+        if (hasValidIcmForecast(wgId)) {
+            log.info("ICM forecast for spot {} is still valid, not generating another", wgId);
+            return Mono.just(true);
+        }
+
+        return icmForecastInFlight
+                .computeIfAbsent(wgId, _ -> generateIcmForecastOnce(wgId, spot)
+                        .doFinally(_ -> icmForecastInFlight.remove(wgId))
+                        .cache());
     }
 
-
-    @Recover
-    public void recoverFromFetchingAiAnalysis(FetchingAiForecastAnalysisException e) {
-        log.error("Failed while fetching AI forecast analysis after 3 attempts", e);
+    private Mono<Boolean> generateIcmForecastOnce(int wgId, Spot spot) {
+        return Mono
+                .fromCallable(() -> {
+                    Optional<String> icmUrl = resolveIcmUrl(wgId, spot);
+                    if (icmUrl.isEmpty()) {
+                        log.warn("No ICM grid point for spot {}, cannot generate a forecast", wgId);
+                        return false;
+                    }
+                    boolean updated = updateIcmForecast(wgId, fetchIcmForecast(icmUrl.get()));
+                    if (updated) {
+                        icmForecastCreatedAt.put(wgId, System.currentTimeMillis());
+                        log.info("ICM forecast for spot {} generated", wgId);
+                    }
+                    return updated;
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnSubscribe(_ -> {
+                    log.info("Generating ICM forecast for spot {}", wgId);
+                    metricsService.incrementIcmAnalysisCounter();
+                })
+                .doOnNext(updated -> {
+                    if (updated) {
+                        metricsService.incrementIcmAnalysisSuccessCounter();
+                    } else {
+                        metricsService.incrementIcmAnalysisFailureCounter();
+                    }
+                })
+                .doOnError(error -> {
+                    log.warn("Failed to generate ICM forecast for spot {}", wgId, error);
+                    metricsService.incrementIcmAnalysisFailureCounter();
+                })
+                .onErrorReturn(false)
+                .elapsed()
+                .doOnNext(timed -> metricsService.recordIcmAnalysisDuration(timed.getT1()))
+                .map(Tuple2::getT2);
     }
 
-    @Async
-    public void fetchAiForecastAnalysisEn() throws FetchingAiForecastAnalysisException {
-        fetchAiForecastAnalysis(aiServiceEn, aiAnalysisEn, "EN");
-    }
+    /**
+     * Drops what has outlived its day. Validity is checked on read anyway, so this
+     * only reclaims the memory of analyses and meteogram forecasts nobody came back
+     * for - and, for ICM, takes the model back out of the spot's dropdown so the
+     * list never offers a forecast that is no longer there.
+     */
+    @Scheduled(fixedRate = ON_DEMAND_EVICTION_INTERVAL_MS, initialDelay = ON_DEMAND_EVICTION_INTERVAL_MS)
+    public void evictExpiredOnDemandData() {
+        int analyses = evictExpiredAnalyses(aiAnalysisEn, aiAnalysisEnCreatedAt)
+                + evictExpiredAnalyses(aiAnalysisPl, aiAnalysisPlCreatedAt);
 
-    @Async
-    public void fetchAiForecastAnalysisPl() throws FetchingAiForecastAnalysisException {
-        fetchAiForecastAnalysis(aiServicePl, aiAnalysisPl, "PL");
-    }
-
-    private void fetchAiForecastAnalysis(
-            AiService aiService,
-            ConcurrentMap<Integer, String> cache,
-            String languageCode
-    ) throws FetchingAiForecastAnalysisException {
-        metricsService.incrementAiFetchCounter();
-        var startTime = System.nanoTime();
-        try (var scope = openScope("aiAnalysis" + languageCode)) {
-            var tasks = spots
-                    .values()
-                    .stream()
-                    .map(spot -> scope.fork(() -> {
-                        aiLimiter.acquire();
-                        try {
-                            // The spots held here carry the daily rows only (hourly
-                            // forecasts are deliberately not kept on them), so the
-                            // hourly forecast comes from the same source
-                            // /api/v1/forecast/{wgId} serves - which is what lets the
-                            // summary name hours instead of days.
-                            var hourly = getHourlyForecast(spot.wgId())
-                                    .orElseGet(() -> new HourlyForecast(spot.wgId(), List.of()));
-                            var analysis = aiService.fetchAiAnalysis(spot, hourly).block();
-                            updateAiAnalysisCache(spot.wgId(), analysis, cache);
-                            return Pair.with(spot.wgId(), analysis);
-                        } finally {
-                            aiLimiter.release();
-                        }
-                    }))
-                    .toList();
-
-            try {
-                scope.join();
-            } catch (Exception e) {
-                log.error("Error while fetching AI forecast analysis ({})", languageCode, e);
-                metricsService.incrementAiFetchFailureCounter();
+        int icmForecasts = 0;
+        for (Integer wgId : List.copyOf(icmForecastCreatedAt.keySet())) {
+            if (!isOnDemandEntryValid(icmForecastCreatedAt.get(wgId))) {
+                icmForecastCreatedAt.remove(wgId);
+                removeIcmForecast(wgId);
+                icmForecasts++;
             }
-
-            tasks
-                    .stream()
-                    .filter(subtask -> subtask.state() == Subtask.State.FAILED)
-                    .map(subtask -> subtask.exception().getMessage())
-                    .forEach(log::warn);
-
-            log.info("AI forecast analysis fetched ({})", languageCode);
-            metricsService.incrementAiFetchSuccessCounter();
-        } finally {
-            metricsService.recordAiFetchDuration(startTime);
         }
+
+        if (analyses > 0 || icmForecasts > 0) {
+            log.info("Evicted {} expired AI analyses and {} expired ICM forecasts", analyses, icmForecasts);
+        }
+    }
+
+    private int evictExpiredAnalyses(
+            ConcurrentMap<Integer, String> cache,
+            ConcurrentMap<Integer, Long> createdAt
+    ) {
+        int evicted = 0;
+        for (Integer wgId : List.copyOf(createdAt.keySet())) {
+            if (!isOnDemandEntryValid(createdAt.get(wgId))) {
+                createdAt.remove(wgId);
+                cache.remove(wgId);
+                evicted++;
+            }
+        }
+        return evicted;
+    }
+
+    /**
+     * Takes the ICM model back out of a spot's cached forecasts, leaving every other
+     * model and the daily rows untouched.
+     */
+    private void removeIcmForecast(int wgId) {
+        forecastCache.computeIfPresent(wgId, (_, existing) -> {
+            Map<ForecastModel, List<Forecast>> hourly = new HashMap<>(existing.hourly());
+            hourly.remove(ForecastModel.ICM_METEO);
+            return new ForecastData(existing.daily(), hourly);
+        });
+    }
+
+    private boolean isOnDemandEntryValid(Long createdAtMs) {
+        return createdAtMs != null && System.currentTimeMillis() - createdAtMs < ON_DEMAND_TTL_MS;
+    }
+
+    private static boolean isPolish(String language) {
+        return language != null && language.toLowerCase(Locale.ROOT).startsWith("pl");
+    }
+
+    private static String languageCode(String language) {
+        return isPolish(language) ? "pl" : "en";
+    }
+
+    private ConcurrentMap<Integer, String> aiAnalysisCache(String language) {
+        return isPolish(language) ? aiAnalysisPl : aiAnalysisEn;
+    }
+
+    private ConcurrentMap<Integer, Long> aiAnalysisCreatedAt(String language) {
+        return isPolish(language) ? aiAnalysisPlCreatedAt : aiAnalysisEnCreatedAt;
     }
 
     private static <T> StructuredTaskScope<T, Void> openScope(String name) {
@@ -1233,11 +1342,5 @@ public class AggregatorService {
                         .withName(name)
                         .withThreadFactory(Thread.ofVirtual().factory())
         );
-    }
-
-    private void updateAiAnalysisCache(int spotId, String analysis, ConcurrentMap<Integer, String> cache) {
-        if (analysis != null && !analysis.isEmpty()) {
-            cache.put(spotId, analysis);
-        }
     }
 }

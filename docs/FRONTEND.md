@@ -179,6 +179,21 @@ DOM Manipulation (vanilla JS)
 
 **Features**:
 - Two-column layout (desktop): left sidebar (map, current conditions, spot info, AI analysis), right main content (forecast table)
+- On-demand generation under the map, desktop only (`isDesktopView`, min-width
+  1005px), each of the two in its own card:
+  - AI analysis: one slot with three states - the analysis, a spinner while it is
+    being written, or the button offering to write one. The heading only appears
+    with the text it labels; a failed generation puts a warning beside the button
+  - ICM forecast: a button below the analysis. Both button and spinner disappear
+    once the forecast is read, and come back when it expires a day later
+  - Each button opens a confirmation modal first (`#aiGenerateModal`,
+    `#icmGenerateModal`), since the click is what spends the money. The ICM one
+    also says the forecast will appear in the model dropdown in the top right
+    corner, which the button's own position does not suggest
+  - Both share `.ondemand-generate-button`, whose `min-width` is sized for the
+    longest label in any language so the two line up whichever language is on
+  - Which state renders is derived from the spot data and the in-memory sets on
+    every rebuild, never from what the previous render left in the DOM
 - Forecast view tabs: Table View (vertical) and Windguru View (horizontal)
 - Real-time current conditions card with live indicator
 - Current conditions history chart (12-hour wind trend)
@@ -423,23 +438,40 @@ let autoRefreshInterval = null;       // Auto-refresh timer
 - **Rendering**: `renderSpots()`, `createSpotCard()`, `renderForecastTable()`
 - **Filtering**: `filterSpots()`, `searchSpots()`, `populateCountryDropdown()`
 - **Drag & Drop**: `initDragAndDrop()` (custom ordering, persisted in `localStorage`)
-- **Modals**: `openInfoModal()`, `openAIModal()`, `openIcmModal()`, `openKiteSizeModal()`
+- **Modals**: `openInfoModal()`, `openAIModal()`, `openIcmModal()`, `openKiteSizeModal()`,
+  `openAiGenerateModal()` / `openIcmGenerateModal()` (spot page, confirm a generation)
 
 #### `page/spot.js` - Spot Detail Logic
 **State Management**:
 ```javascript
 let currentSpot = null;               // Loaded spot data
-let currentSpotId = null;             // Spot ID from URL
+let currentSpotId = null;             // Spot ID from URL (a string - see spotKey())
 let selectedModel = 'gfs';            // Forecast model (GFS/IFS)
 let forecastPollIntervalId = null;    // IFS polling timer
 let backgroundRefreshIntervalId = null; // Auto-refresh timer
+
+// Which on-demand generations are running, kept here rather than in the DOM: the
+// card is rebuilt from scratch every minute by the background refresh, so a
+// spinner living only in the markup would vanish mid-generation.
+const aiAnalysisGenerating = new Set();  // keys: `${wgId}:${language}`
+const icmForecastGenerating = new Set(); // keys: wgId
+const aiAnalysisErrors = new Map();      // last failure per spot
+const icmForecastErrors = new Map();
 ```
+
+`spotKey(wgId)` coerces to Number before touching any of those four: the route
+hands over a string while the spot object carries a number, and Set/Map compare by
+identity, so mixing the two would silently lose every lookup.
 
 **Key Functions**:
 - **Data Fetching**: `fetchSpotData(spotId)`, `hasForecastData(spot)`
 - **Polling**: `startForecastPolling()` (5s interval, 30s timeout), `clearForecastPolling()`
 - **Rendering**: `displaySpot()`, `renderForecastTable()`, `renderWindguruView()`, `renderCurrentConditionsCard()`
 - **Forecast Views**: `switchToTableView()`, `switchToWindguruView()` (desktop only)
+- **On-demand generation**: `requestAiAnalysis(wgId)`, `requestIcmForecast(wgId)`,
+  `setupOnDemandGenerationButtons()` (re-wired after every card rebuild),
+  `openAiGenerateModal()` / `openIcmGenerateModal()` and their close pairs,
+  `updateConfirmModalTranslations(ids)` (each element id doubles as its key)
 - **Helpers**: `getWindArrow()`, `getWindRotation()`, `translateDayName()`, `formatForecastDateLabel()`
 
 ## Component Architecture

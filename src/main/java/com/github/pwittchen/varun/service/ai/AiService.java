@@ -57,12 +57,18 @@ public abstract class AiService {
 
         String prompt = buildPrompt(spot, rows);
 
+        // The chunks are collected into one string, so nothing downstream sees the
+        // stream: a delay between them only ever added wall-clock time. It cost
+        // nothing while this ran as a nightly sweep, but the analysis is generated
+        // on demand now, with a visitor watching a spinner and nginx holding the
+        // request open - a hundred chunks a second apart would time out before the
+        // paragraph ever arrived. The timeout below is Reactor's inter-element one,
+        // so it now bounds the gap between chunks rather than the sum of the delays.
         return chatClient
                 .prompt()
                 .user(prompt)
                 .stream()
                 .content()
-                .delayElements(Duration.ofSeconds(1))
                 .timeout(Duration.ofSeconds(15))
                 .retry(3)
                 .collectList()

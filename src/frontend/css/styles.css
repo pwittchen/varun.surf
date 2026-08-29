@@ -3458,6 +3458,103 @@ body.forecasts-loading .skeleton-text {
     color: var(--warning-color);
 }
 
+/* The same card carries the other two states an analysis can be in: not asked for
+   yet, and being written. Both are laid out on one row so the card keeps roughly
+   the height it has with a paragraph in it, and the forecast below does not jump
+   when the state changes. */
+.ai-analysis-card .ai-analysis-generate {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* The two on-demand buttons sit in stacked cards, so a difference in label length
+   reads as a ragged edge. They share one rule and one min-width, sized for the
+   longest label in any language ("Generate ICM forecast" / "Generuj prognozę ICM"),
+   which lands both of them on the same floor whichever language is on. */
+.ondemand-generate-button {
+    min-width: 13rem;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: inherit;
+    text-align: center;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ondemand-generate-button:hover {
+    background: var(--bg-primary);
+    border-color: var(--accent-color, var(--text-secondary));
+}
+
+.ai-analysis-card .ai-analysis-generating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.ai-analysis-card .ai-analysis-error {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--warning-color);
+}
+
+/* One spinner shape for both on-demand generations */
+.ai-analysis-spinner,
+.icm-generate-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border: 2px solid var(--border-primary);
+    border-top-color: var(--text-secondary);
+    border-radius: 50%;
+    animation: on-demand-spin 0.8s linear infinite;
+}
+
+@keyframes on-demand-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ICM generation, on its own row under the AI analysis. Same card shell as the
+   analysis above it, so the two paid generations read as one group rather than
+   one of them being tucked into the forecast filter row. */
+.icm-generate-card {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 14px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+}
+
+.icm-generate-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.icm-generate-status {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.icm-generate-error {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--warning-color);
+}
+
 /* Sponsors card styling */
 .sponsors-card {
     background: var(--bg-secondary);

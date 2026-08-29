@@ -63,6 +63,56 @@ export async function fetchSpot(spotId, model = null) {
 }
 
 /**
+ * Ask the server to write this spot's AI analysis.
+ *
+ * Nothing generates one in the background any more - an analysis costs an LLM
+ * call, so it is written only when a visitor presses the button and then held for
+ * 24 hours. A spot that already has a valid one is answered from that cache, so
+ * calling this twice within the day is free.
+ *
+ * @param {string|number} spotId - Windguru id of the spot
+ * @param {string} language - 'pl' or 'en'
+ * @returns {Promise<Object>} the spot, with the analysis filled in
+ * @throws {Error} carrying `status` when the server refused or failed
+ */
+export async function generateAiAnalysis(spotId, language) {
+    const url = `${API_ENDPOINT_SPOTS}/${spotId}/analysis?lang=${encodeURIComponent(language || 'en')}`;
+    const response = await fetch(url, { method: 'POST', credentials: 'same-origin' });
+
+    if (!response.ok) {
+        const error = new Error(`HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
+
+    return await response.json();
+}
+
+/**
+ * Ask the server to read this spot's ICM meteogram through the vision model.
+ *
+ * Same bargain as the analysis above: one call, cached for 24 hours. The spot
+ * comes back carrying ICM among its `availableModels`, so the caller can
+ * repopulate the model dropdown without a second request.
+ *
+ * @param {string|number} spotId - Windguru id of the spot
+ * @returns {Promise<Object>} the spot, with ICM among its available models
+ * @throws {Error} carrying `status` when the forecast could not be produced
+ */
+export async function generateIcmForecast(spotId) {
+    const url = `${API_ENDPOINT_SPOTS}/${spotId}/icm`;
+    const response = await fetch(url, { method: 'POST', credentials: 'same-origin' });
+
+    if (!response.ok) {
+        const error = new Error(`HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
+
+    return await response.json();
+}
+
+/**
  * Fetch the hourly wind timeline: every spot's wind laid out on one shared grid
  * of hours, which is what the map's forecast slider steps through. Per-spot
  * hourly forecasts are stripped from the spots response, so the map reads this

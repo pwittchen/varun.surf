@@ -150,6 +150,48 @@
     </div>
 </div>
 
+<!-- Modal confirming an AI analysis is about to be written. Same guard as the ICM
+     one below: a generation costs a model call, so it never rides on a stray click. -->
+<div class="modal-overlay" id="aiGenerateModal">
+    <div class="modal modal-confirm">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span id="aiGenerateModalTitle">Generate AI analysis</span>
+            </div>
+            <button class="modal-close" id="aiGenerateModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p class="modal-intro" id="aiGenerateModalQuestion">Do you really want to generate the analysis?</p>
+            <div class="modal-disclaimer" id="aiGenerateModalHint">Writing the analysis costs an AI call, so it is generated on request and stays valid for 24 hours. It will appear here, in place of this button.</div>
+            <div class="modal-actions">
+                <button class="modal-button modal-button-secondary" id="aiGenerateModalCancel">Cancel</button>
+                <button class="modal-button modal-button-primary" id="aiGenerateModalConfirm">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirming an ICM forecast is about to be generated. Reading the
+     meteogram costs a vision model call, so it is never spent on a stray click. -->
+<div class="modal-overlay" id="icmGenerateModal">
+    <div class="modal modal-confirm">
+        <div class="modal-header">
+            <div class="modal-title">
+                <span id="icmGenerateModalTitle">Generate ICM forecast</span>
+            </div>
+            <button class="modal-close" id="icmGenerateModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p class="modal-intro" id="icmGenerateModalQuestion">Do you really want to generate the forecast?</p>
+            <div class="modal-disclaimer" id="icmGenerateModalHint">The forecast will appear in the model dropdown in the top right corner. To just look at the meteogram itself, use the ICM button in the top left corner.</div>
+            <div class="modal-actions">
+                <button class="modal-button modal-button-secondary" id="icmGenerateModalCancel">Cancel</button>
+                <button class="modal-button modal-button-primary" id="icmGenerateModalConfirm">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal for Embed Widget -->
 <div class="modal-overlay" id="embedModal">
     <div class="modal">

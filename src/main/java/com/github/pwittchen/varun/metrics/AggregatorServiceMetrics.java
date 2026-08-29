@@ -17,12 +17,16 @@ public class AggregatorServiceMetrics {
     private final Counter conditionsFetchCounter;
     private final Counter conditionsFetchSuccessCounter;
     private final Counter conditionsFetchFailureCounter;
-    private final Counter aiFetchCounter;
-    private final Counter aiFetchSuccessCounter;
-    private final Counter aiFetchFailureCounter;
+    private final Counter aiAnalysisCounter;
+    private final Counter aiAnalysisSuccessCounter;
+    private final Counter aiAnalysisFailureCounter;
+    private final Counter icmAnalysisCounter;
+    private final Counter icmAnalysisSuccessCounter;
+    private final Counter icmAnalysisFailureCounter;
     private final Timer forecastFetchTimer;
     private final Timer conditionsFetchTimer;
-    private final Timer aiFetchTimer;
+    private final Timer aiAnalysisTimer;
+    private final Timer icmAnalysisTimer;
     private final AtomicInteger spotsCount;
     private final AtomicInteger countriesCount;
     private final AtomicInteger liveStationsCount;
@@ -38,12 +42,16 @@ public class AggregatorServiceMetrics {
             Counter conditionsFetchCounter,
             Counter conditionsFetchSuccessCounter,
             Counter conditionsFetchFailureCounter,
-            Counter aiFetchCounter,
-            Counter aiFetchSuccessCounter,
-            Counter aiFetchFailureCounter,
+            Counter aiAnalysisCounter,
+            Counter aiAnalysisSuccessCounter,
+            Counter aiAnalysisFailureCounter,
+            Counter icmAnalysisCounter,
+            Counter icmAnalysisSuccessCounter,
+            Counter icmAnalysisFailureCounter,
             Timer forecastFetchTimer,
             Timer conditionsFetchTimer,
-            Timer aiFetchTimer,
+            Timer aiAnalysisTimer,
+            Timer icmAnalysisTimer,
             AtomicInteger spotsCount,
             AtomicInteger countriesCount,
             AtomicInteger liveStationsCount,
@@ -57,12 +65,16 @@ public class AggregatorServiceMetrics {
         this.conditionsFetchCounter = conditionsFetchCounter;
         this.conditionsFetchSuccessCounter = conditionsFetchSuccessCounter;
         this.conditionsFetchFailureCounter = conditionsFetchFailureCounter;
-        this.aiFetchCounter = aiFetchCounter;
-        this.aiFetchSuccessCounter = aiFetchSuccessCounter;
-        this.aiFetchFailureCounter = aiFetchFailureCounter;
+        this.aiAnalysisCounter = aiAnalysisCounter;
+        this.aiAnalysisSuccessCounter = aiAnalysisSuccessCounter;
+        this.aiAnalysisFailureCounter = aiAnalysisFailureCounter;
+        this.icmAnalysisCounter = icmAnalysisCounter;
+        this.icmAnalysisSuccessCounter = icmAnalysisSuccessCounter;
+        this.icmAnalysisFailureCounter = icmAnalysisFailureCounter;
         this.forecastFetchTimer = forecastFetchTimer;
         this.conditionsFetchTimer = conditionsFetchTimer;
-        this.aiFetchTimer = aiFetchTimer;
+        this.aiAnalysisTimer = aiAnalysisTimer;
+        this.icmAnalysisTimer = icmAnalysisTimer;
         this.spotsCount = spotsCount;
         this.countriesCount = countriesCount;
         this.liveStationsCount = liveStationsCount;
@@ -96,16 +108,28 @@ public class AggregatorServiceMetrics {
         conditionsFetchFailureCounter.increment();
     }
 
-    public void incrementAiFetchCounter() {
-        aiFetchCounter.increment();
+    public void incrementAiAnalysisCounter() {
+        aiAnalysisCounter.increment();
     }
 
-    public void incrementAiFetchSuccessCounter() {
-        aiFetchSuccessCounter.increment();
+    public void incrementAiAnalysisSuccessCounter() {
+        aiAnalysisSuccessCounter.increment();
     }
 
-    public void incrementAiFetchFailureCounter() {
-        aiFetchFailureCounter.increment();
+    public void incrementAiAnalysisFailureCounter() {
+        aiAnalysisFailureCounter.increment();
+    }
+
+    public void incrementIcmAnalysisCounter() {
+        icmAnalysisCounter.increment();
+    }
+
+    public void incrementIcmAnalysisSuccessCounter() {
+        icmAnalysisSuccessCounter.increment();
+    }
+
+    public void incrementIcmAnalysisFailureCounter() {
+        icmAnalysisFailureCounter.increment();
     }
 
     public void recordForecastFetchDuration(long startTimeNanos) {
@@ -116,8 +140,17 @@ public class AggregatorServiceMetrics {
         conditionsFetchTimer.record(Duration.ofNanos(System.nanoTime() - startTimeNanos));
     }
 
-    public void recordAiFetchDuration(long startTimeNanos) {
-        aiFetchTimer.record(Duration.ofNanos(System.nanoTime() - startTimeNanos));
+    /**
+     * On-demand generations are timed with Reactor's {@code elapsed()}, which
+     * already hands over the wall-clock milliseconds a subscription took, so unlike
+     * the sweep timers above these take a duration rather than a start stamp.
+     */
+    public void recordAiAnalysisDuration(long durationMs) {
+        aiAnalysisTimer.record(Duration.ofMillis(durationMs));
+    }
+
+    public void recordIcmAnalysisDuration(long durationMs) {
+        icmAnalysisTimer.record(Duration.ofMillis(durationMs));
     }
 
     public void updateLastForecastFetchTimestamp() {

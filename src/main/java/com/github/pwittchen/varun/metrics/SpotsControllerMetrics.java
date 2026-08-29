@@ -11,6 +11,8 @@ public class SpotsControllerMetrics {
     private final Counter apiSpotByIdRequestCounter;
     private final Counter apiWindRequestCounter;
     private final Counter apiForecastRequestCounter;
+    private final Counter apiAiAnalysisRequestCounter;
+    private final Counter apiIcmAnalysisRequestCounter;
 
     public SpotsControllerMetrics(MeterRegistry registry) {
         this.apiSpotsRequestCounter = Counter
@@ -29,6 +31,17 @@ public class SpotsControllerMetrics {
                 .builder("varun.api.forecast.requests")
                 .description("Number of requests to /api/v1/forecast/{wgId} endpoint")
                 .register(registry);
+        // Requests, not generations: these count the button presses, including the
+        // ones answered from the day-long cache without reaching a model. Read
+        // against varun.ondemand.*.total they say how much the cache is saving.
+        this.apiAiAnalysisRequestCounter = Counter
+                .builder("varun.api.analysis.requests")
+                .description("Number of requests to /api/v1/spots/{id}/analysis endpoint")
+                .register(registry);
+        this.apiIcmAnalysisRequestCounter = Counter
+                .builder("varun.api.icm.requests")
+                .description("Number of requests to /api/v1/spots/{id}/icm endpoint")
+                .register(registry);
     }
 
     public void incrementSpotsRequestCounter() {
@@ -45,5 +58,13 @@ public class SpotsControllerMetrics {
 
     public void incrementForecastRequestCounter() {
         apiForecastRequestCounter.increment();
+    }
+
+    public void incrementAiAnalysisRequestCounter() {
+        apiAiAnalysisRequestCounter.increment();
+    }
+
+    public void incrementIcmAnalysisRequestCounter() {
+        apiIcmAnalysisRequestCounter.increment();
     }
 }

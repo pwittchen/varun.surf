@@ -11,9 +11,10 @@
                                                                             |
                                        +-----------------------------------v-----------------------------------+
                                        |             AggregatorService (core orchestrator)                     |
-                         +-------------+  - schedules: forecasts (3h), conditions (1m), AI (24h)                |
+                         +-------------+  - schedules: forecasts (3h), conditions (1m), eviction (1h)          |
+                         |             |  - on demand only: AI analysis and ICM forecast (24h TTL each)        |
                          |             |  - caches: spots, forecasts (40+ models), conditions, AI, maps        |
-                         |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions, 16 AI) |
+                         |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions)        |
                          |             |  - uses Java 25 StructuredTaskScope for concurrent execution          |
                          |             +------------+--------------------+-----------------+-------------------+
                          |                          |                    |                 |
@@ -114,6 +115,22 @@
     -> enriches spot with model-specific hourly forecast + availableModels list
     -> triggers async fetchForecastsForAllModels(id)
     -> returns Mono<Spot>
+
+  POST /api/v1/spots/{id}/analysis?lang=en|pl
+    -> SpotsController.generateAiAnalysis(id, lang)
+    -> AggregatorService.generateAiAnalysis(id, language)
+       [cached and still inside its 24h -> returned without reaching the model]
+       [otherwise AiServiceEn/AiServicePl over the spot's hourly forecast]
+    -> caches the text and dates it, then re-reads the spot
+    -> returns Mono<Spot> [503 when nothing was written]
+
+  POST /api/v1/spots/{id}/icm
+    -> SpotsController.generateIcmForecast(id)
+    -> AggregatorService.generateIcmForecast(id)
+       [cached and still inside its 24h -> returned without reaching the model]
+       [otherwise IcmForecastVisionService reads the meteogram image]
+    -> merges ICM_METEO into forecastCache and dates it
+    -> returns Mono<Spot> [ICM now among availableModels; 503 when it could not be read]
 
   GET /api/v1/wind?hours=N
     -> SpotsController.wind(hours)
@@ -263,8 +280,8 @@ Sponsor
    - Multi-language support:
      - AiServiceEn: English prompts and analysis
      - AiServicePl: Polish prompts and analysis
-     - Both services run in parallel every 24 hours
      - Separate caches for each language
+   - Generated on demand only (POST /api/v1/spots/{id}/analysis), never on a timer
 
 5. ICM Meteogram Integration (Poland & Czech Republic only)
    - IcmGridMapper converts lat/lon to ICM grid coordinates
@@ -272,6 +289,9 @@ Sponsor
    - Validates meteogram availability via HTTP HEAD requests
    - Caches validated grid points to avoid repeated checks
    - Search radius of 8 grid points for finding valid meteograms
+   - The meteogram image is read by the vision model on demand only
+     (POST /api/v1/spots/{id}/icm), never on a timer and never as a side effect
+     of opening a spot
 ```
 
 ### Multi-Language Support
@@ -362,14 +382,22 @@ In-Memory Caches (ConcurrentHashMap):
   4. aiAnalysisEn: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in English
-     - Updated: every 24 hours (if enabled)
+     - Written: on demand, when a visitor presses the button on a spot page
+     - Lifetime: 24 hours, then evicted; validity also checked on read
      - Conditional: only enabled if feature flag is true
 
   5. aiAnalysisPl: Map<Integer, String>
      - Key: spotId (wgId)
      - Value: AI-generated forecast summary in Polish
-     - Updated: every 24 hours (if enabled)
+     - Written: on demand, same as the English one but a separate generation
+     - Lifetime: 24 hours, then evicted
      - Conditional: only enabled if feature flag is true
+
+  5b. aiAnalysisEnCreatedAt / aiAnalysisPlCreatedAt / icmForecastCreatedAt: Map<Integer, Long>
+     - Key: spotId (wgId)
+     - Value: when the on-demand result was generated (epoch millis)
+     - This is what makes a result expire; the hourly eviction sweep reads it,
+       and so does every read of the analysis or of availableModels
 
   6. locationCoordinates: Map<Integer, Coordinates>
      - Key: spotId (wgId)
@@ -417,10 +445,11 @@ Java 25 StructuredTaskScope (Preview Feature):
 Semaphore-based Rate Limiting:
   - forecastLimiter: 32 permits (max 32 concurrent Windguru API calls)
   - currentConditionsLimiter: 32 permits (max 32 concurrent station calls)
-  - aiLimiter: 16 permits (max 16 concurrent LLM API calls)
   - discoveryLimiter: 16 permits (max 16 concurrent model discovery calls)
   - Prevents overwhelming external APIs
   - Ensures fair resource distribution
+  - No LLM limiter: on-demand generation is one call per button press,
+    deduplicated per spot by the in-flight maps and rate limited at nginx
 
 Reactive Patterns (Spring WebFlux):
   - Non-blocking I/O throughout the stack
@@ -462,6 +491,25 @@ Spots:
     - Returns single spot with specified forecast model (any valid modelKey)
     - Includes availableModels list for frontend model selector
     - Triggers async discovery of all forecast models if not cached
+    - Response: Mono<Spot>
+
+  POST /api/v1/spots/{id}/analysis?lang=en|pl
+    - Writes the spot's AI analysis and answers with the spot carrying it
+    - The only path that spends an LLM call on an analysis; nothing generates one
+      in the background
+    - A spot whose analysis is still inside its 24 hours is answered from the
+      cache without reaching the model, so a reload or a second visitor is free
+    - Concurrent callers for the same spot and language share one generation
+    - 404 unknown spot, 503 when the feature is off or nothing was written
+    - Response: Mono<Spot>
+
+  POST /api/v1/spots/{id}/icm
+    - Reads the spot's ICM meteogram through the vision model and answers with the
+      spot carrying ICM among its availableModels, so the caller can repopulate
+      the model dropdown from one response
+    - Same bargain as the analysis: one call, cached 24 hours, single-flight
+    - 404 unknown spot, 503 when there is no grid point, the feature is off, or
+      the model read nothing
     - Response: Mono<Spot>
 
   GET /api/v1/wind?hours=N
@@ -827,14 +875,21 @@ Gauges (current values):
 Counters (cumulative):
   - varun.fetch.forecasts.total/success/failure  # Forecast fetch counts
   - varun.fetch.conditions.total/success/failure # Conditions fetch counts
-  - varun.fetch.ai.total/success/failure         # AI analysis fetch counts
+  - varun.ondemand.ai.total/success/failure      # AI analysis generations (one per call)
+  - varun.ondemand.icm.total/success/failure     # ICM meteogram readings (one per call)
   - varun.api.spots.requests       # GET /api/v1/spots requests
   - varun.api.spot.requests        # GET /api/v1/spots/{id} requests
+  - varun.api.analysis.requests    # POST /api/v1/spots/{id}/analysis requests
+  - varun.api.icm.requests         # POST /api/v1/spots/{id}/icm requests
+
+  The ondemand.* counters count generations and the api.*.requests ones count
+  button presses, so the gap between them is what the 24h cache saved.
 
 Timers (duration tracking):
   - varun.fetch.forecasts.duration   # Time to fetch all forecasts
   - varun.fetch.conditions.duration  # Time to fetch all conditions
-  - varun.fetch.ai.duration          # Time to fetch AI analysis
+  - varun.ondemand.ai.duration       # Time to write one AI analysis
+  - varun.ondemand.icm.duration      # Time to read one ICM meteogram
 
 HTTP Client Metrics:
   - varun.http.client.active_requests      # In-flight requests

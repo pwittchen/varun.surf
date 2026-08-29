@@ -83,7 +83,7 @@
                 <!-- Data Fetching Section -->
                 <div class="status-card">
                     <h3 data-i18n="metricsFetchingTitle">Data Fetching</h3>
-                    <div class="metrics-grid metrics-grid-3">
+                    <div class="metrics-grid metrics-grid-2">
                         <!-- Forecasts -->
                         <div class="metrics-item">
                             <div class="metrics-label" data-i18n="metricsForecasts">Forecasts</div>
@@ -110,18 +110,45 @@
                             </div>
                             <div class="metrics-subvalue" id="conditions-duration">avg: - min</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- On-demand Data Fetching Section.
+                     Everything here costs an LLM call per generation, which is why it
+                     is counted apart from the scheduled fetches above: the totals are
+                     what the OpenAI bill is made of. "requests" counts the button
+                     presses, so the gap between it and the total is what the day-long
+                     cache saved. -->
+                <div class="status-card">
+                    <h3 data-i18n="metricsOnDemandTitle">On-demand Data Fetching</h3>
+                    <div class="metrics-grid metrics-grid-2">
                         <!-- AI Analysis -->
                         <div class="metrics-item">
                             <div class="metrics-label" data-i18n="metricsAiAnalysis">AI Analysis</div>
                             <div class="metrics-stat-row">
-                                <span class="metrics-stat-success" id="ai-success">0</span>
+                                <span class="metrics-stat-success" id="ai-analysis-success">0</span>
                                 <span class="metrics-stat-separator">/</span>
-                                <span class="metrics-stat-total" id="ai-total">0</span>
+                                <span class="metrics-stat-total" id="ai-analysis-total">0</span>
                             </div>
                             <div class="metrics-subvalue">
-                                <span class="metrics-stat-failure" id="ai-failure">0 failed</span>
+                                <span class="metrics-stat-failure" id="ai-analysis-failure">0 failed</span>
                             </div>
-                            <div class="metrics-subvalue" id="ai-duration">avg: - min</div>
+                            <div class="metrics-subvalue" id="ai-analysis-duration">avg: - min</div>
+                            <div class="metrics-subvalue" id="ai-analysis-requests">requests: 0</div>
+                        </div>
+                        <!-- ICM Forecast -->
+                        <div class="metrics-item">
+                            <div class="metrics-label" data-i18n="metricsIcmAnalysis">ICM Forecast (AI)</div>
+                            <div class="metrics-stat-row">
+                                <span class="metrics-stat-success" id="icm-analysis-success">0</span>
+                                <span class="metrics-stat-separator">/</span>
+                                <span class="metrics-stat-total" id="icm-analysis-total">0</span>
+                            </div>
+                            <div class="metrics-subvalue">
+                                <span class="metrics-stat-failure" id="icm-analysis-failure">0 failed</span>
+                            </div>
+                            <div class="metrics-subvalue" id="icm-analysis-duration">avg: - min</div>
+                            <div class="metrics-subvalue" id="icm-analysis-requests">requests: 0</div>
                         </div>
                     </div>
                 </div>

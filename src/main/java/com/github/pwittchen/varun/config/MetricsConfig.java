@@ -139,24 +139,49 @@ public class MetricsConfig {
                 .register(registry);
     }
 
+    // On-demand generation. Both of these are counted per spot rather than per
+    // sweep - there is no sweep any more - so the totals are also the LLM call
+    // counts, which is what the bill is made of.
+
     @Bean
-    public Counter aiFetchCounter(MeterRegistry registry) {
-        return Counter.builder("varun.fetch.ai.total")
-                .description("Total number of AI analysis fetch operations")
+    public Counter aiAnalysisCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.ai.total")
+                .description("Total number of on-demand AI analysis generations")
                 .register(registry);
     }
 
     @Bean
-    public Counter aiFetchSuccessCounter(MeterRegistry registry) {
-        return Counter.builder("varun.fetch.ai.success")
-                .description("Number of successful AI analysis fetch operations")
+    public Counter aiAnalysisSuccessCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.ai.success")
+                .description("Number of successful on-demand AI analysis generations")
                 .register(registry);
     }
 
     @Bean
-    public Counter aiFetchFailureCounter(MeterRegistry registry) {
-        return Counter.builder("varun.fetch.ai.failure")
-                .description("Number of failed AI analysis fetch operations")
+    public Counter aiAnalysisFailureCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.ai.failure")
+                .description("Number of failed on-demand AI analysis generations")
+                .register(registry);
+    }
+
+    @Bean
+    public Counter icmAnalysisCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.icm.total")
+                .description("Total number of on-demand ICM meteogram readings")
+                .register(registry);
+    }
+
+    @Bean
+    public Counter icmAnalysisSuccessCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.icm.success")
+                .description("Number of successful on-demand ICM meteogram readings")
+                .register(registry);
+    }
+
+    @Bean
+    public Counter icmAnalysisFailureCounter(MeterRegistry registry) {
+        return Counter.builder("varun.ondemand.icm.failure")
+                .description("Number of failed on-demand ICM meteogram readings")
                 .register(registry);
     }
 
@@ -175,9 +200,16 @@ public class MetricsConfig {
     }
 
     @Bean
-    public Timer aiFetchTimer(MeterRegistry registry) {
-        return Timer.builder("varun.fetch.ai.duration")
-                .description("Duration of AI analysis fetch operations")
+    public Timer aiAnalysisTimer(MeterRegistry registry) {
+        return Timer.builder("varun.ondemand.ai.duration")
+                .description("Duration of on-demand AI analysis generations")
+                .register(registry);
+    }
+
+    @Bean
+    public Timer icmAnalysisTimer(MeterRegistry registry) {
+        return Timer.builder("varun.ondemand.icm.duration")
+                .description("Duration of on-demand ICM meteogram readings")
                 .register(registry);
     }
 }
