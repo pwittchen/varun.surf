@@ -518,7 +518,15 @@ src/main/java/com/github/pwittchen/varun/
   - `cd.yml`: runs CI, pushes the Docker image to GHCR, deploys to production, creates a GitHub release
   - `deps.yml`: scheduled dependency updates
 - **Registry**: ghcr.io/pwittchen/varun.surf
-- **VPS**: Uses `deployment.sh` helper script
+- **VPS**: a [mikr.us](https://mikr.us) server; deployed with the `deployment.sh`
+  helper script
+- **mikrus MCP**: when the `mikrus` MCP server is connected to Claude, server
+  operations can be performed through its tools instead of SSH - `info`, `servers`,
+  `stats`, `status`, `ports`, `logs`, `db`, `cloud`, `list_profiles` and `ctx` are
+  read-only, while `restart`, `exec`, `domain`, `amfetamina` and `ctx_switch` change
+  the server and must be confirmed with the user first. The tools act on the default
+  server from the mikrus config (`~/.mikrus` or `MIKRUS_SRV`/`MIKRUS_KEY`), so check
+  with `ctx` which server is selected before running anything
 
 ## Features
 

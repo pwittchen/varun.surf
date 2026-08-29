@@ -113,6 +113,18 @@ To do that, follow the instructions below.
 - If you want to test the deployment locally, run `./deployment.sh dev` script.
 - To stop everything, run: `docker stop varun-app-blue-live varun-app-green-live varun-nginx`
 
+## server administration
+
+The app runs on a [Mikrus](https://mikr.us) VPS. Besides plain SSH, the server can be
+administered through the [mikrus MCP server](https://github.com/pwittchen/mikrus-cli), which
+exposes the Mikrus API as tools for an MCP client like Claude. Read-only tools cover the
+server info, list, stats, status, ports, logs, databases, cloud and profiles; the tools
+that change the server - restart, exec, domain, amfetamina and switching the active
+server - should always be confirmed before they are run. Credentials come from the
+`MIKRUS_SRV` and `MIKRUS_KEY` environment variables or from `~/.mikrus`, and the tools
+act on the default server configured there, so it is worth checking which server is
+selected before running anything.
+
 ## api protection
 
 The data is public and the repository is public with it, so none of this tries to stop
