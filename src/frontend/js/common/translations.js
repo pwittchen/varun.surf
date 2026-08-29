@@ -327,8 +327,10 @@ export const translations = {
         loadingSpotData: "Checking conditions on the spot...",
         loadingForecast: "Chasing the wind on the spot...",
         forecastTimeout: "Connection timed out while waiting for forecast data. Please try again later.",
-        // Shown inside the forecast model dropdown while models are discovered
-        loadingModels: "Loading…",
+        // Shown inside the forecast model dropdown while models are discovered.
+        // It shares the 220px button with the spinner, so ~172px of text fits on
+        // one line - keep any wording (both languages) shorter than that.
+        loadingModels: "Loading models…",
         // Shown while the server is still fetching forecasts for the spot list
         forecastProgressTitle: "Loading forecasts",
         forecastProgressSpots: "spots",
@@ -841,7 +843,7 @@ export const translations = {
         loadingForecast: "Trwa pogoń za wiatrem na spocie...",
         forecastTimeout: "Przekroczono czas oczekiwania na dane prognozy. Spróbuj ponownie później.",
         // Shown inside the forecast model dropdown while models are discovered
-        loadingModels: "Wczytywanie…",
+        loadingModels: "Wczytywanie modeli…",
         // Shown while the server is still fetching forecasts for the spot list
         forecastProgressTitle: "Pobieram prognozy",
         forecastProgressSpots: "spotów",
