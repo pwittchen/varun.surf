@@ -725,6 +725,103 @@ class AggregatorServiceTest {
     }
 
     @Test
+    void shouldGenerateBothLanguagesFromOnePress() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Polska analiza AI"));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when - one press, made while reading the page in Polish
+        var analysis = aggregatorService.generateAiAnalysisInAllLanguages(123, "pl").block();
+
+        // then - the reader gets Polish, and the language switch has English waiting
+        assertThat(analysis).isEqualTo("Polska analiza AI");
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "pl")).isTrue();
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "en")).isTrue();
+
+        var enriched = aggregatorService.getSpots().get(0);
+        assertThat(enriched.aiAnalysisPl()).isEqualTo("Polska analiza AI");
+        assertThat(enriched.aiAnalysisEn()).isEqualTo("English AI analysis");
+    }
+
+    @Test
+    void shouldNotRewriteALanguageAlreadyCachedWhenGeneratingBoth() {
+        // given - English was written by an earlier press
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Polska analiza AI"));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+        aggregatorService.generateAiAnalysis(123, "en").block();
+
+        // when
+        var analysis = aggregatorService.generateAiAnalysisInAllLanguages(123, "en").block();
+
+        // then - only the missing language costs a call
+        assertThat(analysis).isEqualTo("English AI analysis");
+        verify(aiServiceEn, times(1)).fetchAiAnalysis(any(), any());
+        verify(aiServicePl, times(1)).fetchAiAnalysis(any(), any());
+    }
+
+    @Test
+    void shouldServeTheRequestedLanguageWhenTheOtherOneFails() {
+        // given - the Polish generation is the one that breaks
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any(), any()))
+                .thenReturn(Mono.error(new RuntimeException("model unavailable")));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when
+        var analysis = aggregatorService.generateAiAnalysisInAllLanguages(123, "en").block();
+
+        // then - the reader still gets what they asked for, and Polish stays missing
+        // so its own button comes back rather than showing them English
+        assertThat(analysis).isEqualTo("English AI analysis");
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "en")).isTrue();
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "pl")).isFalse();
+    }
+
+    @Test
+    void shouldReportNothingWhenTheRequestedLanguageFails() {
+        // given - the language being read is the one that breaks
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any(), any()))
+                .thenReturn(Mono.error(new RuntimeException("model unavailable")));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Polska analiza AI"));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when
+        var analysis = aggregatorService.generateAiAnalysisInAllLanguages(123, "en").block();
+
+        // then - an empty answer, which the endpoint turns into a 503, even though
+        // the Polish one was written and is kept
+        assertThat(analysis).isNull();
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "en")).isFalse();
+        assertThat(aggregatorService.hasValidAiAnalysis(123, "pl")).isTrue();
+    }
+
+    @Test
     void shouldShareOneGenerationBetweenConcurrentCallers() throws Exception {
         // given - the model takes long enough for a second caller to arrive mid-flight
         var spot = createTestSpot(123, "Test Spot");

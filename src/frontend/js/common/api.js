@@ -63,15 +63,22 @@ export async function fetchSpot(spotId, model = null) {
 }
 
 /**
- * Ask the server to write this spot's AI analysis.
+ * Ask the server to write this spot's AI analysis, in both languages.
  *
  * Nothing generates one in the background any more - an analysis costs an LLM
  * call, so it is written only when a visitor presses the button and then held for
  * 24 hours. A spot that already has a valid one is answered from that cache, so
- * calling this twice within the day is free.
+ * calling this twice within the day is free, and so is the language already
+ * written by an earlier press.
+ *
+ * Both languages are written on one press because the page has a language switch:
+ * the spot comes back carrying `aiAnalysisEn` and `aiAnalysisPl`, so flipping it
+ * shows the analysis in the language on screen rather than the one it was
+ * generated under.
  *
  * @param {string|number} spotId - Windguru id of the spot
- * @param {string} language - 'pl' or 'en'
+ * @param {string} language - 'pl' or 'en'; the language being read, whose failure
+ *                            is the one reported back
  * @returns {Promise<Object>} the spot, with the analysis filled in
  * @throws {Error} carrying `status` when the server refused or failed
  */

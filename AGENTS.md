@@ -812,14 +812,21 @@ over ~780 spots, and an ICM meteogram reading every three hours for every Polish
 and Czech spot - which spent almost the entire budget on spots nobody opened.
 
 **Entry points** (`AggregatorService`):
-- `generateAiAnalysis(wgId, language)` - the only path that writes an analysis
+- `generateAiAnalysisInAllLanguages(wgId, language)` - what the endpoint calls: runs
+  the per-language generation for Polish and English concurrently, answers with the
+  requested language, and treats the other one as best effort
+- `generateAiAnalysis(wgId, language)` - the per-language primitive underneath it
 - `generateIcmForecast(wgId)` - the only path that reads a meteogram
 - `hasValidAiAnalysis(wgId, language)` / `hasValidIcmForecast(wgId)` - whether a
   result is present and still inside its 24 hours
 
 **Behaviour**:
 - A result still inside its day is served from the cache without reaching a model,
-  so a reload or a second visitor costs nothing
+  so a reload or a second visitor costs nothing - and so does a language an earlier
+  press already wrote
+- An analysis is written in both languages on one press: the page has a language
+  switch, and one language only would leave the other half of it empty until the
+  next day, or show a paragraph in the language the visitor just switched away from
 - Concurrent callers for the same spot share one generation (`aiAnalysisInFlight`,
   `icmForecastInFlight` hold a `.cache()`d Mono)
 - `evictExpiredOnDemandData()` runs hourly; validity is also checked on read, so an
@@ -829,7 +836,8 @@ and Czech spot - which spent almost the entire budget on spots nobody opened.
   Polish spot used to buy a meteogram reading
 
 **REST**:
-- `POST /api/v1/spots/{id}/analysis?lang=en|pl`
+- `POST /api/v1/spots/{id}/analysis?lang=en|pl` - `lang` is the language being read,
+  and only decides whose failure is reported; both are written
 - `POST /api/v1/spots/{id}/icm`
 
 Both answer with the enriched `Spot` (404 unknown spot, 503 when the generation
@@ -843,7 +851,8 @@ money. In-flight state lives in module-level Sets in `spot.js`, because the card
 is rebuilt from scratch every minute by the background refresh.
 
 **Cost per generation on gpt-4o-mini**: an analysis prompt is ~2200 input tokens
-(EN) or ~2500 (PL) plus ~120 output; an ICM meteogram is a 630x780 image = 25 501
+(EN) or ~2500 (PL) plus ~120 output, and a press buys both - ~4700 input plus ~240
+output per spot per day; an ICM meteogram is a 630x780 image = 25 501
 image tokens (2833 base + 4 tiles x 5667) plus ~1200 output. The bill is
 proportional to how many spots people open, not to the size of the spot list.
 

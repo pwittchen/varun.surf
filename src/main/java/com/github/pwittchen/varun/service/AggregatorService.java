@@ -1114,11 +1114,54 @@ public class AggregatorService {
     }
 
     /**
-     * Generates one spot's AI analysis, or hands back the one already cached.
+     * Generates one spot's AI analysis in both languages at once, and answers with
+     * the one written in the language that was asked for.
+     *
+     * The two languages are two separate generations - the model writes Polish and
+     * English from two different prompts - but a visitor presses the button once and
+     * then expects the language switch to keep working. Producing only the language
+     * on screen would leave the other half of the switch empty for the rest of the
+     * day, or (worse) showing a paragraph in the language the visitor just switched
+     * away from. So one press buys both.
+     *
+     * They are generated concurrently, and each goes through {@link
+     * #generateAiAnalysis(int, String)}, so a language already cached from an earlier
+     * press is not written a second time: pressing the button when only the English
+     * one has expired costs one call, not two.
+     *
+     * The requested language decides the outcome. The other one is best effort: if
+     * the model writes the English text and fails on the Polish one, the visitor
+     * still gets what they asked for, and the button comes back for the language
+     * that is missing.
+     *
+     * @return the analysis in the requested language, or an empty Mono when the spot
+     * is unknown, the feature is switched off, or the model returned nothing to say
+     */
+    public Mono<String> generateAiAnalysisInAllLanguages(int wgId, String language) {
+        String requested = languageCode(language);
+        String other = isPolish(requested) ? "en" : "pl";
+
+        // Optionals rather than the bare Monos: an empty Mono would make zip discard
+        // the pair wholesale, and a failed Polish generation would then swallow a
+        // perfectly good English one.
+        return Mono
+                .zip(
+                        generateAiAnalysis(wgId, requested).map(Optional::of).defaultIfEmpty(Optional.empty()),
+                        generateAiAnalysis(wgId, other).map(Optional::of).defaultIfEmpty(Optional.empty())
+                )
+                .flatMap(both -> Mono.justOrEmpty(both.getT1()));
+    }
+
+    /**
+     * Generates one spot's AI analysis in a single language, or hands back the one
+     * already cached.
      *
      * A spot whose analysis is still valid never reaches the model: the cached text
      * is returned as it is. Concurrent callers for the same spot and language share
      * a single generation rather than each starting their own.
+     *
+     * Callers serving the frontend want {@link #generateAiAnalysisInAllLanguages}
+     * instead - a visitor who can flip the language switch needs both.
      *
      * @return the analysis, or an empty Mono when the spot is unknown, the feature
      * is switched off, or the model returned nothing to say

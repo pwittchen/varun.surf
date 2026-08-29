@@ -93,17 +93,25 @@ public class SpotsController {
     }
 
     /**
-     * Writes one spot's AI analysis, and answers with the spot carrying it.
+     * Writes one spot's AI analysis in both languages, and answers with the spot
+     * carrying them.
      *
      * This is the only thing that spends an LLM call on an analysis: nothing
      * generates one in the background any more. A spot whose analysis is still
      * inside its day-long lifetime is answered from the cache without reaching the
-     * model, so a reload - or a second visitor - costs nothing.
+     * model, so a reload - or a second visitor - costs nothing, and a language that
+     * is already cached is not written again.
+     *
+     * Both languages are written because the page they are written for has a
+     * language switch: an analysis in one language only would leave the other half
+     * of the switch empty until the next day.
      *
      * @param id   Windguru id of the spot
-     * @param lang language to write the analysis in ("pl", anything else is English)
+     * @param lang language the caller is reading in ("pl", anything else is English);
+     *             it decides whose failure is reported, the other one is best effort
      * @return the spot as {@code GET spots/{id}} would serve it, with the analysis
-     * filled in; 404 for an unknown spot, 503 when the analysis could not be written
+     * filled in; 404 for an unknown spot, 503 when the analysis in the requested
+     * language could not be written
      */
     @PostMapping("spots/{id}/analysis")
     public Mono<ResponseEntity<Spot>> generateAiAnalysis(
@@ -116,7 +124,7 @@ public class SpotsController {
         }
 
         return aggregatorService
-                .generateAiAnalysis(id, lang)
+                .generateAiAnalysisInAllLanguages(id, lang)
                 .map(_ -> aggregatorService
                         .getSpotById(id)
                         .map(ResponseEntity::ok)

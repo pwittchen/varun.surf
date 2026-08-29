@@ -328,7 +328,7 @@ Skill definitions are located in `.claude/skills/`.
 - possibility to switch between a list view and a grid view
 - mobile-friendly UI
 - kite and board size calculator
-- AI forecast analysis, generated on demand from a button under the spot map and valid for 24 hours
+- AI forecast analysis, generated on demand from a button under the spot map, written in Polish and English at once so the language switch keeps working, and valid for 24 hours
 - ICM forecast generated on demand from a button under the AI analysis, valid for 24 hours
 - single spot view with hourly forecast (in horizontal and vertical view)
 - additional TV-friendly view for the single spot

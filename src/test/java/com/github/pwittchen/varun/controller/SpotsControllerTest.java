@@ -559,6 +559,47 @@ class SpotsControllerTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldGenerateAiAnalysisInAllLanguagesAndAnswerWithTheSpot() {
+        // The endpoint writes both languages on one press, so the language switch on
+        // the page it serves keeps working for the rest of the day
+        Spot spot = createMockSpotWithCompleteData();
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(spot));
+        when(aggregatorService.generateAiAnalysisInAllLanguages(500760, "pl"))
+                .thenReturn(Mono.just("Polska analiza AI"));
+
+        StepVerifier.create(controller.generateAiAnalysis(500760, "pl"))
+                .assertNext(response -> {
+                    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+                    assertThat(response.getBody()).isEqualTo(spot);
+                })
+                .verifyComplete();
+
+        verify(metrics).incrementAiAnalysisRequestCounter();
+    }
+
+    @Test
+    void shouldReturn404WhenGeneratingAnAnalysisForUnknownSpot() {
+        when(aggregatorService.getSpotById(999999)).thenReturn(Optional.empty());
+
+        StepVerifier.create(controller.generateAiAnalysis(999999, "en"))
+                .assertNext(response -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND))
+                .verifyComplete();
+
+        verify(aggregatorService, never()).generateAiAnalysisInAllLanguages(anyInt(), anyString());
+    }
+
+    @Test
+    void shouldReturn503WhenTheAnalysisCouldNotBeWritten() {
+        when(aggregatorService.getSpotById(500760)).thenReturn(Optional.of(createMockSpotWithCompleteData()));
+        when(aggregatorService.generateAiAnalysisInAllLanguages(500760, "en")).thenReturn(Mono.empty());
+
+        StepVerifier.create(controller.generateAiAnalysis(500760, "en"))
+                .assertNext(response ->
+                        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE))
+                .verifyComplete();
+    }
+
     private Spot createMockSpotWithCompleteData() {
         SpotInfo spotInfo = new SpotInfo("Beach", "W, SW", "18-22°C", "Intermediate", "sandy", "none", "Spring, Summer", "Great spot", "");
 

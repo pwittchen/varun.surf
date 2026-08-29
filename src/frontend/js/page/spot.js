@@ -37,8 +37,9 @@ let currentLoadingKey = 'loadingSpotData';
 // minute), so a spinner living only in the markup would vanish mid-generation and
 // the button would come back offering to buy the same thing again.
 //
-// Keys are `${wgId}:${language}` for analyses - the two languages are separate
-// generations - and plain wgIds for ICM forecasts.
+// Keyed by plain wgId in both cases. One press writes the analysis in both
+// languages, so the spinner belongs to the spot rather than to the language that
+// happens to be on screen while it runs.
 const aiAnalysisGenerating = new Set();
 const icmForecastGenerating = new Set();
 
@@ -375,22 +376,18 @@ function getCurrentLanguageCode() {
     return currentLanguage || state.getLanguage();
 }
 
-// Get AI analysis for the current language with fallbacks
+// The AI analysis in the language currently on screen, and only that one.
+//
+// There is deliberately no fallback to the other language: an analysis is written
+// in both at once, so the only way one is missing is that its generation failed,
+// and a Polish reader is better served by the generate button than by a paragraph
+// of English they did not ask for.
 function getAiAnalysisForCurrentLanguage(spot) {
     if (!spot) return '';
 
-    const sanitize = (value) => (typeof value === 'string' && value.trim().length > 0 ? value : '');
+    const analysis = getCurrentLanguageCode() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn;
 
-    const aiEn = sanitize(spot.aiAnalysisEn);
-    const aiPl = sanitize(spot.aiAnalysisPl);
-    const aiLegacy = sanitize(spot.aiAnalysis);
-    const lang = getCurrentLanguageCode();
-
-    if (lang === 'pl') {
-        return aiPl || aiEn || aiLegacy;
-    }
-
-    return aiEn || aiPl || aiLegacy;
+    return typeof analysis === 'string' && analysis.trim().length > 0 ? analysis : '';
 }
 
 // ============================================================================
@@ -411,12 +408,8 @@ function spotKey(wgId) {
     return Number(wgId);
 }
 
-function aiAnalysisKey(wgId) {
-    return `${spotKey(wgId)}:${getCurrentLanguageCode()}`;
-}
-
 function isAiAnalysisGenerating(wgId) {
-    return aiAnalysisGenerating.has(aiAnalysisKey(wgId));
+    return aiAnalysisGenerating.has(spotKey(wgId));
 }
 
 function isIcmForecastGenerating(wgId) {
@@ -431,14 +424,19 @@ function hasIcmForecast(spot) {
         && spot.availableModels.some(model => model.key === 'icm');
 }
 
+// One press writes the analysis in both languages - the language passed on is only
+// the one being read, which is the one whose failure the server reports back. That
+// is what keeps the language switch working for the rest of the day: switching to
+// Polish after generating in English finds the Polish paragraph already there,
+// rather than an English one under a Polish interface.
 async function requestAiAnalysis(wgId) {
-    const key = aiAnalysisKey(wgId);
+    const key = spotKey(wgId);
     if (aiAnalysisGenerating.has(key)) {
         return;
     }
 
     aiAnalysisGenerating.add(key);
-    aiAnalysisErrors.delete(spotKey(wgId));
+    aiAnalysisErrors.delete(key);
 
     // Redraw straight away so the button gives way to the spinner without waiting
     // for the next background refresh to come round.
@@ -453,7 +451,7 @@ async function requestAiAnalysis(wgId) {
     } catch (error) {
         console.error('Failed to generate AI analysis:', error);
         aiAnalysisGenerating.delete(key);
-        aiAnalysisErrors.set(spotKey(wgId), true);
+        aiAnalysisErrors.set(key, true);
         if (currentSpot) {
             displaySpot(currentSpot);
         }

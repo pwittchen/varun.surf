@@ -170,8 +170,10 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /api/v1/spots/{id}/{model}` - single spot with model selection (gfs/ifs)
      - `GET /api/v1/wind?hours=N` - hourly wind for every spot on one shared time grid
      - `GET /api/v1/forecast/{wgId}` - one spot's full hourly forecast on the same grid (404 when unknown)
-     - `POST /api/v1/spots/{id}/analysis?lang=en|pl` - writes the spot's AI analysis and
-       answers with the spot carrying it (404 unknown spot, 503 when it could not be written)
+     - `POST /api/v1/spots/{id}/analysis?lang=en|pl` - writes the spot's AI analysis in
+       both languages and answers with the spot carrying them (404 unknown spot, 503 when
+       the analysis in the requested language could not be written); `lang` is the language
+       being read, and only decides whose failure is reported
      - `POST /api/v1/spots/{id}/icm` - reads the spot's ICM meteogram through the vision
        model and answers with the spot carrying ICM among its `availableModels`
        (404 unknown spot, 503 when no grid point, feature off, or nothing was read)
@@ -538,7 +540,8 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Mobile-friendly UI
 - [x] Kite and board size calculator
 - [x] AI forecast analysis (optional, disabled by default, supports EN/PL),
-      generated on demand from a button under the spot map and valid for 24 hours
+      generated on demand from a button under the spot map, written in both
+      languages on one press, and valid for 24 hours
 - [x] ICM forecast generated on demand from a button under the AI analysis,
       valid for 24 hours, appearing in the model dropdown once it is read
 - [x] Both on-demand buttons sit behind a confirmation modal and are desktop only,
@@ -589,6 +592,12 @@ the map), generated once, and held for 24 hours:
 
 - `AggregatorService.generateAiAnalysis(wgId, language)` and
   `generateIcmForecast(wgId)` are the only paths that reach a model
+- The analysis endpoint calls `generateAiAnalysisInAllLanguages(wgId, language)`,
+  which runs the per-language generation for Polish and English concurrently: the
+  page has a language switch, so writing only the language on screen would leave
+  the other half of the switch empty for the rest of the day. The requested
+  language decides the outcome, the other one is best effort, and a language
+  already cached is not written again
 - `hasValidAiAnalysis` / `hasValidIcmForecast` gate them: a result still inside its
   day is served from the cache without a call, so a reload or a second visitor is
   free
@@ -603,7 +612,8 @@ the map), generated once, and held for 24 hours:
   spot used to pay for a meteogram reading on its own
 
 Cost, per generation on gpt-4o-mini: an analysis prompt is ~2200 input tokens (EN)
-or ~2500 (PL) plus ~120 output; an ICM meteogram is a 630x780 image, which is
+or ~2500 (PL) plus ~120 output, and a button press buys both - so ~4700 input plus
+~240 output per spot per day; an ICM meteogram is a 630x780 image, which is
 25 501 image tokens (2833 base + 4 tiles x 5667) plus ~1200 output. The bill is
 therefore proportional to how many spots people actually open, not to the size of
 the spot list.

@@ -118,11 +118,12 @@
 
   POST /api/v1/spots/{id}/analysis?lang=en|pl
     -> SpotsController.generateAiAnalysis(id, lang)
-    -> AggregatorService.generateAiAnalysis(id, language)
+    -> AggregatorService.generateAiAnalysisInAllLanguages(id, language)
+    -> AggregatorService.generateAiAnalysis(id, "en") and (id, "pl"), concurrently
        [cached and still inside its 24h -> returned without reaching the model]
        [otherwise AiServiceEn/AiServicePl over the spot's hourly forecast]
-    -> caches the text and dates it, then re-reads the spot
-    -> returns Mono<Spot> [503 when nothing was written]
+    -> caches each text and dates it, then re-reads the spot
+    -> returns Mono<Spot> [503 when nothing was written in the requested language]
 
   POST /api/v1/spots/{id}/icm
     -> SpotsController.generateIcmForecast(id)
@@ -494,13 +495,19 @@ Spots:
     - Response: Mono<Spot>
 
   POST /api/v1/spots/{id}/analysis?lang=en|pl
-    - Writes the spot's AI analysis and answers with the spot carrying it
+    - Writes the spot's AI analysis in Polish and English, and answers with the
+      spot carrying both - the page it serves has a language switch, so one
+      language only would leave the other half of it empty until the next day
+    - lang is the language being read: it decides whose failure is reported, the
+      other one is best effort
     - The only path that spends an LLM call on an analysis; nothing generates one
       in the background
     - A spot whose analysis is still inside its 24 hours is answered from the
-      cache without reaching the model, so a reload or a second visitor is free
+      cache without reaching the model, so a reload, a second visitor, or a
+      language an earlier press already wrote is free
     - Concurrent callers for the same spot and language share one generation
-    - 404 unknown spot, 503 when the feature is off or nothing was written
+    - 404 unknown spot, 503 when the feature is off or nothing was written in the
+      requested language
     - Response: Mono<Spot>
 
   POST /api/v1/spots/{id}/icm

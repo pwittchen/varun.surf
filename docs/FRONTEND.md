@@ -453,7 +453,7 @@ let backgroundRefreshIntervalId = null; // Auto-refresh timer
 // Which on-demand generations are running, kept here rather than in the DOM: the
 // card is rebuilt from scratch every minute by the background refresh, so a
 // spinner living only in the markup would vanish mid-generation.
-const aiAnalysisGenerating = new Set();  // keys: `${wgId}:${language}`
+const aiAnalysisGenerating = new Set();  // keys: wgId (one press writes both languages)
 const icmForecastGenerating = new Set(); // keys: wgId
 const aiAnalysisErrors = new Map();      // last failure per spot
 const icmForecastErrors = new Map();
@@ -468,7 +468,9 @@ identity, so mixing the two would silently lose every lookup.
 - **Polling**: `startForecastPolling()` (5s interval, 30s timeout), `clearForecastPolling()`
 - **Rendering**: `displaySpot()`, `renderForecastTable()`, `renderWindguruView()`, `renderCurrentConditionsCard()`
 - **Forecast Views**: `switchToTableView()`, `switchToWindguruView()` (desktop only)
-- **On-demand generation**: `requestAiAnalysis(wgId)`, `requestIcmForecast(wgId)`,
+- **On-demand generation**: `requestAiAnalysis(wgId)` (one press writes the analysis
+  in Polish and English, so the language switch keeps working for the rest of the
+  day), `requestIcmForecast(wgId)`,
   `setupOnDemandGenerationButtons()` (re-wired after every card rebuild),
   `openAiGenerateModal()` / `openIcmGenerateModal()` and their close pairs,
   `updateConfirmModalTranslations(ids)` (each element id doubles as its key)
