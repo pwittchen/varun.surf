@@ -3798,6 +3798,156 @@
     }
   },
   {
+    "name": "Geisum",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/1097101",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=27.6662,33.7165",
+    "spotInfo": {
+      "type": "Island lagoon, flat water and mini chop",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beaches of the islands, reached by tender from the boat",
+      "hazards": "Coral and sharp shells, no infrastructure or rescue on shore, boat traffic, strong sun",
+      "season": "March-November",
+      "description": "Uninhabited island group about three hours by sea north of Hurghada and the usual first stop of a Red Sea kitesafari. North and south launch areas are used depending on wind direction, with shallow turquoise water off the beach and deeper water further out.",
+      "llmComment": "Reachable only by boat - a liveaboard kitesafari or a day trip out of Hurghada or El Gouna. There is no school, no rental and no rescue beyond the safari zodiacs, and the choice between the north and the south launch is made on the day from the wind direction and the tide."
+    },
+    "spotInfoPL": {
+      "type": "Laguna wyspowa, płaska woda i mini chop",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczyste plaże wysp, dopływa się pontonem z łodzi",
+      "hazards": "Koralowce i ostre muszle, brak infrastruktury i ratownictwa na brzegu, ruch łodzi, silne słońce",
+      "season": "Marzec-Listopad",
+      "description": "Bezludna grupa wysp około trzech godzin drogą morską na północ od Hurghady, zwykle pierwszy przystanek kitesafari po Morzu Czerwonym. W zależności od kierunku wiatru pływa się od strony północnej lub południowej, przy brzegu jest płytko i turkusowo, dalej głębiej.",
+      "llmComment": "Dopłynąć można wyłącznie łodzią - w ramach kitesafari lub jednodniowego rejsu z Hurghady albo El Gouny. Nie ma tu szkoły, wypożyczalni ani ratownictwa poza zodiakami z jachtu, a wybór między spotem północnym i południowym zapada na miejscu, na podstawie kierunku wiatru i pływów."
+    }
+  },
+  {
+    "name": "Om Hayat",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/1249507",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=27.6749,33.6323",
+    "spotInfo": {
+      "type": "Huge shallow lagoon, flat water",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandbar between the islets, reached by tender from the boat",
+      "hazards": "Coral heads, tide changes the depth, no infrastructure or rescue on shore, strong sun",
+      "season": "March-November",
+      "description": "A cluster of small islets close to Geisum, holding the largest lagoon on the kitesafari route. Kilometres of knee to waist deep water depending on the tide, side shore wind and long tacks in a safe, standable area, with deep water available outside the lagoon.",
+      "llmComment": "Also written Umm al Haymat. The lagoon is the safest warm up spot of the trip and is often used on the first day so everybody can get comfortable. Depth swings with the tide: at low water it is knee deep and stand up flat, at high water it is waist deep and the sandbars disappear. Reachable only by boat."
+    },
+    "spotInfoPL": {
+      "type": "Ogromna płytka laguna, płaska woda",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta mierzeja między wysepkami, dopływa się pontonem z łodzi",
+      "hazards": "Głowy koralowe, zmienna głębokość przy pływach, brak infrastruktury i ratownictwa na brzegu, silne słońce",
+      "season": "Marzec-Listopad",
+      "description": "Zespół kilku małych wysepek w pobliżu Geisum, z największą laguną na trasie kitesafari. Kilometry wody od kolan do pasa w zależności od pływów, wiatr boczny i długie halsy w bezpiecznym, stojącym akwenie, a poza laguną dostępna jest woda głęboka.",
+      "llmComment": "Zapisywane też jako Umm al Haymat. Laguna to najbezpieczniejszy spot rozgrzewkowy wyjazdu, często wykorzystywany pierwszego dnia, żeby każdy się rozpłynął. Głębokość zmienia się z pływem: przy niskiej wodzie jest po kolana i można stanąć wszędzie, przy wysokiej po pas, a mierzeje znikają. Dopłynąć można wyłącznie łodzią."
+    }
+  },
+  {
+    "name": "Ashrafi",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/1005331",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=27.7699,33.6951",
+    "spotInfo": {
+      "type": "Open island spot, flat water and chop",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach by the old lighthouse, reached by tender from the boat",
+      "hazards": "Strongest wind of the area, currents in the Gubal Strait, coral, no infrastructure or rescue on shore",
+      "season": "March-November",
+      "description": "The northernmost and most isolated island of the kitesafari route, marked by its old lighthouse. It sits in the narrow Gubal Strait, which funnels the northerly wind and makes this the windiest stop of the trip.",
+      "llmComment": "The Gubal Strait acts as a natural funnel, so the wind here typically blows 5-10 knots stronger than in Hurghada or El Gouna - size down compared to what the forecast suggests for the mainland. Whether the boat can stop here at all depends on the tide and the sea state, so it is a bonus spot rather than a guaranteed one, and it is boat access only."
+    },
+    "spotInfoPL": {
+      "type": "Otwarty spot wyspowy, płaska woda i chop",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy starej latarni morskiej, dopływa się pontonem z łodzi",
+      "hazards": "Najsilniejszy wiatr w rejonie, prądy w cieśninie Gubal, koralowce, brak infrastruktury i ratownictwa na brzegu",
+      "season": "Marzec-Listopad",
+      "description": "Najbardziej wysunięta na północ i najbardziej odizolowana wyspa na trasie kitesafari, z charakterystyczną starą latarnią morską. Leży w wąskiej cieśninie Gubal, która działa jak lej dla północnego wiatru i czyni z niej najbardziej wietrzny przystanek wyjazdu.",
+      "llmComment": "Cieśnina Gubal działa jak naturalny lej, więc wiatr wieje tu zwykle 5-10 węzłów mocniej niż w Hurghadzie czy El Gounie - warto wziąć mniejszy latawiec, niż sugeruje prognoza dla lądu. To, czy łódź w ogóle tu zacumuje, zależy od pływów i stanu morza, więc jest to spot bonusowy, a nie pewny. Dostęp wyłącznie od strony wody."
+    }
+  },
+  {
+    "name": "Tawila",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/1245547",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=27.5892,33.7663",
+    "spotInfo": {
+      "type": "Island sandbar, mirror flat lagoon",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Crescent shaped sandbar, reached by tender from the boat",
+      "hazards": "Coral and reef edges, no infrastructure or rescue on shore, landing subject to permission, strong sun",
+      "season": "March-November",
+      "description": "Private island about an hour by boat from El Gouna, known for steady wind and very flat water. A huge crescent shaped sandbar works as a natural barrier against the swell, so the lee side is mirror flat - ideal for learning new tricks and for top speed runs.",
+      "llmComment": "Mooring at Tawila is not always allowed and depends on a permit from the local authorities, so kitesafaris treat it as an optional extra rather than a fixed stop. There is no shore access at all: the island is reached by boat from El Gouna or from a liveaboard, and a day ashore usually carries a per person island fee."
+    },
+    "spotInfoPL": {
+      "type": "Wyspowa mierzeja, laguna gładka jak lustro",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta mierzeja w kształcie półksiężyca, dopływa się pontonem z łodzi",
+      "hazards": "Koralowce i krawędzie rafy, brak infrastruktury i ratownictwa na brzegu, cumowanie za zgodą władz, silne słońce",
+      "season": "Marzec-Listopad",
+      "description": "Prywatna wyspa około godziny drogi z El Gouny, słynąca ze stabilnego wiatru i bardzo płaskiej wody. Ogromna piaszczysta mierzeja w kształcie półksiężyca działa jak naturalna bariera dla fal, więc po zawietrznej woda jest gładka jak lustro - wymarzone warunki do nauki nowych trików i pływania na najwyższej prędkości.",
+      "llmComment": "Cumowanie przy Tawili nie zawsze jest dozwolone i zależy od zgody lokalnych władz, dlatego kitesafari traktują ją jako opcję dodatkową, a nie stały przystanek. Nie ma tu dojścia od strony lądu: na wyspę dopływa się łodzią z El Gouny albo jachtem safari, a całodniowy pobyt zwykle wiąże się z opłatą od osoby."
+    }
+  },
+  {
+    "name": "Abu Monghar",
+    "country": "Egypt",
+    "windguruUrl": "https://www.windguru.cz/1097104",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=27.2150,33.8859",
+    "spotInfo": {
+      "type": "Island sandbar, flat water on both sides",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "White sand bar, reached by boat from Hurghada",
+      "hazards": "Offshore wind on the south side, day trip boats and swimmers, mangroves and coral, protected area",
+      "season": "March-November",
+      "description": "White sand island a few kilometres off Hurghada, nicknamed the Egyptian Seychelles. The sandbar splits the spot in two: onshore wind and flat water on the northern side, offshore wind on the southern side.",
+      "llmComment": "Also written Abu Mungar, Abu Minqar or Abo Monkar. Ride the northern side unless you have boat cover - the southern side is offshore and only safe with a rescue boat, which is why kitesafaris use it. It is the closest island stop to Hurghada, so expect day trip boats and swimmers in the middle of the day, and the island itself is a protected mangrove area."
+    },
+    "spotInfoPL": {
+      "type": "Wyspowa mierzeja, płaska woda po obu stronach",
+      "bestWind": "N, NW",
+      "waterTemp": "22-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Mierzeja z białego piasku, dopływa się łodzią z Hurghady",
+      "hazards": "Wiatr od brzegu po stronie południowej, łodzie z wycieczkami i kąpiący się, namorzyny i koralowce, obszar chroniony",
+      "season": "Marzec-Listopad",
+      "description": "Wyspa z białego piasku kilka kilometrów od Hurghady, nazywana egipskimi Seszelami. Mierzeja dzieli spot na dwa: po stronie północnej wiatr dopycha do brzegu i woda jest płaska, po południowej wieje od brzegu.",
+      "llmComment": "Zapisywane też jako Abu Mungar, Abu Minqar lub Abo Monkar. Bez asekuracji z wody pływaj po stronie północnej - strona południowa ma wiatr od brzegu i jest bezpieczna wyłącznie z łodzią ratunkową, dlatego korzystają z niej kitesafari. To najbliższy Hurghadzie przystanek wyspowy, więc w środku dnia trzeba liczyć się z łodziami wycieczkowymi i kąpiącymi się, a sama wyspa jest chronionym obszarem namorzynowym."
+    }
+  },
+  {
     "name": "Le Morne",
     "country": "Mauritius",
     "windguruUrl": "https://www.windguru.cz/1122030",
