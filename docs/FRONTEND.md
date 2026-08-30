@@ -183,7 +183,10 @@ DOM Manipulation (vanilla JS)
   1005px), each of the two in its own card:
   - AI analysis: one slot with three states - the analysis, a spinner while it is
     being written, or the button offering to write one. The heading only appears
-    with the text it labels; a failed generation puts a warning beside the button
+    with the text it labels; a failed generation puts a warning beside the button.
+    Under the paragraph sits the generation time (`aiAnalysisEnCreatedAt` /
+    `aiAnalysisPlCreatedAt`, an ISO-8601 instant formatted by `date.formatInstant`
+    in the browser's own time zone), and the disclaimer under that
   - ICM forecast: a button below the analysis. Both button and spinner disappear
     once the forecast is read, and come back when it expires a day later
   - Each button opens a confirmation modal first (`#aiGenerateModal`,

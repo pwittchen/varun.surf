@@ -30,6 +30,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -722,6 +724,48 @@ class AggregatorServiceTest {
         var enriched = aggregatorService.getSpots().get(0);
         assertThat(enriched.aiAnalysisEn()).isEqualTo("English AI analysis");
         assertThat(enriched.aiAnalysisPl()).isEqualTo("Polska analiza AI");
+    }
+
+    @Test
+    void shouldCarryTheGenerationTimestampOfEachAnalysis() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+        ReflectionTestUtils.setField(aggregatorService, "aiForecastAnalysisEnabled", true);
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(aiServiceEn.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("English AI analysis"));
+        when(aiServicePl.fetchAiAnalysis(any(), any())).thenReturn(Mono.just("Polska analiza AI"));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // Truncated down to the millisecond the stored timestamp is taken at, so a
+        // clock with finer resolution than the stored value cannot make this fail.
+        var before = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+        // when
+        aggregatorService.generateAiAnalysisInAllLanguages(123, "en").block();
+
+        // then - an instant the browser can format, taken at generation time
+        var enriched = aggregatorService.getSpots().get(0);
+        assertThat(Instant.parse(enriched.aiAnalysisEnCreatedAt())).isAfterOrEqualTo(before);
+        assertThat(Instant.parse(enriched.aiAnalysisPlCreatedAt())).isAfterOrEqualTo(before);
+    }
+
+    @Test
+    void shouldNotCarryAGenerationTimestampWithoutAnAnalysis() {
+        // given
+        var spot = createTestSpot(123, "Test Spot");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // then
+        var enriched = aggregatorService.getSpots().get(0);
+        assertThat(enriched.aiAnalysisEnCreatedAt()).isNull();
+        assertThat(enriched.aiAnalysisPlCreatedAt()).isNull();
     }
 
     @Test

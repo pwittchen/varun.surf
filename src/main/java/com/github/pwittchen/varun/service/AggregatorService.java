@@ -482,12 +482,14 @@ public class AggregatorService {
         // the frontend already considers stale.
         var analysisEn = aiAnalysisEn.get(spot.wgId());
         if (analysisEn != null && hasValidAiAnalysis(spot.wgId(), "en")) {
-            enrichedSpot = enrichedSpot.withAiAnalysisEn(analysisEn);
+            enrichedSpot = enrichedSpot.withAiAnalysisEn(
+                    analysisEn, toIsoTimestamp(aiAnalysisEnCreatedAt.get(spot.wgId())));
         }
 
         var analysisPl = aiAnalysisPl.get(spot.wgId());
         if (analysisPl != null && hasValidAiAnalysis(spot.wgId(), "pl")) {
-            enrichedSpot = enrichedSpot.withAiAnalysisPl(analysisPl);
+            enrichedSpot = enrichedSpot.withAiAnalysisPl(
+                    analysisPl, toIsoTimestamp(aiAnalysisPlCreatedAt.get(spot.wgId())));
         }
 
         var spotPhotoUrl = spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
@@ -1356,6 +1358,16 @@ public class AggregatorService {
             hourly.remove(ForecastModel.ICM_METEO);
             return new ForecastData(existing.daily(), hourly);
         });
+    }
+
+    /**
+     * The generation time as an ISO-8601 instant, which is what the spot carries to
+     * the frontend. An instant rather than a formatted date on purpose: the server
+     * runs in one time zone and its visitors read in several, so the formatting is
+     * left to the browser that knows which one it is in.
+     */
+    private static String toIsoTimestamp(Long createdAtMs) {
+        return createdAtMs == null ? null : Instant.ofEpochMilli(createdAtMs).toString();
     }
 
     private boolean isOnDemandEntryValid(Long createdAtMs) {

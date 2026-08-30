@@ -390,6 +390,26 @@ function getAiAnalysisForCurrentLanguage(spot) {
     return typeof analysis === 'string' && analysis.trim().length > 0 ? analysis : '';
 }
 
+// The line printed under the analysis saying when it was written, in the reader's
+// own time zone. An analysis is held for 24 hours while the forecast under it is
+// refreshed every 3, so how old the paragraph is decides how much of it still
+// holds - which is worth saying rather than leaving to be guessed.
+//
+// Empty for an analysis with no timestamp: one generated before this existed, and
+// still inside its day, is better shown undated than with a made-up date.
+function getAiAnalysisTimestampHtml(spot) {
+    if (!spot) return '';
+
+    const createdAt = getCurrentLanguageCode() === 'pl'
+        ? spot.aiAnalysisPlCreatedAt
+        : spot.aiAnalysisEnCreatedAt;
+
+    const formatted = date.formatInstant(createdAt, translations.locale());
+    if (!formatted) return '';
+
+    return `<div class="ai-analysis-timestamp">${translations.t('aiAnalysisGeneratedAt')} ${formatted}</div>`;
+}
+
 // ============================================================================
 // ON-DEMAND GENERATION (AI ANALYSIS AND ICM FORECAST)
 //
@@ -574,7 +594,7 @@ function openAIModal(spotName) {
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
 
     modalTitle.textContent = `${spotName} - ${translations.t('aiAnalysisTitle')}`;
-    aiAnalysisContent.innerHTML = `<p>${aiAnalysis}</p>`;
+    aiAnalysisContent.innerHTML = `<p>${aiAnalysis}</p>${getAiAnalysisTimestampHtml(currentSpot)}`;
 
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
     if (aiModalDisclaimer) {
@@ -2783,6 +2803,7 @@ function createSpotCard(spot) {
                     <div class="ai-analysis">
                         <p>${aiAnalysisText}</p>
                     </div>
+                    ${getAiAnalysisTimestampHtml(spot)}
                     <div class="ai-analysis-note">${translations.t('aiDisclaimer')}</div>
                 </div>
             `;

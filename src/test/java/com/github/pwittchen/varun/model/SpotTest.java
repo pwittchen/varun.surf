@@ -284,7 +284,7 @@ class SpotTest {
         var aiAnalysis = "Good conditions for kitesurfing";
 
         // when
-        var updatedSpot = spot.withAiAnalysisEn(aiAnalysis);
+        var updatedSpot = spot.withAiAnalysisEn(aiAnalysis, "2025-01-01T12:00:00Z");
 
         // then
         assertThat(updatedSpot.aiAnalysisEn()).isEqualTo(aiAnalysis);
@@ -318,7 +318,7 @@ class SpotTest {
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysisEn("");
+        var updatedSpot = spot.withAiAnalysisEn("", null);
 
         // then
         assertThat(updatedSpot.aiAnalysisEn()).isEmpty();
@@ -355,7 +355,7 @@ class SpotTest {
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysisEn("New AI analysis");
+        var updatedSpot = spot.withAiAnalysisEn("New AI analysis", "2025-01-01T12:00:00Z");
 
         // then
         assertThat(updatedSpot.name()).isEqualTo("Hel");
@@ -430,7 +430,7 @@ class SpotTest {
         var aiAnalysisPl = "Dobre warunki do kitesurfingu";
 
         // when
-        var updatedSpot = spot.withAiAnalysisPl(aiAnalysisPl);
+        var updatedSpot = spot.withAiAnalysisPl(aiAnalysisPl, "2025-01-01T12:00:00Z");
 
         // then
         assertThat(updatedSpot.aiAnalysisPl()).isEqualTo(aiAnalysisPl);
@@ -464,7 +464,7 @@ class SpotTest {
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysisPl("");
+        var updatedSpot = spot.withAiAnalysisPl("", null);
 
         // then
         assertThat(updatedSpot.aiAnalysisPl()).isEmpty();
@@ -501,7 +501,7 @@ class SpotTest {
         );
 
         // when
-        var updatedSpot = spot.withAiAnalysisPl("Polska analiza AI");
+        var updatedSpot = spot.withAiAnalysisPl("Polska analiza AI", "2025-01-01T12:00:00Z");
 
         // then
         assertThat(updatedSpot.name()).isEqualTo("Hel");
@@ -519,12 +519,27 @@ class SpotTest {
         var spot = createSpot("https://windguru.cz/123");
 
         // when
-        var spotWithEn = spot.withAiAnalysisEn("English analysis");
-        var spotWithBoth = spotWithEn.withAiAnalysisPl("Polska analiza");
+        var spotWithEn = spot.withAiAnalysisEn("English analysis", "2025-01-01T12:00:00Z");
+        var spotWithBoth = spotWithEn.withAiAnalysisPl("Polska analiza", "2025-01-02T08:30:00Z");
 
         // then
         assertThat(spotWithBoth.aiAnalysisEn()).isEqualTo("English analysis");
         assertThat(spotWithBoth.aiAnalysisPl()).isEqualTo("Polska analiza");
+    }
+
+    @Test
+    void shouldKeepEachAiAnalysisTimestampWithItsOwnLanguage() {
+        // given
+        var spot = createSpot("https://windguru.cz/123");
+
+        // when
+        var spotWithBoth = spot
+                .withAiAnalysisEn("English analysis", "2025-01-01T12:00:00Z")
+                .withAiAnalysisPl("Polska analiza", "2025-01-02T08:30:00Z");
+
+        // then
+        assertThat(spotWithBoth.aiAnalysisEnCreatedAt()).isEqualTo("2025-01-01T12:00:00Z");
+        assertThat(spotWithBoth.aiAnalysisPlCreatedAt()).isEqualTo("2025-01-02T08:30:00Z");
     }
 
     @Test

@@ -33,6 +33,15 @@ public record Spot(
         List<Forecast> forecastHourly,
         String aiAnalysisEn,
         String aiAnalysisPl,
+        // When each analysis was written, as an ISO-8601 instant. The frontend
+        // prints it under the paragraph in the visitor's own time zone, which is
+        // what tells a reader whether they are looking at this morning's analysis
+        // or one from last night - an on-demand analysis is held for 24 hours,
+        // while the forecast under it is refreshed every 3.
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        String aiAnalysisEnCreatedAt,
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        String aiAnalysisPlCreatedAt,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         String spotPhotoUrl,
         @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -114,6 +123,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -140,6 +151,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -152,7 +165,12 @@ public record Spot(
         );
     }
 
-    public Spot withAiAnalysisEn(String aiAnalysisEn) {
+    /**
+     * @param createdAtIso when the analysis was written, as an ISO-8601 instant,
+     *                     or null when that is not known (an analysis carried over
+     *                     from before the timestamp existed, or one set by a test)
+     */
+    public Spot withAiAnalysisEn(String aiAnalysisEn, String createdAtIso) {
         return new Spot(
                 this.name,
                 this.country,
@@ -167,7 +185,9 @@ public record Spot(
                 this.forecast,
                 this.forecastHourly,
                 aiAnalysisEn,
-                aiAnalysisPl,
+                this.aiAnalysisPl,
+                createdAtIso,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -180,7 +200,11 @@ public record Spot(
         );
     }
 
-    public Spot withAiAnalysisPl(String aiAnalysisPl) {
+    /**
+     * @param createdAtIso when the analysis was written, as an ISO-8601 instant,
+     *                     or null when that is not known
+     */
+    public Spot withAiAnalysisPl(String aiAnalysisPl, String createdAtIso) {
         return new Spot(
                 this.name,
                 this.country,
@@ -196,6 +220,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                createdAtIso,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -224,6 +250,8 @@ public record Spot(
                 forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -250,6 +278,8 @@ public record Spot(
                 forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -301,10 +331,65 @@ public record Spot(
                 aiAnalysisPl,
                 null,
                 null,
+                null,
+                null,
                 spotInfo,
                 spotInfoPL,
                 sponsors,
                 null,
+                lastUpdated
+        );
+    }
+
+    /**
+     * Secondary constructor for backward compatibility (without the analysis timestamps).
+     */
+    public Spot(
+            String name,
+            String country,
+            String windguruUrl,
+            String windguruFallbackUrl,
+            String windfinderUrl,
+            String icmUrl,
+            String webcamUrl,
+            String locationUrl,
+            CurrentConditions currentConditions,
+            List<CurrentConditions> currentConditionsHistory,
+            List<Forecast> forecast,
+            List<Forecast> forecastHourly,
+            String aiAnalysisEn,
+            String aiAnalysisPl,
+            String spotPhotoUrl,
+            Coordinates coordinates,
+            SpotInfo spotInfo,
+            SpotInfo spotInfoPL,
+            List<Sponsor> sponsors,
+            List<AvailableModel> availableModels,
+            String lastUpdated
+    ) {
+        this(
+                name,
+                country,
+                windguruUrl,
+                windguruFallbackUrl,
+                windfinderUrl,
+                icmUrl,
+                webcamUrl,
+                locationUrl,
+                currentConditions,
+                currentConditionsHistory,
+                forecast,
+                forecastHourly,
+                aiAnalysisEn,
+                aiAnalysisPl,
+                null,
+                null,
+                spotPhotoUrl,
+                coordinates,
+                spotInfo,
+                spotInfoPL,
+                sponsors,
+                availableModels,
                 lastUpdated
         );
     }
@@ -325,6 +410,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -351,6 +438,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 coordinates,
                 this.spotInfo,
@@ -377,6 +466,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -403,6 +494,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -429,6 +522,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -455,6 +550,8 @@ public record Spot(
                 null,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,
@@ -481,6 +578,8 @@ public record Spot(
                 this.forecastHourly,
                 this.aiAnalysisEn,
                 this.aiAnalysisPl,
+                this.aiAnalysisEnCreatedAt,
+                this.aiAnalysisPlCreatedAt,
                 this.spotPhotoUrl,
                 this.coordinates,
                 this.spotInfo,

@@ -411,6 +411,8 @@ public record Spot(
     List<CurrentConditions> currentConditionsHistory,
     String aiAnalysisEn,
     String aiAnalysisPl,
+    String aiAnalysisEnCreatedAt,   // ISO-8601 instant, when the analysis was written
+    String aiAnalysisPlCreatedAt,
     String spotPhotoUrl,
     Coordinates coordinates,
     SpotInfo spotInfo,
@@ -927,7 +929,9 @@ public Spot getSpot(int id) {
 - Current conditions: Refreshed every 1 minute (via `@Scheduled`)
 - Current conditions history: 12h rolling window (via `EvictingQueue`)
 - AI analysis and ICM forecast: generated on demand, 24h TTL, evicted hourly
-  (language-specific caches aiAnalysisEn / aiAnalysisPl, dated by the *CreatedAt maps)
+  (language-specific caches aiAnalysisEn / aiAnalysisPl, dated by the *CreatedAt maps,
+  whose instants also travel to the frontend as `aiAnalysisEnCreatedAt` /
+  `aiAnalysisPlCreatedAt` and are printed under the analysis)
 - Location coordinates: Cached after first access
 - Metrics history: Rolling window via `MetricsHistoryService`
 

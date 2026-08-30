@@ -1045,8 +1045,16 @@ function openAIModal(spotName) {
     const aiAnalysisContent = document.getElementById('aiAnalysisContent');
     const aiModalDisclaimer = document.getElementById('aiModalDisclaimer');
 
+    // When it was written, in the reader's own time zone: the analysis is held for
+    // 24 hours while the forecast under it is refreshed every 3, so its age is part
+    // of how much of it still holds. Left out when the spot carries no timestamp.
+    const createdAt = state.getLanguage() === 'pl' ? spot.aiAnalysisPlCreatedAt : spot.aiAnalysisEnCreatedAt;
+    const generatedAt = date.formatInstant(createdAt, translations.locale());
+
     modalSpotName.textContent = `${translations.t('aiAnalysisTitle')} - ${spotName}`;
-    aiAnalysisContent.innerHTML = aiAnalysis.trim();
+    aiAnalysisContent.innerHTML = generatedAt
+        ? `${aiAnalysis.trim()}<div class="ai-analysis-timestamp">${translations.t('aiAnalysisGeneratedAt')} ${generatedAt}</div>`
+        : aiAnalysis.trim();
     aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
 
     modals.openModal('aiModal');

@@ -86,6 +86,26 @@ export function formatTime(dateStr) {
 }
 
 /**
+ * Format an ISO-8601 instant as a local date and time.
+ *
+ * The server sends instants (the AI analysis generation time, for one) rather
+ * than formatted dates, because it runs in one time zone and is read in several -
+ * so the browser, which knows which one it is in, does the formatting.
+ *
+ * @param {string} isoTimestamp - ISO-8601 instant, e.g. "2025-01-01T12:00:00Z"
+ * @param {string} locale - BCP 47 locale tag, e.g. "pl-PL"
+ * @returns {string} Localised date and time, or empty string when unparseable
+ */
+export function formatInstant(isoTimestamp, locale) {
+    if (!isoTimestamp) return '';
+
+    const parsed = new Date(isoTimestamp);
+    if (isNaN(parsed.getTime())) return '';
+
+    return parsed.toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+/**
  * Check if current conditions date is stale (>= 60 minutes old).
  * Supports multiple date formats from different weather stations.
  * @param {string} dateStr - Date string from weather station

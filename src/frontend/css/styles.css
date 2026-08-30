@@ -2614,6 +2614,16 @@ body.index-page .header-title {
     margin-bottom: 8px;
 }
 
+/* When the analysis was written, under the paragraph it belongs to. Small and in
+   the muted colour: it qualifies the text above it rather than competing with it,
+   the way the disclaimer under it does. */
+.ai-analysis-timestamp {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
 .ai-highlight {
     background: var(--overlay-accent);
     color: var(--accent-primary);

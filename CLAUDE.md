@@ -291,6 +291,8 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
   currentConditionsHistory: List<CurrentConditions>,
   aiAnalysisEn: String,
   aiAnalysisPl: String,
+  aiAnalysisEnCreatedAt: String,   // ISO-8601 instant, when the analysis was written
+  aiAnalysisPlCreatedAt: String,
   spotPhotoUrl: String,
   coordinates: Coordinates,
   spotInfo: SpotInfo,
@@ -618,6 +620,11 @@ the map), generated once, and held for 24 hours:
   back out of the spot's `availableModels`
 - `fetchForecastsForAllModels` no longer forks an ICM vision task; opening a Polish
   spot used to pay for a meteogram reading on its own
+- The analysis is dated: the spot carries `aiAnalysisEnCreatedAt` /
+  `aiAnalysisPlCreatedAt` (ISO-8601 instants taken from the same `*CreatedAt` maps
+  that decide expiry), and the frontend prints the generation time under the
+  paragraph in the reader's own time zone. An analysis is held for a day while the
+  forecast under it is refreshed every 3 hours, so its age is part of reading it
 
 Cost, per generation on gpt-4o-mini: an analysis prompt is ~2200 input tokens (EN)
 or ~2500 (PL) plus ~120 output, and a button press buys both - so ~4700 input plus

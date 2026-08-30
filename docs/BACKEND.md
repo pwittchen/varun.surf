@@ -179,6 +179,8 @@ Spot
 ├─ currentConditionsHistory : List<CurrentConditions> (12-hour history, 1-min intervals)
 ├─ aiAnalysisEn : String (optional, AI-generated forecast summary in English)
 ├─ aiAnalysisPl : String (optional, AI-generated forecast summary in Polish)
+├─ aiAnalysisEnCreatedAt : String (optional, ISO-8601 instant the English analysis was written at)
+├─ aiAnalysisPlCreatedAt : String (optional, ISO-8601 instant the Polish analysis was written at)
 ├─ spotPhotoUrl : String (optional, spot photo from /images/spots/{wgId}.jpg)
 ├─ coordinates : Coordinates (lat, lon - lazy-loaded, used for map generation in frontend)
 ├─ spotInfo : SpotInfo (description, bestWind, hazards, season, waterType in English)
