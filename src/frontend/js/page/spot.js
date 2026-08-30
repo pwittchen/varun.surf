@@ -239,7 +239,7 @@ function startModelDiscoveryPolling(spotId) {
             if (latestSpot && latestSpot.availableModels && latestSpot.availableModels.length > 1) {
                 clearModelDiscoveryPolling();
                 clearModelDropdownLoading();
-                updateModelDropdownOptions(latestSpot.availableModels);
+                updateModelDropdownOptions(latestSpot.availableModels, latestSpot);
                 // Also update current spot data silently
                 if (hasForecastData(latestSpot)) {
                     currentSpot = latestSpot;
@@ -428,6 +428,13 @@ function spotKey(wgId) {
     return Number(wgId);
 }
 
+// The one breakpoint the whole page splits on: below it the card drops the map,
+// the AI analysis and the ICM control, and the generate buttons move into the
+// forecast model dropdown in the header instead.
+function isDesktopLayout() {
+    return window.matchMedia('(min-width: 1005px)').matches;
+}
+
 function isAiAnalysisGenerating(wgId) {
     return aiAnalysisGenerating.has(spotKey(wgId));
 }
@@ -498,7 +505,7 @@ async function requestIcmForecast(wgId) {
         // displaySpot only refreshes the dropdown from the spot it was handed, and
         // the point of the whole exercise is the new entry in it.
         if (updatedSpot && updatedSpot.availableModels) {
-            updateModelDropdownOptions(updatedSpot.availableModels);
+            updateModelDropdownOptions(updatedSpot.availableModels, updatedSpot);
         }
     } catch (error) {
         console.error('Failed to generate ICM forecast:', error);
@@ -522,6 +529,90 @@ function setupOnDemandGenerationButtons() {
     if (icmButton && currentSpotId) {
         icmButton.addEventListener('click', () => openIcmGenerateModal());
     }
+}
+
+// ----------------------------------------------------------------------------
+// The same two generations on the mobile layout.
+//
+// The cards holding them sit under the map, which a phone does not render at all,
+// so there they become two buttons under the forecast model dropdown in the
+// header - next to the dropdown the ICM forecast lands in once it has been read.
+//
+// Each button passes through the same three states as its desktop card, in the
+// same order: a result already in hand takes it away entirely, a generation in
+// flight replaces it with a spinner, and otherwise it is the button opening the
+// confirmation modal. Which of the three shows is derived from the spot and the
+// in-flight sets on every render, never from what the last one left behind.
+// ----------------------------------------------------------------------------
+
+function updateOnDemandGenerationControls(spot) {
+    const container = document.getElementById('ondemandActions');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!spot || isDesktopLayout()) return;
+
+    if (!getAiAnalysisForCurrentLanguage(spot)) {
+        container.appendChild(createOnDemandControl({
+            generating: isAiAnalysisGenerating(spot.wgId),
+            generatingLabel: translations.t('generatingAiAnalysis'),
+            buttonLabel: translations.t('generateAiAnalysisButton'),
+            error: aiAnalysisErrors.has(spotKey(spot.wgId)) ? translations.t('generateAiAnalysisError') : '',
+            onClick: openAiGenerateModal
+        }));
+    }
+
+    // Only for spots the ICM grid covers, and only until a forecast has been read
+    if (spot.icmUrl && !hasIcmForecast(spot)) {
+        container.appendChild(createOnDemandControl({
+            generating: isIcmForecastGenerating(spot.wgId),
+            generatingLabel: translations.t('generatingIcmForecast'),
+            buttonLabel: translations.t('generateIcmForecastButton'),
+            error: icmForecastErrors.has(spotKey(spot.wgId)) ? translations.t('generateIcmForecastError') : '',
+            onClick: openIcmGenerateModal
+        }));
+    }
+}
+
+function createOnDemandControl(entry) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ondemand-action';
+
+    if (entry.generating) {
+        const status = document.createElement('div');
+        status.className = 'ondemand-action-status';
+        const spinner = document.createElement('span');
+        spinner.className = 'ai-analysis-spinner';
+        spinner.setAttribute('aria-hidden', 'true');
+        const label = document.createElement('span');
+        label.textContent = entry.generatingLabel;
+        status.appendChild(spinner);
+        status.appendChild(label);
+        wrapper.appendChild(status);
+        return wrapper;
+    }
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ondemand-generate-button';
+    button.textContent = entry.buttonLabel;
+    button.addEventListener('click', () => {
+        // The drawer holding the button would otherwise stay open over the
+        // confirmation modal it opens
+        closeHeaderDrawer();
+        entry.onClick();
+    });
+    wrapper.appendChild(button);
+
+    if (entry.error) {
+        const error = document.createElement('div');
+        error.className = 'ondemand-action-error';
+        error.textContent = entry.error;
+        wrapper.appendChild(error);
+    }
+
+    return wrapper;
 }
 
 // ============================================================================
@@ -641,10 +732,10 @@ function updateAiGenerateModalTranslations() {
     updateConfirmModalTranslations([
         'aiGenerateModalTitle',
         'aiGenerateModalQuestion',
-        'aiGenerateModalHint',
         'aiGenerateModalCancel',
         'aiGenerateModalConfirm'
     ]);
+    updateConfirmModalHint('aiGenerateModalHint');
 }
 
 // Ask before spending a vision call on the meteogram, and say where the result
@@ -660,10 +751,20 @@ function updateIcmGenerateModalTranslations() {
     updateConfirmModalTranslations([
         'icmGenerateModalTitle',
         'icmGenerateModalQuestion',
-        'icmGenerateModalHint',
         'icmGenerateModalCancel',
         'icmGenerateModalConfirm'
     ]);
+    updateConfirmModalHint('icmGenerateModalHint');
+}
+
+// Both hints say where the result will turn up, and the two layouts put it in
+// different places: the desktop cards under the map, or the AI button and the
+// model dropdown the mobile buttons sit under. Same key with a "Mobile" suffix.
+function updateConfirmModalHint(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    element.textContent = translations.t(isDesktopLayout() ? elementId : `${elementId}Mobile`);
 }
 
 // The confirmation modals' copy is rendered rather than marked up with data-i18n,
@@ -2335,7 +2436,7 @@ function createSpotCard(spot) {
     const hasWaveData = !isLiveDataMode && forecastData && forecastData.some(day => day.wave != null);
 
     // Determine layout (desktop vs mobile)
-    const isDesktopView = window.matchMedia('(min-width: 1005px)').matches;
+    const isDesktopView = isDesktopLayout();
     const spotPhotoUrl = typeof spot.spotPhotoUrl === 'string' ? spot.spotPhotoUrl.trim() : '';
     const hasSpotPhoto = isDesktopView && spotPhotoUrl.length > 0;
 
@@ -3108,8 +3209,12 @@ function displaySpot(spot) {
 
     // Update model dropdown with available models from backend
     if (spot && spot.availableModels && spot.availableModels.length > 0) {
-        updateModelDropdownOptions(spot.availableModels);
+        updateModelDropdownOptions(spot.availableModels, spot);
     }
+
+    // The mobile home of the two generate buttons, and the only one they have on
+    // that layout - so it is refreshed on every render, models discovered or not
+    updateOnDemandGenerationControls(spot);
 
     currentSpot = spot;
 
@@ -3473,6 +3578,27 @@ function setupInfoToggle() {
     }
 }
 
+// Collapse the mobile drawer, from the hamburger itself or from an action inside
+// it that takes the visitor somewhere else (a confirmation modal, say)
+function closeHeaderDrawer() {
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const headerControls = document.getElementById('headerControls');
+    const mainContent = document.querySelector('.main-content');
+
+    if (!headerControls || !headerControls.classList.contains('show')) return;
+
+    headerControls.classList.remove('show');
+
+    if (hamburgerMenu) {
+        hamburgerMenu.classList.remove('active');
+        hamburgerMenu.textContent = '☰';
+    }
+
+    if (mainContent) {
+        mainContent.classList.remove('menu-open');
+    }
+}
+
 // Setup mobile hamburger menu
 function setupHamburgerMenu() {
     const hamburgerMenu = document.getElementById('hamburgerMenu');
@@ -3485,12 +3611,7 @@ function setupHamburgerMenu() {
         const isOpen = headerControls.classList.contains('show');
 
         if (isOpen) {
-            headerControls.classList.remove('show');
-            hamburgerMenu.classList.remove('active');
-            hamburgerMenu.textContent = '☰';
-            if (mainContent) {
-                mainContent.classList.remove('menu-open');
-            }
+            closeHeaderDrawer();
         } else {
             headerControls.classList.add('show');
             hamburgerMenu.classList.add('active');
@@ -3615,14 +3736,28 @@ function setupModelDropdown() {
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         if (!modelDropdown.contains(e.target) && !modelDropdownMenu.contains(e.target)) {
-            modelDropdownMenu.classList.remove('open');
-            modelDropdown.classList.remove('open');
+            closeModelDropdown();
         }
     });
 }
 
-// Update model dropdown options dynamically from availableModels
-function updateModelDropdownOptions(availableModels) {
+function closeModelDropdown() {
+    const modelDropdown = document.getElementById('modelDropdown');
+    const modelDropdownMenu = document.getElementById('modelDropdownMenu');
+
+    if (modelDropdown) {
+        modelDropdown.classList.remove('open');
+    }
+
+    if (modelDropdownMenu) {
+        modelDropdownMenu.classList.remove('open');
+    }
+}
+
+// Update model dropdown options dynamically from availableModels. `spot` is the
+// one the models came from, since the mobile on-demand rows are rebuilt with them
+// and a caller may hold a fresher spot than currentSpot.
+function updateModelDropdownOptions(availableModels, spot = currentSpot) {
     const modelDropdown = document.getElementById('modelDropdown');
     const modelDropdownMenu = document.getElementById('modelDropdownMenu');
     const modelDropdownText = document.getElementById('modelDropdownText');
@@ -3703,6 +3838,10 @@ function updateModelDropdownOptions(availableModels) {
 
         modelDropdownMenu.appendChild(option);
     });
+
+    // A new model list is also how the ICM forecast announces itself, which is
+    // what takes the mobile button under this dropdown away
+    updateOnDemandGenerationControls(spot);
 }
 
 // ============================================================================

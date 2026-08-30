@@ -846,11 +846,16 @@ Both answer with the enriched `Spot` (404 unknown spot, 503 when the generation
 produced nothing), so the frontend can re-render the card and the model dropdown
 from one response.
 
-**Frontend**: buttons on the single spot page under the map, desktop only
-(`isDesktopView`, min-width 1005px). Each sits behind a confirmation modal
-(`#aiGenerateModal`, `#icmGenerateModal`), since the click is what spends the
-money. In-flight state lives in module-level Sets in `spot.js`, because the card
-is rebuilt from scratch every minute by the background refresh.
+**Frontend**: buttons on the single spot page. On the desktop layout
+(`isDesktopLayout()`, min-width 1005px) they are cards under the map; below it the
+card renders no map, so `updateOnDemandGenerationControls()` puts the same two
+buttons into `#ondemandActions`, under the forecast model dropdown in the header
+(the drawer at <=929px). Both layouts run the same three states - result in hand,
+spinner, button - and both sit behind a confirmation modal (`#aiGenerateModal`,
+`#icmGenerateModal`), since the click is what spends the money. The modal hint
+names where the result will turn up, which differs by layout
+(`*ModalHintMobile`). In-flight state lives in module-level Sets in `spot.js`,
+because the card is rebuilt from scratch every minute by the background refresh.
 
 **Cost per generation on gpt-4o-mini**: an analysis prompt is ~2200 input tokens
 (EN) or ~2500 (PL) plus ~120 output, and a press buys both - ~4700 input plus ~240

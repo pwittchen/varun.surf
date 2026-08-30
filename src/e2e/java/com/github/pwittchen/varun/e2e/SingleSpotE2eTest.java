@@ -343,6 +343,39 @@ class SingleSpotE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should move the on-demand generate buttons under the model dropdown on the mobile layout")
+    void shouldMoveOnDemandGenerateButtonsUnderModelDropdownOnMobileLayout() {
+        navigateToSpotPage();
+        waitForSpotToLoad();
+
+        // on the desktop layout they live in cards under the map, so the header
+        // container stays empty
+        Locator mobileButtons = page.locator("#ondemandActions .ondemand-generate-button");
+        assertThat(mobileButtons.count()).isEqualTo(0);
+        assertThat(page.locator("#generateAiAnalysisButton").count()).isEqualTo(1);
+
+        page.setViewportSize(390, 844);
+        page.waitForTimeout(500);
+
+        // the card drops its own copy along with the map it sits under
+        assertThat(page.locator("#generateAiAnalysisButton").count()).isEqualTo(0);
+
+        page.locator("#hamburgerMenu").click();
+        page.waitForTimeout(500);
+
+        Locator analysisButton = mobileButtons.first();
+        assertThat(analysisButton.isVisible()).isTrue();
+
+        // a press costs a model call, so it opens the same confirmation modal the
+        // desktop button does - and the drawer gets out of its way
+        analysisButton.click();
+        page.waitForTimeout(500);
+
+        assertThat(page.locator("#aiGenerateModal").getAttribute("class")).contains("active");
+        assertThat(page.locator("#headerControls").getAttribute("class")).doesNotContain("show");
+    }
+
+    @Test
     @DisplayName("Should change language on single spot page")
     void shouldChangeLanguageOnSingleSpotPage() {
         navigateToSpotPage();

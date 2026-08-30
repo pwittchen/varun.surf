@@ -554,8 +554,9 @@ src/main/java/com/github/pwittchen/varun/
       languages on one press, and valid for 24 hours
 - [x] ICM forecast generated on demand from a button under the AI analysis,
       valid for 24 hours, appearing in the model dropdown once it is read
-- [x] Both on-demand buttons sit behind a confirmation modal and are desktop only,
-      since each click spends a model call
+- [x] Both on-demand buttons sit behind a confirmation modal, since each click
+      spends a model call. On the mobile layout, where neither card is rendered,
+      the same two buttons sit under the forecast model dropdown in the header
 - [x] Prometheus metrics export (/actuator/prometheus)
 - [x] Custom metrics dashboard (/api/v1/metrics)
 - [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
@@ -597,8 +598,9 @@ over ~780 spots, and an ICM meteogram reading every three hours for every Polish
 and Czech spot - which spent almost the entire budget on spots nobody opened that
 day.
 
-Both are now triggered by a button on the single spot page (desktop only, under
-the map), generated once, and held for 24 hours:
+Both are now triggered by a button on the single spot page - under the map on the
+desktop layout, under the forecast model dropdown in the header on the mobile one,
+which renders no map - generated once, and held for 24 hours:
 
 - `AggregatorService.generateAiAnalysis(wgId, language)` and
   `generateIcmForecast(wgId)` are the only paths that reach a model

@@ -179,8 +179,8 @@ DOM Manipulation (vanilla JS)
 
 **Features**:
 - Two-column layout (desktop): left sidebar (map, current conditions, spot info, AI analysis), right main content (forecast table)
-- On-demand generation under the map, desktop only (`isDesktopView`, min-width
-  1005px), each of the two in its own card:
+- On-demand generation under the map on the desktop layout (`isDesktopLayout()`,
+  min-width 1005px), each of the two in its own card:
   - AI analysis: one slot with three states - the analysis, a spinner while it is
     being written, or the button offering to write one. The heading only appears
     with the text it labels; a failed generation puts a warning beside the button.
@@ -197,6 +197,17 @@ DOM Manipulation (vanilla JS)
     longest label in any language so the two line up whichever language is on
   - Which state renders is derived from the spot data and the in-memory sets on
     every rebuild, never from what the previous render left in the DOM
+- The same two generations on the mobile layout: the card renders no map to put
+  them under, so `updateOnDemandGenerationControls()` fills `#ondemandActions` -
+  the container right under the forecast model dropdown in the header, which is
+  the drawer at <=929px - with the same buttons, the same three states and the
+  same confirmation modals. Pressing one closes the drawer so the modal is not
+  opened behind it, and the modal hint switches to its `*ModalHintMobile`
+  wording, since the analysis turns up behind the card's AI link and the ICM
+  forecast in the dropdown in the menu rather than in the window's corners.
+  The container is rebuilt on every `displaySpot()` and whenever the model list
+  is rewritten (a new ICM entry is what takes that button away), and collapses
+  with `:empty` so it leaves no gap in the header on desktop
 - Forecast view tabs: Table View (vertical) and Windguru View (horizontal)
 - Real-time current conditions card with live indicator
 - Current conditions history chart (12-hour wind trend)

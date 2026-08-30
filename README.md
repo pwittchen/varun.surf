@@ -342,6 +342,8 @@ Skill definitions are located in `.claude/skills/`.
 - kite and board size calculator
 - AI forecast analysis, generated on demand from a button under the spot map, written in Polish and English at once so the language switch keeps working, and valid for 24 hours
 - ICM forecast generated on demand from a button under the AI analysis, valid for 24 hours
+- on a phone, where the spot page renders no map, both generate buttons sit under the
+  forecast model dropdown in the menu instead
 - single spot view with hourly forecast (in horizontal and vertical view)
 - additional TV-friendly view for the single spot
 - map of the spot (Open Street Maps, zoomed in on the spot)

@@ -359,6 +359,9 @@ export const translations = {
         aiGenerateModalTitle: "Generate AI analysis",
         aiGenerateModalQuestion: "Do you really want to generate the analysis?",
         aiGenerateModalHint: "Writing the analysis costs an AI call, so it is generated on request and stays valid for 24 hours. It is written in Polish and English at once, so the language switch keeps working. It will appear here, in place of this button.",
+        // Same generation, different place to look for it: the mobile layout has no
+        // card for the analysis, so it turns up behind the AI button on the spot card
+        aiGenerateModalHintMobile: "Writing the analysis costs an AI call, so it is generated on request and stays valid for 24 hours. It is written in Polish and English at once, so the language switch keeps working. It will appear behind the AI button on the spot card.",
         aiGenerateModalCancel: "Cancel",
         aiGenerateModalConfirm: "Generate",
         generatingAiAnalysis: "Generating AI analysis...",
@@ -366,6 +369,9 @@ export const translations = {
         icmGenerateModalTitle: "Generate ICM forecast",
         icmGenerateModalQuestion: "Do you really want to generate the forecast?",
         icmGenerateModalHint: "Reading the ICM meteogram costs an AI call, so the forecast is generated on request and stays valid for 24 hours. It will appear in the model dropdown in the top right corner. To just look at the meteogram itself, use the ICM button in the top left corner - that costs nothing.",
+        // The dropdown and the ICM link are both on the spot card on a phone, not in
+        // the corners of a desktop window
+        icmGenerateModalHintMobile: "Reading the ICM meteogram costs an AI call, so the forecast is generated on request and stays valid for 24 hours. It will appear in the model dropdown in the menu. To just look at the meteogram itself, use the ICM button on the spot card - that costs nothing.",
         icmGenerateModalCancel: "Cancel",
         icmGenerateModalConfirm: "Generate",
         generateIcmForecastButton: "Generate ICM forecast",
@@ -892,6 +898,7 @@ export const translations = {
         aiGenerateModalTitle: "Generuj analizę AI",
         aiGenerateModalQuestion: "Czy na pewno chcesz wygenerować analizę?",
         aiGenerateModalHint: "Napisanie analizy kosztuje wywołanie AI, dlatego jest generowana na żądanie i jest ważna przez 24 godziny. Powstaje od razu po polsku i po angielsku, więc przełącznik języka nadal działa. Pojawi się w tym miejscu, zamiast tego przycisku.",
+        aiGenerateModalHintMobile: "Napisanie analizy kosztuje wywołanie AI, dlatego jest generowana na żądanie i jest ważna przez 24 godziny. Powstaje od razu po polsku i po angielsku, więc przełącznik języka nadal działa. Pojawi się pod przyciskiem AI na karcie spotu.",
         aiGenerateModalCancel: "Anuluj",
         aiGenerateModalConfirm: "Generuj",
         generatingAiAnalysis: "Generowanie analizy AI...",
@@ -899,6 +906,7 @@ export const translations = {
         icmGenerateModalTitle: "Generuj prognozę ICM",
         icmGenerateModalQuestion: "Czy na pewno chcesz wygenerować prognozę?",
         icmGenerateModalHint: "Odczyt meteogramu ICM kosztuje wywołanie AI, dlatego prognoza jest generowana na żądanie i jest ważna przez 24 godziny. Pojawi się w prawym górnym rogu w rozwijanej liście z prognozami. Sam meteogram ICM możesz obejrzeć klikając przycisk ICM w lewym górnym rogu - to nic nie kosztuje.",
+        icmGenerateModalHintMobile: "Odczyt meteogramu ICM kosztuje wywołanie AI, dlatego prognoza jest generowana na żądanie i jest ważna przez 24 godziny. Pojawi się w menu w rozwijanej liście z prognozami. Sam meteogram ICM możesz obejrzeć klikając przycisk ICM na karcie spotu - to nic nie kosztuje.",
         icmGenerateModalCancel: "Anuluj",
         icmGenerateModalConfirm: "Generuj",
         generateIcmForecastButton: "Generuj prognozę ICM",

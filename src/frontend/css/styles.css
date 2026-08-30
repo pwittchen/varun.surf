@@ -3565,6 +3565,37 @@ body.forecasts-loading .skeleton-text {
     color: var(--warning-color);
 }
 
+/* The same two generations on the mobile layout, where the cards above are not
+   rendered at all: two buttons under the forecast model dropdown in the header.
+   Empty on desktop - the container collapses rather than being hidden, so it
+   leaves no gap in the header row it sits in. */
+.ondemand-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ondemand-actions:empty {
+    display: none;
+}
+
+.ondemand-action-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 34px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.ondemand-action-error {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--warning-color);
+}
+
 /* Sponsors card styling */
 .sponsors-card {
     background: var(--bg-secondary);
@@ -6792,6 +6823,20 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
     #modelDropdownContainer .dropdown-button {
         width: 100%;
+    }
+
+    /* Directly under the model dropdown, on the last row of the drawer */
+    .ondemand-actions {
+        width: 100%;
+        max-width: 300px;
+        flex: 0 0 100%;
+        order: 12;
+    }
+
+    .ondemand-actions .ondemand-generate-button {
+        width: 100%;
+        min-width: 0;
+        padding: 9px 14px;
     }
 
     .dropdown-button {
