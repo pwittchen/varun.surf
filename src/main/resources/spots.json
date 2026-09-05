@@ -23355,5 +23355,36 @@
       "description": "Geierswalder See to jedno z nielicznych jezior Łużyckiego Pojezierza, gdzie kitesurfing jest oficjalnie dozwolony - w oznakowanej strefie, obecnie czynnej cały rok po zniesieniu dawnego zimowego zakazu. To zalane wyrobisko odkrywkowe, więc linia brzegowa jest inżynieryjna, a woda szybko się pogłębia. Dla kiterów wschodnich Niemiec jest to legalna alternatywa dla Senftenberger See i jezior lipskich, gdzie kitesurfing jest zabroniony.",
       "llmComment": "Geierswalder See to jedno z nielicznych jezior łużyckich, gdzie kitesurfing jest oficjalnie dozwolony, i to wyłącznie w wyznaczonej strefie, z opłatą lub biletem dziennym; dawny zimowy zakaz zniesiono, więc akwen jest czynny cały rok. Sąsiedni Senftenberger See jest dla latawców zamknięty, podobnie jak jeziora lipskie (Cospudener, Zwenkauer, Störmthaler, Markkleeberger) na mocy saksońskich przepisów żeglugowych - to legalna alternatywa, a nie sygnał, że region jest otwarty. Zalane wyrobisko: strome uskoki, mało wody do stania. Typowy latawiec 10-14 m."
     }
+  },
+  {
+    "name": "Mucharz",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/656703",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "",
+    "webcamUrl": "https://swinna-poreba.webcamera.pl/",
+    "locationUrl": "https://www.google.com/maps?q=49.817535,19.544821",
+    "spotInfo": {
+      "type": "Lake, reservoir",
+      "bestWind": "NW, SE",
+      "waterTemp": "10-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach near the Przystań Leniówka marina, Mucharz",
+      "hazards": "Gusty, shifty wind funnelled by the surrounding Beskid Mały hills; motorboat, jet ski and kayak traffic near the marina and rental points; swimmers and SUP riders in summer; no lifeguard on this reservoir - kite at your own risk; water level can vary since it is a flood-control reservoir",
+      "season": "May-September",
+      "description": "Jezioro Mucharskie (also known as Zbiornik Świnna Poręba) is a large reservoir on the Skawa river in the Beskid Mały foothills of Małopolska, near the village of Mucharz. Its long, hill-lined basin runs roughly NW-SE, which channels the wind along the lake, and the scenic setting has made it a growing kitesurfing and wingfoiling spot within easy reach of Kraków and Wadowice.",
+      "llmComment": "Jezioro Mucharskie sits in a narrow valley between the Beskid Mały hills, so the gridded model forecast can miss local channelling: wind close to the water tends to align with the NW-SE valley axis and gust harder than the raw model direction and speed suggest. It is a young reservoir with no lifeguard cover, shared with motorboats and jet skis from the Mucharz marina."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, zbiornik zaporowy",
+      "bestWind": "NW, SE",
+      "waterTemp": "10-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy przystani Leniówka w Mucharzu",
+      "hazards": "Porywisty, zmienny wiatr kanalizowany przez okoliczne wzgórza Beskidu Małego; ruch motorówek, skuterów wodnych i kajaków w rejonie przystani i wypożyczalni; latem kąpiący się i pływający na SUP-ach; brak ratownika na zbiorniku - kitowanie na własną odpowiedzialność; poziom wody może się wahać, bo to zbiornik przeciwpowodziowy",
+      "season": "Maj-Wrzesień",
+      "description": "Jezioro Mucharskie (dawniej Zbiornik Świnna Poręba) to duży zbiornik zaporowy na rzece Skawie w Beskidzie Małym, w Małopolsce, przy wsi Mucharz. Jego wydłużona, otoczona wzgórzami niecka biegnie mniej więcej z NW na SE, co kanalizuje wiatr wzdłuż jeziora, a malownicze otoczenie sprawia, że to coraz popularniejszy spot do kitesurfingu i wingfoilu, niedaleko Krakowa i Wadowic.",
+      "llmComment": "Jezioro Mucharskie leży w wąskiej dolinie między wzgórzami Beskidu Małego, więc siatkowa prognoza modelu może nie uchwycić lokalnego kanalizowania wiatru: tuż nad wodą wiatr bywa bardziej zgodny z osią doliny NW-SE i mocniej wzmaga się w porywach, niż sugeruje surowy kierunek i prędkość z modelu. To młody zbiornik bez ratownika, dzielony z motorówkami i skuterami wodnymi z mariny w Mucharzu."
+    }
   }
 ]
