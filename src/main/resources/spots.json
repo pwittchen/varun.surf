@@ -23386,5 +23386,36 @@
       "description": "Jezioro Mucharskie (dawniej Zbiornik Świnna Poręba) to duży zbiornik zaporowy na rzece Skawie w Beskidzie Małym, w Małopolsce, przy wsi Mucharz. Jego wydłużona, otoczona wzgórzami niecka biegnie mniej więcej z NW na SE, co kanalizuje wiatr wzdłuż jeziora, a malownicze otoczenie sprawia, że to coraz popularniejszy spot do kitesurfingu i wingfoilu, niedaleko Krakowa i Wadowic.",
       "llmComment": "Jezioro Mucharskie leży w wąskiej dolinie między wzgórzami Beskidu Małego, więc siatkowa prognoza modelu może nie uchwycić lokalnego kanalizowania wiatru: tuż nad wodą wiatr bywa bardziej zgodny z osią doliny NW-SE i mocniej wzmaga się w porywach, niż sugeruje surowy kierunek i prędkość z modelu. To młody zbiornik bez ratownika, dzielony z motorówkami i skuterami wodnymi z mariny w Mucharzu."
     }
+  },
+  {
+    "name": "Jezioro Czorsztyńskie (Plaża Maniowy)",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/89080",
+    "windguruFallbackUrl": "https://www.windguru.cz/418",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.4446,20.2703",
+    "spotInfo": {
+      "type": "Lake, mountain reservoir",
+      "bestWind": "N, S",
+      "waterTemp": "12-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Grassy/stony beach at Plaża Maniowy (Wyskocz Na rental point), Maniowy",
+      "hazards": "Gusty, shifting wind funnelled along the narrow N-S valley; the Czorsztyn-Niedzica sightseeing ferry crosses the lake; swimmers, SUP boards and kayak/pedalo rental traffic near the beach; steep drop-off close to shore after a shallow shelf; Zatoka Harczygrunt bay near the national park boundary is closed to all water traffic - stay clear of it; no lifeguard cover on this reservoir (only Plaża Zamajerz is an officially supervised bathing site) - kite at your own risk; water level can vary since it is a hydroelectric/flood-control reservoir; occasional cyanobacteria bathing bans in still bays in summer",
+      "season": "May-September",
+      "description": "Jezioro Czorsztyńskie (Lake Czorsztyn) is a deep, narrow reservoir on the Dunajec river between the Pieniny and Gorce mountain ranges in southern Małopolska, created by the dam at Niedzica. Plaża Maniowy sits on the lake's northern shore near the village of Maniowy, where the roughly north-south basin can channel wind along its axis, making this a scenic but still niche spot for kiting and wingfoiling within reach of Nowy Targ and Zakopane.",
+      "llmComment": "Jezioro Czorsztyńskie fills a narrow N-S valley squeezed between the Pieniny and Gorce ranges, so surface wind near Maniowy can align with the valley axis and gust harder than the raw gridded forecast direction and speed suggest. There is no dedicated kite infrastructure or lifeguard cover on this reservoir, a sightseeing ferry crosses between Czorsztyn and Niedzica, and the Zatoka Harczygrunt bay near the national park boundary is closed to all water traffic."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro, górski zbiornik zaporowy",
+      "bestWind": "N, S",
+      "waterTemp": "12-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Trawiasto-kamienista plaża Maniowy (przy wypożyczalni Wyskocz Na), Maniowy",
+      "hazards": "Porywisty, zmienny wiatr kanalizowany wzdłuż wąskiej doliny o osi N-S; przez jezioro kursuje statek widokowy na trasie Czorsztyn-Niedzica; w pobliżu plaży kąpiący się, deski SUP oraz ruch wypożyczalni kajaków i rowerków wodnych; blisko brzegu płytko, ale po kilku krokach następuje gwałtowne zejście w głąb; Zatoka Harczygrunt przy granicy parku narodowego jest zamknięta dla wszelkiego ruchu wodnego - należy jej unikać; brak ratownika na zbiorniku (jedynym oficjalnie strzeżonym kąpieliskiem jest Plaża Zamajerz) - kitowanie na własną odpowiedzialność; poziom wody może się wahać, bo to zbiornik hydroelektryczny/przeciwpowodziowy; latem w spokojniejszych zatoczkach zdarzają się okresowe zakazy kąpieli z powodu zakwitu sinic",
+      "season": "Maj-Wrzesień",
+      "description": "Jezioro Czorsztyńskie to głęboki, wąski zbiornik zaporowy na rzece Dunajec, położony między Pieninami a Gorcami w południowej Małopolsce, powstały dzięki zaporze w Niedzicy. Plaża Maniowy leży na północnym brzegu jeziora, przy wsi Maniowy, gdzie biegnąca mniej więcej z północy na południe niecka może kanalizować wiatr wzdłuż swojej osi, co czyni to malownicze miejsce coraz ciekawszym, choć wciąż niszowym spotem do kitesurfingu i wingfoilu, w zasięgu Nowego Targu i Zakopanego.",
+      "llmComment": "Jezioro Czorsztyńskie wypełnia wąską dolinę o osi N-S, ściśniętą między Pieninami a Gorcami, więc wiatr przy powierzchni w rejonie Maniów bywa bardziej zgodny z osią doliny i mocniej wzmaga się w porywach, niż sugeruje surowy kierunek i prędkość z siatkowego modelu. Na tym zbiorniku nie ma dedykowanej infrastruktury kitesurfingowej ani ratownika, przez jezioro kursuje statek widokowy między Czorsztynem a Niedzicą, a Zatoka Harczygrunt przy granicy parku narodowego jest zamknięta dla wszelkiego ruchu wodnego."
+    }
   }
 ]
