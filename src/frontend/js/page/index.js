@@ -594,6 +594,10 @@ function initLanguage() {
         if (windOverlayDisclaimerEl) {
             windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
         }
+        // The marker popups and the side peek are written from the spot data
+        // rather than from markup, so they are redrawn rather than translated in
+        // place. A no-op outside the map view.
+        updateMapMarkers();
 
         // Re-render spots to update table headers and content
         if (globalWeatherData.length > 0) {
@@ -1153,17 +1157,16 @@ function skeletonNowReadout() {
             `;
 }
 
-function createSpotCard(spot) {
-    const card = document.createElement('div');
-    card.className = 'spot-card';
-    card.dataset.country = translations.t(spot.country.replace(/\s+/g, ''));
+// An inland lake has no waves to report, so the column is dropped rather than
+// printed empty over every row.
+function spotHasWaveData(spot) {
+    return !!((spot.forecast && spot.forecast.some(day => day.wave != null))
+        || (spot.currentConditions && spot.currentConditions.wave != null));
+}
 
-    // Check if a spot has wave data
-    const hasWaveData = spot.forecast && spot.forecast.some(day => day.wave != null) ||
-        (spot.currentConditions && spot.currentConditions.wave != null);
-
-    const spotConditions = getSpotConditions(spot);
-
+// The daily forecast table, shared by the spot card and the map side peek: both
+// answer the same question, so they answer it with the same rows.
+function buildForecastRows(spot, hasWaveData) {
     let forecastRows = '';
     if (spot.forecast && Array.isArray(spot.forecast)) {
         spot.forecast.forEach(day => {
@@ -1224,8 +1227,39 @@ function createSpotCard(spot) {
         forecastRows = skeletonForecastRows(hasWaveData ? 7 : 6);
     }
 
-    // Prominent "now" readout (live conditions if available, otherwise forecast-for-now).
-    // Promoted above the forecast table so the current wind is the primary, glanceable read.
+    return forecastRows;
+}
+
+// The whole daily table, header included.
+function buildForecastTable(spot) {
+    const hasWaveData = spotHasWaveData(spot);
+
+    return `
+                <table class="weather-table">
+                    <thead>
+                        <tr>
+                            <th>${translations.t('dateHeader')}</th>
+                            <th>${translations.t('windHeader')}</th>
+                            <th>${translations.t('gustsHeader')}</th>
+                            <th>${translations.t('directionHeader')}</th>
+                            <th>${translations.t('tempHeader')}</th>
+                            <th>${translations.t('rainHeader')}</th>
+                            ${hasWaveData ? `<th class="wave-col">${translations.t('waveHeader')}</th>` : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${buildForecastRows(spot, hasWaveData)}
+                    </tbody>
+                </table>
+            `;
+}
+
+// Prominent "now" readout (live conditions if available, otherwise forecast-for-now).
+// Promoted above the forecast table so the current wind is the primary, glanceable read.
+// The status class comes back with it: the card tints its whole border by it.
+function buildNowReadout(spot) {
+    const spotConditions = getSpotConditions(spot);
+
     let nowReadout = '';
     let statusClass = '';
     if (spotConditions) {
@@ -1270,6 +1304,31 @@ function createSpotCard(spot) {
         nowReadout = skeletonNowReadout();
     }
 
+    return { html: nowReadout, statusClass };
+}
+
+// The row of links to what the app doesn't host itself (Windguru, Windfinder,
+// ICM, webcam, navigation) plus the modals it does.
+function buildExternalLinks(spot) {
+    return `
+                <div class="external-links">
+                    ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
+                    ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
+                    ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
+                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
+                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
+                    ${(state.getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
+                </div>
+            `;
+}
+
+function createSpotCard(spot) {
+    const card = document.createElement('div');
+    card.className = 'spot-card';
+    card.dataset.country = translations.t(spot.country.replace(/\s+/g, ''));
+
+    const { html: nowReadout, statusClass } = buildNowReadout(spot);
+
     // Check if a spot is favorited
     const isFavorited = isFavorite(spot.name);
     const favoriteClass = isFavorited ? 'favorited' : '';
@@ -1296,31 +1355,9 @@ function createSpotCard(spot) {
                         <div class="last-updated">${spot.lastUpdated || 'No data'}</div>
                     </div>
                 </div>
-                <div class="external-links">
-                    ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
-                    ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
-                    ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
-                    ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
-                    ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
-                    ${(state.getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
-                </div>
+                ${buildExternalLinks(spot)}
                 ${nowReadout}
-                <table class="weather-table">
-                    <thead>
-                        <tr>
-                            <th>${translations.t('dateHeader')}</th>
-                            <th>${translations.t('windHeader')}</th>
-                            <th>${translations.t('gustsHeader')}</th>
-                            <th>${translations.t('directionHeader')}</th>
-                            <th>${translations.t('tempHeader')}</th>
-                            <th>${translations.t('rainHeader')}</th>
-                            ${hasWaveData ? `<th class="wave-col">${translations.t('waveHeader')}</th>` : ''}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${forecastRows}
-                    </tbody>
-                </table>
+                ${buildForecastTable(spot)}
             `;
 
     return card;
@@ -2259,6 +2296,10 @@ async function refreshDataInBackground() {
             replaceRenderedCards(spotsGrid, filterSpots(globalWeatherData, currentFilter, currentSearchQuery));
         }
 
+        // An open map side peek carries the same readings the cards do, so it is
+        // rewritten from the fresh data too
+        refreshMapSidePeek();
+
         console.log('Data refreshed in background at', new Date().toLocaleTimeString());
     } catch (error) {
         console.error('Background refresh failed:', error);
@@ -2923,6 +2964,14 @@ function initMap() {
             updateMapMarkers();
         }
     });
+
+    // A window narrowed to phone width has no room for the side peek, and the
+    // popup that opens it is rebuilt without its button on the next redraw.
+    window.addEventListener('resize', () => {
+        if (isMobileView()) {
+            closeMapSidePeek();
+        }
+    });
 }
 
 // Shown by the field overlay, which interpolates between spots, so nobody reads
@@ -2985,16 +3034,171 @@ function buildMapPopupWindDetails(spotConditions) {
     `;
 }
 
+// Sits after the label on the popup's side peek button: a panel filled along the
+// right edge of a frame, which is where the peek slides in from. It says what
+// the click does before the click, so nobody has to guess whether "details"
+// means a panel here or a page somewhere else.
+const SIDE_PEEK_BUTTON_ICON = '<svg class="map-popup-peek-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/><path d="M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4z" fill="currentColor" stroke="none" opacity="0.35"/></svg>';
+
 // Shared popup markup for a spot (clickable name + wind summary). Used by both
 // the dot markers and the wind-arrow markers.
+//
+// The side peek button is added next to what the popup already carries, never in
+// place of it: the link to the spot page and the wind readout stay exactly where
+// they were, and the button is one more way in for whoever wants the longer read
+// without leaving the map. It is left out below the desktop breakpoint, where a
+// panel that wide would be the whole screen and the spot page is the better answer.
 function buildSpotMarkerPopup(spot) {
     const popupWindDetails = buildMapPopupWindDetails(getMapSpotConditions(spot));
+    const peekButton = isMobileView()
+        ? ''
+        : `<button type="button" class="map-popup-peek" onclick="openMapSidePeek(${spot.wgId})">${translations.t('mapSidePeekOpen')}${SIDE_PEEK_BUTTON_ICON}</button>`;
+
     return `
         <div class="map-popup">
             <a href="${routing.buildSpotUrl(spot.wgId)}" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">${spot.name}</a>
             ${popupWindDetails}
+            ${peekButton}
         </div>
     `;
+}
+
+// ============================================================================
+// MAP SIDE PEEK
+// The spot behind a marker, read without leaving the map: what it is doing now,
+// what the next days look like and what the spot itself is like. Desktop only -
+// see map.createSpotSidePeek.
+// ============================================================================
+
+// Created the first time a visitor asks for it, then reused for every spot.
+let mapSidePeek = null;
+let mapSidePeekWgId = null;
+
+// What the spot is like, in the language on screen. Everything the spot page
+// puts in its info modal except the fields spots.json leaves empty.
+function buildMapSidePeekInfo(spot) {
+    const info = state.getLanguage() === 'pl' ? spot.spotInfoPL : spot.spotInfo;
+    if (!info) {
+        return '';
+    }
+
+    const items = [
+        ['spotTypeLabel', info.type],
+        ['bestWindLabel', info.bestWind],
+        ['waterTempLabel', info.waterTemp],
+        ['experienceLabel', info.experience],
+        ['launchTypeLabel', info.launch],
+        ['hazardsLabel', info.hazards],
+        ['seasonLabel', info.season]
+    ]
+        .filter(([, value]) => value)
+        .map(([key, value]) => `
+                <div class="info-item">
+                    <div class="info-label">${translations.t(key)}</div>
+                    <div class="info-value">${value}</div>
+                </div>
+            `)
+        .join('');
+
+    if (!info.description && items === '') {
+        return '';
+    }
+
+    return `
+        <div class="map-side-peek-section">
+            <h4 class="map-side-peek-section-title">${translations.t('mapSidePeekAbout')}</h4>
+            ${info.description ? `<p class="map-side-peek-description">${info.description}</p>` : ''}
+            ${items ? `<div class="info-grid">${items}</div>` : ''}
+        </div>
+    `;
+}
+
+// The panel's three slots, built from the cached spot the map is already drawn
+// from - so opening the peek costs no request. Which spot is being read stays in
+// the header and the way onto its page in the footer, both out of the scroll.
+function buildMapSidePeekContent(spot) {
+    const spotUrl = routing.buildSpotUrl(spot.wgId);
+    const country = translations.t(spot.country.replace(/\s+/g, '')) || spot.country;
+    const { html: nowReadout } = buildNowReadout(spot);
+
+    return {
+        header: `
+            <a class="map-side-peek-name" href="${spotUrl}">${spot.name}</a>
+            <div class="map-side-peek-meta">
+                <span class="country-tag">${country}</span>
+                <span class="last-updated">${spot.lastUpdated || ''}</span>
+            </div>
+        `,
+        body: `
+            ${buildExternalLinks(spot)}
+            ${nowReadout}
+            <div class="map-side-peek-section">
+                <h4 class="map-side-peek-section-title">${translations.t('mapSidePeekForecast')}</h4>
+                ${buildForecastTable(spot)}
+            </div>
+            ${buildMapSidePeekInfo(spot)}
+        `,
+        // The step from the peek to the spot page itself, which is where the
+        // hourly forecast, the map and the AI analysis live
+        footer: `<a class="map-side-peek-cta" href="${spotUrl}">${translations.t('mapSidePeekOpenSpot')}</a>`
+    };
+}
+
+// Opened from the marker popup. Called through the global below, so an unknown
+// or stale id has to be survivable rather than trusted.
+function openMapSidePeek(wgId) {
+    if (!leafletMap || isMobileView()) {
+        return;
+    }
+
+    const id = Number(wgId);
+    const spot = globalWeatherData.find(candidate => candidate.wgId === id);
+    if (!spot) {
+        return;
+    }
+
+    if (!mapSidePeek) {
+        mapSidePeek = map.createSpotSidePeek({
+            map: leafletMap,
+            onClose: () => {
+                mapSidePeekWgId = null;
+            }
+        });
+        if (!mapSidePeek) {
+            return;
+        }
+    }
+
+    mapSidePeekWgId = id;
+    mapSidePeek.open(buildMapSidePeekContent(spot));
+
+    if (spot.coordinates) {
+        mapSidePeek.revealPoint(spot.coordinates.lat, spot.coordinates.lon);
+    }
+}
+
+function closeMapSidePeek() {
+    if (mapSidePeek) {
+        mapSidePeek.close();
+    }
+}
+
+// Rewrite the open panel in place after a background refresh, a language switch
+// or a filter that drops the spot it stands for. The scroll position survives,
+// so a refresh never yanks the table out from under whoever is reading it.
+function refreshMapSidePeek() {
+    if (!mapSidePeek || !mapSidePeek.isOpen()) {
+        return;
+    }
+
+    const spot = globalWeatherData.find(candidate => candidate.wgId === mapSidePeekWgId);
+    if (!spot) {
+        mapSidePeek.close();
+        return;
+    }
+
+    mapSidePeek.refreshLabels();
+    mapSidePeek.setContent(buildMapSidePeekContent(spot));
 }
 
 function addMarkersToMap(spots) {
@@ -3178,6 +3382,7 @@ function hideMapView(options = {}) {
         windOverlayLayer.clearLayers();
     }
     ensureWindOverlayDisclaimer(false);
+    closeMapSidePeek();
 
     // Hide map container
     mapContainer.style.display = 'none';
@@ -3409,6 +3614,7 @@ function updateMapMarkers() {
     // from a handful of starred spots would say nothing about the weather.
     addMarkersToMap(onlyFavorites(filteredSpots));
     renderWindOverlay(filteredSpots);
+    refreshMapSidePeek();
 }
 
 // The favorites filter, as the map applies it - the identity outside favorites mode.
@@ -3433,6 +3639,7 @@ window.closeAIModal = closeAIModal;
 window.openIcmModal = openIcmModal;
 window.closeIcmModal = closeIcmModal;
 window.toggleFavorite = toggleFavorite;
+window.openMapSidePeek = openMapSidePeek;
 
 // ============================================================================
 // MAIN INITIALIZATION

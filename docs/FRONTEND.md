@@ -34,7 +34,7 @@ varun.surf/
 │   │   │   ├── appShell.js        # Shared page shell (header, sidebar wiring)
 │   │   │   ├── sideMenu.js        # Sidebar navigation and mobile drawer
 │   │   │   ├── footer.js          # Shared footer
-│   │   │   ├── map.js             # Leaflet map: markers, clustering, wind field, timeline
+│   │   │   ├── map.js             # Leaflet map: markers, clustering, wind field, timeline, side peek
 │   │   │   ├── modals.js          # Modal overlay system
 │   │   │   ├── routing.js         # Client-side routing (History API)
 │   │   │   ├── calculator.js      # Kite and board size calculator
@@ -112,7 +112,7 @@ JavaScript Entry Points (inline <script> tags)
     ├─→ common/state.js (centralized state management)
     ├─→ common/translations.js (i18n)
     ├─→ common/appShell.js + sideMenu.js (shared shell and navigation)
-    ├─→ common/map.js (wind map: markers, clustering, wind field, timeline)
+    ├─→ common/map.js (wind map: markers, clustering, wind field, timeline, side peek)
     ├─→ page/index.js (dashboard logic)
     ├─→ page/spot.js (spot detail logic)
     └─→ page/status.js (status page logic)
@@ -162,6 +162,18 @@ DOM Manipulation (vanilla JS)
   which lives on its own layer, alone on the map), the wind field toggle (the
   same on/off button, lit while the overlay is drawn) and the base layer
   switcher. All three choices are remembered
+- Spot side peek (`map.createSpotSidePeek`, desktop only): a panel over the right
+  edge of the map carrying the spot's links, live readout, daily forecast and
+  description, opened from a Details button the marker popup gains next to
+  everything it already carried. The popup keeps its name link and wind readout -
+  the peek is offered beside them, not instead of them. Written from the spots
+  already in memory, so it costs no request; the map underneath stays where it
+  was, apart from a nudge left when the marker would sit under the panel. Which
+  spot is being read (header) and the way onto its page (footer) sit outside the
+  scroll, the attribution is moved out from under the panel, and Escape or the
+  close button ends it. Below 930px neither the panel nor the button that opens
+  it exists: a 360px panel would be the whole screen, and the spot page is the
+  better answer there
 - Modal overlays (AI analysis, spot info, ICM forecast, kite calculator, hide-banner confirmation)
 
 **JavaScript Logic** (`page/index.js`):

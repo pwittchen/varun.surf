@@ -256,6 +256,97 @@ class MainPageE2eTest extends BaseE2eTest {
         assertThat(value.textContent()).isEqualTo(nowLabel);
     }
 
+    /**
+     * Opens the side peek the way the marker popup does. The markers themselves are
+     * drawn from coordinates resolved over the network, which a sandboxed run may not
+     * have, so the peek is opened through the same global the popup button calls
+     * rather than by clicking a marker that may not be on the map.
+     *
+     * @return the wgId of the spot the peek was opened for
+     */
+    private int openMapSidePeek() {
+        Object wgId = page.evaluate("""
+            async () => {
+                const spots = await (await fetch('/api/v1/spots')).json();
+                const spot = spots.find(s => s.forecast && s.forecast.length > 0) || spots[0];
+                window.openMapSidePeek(spot.wgId);
+                return spot.wgId;
+            }
+            """);
+        return ((Number) wgId).intValue();
+    }
+
+    @Test
+    @DisplayName("Should open the spot side peek beside the map and close it again")
+    void shouldOpenTheMapSidePeek() {
+        page.navigate(BASE_URL + "/map");
+        waitForPageLoad();
+
+        Locator mapContainer = page.locator("#mapContainer");
+        mapContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        int wgId = openMapSidePeek();
+
+        Locator peek = page.locator(".map-side-peek");
+        peek.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // The spot, its conditions and its forecast, read without leaving the map
+        assertThat(page.locator(".map-side-peek-name").textContent()).isNotEmpty();
+        assertThat(page.locator(".map-side-peek .spot-now").count()).isEqualTo(1);
+        assertThat(page.locator(".map-side-peek .weather-table tbody tr").count()).isGreaterThan(0);
+
+        // Both ways from the peek to the spot page point at the same one
+        assertThat(page.locator(".map-side-peek-cta").getAttribute("href")).isEqualTo("/spot/" + wgId);
+        assertThat(page.locator(".map-side-peek-name").getAttribute("href")).isEqualTo("/spot/" + wgId);
+
+        // The map keeps its own attribution out from under the panel
+        assertThat(page.locator(".leaflet-container").getAttribute("class")).contains("map-with-side-peek");
+
+        // Escape closes it, and so does the close button
+        page.keyboard().press("Escape");
+        peek.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.HIDDEN)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(page.locator(".leaflet-container").getAttribute("class")).doesNotContain("map-with-side-peek");
+
+        openMapSidePeek();
+        peek.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        page.locator(".map-side-peek-close").click();
+        peek.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.HIDDEN)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(peek.isVisible()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should keep the spot side peek off the mobile layout")
+    void shouldKeepTheSidePeekOffTheMobileLayout() {
+        page.setViewportSize(390, 844);
+        page.navigate(BASE_URL + "/map");
+        waitForPageLoad();
+
+        Locator mapContainer = page.locator("#mapContainer");
+        mapContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // A panel 360px wide would be the whole screen here, so it is never built -
+        // not even when the call that opens it is made directly
+        openMapSidePeek();
+        page.waitForTimeout(300);
+        assertThat(page.locator(".map-side-peek").count()).isEqualTo(0);
+
+        // And no popup offers the button that would call it
+        assertThat(page.locator(".map-popup-peek").count()).isEqualTo(0);
+    }
+
     @Test
     @DisplayName("Should link to the other pages from the sidebar")
     void shouldLinkToTheOtherPagesFromTheSidebar() {

@@ -582,6 +582,11 @@ src/main/java/com/github/pwittchen/varun/
       five days on a phone)
 - [x] Wind map popups carrying wind, gusts and direction for the hour the
       forecast slider stands on, rewritten in place as it steps
+- [x] Spot side peek on the main map (desktop only): a panel over the right edge
+      of the map with the spot's links, live readout, daily forecast and
+      description, opened from a button added to the popup next to everything it
+      already carried, closed with its own button or Escape, and left for the
+      spot page through the button in its footer
 - [x] Running version shown next to the about modal title (fetched from
       /api/v1/status the first time the modal opens)
 - [x] Sidebar navigation shared by every page, with a mobile drawer

@@ -743,6 +743,173 @@ export function openSpotPopup(group, wgId) {
     return opened;
 }
 
+// ============================================================================
+// SPOT SIDE PEEK
+// A panel over the right edge of the map carrying the long read a marker popup
+// has no room for: what the spot is like, what it is doing right now and what
+// the forecast says. The popup keeps everything it had - the peek is offered
+// next to it, not instead of it - and the map underneath stays exactly where the
+// visitor left it, which is what separates a peek from opening the spot page.
+//
+// Desktop only: on a phone a 360px panel is the whole screen, so the spot page
+// itself is the better answer there. Callers are expected to keep the trigger
+// off the popup on narrow viewports; the stylesheet keeps the panel off too.
+// ============================================================================
+
+// Panel width in pixels. Mirrors --map-side-peek-width in the stylesheet: the
+// value is needed here to keep a marker from hiding underneath the panel.
+export const SIDE_PEEK_WIDTH_PX = 360;
+
+// Free space kept between a marker and the panel edge when the map is nudged
+// aside, so the marker doesn't end up glued to it.
+const SIDE_PEEK_MARKER_GAP_PX = 32;
+
+const SIDE_PEEK_CLOSE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
+
+/**
+ * Create the side peek panel for a map.
+ *
+ * The panel is mounted inside the Leaflet container, so it covers the map and
+ * nothing else - a slider under the map keeps working while the peek is open.
+ * Its content is written by the caller; everything here is chrome: the close
+ * button, the Escape key, and keeping the map from reacting to clicks, drags and
+ * wheel events that land on the panel.
+ *
+ * @param {object} options - Configuration options
+ * @param {L.Map} options.map - Leaflet map instance the panel belongs to
+ * @param {function} [options.onClose] - Called after the panel is closed
+ * @returns {{element:HTMLElement, isOpen:function, open:function, setContent:function,
+ *   revealPoint:function, close:function, refreshLabels:function, destroy:function}|null}
+ *   Null without a map
+ */
+export function createSpotSidePeek(options = {}) {
+    const { map, onClose = null } = options;
+
+    if (!map) {
+        return null;
+    }
+
+    const mapContainer = map.getContainer();
+
+    const element = L.DomUtil.create('aside', 'map-side-peek', mapContainer);
+    element.setAttribute('role', 'complementary');
+    element.setAttribute('aria-hidden', 'true');
+
+    // Header and footer sit outside the scrolling body: which spot is being read
+    // and the way onto its page are the panel's own chrome, so they stay on
+    // screen however far down the forecast has been scrolled.
+    const header = L.DomUtil.create('div', 'map-side-peek-header', element);
+    const headerContent = L.DomUtil.create('div', 'map-side-peek-header-content', header);
+
+    const closeButton = L.DomUtil.create('button', 'map-side-peek-close', header);
+    closeButton.type = 'button';
+    closeButton.innerHTML = SIDE_PEEK_CLOSE_ICON;
+
+    const body = L.DomUtil.create('div', 'map-side-peek-body', element);
+    const footer = L.DomUtil.create('div', 'map-side-peek-footer', element);
+
+    // Scrolling the forecast table must not zoom the map underneath it, and a
+    // drag that starts on the panel must not pan the map away behind it.
+    L.DomEvent.disableClickPropagation(element);
+    L.DomEvent.disableScrollPropagation(element);
+
+    let opened = false;
+
+    const refreshLabels = () => {
+        const label = translations.t('mapSidePeekClose');
+        closeButton.title = label;
+        closeButton.setAttribute('aria-label', label);
+    };
+    refreshLabels();
+
+    /**
+     * Write the panel's three slots.
+     *
+     * The scroll position survives: the content is refreshed under a reader who
+     * did not ask for anything, and losing their place in the forecast table
+     * every time the data comes round would be its own bug.
+     *
+     * @param {object} content - { header, body, footer } markup, all optional
+     */
+    const setContent = (content = {}) => {
+        const scrollTop = body.scrollTop;
+        headerContent.innerHTML = content.header || '';
+        body.innerHTML = content.body || '';
+        body.scrollTop = scrollTop;
+        footer.innerHTML = content.footer || '';
+        footer.hidden = !content.footer;
+    };
+
+    // The content is left where it is: emptying it here would blank the panel
+    // halfway through the slide out.
+    const close = () => {
+        if (!opened) {
+            return;
+        }
+        opened = false;
+        element.classList.remove('open');
+        element.setAttribute('aria-hidden', 'true');
+        mapContainer.classList.remove('map-with-side-peek');
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+    };
+
+    /**
+     * Nudge the map sideways when the spot behind the panel would be covered by
+     * it. Only ever pans left, and only by the overlap, so the view the visitor
+     * built stays as close to where it was as the panel allows.
+     * @param {number} lat - Spot latitude
+     * @param {number} lon - Spot longitude
+     */
+    const revealPoint = (lat, lon) => {
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+            return;
+        }
+        const point = map.latLngToContainerPoint([lat, lon]);
+        const limit = map.getSize().x - SIDE_PEEK_WIDTH_PX - SIDE_PEEK_MARKER_GAP_PX;
+        const overlap = point.x - limit;
+        if (overlap > 0) {
+            map.panBy([overlap, 0]);
+        }
+    };
+
+    // A different spot starts at the top - unlike a refresh, this is content the
+    // visitor did ask for.
+    const open = (content = {}) => {
+        setContent(content);
+        body.scrollTop = 0;
+        opened = true;
+        element.classList.add('open');
+        element.setAttribute('aria-hidden', 'false');
+        mapContainer.classList.add('map-with-side-peek');
+    };
+
+    const onKeyDown = (event) => {
+        if (event.key === 'Escape' && opened) {
+            close();
+        }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    closeButton.addEventListener('click', close);
+
+    return {
+        element,
+        isOpen: () => opened,
+        open,
+        setContent,
+        revealPoint,
+        close,
+        refreshLabels,
+        destroy: () => {
+            document.removeEventListener('keydown', onKeyDown);
+            mapContainer.classList.remove('map-with-side-peek');
+            element.remove();
+        }
+    };
+}
+
 /**
  * Create an interpolated wind-field layer for the given spots.
  *

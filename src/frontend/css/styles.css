@@ -6251,6 +6251,300 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     letter-spacing: 0.08em;
 }
 
+/* Opens the side peek. Sits under everything the popup already carried - the
+   link to the spot page above it is untouched, this is the second way in. */
+.map-popup-peek {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    padding: 5px 10px;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.map-popup-peek:hover {
+    background: var(--button-accent-bg);
+    border-color: var(--button-accent-bg);
+    color: #fff;
+}
+
+/* The panel the button opens, drawn small: the label says what, the icon says
+   where. Slightly quieter than the label so it reads as a hint, not a second
+   word - and it takes the button's colour, hover included. */
+.map-popup-peek-icon {
+    flex: 0 0 auto;
+    opacity: 0.75;
+}
+
+.map-popup-peek:hover .map-popup-peek-icon {
+    opacity: 1;
+}
+
+/* ============================================================================
+   MAP SIDE PEEK
+   The spot behind a marker, read beside the map rather than instead of it: live
+   readout, forecast table and what the spot is like, over the right edge of the
+   map and nothing else - the forecast slider under the map keeps working.
+   Desktop only; the media query at the end of this block is what enforces that.
+   ============================================================================ */
+
+:root {
+    /* Mirrors SIDE_PEEK_WIDTH_PX in js/common/map.js, which needs the same number
+       to keep a marker from ending up underneath the panel. */
+    --map-side-peek-width: 360px;
+}
+
+.map-side-peek {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--map-side-peek-width);
+    /* Above the Leaflet control corners (1000), which is what makes the panel a
+       peek over the map rather than a layer inside it */
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-overlay);
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.2s ease, opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.map-side-peek.open {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* The attribution sits in the corner the panel covers, so it is moved out from
+   under it rather than hidden by it. */
+.leaflet-container.map-with-side-peek .leaflet-bottom.leaflet-right {
+    margin-right: var(--map-side-peek-width);
+}
+
+/* Which spot is being read, kept above the scroll */
+.map-side-peek-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 14px 12px 18px;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.map-side-peek-header-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.map-side-peek-close {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.map-side-peek-close:hover {
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.map-side-peek-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    /* A forecast table scrolled to its end must not carry on into the page
+       behind the map */
+    overscroll-behavior: contain;
+    padding: 6px 18px 18px;
+}
+
+/* Leaflet paints every link inside its own container its own blue
+   (.leaflet-container a), which outranks the app's single-class link rules now
+   that this markup lives inside the map. The three rules carrying a link colour
+   in this section are written against .leaflet-container to win it back, and say
+   nothing the sections above don't already say. */
+.leaflet-container .map-side-peek .external-link {
+    color: var(--text-secondary);
+}
+
+.leaflet-container .map-side-peek-name {
+    display: inline-block;
+    color: var(--accent-primary);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-decoration: none;
+}
+
+.map-side-peek-name:hover {
+    text-decoration: underline;
+}
+
+.map-side-peek-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.map-side-peek .external-links {
+    margin-top: 12px;
+}
+
+.map-side-peek .spot-now {
+    /* The readout is the answer to "is it on right now", so it gets its own
+       band rather than floating between the links and the table */
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    background: var(--bg-tertiary);
+}
+
+.map-side-peek-section {
+    margin-top: 18px;
+}
+
+.map-side-peek-section-title {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+/* The panel is a third the width of a spot card, so the daily table is set in
+   the tighter type the three-column grid uses - otherwise the rain column falls
+   off the right edge. */
+.map-side-peek .weather-table {
+    margin-top: 8px;
+    font-size: 0.72rem;
+}
+
+.map-side-peek .weather-table th,
+.map-side-peek .weather-table td {
+    padding: 7px 4px;
+    white-space: nowrap;
+}
+
+.map-side-peek .weather-table th:first-child,
+.map-side-peek .weather-table td:first-child {
+    padding-left: 8px;
+}
+
+.map-side-peek .weather-table .wind-arrow {
+    font-size: 0.85rem;
+}
+
+.map-side-peek-description {
+    margin: 10px 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* One column: at 360px a two-column grid of labelled values wraps every value
+   onto its own line anyway */
+.map-side-peek .info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.map-side-peek .info-item {
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+}
+
+.map-side-peek .info-label {
+    margin-bottom: 2px;
+    font-size: 0.72rem;
+}
+
+.map-side-peek .info-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Outside the scrolling body, so the way onto the spot page is on screen
+   however far down the panel has been scrolled */
+.map-side-peek-footer {
+    flex: 0 0 auto;
+    padding: 12px 18px;
+    border-top: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+}
+
+.map-side-peek-footer[hidden] {
+    display: none;
+}
+
+.leaflet-container .map-side-peek-cta {
+    display: block;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background: var(--button-accent-bg);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.map-side-peek-cta:hover {
+    background: var(--button-accent-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-side-peek {
+        transition: none;
+    }
+}
+
+/* Below the desktop breakpoint the panel would be the whole screen, and the
+   spot page is the better answer there - so neither the panel nor the button
+   that opens it exists. */
+@media (max-width: 929px) {
+    .map-side-peek,
+    .map-popup-peek {
+        display: none;
+    }
+
+    .leaflet-container.map-with-side-peek .leaflet-bottom.leaflet-right {
+        margin-right: 0;
+    }
+}
+
 /* Leaflet popup customization */
 .leaflet-popup-content-wrapper {
     background: var(--bg-secondary);

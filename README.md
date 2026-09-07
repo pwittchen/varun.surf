@@ -353,6 +353,8 @@ Skill definitions are located in `.claude/skills/`.
   can be read on its own
 - map popups reading the wind, gusts and direction of the hour the forecast timeline stands on,
   following it as it steps
+- side peek opened from a map popup (desktop only): the spot's live conditions, daily forecast
+  and description beside the map, with the map left where it was and a button onto the spot page
 - sidebar navigation shared by every page, with a mobile drawer
 - link to the navigation app (Google Maps)
 - displaying a photo of the spot (if available)

@@ -798,6 +798,11 @@ Implemented features (complete):
   five days on a phone)
 - Wind map popups carrying wind, gusts and direction for the hour the forecast
   slider stands on, rewritten in place as it steps (the page's own spot included)
+- Spot side peek on the main map (desktop only): a panel over the right edge of
+  the map carrying the spot's links, live readout, daily forecast and
+  description, opened from a button the popup gains next to everything it
+  already carried, closed with its own button or Escape, and left behind for the
+  spot page by the button in its footer
 - Running version shown next to the about modal title, fetched from
   /api/v1/status the first time the modal opens and cached for the session
 - Sidebar navigation shared by every page, with a mobile drawer
