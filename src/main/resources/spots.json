@@ -656,7 +656,7 @@
     }
   },
   {
-    "name": "Pogoria",
+    "name": "Pogoria III",
     "country": "Poland",
     "windguruUrl": "https://www.windguru.cz/30007",
     "windfinderUrl": "https://www.windfinder.com/forecast/pogoria_lakes",
@@ -664,23 +664,55 @@
     "locationUrl": "https://maps.app.goo.gl/AZeeBXia9iE9bWo87",
     "spotInfo": {
       "type": "Lake",
-      "bestWind": "N, NW",
+      "bestWind": "N",
       "waterTemp": "10-22°C",
       "experience": "Beginner to Advanced",
       "launch": "Small beach",
       "hazards": "Trees on shore, swimmers, gusty winds",
       "season": "April-September",
-      "description": "Lakes in Dąbrowa Górnicza. The best lakes for kiting there are Pogoria III and Pogoria IV. When the N wind is blowing, it's recommended to kite on Pogoria III and Pogoria IV with NW winds."
+      "description": "The most popular of the Pogoria lakes in Dąbrowa Górnicza, roughly 2 km long on a SW-NE axis, with sandy beaches and a sailing club on the shore. A clean N wind is the one to come here for; in NW, Pogoria IV to the north is the better call.",
+      "llmComment": "One of the two Pogoria lakes covered here, the southern and smaller one. It is the choice in a clean N wind; in NW the longer, more open Pogoria IV works better. The lake is surrounded by trees and a town, so the wind is gusty and the forecast tends to read higher than what is on the water. In summer the beaches are busy with swimmers and sailing club boats."
     },
     "spotInfoPL": {
       "type": "Jezioro",
-      "bestWind": "N, NW",
+      "bestWind": "N",
       "waterTemp": "10-22°C",
       "experience": "Od początkującego do zaawansowanego",
       "launch": "Mała plaża",
       "hazards": "Drzewa na brzegu, pływacy, porywisty wiatr",
       "season": "Kwiecień-Wrzesień",
-      "description": "Jeziora w Dąbrowie Górniczej. Najlepsze jeziora do kitesurfingu to Pogoria III i Pogoria IV. Jeżeli wieje czysty wiatr północny (N), najlepiej pływać na jeziorze Pogoria III. Natomiast jeżeli wieje NW, to wtedy Pogoria IV będzie lepszą opcją."
+      "description": "Najpopularniejsze z jezior Pogoria w Dąbrowie Górniczej, długie na jakieś 2 km na osi SW-NE, z piaszczystymi plażami i klubem żeglarskim na brzegu. Najlepiej pływa się tu przy czystym wietrze północnym (N), a przy NW lepszym wyborem jest leżąca dalej na północ Pogoria IV.",
+      "llmComment": "Jedno z dwóch jezior Pogoria opisanych w serwisie, to południowe i mniejsze. Wybiera się je przy czystym wietrze N, a przy NW lepiej sprawdza się dłuższa i bardziej otwarta Pogoria IV. Jezioro otaczają drzewa i zabudowa miasta, więc wiatr jest porywisty, a prognoza zwykle pokazuje więcej, niż faktycznie wieje na wodzie. Latem na plażach jest tłoczno, są kąpiący się i łódki z klubu żeglarskiego."
+    }
+  },
+  {
+    "name": "Pogoria IV",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/142574",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.365100,19.206500",
+    "spotInfo": {
+      "type": "Lake",
+      "bestWind": "NW, N",
+      "waterTemp": "10-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sand and grass on the southern shore, next to the slipway",
+      "hazards": "Shallows and sandbanks, almost no infrastructure, gusty wind near the trees",
+      "season": "April-September",
+      "description": "The largest of the Pogoria lakes in Dąbrowa Górnicza, the Kuźnica Warężyńska reservoir, about 5 km long from north to south. The shores are mostly open and undeveloped, which makes it the better choice in a NW wind, while Pogoria III to the south works better in a clean N.",
+      "llmComment": "One of the two Pogoria lakes covered here, the northern and larger one, a flooded sand mine known as Kuźnica Warężyńska. Its long N-S axis gives a long fetch in NW and N, which is why it beats Pogoria III in those directions. Wide open shores mean the wind is steadier here than on Pogoria III, but there is no infrastructure at the launch and parts of the reservoir are shallow with sandbanks."
+    },
+    "spotInfoPL": {
+      "type": "Jezioro",
+      "bestWind": "NW, N",
+      "waterTemp": "10-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piach i trawa na południowym brzegu, obok slipu",
+      "hazards": "Płycizny i łachy piachu, prawie brak infrastruktury, porywisty wiatr przy drzewach",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Największe z jezior Pogoria w Dąbrowie Górniczej, czyli zbiornik Kuźnica Warężyńska, długi na jakieś 5 km z północy na południe. Brzegi są w większości otwarte i niezabudowane, więc przy wietrze NW to lepszy wybór niż leżąca na południe Pogoria III, która z kolei wygrywa przy czystym N.",
+      "llmComment": "Jedno z dwóch jezior Pogoria opisanych w serwisie, to północne i większe, czyli zalana kopalnia piasku znana jako Kuźnica Warężyńska. Długa oś N-S daje spory rozbieg przy NW i N i dlatego przy tych kierunkach bije Pogorię III. Otwarte brzegi sprawiają, że wiatr jest tu równiejszy niż na Pogorii III, ale przy starcie nie ma żadnej infrastruktury, a część zbiornika jest płytka i ma łachy piachu."
     }
   },
   {
