@@ -1,9 +1,12 @@
 # varun.surf — Native Android App Plan
 
-**Status**: proposal / not started
-**Written**: 2026-09-22
+**Status**: proposal — Stage 0 partly done, no app code written yet
+**Written**: 2026-09-22 · **Updated**: 2026-09-22
 **Scope**: a native Kotlin Android client for the existing varun.surf backend, with a
 mobile-first UI rather than a port of the web frontend.
+**Lives in**: `android/` in this repository, as a self-contained Gradle build — see §3.
+**Already done**: `GET /api/v1/session` (the app's way past the SESSION cookie gate)
+is implemented and in `master` — see §2.1.
 
 ---
 
@@ -42,30 +45,37 @@ below are from the live production API and drive several design decisions.
 | `POST /api/v1/spots/{id}/analysis?lang=en\|pl` | `Spot` | — | costs an LLM call; 24 h cache; 503 on failure |
 | `POST /api/v1/spots/{id}/icm` | `Spot` | — | vision call; 24 h cache; 503 when no grid point |
 | `GET /api/v1/sponsors`, `/status`, `/status/forecast` | — | small | status feeds an About screen + "forecast sweep in progress" state |
-| `GET /api/v1/session` | — | 0 | **204 + `Set-Cookie: SESSION=…`**; the client's way in (§2.1) |
+| `GET /api/v1/session` | — | 0 | **implemented 2026-09-22.** 204 + `Set-Cookie: SESSION=…`; the client's way in (§2.1) |
 | `GET /llms/*.md` | Markdown | — | **cookie-exempt**; useful as a fallback / debugging path |
 
-### 2.1 The one real obstacle: the SESSION cookie
+### 2.1 The SESSION cookie — solved, `GET /api/v1/session` is implemented
 
-`SessionAuthenticationFilter` refuses every `/api/v1/**` call (except
-`/api/v1/health`) without a valid `SESSION` cookie, and only *page* visits get one
-issued. A native client must therefore bootstrap by requesting a non-API path
-(e.g. `GET https://varun.surf/`, which returns `Set-Cookie: SESSION=…`) and then
-replay that cookie. Verified working: a plain `curl -c` against `/` followed by
-`curl -b` against `/api/v1/spots` returns 200.
+`SessionAuthenticationFilter` refuses every `/api/v1/**` call without a valid
+`SESSION` cookie, and only *page* visits got one issued. A native client has no page
+to load, which used to mean fetching the index HTML purely to read a header off it.
 
-**Two options — the first is now implemented; keep the second as a fallback:**
+**`GET /api/v1/session` now exists and is the app's way in** (implemented 2026-09-22,
+in `master`):
 
-- **(A, done — 2026-09-22) `GET /api/v1/session`.** Answers **204** and sets the
-  same cookie a page visit would. Implemented as an inversion in
-  `SessionAuthenticationFilter` (the path is excluded from the API gate and falls
-  through to the page-visit cookie branch) plus a two-line `SessionController`.
-  A caller already holding a fresh token gets 204 with **no** `Set-Cookie` and
-  should keep the one it has. Covered by four tests in
-  `SessionAuthenticationFilterTest`.
-- **(B, fallback) Bootstrap off `GET /`.** Still works. Implement it as the
-  fallback path in the auth interceptor anyway, so the app survives a backend
-  rollback or an older deployed version.
+- Answers **204 No Content** with `Set-Cookie: SESSION=…` — the same cookie, with the
+  same `httpOnly` / `SameSite=Lax` / `path=/` / conditional `Secure` treatment, that a
+  page visit sets.
+- Implemented as an *inversion* rather than an exemption: the path is excluded from
+  the API gate in `SessionAuthenticationFilter` (`SESSION_PATH`) so it falls into the
+  page-visit branch that already knows how to mint the cookie, plus a two-line
+  `SessionController`. Exempting it would have skipped cookie handling altogether.
+- **A caller already holding a fresh token gets 204 with no `Set-Cookie`** — the same
+  "don't reissue before the half-life" rule browsers get. The client must treat an
+  absent `Set-Cookie` as success and keep the cookie it has, *not* as a failed
+  bootstrap.
+- **It never answers 401**, even for a garbage cookie — it replaces it. A client
+  holding a corrupt or expired token can always recover.
+- Pinned by four tests in `SessionAuthenticationFilterTest`; documented in README,
+  CLAUDE.md, AGENTS.md and docs/BACKEND.md.
+
+**Keep one fallback**: bootstrapping off `GET /` still works and costs one HTML fetch.
+Implement it as the second attempt in the auth interceptor so the app survives talking
+to an older server or a rolled-back deployment.
 
 Client side either way: an OkHttp `CookieJar` persisted in DataStore, plus an
 `Authenticator`/`Interceptor` that, on a 401, bootstraps once and replays the
@@ -116,43 +126,72 @@ not twenty).
 | Testing | JUnit5 + Turbine + MockWebServer (unit), Roborazzi or Paparazzi (screenshot), Compose UI tests + Macrobenchmark (instrumented) | MockWebServer mirrors the backend's own test setup. |
 | Static analysis | ktlint + detekt + Android Lint in CI | — |
 
-### Repository decision
+### Repository decision — **decided: `android/` in this repo**
 
-**Recommendation: a separate repository, `varun.surf-android`.** The Gradle build
-here is a Spring Boot + Bun build; bolting the Android Gradle Plugin onto it makes
-both CI jobs slower and more fragile, and the app has an independent release
-cadence (Play review) from the server. The API contract is the only coupling, and
-that is better expressed as a versioned contract doc than as shared source.
+The app lives in the **`android/` directory of the varun.surf repository**, not in a
+repository of its own. The upside is that the API contract and its client move in one
+commit: a field added to `Spot` and the DTO that reads it are reviewed together, and
+the backend test that pins the app's bootstrap path sits next to the app that depends
+on it.
 
-If a monorepo is preferred anyway: put it under `android/` with its own
-`settings.gradle.kts` and a separate GitHub Actions workflow, and never let the
-root build depend on it.
+What that costs, and how to keep the cost at zero:
+
+- **`android/` must be its own Gradle build**, with its own `settings.gradle.kts` and
+  wrapper. It is *not* a subproject of the root build — the root is Spring Boot +
+  Bun, and adding the Android Gradle Plugin to it would slow and destabilise the
+  server build for no gain. Nothing in the root build may `include` or depend on
+  `android/`.
+- **Separate CI workflow**, `.github/workflows/android.yml`, with
+  `paths: ['android/**']` so server commits do not trigger an Android build. And add
+  `android/**` to the existing `ci.yml`'s `paths-ignore` (it currently ignores only
+  `**.md` and `**.jpg`), or every app commit runs the full Spring Boot test suite for
+  nothing.
+- **Tag prefix — this is the one that bites.** `cd.yml` triggers on pushed tags
+  matching `v*`, and that job builds the Docker image, **deploys to production** and
+  cuts a GitHub release. An app release tagged `v1.2.0` would therefore deploy the
+  *server*. Tag app releases `android-v1.2.0`. (`cd.yml` itself needs no change —
+  it is tag-triggered, so ordinary commits under `android/` can never reach it.)
+- **`.gitignore`**: add `android/build/`, `android/.gradle/`, `android/local.properties`,
+  `android/app/release/`, and `*.jks` / `*.keystore` (signing keys never enter the repo —
+  they belong in GitHub Actions secrets).
+- **Docker**: `.dockerignore` must exclude `android/`, or the server image build will
+  copy the whole app source into its context.
+
+The one real risk of the monorepo is an app release tag firing the server's deploy
+pipeline. The `android-v*` prefix is what prevents it — treat it as a required part of
+Stage 1, not a nicety.
 
 ---
 
 ## 4. Module structure
 
 ```
-varun.surf-android/
-├── app/                        # Application, DI graph, navigation host, theme
-├── core/
-│   ├── designsystem/           # Colors (wind scale), typography, spacing, components
-│   ├── model/                  # Domain models: Spot, Forecast, CurrentConditions, …
-│   ├── network/                # Retrofit API, DTOs, session interceptor, mappers
-│   ├── database/               # Room entities, DAOs, converters
-│   ├── datastore/              # Preferences: theme, language, favourites, filters
-│   ├── data/                   # Repositories = the offline-first merge point
-│   ├── common/                 # Result/error types, dispatchers, clock, formatters
-│   └── testing/                # Fakes, fixtures, MockWebServer rules
-├── feature/
-│   ├── spots/                  # List + filters + search
-│   ├── spotdetail/             # Detail: now, hourly, daily, chart, info, links
-│   ├── map/                    # Map + clustering + wind field + time slider
-│   ├── favorites/
-│   ├── settings/               # Theme, language, units, alerts, about
-│   └── alerts/                 # Threshold rules + evaluation
-├── widget/                     # Glance widgets
-└── benchmark/                  # Macrobenchmark + baseline profile
+varun.surf/                     # this repository
+├── src/                        # the existing Spring Boot + frontend sources
+├── build.gradle                # the server build — never references android/
+└── android/                    # ← the app, a self-contained Gradle build
+    ├── settings.gradle.kts
+    ├── gradlew                 # its own wrapper
+    ├── gradle/libs.versions.toml
+    ├── app/                    # Application, DI graph, navigation host, theme
+    ├── core/
+    │   ├── designsystem/       # Colors (wind scale), typography, spacing, components
+    │   ├── model/              # Domain models: Spot, Forecast, CurrentConditions, …
+    │   ├── network/            # Retrofit API, DTOs, session interceptor, mappers
+    │   ├── database/           # Room entities, DAOs, converters
+    │   ├── datastore/          # Preferences: theme, language, favourites, filters
+    │   ├── data/               # Repositories = the offline-first merge point
+    │   ├── common/             # Result/error types, dispatchers, clock, formatters
+    │   └── testing/            # Fakes, fixtures, MockWebServer rules
+    ├── feature/
+    │   ├── spots/              # List + filters + search
+    │   ├── spotdetail/         # Detail: now, hourly, daily, chart, info, links
+    │   ├── map/                # Map + clustering + wind field + time slider
+    │   ├── favorites/
+    │   ├── settings/           # Theme, language, units, alerts, about
+    │   └── alerts/             # Threshold rules + evaluation
+    ├── widget/                 # Glance widgets
+    └── benchmark/              # Macrobenchmark + baseline profile
 ```
 
 Rule: `feature/*` never talks to `core/network` or `core/database` directly — only
@@ -256,8 +295,12 @@ assumes one developer working part-time; treat them as ordering, not commitments
 
 ### Stage 0 — Contract & prerequisites (backend side, ~half a day)
 
-- [x] Add `GET /api/v1/session` (issues the SESSION cookie, 204). **Done 2026-09-22**
-      — `SessionController` + filter change + tests + docs.
+- [x] **Add `GET /api/v1/session` — DONE, in `master` as of 2026-09-22.** Answers 204
+      and sets the SESSION cookie. `controller/SessionController.java` plus the gate
+      exclusion in `config/SessionAuthenticationFilter.java` (`SESSION_PATH`), four
+      tests in `SessionAuthenticationFilterTest`, documented in README, CLAUDE.md,
+      AGENTS.md and docs/BACKEND.md. **The app can authenticate against production
+      today — nothing else on this list blocks Stage 1.**
 - [ ] Serve `/.well-known/assetlinks.json` for App Links (needs the release
       signing cert SHA-256, so can land later — keep it on the list).
 - [ ] Confirm gzip is on for `/api/v1/**` at nginx (it is on the wire today) and
@@ -272,8 +315,15 @@ assumes one developer working part-time; treat them as ordering, not commitments
 
 ### Stage 1 — Scaffold (~2–3 days)
 
-- [ ] `varun.surf-android` repo, AGP + Kotlin + version catalog, module skeleton
-      from §4, Hilt wired, Compose BOM.
+- [ ] `android/` directory in this repo as a **self-contained Gradle build** (own
+      `settings.gradle.kts` and wrapper), AGP + Kotlin + version catalog, module
+      skeleton from §4, Hilt wired, Compose BOM. The root build must not reference it.
+- [ ] Repo plumbing the monorepo needs, per §3: `.github/workflows/android.yml` with
+      `paths: ['android/**']`; `android/**` added to `ci.yml`'s `paths-ignore`;
+      the `android-v*` tag convention agreed **before** the first release tag, since
+      `cd.yml` deploys production off `v*`; `android/build/`, `android/.gradle/`,
+      `android/local.properties` and `*.jks` in `.gitignore`; `android/` in
+      `.dockerignore`.
 - [ ] Design system module: wind colour scale (light + dark), typography, spacing,
       `WindText`, `DirectionArrow`, `WindPill`, `StaleBadge` primitives.
 - [ ] Network module: Retrofit service for all endpoints in §2, kotlinx DTOs,
@@ -403,7 +453,8 @@ switching away later is harder than switching from osmdroid.
 
 | Risk | Mitigation |
 |---|---|
-| **Session cookie contract is undocumented and could change** | Stage 0 endpoint + a contract test in the *backend* repo asserting the app's bootstrap path keeps working |
+| **Session cookie contract could change under the app** | Largely closed: `GET /api/v1/session` exists and `SessionAuthenticationFilterTest` pins its behaviour, so a change that would break the app breaks the server build first. The monorepo is what keeps that test next to the client that depends on it |
+| **An app release tag fires the server's deploy pipeline** | `cd.yml` triggers on `v*` tags and deploys to production, so app releases must be tagged `android-v*`. Plus `android/**` in `ci.yml`'s `paths-ignore` so app commits don't run the server suite (§3) |
 | **537 KB list fetch on mobile data** | Room caching (Stage 3) + ETag (Stage 0) + optional `?fields=summary`; never fetch it on the Now tab |
 | **nginx rate limits vs. many installs** | Measure before release; widen the app's intervals rather than the server's limits |
 | **Wind field overlay** (heatmap + particles) is ~1000 lines of canvas maths in `map.js` | Explicitly out of v1. It is the highest-effort, lowest-value item for a phone screen and drains battery. Revisit with MapLibre only. |
@@ -414,30 +465,36 @@ switching away later is harder than switching from osmdroid.
 
 ### Open questions for the owner
 
-1. **Separate repo or monorepo?** (Recommendation: separate — §3.)
-2. **Package name / Play account** — `surf.varun.android`? Is there an existing
+1. ~~Separate repo or monorepo?~~ **Decided: `android/` in this repo — §3.**
+2. ~~Is a backend change acceptable at all?~~ **Answered: yes — `/api/v1/session`
+   is implemented and merged (§2.1, Stage 0).**
+3. **Package name / Play account** — `surf.varun.android`? Is there an existing
    Play developer account?
-3. **Units**: knots only (as the web app), or add m/s and km/h for the German and
+4. **Units**: knots only (as the web app), or add m/s and km/h for the German and
    Polish inland lake crowd? (Cheap to add in Stage 2; expensive to retrofit into
    widgets and alerts later.)
-4. **iOS later?** If yes, Stage 1 should put the domain + repository layer in KMP
+5. **iOS later?** If yes, Stage 1 should put the domain + repository layer in KMP
    from day one rather than retrofitting it. This meaningfully changes Stage 1.
-5. **Is a backend change acceptable at all** (Stage 0), or must the app work
-   against the API exactly as it stands today?
 
 ---
 
 ## 9. Suggested first commit
 
 ```
-varun.surf-android/
-├── settings.gradle.kts            # includes app, core:*, feature:*
-├── gradle/libs.versions.toml      # AGP, Kotlin, Compose BOM, Hilt, Retrofit, Room, Coil
+android/
+├── settings.gradle.kts                # includes app, core:*, feature:*
+├── gradlew, gradle/wrapper/           # its own wrapper, not the server's
+├── gradle/libs.versions.toml          # AGP, Kotlin, Compose BOM, Hilt, Retrofit, Room, Coil
 ├── app/src/main/kotlin/surf/varun/VarunApplication.kt
-├── core/network/…/VarunApi.kt     # the 8 endpoints from §2
-├── core/network/…/SessionInterceptor.kt
-├── core/model/…/Spot.kt
-└── .github/workflows/ci.yml
+├── core/network/…/VarunApi.kt         # the 9 endpoints from §2
+├── core/network/…/SessionInterceptor.kt   # GET /api/v1/session → cookie → replay
+└── core/model/…/Spot.kt
+.github/workflows/android.yml          # paths: ['android/**']
+.github/workflows/{ci,cd}.yml          # + paths-ignore: ['android/**']
+.gitignore, .dockerignore              # + android/build, local.properties, *.jks
 ```
 
-Nothing in that commit needs the backend to change — Stage 0 only removes friction.
+**Nothing in that commit needs the backend to change.** `GET /api/v1/session` is
+already deployed, so `SessionInterceptor` can be written against the real endpoint
+from the first line — bootstrap on 401, replay once, and fall back to `GET /` only
+for the case where the app is talking to an older server.
