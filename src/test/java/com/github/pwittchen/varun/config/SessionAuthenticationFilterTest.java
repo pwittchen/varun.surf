@@ -102,6 +102,66 @@ public class SessionAuthenticationFilterTest {
     }
 
     @Test
+    void shouldIssueSessionCookieOnSessionEndpointWithoutOne() {
+        var result = webTestClient.get()
+                .uri("/api/v1/session")
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNotNull();
+    }
+
+    @Test
+    void shouldIssueUsableSessionCookieOnSessionEndpoint() {
+        var result = webTestClient.get()
+                .uri("/api/v1/session")
+                .exchange()
+                .expectStatus().isNoContent()
+                .returnResult(Void.class);
+
+        ResponseCookie cookie = result.getResponseCookies().getFirst("SESSION");
+        assertThat(cookie).isNotNull();
+        assertThat(cookie.isHttpOnly()).isTrue();
+        assertThat(cookie.getPath()).isEqualTo("/");
+        assertThat(cookie.getSameSite()).isEqualTo("Lax");
+
+        webTestClient.get()
+                .uri("/api/v1/spots")
+                .cookie("SESSION", cookie.getValue())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void shouldNotReissueCookieOnSessionEndpointForCallerAlreadyHoldingAFreshOne() {
+        String sessionCookie = getSessionCookie();
+
+        var result = webTestClient.get()
+                .uri("/api/v1/session")
+                .cookie("SESSION", sessionCookie)
+                .exchange()
+                .expectStatus().isNoContent()
+                .returnResult(Void.class);
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNull();
+    }
+
+    @Test
+    void shouldReplaceGarbageCookieOnSessionEndpointRatherThanRefusing() {
+        var result = webTestClient.get()
+                .uri("/api/v1/session")
+                .cookie("SESSION", "definitely-not-a-token")
+                .exchange()
+                .expectStatus().isNoContent()
+                .returnResult(Void.class);
+
+        ResponseCookie cookie = result.getResponseCookies().getFirst("SESSION");
+        assertThat(cookie).isNotNull();
+        assertThat(cookie.getValue()).isNotEqualTo("definitely-not-a-token");
+    }
+
+    @Test
     void shouldAllowApiAccessWithValidSession() {
         String sessionCookie = getSessionCookie();
 

@@ -51,6 +51,7 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
+    ├─→ /api/v1/session (hands out the SESSION cookie the rest of the API needs)
     └─→ /llms/*.md (LLM-friendly Markdown for spots, countries and wind)
     ↓
 AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
@@ -220,6 +221,10 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
       - **API paths** (`/api/v1/**`): requires a valid token, returns 401 without
       - **Page visits** (all other paths): issued a cookie, and reissued one once the
         token is past its half-life so an active visitor is never cut off mid-visit
+      - **`/api/v1/session`**: the one path under `/api/v1/` treated as a page visit
+        rather than gated, so a client with no page to load can still get a cookie
+        (`SessionController`, 204). A caller already holding a fresh token gets no
+        `Set-Cookie` and keeps the one it has
     - Cookie: httpOnly, sameSite=Lax, path=/, and Secure only when `X-Forwarded-Proto`
       says the visitor is on https (a Secure cookie over plain http is dropped, which
       would break local runs and the e2e suite)
@@ -722,8 +727,11 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
     - Provides uptime percentage and average latency
 
 16. **Session Cookie Authentication**:
-    - All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie
+    - All `/api/v1/**` endpoints (except `/api/v1/health` and `/api/v1/session`)
+      require a valid `SESSION` cookie
     - Visitors who load the frontend get one automatically on any page visit
+    - Clients with no page to load (native apps, scripts) ask `GET /api/v1/session`,
+      which answers 204 and sets the same cookie
     - Requests without a valid token receive HTTP 401 with an empty body
     - Exempt paths: `/api/v1/health`, `/actuator/**`, `/llms/**`, `/mcp/**`, static assets
     - The cookie is a stateless signed token, not a session id - see `SessionTokenService`

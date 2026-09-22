@@ -21,6 +21,15 @@ public class SessionAuthenticationFilter implements WebFilter {
 
     public static final String SESSION_COOKIE = "SESSION";
 
+    /**
+     * The one path under {@code /api/v1/} that hands out a cookie instead of demanding
+     * one. A browser gets its cookie from whatever page it loaded first; a native client
+     * has no page to load, and scraping the index HTML for a Set-Cookie header is a
+     * contract nobody wrote down. This is that contract written down - it is treated
+     * exactly like a page visit and answered by {@code SessionController} with 204.
+     */
+    public static final String SESSION_PATH = "/api/v1/session";
+
     private static final String API_PATH_PREFIX = "/api/v1/";
     private static final String FORWARDED_PROTO_HEADER = "X-Forwarded-Proto";
     private static final String HTTPS = "https";
@@ -64,7 +73,7 @@ public class SessionAuthenticationFilter implements WebFilter {
 
         String token = readToken(exchange);
 
-        if (path.startsWith(API_PATH_PREFIX)) {
+        if (path.startsWith(API_PATH_PREFIX) && !path.equals(SESSION_PATH)) {
             if (tokens.isValid(token)) {
                 return chain.filter(exchange);
             }

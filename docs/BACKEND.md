@@ -89,9 +89,15 @@
   curl: GET /api/v1/spots (no cookie)  →  SessionFilter  →  401 empty body
   curl: GET /api/v1/health (no cookie)  →  SessionFilter exempts  →  200
   curl: GET /llms/spots.md (no cookie)  →  SessionFilter exempts  →  200 (text/markdown)
+  app:  GET /api/v1/session (no cookie)  →  SessionFilter issues one  →  204 + Set-Cookie
 
   Exempt paths (no session required):
     /api/v1/health, /actuator/**, /llms/**, static assets (.js, .css, .png, etc.)
+
+  /api/v1/session is not exempt but inverted: it is treated as a page visit, so
+  instead of demanding a cookie it hands one out. It exists for clients with no
+  page to load (native apps, scripts), which would otherwise have to fetch the
+  index HTML just to read its Set-Cookie header.
 
 [Client Request Flow]
 
@@ -553,6 +559,15 @@ Sponsors:
     - Returns only main sponsors (isMain = true)
     - Response: Flux<Sponsor>
 
+Session:
+  GET /api/v1/session
+    - Hands out the SESSION cookie the rest of /api/v1/** requires, for clients
+      with no page to load (native apps, scripts). A browser never needs it: it
+      gets a cookie from whatever page it loaded first
+    - Needs no cookie itself; a caller already holding a fresh one gets no
+      Set-Cookie back and should keep using it
+    - Response: 204 No Content, with Set-Cookie when a cookie was issued
+
 Health & Status:
   GET /api/v1/health
     - Simple health check endpoint
@@ -696,6 +711,7 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── LogsController.java               # /api/v1/logs/*
 │   ├── MetricsController.java            # /api/v1/metrics/*
 │   ├── SeoController.java                # /spot/{id}, /country/{name}, /sitemap.xml
+│   ├── SessionController.java            # /api/v1/session (hands out the SESSION cookie)
 │   ├── SponsorsController.java           # /api/v1/sponsors/*
 │   ├── SpotsController.java              # /api/v1/spots/*, /api/v1/wind, /api/v1/forecast/*
 │   └── StatusController.java             # /api/v1/health, /api/v1/status/*

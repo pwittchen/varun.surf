@@ -53,6 +53,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/metrics (application metrics)
     ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
+    ├─→ /api/v1/session (hands out the SESSION cookie the rest of the API needs)
     └─→ /llms/*.md (LLM-friendly Markdown for spots, countries and wind)
     ↓
 AggregatorService (orchestrates with Java 25 StructuredTaskScope)
@@ -668,6 +669,7 @@ src/main/java/com/github/pwittchen/varun/
 ├── controller/                      # REST controllers
 │   ├── SpotsController.java        # /api/v1/spots, /api/v1/wind, /api/v1/forecast
 │   ├── SponsorsController.java     # /api/v1/sponsors endpoints
+│   ├── SessionController.java      # /api/v1/session (hands out the SESSION cookie)
 │   ├── StatusController.java       # /api/v1/status, /api/v1/health
 │   ├── MetricsController.java      # /api/v1/metrics endpoints
 │   ├── LogsController.java         # /api/v1/logs endpoints
@@ -1112,12 +1114,18 @@ The application includes comprehensive metrics collection:
 - Protects `/api/v1/logs/**` only; `/api/v1/metrics/**` is open to any session
 
 ### 10. Session Cookie Authentication
-All `/api/v1/**` endpoints (except `/api/v1/health`) require a valid `SESSION` cookie.
+All `/api/v1/**` endpoints (except `/api/v1/health` and `/api/v1/session`) require a valid
+`SESSION` cookie.
 
 **How It Works**:
 - `SessionAuthenticationFilter` (a `WebFilter`) runs before Spring Security authentication
 - Page visits (non-API paths) automatically create and initialize a session → browser gets `SESSION` cookie
 - API requests check for valid initialized session → 401 if missing
+- `GET /api/v1/session` is the exception under `/api/v1/`: it is treated as a page visit,
+  so it hands out a cookie (204 + `Set-Cookie`) instead of demanding one. It exists for
+  clients with no page to load - a native app or a script - which would otherwise have to
+  fetch the index HTML just to read the header off it. A caller already holding a fresh
+  token gets no `Set-Cookie` and keeps the one it has
 
 **Exempt Paths** (no session required):
 - `/api/v1/health` - monitoring/uptime checks

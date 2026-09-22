@@ -147,8 +147,10 @@ as a free backend by someone else's app.
   assumes traffic reaches nginx through Cloudflare: a client able to hit the origin port
   directly could set the header itself.
 - **session cookie** (`SessionAuthenticationFilter`): a signed stateless token issued on
-  any page visit and required by `/api/v1/**`. It costs a scraper one extra request and
-  nothing more - `/llms/**` and `/mcp/**` serve the same data without it, by design.
+  any page visit and required by `/api/v1/**`. A client with no page to load asks
+  `GET /api/v1/session`, which answers 204 and sets the same cookie. It costs a scraper
+  one extra request and nothing more - `/llms/**` and `/mcp/**` serve the same data
+  without it, by design.
 - **fail-closed logs**: with no `ANALYTICS_PASSWORD` set, `/api/v1/logs` is denied rather
   than opened to everyone holding a cookie. Set the variable or the logs page stays dark.
 - **security headers**: `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
