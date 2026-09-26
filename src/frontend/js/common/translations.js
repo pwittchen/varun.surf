@@ -546,7 +546,22 @@ export const translations = {
         Tanzania: "Tanzania",
         SriLanka: "Sri Lanka",
         Vietnam: "Vietnam",
-        TurksandCaicos: "Turks and Caicos"
+        TurksandCaicos: "Turks and Caicos",
+        Philippines: "Philippines",
+        Thailand: "Thailand",
+        Indonesia: "Indonesia",
+        Taiwan: "Taiwan",
+        India: "India",
+        Oman: "Oman",
+        UnitedArabEmirates: "United Arab Emirates",
+        Canada: "Canada",
+        DominicanRepublic: "Dominican Republic",
+        Aruba: "Aruba",
+        Colombia: "Colombia",
+        Venezuela: "Venezuela",
+        Ecuador: "Ecuador",
+        Argentina: "Argentina",
+        Australia: "Australia"
     },
     pl: {
         // Page title
@@ -1096,7 +1111,22 @@ export const translations = {
         Tanzania: "Tanzania",
         SriLanka: "Sri Lanka",
         Vietnam: "Wietnam",
-        TurksandCaicos: "Turks and Caicos"
+        TurksandCaicos: "Turks and Caicos",
+        Philippines: "Filipiny",
+        Thailand: "Tajlandia",
+        Indonesia: "Indonezja",
+        Taiwan: "Tajwan",
+        India: "Indie",
+        Oman: "Oman",
+        UnitedArabEmirates: "Zjednoczone Emiraty Arabskie",
+        Canada: "Kanada",
+        DominicanRepublic: "Dominikana",
+        Aruba: "Aruba",
+        Colombia: "Kolumbia",
+        Venezuela: "Wenezuela",
+        Ecuador: "Ekwador",
+        Argentina: "Argentyna",
+        Australia: "Australia"
     }
 };
 

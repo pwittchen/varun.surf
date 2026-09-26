@@ -50,7 +50,22 @@ export const COUNTRY_FLAGS = {
     'Costa Rica': '🇨🇷',
     'Turks and Caicos': '🇹🇨',
     'Sri Lanka': '🇱🇰',
-    'Vietnam': '🇻🇳'
+    'Vietnam': '🇻🇳',
+    'Philippines': '🇵🇭',
+    'Thailand': '🇹🇭',
+    'Indonesia': '🇮🇩',
+    'Taiwan': '🇹🇼',
+    'India': '🇮🇳',
+    'Oman': '🇴🇲',
+    'United Arab Emirates': '🇦🇪',
+    'Canada': '🇨🇦',
+    'Dominican Republic': '🇩🇴',
+    'Aruba': '🇦🇼',
+    'Colombia': '🇨🇴',
+    'Venezuela': '🇻🇪',
+    'Ecuador': '🇪🇨',
+    'Argentina': '🇦🇷',
+    'Australia': '🇦🇺'
 };
 
 export function getCountryFlag(country) {

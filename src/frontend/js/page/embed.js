@@ -123,7 +123,22 @@ const countriesPl = {
     Tanzania: 'Tanzania',
     SriLanka: 'Sri Lanka',
     Vietnam: 'Wietnam',
-    TurksandCaicos: 'Turks and Caicos'
+    TurksandCaicos: 'Turks and Caicos',
+    Philippines: 'Filipiny',
+    Thailand: 'Tajlandia',
+    Indonesia: 'Indonezja',
+    Taiwan: 'Tajwan',
+    India: 'Indie',
+    Oman: 'Oman',
+    UnitedArabEmirates: 'Zjednoczone Emiraty Arabskie',
+    Canada: 'Kanada',
+    DominicanRepublic: 'Dominikana',
+    Aruba: 'Aruba',
+    Colombia: 'Kolumbia',
+    Venezuela: 'Wenezuela',
+    Ecuador: 'Ekwador',
+    Argentina: 'Argentyna',
+    Australia: 'Australia'
 };
 
 function t(key) {

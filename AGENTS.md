@@ -72,7 +72,7 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 **Purpose**: Central data orchestration and caching layer using Java 25 structured concurrency.
 
 **Scheduled Tasks** (run in parallel with `@Async`):
-- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~780 spots
+- **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~820 spots
 - **Current Conditions**: Every 1 minute - real-time wind data
 - **On-demand eviction**: Every 1 hour - drops expired AI analyses and ICM forecasts
 
@@ -255,7 +255,7 @@ chatClient.prompt().user(prompt)
   - model: any valid ForecastModel key (e.g. "gfs", "ifs", "icon", "hrrr", etc.)
   - Triggers async model discovery if not cached
 - `GET /api/v1/wind?hours=N` - Hourly wind for every spot on one shared time grid (Mono<WindTimeline>)
-  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~780 spots), so the
+  - `/api/v1/spots` strips `forecastHourly` (megabytes across ~820 spots), so the
     map's forecast timeline reads this instead
   - `HourlyForecastMapper` projects each spot's hourly GFS forecast onto one shared
     grid and emits wind/gusts/direction as parallel arrays (roughly 100 KB gzipped
@@ -467,7 +467,7 @@ public record SpotInfo(
 
 ### Static Data: spots.json
 - **Location**: `src/main/resources/spots.json`
-- **Size**: ~780 kite spots across 43 countries
+- **Size**: ~820 kite spots across 59 countries
 - **Coverage**: Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, Croatia and the Balkans, Lithuania/Latvia/Estonia, Sweden, Norway, the United Kingdom, Austria, Switzerland, Brazil, Egypt, South Africa, and more
 - **Content**: Each spot contains:
   - Basic info (id, name, country, coordinates)

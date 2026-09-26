@@ -189,7 +189,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
    - Returns reactive types: `Flux<Spot>` and `Mono<Spot>`
    - Enriches spots with cached forecasts, conditions, AI analysis
    - Uses SpotsControllerMetrics for request tracking
-   - `/api/v1/spots` strips `forecastHourly` (too large for ~780 spots), so the
+   - `/api/v1/spots` strips `forecastHourly` (too large for ~820 spots), so the
      map's forecast timeline reads `/api/v1/wind` instead: `HourlyForecastMapper`
      projects every spot's hourly GFS forecast onto one shared grid and emits
      wind/gusts/direction as parallel arrays (roughly 100 KB gzipped for 120
@@ -345,7 +345,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 ### spots.json
 - Location: `src/main/resources/spots.json`
-- Contains ~780 kite spots across 43 countries (Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, the Balkans, the Baltics, Scandinavia, the UK, Brazil, Egypt, South Africa, etc.)
+- Contains ~820 kite spots across 59 countries (Poland, Germany, Denmark, Netherlands, France, Spain, Portugal, Italy, Greece, Turkey, the Balkans, the Baltics, Scandinavia, the UK, Brazil, Egypt, South Africa, the USA, Australia and a selection of the best-known spots in Asia and the Americas)
 - Each spot includes: location, URLs (Windguru, Windfinder, ICM, webcam), spot info (water type, best wind, hazards, season)
 - Loaded on startup by `JsonSpotsDataProvider`
 

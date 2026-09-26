@@ -4316,6 +4316,119 @@
     }
   },
   {
+    "name": "Atins",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/882255",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-2.5550,-42.7420",
+    "spotInfo": {
+      "type": "River mouth, lagoons and sea: flat water to waves",
+      "bestWind": "E, NE",
+      "waterTemp": "27-30°C",
+      "experience": "All levels",
+      "launch": "Beach at the mouth of the Preguiças River",
+      "hazards": "Strong tidal current in the river mouth, shallow sandbanks, remote location",
+      "season": "July-December",
+      "description": "Atins is a small village at the edge of the Lençóis Maranhenses dunes. The mouth of the Preguiças River gives flat water, and the open sea next to it has waves. From July to December the trade winds blow 18-28 knots, and it is a popular stop on downwinders along the north coast of Brazil."
+    },
+    "spotInfoPL": {
+      "type": "Ujście rzeki, laguny i morze: od płaskiej wody do fal",
+      "bestWind": "E, NE",
+      "waterTemp": "27-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Plaża przy ujściu rzeki Preguiças",
+      "hazards": "Silny prąd pływowy w ujściu rzeki, płytkie mielizny, odludna lokalizacja",
+      "season": "Lipiec-Grudzień",
+      "description": "Atins to mała wioska na skraju wydm Lençóis Maranhenses. Ujście rzeki Preguiças daje płaską wodę, a obok na otwartym morzu jest fala. Od lipca do grudnia pasaty wieją 18-28 węzłów, a Atins to popularny przystanek na downwindach wzdłuż północnego wybrzeża Brazylii."
+    }
+  },
+  {
+    "name": "São Miguel do Gostoso",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/9155",
+    "windfinderUrl": "https://www.windfinder.com/forecast/sao_miguel_do_gostoso",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-5.1180,-35.6110",
+    "spotInfo": {
+      "type": "Sea bay, flat to choppy water; waves at nearby points",
+      "bestWind": "E, SE",
+      "waterTemp": "26-28°C",
+      "experience": "All levels",
+      "launch": "Sandy beach in the bay near Ponta do Santo Cristo",
+      "hazards": "Rocky reef sections, fishing boats, strong wind in peak season",
+      "season": "July-January",
+      "description": "São Miguel do Gostoso in Rio Grande do Norte is a relaxed fishing village that has become one of Brazil's popular kite spots. The bay by Ponta do Santo Cristo has flat to choppy water, and the trade winds blow 18-25 knots from July to January. Nearby points have waves for experienced riders."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka morska, woda płaska do zafalowanej; fale na pobliskich cyplach",
+      "bestWind": "E, SE",
+      "waterTemp": "26-28°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczysta plaża w zatoce przy Ponta do Santo Cristo",
+      "hazards": "Skaliste fragmenty rafy, łodzie rybackie, silny wiatr w szczycie sezonu",
+      "season": "Lipiec-Styczeń",
+      "description": "São Miguel do Gostoso w stanie Rio Grande do Norte to spokojna wioska rybacka, która stała się jednym z popularnych spotów kite w Brazylii. Zatoka przy Ponta do Santo Cristo ma wodę od płaskiej do zafalowanej, a pasaty wieją 18-25 węzłów od lipca do stycznia. Na pobliskich cyplach jest fala dla doświadczonych."
+    }
+  },
+  {
+    "name": "Icaraizinho de Amontada",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/209228",
+    "windguruFallbackUrl": "https://www.windguru.cz/206858",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-3.0200,-39.6450",
+    "spotInfo": {
+      "type": "Bay with flat to choppy water; waves at the point",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "All levels",
+      "launch": "Sandy beach in the village bay",
+      "hazards": "Rocks at the point, fishing boats (jangadas), shorebreak at high tide",
+      "season": "July-January",
+      "description": "Icaraizinho de Amontada is a quiet fishing village in Ceará, between Cumbuco and Jericoacoara. Its sheltered bay has flat to choppy water, and the point has waves. The trade winds blow 18-25 knots from July to January, and the village is a regular stop on downwinders along the coast."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka z wodą płaską do zafalowanej; fale przy cyplu",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczysta plaża w zatoce przy wiosce",
+      "hazards": "Skały przy cyplu, łodzie rybackie (jangadas), przybój przy przypływie",
+      "season": "Lipiec-Styczeń",
+      "description": "Icaraizinho de Amontada to spokojna wioska rybacka w stanie Ceará, między Cumbuco a Jericoacoarą. Osłonięta zatoka ma wodę od płaskiej do zafalowanej, a przy cyplu jest fala. Pasaty wieją 18-25 węzłów od lipca do stycznia, a wioska jest stałym przystankiem na downwindach wzdłuż wybrzeża."
+    }
+  },
+  {
+    "name": "Lagoa da Conceição (Florianópolis)",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/3624",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-27.6100,-48.4530",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "NE, S",
+      "waterTemp": "18-25°C",
+      "experience": "All levels",
+      "launch": "Sandy shore near the dunes along Avenida das Rendeiras",
+      "hazards": "Boats, shallow areas, gusts near the hills, swimmers",
+      "season": "September-March (NE); cold fronts from the S in winter",
+      "description": "Lagoa da Conceição is a large brackish lagoon in the middle of Santa Catarina Island in Florianópolis. On summer afternoons a NE sea breeze blows over flat water, and in winter cold fronts from the south bring stronger wind. It is the main kite spot in southern Brazil."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda",
+      "bestWind": "NE, S",
+      "waterTemp": "18-25°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczysty brzeg przy wydmach wzdłuż Avenida das Rendeiras",
+      "hazards": "Łodzie, płycizny, szkwały przy wzgórzach, kąpiący się",
+      "season": "Wrzesień-Marzec (NE); zimą fronty chłodne z S",
+      "description": "Lagoa da Conceição to duża laguna o słonawej wodzie w środku wyspy Santa Catarina we Florianópolis. W letnie popołudnia nad płaską wodą wieje bryza z NE, a zimą fronty chłodne z południa przynoszą silniejszy wiatr. To główny spot kite na południu Brazylii."
+    }
+  },
+  {
     "name": "Pupuya",
     "country": "Chile",
     "windguruUrl": "https://www.windguru.cz/209143",
@@ -4341,6 +4454,34 @@
       "hazards": "Zimna woda, fale",
       "season": "Październik-Marzec",
       "description": "Chilijski spot wave z potężną falą pacyficzną."
+    }
+  },
+  {
+    "name": "Matanzas",
+    "country": "Chile",
+    "windguruUrl": "https://www.windguru.cz/42511",
+    "windfinderUrl": "https://www.windfinder.com/forecast/matanzas",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-33.9600,-71.8750",
+    "spotInfo": {
+      "type": "Ocean, waves",
+      "bestWind": "SW, S",
+      "waterTemp": "12-16°C",
+      "experience": "Advanced",
+      "launch": "Sandy beach at Matanzas village",
+      "hazards": "Cold water, powerful Pacific swell, rocks, strong currents",
+      "season": "September-April",
+      "description": "Matanzas on Chile's central coast, near Navidad and Pupuya, is one of the best-known wave spots in South America. The S to SW wind blows 15-25 knots on most summer afternoons, and the Pacific brings consistent swell. Cold water and powerful waves make it a spot for experienced riders."
+    },
+    "spotInfoPL": {
+      "type": "Ocean, fale",
+      "bestWind": "SW, S",
+      "waterTemp": "12-16°C",
+      "experience": "Zaawansowany",
+      "launch": "Piaszczysta plaża przy wiosce Matanzas",
+      "hazards": "Zimna woda, potężny rozkołys Pacyfiku, skały, silne prądy",
+      "season": "Wrzesień-Kwiecień",
+      "description": "Matanzas na środkowym wybrzeżu Chile, niedaleko Navidad i Pupuyi, to jeden z najbardziej znanych spotów falowych w Ameryce Południowej. Wiatr z S-SW wieje 15-25 węzłów w większość letnich popołudni, a Pacyfik przynosi regularny rozkołys. Zimna woda i mocne fale sprawiają, że to spot dla doświadczonych."
     }
   },
   {
@@ -4485,6 +4626,34 @@
       "season": "Grudzień-Lipiec",
       "description": "Karaibski raj z widokiem na ruiny Majów i krystalicznie czystą turkusową wodą. Pasaty zapewniają stabilne warunki wzdłuż białych piaszczystych plaż. Popularna destynacja turystyczna z doskonałą infrastrukturą i klubami plażowymi.",
       "llmComment": "Pasaty są najsilniejsze od stycznia do czerwca. Wodorosty sargassum mogą występować maj-sierpień. Dostęp do plaży przez hotele lub szkoły kitesurfingu."
+    }
+  },
+  {
+    "name": "Holbox",
+    "country": "Mexico",
+    "windguruUrl": "https://www.windguru.cz/9339",
+    "windfinderUrl": "https://www.windfinder.com/forecast/isla_holbox",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=21.5280,-87.3700",
+    "spotInfo": {
+      "type": "Shallow turquoise water, flat to light chop",
+      "bestWind": "NE, E, N",
+      "waterTemp": "24-30°C",
+      "experience": "All levels",
+      "launch": "Sandy beaches near the town and towards Punta Cocos",
+      "hazards": "Shallow sandbanks, boats, seagrass, jellyfish at times, gusty winter norte fronts",
+      "season": "November-May",
+      "description": "Holbox is a car-free island off the northern tip of the Yucatán Peninsula. Its shallow turquoise water stays flat to lightly choppy, and E trade winds and winter norte fronts bring 15-25 knots. The spot suits beginners and freestyle riders who want a quiet island atmosphere."
+    },
+    "spotInfoPL": {
+      "type": "Płytka turkusowa woda, płasko do lekkiego chopu",
+      "bestWind": "NE, E, N",
+      "waterTemp": "24-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczyste plaże przy miasteczku i w stronę Punta Cocos",
+      "hazards": "Płytkie mielizny, łodzie, trawa morska, okresowo meduzy, porywiste zimowe fronty norte",
+      "season": "Listopad-Maj",
+      "description": "Holbox to wyspa bez samochodów u północnego krańca Półwyspu Jukatan. Płytka turkusowa woda pozostaje płaska lub lekko zafalowana, a pasaty z E i zimowe fronty norte dają 15-25 węzłów. Spot pasuje początkującym i freestyle'owcom, którzy szukają spokojnej wyspiarskiej atmosfery."
     }
   },
   {
@@ -7006,6 +7175,36 @@
     }
   },
   {
+    "name": "My Hoa Lagoon",
+    "country": "Vietnam",
+    "windguruUrl": "https://www.windguru.cz/860891",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=11.6078,109.1466",
+    "spotInfo": {
+      "type": "Shallow lagoon with flat water; open sea with waves nearby",
+      "bestWind": "NE, N",
+      "waterTemp": "25-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy lagoon shore in front of the kite resorts",
+      "hazards": "Very shallow water (fall carefully), fish-farming posts and nets, strong gusts on the windiest days",
+      "season": "November-April",
+      "description": "My Hoa Lagoon, about 20 km north of Phan Rang, lies on one of the windiest stretches of the Vietnamese coast. The waist-deep lagoon has flat water for learning and freestyle, while the open sea right next to it has waves. The NE monsoon regularly reaches 18-28 knots from November to April, and a small kite village with resorts and schools has grown around the lagoon.",
+      "llmComment": "The coast around Phan Rang is among the windiest in South-East Asia. In the NE monsoon (November-April) the wind on the water is often a few knots stronger than at Mui Ne."
+    },
+    "spotInfoPL": {
+      "type": "Płytka laguna z płaską wodą; obok otwarte morze z falą",
+      "bestWind": "NE, N",
+      "waterTemp": "25-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysty brzeg laguny przed resortami kite",
+      "hazards": "Bardzo płytka woda (uwaga przy upadkach), paliki i sieci hodowli ryb, silne szkwały w najbardziej wietrzne dni",
+      "season": "Listopad-Kwiecień",
+      "description": "Laguna My Hoa, około 20 km na północ od Phan Rang, leży na jednym z najbardziej wietrznych odcinków wybrzeża Wietnamu. Laguna o głębokości do pasa daje płaską wodę do nauki i freestyle'u, a tuż obok na otwartym morzu jest fala. Monsun z NE regularnie osiąga 18-28 węzłów od listopada do kwietnia, a wokół laguny wyrosła mała wioska kite z resortami i szkołami.",
+      "llmComment": "Wybrzeże wokół Phan Rang należy do najbardziej wietrznych w Azji Południowo-Wschodniej. Przy monsunie z NE (listopad-kwiecień) wiatr na wodzie jest często o kilka węzłów silniejszy niż w Mui Ne."
+    }
+  },
+  {
     "name": "Cape Hatteras",
     "country": "USA",
     "windguruUrl": "https://www.windguru.cz/62",
@@ -7032,6 +7231,123 @@
       "hazards": "Przemieszczające się łachy piasku, silne prądy po stronie oceanicznej, linie energetyczne w pobliżu Kite Point, wędkarze, obecność rekinów w oceanie, sezon huraganów (czerwiec-listopad)",
       "season": "Kwiecień-Listopad",
       "description": "Cape Hatteras na Outer Banks w Karolinie Północnej to jedno z najlepszych miejsc do kitesurfingu na wschodnim wybrzeżu USA. Pamlico Sound oferuje rozległą, płytką wodę idealną do downwinderów i freestyle'u przy wietrze SW, natomiast strona atlantycka umożliwia jazdę na falach przy wietrze NE. Kite Point i Canadian Hole, zarządzane przez Służbę Parków Narodowych, to główne startowiska po stronie zalewu, zlokalizowane między Avon a Buxton."
+    }
+  },
+  {
+    "name": "Kanaha (Maui)",
+    "country": "USA",
+    "windguruUrl": "https://www.windguru.cz/92740",
+    "windguruFallbackUrl": "https://www.windguru.cz/208805",
+    "windfinderUrl": "https://www.windfinder.com/forecast/kanaha",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=20.8985,-156.4330",
+    "spotInfo": {
+      "type": "Ocean, reef waves outside, chop inside",
+      "bestWind": "NE, ENE",
+      "waterTemp": "24-27°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Kite Beach at the downwind (east) end of Kanaha Beach Park",
+      "hazards": "Reef, strong currents, height limits for kites near Kahului Airport, shared water with windsurfers",
+      "season": "April-October (strongest trades June-August)",
+      "description": "Kanaha Beach Park next to Kahului is Maui's main kite spot and one of the birthplaces of the sport. The NE trade winds blow 15-25 knots, with chop inside and reef waves further out. The airport nearby limits line length and kite height, and local rules keep kites and windsurfers apart.",
+      "llmComment": "Trade winds accelerate through the isthmus between Haleakala and the West Maui Mountains, so Kanaha is usually several knots windier than gridded models show. The wind builds from late morning."
+    },
+    "spotInfoPL": {
+      "type": "Ocean, fale na rafie dalej od brzegu, chop bliżej",
+      "bestWind": "NE, ENE",
+      "waterTemp": "24-27°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Kite Beach na zawietrznym (wschodnim) końcu parku Kanaha Beach",
+      "hazards": "Rafa, silne prądy, ograniczenia wysokości latawca w pobliżu lotniska Kahului, woda dzielona z windsurferami",
+      "season": "Kwiecień-Październik (najsilniejsze pasaty Czerwiec-Sierpień)",
+      "description": "Park Kanaha Beach obok Kahului to główny spot kite na Maui i jedno z miejsc, gdzie narodził się ten sport. Pasaty z NE wieją 15-25 węzłów, bliżej brzegu jest chop, a dalej fale na rafie. Pobliskie lotnisko ogranicza długość linek i wysokość latawca, a lokalne zasady rozdzielają kite'y i windsurferów.",
+      "llmComment": "Pasaty przyspieszają w przesmyku między Haleakalą a górami West Maui, więc na Kanaha zwykle wieje o kilka węzłów mocniej niż pokazują modele siatkowe. Wiatr rozkręca się od późnego przedpołudnia."
+    }
+  },
+  {
+    "name": "South Padre Island",
+    "country": "USA",
+    "windguruUrl": "https://www.windguru.cz/8191",
+    "windfinderUrl": "https://www.windfinder.com/forecast/south_padre_island",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=26.1480,-97.1780",
+    "spotInfo": {
+      "type": "Shallow bay flats with flat water (Laguna Madre); waves on the Gulf side",
+      "bestWind": "SE, S, E",
+      "waterTemp": "18-30°C",
+      "experience": "All levels",
+      "launch": "Bay-side flats north of the town",
+      "hazards": "Very shallow water with oyster beds and seagrass, boat traffic, summer thunderstorms",
+      "season": "March-October",
+      "description": "South Padre Island is the kite capital of Texas. On the bay side, the Laguna Madre has kilometres of knee-deep flat water, ideal for learning and freestyle. From spring to autumn steady S to SE winds blow 15-25 knots, and the Gulf of Mexico side offers waves."
+    },
+    "spotInfoPL": {
+      "type": "Płytka zatoka z płaską wodą (Laguna Madre); fale od strony Zatoki Meksykańskiej",
+      "bestWind": "SE, S, E",
+      "waterTemp": "18-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Płycizny od strony zatoki na północ od miasteczka",
+      "hazards": "Bardzo płytka woda z ławicami ostryg i trawą morską, ruch łodzi, letnie burze",
+      "season": "Marzec-Październik",
+      "description": "South Padre Island to stolica kitesurfingu w Teksasie. Od strony zatoki Laguna Madre ma kilometry płaskiej wody po kolana, idealnej do nauki i freestyle'u. Od wiosny do jesieni wieje stały wiatr z S-SE o sile 15-25 węzłów, a od strony Zatoki Meksykańskiej jest fala."
+    }
+  },
+  {
+    "name": "Sherman Island",
+    "country": "USA",
+    "windguruUrl": "https://www.windguru.cz/208867",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=38.0495,-121.7880",
+    "spotInfo": {
+      "type": "River delta, chop and wind-against-current swell",
+      "bestWind": "W, WSW",
+      "waterTemp": "15-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Kite launch at Sherman Island county park",
+      "hazards": "Strong river currents, large ships in the channel, floating debris, power lines near the launch area",
+      "season": "April-September",
+      "description": "Sherman Island lies in the Sacramento River delta, about 80 km north-east of San Francisco. On summer afternoons the hot Central Valley pulls marine air inland, producing strong westerlies of 18-30 knots. The wind blowing against the river current creates steep chop, so the spot suits confident riders.",
+      "llmComment": "Thermal: marine air is pulled through the Carquinez Strait towards the hot Central Valley, so summer afternoons usually bring 18-30 knots even when the gridded forecast shows much less."
+    },
+    "spotInfoPL": {
+      "type": "Delta rzeki, chop i strome fale przy wietrze pod prąd",
+      "bestWind": "W, WSW",
+      "waterTemp": "15-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Miejsce startowe w parku hrabstwa na Sherman Island",
+      "hazards": "Silne prądy rzeczne, duże statki w kanale, pływające śmieci, linie energetyczne w pobliżu miejsca startu",
+      "season": "Kwiecień-Wrzesień",
+      "description": "Sherman Island leży w delcie rzeki Sacramento, około 80 km na północny wschód od San Francisco. W letnie popołudnia rozgrzana Dolina Centralna zasysa powietrze znad oceanu i daje silny wiatr z zachodu o sile 18-30 węzłów. Wiatr wiejący pod prąd rzeki tworzy stromy chop, więc spot jest dla pewnie pływających.",
+      "llmComment": "Wiatr termiczny: powietrze znad oceanu jest zasysane przez Cieśninę Carquinez w stronę rozgrzanej Doliny Centralnej, więc w letnie popołudnia zwykle wieje 18-30 węzłów, nawet gdy prognoza z modelu siatkowego pokazuje znacznie mniej."
+    }
+  },
+  {
+    "name": "Crandon Park (Miami)",
+    "country": "USA",
+    "windguruUrl": "https://www.windguru.cz/208904",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=25.7130,-80.1510",
+    "spotInfo": {
+      "type": "Shallow bay-like water, flat to light chop",
+      "bestWind": "E, SE, NE",
+      "waterTemp": "22-30°C",
+      "experience": "All levels",
+      "launch": "Designated kite area at the north end of Crandon Park on Key Biscayne",
+      "hazards": "Shallow seagrass flats, swimmers, kiting only in the designated area, summer thunderstorms",
+      "season": "November-April",
+      "description": "Crandon Park on Key Biscayne is Miami's main kite spot, with shallow flat water and the city skyline in view. In winter the E trade winds and passing cold fronts bring 12-20 knots. A sandbar offshore keeps the water flat, which suits beginners and freestyle."
+    },
+    "spotInfoPL": {
+      "type": "Płytka woda jak w zatoce, płasko do lekkiego chopu",
+      "bestWind": "E, SE, NE",
+      "waterTemp": "22-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Wyznaczona strefa kite na północnym krańcu Crandon Park na Key Biscayne",
+      "hazards": "Płytkie łąki trawy morskiej, kąpiący się, pływanie tylko w wyznaczonej strefie, letnie burze",
+      "season": "Listopad-Kwiecień",
+      "description": "Crandon Park na Key Biscayne to główny spot kite w Miami, z płytką płaską wodą i widokiem na panoramę miasta. Zimą pasaty z E i przechodzące fronty chłodne dają 12-20 węzłów. Łacha piachu dalej od brzegu utrzymuje płaską wodę, co sprzyja początkującym i freestyle'owi."
     }
   },
   {
@@ -23448,6 +23764,717 @@
       "season": "Maj-Wrzesień",
       "description": "Jezioro Czorsztyńskie to głęboki, wąski zbiornik zaporowy na rzece Dunajec, położony między Pieninami a Gorcami w południowej Małopolsce, powstały dzięki zaporze w Niedzicy. Plaża Maniowy leży na północnym brzegu jeziora, przy wsi Maniowy, gdzie biegnąca mniej więcej z północy na południe niecka może kanalizować wiatr wzdłuż swojej osi, co czyni to malownicze miejsce coraz ciekawszym, choć wciąż niszowym spotem do kitesurfingu i wingfoilu, w zasięgu Nowego Targu i Zakopanego.",
       "llmComment": "Jezioro Czorsztyńskie wypełnia wąską dolinę o osi N-S, ściśniętą między Pieninami a Gorcami, więc wiatr przy powierzchni w rejonie Maniów bywa bardziej zgodny z osią doliny i mocniej wzmaga się w porywach, niż sugeruje surowy kierunek i prędkość z siatkowego modelu. Na tym zbiorniku nie ma dedykowanej infrastruktury kitesurfingowej ani ratownika, przez jezioro kursuje statek widokowy między Czorsztynem a Niedzicą, a Zatoka Harczygrunt przy granicy parku narodowego jest zamknięta dla wszelkiego ruchu wodnego."
+    }
+  },
+  {
+    "name": "Bulabog Beach (Boracay)",
+    "country": "Philippines",
+    "windguruUrl": "https://www.windguru.cz/576",
+    "windfinderUrl": "https://www.windfinder.com/forecast/boracay_island",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=11.9625,121.9310",
+    "spotInfo": {
+      "type": "Reef-protected lagoon, flat to choppy water",
+      "bestWind": "NE, E",
+      "waterTemp": "27-30°C",
+      "experience": "All levels",
+      "launch": "Sandy beach at Bulabog on the east side of the island",
+      "hazards": "Outer reef edge, very shallow water at low tide, sea urchins, crowded kite zone in peak season",
+      "season": "November-April (peak December-March)",
+      "description": "Bulabog Beach on the east coast of Boracay is Asia's best-known kite spot. The outer reef shelters a wide lagoon of flat to choppy water, and the NE Amihan monsoon blows a steady 15-25 knots from November to April. Dozens of kite schools line the beach, which makes it a popular place to learn and to progress.",
+      "llmComment": "Works only in the NE/E Amihan monsoon (November-April). In the SW Habagat season (June-October) the wind is onshore at Bulabog and the spot is effectively closed. The reef lagoon gets very shallow at low tide."
+    },
+    "spotInfoPL": {
+      "type": "Laguna osłonięta rafą, woda płaska do lekko zafalowanej",
+      "bestWind": "NE, E",
+      "waterTemp": "27-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczysta plaża Bulabog po wschodniej stronie wyspy",
+      "hazards": "Krawędź zewnętrznej rafy, bardzo płytko przy odpływie, jeżowce, tłok w strefie kite w szczycie sezonu",
+      "season": "Listopad-Kwiecień (szczyt Grudzień-Marzec)",
+      "description": "Bulabog Beach na wschodnim wybrzeżu Boracay to najbardziej znany spot kitesurfingowy w Azji. Zewnętrzna rafa osłania szeroką lagunę z płaską lub lekko zafalowaną wodą, a monsun Amihan z NE wieje równo 15-25 węzłów od listopada do kwietnia. Wzdłuż plaży działają dziesiątki szkół, więc to dobre miejsce do nauki i dalszego szkolenia.",
+      "llmComment": "Działa tylko przy monsunie Amihan z NE/E (listopad-kwiecień). W sezonie Habagat z SW (czerwiec-październik) wiatr na Bulabog jest dobrzeżny i spot praktycznie nie działa. Przy odpływie laguna robi się bardzo płytka."
+    }
+  },
+  {
+    "name": "Hua Hin",
+    "country": "Thailand",
+    "windguruUrl": "https://www.windguru.cz/273",
+    "windfinderUrl": "https://www.windfinder.com/forecast/hua_hin",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=12.5578,99.9635",
+    "spotInfo": {
+      "type": "Sea, chop to small waves",
+      "bestWind": "NE, E, SE, S",
+      "waterTemp": "27-31°C",
+      "experience": "All levels",
+      "launch": "Long sandy beach south of the town centre (Kite Beach area)",
+      "hazards": "Jellyfish, swimmers, fishing boats and nets, shorebreak in the NE monsoon",
+      "season": "October-May",
+      "description": "Hua Hin, around 200 km south of Bangkok, is the centre of kitesurfing in Thailand. The long sandy beach gets two wind seasons: the NE monsoon from October to January and a southerly to south-easterly sea breeze from February to May, usually 12-20 knots. Many schools operate here, and the quieter beaches of Pranburi lie just to the south.",
+      "llmComment": "From February to May the wind is a thermal sea breeze from S/SE that builds through the afternoon. In the NE monsoon (November-January) the wind is gradient-driven, blows through the whole day and brings more chop."
+    },
+    "spotInfoPL": {
+      "type": "Morze, chop do małych fal",
+      "bestWind": "NE, E, SE, S",
+      "waterTemp": "27-31°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Długa piaszczysta plaża na południe od centrum (okolice Kite Beach)",
+      "hazards": "Meduzy, pływacy, łodzie i sieci rybackie, przybój przy monsunie z NE",
+      "season": "Październik-Maj",
+      "description": "Hua Hin, około 200 km na południe od Bangkoku, to centrum kitesurfingu w Tajlandii. Na długiej piaszczystej plaży są dwa sezony wiatrowe: monsun z NE od października do stycznia oraz bryza z S-SE od lutego do maja, zwykle 12-20 węzłów. Działa tu wiele szkół, a spokojniejsze plaże Pranburi leżą tuż na południe.",
+      "llmComment": "Od lutego do maja wiatr to termiczna bryza z S/SE, która rozkręca się po południu. Przy monsunie z NE (listopad-styczeń) wiatr jest gradientowy, wieje przez cały dzień i daje więcej chopu."
+    }
+  },
+  {
+    "name": "Sanur (Bali)",
+    "country": "Indonesia",
+    "windguruUrl": "https://www.windguru.cz/208480",
+    "windguruFallbackUrl": "https://www.windguru.cz/249",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-8.7150,115.2560",
+    "spotInfo": {
+      "type": "Reef lagoon with flat to choppy water; waves on the outer reef",
+      "bestWind": "SE, E",
+      "waterTemp": "26-29°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at Mertasari (Sanur Kite Beach), south end of Sanur",
+      "hazards": "Shallow reef at low tide, sea urchins, boat traffic, strong current at the reef passes",
+      "season": "June-September",
+      "description": "Sanur on the south-east coast of Bali is the island's main kite spot. In the dry season the SE trade wind blows 15-22 knots from June to September. Inside the reef the water is flat to choppy, and the outer reef has waves for experienced riders. The session plan depends on the tide.",
+      "llmComment": "Rideable only around mid to high tide; at low tide the reef lagoon is too shallow. Works in the dry-season SE trade wind (June-September). In the wet season (November-March) the wind is light and westerly."
+    },
+    "spotInfoPL": {
+      "type": "Laguna za rafą z płaską do zafalowanej wodą; fale na zewnętrznej rafie",
+      "bestWind": "SE, E",
+      "waterTemp": "26-29°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża Mertasari (Sanur Kite Beach), na południowym krańcu Sanur",
+      "hazards": "Płytka rafa przy odpływie, jeżowce, ruch łodzi, silny prąd w przesmykach rafy",
+      "season": "Czerwiec-Wrzesień",
+      "description": "Sanur na południowo-wschodnim wybrzeżu Bali to główny spot kitesurfingowy wyspy. W porze suchej pasat z SE wieje 15-22 węzłów od czerwca do września. Za rafą woda jest płaska lub lekko zafalowana, a na zewnętrznej rafie jest fala dla doświadczonych. Plan sesji zależy od pływów.",
+      "llmComment": "Da się pływać tylko od połowy przypływu do wysokiej wody; przy odpływie laguna za rafą jest zbyt płytka. Działa przy pasacie z SE w porze suchej (czerwiec-wrzesień). W porze deszczowej (listopad-marzec) wiatr jest słaby i z zachodu."
+    }
+  },
+  {
+    "name": "Masirah Island",
+    "country": "Oman",
+    "windguruUrl": "https://www.windguru.cz/84249",
+    "windguruFallbackUrl": "https://www.windguru.cz/84246",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=20.4167,58.8236",
+    "spotInfo": {
+      "type": "Open sea with waves and chop; sheltered bays with flatter water",
+      "bestWind": "S, SW",
+      "waterTemp": "22-27°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beaches around the island, reached from the kite camps",
+      "hazards": "Very remote with no rescue service, strong currents, rocky sections, protected turtle-nesting beaches",
+      "season": "May-September (peak June-August)",
+      "description": "Masirah is an Arabian Sea island off Oman's east coast and one of the most reliable wind destinations in the Middle East. The SW monsoon blows 20-30 knots from May to September, over empty beaches with waves, flat bays and long downwinders. The island is reached by ferry from Shannah and has only a few kite camps, so riders need to be self-sufficient.",
+      "llmComment": "The SW monsoon (Khareef) is very steady: from June to August the wind rarely drops below 15 knots and is often 20-30. Outside May-September the wind is mostly light."
+    },
+    "spotInfoPL": {
+      "type": "Otwarte morze z falą i chopem; osłonięte zatoki z płaską wodą",
+      "bestWind": "S, SW",
+      "waterTemp": "22-27°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczyste plaże wokół wyspy, dostępne z obozów kite",
+      "hazards": "Bardzo odludne miejsce bez ratownictwa, silne prądy, skaliste odcinki, chronione plaże lęgowe żółwi",
+      "season": "Maj-Wrzesień (szczyt Czerwiec-Sierpień)",
+      "description": "Masirah to wyspa na Morzu Arabskim u wschodnich wybrzeży Omanu i jedno z najpewniejszych wietrznych miejsc na Bliskim Wschodzie. Monsun z SW wieje 20-30 węzłów od maja do września nad pustymi plażami z falą, płaskimi zatokami i długimi downwindami. Na wyspę płynie się promem z Shannah, a obozów kite jest tylko kilka, więc trzeba być samodzielnym.",
+      "llmComment": "Monsun z SW (Khareef) jest bardzo stabilny: od czerwca do sierpnia wiatr rzadko spada poniżej 15 węzłów i często ma 20-30. Poza okresem maj-wrzesień wiatr jest przeważnie słaby."
+    }
+  },
+  {
+    "name": "Kite Beach (Dubai)",
+    "country": "United Arab Emirates",
+    "windguruUrl": "https://www.windguru.cz/5692",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=25.1560,55.1970",
+    "spotInfo": {
+      "type": "Sea, chop to small waves",
+      "bestWind": "NW, W, N",
+      "waterTemp": "20-34°C",
+      "experience": "Intermediate",
+      "launch": "Designated kiting zone at Kite Beach (Umm Suqeim)",
+      "hazards": "Kiting allowed only in the designated zone, swimmers, jet skis, gusty shamal fronts, extreme summer heat",
+      "season": "October-May",
+      "description": "Kite Beach on the Jumeirah coast is Dubai's main kite spot, with the Burj Al Arab in view. From October to May shamal fronts bring NW winds of 15-25 knots, and on other days an afternoon sea breeze fills in. Summers are very hot and the wind is mostly light.",
+      "llmComment": "Kiting is allowed only in the zone and at the times set by the local authorities. Wind comes from NW shamal fronts (October-April) and the afternoon sea breeze; the gridded forecast tends to underestimate the sea breeze."
+    },
+    "spotInfoPL": {
+      "type": "Morze, chop do małych fal",
+      "bestWind": "NW, W, N",
+      "waterTemp": "20-34°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Wyznaczona strefa kite na Kite Beach (Umm Suqeim)",
+      "hazards": "Pływanie tylko w wyznaczonej strefie, kąpiący się, skutery wodne, porywisty szamal, upał latem",
+      "season": "Październik-Maj",
+      "description": "Kite Beach na wybrzeżu Jumeirah to główny spot kitesurfingowy Dubaju, z widokiem na Burj Al Arab. Od października do maja fronty szamalu przynoszą wiatr z NW o sile 15-25 węzłów, a w pozostałe dni po południu wieje bryza morska. Lato jest bardzo gorące i wiatr jest wtedy zwykle słaby.",
+      "llmComment": "Pływać wolno tylko w strefie i w godzinach wyznaczonych przez lokalne władze. Wiatr daje szamal z NW (październik-kwiecień) oraz popołudniowa bryza morska; prognoza z modelu siatkowego zwykle zaniża bryzę."
+    }
+  },
+  {
+    "name": "Alaçatı",
+    "country": "Turkey",
+    "windguruUrl": "https://www.windguru.cz/501301",
+    "windguruFallbackUrl": "https://www.windguru.cz/30910",
+    "windfinderUrl": "https://www.windfinder.com/forecast/alacati",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=38.2410,26.3990",
+    "spotInfo": {
+      "type": "Bay, flat to small chop",
+      "bestWind": "N, NNE",
+      "waterTemp": "18-25°C",
+      "experience": "All levels",
+      "launch": "Kite Beach at the southern end of Alaçatı Bay",
+      "hazards": "Crowded with windsurfers, strong gusts on peak days, rocky shore at the bay edges",
+      "season": "May-October (peak July-August)",
+      "description": "Alaçatı near Çeşme is one of the windsurfing and kitesurfing capitals of the Aegean. The summer meltem blows from the north at 15-25 knots on most days, over shallow flat to slightly choppy water in a wide bay. A dedicated kite beach with schools and rental keeps kites apart from the busy windsurf centres.",
+      "llmComment": "The Aegean meltem (N) is reinforced thermally here and on summer afternoons is often a few knots stronger than the forecast."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, woda płaska do lekkiego chopu",
+      "bestWind": "N, NNE",
+      "waterTemp": "18-25°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Kite Beach na południowym krańcu zatoki Alaçatı",
+      "hazards": "Tłok windsurferów, silne szkwały w najmocniejsze dni, skalisty brzeg na krańcach zatoki",
+      "season": "Maj-Październik (szczyt Lipiec-Sierpień)",
+      "description": "Alaçatı koło Çeşme to jedna ze stolic windsurfingu i kitesurfingu na Morzu Egejskim. Letni meltem wieje z północy 15-25 węzłów przez większość dni, nad płytką, płaską lub lekko zafalowaną wodą w szerokiej zatoce. Osobna plaża kite ze szkołami i wypożyczalniami oddziela kite'y od zatłoczonych centrów windsurfingowych.",
+      "llmComment": "Egejski meltem (N) jest tu wzmacniany termicznie i w letnie popołudnia często wieje o kilka węzłów mocniej niż w prognozie."
+    }
+  },
+  {
+    "name": "Akyaka",
+    "country": "Turkey",
+    "windguruUrl": "https://www.windguru.cz/495478",
+    "windfinderUrl": "https://www.windfinder.com/forecast/akyaka",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=37.0470,28.3240",
+    "spotInfo": {
+      "type": "Bay, flat to choppy water near a river mouth",
+      "bestWind": "W, SW",
+      "waterTemp": "20-26°C",
+      "experience": "All levels",
+      "launch": "Kite beach next to the Azmak river mouth",
+      "hazards": "Shallow sandbanks, cold river water near the mouth, boats entering the river, crowded in high season",
+      "season": "May-October",
+      "description": "Akyaka sits at the head of Gökova Bay on Turkey's south-west coast. On summer days a thermal westerly builds from late morning and reaches 15-25 knots by the afternoon, while the water close to shore stays flat. Its reliability has made it one of the busiest kite spots in Turkey.",
+      "llmComment": "Thermal: the wind builds from late morning and peaks in the afternoon, often at 18-25 knots. Gökova Bay funnels it, so the spot is much windier than gridded forecasts show."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, woda płaska do zafalowanej przy ujściu rzeki",
+      "bestWind": "W, SW",
+      "waterTemp": "20-26°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Plaża kite przy ujściu rzeki Azmak",
+      "hazards": "Płytkie mielizny, zimna woda rzeczna przy ujściu, łodzie wpływające do rzeki, tłok w szczycie sezonu",
+      "season": "Maj-Październik",
+      "description": "Akyaka leży na końcu zatoki Gökova na południowo-zachodnim wybrzeżu Turcji. W letnie dni termiczny wiatr z zachodu rozkręca się od późnego przedpołudnia i po południu osiąga 15-25 węzłów, a woda przy brzegu pozostaje płaska. Dzięki tej powtarzalności to jeden z najpopularniejszych spotów kite w Turcji.",
+      "llmComment": "Wiatr termiczny: rozkręca się od późnego przedpołudnia i szczyt ma po południu, często 18-25 węzłów. Zatoka Gökova go kanalizuje, więc na spocie wieje znacznie mocniej niż w prognozach z modeli siatkowych."
+    }
+  },
+  {
+    "name": "Dhanushkodi (Rameswaram)",
+    "country": "India",
+    "windguruUrl": "https://www.windguru.cz/1154418",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=9.1800,79.4100",
+    "spotInfo": {
+      "type": "Lagoons with flat water and open sea with waves",
+      "bestWind": "SW, NE",
+      "waterTemp": "26-30°C",
+      "experience": "All levels",
+      "launch": "Sandy beaches and lagoon shores along the Dhanushkodi spit",
+      "hazards": "Remote area with little infrastructure, fishing nets, strong currents towards the tip of the spit",
+      "season": "April-September (SW monsoon), December-February (NE monsoon)",
+      "description": "Rameswaram Island and the narrow Dhanushkodi spit, between Palk Bay and the Gulf of Mannar, are India's best-known kite destination. Both monsoons bring wind: the SW monsoon from April to September and the NE monsoon in winter. The sand spit has water on both sides, so riders can pick the flat lagoon or the wave side for any wind direction.",
+      "llmComment": "Choose the side of the spit by wind direction: in the SW monsoon the Palk Bay (north) side is flatter, in the NE monsoon the Gulf of Mannar (south) side is."
+    },
+    "spotInfoPL": {
+      "type": "Laguny z płaską wodą i otwarte morze z falą",
+      "bestWind": "SW, NE",
+      "waterTemp": "26-30°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczyste plaże i brzegi lagun wzdłuż mierzei Dhanushkodi",
+      "hazards": "Odludny teren z niewielką infrastrukturą, sieci rybackie, silne prądy przy końcu mierzei",
+      "season": "Kwiecień-Wrzesień (monsun SW), Grudzień-Luty (monsun NE)",
+      "description": "Wyspa Rameswaram i wąska mierzeja Dhanushkodi między Cieśniną Palk a Zatoką Mannar to najbardziej znany spot kite w Indiach. Wiatr przynoszą oba monsuny: z SW od kwietnia do września i z NE zimą. Mierzeja ma wodę po obu stronach, więc przy każdym kierunku wiatru można wybrać płaską lagunę albo stronę z falą.",
+      "llmComment": "Stronę mierzei wybiera się według kierunku wiatru: przy monsunie z SW bardziej płasko jest od strony Cieśniny Palk (północ), przy monsunie z NE od strony Zatoki Mannar (południe)."
+    }
+  },
+  {
+    "name": "Penghu",
+    "country": "Taiwan",
+    "windguruUrl": "https://www.windguru.cz/4873",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=23.5610,119.6340",
+    "spotInfo": {
+      "type": "Sea bays, flat to choppy water; waves on exposed beaches",
+      "bestWind": "NE",
+      "waterTemp": "18-27°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beaches such as Aimen and Lintou",
+      "hazards": "Very strong and gusty wind at the height of the monsoon, rocky and coral reefs, cool water in winter",
+      "season": "October-March",
+      "description": "The Penghu archipelago in the Taiwan Strait is one of the windiest places in Asia. The strait funnels the NE winter monsoon, which blows 20-30 knots on many days from October to March. Sheltered bays give flat water, and more exposed beaches have waves.",
+      "llmComment": "The Taiwan Strait funnels the NE monsoon. From October to March days of 20-30 knots are common, and the wind is often stronger than the forecast."
+    },
+    "spotInfoPL": {
+      "type": "Zatoki morskie, woda płaska do zafalowanej; fale na odsłoniętych plażach",
+      "bestWind": "NE",
+      "waterTemp": "18-27°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczyste plaże, np. Aimen i Lintou",
+      "hazards": "Bardzo silny i porywisty wiatr w szczycie monsunu, skaliste i koralowe rafy, chłodna woda zimą",
+      "season": "Październik-Marzec",
+      "description": "Archipelag Penghu w Cieśninie Tajwańskiej to jedno z najbardziej wietrznych miejsc w Azji. Cieśnina kanalizuje zimowy monsun z NE, który od października do marca wieje w wiele dni z siłą 20-30 węzłów. Osłonięte zatoki dają płaską wodę, a bardziej odsłonięte plaże mają falę.",
+      "llmComment": "Cieśnina Tajwańska kanalizuje monsun z NE. Od października do marca dni z wiatrem 20-30 węzłów są częste, a wiatr bywa silniejszy niż w prognozie."
+    }
+  },
+  {
+    "name": "Squamish Spit",
+    "country": "Canada",
+    "windguruUrl": "https://www.windguru.cz/208841",
+    "windfinderUrl": "https://www.windfinder.com/forecast/squamish_spit",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=49.7000,-123.1700",
+    "spotInfo": {
+      "type": "Fjord estuary, chop, cold water",
+      "bestWind": "S",
+      "waterTemp": "8-12°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "The Spit, run by the Squamish Windsports Society (day pass required)",
+      "hazards": "Very cold water (drysuit or thick wetsuit), strong river current, floating logs, gusts near the mountains",
+      "season": "May-September",
+      "description": "The Squamish Spit sits at the head of Howe Sound, an hour north of Vancouver, surrounded by mountains. On sunny summer days a thermal southerly flows up the sound and reaches 15-30 knots in the afternoon. The launch and a rescue boat are run by the local windsports society.",
+      "llmComment": "Thermal: the S inflow up Howe Sound builds on hot sunny days from around noon and is typically 15-30 knots, which gridded models heavily underestimate. Cloudy or rainy days usually bring no usable wind."
+    },
+    "spotInfoPL": {
+      "type": "Estuarium w fiordzie, chop, zimna woda",
+      "bestWind": "S",
+      "waterTemp": "8-12°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "The Spit, prowadzony przez Squamish Windsports Society (wymagany karnet dzienny)",
+      "hazards": "Bardzo zimna woda (suchy skafander lub gruba pianka), silny prąd rzeki, pływające kłody, szkwały przy górach",
+      "season": "Maj-Wrzesień",
+      "description": "Squamish Spit leży na końcu zatoki Howe Sound, godzinę na północ od Vancouver, w otoczeniu gór. W słoneczne letnie dni termiczny wiatr z południa wpływa w głąb zatoki i po południu osiąga 15-30 węzłów. Miejsce startu i łódź ratunkową prowadzi lokalne stowarzyszenie sportów wiatrowych.",
+      "llmComment": "Wiatr termiczny: napływ z S w głąb Howe Sound rozkręca się w gorące słoneczne dni od około południa i zwykle ma 15-30 węzłów, co modele siatkowe mocno zaniżają. W pochmurne i deszczowe dni zwykle nie ma wiatru do pływania."
+    }
+  },
+  {
+    "name": "Cabarete",
+    "country": "Dominican Republic",
+    "windguruUrl": "https://www.windguru.cz/208988",
+    "windguruFallbackUrl": "https://www.windguru.cz/139",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cabarete",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=19.7580,-70.4140",
+    "spotInfo": {
+      "type": "Bay with reef: chop inside, waves on the reef",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "All levels",
+      "launch": "Kite Beach, west of Cabarete town",
+      "hazards": "Reef, crowded beach, shorebreak, strong currents",
+      "season": "June-August and December-March",
+      "description": "Cabarete on the north coast of the Dominican Republic is the kitesurfing capital of the Caribbean. The trade winds, reinforced by an afternoon thermal, blow 15-25 knots, with chop inside the bay and waves on the reef. Kite Beach is lined with schools, and there are quieter spots along the coast.",
+      "llmComment": "An afternoon thermal adds to the trade winds: the wind usually picks up around noon and peaks in the afternoon, while mornings are often light."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka z rafą: chop bliżej brzegu, fale na rafie",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Kite Beach, na zachód od miasteczka Cabarete",
+      "hazards": "Rafa, zatłoczona plaża, przybój, silne prądy",
+      "season": "Czerwiec-Sierpień oraz Grudzień-Marzec",
+      "description": "Cabarete na północnym wybrzeżu Dominikany to stolica kitesurfingu na Karaibach. Pasaty wzmocnione popołudniową termiką wieją 15-25 węzłów, w zatoce jest chop, a na rafie fala. Wzdłuż Kite Beach działa mnóstwo szkół, a spokojniejsze spoty są dalej wzdłuż wybrzeża.",
+      "llmComment": "Popołudniowa termika wzmacnia pasaty: wiatr zwykle rośnie około południa i szczyt ma po południu, a poranki są często słabe."
+    }
+  },
+  {
+    "name": "Fisherman's Huts",
+    "country": "Aruba",
+    "windguruUrl": "https://www.windguru.cz/311531",
+    "windguruFallbackUrl": "https://www.windguru.cz/206895",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=12.5770,-70.0460",
+    "spotInfo": {
+      "type": "Sea, flat to light chop",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "All levels",
+      "launch": "Hadicurari beach (Fisherman's Huts) on the north-west coast",
+      "hazards": "Side-offshore wind, windsurfers sharing the water, swimmers, boats",
+      "season": "December-August (peak May-July)",
+      "description": "Fisherman's Huts on Aruba's leeward north-west coast is the island's main kite spot. The trade winds are among the most consistent in the Caribbean, usually 18-25 knots, and the water stays flat to lightly choppy. Riders looking for waves go to Boca Grandi on the east coast.",
+      "llmComment": "The trade wind is side-offshore here, since the beach is on the leeward coast: the water is flat, but drifting away from shore is a real risk. The wind is very steady and from May to July rarely drops below 15 knots."
+    },
+    "spotInfoPL": {
+      "type": "Morze, płasko do lekkiego chopu",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Plaża Hadicurari (Fisherman's Huts) na północno-zachodnim wybrzeżu",
+      "hazards": "Wiatr boczno-odlądowy, woda dzielona z windsurferami, kąpiący się, łodzie",
+      "season": "Grudzień-Sierpień (szczyt Maj-Lipiec)",
+      "description": "Fisherman's Huts na zawietrznym, północno-zachodnim wybrzeżu Aruby to główny spot kite na wyspie. Pasaty są tu jednymi z najstabilniejszych na Karaibach, zwykle 18-25 węzłów, a woda pozostaje płaska lub lekko zafalowana. Po fale jeździ się do Boca Grandi na wschodnim wybrzeżu.",
+      "llmComment": "Pasat jest tu boczno-odlądowy, bo plaża leży na zawietrznym wybrzeżu: woda jest płaska, ale zdryfowanie od brzegu to realne ryzyko. Wiatr jest bardzo stabilny i od maja do lipca rzadko spada poniżej 15 węzłów."
+    }
+  },
+  {
+    "name": "Cabo de la Vela",
+    "country": "Colombia",
+    "windguruUrl": "https://www.windguru.cz/116785",
+    "windfinderUrl": "https://www.windfinder.com/forecast/cabo_de_la_vela",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=12.2040,-72.1480",
+    "spotInfo": {
+      "type": "Bay, flat to choppy water",
+      "bestWind": "E, NE",
+      "waterTemp": "26-29°C",
+      "experience": "All levels",
+      "launch": "Sandy beach in front of the village",
+      "hazards": "Very remote desert area with basic infrastructure, strong wind, little shade",
+      "season": "December-August",
+      "description": "Cabo de la Vela is a remote Wayuu village on the desert peninsula of La Guajira, at the northern tip of Colombia. The trade winds blow 20-30 knots for much of the year, over flat to choppy water in a wide bay. Facilities are basic, but the wind is among the most reliable in South America."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, woda płaska do zafalowanej",
+      "bestWind": "E, NE",
+      "waterTemp": "26-29°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Piaszczysta plaża przed wioską",
+      "hazards": "Bardzo odludny, pustynny teren z podstawową infrastrukturą, silny wiatr, mało cienia",
+      "season": "Grudzień-Sierpień",
+      "description": "Cabo de la Vela to odległa wioska Indian Wayuu na pustynnym półwyspie La Guajira, na północnym krańcu Kolumbii. Pasaty wieją 20-30 węzłów przez dużą część roku, nad płaską lub lekko zafalowaną wodą w szerokiej zatoce. Warunki bytowe są skromne, ale wiatr należy do najpewniejszych w Ameryce Południowej."
+    }
+  },
+  {
+    "name": "Salinas del Rey",
+    "country": "Colombia",
+    "windguruUrl": "https://www.windguru.cz/1317311",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=10.8730,-75.0990",
+    "spotInfo": {
+      "type": "Sea with chop and waves; small lagoon",
+      "bestWind": "NE",
+      "waterTemp": "26-29°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Beach in front of the kite lodges",
+      "hazards": "Shorebreak, currents, strong gusty trade winds in peak season",
+      "season": "December-April",
+      "description": "Salinas del Rey lies on Colombia's Caribbean coast between Barranquilla and Cartagena. From December to April strong NE trade winds blow 18-28 knots over the open sea, which has chop and waves, and a small lagoon offers flatter water. A handful of kite lodges keep the place quiet and focused on riding."
+    },
+    "spotInfoPL": {
+      "type": "Morze z chopem i falą; mała laguna",
+      "bestWind": "NE",
+      "waterTemp": "26-29°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Plaża przed ośrodkami kite",
+      "hazards": "Przybój, prądy, silne i porywiste pasaty w szczycie sezonu",
+      "season": "Grudzień-Kwiecień",
+      "description": "Salinas del Rey leży na karaibskim wybrzeżu Kolumbii między Barranquillą a Cartageną. Od grudnia do kwietnia silne pasaty z NE wieją 18-28 węzłów nad otwartym morzem z chopem i falą, a mała laguna daje bardziej płaską wodę. Kilka ośrodków kite sprawia, że jest tu spokojnie i wszystko kręci się wokół pływania."
+    }
+  },
+  {
+    "name": "El Yaque (Margarita)",
+    "country": "Venezuela",
+    "windguruUrl": "https://www.windguru.cz/3607",
+    "windguruFallbackUrl": "https://www.windguru.cz/209044",
+    "windfinderUrl": "https://www.windfinder.com/forecast/el_yaque",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=10.9030,-63.9580",
+    "spotInfo": {
+      "type": "Shallow bay, flat to light chop",
+      "bestWind": "E",
+      "waterTemp": "25-28°C",
+      "experience": "All levels",
+      "launch": "Kite beach at the eastern end of El Yaque, separate from the windsurf beach",
+      "hazards": "Shallow water, busy windsurf zone, height limits near the airport; check travel advisories before going",
+      "season": "Year-round (peak June-August)",
+      "description": "El Yaque on Isla Margarita is a legendary windsurfing and kitesurfing spot in the Caribbean. The E trade wind blows almost every day, usually 15-25 knots, over shallow warm water that stays flat to lightly choppy. Kiters use a separate beach at the eastern end of the village."
+    },
+    "spotInfoPL": {
+      "type": "Płytka zatoka, płasko do lekkiego chopu",
+      "bestWind": "E",
+      "waterTemp": "25-28°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Plaża kite na wschodnim krańcu El Yaque, oddzielona od plaży windsurfingowej",
+      "hazards": "Płytka woda, ruchliwa strefa windsurfingowa, ograniczenia wysokości przy lotnisku; przed wyjazdem sprawdź ostrzeżenia dla podróżnych",
+      "season": "Cały rok (szczyt Czerwiec-Sierpień)",
+      "description": "El Yaque na wyspie Margarita to legendarny spot windsurfingowy i kitesurfingowy na Karaibach. Pasat z E wieje niemal codziennie, zwykle 15-25 węzłów, nad płytką i ciepłą wodą, która pozostaje płaska lub lekko zafalowana. Kiterzy korzystają z osobnej plaży na wschodnim krańcu wioski."
+    }
+  },
+  {
+    "name": "Cuesta del Viento",
+    "country": "Argentina",
+    "windguruUrl": "https://www.windguru.cz/128492",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-30.1680,-69.0990",
+    "spotInfo": {
+      "type": "Mountain reservoir, chop, very strong wind",
+      "bestWind": "S, SE",
+      "waterTemp": "14-22°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Playa Lamaral near Rodeo, San Juan province",
+      "hazards": "Very strong and gusty wind, altitude of about 1,500 m, cold water, remote location",
+      "season": "October-April",
+      "description": "Cuesta del Viento is a reservoir in the Andes near Rodeo, in San Juan province, at around 1,500 m. It is famous for a thermal wind that blows almost every afternoon from October to April, often at 20-35 knots. It is one of the most reliable wind spots in the world, best suited to confident riders on small kites.",
+      "llmComment": "Thermal: almost every afternoon from October to April the wind builds to 20-35 knots, far above what gridded models show. Mornings are usually calm."
+    },
+    "spotInfoPL": {
+      "type": "Górski zbiornik, chop, bardzo silny wiatr",
+      "bestWind": "S, SE",
+      "waterTemp": "14-22°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Playa Lamaral koło Rodeo w prowincji San Juan",
+      "hazards": "Bardzo silny i porywisty wiatr, wysokość około 1500 m n.p.m., zimna woda, odludna lokalizacja",
+      "season": "Październik-Kwiecień",
+      "description": "Cuesta del Viento to zbiornik w Andach koło Rodeo, w prowincji San Juan, na wysokości około 1500 m. Słynie z termicznego wiatru, który od października do kwietnia wieje niemal każdego popołudnia, często z siłą 20-35 węzłów. To jedno z najpewniejszych wietrznych miejsc na świecie, najlepsze dla pewnie pływających na małych latawcach.",
+      "llmComment": "Wiatr termiczny: od października do kwietnia prawie każdego popołudnia rozkręca się do 20-35 węzłów, znacznie powyżej tego, co pokazują modele siatkowe. Poranki są zwykle bezwietrzne."
+    }
+  },
+  {
+    "name": "Santa Marianita",
+    "country": "Ecuador",
+    "windguruUrl": "https://www.windguru.cz/237053",
+    "windfinderUrl": "https://www.windfinder.com/forecast/santa_marianita",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-0.9633,-80.8331",
+    "spotInfo": {
+      "type": "Ocean, chop to waves",
+      "bestWind": "SW, W",
+      "waterTemp": "22-27°C",
+      "experience": "All levels",
+      "launch": "Wide sandy beach in front of the village",
+      "hazards": "Shorebreak, currents, fishing boats",
+      "season": "June-December",
+      "description": "Santa Marianita, a short drive from Manta, is the kitesurfing capital of Ecuador. An afternoon sea breeze from the SW blows 15-22 knots from June to December along a wide sandy beach. The water ranges from chop to small waves, and a few schools and kite hostels operate in the village."
+    },
+    "spotInfoPL": {
+      "type": "Ocean, chop do fal",
+      "bestWind": "SW, W",
+      "waterTemp": "22-27°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Szeroka piaszczysta plaża przed wioską",
+      "hazards": "Przybój, prądy, łodzie rybackie",
+      "season": "Czerwiec-Grudzień",
+      "description": "Santa Marianita, niedaleko Manty, to stolica kitesurfingu w Ekwadorze. Popołudniowa bryza z SW wieje 15-22 węzłów od czerwca do grudnia wzdłuż szerokiej piaszczystej plaży. Woda jest od chopu do małych fal, a w wiosce działa kilka szkół i hosteli kite."
+    }
+  },
+  {
+    "name": "Lancelin",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/222",
+    "windfinderUrl": "https://www.windfinder.com/forecast/lancelin",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-31.0180,115.3260",
+    "spotInfo": {
+      "type": "Bay with reef-sheltered flat water; waves on the outer reefs",
+      "bestWind": "S, SW",
+      "waterTemp": "18-23°C",
+      "experience": "All levels",
+      "launch": "Main beach and kite beach next to the town",
+      "hazards": "Reefs, strong wind, crowded in summer, sharks",
+      "season": "November-March",
+      "description": "Lancelin, 125 km north of Perth, is one of Australia's best-known wind destinations. On summer afternoons a strong southerly sea breeze blows 18-30 knots, and offshore reefs shelter the bay, which has flat water inside and waves on the outer reefs.",
+      "llmComment": "The summer S/SW sea breeze builds from late morning and typically reaches 18-30 knots, much stronger than gridded models show."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka z płaską wodą osłoniętą rafą; fale na zewnętrznych rafach",
+      "bestWind": "S, SW",
+      "waterTemp": "18-23°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Główna plaża i plaża kite obok miasteczka",
+      "hazards": "Rafy, silny wiatr, tłok latem, rekiny",
+      "season": "Listopad-Marzec",
+      "description": "Lancelin, 125 km na północ od Perth, to jedno z najbardziej znanych wietrznych miejsc w Australii. W letnie popołudnia silna bryza z południa wieje 18-30 węzłów, a rafy osłaniają zatokę z płaską wodą w środku i falą na zewnętrznych rafach.",
+      "llmComment": "Letnia bryza z S/SW rozkręca się od późnego przedpołudnia i zwykle osiąga 18-30 węzłów, znacznie więcej niż pokazują modele siatkowe."
+    }
+  },
+  {
+    "name": "Pinnaroo Point (Perth)",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/208589",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-31.8060,115.7240",
+    "spotInfo": {
+      "type": "Ocean, chop to small waves",
+      "bestWind": "SW, S",
+      "waterTemp": "18-23°C",
+      "experience": "Intermediate",
+      "launch": "Sandy beach at Pinnaroo Point, north of Hillarys",
+      "hazards": "Near-shore reef, swimmers, boat traffic from the nearby marina",
+      "season": "October-April",
+      "description": "Pinnaroo Point is one of the main kite spots on Perth's northern coast. On summer afternoons the SW sea breeze, known locally as the Fremantle Doctor, blows 15-25 knots over chop and small waves.",
+      "llmComment": "The afternoon SW sea breeze (the Fremantle Doctor) arrives around midday on hot summer days and is usually stronger than gridded models show."
+    },
+    "spotInfoPL": {
+      "type": "Ocean, chop do małych fal",
+      "bestWind": "SW, S",
+      "waterTemp": "18-23°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Piaszczysta plaża przy Pinnaroo Point, na północ od Hillarys",
+      "hazards": "Rafa blisko brzegu, kąpiący się, ruch łodzi z pobliskiej mariny",
+      "season": "Październik-Kwiecień",
+      "description": "Pinnaroo Point to jeden z głównych spotów kite na północnym wybrzeżu Perth. W letnie popołudnia bryza z SW, zwana lokalnie Fremantle Doctor, wieje 15-25 węzłów nad chopem i małymi falami.",
+      "llmComment": "Popołudniowa bryza z SW (Fremantle Doctor) przychodzi w gorące letnie dni około południa i zwykle jest silniejsza niż pokazują modele siatkowe."
+    }
+  },
+  {
+    "name": "Safety Bay",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/208581",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-32.3050,115.7100",
+    "spotInfo": {
+      "type": "Sheltered bay, shallow flat water",
+      "bestWind": "SW, S",
+      "waterTemp": "18-23°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach along Safety Bay Road",
+      "hazards": "Seagrass, shallow sandbars, jetties, swimmers",
+      "season": "October-April",
+      "description": "Safety Bay near Rockingham, south of Perth, is a sheltered bay with shallow flat water over sandbars. The afternoon sea breeze from the S-SW makes it one of the best places around Perth for beginners and freestyle riders."
+    },
+    "spotInfoPL": {
+      "type": "Osłonięta zatoka, płytka płaska woda",
+      "bestWind": "SW, S",
+      "waterTemp": "18-23°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża wzdłuż Safety Bay Road",
+      "hazards": "Trawa morska, płytkie mielizny, pomosty, kąpiący się",
+      "season": "Październik-Kwiecień",
+      "description": "Safety Bay koło Rockingham, na południe od Perth, to osłonięta zatoka z płytką płaską wodą nad piaszczystymi mieliznami. Popołudniowa bryza z S-SW sprawia, że to jedno z najlepszych miejsc w okolicy Perth dla początkujących i freestyle'owców."
+    }
+  },
+  {
+    "name": "Coronation Beach",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/639103",
+    "windfinderUrl": "https://www.windfinder.com/forecast/coronation_beach",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-28.5530,114.5640",
+    "spotInfo": {
+      "type": "Reef-protected lagoon with flat water; waves on the reef",
+      "bestWind": "S, SSW",
+      "waterTemp": "19-24°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Sandy beach at the Coronation Beach campground",
+      "hazards": "Reef, very strong wind, remote location with limited facilities",
+      "season": "November-March",
+      "description": "Coronation Beach, about 25 km north of Geraldton, is one of the windiest places on the Australian coast. In summer a strong southerly blows 20-35 knots on most afternoons. A reef-protected lagoon has flat water, while the outer reef offers waves.",
+      "llmComment": "The summer S sea breeze, boosted by the heat inland, is very reliable and often 20-35 knots in the afternoon, well above what gridded models show."
+    },
+    "spotInfoPL": {
+      "type": "Laguna osłonięta rafą z płaską wodą; fale na rafie",
+      "bestWind": "S, SSW",
+      "waterTemp": "19-24°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy polu kempingowym Coronation Beach",
+      "hazards": "Rafa, bardzo silny wiatr, odludne miejsce z ograniczoną infrastrukturą",
+      "season": "Listopad-Marzec",
+      "description": "Coronation Beach, około 25 km na północ od Geraldton, to jedno z najbardziej wietrznych miejsc na wybrzeżu Australii. Latem silny wiatr z południa wieje 20-35 węzłów w większość popołudni. Laguna za rafą ma płaską wodę, a na zewnętrznej rafie jest fala.",
+      "llmComment": "Letnia bryza z S, wzmacniana upałem w głębi lądu, jest bardzo pewna i po południu często ma 20-35 węzłów, znacznie więcej niż pokazują modele siatkowe."
+    }
+  },
+  {
+    "name": "St Kilda (Melbourne)",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/208658",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-37.8670,144.9730",
+    "spotInfo": {
+      "type": "Bay, chop",
+      "bestWind": "S, SW, W",
+      "waterTemp": "12-22°C",
+      "experience": "Intermediate",
+      "launch": "Designated kite zone between St Kilda and Elwood",
+      "hazards": "Swimmers, boats, pier, crowded summer weekends",
+      "season": "October-April",
+      "description": "St Kilda is Melbourne's best-known kite spot on Port Phillip Bay. In summer a southerly sea breeze and passing fronts bring 15-25 knots over choppy bay water, a short ride from the city centre."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, chop",
+      "bestWind": "S, SW, W",
+      "waterTemp": "12-22°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Wyznaczona strefa kite między St Kilda a Elwood",
+      "hazards": "Kąpiący się, łodzie, molo, tłok w letnie weekendy",
+      "season": "Październik-Kwiecień",
+      "description": "St Kilda to najbardziej znany spot kite w Melbourne nad zatoką Port Phillip. Latem bryza z południa i przechodzące fronty dają 15-25 węzłów nad zafalowaną wodą zatoki, niedaleko centrum miasta."
+    }
+  },
+  {
+    "name": "Kurnell (Botany Bay)",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/208675",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-34.0060,151.2020",
+    "spotInfo": {
+      "type": "Bay, flat to choppy water",
+      "bestWind": "NE, E, S",
+      "waterTemp": "17-24°C",
+      "experience": "All levels",
+      "launch": "Silver Beach, Kurnell",
+      "hazards": "Shipping lanes, airspace limits near Sydney Airport, groynes, swimmers",
+      "season": "September-April",
+      "description": "Kurnell on the southern shore of Botany Bay is Sydney's main kite spot. On summer afternoons a NE sea breeze blows 12-20 knots over flat to choppy water, and southerly changes bring stronger wind. The groynes along Silver Beach and the nearby airport call for care."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka, woda płaska do zafalowanej",
+      "bestWind": "NE, E, S",
+      "waterTemp": "17-24°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Silver Beach, Kurnell",
+      "hazards": "Tory wodne statków, ograniczenia przestrzeni powietrznej przy lotnisku w Sydney, falochrony, kąpiący się",
+      "season": "Wrzesień-Kwiecień",
+      "description": "Kurnell na południowym brzegu zatoki Botany to główny spot kite w Sydney. W letnie popołudnia bryza z NE wieje 12-20 węzłów nad wodą płaską lub lekko zafalowaną, a zmiany frontowe z południa przynoszą silniejszy wiatr. Falochrony wzdłuż Silver Beach i pobliskie lotnisko wymagają ostrożności."
+    }
+  },
+  {
+    "name": "Golden Beach (Caloundra)",
+    "country": "Australia",
+    "windguruUrl": "https://www.windguru.cz/160115",
+    "windguruFallbackUrl": "https://www.windguru.cz/729247",
+    "windfinderUrl": "https://www.windfinder.com/forecast/caloundra",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-26.8170,153.1230",
+    "spotInfo": {
+      "type": "Tidal channel, flat water",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "20-27°C",
+      "experience": "All levels",
+      "launch": "Grassy parkland along the shore at Golden Beach",
+      "hazards": "Tidal currents, boats in the channel, shallow sandbanks",
+      "season": "Year-round (SE trades in winter, NE sea breeze in summer)",
+      "description": "Golden Beach in Caloundra on the Sunshine Coast faces the Pumicestone Passage, a channel sheltered by Bribie Island. The water stays flat, the SE trade winds blow in winter and a NE sea breeze in summer, which makes it one of the most popular kite spots in Queensland."
+    },
+    "spotInfoPL": {
+      "type": "Kanał pływowy, płaska woda",
+      "bestWind": "SE, E, NE",
+      "waterTemp": "20-27°C",
+      "experience": "Wszystkie poziomy",
+      "launch": "Trawiasty park wzdłuż brzegu w Golden Beach",
+      "hazards": "Prądy pływowe, łodzie w kanale, płytkie mielizny",
+      "season": "Cały rok (zimą pasaty z SE, latem bryza z NE)",
+      "description": "Golden Beach w Caloundrze na Sunshine Coast leży nad Pumicestone Passage, kanałem osłoniętym przez wyspę Bribie. Woda pozostaje płaska, zimą wieją pasaty z SE, a latem bryza z NE, co czyni to miejsce jednym z najpopularniejszych spotów kite w Queensland."
     }
   }
 ]
