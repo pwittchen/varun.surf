@@ -13,6 +13,19 @@ fi
 
 echo "==> Starting deployment"
 
+# While maintenance.sh has the site in maintenance mode the application is meant to
+# stay stopped, so a release pushed in the meantime must not start it again.
+# maintenance.sh off sets ALLOW_DURING_MAINTENANCE to bring it back.
+if [[ "$ENV" == "prod" ]]; then
+  MAINTENANCE_FLAG="/root/apps/varun.surf/nginx/maintenance/maintenance.on"
+else
+  MAINTENANCE_FLAG="$(dirname "$0")/nginx/maintenance/maintenance.on"
+fi
+if [[ -f "$MAINTENANCE_FLAG" && -z "${ALLOW_DURING_MAINTENANCE:-}" ]]; then
+  echo "==> Maintenance mode is on, skipping deployment (run ./maintenance.sh off $ENV to end it)"
+  exit 0
+fi
+
 # Purges the Cloudflare edge cache so updated pages, styles and images are served
 # immediately instead of waiting for the cached copies to expire.
 # No-op unless CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN are present in the .env file.

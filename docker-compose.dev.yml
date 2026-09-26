@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/maintenance:/etc/nginx/maintenance:ro
     ports:
       - "20245:80"
     networks:

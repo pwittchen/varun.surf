@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - /root/apps/varun.surf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /root/apps/varun.surf/nginx/maintenance:/etc/nginx/maintenance:ro
     ports:
       - "20245:80"
     networks:

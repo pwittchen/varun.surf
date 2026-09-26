@@ -54,3 +54,6 @@ src/main/resources/static/*
 
 ### Playwright
 .playwright-mcp/
+
+### maintenance mode flag, created and removed by maintenance.sh
+nginx/maintenance/maintenance.on

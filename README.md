@@ -106,13 +106,27 @@ Deployment of the app is configured with the bash, docker, and docker compose sc
 With these scripts, we can perform zero-downtime (blue/green) deployment with nginx server as a proxy.
 To do that, follow the instructions below.
 
-- Copy `deployment.sh`, `stop.sh`, `docker-compose.prod.yml`, `.env`, and `./nginx/nginx.conf` files to the single directory on the VPS.
-- In the `deployment.sh`, `stop.sh` and `docker-compose.prod.yml` files adjust server paths if needed
+- Copy `deployment.sh`, `stop.sh`, `maintenance.sh`, `docker-compose.prod.yml`, `.env`, `./nginx/nginx.conf` and `./nginx/maintenance/` to the single directory on the VPS.
+- In the `deployment.sh`, `stop.sh`, `maintenance.sh` and `docker-compose.prod.yml` files adjust server paths if needed
 - In the `.env` file, configure the environment variables basing on the `.env.example` file.
 - Run `./deployment.sh prod` script to deploy the app with the nginx proxy.
 - Run the same command again to perform the update with a zero-downtime and the latest docker image.
 - If you want to test the deployment locally, run `./deployment.sh dev` script.
 - To stop everything, run `./stop.sh prod` (or `./stop.sh dev` for the local deployment).
+
+## maintenance mode
+
+```
+./maintenance.sh on prod      # show the maintenance page and stop the app
+./maintenance.sh status prod  # tell whether maintenance mode is on
+./maintenance.sh off prod     # start the app and take the maintenance page down
+```
+
+`on` creates the `nginx/maintenance/maintenance.on` flag, and from then on nginx answers every request
+with a 503 and the static `nginx/maintenance/maintenance.html` page (EN/PL). The app containers are
+then stopped, so nothing fetches forecasts, live readings or anything else. While the flag is up,
+`deployment.sh` skips deployments, so a release pushed in the meantime does not start the app again.
+`off` starts the app through `deployment.sh`, waits for it to be healthy, and only then removes the flag.
 
 ## server administration
 

@@ -549,6 +549,12 @@ src/main/java/com/github/pwittchen/varun/
 - **Registry**: ghcr.io/pwittchen/varun.surf
 - **VPS**: a [mikr.us](https://mikr.us) server; deployed with the `deployment.sh`
   helper script
+- **Maintenance mode**: `./maintenance.sh on|off|status [dev|prod]`. `on` creates the
+  `nginx/maintenance/maintenance.on` flag (gitignored), which makes nginx answer every
+  request with a 503 and the static `nginx/maintenance/maintenance.html`, then stops
+  the app containers, so nothing is fetched. `deployment.sh` skips while the flag is
+  up (unless `ALLOW_DURING_MAINTENANCE` is set), so a CD release cannot restart the
+  app. `off` runs `deployment.sh` and removes the flag only once the app is healthy
 - **mikrus MCP**: when the `mikrus` MCP server is connected to Claude, server
   operations can be performed through its tools instead of SSH - `info`, `servers`,
   `stats`, `status`, `ports`, `logs`, `db`, `cloud`, `list_profiles` and `ctx` are

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>varun.surf - maintenance</title>
+    <style>
+        :root {
+            --bg: #08090a;
+            --text: #f2f3f4;
+            --muted: #8a8f98;
+            --border: #1c1e21;
+            --accent: #22c3e6;
+            color-scheme: dark;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f7f8f8;
+                --text: #08090a;
+                --muted: #5b6069;
+                --border: #e2e4e7;
+                --accent: #0e8aa8;
+                color-scheme: light;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        main {
+            max-width: 480px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0 0 12px;
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 32px auto;
+            width: 64px;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="logo">varun.surf</div>
+    <h1 id="title">We'll be back soon</h1>
+    <p id="message">varun.surf is down for maintenance right now. Forecasts and live wind readings are paused - please come back later.</p>
+    <hr>
+    <p id="footer">Thanks for your patience.</p>
+</main>
+<script>
+    (function () {
+        var lang = (navigator.language || '').toLowerCase();
+        if (lang.indexOf('pl') !== 0) {
+            return;
+        }
+        document.documentElement.lang = 'pl';
+        document.getElementById('title').textContent = 'Wracamy niedługo';
+        document.getElementById('message').textContent =
+            'Trwają prace techniczne na varun.surf. Prognozy i odczyty wiatru na żywo są wstrzymane - zajrzyj później.';
+        document.getElementById('footer').textContent = 'Dzięki za cierpliwość.';
+    })();
+</script>
+</body>
+</html>
