@@ -219,6 +219,12 @@ OXYLABS_PASSWORD=your-password
 OXYLABS_COUNTRY=PL   # optional exit country
 ```
 
+`OXYLABS_COUNTRY` is best left empty: Oxylabs then picks exit IPs from its whole worldwide pool,
+so connections come from many countries. Set to a country code, every exit IP is from that one
+country - Oxylabs takes a single country per username, so a list of countries is not possible.
+The exit IP changes per connection, not per request: a pooled connection is kept for up to
+5 minutes and all requests sent over it leave from the same IP.
+
 The endpoint defaults to `pr.oxylabs.io:7777` (`app.proxy.oxylabs.host` / `port`). A target
 switched on without credentials goes direct and logs a warning. Requests to OpenAI never go
 through the proxy. The [/metrics](https://varun.surf/metrics) page shows which targets are proxied.

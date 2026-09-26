@@ -792,7 +792,11 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       and `other` (Google Maps, ICM meteo.pl, the `/api/v1/status/sources` pings)
     - Credentials only from the environment: `OXYLABS_USERNAME`, `OXYLABS_PASSWORD`, plus
       the optional exit country `OXYLABS_COUNTRY`. The `customer-` prefix and `-cc-<country>`
-      suffix Oxylabs expects in the username are added by `OxylabsProxy.proxyUsername()`
+      suffix Oxylabs expects in the username are added by `OxylabsProxy.proxyUsername()`.
+      Without a country the exit IPs come from the whole worldwide pool; with one, all of
+      them come from that country (Oxylabs takes one country per username, not a list)
+    - The exit IP rotates per connection, not per request: a pooled connection lives up to
+      5 minutes and every request sent over it leaves from the same IP
     - Three `OkHttpClient` beans derived from one: the `@Primary` one is the `other` target,
       and `windguruHttpClient` / `liveStationsHttpClient` (`OkHttpClientConfig.WINDGURU_HTTP_CLIENT`,
       `LIVE_STATIONS_HTTP_CLIENT`) are injected with `@Qualifier`. They share one dispatcher
