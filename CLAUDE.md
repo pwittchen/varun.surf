@@ -79,7 +79,11 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      The Windguru limits are low on purpose: at 32 wide Windguru blocked the
      production IP for "unusual traffic". `ForecastService` also pauses every
      Windguru request for 30 minutes after a 403/429 (sweep, retry pass and model
-     discovery are skipped while paused) and shares one wave fetch across models
+     discovery are skipped while paused) and shares one wave fetch across models.
+     A refused request is failed for good - never retried, not even in the sweep's
+     retry pass - and counted as failed on the metrics page: as a failed HTTP client
+     request (`exception="HTTP 403"`/`"HTTP 429"`) and, when it hit the sweep, as a
+     failed forecast fetch
    - Maintains multiple in-memory caches (ConcurrentHashMap):
      - forecastCache: Map<Integer, ForecastData(daily, Map<ForecastModel, List<Forecast>>)>
      - currentConditions: Map<Integer, CurrentConditions>

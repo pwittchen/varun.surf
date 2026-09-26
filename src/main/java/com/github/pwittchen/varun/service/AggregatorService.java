@@ -645,6 +645,8 @@ public class AggregatorService {
         try (var scope = openScope("forecast")) {
             // The spots whose fetch threw, retried once the rest of the pass is through.
             final Queue<Spot> failedSpots = new ConcurrentLinkedQueue<>();
+            // Spots Windguru refused (403/429), or that were held back by the pause a refusal starts.
+            final AtomicInteger refusedSpots = new AtomicInteger();
 
             spots.values().forEach(spot -> scope.fork(() -> {
                 forecastLimiter.acquire();
@@ -658,7 +660,12 @@ public class AggregatorService {
                     return Pair.with(cacheId, data);
                 } catch (Exception e) {
                     recordForecastFetchFailure(spot, total, e);
-                    failedSpots.add(spot);
+                    // A refusal is final: retrying it is exactly the traffic that keeps the IP blocked.
+                    if (isWindguruRefusal(e)) {
+                        refusedSpots.incrementAndGet();
+                    } else {
+                        failedSpots.add(spot);
+                    }
                     throw e;
                 } finally {
                     forecastLimiter.release();
@@ -678,8 +685,14 @@ public class AggregatorService {
             long elapsedMs = (System.nanoTime() - startTime) / 1_000_000;
             log.info("Forecasts fetched: {} of {} spots in {} ms ({} failed, cache holds {})",
                     forecastFetchSucceeded.get(), total, elapsedMs, forecastFetchFailed.get(), forecastCache.size());
-            metricsService.incrementForecastFetchSuccessCounter();
-            metricsService.updateLastForecastFetchTimestamp();
+            if (refusedSpots.get() > 0) {
+                // Not thrown: @Retryable would start the pass over, and the pause is there to stop that.
+                log.error("Forecast fetch failed: Windguru refused {} of {} spots", refusedSpots.get(), total);
+                metricsService.incrementForecastFetchFailureCounter();
+            } else {
+                metricsService.incrementForecastFetchSuccessCounter();
+                metricsService.updateLastForecastFetchTimestamp();
+            }
             updateMetricsGauges();
         } finally {
             endForecastFetchProgress();
@@ -777,6 +790,16 @@ public class AggregatorService {
 
         log.info("Retried forecasts for {} spots: {} recovered, {} still failing",
                 attempted, recovered.get(), forecastFetchFailed.get());
+    }
+
+    private static boolean isWindguruRefusal(final Throwable e) {
+        // block() rethrows a checked exception wrapped in a RuntimeException
+        for (Throwable cause = e; cause != null; cause = cause.getCause()) {
+            if (cause instanceof ForecastService.WindguruRefusedException) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void recordForecastFetchFailure(final Spot spot, final int total, final Exception e) {

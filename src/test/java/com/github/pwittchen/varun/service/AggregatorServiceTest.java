@@ -294,6 +294,37 @@ class AggregatorServiceTest {
     }
 
     /**
+     * A 403 or 429 means Windguru is blocking the server. Retrying it is exactly the traffic that
+     * keeps the block in place, so the spot stays failed and the pass is counted as a failed one.
+     */
+    @Test
+    void shouldNotRetryARefusedSpotAndCountThePassAsFailed() throws FetchingForecastException {
+        // given
+        var refused = createTestSpot(123, "Refused Spot");
+        var working = createTestSpot(456, "Working Spot");
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(refused, working));
+        when(forecastService.getForecastData(123))
+                .thenReturn(Mono.error(new ForecastService.WindguruRefusedException("HTTP 403: Forbidden")));
+        when(forecastService.getForecastData(456)).thenReturn(Mono.just(new ForecastData(daily, Map.of())));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(2);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        var progress = aggregatorService.getForecastFetchProgress();
+        assertThat(progress.fetched()).isEqualTo(1);
+        assertThat(progress.failed()).isEqualTo(1);
+        verify(forecastService, times(1)).getForecastData(123);
+        verify(metricsService).incrementForecastFetchFailureCounter();
+        verify(metricsService, never()).incrementForecastFetchSuccessCounter();
+    }
+
+    /**
      * A handful of exports time out on any given pass. Retrying them once the pass is through is
      * what keeps those spots from carrying a three-hour-old forecast - or none at all, on a freshly
      * started instance - until the next sweep.

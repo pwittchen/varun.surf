@@ -27,6 +27,9 @@ public class HttpClientMetricsEventListener extends EventListener {
     private final ConcurrentHashMap<Call, Long> callStartTimes = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Call, Long> connectStartTimes = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Call, Long> dnsStartTimes = new ConcurrentHashMap<>();
+    // Calls the server answered with a refusal. The call itself completes, but a 403 or 429 is a
+    // request that got nothing (Windguru blocking the IP, a rate limit), so it counts as failed.
+    private final ConcurrentHashMap<Call, Integer> refusedCalls = new ConcurrentHashMap<>();
 
     public HttpClientMetricsEventListener(MeterRegistry registry) {
         this.registry = registry;
@@ -46,6 +49,7 @@ public class HttpClientMetricsEventListener extends EventListener {
     @Override
     public void callEnd(@NotNull Call call) {
         Long startTime = callStartTimes.remove(call);
+        Integer refusedStatus = refusedCalls.remove(call);
         if (startTime != null) {
             activeRequests.decrementAndGet();
             long duration = System.nanoTime() - startTime;
@@ -54,13 +58,19 @@ public class HttpClientMetricsEventListener extends EventListener {
                     .tag("host", extractHost(call.request()))
                     .register(registry)
                     .record(Duration.ofNanos(duration));
-            registry.counter("varun.http.client.requests.success").increment();
+            if (refusedStatus != null) {
+                registry.counter("varun.http.client.requests.failed",
+                        "exception", "HTTP " + refusedStatus).increment();
+            } else {
+                registry.counter("varun.http.client.requests.success").increment();
+            }
         }
     }
 
     @Override
     public void callFailed(@NotNull Call call, @NotNull IOException e) {
         callStartTimes.remove(call);
+        refusedCalls.remove(call);
         activeRequests.decrementAndGet();
         registry.counter("varun.http.client.requests.failed",
                 "exception", e.getClass().getSimpleName()).increment();
@@ -119,9 +129,16 @@ public class HttpClientMetricsEventListener extends EventListener {
 
     @Override
     public void responseHeadersEnd(@NotNull Call call, @NotNull Response response) {
+        if (isRefusal(response.code())) {
+            refusedCalls.put(call, response.code());
+        }
         registry.counter("varun.http.client.responses",
                 "status", String.valueOf(response.code()),
                 "host", extractHost(call.request())).increment();
+    }
+
+    private static boolean isRefusal(int statusCode) {
+        return statusCode == 403 || statusCode == 429;
     }
 
     private String extractHost(Request request) {

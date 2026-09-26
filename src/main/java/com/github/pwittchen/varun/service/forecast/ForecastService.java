@@ -91,7 +91,7 @@ public class ForecastService {
      * Thrown instead of sending anything while Windguru's refusal pause lasts, and for the refusal itself.
      */
     public static final class WindguruRefusedException extends IOException {
-        WindguruRefusedException(String message) {
+        public WindguruRefusedException(String message) {
             super(message);
         }
     }
@@ -131,7 +131,9 @@ public class ForecastService {
                             Map.of(forecastModel, mapper.toHourlyForecasts(merged))
                     );
                 })
-                .onErrorResume(_ -> forecastMono.map(forecasts -> new ForecastData(
+                // A refusal fails the request for good: subscribing to forecastMono again would be
+                // a retry of exactly the request Windguru just turned down.
+                .onErrorResume(e -> !(e instanceof WindguruRefusedException), _ -> forecastMono.map(forecasts -> new ForecastData(
                         mapper.toWeatherForecasts(forecasts),
                         Map.of(forecastModel, mapper.toHourlyForecasts(forecasts))
                 )));

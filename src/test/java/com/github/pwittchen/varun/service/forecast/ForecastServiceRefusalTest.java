@@ -94,6 +94,20 @@ class ForecastServiceRefusalTest {
     }
 
     @Test
+    void shouldNotRetryARefusedForecastRequest() {
+        status = 403;
+
+        StepVerifier.create(service.getForecastData(1, ForecastModel.GFS))
+                .expectError(ForecastService.WindguruRefusedException.class)
+                .verify();
+
+        long forecastRequests = requests.stream()
+                .filter(request -> !"ewam".equals(request.getRequestUrl().queryParameter("m")))
+                .count();
+        assertThat(forecastRequests).isEqualTo(1);
+    }
+
+    @Test
     void shouldPauseOnTooManyRequests() {
         status = 429;
 
