@@ -13,42 +13,97 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class ForecastService {
+    private static final Logger log = LoggerFactory.getLogger(ForecastService.class);
     // for help regarding website usage, visit: https://micro.windguru.cz/help.php
     private static final String URL = "https://micro.windguru.cz";
     private static final String FORECAST_PARAMS = "WSPD,GUST,WDEG,TMP,APCP1,HCLD,MCLD,LCLD,SLP";
     private static final String WAVE_PARAMS = "HTSGW,PERPW,WADEG";
     private static final String WAVE_MODEL = "ewam";
+    private static final String USER_AGENT = "varun.surf (+https://varun.surf)";
+
+    /**
+     * How long every request to Windguru is held back after it answered 403 or 429. Windguru's
+     * firewall blocks an IP for "unusual traffic", and a blocked instance that kept going - a sweep
+     * of ~1600 requests every three hours, a retry pass after each, 80 more per spot page opened -
+     * is exactly the traffic that keeps it blocked.
+     */
+    static final Duration REFUSAL_PAUSE = Duration.ofMinutes(30);
+
+    /**
+     * The wave export does not depend on the forecast model, yet opening a spot page fetches every
+     * model at once and each of them used to fetch the waves again: 40 identical requests per page.
+     * One fetch is shared by every model asking within this window.
+     */
+    private static final Duration WAVE_CACHE_TTL = Duration.ofMinutes(10);
 
     private final OkHttpClient httpClient;
     private final WeatherForecastMapper mapper;
+    private final String baseUrl;
+    private final Clock clock;
+    private final Map<Integer, CachedWaves> waveCache = new ConcurrentHashMap<>();
+    private final AtomicLong pausedUntilMillis = new AtomicLong();
 
+    @Autowired
     public ForecastService(WeatherForecastMapper mapper, OkHttpClient httpClient) {
+        this(mapper, httpClient, URL, Clock.systemUTC());
+    }
+
+    ForecastService(WeatherForecastMapper mapper, OkHttpClient httpClient, String baseUrl, Clock clock) {
         this.httpClient = httpClient;
         this.mapper = mapper;
+        this.baseUrl = baseUrl;
+        this.clock = clock;
     }
+
+    /**
+     * Whether Windguru refused a request recently and every request is held back until the pause
+     * runs out. Callers about to send a whole batch check it first rather than failing it spot by spot.
+     */
+    public boolean isPaused() {
+        return clock.millis() < pausedUntilMillis.get();
+    }
+
+    /**
+     * Thrown instead of sending anything while Windguru's refusal pause lasts, and for the refusal itself.
+     */
+    public static final class WindguruRefusedException extends IOException {
+        WindguruRefusedException(String message) {
+            super(message);
+        }
+    }
+
+    private record CachedWaves(Mono<Map<String, WaveData>> waves, long expiresAtMillis) {}
 
     public Mono<ForecastData> getForecastData(int wgSpotId) {
         return getForecastData(wgSpotId, ForecastModel.GFS);
     }
 
     public Mono<ForecastData> getForecastData(int wgSpotId, ForecastModel forecastModel) {
-        final HttpUrl httpUrl = HttpUrl.parse(URL);
+        final HttpUrl httpUrl = HttpUrl.parse(baseUrl);
         if (httpUrl == null) return Mono.just(new ForecastData(List.of(), Map.of()));
 
         Mono<List<ForecastWg>> forecastMono = executeHttpRequest(new Request
@@ -89,7 +144,18 @@ public class ForecastService {
     private record WaveData(Double height, Double period, Integer directionDeg) {}
 
     private Mono<Map<String, WaveData>> fetchWaveData(int wgSpotId) {
-        final HttpUrl httpUrl = HttpUrl.parse(URL);
+        final long now = clock.millis();
+        // Expired entries are never read again, so without this the sweep would leave one behind
+        // for every spot until the next pass came round.
+        waveCache.values().removeIf(entry -> entry.expiresAtMillis() <= now);
+        return waveCache.compute(wgSpotId, (_, cached) -> cached != null && cached.expiresAtMillis() > now
+                ? cached
+                : new CachedWaves(requestWaveData(wgSpotId).cache(), now + WAVE_CACHE_TTL.toMillis())
+        ).waves();
+    }
+
+    private Mono<Map<String, WaveData>> requestWaveData(int wgSpotId) {
+        final HttpUrl httpUrl = HttpUrl.parse(baseUrl);
         if (httpUrl == null) return Mono.just(Map.of());
         return executeHttpRequest(new Request
                 .Builder()
@@ -152,8 +218,14 @@ public class ForecastService {
                 .collect(Collectors.toList());
     }
 
-    private Mono<String> executeHttpRequest(final Request request) {
+    private Mono<String> executeHttpRequest(final Request unidentifiedRequest) {
+        final Request request = unidentifiedRequest.newBuilder().header("User-Agent", USER_AGENT).build();
         return Mono.<String>create(sink -> {
+            if (isPaused()) {
+                sink.error(new WindguruRefusedException("Windguru requests paused until "
+                        + Instant.ofEpochMilli(pausedUntilMillis.get()) + " after a refusal"));
+                return;
+            }
             Call call = httpClient.newCall(request);
             sink.onCancel(call::cancel);
             call.enqueue(new Callback() {
@@ -165,6 +237,11 @@ public class ForecastService {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) {
                     try (response) {
+                        if (response.code() == 403 || response.code() == 429) {
+                            pauseAfterRefusal(response.code());
+                            sink.error(new WindguruRefusedException("HTTP " + response.code() + ": " + response.message()));
+                            return;
+                        }
                         if (!response.isSuccessful()) {
                             sink.error(new IOException("HTTP " + response.code() + ": " + response.message()));
                             return;
@@ -177,6 +254,18 @@ public class ForecastService {
                 }
             });
         }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private void pauseAfterRefusal(int statusCode) {
+        final long now = clock.millis();
+        final long until = now + REFUSAL_PAUSE.toMillis();
+        final long previous = pausedUntilMillis.getAndUpdate(current -> Math.max(current, until));
+        // Requests already in flight all come back refused at once; one line is enough to say so.
+        if (previous <= now) {
+            log.error("Windguru refused a request with HTTP {}; pausing every Windguru request until {}. "
+                    + "A 403 usually means the server's IP was blocked - see https://micro.windguru.cz",
+                    statusCode, Instant.ofEpochMilli(until));
+        }
     }
 
     private List<ForecastWg> retrieveWgForecasts(final String microText) {

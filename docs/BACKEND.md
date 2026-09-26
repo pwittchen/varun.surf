@@ -14,7 +14,7 @@
                          +-------------+  - schedules: forecasts (3h), conditions (1m), eviction (1h)          |
                          |             |  - on demand only: AI analysis and ICM forecast (24h TTL each)        |
                          |             |  - caches: spots, forecasts (40+ models), conditions, AI, maps        |
-                         |             |  - semaphore-based rate limiting (32 forecasts, 32 conditions)        |
+                         |             |  - semaphore-based rate limiting (4 forecasts, 32 conditions)         |
                          |             |  - uses Java 25 StructuredTaskScope for concurrent execution          |
                          |             +------------+--------------------+-----------------+-------------------+
                          |                          |                    |                 |
@@ -452,9 +452,16 @@ Java 25 StructuredTaskScope (Preview Feature):
   - Automatic cleanup on scope exit
 
 Semaphore-based Rate Limiting:
-  - forecastLimiter: 32 permits (max 32 concurrent Windguru API calls)
+  - forecastLimiter: 4 permits (max 4 spots fetched from Windguru at once)
   - currentConditionsLimiter: 32 permits (max 32 concurrent station calls)
-  - discoveryLimiter: 16 permits (max 16 concurrent model discovery calls)
+  - discoveryLimiter: 4 permits (max 4 concurrent model discovery calls)
+  - Windguru limits are deliberately low: at 32 spots (64 requests) wide its
+    firewall blocked the production IP for "unusual traffic"
+  - ForecastService pauses every Windguru request for 30 minutes after a 403
+    or 429, and the sweep, its retry pass and model discovery are skipped
+    while paused, so a blocked instance stops sending the traffic that keeps it blocked
+  - The wave export (model-independent) is fetched once per spot and shared by
+    every model for 10 minutes, instead of once per model on each spot page
   - Prevents overwhelming external APIs
   - Ensures fair resource distribution
   - No LLM limiter: on-demand generation is one call per button press,

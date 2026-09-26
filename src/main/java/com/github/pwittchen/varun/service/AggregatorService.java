@@ -121,10 +121,12 @@ public class AggregatorService {
     // One line per this many keeps the sweep followable at INFO; the per-spot lines are at DEBUG.
     private static final int FORECAST_PROGRESS_LOG_EVERY = 50;
 
-    // Concurrency limits
-    private static final int FORECAST_SEMAPHORE_PERMITS = 32;
+    // Concurrency limits. The forecast and discovery limits both land on one host,
+    // micro.windguru.cz, which blocked the production IP for "unusual traffic" when the sweep ran
+    // 32 spots (64 requests) wide. A few at a time still gets through ~800 spots in minutes.
+    private static final int FORECAST_SEMAPHORE_PERMITS = 4;
     private static final int CONDITIONS_SEMAPHORE_PERMITS = 32;
-    private static final int DISCOVERY_SEMAPHORE_PERMITS = 16;
+    private static final int DISCOVERY_SEMAPHORE_PERMITS = 4;
 
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
@@ -615,6 +617,10 @@ public class AggregatorService {
         if (!backgroundTasksEnabled) {
             return;
         }
+        if (forecastService.isPaused()) {
+            log.warn("Skipping the forecast sweep: Windguru refused a recent request and requests are paused");
+            return;
+        }
         log.info("Fetching forecasts");
         fetchForecasts();
     }
@@ -729,6 +735,11 @@ public class AggregatorService {
      */
     private void retryFailedForecasts(final Collection<Spot> failedSpots) {
         if (failedSpots.isEmpty()) {
+            return;
+        }
+        if (forecastService.isPaused()) {
+            log.warn("Not retrying forecasts for {} spots: Windguru refused a request and requests are paused",
+                    failedSpots.size());
             return;
         }
 
@@ -952,6 +963,10 @@ public class AggregatorService {
     public void fetchForecastsForAllModels(int spotId) {
         if (isHourlyForecastCacheTimestampNotExpired(spotId)) {
             log.info("Hourly forecast cache timestamp for spot {} is not expired yet", spotId);
+            return;
+        }
+        if (forecastService.isPaused()) {
+            log.info("Not fetching forecast models for spot {}: Windguru requests are paused", spotId);
             return;
         }
 

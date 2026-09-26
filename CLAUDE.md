@@ -75,7 +75,11 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      reading are the only two paid operations, and both are generated only when a
      visitor presses a button - see On-Demand Generation below
    - Uses Java 25 StructuredTaskScope with virtual threads for concurrent execution
-   - Semaphore-based rate limiting (32 forecasts, 32 conditions, 16 model discovery)
+   - Semaphore-based rate limiting (4 forecasts, 32 conditions, 4 model discovery).
+     The Windguru limits are low on purpose: at 32 wide Windguru blocked the
+     production IP for "unusual traffic". `ForecastService` also pauses every
+     Windguru request for 30 minutes after a 403/429 (sweep, retry pass and model
+     discovery are skipped while paused) and shares one wave fetch across models
    - Maintains multiple in-memory caches (ConcurrentHashMap):
      - forecastCache: Map<Integer, ForecastData(daily, Map<ForecastModel, List<Forecast>>)>
      - currentConditions: Map<Integer, CurrentConditions>

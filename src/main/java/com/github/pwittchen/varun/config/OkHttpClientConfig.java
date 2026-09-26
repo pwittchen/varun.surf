@@ -23,13 +23,16 @@ public class OkHttpClientConfig {
      * around 1500 requests at a few seconds each, which is half an hour of fetching before a
      * single forecast reached the page.
      * <p>
-     * Per-host is sized to the forecast semaphore (32 permits, two requests each - the wind
-     * export and the wave export are fetched together), so the semaphore is what limits the
-     * fetch again. The global cap leaves room for the current conditions sweep, which runs
-     * every minute against a dozen other hosts and used to queue behind the forecasts.
+     * Per-host is sized to the forecast and discovery semaphores (4 permits each, two requests
+     * per permit - the wind export and the wave export are fetched together), so the semaphores
+     * are what limit the fetch. It was 64 for a while, and Windguru's firewall answered by
+     * blocking the production IP for "unusual traffic" - this cap is a guard against the
+     * semaphores being raised back without anyone noticing what that means for one host.
+     * The global cap leaves room for the current conditions sweep, which runs every minute
+     * against a dozen other hosts and used to queue behind the forecasts.
      */
     private static final int MAX_REQUESTS = 192;
-    private static final int MAX_REQUESTS_PER_HOST = 64;
+    private static final int MAX_REQUESTS_PER_HOST = 16;
 
     @Bean
     public HttpClientMetricsEventListener httpClientMetricsEventListener(MeterRegistry meterRegistry) {
