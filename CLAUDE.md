@@ -393,11 +393,11 @@ app:
       password: ${OXYLABS_PASSWORD:}
       country: ${OXYLABS_COUNTRY:}        # optional exit country, e.g. PL
     windguru:
-      enabled: false                      # micro.windguru.cz forecasts and model discovery
+      enabled: ${OXYLABS_WINDGURU_ENABLED:false}       # micro.windguru.cz forecasts and model discovery
     live-stations:
-      enabled: false                      # the 14 live station strategies
+      enabled: ${OXYLABS_LIVE_STATIONS_ENABLED:false}  # the 14 live station strategies
     other:
-      enabled: false                      # Google Maps, ICM meteo.pl, source pings
+      enabled: ${OXYLABS_OTHER_ENABLED:false}          # Google Maps, ICM meteo.pl, source pings
 
 spring:
   ai:
@@ -812,8 +812,11 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       country, never the credentials) and the connection counts from
       `varun.http.client.connections.opened{route=proxy|direct}`, shown on `/metrics` in
       the "Outgoing Proxy" card
-    - In docker compose the switches go into the `command:` like the feature flags, e.g.
-      `--app.proxy.windguru.enabled=true`; the credentials are passed from `.env`
+    - The switches are read from the environment (`OXYLABS_WINDGURU_ENABLED`,
+      `OXYLABS_LIVE_STATIONS_ENABLED`, `OXYLABS_OTHER_ENABLED`), set in `.env` next to the
+      credentials and passed into the containers by both docker compose files, so local and
+      prod can differ without editing `application.yml`. A `--app.proxy.<target>.enabled=true`
+      argument still works and wins over the environment
 
 ## Adding New Kite Spots
 

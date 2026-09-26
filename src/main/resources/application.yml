@@ -76,9 +76,11 @@ app:
       password: "\${OXYLABS_PASSWORD:}"
       # Optional exit country (ISO code, e.g. PL); empty picks from the whole pool
       country: "\${OXYLABS_COUNTRY:}"
+    # The switches are read from the environment too (.env), so local runs and prod
+    # can differ without touching this file.
     windguru:
-      enabled: false          # micro.windguru.cz forecasts and model discovery
+      enabled: "\${OXYLABS_WINDGURU_ENABLED:false}"            # micro.windguru.cz forecasts and model discovery
     live-stations:
-      enabled: false          # the live weather station strategies
+      enabled: "\${OXYLABS_LIVE_STATIONS_ENABLED:false}"       # the live weather station strategies
     other:
-      enabled: false          # Google Maps, ICM meteo.pl and the source pings
+      enabled: "\${OXYLABS_OTHER_ENABLED:false}"               # Google Maps, ICM meteo.pl and the source pings

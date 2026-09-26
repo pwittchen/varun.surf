@@ -524,11 +524,11 @@ app:
       password: ${OXYLABS_PASSWORD:}
       country: ${OXYLABS_COUNTRY:}        # optional exit country, e.g. PL
     windguru:
-      enabled: false                      # micro.windguru.cz forecasts and model discovery
+      enabled: ${OXYLABS_WINDGURU_ENABLED:false}       # micro.windguru.cz forecasts and model discovery
     live-stations:
-      enabled: false                      # the 14 live station strategies
+      enabled: ${OXYLABS_LIVE_STATIONS_ENABLED:false}  # the 14 live station strategies
     other:
-      enabled: false                      # Google Maps, ICM meteo.pl, source pings
+      enabled: ${OXYLABS_OTHER_ENABLED:false}          # Google Maps, ICM meteo.pl, source pings
 
 spring:
   ai:

@@ -210,14 +210,21 @@ app:
       enabled: false   # Google Maps, ICM meteo.pl, source pings on the status page
 ```
 
-The switches can also be passed as arguments, e.g. `--app.proxy.windguru.enabled=true` in the
-`command:` of the docker compose service. The credentials go into `.env` (see `.env.example`):
+The switches are read from the environment, so they are set in `.env` (see `.env.example`)
+next to the credentials, and a local run and production can use different ones without touching
+`application.yml`. The docker compose files pass them into the containers:
 
 ```
 OXYLABS_USERNAME=your-user
 OXYLABS_PASSWORD=your-password
-OXYLABS_COUNTRY=PL   # optional exit country
+OXYLABS_COUNTRY=PL                    # optional exit country
+OXYLABS_WINDGURU_ENABLED=true
+OXYLABS_LIVE_STATIONS_ENABLED=false
+OXYLABS_OTHER_ENABLED=false
 ```
+
+They can also be passed as arguments, e.g. `--app.proxy.windguru.enabled=true`, which wins over
+the environment.
 
 `OXYLABS_COUNTRY` is best left empty: Oxylabs then picks exit IPs from its whole worldwide pool,
 so connections come from many countries. Set to a country code, every exit IP is from that one
