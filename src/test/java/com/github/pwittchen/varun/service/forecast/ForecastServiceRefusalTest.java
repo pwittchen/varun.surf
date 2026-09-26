@@ -43,6 +43,7 @@ class ForecastServiceRefusalTest {
     private ForecastService service;
     private final List<RecordedRequest> requests = new CopyOnWriteArrayList<>();
     private volatile int status = 200;
+    private volatile boolean refuseWaves = true;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -52,10 +53,10 @@ class ForecastServiceRefusalTest {
             @Override
             public MockResponse dispatch(@NotNull RecordedRequest request) {
                 requests.add(request);
-                if (status != 200) {
+                boolean waves = request.getRequestUrl().queryParameter("m").equals("ewam");
+                if (status != 200 && (refuseWaves || !waves)) {
                     return new MockResponse().setResponseCode(status);
                 }
-                boolean waves = request.getRequestUrl().queryParameter("m").equals("ewam");
                 return new MockResponse().setBody(waves ? WAVE_EXPORT : WIND_EXPORT);
             }
         });
@@ -84,13 +85,17 @@ class ForecastServiceRefusalTest {
         StepVerifier.create(service.getForecastData(1, ForecastModel.GFS))
                 .expectError(ForecastService.WindguruRefusedException.class)
                 .verify();
-        int sentBeforePause = requests.size();
 
         assertThat(service.isPaused()).isTrue();
         StepVerifier.create(service.getForecastData(2, ForecastModel.GFS))
                 .expectError(ForecastService.WindguruRefusedException.class)
                 .verify();
-        assertThat(requests).hasSize(sentBeforePause);
+        // The first spot's wave request can still reach the server after the refusal has failed the
+        // forecast, so count only the second spot's requests: none of them may have been sent.
+        long secondSpotRequests = requests.stream()
+                .filter(request -> "2".equals(request.getRequestUrl().queryParameter("s")))
+                .count();
+        assertThat(secondSpotRequests).isEqualTo(0);
     }
 
     @Test
@@ -120,6 +125,9 @@ class ForecastServiceRefusalTest {
 
     @Test
     void shouldResumeOnceThePauseRunsOut() {
+        // The wave request outlives the refused forecast, and a refusal coming back after the clock
+        // was advanced would start a new pause, so only the forecast request is refused here.
+        refuseWaves = false;
         status = 403;
         StepVerifier.create(service.getForecastData(1, ForecastModel.GFS)).expectError().verify();
 
