@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.controller;
 
+import static com.github.pwittchen.varun.config.OkHttpClientConfig.WINDGURU_HTTP_CLIENT;
+
 import com.github.pwittchen.varun.model.status.SourceHealthResult;
 import com.github.pwittchen.varun.model.status.Uptime;
 import com.github.pwittchen.varun.service.AggregatorService;
@@ -10,6 +12,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +68,7 @@ public class StatusController {
     private final AggregatorService aggregatorService;
     private final HealthHistoryService healthHistoryService;
     private final OkHttpClient okHttpClient;
+    private final OkHttpClient windguruHttpClient;
 
     @Value("${spring.application.version:unknown}")
     private String version;
@@ -72,11 +76,13 @@ public class StatusController {
     public StatusController(
             AggregatorService aggregatorService,
             HealthHistoryService healthHistoryService,
-            OkHttpClient okHttpClient
+            OkHttpClient okHttpClient,
+            @Qualifier(WINDGURU_HTTP_CLIENT) OkHttpClient windguruHttpClient
     ) {
         this.aggregatorService = aggregatorService;
         this.healthHistoryService = healthHistoryService;
         this.okHttpClient = okHttpClient;
+        this.windguruHttpClient = windguruHttpClient;
     }
 
     @GetMapping("health")
@@ -168,7 +174,7 @@ public class StatusController {
                     .url(source.url())
                     .head()
                     .build();
-            try (Response response = okHttpClient.newCall(request).execute()) {
+            try (Response response = clientFor(source).newCall(request).execute()) {
                 long latency = System.currentTimeMillis() - start;
                 boolean ok = response.isSuccessful() || response.isRedirect();
                 return new SourceHealthResult(source.name(), source.url(), source.displayUrl(), ok, latency);
@@ -178,6 +184,15 @@ public class StatusController {
             log.debug("Failed to ping source {}: {}", source.name(), e.getMessage());
             return new SourceHealthResult(source.name(), source.url(), source.displayUrl(), false, latency);
         }
+    }
+
+    /**
+     * Windguru is pinged the way the forecasts reach it: when they go through the proxy
+     * because the server's own IP is blocked, a direct ping would report it down while
+     * every forecast still arrives.
+     */
+    private OkHttpClient clientFor(SourceDefinition source) {
+        return source.url().contains("windguru.cz") ? windguruHttpClient : okHttpClient;
     }
 
     private record SourceDefinition(String name, String url, String displayUrl) {

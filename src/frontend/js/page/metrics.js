@@ -326,6 +326,35 @@ function updateHttpClientMetrics(http) {
     document.getElementById('http-conn-released').textContent = formatNumber(http.connectionsReleased);
 }
 
+// Whether each group of outgoing requests goes through the residential proxy.
+// "misconfigured" is a target switched on without credentials: the backend sends
+// it direct rather than failing, and this is where that becomes visible.
+function updateProxyStatus(proxy) {
+    const targets = proxy.targets || {};
+    const rows = [
+        ['proxy-windguru', targets.windguru],
+        ['proxy-live-stations', targets.liveStations],
+        ['proxy-other', targets.other]
+    ];
+    for (const [id, target] of rows) {
+        const el = document.getElementById(id);
+        const proxied = !!target?.proxied;
+        const misconfigured = !!target?.enabled && !proxied;
+        el.textContent = proxied
+            ? t('metricsProxyProxied')
+            : misconfigured ? t('metricsProxyMissingCredentials') : t('metricsProxyDirect');
+        el.classList.toggle('proxied', proxied);
+        el.classList.toggle('misconfigured', misconfigured);
+    }
+
+    const endpoint = proxy.configured && proxy.endpoint
+        ? `${proxy.provider} ${proxy.endpoint}${proxy.country ? ` (${proxy.country})` : ''}`
+        : `${proxy.provider || 'Oxylabs'} - ${t('metricsProxyNotConfigured')}`;
+    document.getElementById('proxy-endpoint').textContent = endpoint;
+    document.getElementById('proxy-connections').textContent =
+        `${formatNumber(proxy.proxiedConnections)} / ${formatNumber(proxy.directConnections)}`;
+}
+
 function drawCpuHistoryChart() {
     const canvas = document.getElementById('cpu-history-chart');
     const ctx = canvas.getContext('2d');
@@ -602,6 +631,7 @@ function renderMetrics() {
     updateCacheMetrics(data.gauges || {});
     updateHttpServerMetrics(data.httpClient || {}, data.counters || {});
     updateHttpClientMetrics(data.httpClient || {});
+    updateProxyStatus(data.proxy || {});
 
     drawCpuHistoryChart();
     drawRamHistoryChart();

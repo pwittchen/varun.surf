@@ -516,6 +516,19 @@ app:
   wunderground:
     api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
                                           # no default - the station is skipped without it
+  proxy:                                  # Oxylabs residential proxy, off by default
+    oxylabs:
+      host: pr.oxylabs.io
+      port: 7777
+      username: ${OXYLABS_USERNAME:}
+      password: ${OXYLABS_PASSWORD:}
+      country: ${OXYLABS_COUNTRY:}        # optional exit country, e.g. PL
+    windguru:
+      enabled: false                      # micro.windguru.cz forecasts and model discovery
+    live-stations:
+      enabled: false                      # the 14 live station strategies
+    other:
+      enabled: false                      # Google Maps, ICM meteo.pl, source pings
 
 spring:
   ai:
@@ -552,6 +565,11 @@ management:
 - `APP_SESSION_SECRET`: Optional secret signing the SESSION cookie. Without it a random one
   is generated at startup, so cookies stop working after a restart and are not shared
   between the blue and green containers
+- `OXYLABS_USERNAME` / `OXYLABS_PASSWORD`: Optional Oxylabs residential proxy credentials.
+  Only used by the targets switched on under `app.proxy.*` (`windguru`, `live-stations`,
+  `other`), all off by default; a target switched on without them goes direct and logs a
+  warning. OpenAI is never proxied
+- `OXYLABS_COUNTRY`: Optional exit country for the proxy (ISO code, e.g. `PL`)
 - `CLOUDFLARE_ZONE_ID` / `CLOUDFLARE_API_TOKEN`: Optional, used by `deployment.sh` to purge the cache after deploy
 
 ## Build & Run Commands
@@ -656,7 +674,8 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── NettyConfig.java            # WebFlux Netty tuning
 │   ├── AsyncConfig.java            # Async executor configuration
 │   ├── MetricsConfig.java          # Micrometer metrics configuration
-│   ├── OkHttpClientConfig.java     # OkHttp client beans
+│   ├── OkHttpClientConfig.java     # OkHttp client beans (default, Windguru, live stations)
+│   ├── OxylabsProxy.java           # optional Oxylabs residential proxy, per target
 │   ├── CorsConfig.java             # CORS configuration
 │   ├── WebConfig.java              # WebFlux configuration
 │   ├── SecurityConfig.java         # Spring Security (HTTP Basic Auth + session filter)

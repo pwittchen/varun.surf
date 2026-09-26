@@ -100,6 +100,10 @@ public class HttpClientMetricsEventListener extends EventListener {
 
     @Override
     public void connectEnd(@NotNull Call call, @NotNull InetSocketAddress inetSocketAddress, @NotNull Proxy proxy, @Nullable Protocol protocol) {
+        // Counted per connection rather than per request: a pooled connection carries many
+        // requests, and through a residential proxy each one leaves from its own exit IP
+        registry.counter("varun.http.client.connections.opened",
+                "route", proxy.type() == Proxy.Type.DIRECT ? "direct" : "proxy").increment();
         Long startTime = connectStartTimes.remove(call);
         if (startTime != null) {
             long duration = System.nanoTime() - startTime;

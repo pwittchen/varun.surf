@@ -292,6 +292,16 @@ Sponsor
      - Separate caches for each language
    - Generated on demand only (POST /api/v1/spots/{id}/analysis), never on a timer
 
+Outgoing proxy (optional, OxylabsProxy)
+   - Oxylabs residential proxy (pr.oxylabs.io:7777), off by default, switched on per target:
+     app.proxy.windguru.enabled -> windguruHttpClient (ForecastService, Windguru ping)
+     app.proxy.live-stations.enabled -> liveStationsHttpClient (all 14 strategies)
+     app.proxy.other.enabled -> the @Primary okHttpClient (Google Maps, ICM, source pings)
+   - All three share one Dispatcher and ConnectionPool (per-host cap holds across them;
+     pooled connections are keyed by address, which includes the proxy)
+   - Credentials from OXYLABS_USERNAME / OXYLABS_PASSWORD, optional OXYLABS_COUNTRY
+   - Spring AI (OpenAI) uses its own HTTP client and is never proxied
+
 5. ICM Meteogram Integration (Poland & Czech Republic only)
    - IcmGridMapper converts lat/lon to ICM grid coordinates
    - Uses empirically fitted coefficients for UM 4km grid
@@ -705,7 +715,8 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── LoggingFilter.java                # HTTP request logging
 │   ├── MetricsConfig.java                # Micrometer metrics configuration
 │   ├── NettyConfig.java                  # Netty HTTP client tuning
-│   ├── OkHttpClientConfig.java           # OkHttpClient bean configuration
+│   ├── OkHttpClientConfig.java           # OkHttpClient beans (default, Windguru, live stations)
+│   ├── OxylabsProxy.java                 # optional Oxylabs residential proxy, per target
 │   ├── SecurityConfig.java               # Spring Security (HTTP Basic + session filter)
 │   ├── SessionTokenService.java          # signed stateless SESSION cookie token
 │   ├── SessionAuthenticationFilter.java  # Session-based API access gating
@@ -931,6 +942,13 @@ HTTP Client Metrics:
   - varun.http.client.request.duration     # Request timing
   - varun.http.client.dns.duration         # DNS resolution timing
   - varun.http.client.connect.duration     # TCP connect timing
+  - varun.http.client.connections.opened   # New connections, tagged route=proxy|direct
+
+Outgoing Proxy (/api/v1/metrics "proxy" block):
+  - provider, endpoint, country, configured  # never the credentials
+  - targets.windguru/liveStations/other      # enabled (switched on) and proxied
+                                             # (switched on and credentials present)
+  - proxiedConnections / directConnections   # from connections.opened
 
 JVM Metrics (auto-collected):
   - jvm.memory.used/max (heap/nonheap)

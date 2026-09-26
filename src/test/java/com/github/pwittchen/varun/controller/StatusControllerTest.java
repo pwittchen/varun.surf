@@ -31,7 +31,7 @@ public class StatusControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new StatusController(aggregatorService, healthHistoryService, new OkHttpClient());
+        controller = new StatusController(aggregatorService, healthHistoryService, new OkHttpClient(), new OkHttpClient());
         ReflectionTestUtils.setField(controller, "version", "test-version");
     }
 

@@ -5562,6 +5562,20 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     font-size: 0.75rem;
 }
 
+/* Outgoing proxy: green when a target is proxied, amber when it was switched on
+   but has no credentials and so still goes direct */
+.metrics-proxy-state.proxied {
+    color: var(--status-up);
+}
+
+.metrics-proxy-state.misconfigured {
+    color: #f59e0b;
+}
+
+.metrics-proxy-note {
+    margin-top: 12px;
+}
+
 /* Mini Chart */
 .metrics-chart-mini {
     width: 40px;

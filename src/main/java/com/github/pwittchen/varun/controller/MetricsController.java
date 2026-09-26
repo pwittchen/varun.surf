@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.config.OxylabsProxy;
 import com.github.pwittchen.varun.service.metrics.MetricsHistoryService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
@@ -23,13 +24,19 @@ public class MetricsController {
 
     private final MeterRegistry meterRegistry;
     private final MetricsHistoryService metricsHistoryService;
+    private final OxylabsProxy proxy;
 
     @Value("${spring.application.version:unknown}")
     private String version;
 
-    public MetricsController(MeterRegistry meterRegistry, MetricsHistoryService metricsHistoryService) {
+    public MetricsController(
+            MeterRegistry meterRegistry,
+            MetricsHistoryService metricsHistoryService,
+            OxylabsProxy proxy
+    ) {
         this.meterRegistry = meterRegistry;
         this.metricsHistoryService = metricsHistoryService;
+        this.proxy = proxy;
     }
 
     @GetMapping("metrics/history")
@@ -59,6 +66,9 @@ public class MetricsController {
 
         // HTTP client metrics
         result.put("httpClient", getHttpClientMetrics());
+
+        // Whether outgoing requests go through the residential proxy, per target
+        result.put("proxy", getProxyStatus());
 
         // Timestamp
         result.put("timestamp", Instant.now().toString());
@@ -176,6 +186,13 @@ public class MetricsController {
         return http;
     }
 
+    private Map<String, Object> getProxyStatus() {
+        Map<String, Object> status = new HashMap<>(proxy.status());
+        status.put("proxiedConnections", getCounterValue("varun.http.client.connections.opened", "route", "proxy"));
+        status.put("directConnections", getCounterValue("varun.http.client.connections.opened", "route", "direct"));
+        return status;
+    }
+
     private double getGaugeValue(String name) {
         return meterRegistry.find(name)
                 .gauges()
@@ -196,6 +213,15 @@ public class MetricsController {
 
     private double getCounterValue(String name) {
         return meterRegistry.find(name)
+                .counters()
+                .stream()
+                .mapToDouble(Counter::count)
+                .sum();
+    }
+
+    private double getCounterValue(String name, String tagKey, String tagValue) {
+        return meterRegistry.find(name)
+                .tag(tagKey, tagValue)
                 .counters()
                 .stream()
                 .mapToDouble(Counter::count)

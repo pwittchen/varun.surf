@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.service.forecast;
 
+import static com.github.pwittchen.varun.config.OkHttpClientConfig.WINDGURU_HTTP_CLIENT;
+
 import com.github.pwittchen.varun.mapper.WeatherForecastMapper;
 import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastData;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -68,7 +71,7 @@ public class ForecastService {
     private final AtomicLong pausedUntilMillis = new AtomicLong();
 
     @Autowired
-    public ForecastService(WeatherForecastMapper mapper, OkHttpClient httpClient) {
+    public ForecastService(WeatherForecastMapper mapper, @Qualifier(WINDGURU_HTTP_CLIENT) OkHttpClient httpClient) {
         this(mapper, httpClient, URL, Clock.systemUTC());
     }
 

@@ -179,6 +179,36 @@ Cloudflare edge cache or a browser cache to expire. This works on three levels:
 In Cloudflare, keep *Browser Cache TTL* set to **Respect Existing Headers**, otherwise the dashboard
 setting overrides the headers described above.
 
+## outgoing proxy
+
+Outgoing requests can go through an [Oxylabs](https://oxylabs.io) residential proxy. It is off
+by default and switched on separately for each group of hosts in `application.yml`, since the
+proxy is paid per gigabyte and only Windguru has ever blocked the server's IP:
+
+```yaml
+app:
+  proxy:
+    windguru:
+      enabled: true    # micro.windguru.cz forecasts and model discovery
+    live-stations:
+      enabled: false   # live weather stations
+    other:
+      enabled: false   # Google Maps, ICM meteo.pl, source pings on the status page
+```
+
+The switches can also be passed as arguments, e.g. `--app.proxy.windguru.enabled=true` in the
+`command:` of the docker compose service. The credentials go into `.env` (see `.env.example`):
+
+```
+OXYLABS_USERNAME=your-user
+OXYLABS_PASSWORD=your-password
+OXYLABS_COUNTRY=PL   # optional exit country
+```
+
+The endpoint defaults to `pr.oxylabs.io:7777` (`app.proxy.oxylabs.host` / `port`). A target
+switched on without credentials goes direct and logs a warning. Requests to OpenAI never go
+through the proxy. The [/metrics](https://varun.surf/metrics) page shows which targets are proxied.
+
 ## monitoring
 
 We can view system status, by visiting [/status](https://varun.surf/status) page.
@@ -198,6 +228,8 @@ The app includes a custom metrics dashboard at [/metrics](https://varun.surf/met
 - **Timers**: forecast, conditions, and AI fetch durations (count, total time, mean, max)
 - **JVM metrics**: heap/non-heap memory usage, thread counts, GC pause stats, CPU usage, uptime
 - **HTTP client metrics**: active/total/success/failed requests, connection stats, DNS/connect durations
+- **Outgoing proxy**: whether Windguru, the live stations and the other sources go through the
+  Oxylabs proxy or direct, and how many connections went each way
 - **Wide/narrow view toggle**: expand to full width for better readability
 
 The metrics dashboard needs no password: it is open to any visitor of the site.

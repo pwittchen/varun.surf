@@ -7,12 +7,16 @@ import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class OkHttpClientConfig {
+
+    public static final String WINDGURU_HTTP_CLIENT = "windguruHttpClient";
+    public static final String LIVE_STATIONS_HTTP_CLIENT = "liveStationsHttpClient";
 
     /**
      * OkHttp's dispatcher defaults are the real concurrency limit, not the semaphores in
@@ -39,13 +43,21 @@ public class OkHttpClientConfig {
         return new HttpClientMetricsEventListener(meterRegistry);
     }
 
+    /**
+     * The client for everything that is neither Windguru nor a live station (Google Maps,
+     * ICM, the source pings), and the one the other two are derived from. Derived clients
+     * share its dispatcher and connection pool, so the per-host cap above still holds across
+     * all of them, and a pooled connection is never handed to the wrong client: OkHttp keys
+     * connections by address, and the proxy is part of the address.
+     */
     @Bean
-    public OkHttpClient okHttpClient(HttpClientMetricsEventListener metricsEventListener) {
+    @Primary
+    public OkHttpClient okHttpClient(HttpClientMetricsEventListener metricsEventListener, OxylabsProxy proxy) {
         final Dispatcher dispatcher = new Dispatcher();
         dispatcher.setMaxRequests(MAX_REQUESTS);
         dispatcher.setMaxRequestsPerHost(MAX_REQUESTS_PER_HOST);
 
-        return new OkHttpClient
+        final OkHttpClient.Builder builder = new OkHttpClient
                 .Builder()
                 .dispatcher(dispatcher)
                 .connectTimeout(Duration.ofSeconds(10))
@@ -56,7 +68,18 @@ public class OkHttpClientConfig {
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .retryOnConnectionFailure(true)
-                .eventListenerFactory(_ -> metricsEventListener)
-                .build();
+                .eventListenerFactory(_ -> metricsEventListener);
+
+        return proxy.apply(builder, OxylabsProxy.Target.OTHER).build();
+    }
+
+    @Bean(WINDGURU_HTTP_CLIENT)
+    public OkHttpClient windguruHttpClient(OkHttpClient okHttpClient, OxylabsProxy proxy) {
+        return proxy.apply(okHttpClient.newBuilder(), OxylabsProxy.Target.WINDGURU).build();
+    }
+
+    @Bean(LIVE_STATIONS_HTTP_CLIENT)
+    public OkHttpClient liveStationsHttpClient(OkHttpClient okHttpClient, OxylabsProxy proxy) {
+        return proxy.apply(okHttpClient.newBuilder(), OxylabsProxy.Target.LIVE_STATIONS).build();
     }
 }

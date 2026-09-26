@@ -385,6 +385,19 @@ app:
   wunderground:
     api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
                                           # no default - the station is skipped without it
+  proxy:                                  # Oxylabs residential proxy, off by default
+    oxylabs:
+      host: pr.oxylabs.io
+      port: 7777
+      username: ${OXYLABS_USERNAME:}
+      password: ${OXYLABS_PASSWORD:}
+      country: ${OXYLABS_COUNTRY:}        # optional exit country, e.g. PL
+    windguru:
+      enabled: false                      # micro.windguru.cz forecasts and model discovery
+    live-stations:
+      enabled: false                      # the 14 live station strategies
+    other:
+      enabled: false                      # Google Maps, ICM meteo.pl, source pings
 
 spring:
   ai:
@@ -473,7 +486,8 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── NettyConfig.java
 │   ├── AsyncConfig.java
 │   ├── MetricsConfig.java
-│   ├── OkHttpClientConfig.java
+│   ├── OkHttpClientConfig.java # OkHttp clients (default, Windguru, live stations)
+│   ├── OxylabsProxy.java      # optional Oxylabs residential proxy, per target
 │   ├── CorsConfig.java
 │   ├── WebConfig.java
 │   ├── SecurityConfig.java    # Spring Security (HTTP Basic Auth + session filter)
@@ -570,6 +584,9 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Both on-demand buttons sit behind a confirmation modal, since each click
       spends a model call. On the mobile layout, where neither card is rendered,
       the same two buttons sit under the forecast model dropdown in the header
+- [x] Optional Oxylabs residential proxy for outgoing requests, switched on separately
+      for Windguru, the live stations and everything else (never for OpenAI), with the
+      state of each shown on the /metrics page
 - [x] Prometheus metrics export (/actuator/prometheus)
 - [x] Custom metrics dashboard (/api/v1/metrics)
 - [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
@@ -761,6 +778,32 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       - a `Cache-Control` header already set by a handler is never overwritten
     - `deployment.sh` purges the Cloudflare cache after a successful deploy when
       `CLOUDFLARE_ZONE_ID` and `CLOUDFLARE_API_TOKEN` are set (skipped otherwise)
+
+18. **Outgoing Proxy (Oxylabs)** (`config/OxylabsProxy.java`, `config/OkHttpClientConfig.java`):
+    - Optional Oxylabs residential proxy (`pr.oxylabs.io:7777`) for outgoing OkHttp requests,
+      switched on per target under `app.proxy.*` and off for every target by default:
+      `windguru` (forecasts and model discovery), `live-stations` (the 14 station strategies)
+      and `other` (Google Maps, ICM meteo.pl, the `/api/v1/status/sources` pings)
+    - Credentials only from the environment: `OXYLABS_USERNAME`, `OXYLABS_PASSWORD`, plus
+      the optional exit country `OXYLABS_COUNTRY`. The `customer-` prefix and `-cc-<country>`
+      suffix Oxylabs expects in the username are added by `OxylabsProxy.proxyUsername()`
+    - Three `OkHttpClient` beans derived from one: the `@Primary` one is the `other` target,
+      and `windguruHttpClient` / `liveStationsHttpClient` (`OkHttpClientConfig.WINDGURU_HTTP_CLIENT`,
+      `LIVE_STATIONS_HTTP_CLIENT`) are injected with `@Qualifier`. They share one dispatcher
+      and connection pool, so the per-host cap on Windguru holds across all of them. A new
+      live station strategy must take the `LIVE_STATIONS_HTTP_CLIENT` qualifier, or it goes
+      through the `other` switch
+    - A target switched on without credentials goes direct and logs a warning, rather than
+      failing the startup. A 407 to a request already carrying the credential is not retried
+    - OpenAI is never proxied: Spring AI reaches it through its own HTTP client
+    - The Windguru source ping on `/api/v1/status/sources` uses the Windguru client, so it
+      reports what the forecasts see
+    - `/api/v1/metrics` carries a `proxy` block (per target `enabled`/`proxied`, endpoint,
+      country, never the credentials) and the connection counts from
+      `varun.http.client.connections.opened{route=proxy|direct}`, shown on `/metrics` in
+      the "Outgoing Proxy" card
+    - In docker compose the switches go into the `command:` like the feature flags, e.g.
+      `--app.proxy.windguru.enabled=true`; the credentials are passed from `.env`
 
 ## Adding New Kite Spots
 

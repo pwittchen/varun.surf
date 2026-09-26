@@ -320,6 +320,9 @@ DOM Manipulation (vanilla JS)
 
 **Features**:
 - Gauges, counters, timers, JVM and HTTP client metrics
+- "Outgoing Proxy" card: per target (Windguru, live stations, other) whether requests go
+  through the Oxylabs proxy, directly, or directly because the proxy was switched on without
+  credentials (amber), plus the proxy endpoint and proxied / direct connection counts
 - Canvas-based charts from `/api/v1/metrics/history`
 - No password: the session cookie every visitor gets is enough
 

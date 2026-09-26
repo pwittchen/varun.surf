@@ -1,5 +1,6 @@
 package com.github.pwittchen.varun.controller;
 
+import com.github.pwittchen.varun.config.OxylabsProxy;
 import com.github.pwittchen.varun.service.metrics.MetricsHistoryService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
@@ -43,7 +44,8 @@ public class MetricsControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new MetricsController(meterRegistry, metricsHistoryService);
+        controller = new MetricsController(meterRegistry, metricsHistoryService, new OxylabsProxy(
+                "pr.oxylabs.io", 7777, "user", "secret", "", true, false, false));
 
         // Setup default search behavior
         lenient().when(meterRegistry.find(anyString())).thenReturn(search);
@@ -51,6 +53,23 @@ public class MetricsControllerTest {
         lenient().when(search.gauges()).thenReturn(Collections.emptyList());
         lenient().when(search.counters()).thenReturn(Collections.emptyList());
         lenient().when(search.timers()).thenReturn(Collections.emptyList());
+    }
+
+    @Test
+    void shouldReportWhichTargetsAreProxied() {
+        StepVerifier.create(controller.metrics())
+                .assertNext(metrics -> {
+                    Map<String, Object> proxy = (Map<String, Object>) metrics.get("proxy");
+                    assertThat(proxy).containsEntry("configured", true);
+                    assertThat(proxy).containsEntry("endpoint", "pr.oxylabs.io:7777");
+                    assertThat(proxy).containsEntry("proxiedConnections", 0.0);
+                    assertThat(proxy.toString()).doesNotContain("secret");
+                    Map<String, Object> targets = (Map<String, Object>) proxy.get("targets");
+                    assertThat(targets.get("windguru")).isEqualTo(Map.of("enabled", true, "proxied", true));
+                    assertThat(targets.get("liveStations")).isEqualTo(Map.of("enabled", false, "proxied", false));
+                    assertThat(targets.get("other")).isEqualTo(Map.of("enabled", false, "proxied", false));
+                })
+                .verifyComplete();
     }
 
     @Test

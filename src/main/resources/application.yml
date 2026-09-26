@@ -62,3 +62,23 @@ app:
     # No default on purpose: this repository is public, and a key committed here is
     # a published key. Without it the Turawa South station is simply skipped.
     api-key: "\${WUNDERGROUND_API_KEY:}"
+  proxy:
+    # Oxylabs residential proxy for outgoing requests, off for every target by default.
+    # Each target has its own switch because the proxy is paid per gigabyte: Windguru
+    # blocked the production IP, the live stations never did. OpenAI is never proxied -
+    # Spring AI reaches it through its own HTTP client. A target switched on without
+    # credentials goes direct and logs a warning. The /metrics page shows which
+    # targets are proxied. Credentials only from the environment (.env).
+    oxylabs:
+      host: pr.oxylabs.io
+      port: 7777
+      username: "\${OXYLABS_USERNAME:}"
+      password: "\${OXYLABS_PASSWORD:}"
+      # Optional exit country (ISO code, e.g. PL); empty picks from the whole pool
+      country: "\${OXYLABS_COUNTRY:}"
+    windguru:
+      enabled: false          # micro.windguru.cz forecasts and model discovery
+    live-stations:
+      enabled: false          # the live weather station strategies
+    other:
+      enabled: false          # Google Maps, ICM meteo.pl and the source pings

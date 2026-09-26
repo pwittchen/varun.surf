@@ -1,5 +1,7 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
+import static com.github.pwittchen.varun.config.OkHttpClientConfig.LIVE_STATIONS_HTTP_CLIENT;
+
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditionsStrategyBase;
@@ -9,6 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +27,7 @@ public class FetchCurrentConditionsStrategyPuck extends FetchCurrentConditionsSt
     private final OkHttpClient httpClient;
     private final Gson gson;
 
-    public FetchCurrentConditionsStrategyPuck(OkHttpClient httpClient, Gson gson) {
+    public FetchCurrentConditionsStrategyPuck(@Qualifier(LIVE_STATIONS_HTTP_CLIENT) OkHttpClient httpClient, Gson gson) {
         this.httpClient = httpClient;
         this.gson = gson;
     }

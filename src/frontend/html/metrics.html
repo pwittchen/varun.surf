@@ -272,6 +272,38 @@
                     </div>
                 </div>
 
+                <!-- Outgoing proxy. Each target goes through the Oxylabs residential
+                     proxy only when switched on and given credentials; the rows say
+                     which is which, and the connection counts show it actually happens. -->
+                <div class="status-card">
+                    <h3 data-i18n="metricsProxyTitle">Outgoing Proxy</h3>
+                    <div class="metrics-grid metrics-grid-3">
+                        <div class="metrics-item">
+                            <div class="metrics-label">Windguru</div>
+                            <div class="metrics-value-large metrics-proxy-state" id="proxy-windguru">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label" data-i18n="metricsProxyLiveStations">Live Stations</div>
+                            <div class="metrics-value-large metrics-proxy-state" id="proxy-live-stations">-</div>
+                        </div>
+                        <div class="metrics-item">
+                            <div class="metrics-label" data-i18n="metricsProxyOther">Other (Maps, ICM)</div>
+                            <div class="metrics-value-large metrics-proxy-state" id="proxy-other">-</div>
+                        </div>
+                    </div>
+                    <div class="metrics-timestamps">
+                        <div class="metrics-timestamp-item">
+                            <span class="metrics-timestamp-label" data-i18n="metricsProxyEndpoint">Proxy:</span>
+                            <span class="metrics-timestamp-value" id="proxy-endpoint">-</span>
+                        </div>
+                        <div class="metrics-timestamp-item">
+                            <span class="metrics-timestamp-label" data-i18n="metricsProxyConnections">Connections (proxy / direct):</span>
+                            <span class="metrics-timestamp-value" id="proxy-connections">-</span>
+                        </div>
+                    </div>
+                    <div class="metrics-subvalue metrics-proxy-note" data-i18n="metricsProxyNote">Each target goes through the Oxylabs residential proxy only when switched on. OpenAI requests are never proxied.</div>
+                </div>
+
                 <!-- CPU History Chart -->
                 <div class="status-card">
                     <h3 data-i18n="metricsCpuHistoryTitle">CPU Usage History</h3>
