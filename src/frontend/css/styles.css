@@ -3015,6 +3015,82 @@ body.forecasts-loading .skeleton-text {
     margin: 0 auto;
 }
 
+/* Three wave layers rolling into the band the footer text sits on, desktop
+   only: on a phone the footer keeps its plain top border */
+.footer-art {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .footer {
+        --footer-sea: color-mix(in srgb, var(--accent-primary) 12%, var(--bg-primary));
+        --footer-sea-mid: color-mix(in srgb, var(--accent-primary) 22%, var(--bg-primary));
+        --footer-sea-back: color-mix(in srgb, var(--accent-primary) 34%, var(--bg-primary));
+        padding: 0;
+        border-top: none;
+    }
+
+    .footer-art {
+        display: block;
+        position: relative;
+        height: 80px;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .footer-art-waves {
+        position: absolute;
+        inset: 0;
+    }
+
+    .footer-wave {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 200%;
+        height: 100%;
+        animation: footer-wave 18s linear infinite;
+    }
+
+    .footer-wave-back {
+        fill: var(--footer-sea-back);
+        opacity: .5;
+        animation-duration: 26s;
+    }
+
+    .footer-wave-mid {
+        fill: var(--footer-sea-mid);
+        opacity: .8;
+        animation-duration: 20s;
+        animation-direction: reverse;
+    }
+
+    .footer-wave-front {
+        fill: var(--footer-sea);
+        animation-duration: 14s;
+    }
+
+    .footer-content {
+        max-width: none;
+        margin: -1px 0 0;
+        padding: 6px 16px 30px;
+        background: var(--footer-sea);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+}
+
+@keyframes footer-wave {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .footer-wave {
+        animation: none;
+    }
+}
+
 .footer-content p {
     color: var(--text-secondary);
     font-size: .875rem;
@@ -3077,10 +3153,6 @@ body.forecasts-loading .skeleton-text {
 }
 
 @media (min-width: 769px) {
-    .footer-content {
-        max-width: none;
-    }
-
     .footer-link {
         white-space: nowrap;
     }
