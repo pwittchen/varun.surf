@@ -91,6 +91,10 @@ export function setup() {
         window.location.href = '/map';
     });
 
+    onClick('globeToggle', () => {
+        window.location.href = '/globe';
+    });
+
     // Mirrors the main page, where the list entry is the way back to a plain
     // spots list on a phone and clears the two filters a narrow layout can set.
     onClick('listViewBtn', () => {

@@ -113,6 +113,7 @@ JavaScript Entry Points (inline <script> tags)
     ├─→ common/translations.js (i18n)
     ├─→ common/appShell.js + sideMenu.js (shared shell and navigation)
     ├─→ common/map.js (wind map: markers, clustering, wind field, timeline, side peek)
+    ├─→ common/globe.js (globe view: orthographic canvas globe, geographic wind grid, particles)
     ├─→ page/index.js (dashboard logic)
     ├─→ page/spot.js (spot detail logic)
     └─→ page/status.js (status page logic)
@@ -380,8 +381,9 @@ DOM Manipulation (vanilla JS)
 
 **JavaScript Logic** (`page/tv.js`)
 
-> Additional routes serving `index.html`: `/starred` (favorites view) and `/map`
-> (map view), both wired in `WebConfig`.
+> Additional routes serving `index.html`: `/starred` (favorites view), `/map`
+> (map view) and `/globe` (globe view, desktop only - a phone is sent to the map),
+> all wired in `WebConfig`.
 
 ### Core JavaScript Modules
 

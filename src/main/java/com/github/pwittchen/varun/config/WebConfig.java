@@ -78,6 +78,20 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
+    public RouterFunction<ServerResponse> globeRouter() {
+        return RouterFunctions.route(
+                GET("/globe"),
+                _ -> {
+                    Resource indexHtml = new ClassPathResource("static/index.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(indexHtml);
+                }
+        );
+    }
+
+    @Bean
     public RouterFunction<ServerResponse> statusRouter() {
         return RouterFunctions.route(
                 GET("/status"),

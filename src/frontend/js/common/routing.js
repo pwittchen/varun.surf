@@ -76,6 +76,14 @@ export function isMapUrl() {
     return window.location.pathname === '/map';
 }
 
+/**
+ * Check if the current URL is /globe
+ * @returns {boolean} True if on globe page
+ */
+export function isGlobeUrl() {
+    return window.location.pathname === '/globe';
+}
+
 // ============================================================================
 // NAVIGATION
 // ============================================================================
@@ -133,6 +141,13 @@ export function pushStarredUrl() {
  */
 export function pushMapUrl() {
     window.history.pushState({map: true}, '', '/map');
+}
+
+/**
+ * Update browser URL to /globe without a page reload
+ */
+export function pushGlobeUrl() {
+    window.history.pushState({globe: true}, '', '/globe');
 }
 
 /**

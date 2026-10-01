@@ -410,6 +410,7 @@ Skill definitions are located in `.claude/skills/`.
 - additional TV-friendly view for the single spot
 - map of the spot (Open Street Maps, zoomed in on the spot)
 - wind field overlay on the maps (heatmap and animated wind particles) with an hourly forecast timeline
+- globe view (desktop only): the spots and the wind field on a rotating planet, with the same filters, clusters, side peek and forecast timeline as the map
   stepping through the whole forecast run on a desktop, five days on a phone
 - spot visibility toggle on the main map, hiding the markers and clusters so the wind field
   can be read on its own

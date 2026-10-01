@@ -7,6 +7,7 @@ import * as date from '../common/date.js';
 import * as api from '../common/api.js';
 import * as routing from '../common/routing.js';
 import * as map from '../common/map.js';
+import * as globe from '../common/globe.js';
 import * as state from '../common/state.js';
 import * as modals from '../common/modals.js';
 import * as calculator from '../common/calculator.js';
@@ -593,6 +594,12 @@ function initLanguage() {
         map.updateForecastTimelineLabels();
         if (windOverlayDisclaimerEl) {
             windOverlayDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
+        }
+        if (globeDisclaimerEl) {
+            globeDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
+        }
+        if (globeView) {
+            globeView.refreshLabels();
         }
         // The marker popups and the side peek are written from the spot data
         // rather than from markup, so they are redrawn rather than translated in
@@ -2337,7 +2344,7 @@ function handlePopState() {
     window.addEventListener('popstate', () => {
         // The map keeps its own URL and its own favorites filter - a history
         // step back onto it leaves the star where the user put it
-        if (routing.isMapUrl() && isMapView) {
+        if ((routing.isMapUrl() || routing.isGlobeUrl()) && isMapView) {
             return;
         }
 
@@ -2746,7 +2753,7 @@ function handleCountryURL() {
 }
 
 function handleStarredURL() {
-    if (routing.isMapUrl()) {
+    if (routing.isMapUrl() || routing.isGlobeUrl()) {
         handleMapRoute();
         return;
     }
@@ -2783,7 +2790,12 @@ function handleMapRoute() {
             if (state.getShowingFavorites()) {
                 enterFavoritesMode();
             }
-            showMapView();
+            // The globe is desktop only - a phone sent a /globe link gets the map
+            if (routing.isGlobeUrl() && !isMobileView()) {
+                showGlobeView();
+            } else {
+                showMapView();
+            }
             startAutoRefresh();
         })
         .catch(error => {
@@ -2865,6 +2877,32 @@ function getMapSpotConditions(spot) {
 // Fetched the first time the map is opened, so visitors who never leave the
 // spots grid don't pay for it. Until it arrives the map shows what it always
 // has: the conditions right now.
+// The hourly grid behind both sliders (map and globe), fetched once and shared.
+// An empty grid is not kept, so a later visit to either view tries again.
+let windTimelineIndexRequest = null;
+
+function fetchWindTimelineIndex() {
+    if (!windTimelineIndexRequest) {
+        // The grid is fetched once per session, so the width decided here is the
+        // one the slider keeps - a phone that later becomes a desktop window
+        // (rotated tablet) steps through five days until the next page load.
+        const timelineHours = isMobileView() ? map.TIMELINE_HOURS_COMPACT : map.TIMELINE_HOURS_FULL;
+
+        windTimelineIndexRequest = api.fetchWindTimeline(timelineHours).then(timeline => {
+            const index = weather.indexWindTimeline(timeline);
+            if (index.hours.length === 0 || index.bySpotId.size === 0) {
+                windTimelineIndexRequest = null;
+                return null;
+            }
+            return index;
+        }, error => {
+            windTimelineIndexRequest = null;
+            throw error;
+        });
+    }
+    return windTimelineIndexRequest;
+}
+
 function ensureMapTimeline() {
     if (mapTimeline || mapTimelineRequest) {
         return;
@@ -2875,14 +2913,8 @@ function ensureMapTimeline() {
         return;
     }
 
-    // The grid is fetched once per session, so the width decided here is the one
-    // the slider keeps - a phone that later becomes a desktop window (rotated
-    // tablet) steps through five days until the next page load.
-    const timelineHours = isMobileView() ? map.TIMELINE_HOURS_COMPACT : map.TIMELINE_HOURS_FULL;
-
-    mapTimelineRequest = api.fetchWindTimeline(timelineHours).then(timeline => {
-        const index = weather.indexWindTimeline(timeline);
-        if (index.hours.length === 0 || index.bySpotId.size === 0) {
+    mapTimelineRequest = fetchWindTimelineIndex().then(index => {
+        if (!index) {
             // Nothing to step through - leave the map on "now" and let a later
             // visit to the map view try again.
             mapTimelineRequest = null;
@@ -2960,7 +2992,7 @@ function initMap() {
     // Clustering is computed in screen pixels, so the markers have to be
     // rebuilt whenever the zoom level changes.
     leafletMap.on('zoomend', () => {
-        if (isMapView) {
+        if (isMapView && !isGlobeView) {
             updateMapMarkers();
         }
     });
@@ -3147,6 +3179,12 @@ function buildMapSidePeekContent(spot) {
 // Opened from the marker popup. Called through the global below, so an unknown
 // or stale id has to be survivable rather than trusted.
 function openMapSidePeek(wgId) {
+    // The popup button is shared with the globe, which has its own panel
+    if (isGlobeView) {
+        openGlobeSidePeek(wgId);
+        return;
+    }
+
     if (!leafletMap || isMobileView()) {
         return;
     }
@@ -3187,6 +3225,8 @@ function closeMapSidePeek() {
 // or a filter that drops the spot it stands for. The scroll position survives,
 // so a refresh never yanks the table out from under whoever is reading it.
 function refreshMapSidePeek() {
+    refreshGlobeSidePeek();
+
     if (!mapSidePeek || !mapSidePeek.isOpen()) {
         return;
     }
@@ -3251,11 +3291,11 @@ function fitMapToSpots(spots) {
     map.zoomToFillWorld(leafletMap);
 }
 
-function showMapView() {
+// What the map and the globe both do on the way in: the spots list, the banner
+// and the firing sort (a sort means nothing without a list) step aside.
+function enterSpatialView() {
     isMapView = true;
     const spotsGrid = document.getElementById('spotsGrid');
-    const mapContainer = document.getElementById('mapContainer');
-    const mapToggle = document.getElementById('mapToggle');
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
     const heroSection = document.getElementById('heroSection');
@@ -3275,15 +3315,25 @@ function showMapView() {
     }
     spotsGrid.style.display = 'none';
 
+    if (listViewBtn) listViewBtn.classList.remove('active');
+    if (gridViewBtn) gridViewBtn.classList.remove('active');
+}
+
+function showMapView() {
+    // Switching straight over from the globe: it steps aside without the spots
+    // list coming back in between
+    if (isGlobeView) {
+        leaveGlobeView();
+    }
+
+    enterSpatialView();
+    const mapContainer = document.getElementById('mapContainer');
+    const mapToggle = document.getElementById('mapToggle');
+
     // Show map container
     // Flex, not block: the container stacks the map above the day slider
     mapContainer.style.display = 'flex';
-
-    // Mark map button as active and deselect view buttons
     mapToggle.classList.add('active');
-    if (listViewBtn) listViewBtn.classList.remove('active');
-    if (gridViewBtn) gridViewBtn.classList.remove('active');
-
 
     // Fetch the hourly forecast grid behind the slider (once per session)
     ensureMapTimeline();
@@ -3357,10 +3407,15 @@ function hideMapView(options = {}) {
 
     isMapView = false;
     const spotsGrid = document.getElementById('spotsGrid');
-    const mapContainer = document.getElementById('mapContainer');
-    const mapToggle = document.getElementById('mapToggle');
     const listViewBtn = document.getElementById('listViewBtn');
     const gridViewBtn = document.getElementById('gridViewBtn');
+
+    // The same exit serves both spatial views
+    if (isGlobeView) {
+        leaveGlobeView();
+    } else {
+        leaveLeafletMap();
+    }
 
     // Show spots grid, restore hero section, and re-enable hero toggle button
     spotsGrid.style.display = '';
@@ -3377,18 +3432,7 @@ function hideMapView(options = {}) {
     }
     updateHeroVisibility();
 
-    // Tear down the wind overlay contents (rebuilt on next showMapView)
-    if (windOverlayLayer) {
-        windOverlayLayer.clearLayers();
-    }
-    ensureWindOverlayDisclaimer(false);
-    closeMapSidePeek();
-
-    // Hide map container
-    mapContainer.style.display = 'none';
-
-    // Remove active state from map button and restore view button state
-    mapToggle.classList.remove('active');
+    // Restore view button state
     if (currentViewMode === 'list') {
         if (listViewBtn) listViewBtn.classList.add('active');
         if (gridViewBtn) gridViewBtn.classList.remove('active');
@@ -3415,6 +3459,287 @@ function hideMapView(options = {}) {
             renderSpots(currentFilter, currentSearchQuery, true);
         }
     }
+}
+
+// Take the Leaflet map off screen without bringing the spots list back - the
+// first half of leaving the map, shared with switching over to the globe.
+function leaveLeafletMap() {
+    const mapContainer = document.getElementById('mapContainer');
+    const mapToggle = document.getElementById('mapToggle');
+
+    // Tear down the wind overlay contents (rebuilt on next showMapView)
+    if (windOverlayLayer) {
+        windOverlayLayer.clearLayers();
+    }
+    ensureWindOverlayDisclaimer(false);
+    closeMapSidePeek();
+
+    if (mapContainer) mapContainer.style.display = 'none';
+    if (mapToggle) mapToggle.classList.remove('active');
+}
+
+// ============================================================================
+// GLOBE VIEW
+// The map's spots and wind field on a rotating planet - see common/globe.js.
+// It is a second spatial view rather than a page of its own: the same filters
+// (country, search, live stations, favorites) and the same forecast timeline
+// apply, and every place that reacts to the map view (isMapView) reacts to the
+// globe too. Desktop only.
+// ============================================================================
+
+let isGlobeView = false;
+let globeView = null;
+let globeTimeline = null;
+let globeTimelineRequest = null;
+let globeForecastStep = 0;
+let globeDisclaimerEl = null;
+
+// The globe steps through the forecast on its own slider, so it reads its
+// conditions through its own step - the map's is left where the map left it.
+function getGlobeSpotConditions(spot) {
+    const conditions = weather.getWindConditionsAtStep(spot, globeForecastStep, mapTimelineIndex);
+    if (!conditions) {
+        return null;
+    }
+
+    return {
+        ...conditions,
+        label: conditions.isCurrent
+            ? translations.t('nowLabel')
+            : formatForecastDateLabel(conditions.forecastDate)
+    };
+}
+
+// The map popup, read through the globe's own forecast step. The side peek
+// button opens the same panel the map has, over the globe's right edge.
+function buildGlobeSpotPopup(spot) {
+    return `
+        <div class="map-popup">
+            <a href="${routing.buildSpotUrl(spot.wgId)}" class="globe-popup-name">${spot.name}</a>
+            ${buildMapPopupWindDetails(getGlobeSpotConditions(spot))}
+            <button type="button" class="map-popup-peek" onclick="openMapSidePeek(${spot.wgId})">${translations.t('mapSidePeekOpen')}${SIDE_PEEK_BUTTON_ICON}</button>
+        </div>
+    `;
+}
+
+// The side peek over the globe: the map's panel, mounted in the globe and
+// filled with the same content. The idle spin is held while it is open, so the
+// spot being read doesn't drift off behind the panel.
+let globeSidePeek = null;
+let globeSidePeekWgId = null;
+
+function openGlobeSidePeek(wgId) {
+    if (!globeView || isMobileView()) {
+        return;
+    }
+
+    const id = Number(wgId);
+    const spot = globalWeatherData.find(candidate => candidate.wgId === id);
+    if (!spot) {
+        return;
+    }
+
+    if (!globeSidePeek) {
+        globeSidePeek = map.createSpotSidePeek({
+            container: globeView.element,
+            reveal: (lat, lon, inset) => globeView.revealPoint(lat, lon, inset),
+            onClose: () => {
+                globeSidePeekWgId = null;
+                globeView.setHold(false);
+            }
+        });
+        if (!globeSidePeek) {
+            return;
+        }
+    }
+
+    globeSidePeekWgId = id;
+    globeView.setHold(true);
+    globeSidePeek.open(buildMapSidePeekContent(spot));
+
+    if (spot.coordinates) {
+        globeSidePeek.revealPoint(spot.coordinates.lat, spot.coordinates.lon);
+    }
+}
+
+function closeGlobeSidePeek() {
+    if (globeSidePeek) {
+        globeSidePeek.close();
+    }
+}
+
+function refreshGlobeSidePeek() {
+    if (!globeSidePeek || !globeSidePeek.isOpen()) {
+        return;
+    }
+
+    const spot = globalWeatherData.find(candidate => candidate.wgId === globeSidePeekWgId);
+    if (!spot) {
+        globeSidePeek.close();
+        return;
+    }
+
+    globeSidePeek.refreshLabels();
+    globeSidePeek.setContent(buildMapSidePeekContent(spot));
+}
+
+function ensureGlobeDisclaimer(visible) {
+    const globeContainer = document.getElementById('globeContainer');
+    if (!globeContainer) return;
+
+    if (visible) {
+        if (!globeDisclaimerEl) {
+            globeDisclaimerEl = document.createElement('div');
+            globeDisclaimerEl.className = 'wind-overlay-disclaimer';
+            globeContainer.appendChild(globeDisclaimerEl);
+        }
+        globeDisclaimerEl.textContent = translations.t('windOverlayDisclaimer');
+    } else if (globeDisclaimerEl) {
+        globeDisclaimerEl.remove();
+        globeDisclaimerEl = null;
+    }
+}
+
+function initGlobe() {
+    if (globeView) return;
+
+    const globeEl = document.getElementById('globe');
+    if (!globeEl) return;
+
+    // The wind and spot switches are the map's own: whatever the visitor chose
+    // on one view is what the other opens with
+    globeView = globe.createGlobe({
+        container: globeEl,
+        getConditions: getGlobeSpotConditions,
+        buildPopup: buildGlobeSpotPopup,
+        windVisible: windOverlayVisible,
+        spotsVisible: mapSpotsVisible,
+        autoRotate: state.getGlobeAutoRotate(),
+        onWindToggle: (visible) => {
+            windOverlayVisible = visible;
+            state.setWindOverlayVisible(visible);
+            ensureGlobeDisclaimer(visible);
+        },
+        onSpotsToggle: (visible) => {
+            mapSpotsVisible = visible;
+            state.setMapSpotsVisible(visible);
+        },
+        onAutoRotateToggle: (enabled) => {
+            state.setGlobeAutoRotate(enabled);
+        }
+    });
+}
+
+function ensureGlobeTimeline() {
+    if (globeTimeline || globeTimelineRequest) {
+        return;
+    }
+
+    const globeContainer = document.getElementById('globeContainer');
+    if (!globeContainer) {
+        return;
+    }
+
+    globeTimelineRequest = fetchWindTimelineIndex().then(index => {
+        if (!index) {
+            globeTimelineRequest = null;
+            return;
+        }
+
+        mapTimelineIndex = index;
+        globeTimeline = map.createForecastTimeline({
+            container: globeContainer,
+            hours: index.hours,
+            initialStep: globeForecastStep,
+            onChange: (step) => {
+                globeForecastStep = step;
+                updateGlobe();
+            }
+        });
+    }).catch(error => {
+        globeTimelineRequest = null;
+        console.error('Failed to load the globe forecast timeline:', error);
+    });
+}
+
+function updateGlobe() {
+    if (!isGlobeView || !globeView) return;
+
+    const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
+    // As on the map, only the dots follow the favorites filter - the field
+    // interpolated from a handful of starred spots would say nothing
+    globeView.setSpots(onlyFavorites(filteredSpots), filteredSpots);
+    ensureGlobeDisclaimer(windOverlayVisible);
+    refreshGlobeSidePeek();
+}
+
+function showGlobeView() {
+    // Desktop only - the sidebar entry is hidden below the breakpoint, and a
+    // phone that got here anyway is better served by the map
+    if (isMobileView()) {
+        showMapView();
+        return;
+    }
+
+    if (isMapView && !isGlobeView) {
+        leaveLeafletMap();
+    }
+
+    enterSpatialView();
+    isGlobeView = true;
+
+    const globeContainer = document.getElementById('globeContainer');
+    const globeToggle = document.getElementById('globeToggle');
+    globeContainer.style.display = 'flex';
+    if (globeToggle) globeToggle.classList.add('active');
+
+    ensureGlobeTimeline();
+    initGlobe();
+    if (globeView) {
+        globeView.start();
+    }
+    updateGlobe();
+
+    routing.pushGlobeUrl();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Take the globe off screen without bringing the spots list back. The globe
+// itself is kept, stopped, so coming back to it costs no reload of the outlines.
+function leaveGlobeView() {
+    isGlobeView = false;
+
+    const globeContainer = document.getElementById('globeContainer');
+    const globeToggle = document.getElementById('globeToggle');
+
+    closeGlobeSidePeek();
+    if (globeView) {
+        globeView.stop();
+    }
+    ensureGlobeDisclaimer(false);
+    if (globeContainer) globeContainer.style.display = 'none';
+    if (globeToggle) globeToggle.classList.remove('active');
+}
+
+function setupGlobeToggle() {
+    const globeToggle = document.getElementById('globeToggle');
+    if (!globeToggle) return;
+
+    globeToggle.addEventListener('click', () => {
+        if (!isGlobeView) {
+            showGlobeView();
+        } else {
+            hideMapView();
+        }
+    });
+
+    // A window narrowed to phone width has no room for the globe, and its
+    // sidebar entry disappears with it - the map takes over
+    window.addEventListener('resize', () => {
+        if (isGlobeView && isMobileView()) {
+            showMapView();
+        }
+    });
 }
 
 // ============================================================================
@@ -3554,7 +3879,7 @@ function setupMapToggle() {
     if (!mapToggle) return;
 
     mapToggle.addEventListener('click', () => {
-        if (!isMapView) {
+        if (!isMapView || isGlobeView) {
             showMapView();
             return;
         }
@@ -3608,6 +3933,11 @@ function setupRandomSpotToggle() {
 
 function updateMapMarkers() {
     if (!isMapView) return;
+
+    if (isGlobeView) {
+        updateGlobe();
+        return;
+    }
 
     const filteredSpots = filterSpots(globalWeatherData, currentFilter, currentSearchQuery);
     // Only the markers follow the favorites filter: a wind field interpolated
@@ -3667,6 +3997,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFiringSortToggle();
     setupLiveStationsToggle();
     setupMapToggle();
+    setupGlobeToggle();
     setupRandomSpotToggle();
     handlePopState();
     setupInfoToggle();

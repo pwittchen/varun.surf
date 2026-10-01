@@ -50,6 +50,9 @@ export const STORAGE_KEYS = {
     // Map spot markers and clusters shown or hidden
     MAP_SPOTS_VISIBLE: 'mapSpotsVisible',
 
+    // Globe idle spin on or off
+    GLOBE_AUTO_ROTATE: 'globeAutoRotate',
+
     // Sidebar collapsed to an icon rail (desktop / tablet)
     SIDEBAR_COLLAPSED: 'sidebarCollapsed'
 };
@@ -233,6 +236,20 @@ export function getMapSpotsVisible() {
 
 export function setMapSpotsVisible(visible) {
     localStorage.setItem(STORAGE_KEYS.MAP_SPOTS_VISIBLE, visible ? 'true' : 'false');
+}
+
+// ============================================================================
+// GLOBE AUTO ROTATION
+// ============================================================================
+
+// The globe spins while nobody touches it; stopping it is remembered between
+// visits. Reduced motion keeps it still whatever is stored here.
+export function getGlobeAutoRotate() {
+    return localStorage.getItem(STORAGE_KEYS.GLOBE_AUTO_ROTATE) !== 'false';
+}
+
+export function setGlobeAutoRotate(enabled) {
+    localStorage.setItem(STORAGE_KEYS.GLOBE_AUTO_ROTATE, enabled ? 'true' : 'false');
 }
 
 // ============================================================================

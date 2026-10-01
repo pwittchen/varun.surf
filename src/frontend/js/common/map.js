@@ -390,8 +390,8 @@ const WIND_FIELD_STOPS = [
 // zoom, and the fraction of that radius held at full strength before it fades
 // out. Shared by the colour wash and the particles so the two passes cover the
 // same ground.
-const WIND_FIELD_MAX_DIST = 70;
-const WIND_FIELD_FADE_FROM = 0.5;
+export const WIND_FIELD_MAX_DIST = 70;
+export const WIND_FIELD_FADE_FROM = 0.5;
 
 // Above the reference zoom the radius doubles per zoom level, so the field keeps
 // covering the same patch of ground instead of shrinking into a small blob
@@ -407,7 +407,7 @@ const WIND_FIELD_MAX_GROWTH = 8;
  * @param {number} zoom - Map zoom level
  * @returns {number} Radius in pixels
  */
-function windFieldRadius(zoom) {
+export function windFieldRadius(zoom) {
     if (!Number.isFinite(zoom) || zoom <= WIND_FIELD_REFERENCE_ZOOM) {
         return WIND_FIELD_MAX_DIST;
     }
@@ -422,7 +422,7 @@ function windFieldRadius(zoom) {
  * @param {number} kt - Wind speed in knots
  * @returns {number[]} [r, g, b]
  */
-function windFieldColor(kt) {
+export function windFieldColor(kt) {
     const stops = WIND_FIELD_STOPS;
     if (kt < stops[0].kt) return WIND_FIELD_GRAY;
     if (kt >= stops[stops.length - 1].kt) return stops[stops.length - 1].rgb;
@@ -447,7 +447,7 @@ function windFieldColor(kt) {
  * @param {function} getConditions - Returns { wind, gusts, direction, isCurrent } or null
  * @returns {{lat:number, lon:number, wind:number, direction:string, isCurrent:boolean}|null}
  */
-function getWindSample(spot, getConditions) {
+export function getWindSample(spot, getConditions) {
     if (!spot || !spot.coordinates) {
         return null;
     }
@@ -476,14 +476,14 @@ function getWindSample(spot, getConditions) {
 // ============================================================================
 
 // Spots closer than this many screen pixels are merged into one cluster.
-const CLUSTER_RADIUS_PX = 60;
+export const CLUSTER_RADIUS_PX = 60;
 
 // From this zoom level up every spot is drawn on its own, however close it is.
-const CLUSTER_MAX_ZOOM = 10;
+export const CLUSTER_MAX_ZOOM = 10;
 
 // Cardinal directions with a meaningful bearing. An unknown/empty direction is
 // skipped when averaging instead of being treated as north.
-const CARDINAL_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+export const CARDINAL_DIRECTIONS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
 /**
  * Group nearby points into clusters based on their distance on screen.
@@ -573,7 +573,7 @@ export function clusterPoints(map, points, options = {}) {
  * @param {Array<{wind:number}>} samples - Wind samples
  * @returns {number|null} Mean wind speed in knots, or null when there is none
  */
-function averageWindSpeed(samples) {
+export function averageWindSpeed(samples) {
     const winds = samples.map(s => s.wind).filter(Number.isFinite);
     if (winds.length === 0) {
         return null;
@@ -587,7 +587,7 @@ function averageWindSpeed(samples) {
  * @param {number} count - Number of spots in the cluster
  * @returns {number} Diameter in pixels
  */
-function clusterBubbleSize(count) {
+export function clusterBubbleSize(count) {
     if (count < 5) return 32;
     if (count < 10) return 38;
     if (count < 25) return 44;
@@ -767,51 +767,67 @@ const SIDE_PEEK_MARKER_GAP_PX = 32;
 const SIDE_PEEK_CLOSE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
 
 /**
- * Create the side peek panel for a map.
+ * Create the side peek panel for a map or the globe.
  *
- * The panel is mounted inside the Leaflet container, so it covers the map and
+ * The panel is mounted inside the map's own container, so it covers the map and
  * nothing else - a slider under the map keeps working while the peek is open.
  * Its content is written by the caller; everything here is chrome: the close
  * button, the Escape key, and keeping the map from reacting to clicks, drags and
  * wheel events that land on the panel.
  *
+ * A Leaflet map is passed as `map`. Anything else that wants the panel - the
+ * globe - passes the element to mount it in as `container`, and says how to move
+ * a point out from under it with `reveal(lat, lon, insetPx)`.
+ *
  * @param {object} options - Configuration options
- * @param {L.Map} options.map - Leaflet map instance the panel belongs to
+ * @param {L.Map} [options.map] - Leaflet map instance the panel belongs to
+ * @param {HTMLElement} [options.container] - Element to mount in, without a map
+ * @param {function} [options.reveal] - Moves a point clear of the panel, without a map
  * @param {function} [options.onClose] - Called after the panel is closed
  * @returns {{element:HTMLElement, isOpen:function, open:function, setContent:function,
  *   revealPoint:function, close:function, refreshLabels:function, destroy:function}|null}
- *   Null without a map
+ *   Null without a map or a container
  */
 export function createSpotSidePeek(options = {}) {
-    const { map, onClose = null } = options;
+    const { map = null, reveal = null, onClose = null } = options;
 
-    if (!map) {
+    const mapContainer = map ? map.getContainer() : options.container;
+    if (!mapContainer) {
         return null;
     }
 
-    const mapContainer = map.getContainer();
+    const create = (tagName, className, parent) => {
+        const el = document.createElement(tagName);
+        el.className = className;
+        parent.appendChild(el);
+        return el;
+    };
 
-    const element = L.DomUtil.create('aside', 'map-side-peek', mapContainer);
+    const element = create('aside', 'map-side-peek', mapContainer);
     element.setAttribute('role', 'complementary');
     element.setAttribute('aria-hidden', 'true');
 
     // Header and footer sit outside the scrolling body: which spot is being read
     // and the way onto its page are the panel's own chrome, so they stay on
     // screen however far down the forecast has been scrolled.
-    const header = L.DomUtil.create('div', 'map-side-peek-header', element);
-    const headerContent = L.DomUtil.create('div', 'map-side-peek-header-content', header);
+    const header = create('div', 'map-side-peek-header', element);
+    const headerContent = create('div', 'map-side-peek-header-content', header);
 
-    const closeButton = L.DomUtil.create('button', 'map-side-peek-close', header);
+    const closeButton = create('button', 'map-side-peek-close', header);
     closeButton.type = 'button';
     closeButton.innerHTML = SIDE_PEEK_CLOSE_ICON;
 
-    const body = L.DomUtil.create('div', 'map-side-peek-body', element);
-    const footer = L.DomUtil.create('div', 'map-side-peek-footer', element);
+    const body = create('div', 'map-side-peek-body', element);
+    const footer = create('div', 'map-side-peek-footer', element);
 
     // Scrolling the forecast table must not zoom the map underneath it, and a
-    // drag that starts on the panel must not pan the map away behind it.
-    L.DomEvent.disableClickPropagation(element);
-    L.DomEvent.disableScrollPropagation(element);
+    // drag that starts on the panel must not pan the map away behind it. The
+    // globe listens on its own canvas, a sibling of the panel, so nothing that
+    // lands on the panel reaches it in the first place.
+    if (map) {
+        L.DomEvent.disableClickPropagation(element);
+        L.DomEvent.disableScrollPropagation(element);
+    }
 
     let opened = false;
 
@@ -864,6 +880,12 @@ export function createSpotSidePeek(options = {}) {
      */
     const revealPoint = (lat, lon) => {
         if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+            return;
+        }
+        if (!map) {
+            if (typeof reveal === 'function') {
+                reveal(lat, lon, SIDE_PEEK_WIDTH_PX + SIDE_PEEK_MARKER_GAP_PX);
+            }
             return;
         }
         const point = map.latLngToContainerPoint([lat, lon]);
@@ -1047,30 +1069,30 @@ export function createWindHeatLayer(spots, getConditions) {
 const PARTICLE_GRID_STEP = 16;
 
 // Particles die where the field is this weak - i.e. far from every spot.
-const PARTICLE_MIN_FIELD = 0.05;
+export const PARTICLE_MIN_FIELD = 0.05;
 
 // Screen pixels travelled per knot per frame (at 60 fps).
-const PARTICLE_SPEED = 0.09;
+export const PARTICLE_SPEED = 0.09;
 
 // Frames a particle lives before it respawns somewhere else. Randomised per
 // particle so the whole field never blinks at once.
-const PARTICLE_LIFE = 60;
+export const PARTICLE_LIFE = 60;
 
 // Per-frame alpha erased from the canvas; controls how long the trails linger.
-const PARTICLE_TRAIL_FADE = 0.12;
+export const PARTICLE_TRAIL_FADE = 0.12;
 
 // Particle budget: scaled by the number of spots in view so a single visible
 // spot doesn't get a dense blob crammed into its influence radius.
-const PARTICLES_PER_SPOT = 18;
-const PARTICLES_MIN = 40;
-const PARTICLES_MAX = 1400;
+export const PARTICLES_PER_SPOT = 18;
+export const PARTICLES_MIN = 40;
+export const PARTICLES_MAX = 1400;
 
 // The canvas is grown beyond the viewport so a short pan (during which the
 // animation is frozen) doesn't reveal an empty edge.
 const PARTICLE_CANVAS_MARGIN = 96;
 
 // Frames advected for the single static frame drawn under reduced motion.
-const PARTICLE_STATIC_STEPS = 26;
+export const PARTICLE_STATIC_STEPS = 26;
 
 // How far the streak colour is pushed toward white. The wash underneath already
 // carries the speed as hue, so the particles only have to stay legible on top of
@@ -1079,16 +1101,16 @@ const PARTICLE_LIGHTEN = 0.65;
 
 // Streak width, and the darker halo stroked underneath it so the light streaks
 // survive a pale base map as well as the satellite one.
-const PARTICLE_WIDTH = 1.4;
-const PARTICLE_HALO_WIDTH = 3;
-const PARTICLE_HALO_ALPHA = 0.35;
+export const PARTICLE_WIDTH = 1.4;
+export const PARTICLE_HALO_WIDTH = 3;
+export const PARTICLE_HALO_ALPHA = 0.35;
 
 /**
  * Particle colour for a wind speed: the field palette lightened toward white.
  * @param {number} kt - Wind speed in knots
  * @returns {number[]} [r, g, b]
  */
-function windParticleColor(kt) {
+export function windParticleColor(kt) {
     const rgb = windFieldColor(kt);
     return [
         Math.round(rgb[0] + (255 - rgb[0]) * PARTICLE_LIGHTEN),

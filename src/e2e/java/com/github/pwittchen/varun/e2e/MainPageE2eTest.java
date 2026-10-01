@@ -104,6 +104,72 @@ class MainPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should switch to globe view and back to the spots grid")
+    void shouldSwitchToGlobeView() {
+        navigateToMainPage();
+        waitForSpotsToLoad();
+
+        Locator spotsGrid = page.locator("#spotsGrid");
+        Locator globeToggle = page.locator("#globeToggle");
+
+        globeToggle.click();
+
+        Locator globeContainer = page.locator("#globeContainer");
+        globeContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // The globe paints on three stacked canvases and carries its own controls
+        // (the outlines come from a CDN, which the sandboxed run may not reach,
+        // so the mechanics are asserted rather than the picture)
+        assertThat(page.url()).endsWith("/globe");
+        assertThat(globeToggle.getAttribute("class")).contains("active");
+        assertThat(spotsGrid.isVisible()).isFalse();
+        assertThat(page.locator("#globeContainer canvas.globe-canvas").count()).isEqualTo(3);
+        assertThat(page.locator(".globe-toggle-wind").getAttribute("aria-pressed")).isEqualTo("true");
+        assertThat(page.locator(".globe-toggle-spots").getAttribute("aria-pressed")).isEqualTo("true");
+
+        globeToggle.click();
+        page.waitForTimeout(500);
+
+        spotsGrid.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(spotsGrid.isVisible()).isTrue();
+        assertThat(globeContainer.isVisible()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should switch from the globe straight to the map and back")
+    void shouldSwitchBetweenGlobeAndMap() {
+        page.navigate(BASE_URL + "/globe");
+        waitForPageLoad();
+
+        Locator globeContainer = page.locator("#globeContainer");
+        globeContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        page.locator("#mapToggle").click();
+        Locator mapContainer = page.locator("#mapContainer");
+        mapContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        // One spatial view replaces the other without the spots grid in between
+        assertThat(globeContainer.isVisible()).isFalse();
+        assertThat(page.locator("#spotsGrid").isVisible()).isFalse();
+        assertThat(page.url()).endsWith("/map");
+
+        page.locator("#globeToggle").click();
+        globeContainer.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+        assertThat(mapContainer.isVisible()).isFalse();
+        assertThat(page.url()).endsWith("/globe");
+    }
+
+    @Test
     @DisplayName("Should hide and show the wind field overlay")
     void shouldToggleWindOverlay() {
         navigateToMainPage();

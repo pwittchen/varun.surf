@@ -616,6 +616,14 @@ src/main/java/com/github/pwittchen/varun/
       visibility toggle (hiding the markers leaves the field alone on the map)
       and an hourly forecast timeline (the whole forecast run on a desktop,
       five days on a phone)
+- [x] Globe view (/globe, desktop only): the map's spots and wind field
+      (colour wash + animated particles) on a rotating planet, with the same
+      filters, popups, clusters, side peek and forecast timeline as the map;
+      drag to turn, wheel to zoom, idle spin that can be switched off. Field
+      reach, particle speed/lifetime/density and the cluster radius are the
+      map's own constants, read at an "equivalent" Leaflet zoom, so both views
+      move and merge alike. d3-geo and the world-atlas outlines (1:110m, 1:50m
+      once zoomed in) are loaded from unpkg on first use (`common/globe.js`)
 - [x] Wind map popups carrying wind, gusts and direction for the hour the
       forecast slider stands on, rewritten in place as it steps
 - [x] Spot side peek on the main map (desktop only): a panel over the right edge

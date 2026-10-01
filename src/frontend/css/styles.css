@@ -195,6 +195,10 @@
     --marker-border: #ffffff;
     --marker-no-data: #9ca3af;
 
+    /* Globe view backdrop: deep space around the planet */
+    --globe-space-inner: #0d1a26;
+    --globe-space-outer: #050608;
+
     /* Leaflet Controls (always light) */
     --leaflet-bg: #ffffff;
     --leaflet-text: #333333;
@@ -248,6 +252,10 @@
 
     /* Translucent surfaces (header, side rail) */
     --surface-glass: rgba(255, 255, 255, 0.8);
+
+    /* Globe view backdrop: a pale sky rather than deep space */
+    --globe-space-inner: #f3f7f9;
+    --globe-space-outer: #dfe8ee;
     --surface-glass-border: rgba(15, 15, 15, 0.09);
 
     /* Button & Active Backgrounds */
@@ -6011,6 +6019,239 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     z-index: 1;
 }
 
+/* ----------------------------------------------------------------------------
+   Globe view (desktop only): the map's spots and wind field on a rotating
+   planet, painted on three stacked canvases - see common/globe.js
+   ---------------------------------------------------------------------------- */
+
+#globeContainer {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 160px);
+    margin: 0 0 20px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    background:
+        radial-gradient(ellipse at 50% 45%, var(--globe-space-inner) 0%, var(--globe-space-outer) 75%);
+    flex-direction: column;
+}
+
+#globe {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* The timeline under the globe sits on the space backdrop, not on a map */
+#globeContainer .map-timeline {
+    position: relative;
+    z-index: 2;
+}
+
+.globe {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    user-select: none;
+}
+
+.globe [hidden] {
+    display: none !important;
+}
+
+.globe-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+/* Only the top canvas takes the pointer: drag to turn, wheel to zoom */
+.globe-canvas-overlay {
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+}
+
+.globe.globe-dragging .globe-canvas-overlay {
+    cursor: grabbing;
+}
+
+.globe-status {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--leaflet-bg);
+    color: var(--leaflet-text);
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-card);
+    pointer-events: none;
+}
+
+.globe-tooltip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: var(--shadow-card);
+}
+
+/* Styled after the Leaflet popup, so a spot reads the same on both views */
+.globe-popup {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 4;
+    min-width: 140px;
+    max-width: 260px;
+    padding: 12px 36px 12px 16px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.globe-popup::after {
+    content: "";
+    position: absolute;
+    left: var(--globe-tip-x, 50%);
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    background: var(--bg-secondary);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+/* Flipped under the dot when the top edge leaves no room above it */
+.globe-popup.globe-bubble-below::after {
+    bottom: auto;
+    top: -6px;
+}
+
+.globe-popup-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.globe-popup-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
+.globe-popup-name {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.globe-popup-name:hover {
+    text-decoration: underline;
+}
+
+/* Controls laid out like the map's: zoom top left, toggles in a row bottom left */
+.globe-controls {
+    position: absolute;
+    left: 10px;
+    z-index: 3;
+    display: flex;
+    background: var(--leaflet-bg);
+    border: 2px solid var(--leaflet-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.globe-controls-zoom {
+    top: 10px;
+    flex-direction: column;
+}
+
+.globe-controls-toggles {
+    bottom: 10px;
+    flex-direction: row;
+}
+
+.globe-button {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    border: none;
+    background: var(--leaflet-bg);
+    color: var(--leaflet-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.globe-button + .globe-button {
+    border-left: 1px solid var(--leaflet-border);
+}
+
+.globe-controls-zoom .globe-button + .globe-button {
+    border-left: none;
+    border-top: 1px solid var(--leaflet-border);
+}
+
+.globe-button:hover {
+    background: var(--leaflet-hover);
+}
+
+.globe-button.active,
+.globe-button.active:hover {
+    background: var(--leaflet-active);
+    color: var(--text-white);
+}
+
+.globe-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+/* The sidebar glyphs are filled shapes; the globe's is drawn with strokes */
+.theme-toggle.globe-toggle .icon {
+    fill: none !important;
+    stroke: var(--text-secondary);
+    transition: stroke 0.3s ease;
+}
+
+.theme-toggle.globe-toggle:hover .icon,
+.theme-toggle.globe-toggle.active .icon {
+    stroke: var(--accent-primary);
+}
+
 /* Custom Marker Styles */
 .custom-marker-icon {
     background: transparent;
@@ -6474,11 +6715,13 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
    that this markup lives inside the map. The three rules carrying a link colour
    in this section are written against .leaflet-container to win it back, and say
    nothing the sections above don't already say. */
-.leaflet-container .map-side-peek .external-link {
+.leaflet-container .map-side-peek .external-link,
+.globe .map-side-peek .external-link {
     color: var(--text-secondary);
 }
 
-.leaflet-container .map-side-peek-name {
+.leaflet-container .map-side-peek-name,
+.globe .map-side-peek-name {
     display: inline-block;
     color: var(--accent-primary);
     font-size: 1.05rem;
@@ -6594,7 +6837,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     display: none;
 }
 
-.leaflet-container .map-side-peek-cta {
+.leaflet-container .map-side-peek-cta,
+.globe .map-side-peek-cta {
     display: block;
     padding: 10px 14px;
     border-radius: var(--radius-md);

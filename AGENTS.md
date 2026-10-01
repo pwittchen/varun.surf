@@ -817,6 +817,11 @@ Implemented features (complete):
   (hiding the markers and clusters leaves the field alone on the map), layer
   switcher and an hourly forecast timeline (the whole forecast run on a desktop,
   five days on a phone)
+- Globe view (`/globe`, desktop only, `common/globe.js`): the map's spots and wind
+  field on a rotating orthographic globe drawn on canvas, with the same filters,
+  popups, clusters, side peek and forecast timeline; field reach, particle
+  motion and cluster radius reuse the map's constants at an equivalent Leaflet
+  zoom; d3-geo and world-atlas loaded lazily from unpkg
 - Wind map popups carrying wind, gusts and direction for the hour the forecast
   slider stands on, rewritten in place as it steps (the page's own spot included)
 - Spot side peek on the main map (desktop only): a panel over the right edge of
