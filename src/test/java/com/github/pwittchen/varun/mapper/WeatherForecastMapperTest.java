@@ -5,7 +5,10 @@ import com.github.pwittchen.varun.model.forecast.ForecastWg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,6 +143,65 @@ class WeatherForecastMapperTest {
         LocalDateTime parsed = LocalDateTime.parse(formatted, formatter);
         assertThat(parsed.getHour()).isEqualTo(2);
         assertThat(parsed.getDayOfMonth()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldKeepFirstHourlyRowFromYesterdayInCurrentMonth() {
+        // A run fetched on Sat 10 Oct 2026 starts the previous evening; that first
+        // row used to be pushed to the next Friday the 9th - April 2027.
+        WeatherForecastMapper mapperOnDay = mapperOn(LocalDate.of(2026, 10, 10));
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Fri 09. 20h", 10, 15, 180, 20, 0, 0, 1013),
+                new ForecastWg("Fri 09. 23h", 10, 15, 180, 20, 0, 0, 1013),
+                new ForecastWg("Sat 10. 02h", 10, 15, 180, 20, 0, 0, 1013)
+        );
+
+        List<Forecast> result = mapperOnDay.toHourlyForecasts(forecasts);
+
+        assertThat(result.stream().map(Forecast::date).toList()).containsExactly(
+                "Fri 09 Oct 2026 20:00",
+                "Fri 09 Oct 2026 23:00",
+                "Sat 10 Oct 2026 02:00"
+        ).inOrder();
+    }
+
+    @Test
+    void shouldKeepFirstHourlyRowFromLastDayOfPreviousMonth() {
+        WeatherForecastMapper mapperOnDay = mapperOn(LocalDate.of(2026, 11, 1));
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Sat 31. 23h", 10, 15, 180, 20, 0, 0, 1013),
+                new ForecastWg("Sun 01. 02h", 10, 15, 180, 20, 0, 0, 1013)
+        );
+
+        List<Forecast> result = mapperOnDay.toHourlyForecasts(forecasts);
+
+        assertThat(result.stream().map(Forecast::date).toList()).containsExactly(
+                "Sat 31 Oct 2026 23:00",
+                "Sun 01 Nov 2026 02:00"
+        ).inOrder();
+    }
+
+    @Test
+    void shouldRollHourlyRowsOverIntoNextMonth() {
+        WeatherForecastMapper mapperOnDay = mapperOn(LocalDate.of(2026, 10, 30));
+        List<ForecastWg> forecasts = List.of(
+                new ForecastWg("Fri 30. 08h", 10, 15, 180, 20, 0, 0, 1013),
+                new ForecastWg("Sat 31. 08h", 10, 15, 180, 20, 0, 0, 1013),
+                new ForecastWg("Sun 01. 08h", 10, 15, 180, 20, 0, 0, 1013)
+        );
+
+        List<Forecast> result = mapperOnDay.toHourlyForecasts(forecasts);
+
+        assertThat(result.stream().map(Forecast::date).toList()).containsExactly(
+                "Fri 30 Oct 2026 08:00",
+                "Sat 31 Oct 2026 08:00",
+                "Sun 01 Nov 2026 08:00"
+        ).inOrder();
+    }
+
+    private static WeatherForecastMapper mapperOn(LocalDate day) {
+        ZoneId zone = ZoneId.of("UTC");
+        return new WeatherForecastMapper(Clock.fixed(day.atTime(3, 0).atZone(zone).toInstant(), zone));
     }
 
     @Test

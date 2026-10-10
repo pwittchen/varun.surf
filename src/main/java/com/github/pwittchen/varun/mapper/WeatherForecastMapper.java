@@ -4,6 +4,7 @@ import com.github.pwittchen.varun.model.forecast.Forecast;
 import com.github.pwittchen.varun.model.forecast.ForecastWg;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +31,22 @@ public class WeatherForecastMapper {
     private static final DateTimeFormatter HOURLY_OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm", Locale.ENGLISH);
     private static final ZoneId FORECAST_ZONE = ZoneId.systemDefault();
 
+    // A model run starts at its init time, so the first rows of a forecast fetched
+    // shortly after midnight are still dated yesterday. The first row may therefore
+    // lie this far in the past; a weekday + day-of-month pair repeats no sooner than
+    // every 28 days, so a week back can never match the wrong month.
+    private static final int FIRST_ROW_LOOKBACK_DAYS = 7;
+
+    private final Clock clock;
+
+    public WeatherForecastMapper() {
+        this(Clock.system(FORECAST_ZONE));
+    }
+
+    WeatherForecastMapper(Clock clock) {
+        this.clock = clock;
+    }
+
     public List<Forecast> toWeatherForecasts(List<ForecastWg> forecasts) {
         final Map<String, ForecastWg> wgForecastsByDay = getWgForecastMapByDay(forecasts);
         return IntStream
@@ -40,7 +57,9 @@ public class WeatherForecastMapper {
 
     public List<Forecast> toHourlyForecasts(List<ForecastWg> forecasts) {
         List<Forecast> result = new ArrayList<>(forecasts.size());
-        YearMonth currentYearMonth = YearMonth.from(LocalDate.now(FORECAST_ZONE));
+        // One month back, so a first row from the last days of the previous month
+        // (fetched just after the 1st) resolves to that month rather than a later one.
+        YearMonth currentYearMonth = YearMonth.from(LocalDate.now(clock)).minusMonths(1);
         LocalDate previousDate = null;
         int previousHour = -1;
 
@@ -101,7 +120,7 @@ public class WeatherForecastMapper {
             int previousHour
     ) {
         YearMonth candidateYearMonth = baseYearMonth;
-        LocalDate today = LocalDate.now(FORECAST_ZONE);
+        LocalDate earliestFirstRow = LocalDate.now(clock).minusDays(FIRST_ROW_LOOKBACK_DAYS);
 
         while (true) {
             while (dayOfMonth > candidateYearMonth.lengthOfMonth()) {
@@ -116,7 +135,7 @@ public class WeatherForecastMapper {
             }
 
             if (previousDate == null) {
-                if (candidateDate.isBefore(today)) {
+                if (candidateDate.isBefore(earliestFirstRow)) {
                     candidateYearMonth = candidateYearMonth.plusMonths(1);
                     continue;
                 }
