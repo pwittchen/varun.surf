@@ -6770,6 +6770,64 @@
     }
   },
   {
+    "name": "Bønnerup Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48054",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/bonnerup-strand",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.527164,10.712375",
+    "spotInfo": {
+      "type": "Kattegat, sandy beach with shallow water and sandbars",
+      "bestWind": "NW, N, SE",
+      "waterTemp": "3-19°C",
+      "experience": "Intermediate",
+      "launch": "Wide sandy beach beside Bønnerup Harbour on the north coast of Djursland; park behind the dunes and do not drive too far onto the beach at low tide",
+      "hazards": "Boats leaving the harbour mouth, especially in summer; remains of old groynes and fishing nets near the shore; marked bathing zones in July and August - launch away from them; Natura 2000 and dune protection areas behind the beach, stay on the sand; a westerly or southwesterly is offshore, with open water far to the west, so ride with a safety plan",
+      "season": "April-October",
+      "description": "Bønnerup Strand faces north on the Djursland coast and picks up the Kattegat swell from the north-west, which breaks over offshore sandbars and makes it one of the few spots in the area with decent waves. The water is shallow and stays knee-deep far from shore, and the beach is wide enough to launch without obstacles. When the wind goes east or south-east, Grenaa is the nearby alternative."
+    },
+    "spotInfoPL": {
+      "type": "Kattegat, piaszczysta plaża z płytką wodą i łachami",
+      "bestWind": "NW, N, SE",
+      "waterTemp": "3-19°C",
+      "experience": "Średniozaawansowany",
+      "launch": "Szeroka piaszczysta plaża obok portu Bønnerup na północnym wybrzeżu Djursland; parking za wydmami, przy niskiej wodzie nie wjeżdżaj zbyt daleko na plażę",
+      "hazards": "Łodzie wypływające z portu, zwłaszcza latem; resztki dawnych grodzy i sieci rybackie przy brzegu; w lipcu i sierpniu wyznaczone kąpieliska - startuj z dala od nich; za plażą obszary Natura 2000 i ochrony wydm, trzymaj się piasku; wiatr z zachodu i południowego zachodu wieje od lądu, a na zachodzie jest daleko do brzegu, więc płyń z planem bezpieczeństwa",
+      "season": "Kwiecień-Październik",
+      "description": "Bønnerup Strand jest zwrócone na północ na wybrzeżu Djursland i łapie falę z Kattegat od północnego zachodu, która łamie się na zewnętrznych łachach, dzięki czemu to jedno z niewielu miejsc w okolicy z przyzwoitą falą. Woda jest płytka i daleko od brzegu sięga do kolan, a plaża jest na tyle szeroka, że da się startować bez przeszkód. Gdy wiatr skręca na wschód lub południowy wschód, alternatywą jest pobliskie Grenaa."
+    }
+  },
+  {
+    "name": "Grenaa Strand",
+    "country": "Denmark",
+    "windguruUrl": "https://www.windguru.cz/48055",
+    "windguruFallbackUrl": "",
+    "windfinderUrl": "https://www.windfinder.com/forecast/grenaa-strand",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=56.396722,10.911558",
+    "spotInfo": {
+      "type": "Kattegat, long sandy beach, flat to light chop",
+      "bestWind": "E, NE, SE",
+      "waterTemp": "3-19°C",
+      "experience": "Beginner to Intermediate",
+      "launch": "Sandy beach south of Grenaa Harbour with free parking along Katholm Strandvej and easy access to the shoreline",
+      "hazards": "Busy bathing beach in summer with marked swimming zones - kiting is only possible outside them, so launch well south of the harbour; harbour entrance, ferry and boat traffic to the north; westerlies are offshore and gusty; protected dune areas behind the beach, stay on the sand",
+      "season": "April-October",
+      "description": "Grenaa Strand is a six-kilometre sandy beach on the east coast of Djursland, starting at Grenaa Marina and running south. The coast faces east with no real tide or current, so it works on onshore easterly and south-easterly winds, when it turns into a simple, forgiving spot. Local kiters have long used it when Bønnerup and the north coast are not working."
+    },
+    "spotInfoPL": {
+      "type": "Kattegat, długa piaszczysta plaża, płaska woda do lekkiego chopu",
+      "bestWind": "E, NE, SE",
+      "waterTemp": "3-19°C",
+      "experience": "Od początkującego do średniozaawansowanego",
+      "launch": "Piaszczysta plaża na południe od portu Grenaa, bezpłatny parking wzdłuż Katholm Strandvej i łatwy dostęp do brzegu",
+      "hazards": "Latem zatłoczone kąpielisko z wyznaczonymi strefami do pływania - kitesurfing możliwy tylko poza nimi, więc startuj daleko na południe od portu; wejście do portu oraz ruch promów i łodzi na północy; wiatry z zachodu wieją od lądu i są porywiste; za plażą chronione obszary wydm, trzymaj się piasku",
+      "season": "Kwiecień-Październik",
+      "description": "Grenaa Strand to sześciokilometrowa piaszczysta plaża na wschodnim wybrzeżu Djursland, zaczynająca się przy marinie w Grenaa i ciągnąca na południe. Wybrzeże jest zwrócone na wschód, bez pływów i wyraźnych prądów, więc spot działa przy wiatrach od morza ze wschodu i południowego wschodu i jest wtedy prosty i wyrozumiały. Lokalni kiterzy korzystają z niego od dawna, gdy Bønnerup i północne wybrzeże nie działają."
+    }
+  },
+  {
     "name": "Praia da Bordeira",
     "country": "Portugal",
     "windguruUrl": "https://www.windguru.cz/112689",
