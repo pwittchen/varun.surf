@@ -283,7 +283,7 @@ Sponsor
    - Frontend generates embedded iframe from coordinates
 
 4. Spring AI (optional, feature-flagged)
-   - OpenAI API (gpt-4o-mini)
+   - OpenAI API (gpt-5-mini)
    - ChatClient for AI-powered forecast analysis
    - Enabled via app.feature.ai.forecast.analysis.enabled, model under spring.ai.openai
    - Multi-language support:

@@ -182,7 +182,7 @@ button - see On-Demand Generation below.
 
 **Configuration**:
 - Disabled by default: `app.feature.ai.forecast.analysis.enabled: false`
-- Provider: OpenAI (gpt-4o-mini) - roughly $0.20 per pass over ~780 spots
+- Provider: OpenAI (gpt-5-mini), generated on demand only
 
 **Professional Prompt Engineering**:
 - System role: Professional kitesurfing weather analyst
@@ -536,8 +536,9 @@ spring:
       api-key: ${OPENAI_API_KEY}  # Set via environment variable
       chat:
         options:
-          model: gpt-4o-mini       # Model for OpenAI provider
-          temperature: 0.7
+          model: gpt-5-mini        # Model for OpenAI provider
+          temperature: 1.0         # GPT-5 accepts only 1, Spring AI defaults to 0.7
+          reasoning-effort: low
     mcp:
       server:
         enabled: true              # MCP server
@@ -916,7 +917,7 @@ app:
           enabled: true
 ```
 
-**Provider**: OpenAI (gpt-4o-mini) - production-ready, consistent output
+**Provider**: OpenAI (gpt-5-mini) - production-ready, consistent output
 
 ## Critical Implementation Notes for AI Agents
 

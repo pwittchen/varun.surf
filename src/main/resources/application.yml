@@ -10,7 +10,11 @@ spring:
       api-key: YOUR_API_KEY
       chat:
         options:
-          model: gpt-4o-mini
+          model: gpt-5-mini
+          # GPT-5 models reject any temperature but 1, and Spring AI sends 0.7 unless told otherwise
+          temperature: 1.0
+          # keeps the reasoning short, so a visitor is not left waiting on the button
+          reasoning-effort: low
     mcp:
       server:
         enabled: true

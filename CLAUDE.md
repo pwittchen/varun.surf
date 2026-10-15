@@ -131,7 +131,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
    - Optional feature (disabled by default via feature flag)
    - Language-specific implementations (English and Polish)
    - Generates AI-powered forecast summaries using Spring AI ChatClient
-   - Uses OpenAI (gpt-4o-mini) as the LLM provider
+   - Uses OpenAI (gpt-5-mini) as the LLM provider
    - Professional kitesurfing analyst prompt with kite size recommendations:
      - Below 8 kts: not rideable
      - 8-11 kts: foil only
@@ -405,7 +405,9 @@ spring:
       api-key: YOUR_API_KEY
       chat:
         options:
-          model: gpt-4o-mini
+          model: gpt-5-mini
+          temperature: 1.0      # GPT-5 accepts only 1, Spring AI defaults to 0.7
+          reasoning-effort: low
     mcp:
       server:
         enabled: true           # MCP server (SSE at /mcp/sse, messages at /mcp/message)
