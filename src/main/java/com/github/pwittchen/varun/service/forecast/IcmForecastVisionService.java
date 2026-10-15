@@ -46,49 +46,61 @@ public class IcmForecastVisionService {
     private static final Pattern DAY_MONTH_PATTERN = Pattern.compile("^(\\d{1,2})[.\\-/](\\d{1,2})");
     private static final Pattern CODE_FENCE_PATTERN = Pattern.compile("(?s)^\\s*```(?:json)?\\s*(.*?)\\s*```\\s*$");
 
+    // Deliberately carries no example values: given a filled-in sample row, gpt-4o-mini copied it
+    // (and continued the series from it) instead of reading the chart
     private static final String VISION_PROMPT = """
             You are reading a Polish ICM UM 4 km meteogram image from meteo.pl (numerical weather forecast).
+            Today is {today} (Polish local time). The chart starts today or yesterday and covers the
+            next two to three days.
+
+            IGNORE the advertisement banner at the very top of the image and the location header under it.
 
             LAYOUT (panels stacked vertically, top to bottom):
             1. TEMPERATURE - red/blue lines, left axis in degrees Celsius. Thin vertical red bars are
                the spread between grid points, the thick red line is the forecast temperature.
             2. PRECIPITATION - green vertical bars, left axis in mm/h (0 at the bottom).
                The orange line on this panel is relative humidity in percent (right axis) - IGNORE it.
-            3. PRESSURE - black line over a color-filled area, left axis in hPa (e.g. 1000, 1010, 1020).
+            3. PRESSURE - black line over a color-filled area, left axis in hPa.
                The right axis is mmHg - IGNORE it. The fill color here means nothing.
             4. WIND (the most important panel) - a smooth colored area with a dark blue outline.
-               The LEFT axis is m/s (ticks 0, 5, 10, 15, 20, 25), the RIGHT axis is the same data
-               in km/h (ticks 0, 18, 36, 54, 72, 90). Read the wind from the top of the colored area.
+               The LEFT axis is m/s, the RIGHT axis is the same data in km/h. The scale CHANGES from
+               chart to chart: read the tick labels printed on the left axis of this image, never
+               assume a fixed scale. Read the wind from the top of the colored area.
                The short HORIZONTAL RED DASHES floating above the area are the GUSTS (szkwaly),
-               read them on the same axis. Black dashed lines are only the grid - never read them as data.
-               Fill color is a sanity check for the wind speed:
-                 dark/light blue = weak, below ~6 m/s (12 kts)
-                 green           = ~6-10 m/s (12-20 kts)
-                 yellow          = ~10-13 m/s (20-25 kts)
-                 orange/red      = ~15 m/s and more (30+ kts)
+               read them on the same left axis. Black dashed lines are only the grid - never read them as data.
             5. WIND DIRECTION - a narrow panel with blue arrows, oriented like a compass:
                up = N, right = E, down = S, left = W. Report where the ARROWHEAD POINTS, purely as
                you see it on the image. Do not convert it into a meteorological direction.
             6. CLOUD / VISIBILITY panel - IGNORE it.
-            7. CLOUD COVER - gray area, left axis in octants (0 = clear sky, 8 = fully overcast).
+            7. CLOUDINESS - gray area, left axis in octants (0 = clear sky, 8 = fully overcast).
 
             TIME AXIS:
             - Use the TOP axis, labelled CEST or CET (Polish local time). Do NOT use the bottom UTC axis.
-            - Day labels above the top axis look like "Mon, 27.07" (day of month and month, no year).
+            - Day labels above the top axis read like "Fri, 16.10" (day of month and month, no year).
+              Hours left of the first label belong to the day before it.
             - Gray vertical bands mark the night (between sunset and sunrise).
 
             TASK: read one data point every 3 hours across the whole chart, from left to right.
+            Every value must be read from THIS image.
 
-            Return ONLY a JSON array, no markdown fences and no commentary. One object per time point:
-            [{"day":"27.07","hour":15,"windMs":8.5,"gustMs":14.0,"arrowPointsTo":"SE","tempC":19.0,
-              "precipitationMm":0.0,"pressureHpa":1012,"cloudCoverOctants":6}]
+            Return ONLY a JSON array, no markdown fences and no commentary. One object per time point,
+            with these fields:
+            - "day": string, the DD.MM day label that time point belongs to, as printed on the chart
+            - "hour": integer 0-23, Polish local time from the top axis
+            - "windMs": number, wind speed in m/s
+            - "gustMs": number, gust speed in m/s
+            - "arrowPointsTo": string, one of N, NE, E, SE, S, SW, W, NW
+            - "tempC": number, temperature in degrees Celsius
+            - "precipitationMm": number, precipitation in mm/h
+            - "pressureHpa": number, pressure in hPa
+            - "cloudCoverOctants": number 0-8
 
             Rules:
-            - "day" is exactly the DD.MM label of the day that time point belongs to, "hour" is 0-23 local time.
             - Report wind and gusts in m/s as read from the chart. Do NOT convert to other units.
-            - "arrowPointsTo" is one of N, NE, E, SE, S, SW, W, NW.
             - Use 0.0 when a value is zero (for example no precipitation), never null.
             """;
+    private static final DateTimeFormatter PROMPT_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("EEE, dd.MM.yyyy", Locale.ENGLISH);
 
     private static final Type VISION_POINT_LIST_TYPE = new TypeToken<List<VisionPoint>>() {}.getType();
 
@@ -113,7 +125,7 @@ public class IcmForecastVisionService {
             String response = chatClient
                     .prompt()
                     .user(u -> u
-                            .text(VISION_PROMPT)
+                            .text(visionPrompt())
                             .media(MimeTypeUtils.IMAGE_PNG, new ByteArrayResource(imageBytes)))
                     .stream()
                     .content()
@@ -135,7 +147,8 @@ public class IcmForecastVisionService {
 
             List<Forecast> forecasts = toForecasts(points);
             if (forecasts.isEmpty()) {
-                log.warn("All {} points extracted from the ICM meteogram were rejected as invalid", points.size());
+                log.warn("All {} points extracted from the ICM meteogram were rejected as invalid, first: {}",
+                        points.size(), points.getFirst());
                 return Optional.empty();
             }
 
@@ -148,6 +161,10 @@ public class IcmForecastVisionService {
             log.warn("Failed to extract forecast from ICM meteogram: {}", e.getMessage());
             return Optional.empty();
         }
+    }
+
+    static String visionPrompt() {
+        return VISION_PROMPT.replace("{today}", LocalDate.now(ICM_ZONE).format(PROMPT_DATE_FORMATTER));
     }
 
     /**

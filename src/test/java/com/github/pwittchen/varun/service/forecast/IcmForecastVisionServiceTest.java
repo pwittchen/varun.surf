@@ -245,6 +245,17 @@ class IcmForecastVisionServiceTest {
         assertThat(extract().isPresent()).isFalse();
     }
 
+    @Test
+    void shouldGiveTheModelTodaysDateAndNoSampleValuesToCopy() {
+        String prompt = IcmForecastVisionService.visionPrompt();
+        String today = LocalDate.now(ZoneId.of("Europe/Warsaw"))
+                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH));
+
+        assertThat(prompt).contains(today);
+        assertThat(prompt).doesNotContain("{today}");
+        assertThat(prompt).doesNotContainMatch("\"day\"\\s*:\\s*\"\\d");
+    }
+
     @SuppressWarnings("unchecked")
     private void stubVisionResponse(String jsonResponse) {
         mockWebServer.enqueue(new MockResponse()
