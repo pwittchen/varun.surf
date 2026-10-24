@@ -5,14 +5,12 @@ on:
     branches: [ "master" ]
     paths:
       - 'android/**'
-      - '.github/workflows/android.yml'
     tags:
       - 'android-v*'
   pull_request:
     branches: [ "master" ]
     paths:
       - 'android/**'
-      - '.github/workflows/android.yml'
   workflow_dispatch:
 
 defaults:
