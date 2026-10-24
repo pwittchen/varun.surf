@@ -2,10 +2,6 @@ package surf.varun.feature.map
 
 import surf.varun.core.ui.MapStyles
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.PointF
 import android.graphics.RectF
 import androidx.compose.ui.graphics.toArgb
@@ -13,45 +9,39 @@ import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.geometry.LatLngBounds
 import org.maplibre.android.maps.MapLibreMap
+import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style
 import org.maplibre.android.style.expressions.Expression
 import org.maplibre.android.style.expressions.Expression.accumulated
 import org.maplibre.android.style.expressions.Expression.all
 import org.maplibre.android.style.expressions.Expression.coalesce
 import org.maplibre.android.style.expressions.Expression.color
-import org.maplibre.android.style.expressions.Expression.concat
 import org.maplibre.android.style.expressions.Expression.get
 import org.maplibre.android.style.expressions.Expression.gte
 import org.maplibre.android.style.expressions.Expression.has
 import org.maplibre.android.style.expressions.Expression.literal
 import org.maplibre.android.style.expressions.Expression.match
 import org.maplibre.android.style.expressions.Expression.not
-import org.maplibre.android.style.expressions.Expression.product
 import org.maplibre.android.style.expressions.Expression.step
 import org.maplibre.android.style.expressions.Expression.stop
 import org.maplibre.android.style.expressions.Expression.switchCase
 import org.maplibre.android.style.expressions.Expression.toString as exprToString
 import org.maplibre.android.style.layers.CircleLayer
 import org.maplibre.android.style.layers.Property
+import org.maplibre.android.style.layers.PropertyFactory.circleBlur
 import org.maplibre.android.style.layers.PropertyFactory.circleColor
+import org.maplibre.android.style.layers.PropertyFactory.circleOpacity
 import org.maplibre.android.style.layers.PropertyFactory.circleRadius
 import org.maplibre.android.style.layers.PropertyFactory.circleStrokeColor
 import org.maplibre.android.style.layers.PropertyFactory.circleStrokeWidth
-import org.maplibre.android.style.layers.PropertyFactory.iconAllowOverlap
-import org.maplibre.android.style.layers.PropertyFactory.iconIgnorePlacement
-import org.maplibre.android.style.layers.PropertyFactory.iconImage
-import org.maplibre.android.style.layers.PropertyFactory.iconOffset
-import org.maplibre.android.style.layers.PropertyFactory.iconRotate
-import org.maplibre.android.style.layers.PropertyFactory.iconRotationAlignment
+import org.maplibre.android.style.layers.PropertyFactory.circleTranslate
 import org.maplibre.android.style.layers.PropertyFactory.textAllowOverlap
 import org.maplibre.android.style.layers.PropertyFactory.textColor
 import org.maplibre.android.style.layers.PropertyFactory.textField
 import org.maplibre.android.style.layers.PropertyFactory.textFont
-import org.maplibre.android.style.layers.PropertyFactory.textHaloColor
-import org.maplibre.android.style.layers.PropertyFactory.textHaloWidth
 import org.maplibre.android.style.layers.PropertyFactory.textIgnorePlacement
-import org.maplibre.android.style.layers.PropertyFactory.textLineHeight
 import org.maplibre.android.style.layers.PropertyFactory.textSize
+import org.maplibre.android.style.layers.PropertyFactory.textTranslate
 import org.maplibre.android.style.layers.PropertyFactory.visibility
 import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonOptions
@@ -67,17 +57,17 @@ import surf.varun.core.model.Coordinates
  * Spots are one clustered GeoJSON source drawn with style layers - not a view per
  * marker - so ~820 spots stay cheap and a timeline step only swaps the data.
  */
-class MapController(val map: MapLibreMap, private val context: Context) {
+class MapController(val map: MapLibreMap, private val view: MapView, private val context: Context) {
     private var style: Style? = null
     private var pendingFeatures: List<MapSpotFeature>? = null
     private var markersVisible = true
 
     /** Apply a basemap and re-add the spot layers on top once it has loaded. */
-    fun setStyle(builder: Style.Builder, colors: WindColors, darkBasemap: Boolean, onLoaded: () -> Unit = {}) {
+    fun setStyle(builder: Style.Builder, colors: WindColors, onLoaded: () -> Unit = {}) {
         style = null
         map.setStyle(builder) { loaded ->
             style = loaded
-            addSpotLayers(loaded, colors, darkBasemap)
+            addSpotLayers(loaded, colors)
             pendingFeatures?.let { setFeatures(it) }
             setMarkersVisible(markersVisible)
             onLoaded()
@@ -93,6 +83,16 @@ class MapController(val map: MapLibreMap, private val context: Context) {
         markersVisible = visible
         val value = if (visible) Property.VISIBLE else Property.NONE
         SPOT_LAYERS.forEach { id -> style?.getLayer(id)?.setProperties(visibility(value)) }
+    }
+
+    /**
+     * Call [listener] each time the map has drawn everything it was given (tiles,
+     * re-clustered spots, a layer shown or hidden). Returns the unsubscribe.
+     */
+    fun onRendered(listener: () -> Unit): () -> Unit {
+        val idle = MapView.OnDidBecomeIdleListener { listener() }
+        view.addOnDidBecomeIdleListener(idle)
+        return { view.removeOnDidBecomeIdleListener(idle) }
     }
 
     val zoom: Double get() = map.cameraPosition.zoom
@@ -138,8 +138,7 @@ class MapController(val map: MapLibreMap, private val context: Context) {
         }
     }
 
-    private fun addSpotLayers(style: Style, colors: WindColors, darkBasemap: Boolean) {
-        style.addImage(ARROW_IMAGE, arrowBitmap(context, darkBasemap))
+    private fun addSpotLayers(style: Style, colors: WindColors) {
         style.addSource(
             GeoJsonSource(
                 SOURCE,
@@ -157,7 +156,7 @@ class MapController(val map: MapLibreMap, private val context: Context) {
             ),
         )
 
-        val outline = if (darkBasemap) 0xFF08090A.toInt() else 0xFFFFFFFF.toInt()
+        // Fill by wind class, with dark text on the bright classes and white on the dark ones
         val clusterFill = step(
             get(SpotProps.MAX_WIND),
             color(colors.calm.toArgb()),
@@ -166,135 +165,177 @@ class MapController(val map: MapLibreMap, private val context: Context) {
             stop(18, color(colors.strong.toArgb())),
             stop(25.01, color(colors.extreme.toArgb())),
         )
+        val clusterText = step(
+            get(SpotProps.MAX_WIND),
+            color(LIGHT_TEXT),
+            stop(5, color(DARK_TEXT)),
+            stop(25.01, color(LIGHT_TEXT)),
+        )
+        val dotFill = match(
+            get(SpotProps.WIND_CLASS),
+            color(colors.calm.toArgb()),
+            stop(WindClass.LIGHT.name.lowercase(), color(colors.light.toArgb())),
+            stop(WindClass.MODERATE.name.lowercase(), color(colors.moderate.toArgb())),
+            stop(WindClass.STRONG.name.lowercase(), color(colors.strong.toArgb())),
+            stop(WindClass.EXTREME.name.lowercase(), color(colors.extreme.toArgb())),
+        )
+        val dotText = match(
+            get(SpotProps.WIND_CLASS),
+            color(LIGHT_TEXT),
+            stop(WindClass.LIGHT.name.lowercase(), color(DARK_TEXT)),
+            stop(WindClass.MODERATE.name.lowercase(), color(DARK_TEXT)),
+            stop(WindClass.STRONG.name.lowercase(), color(DARK_TEXT)),
+        )
+        val isCluster = has("point_count")
+        val isSpot = not(isCluster)
+        val hasWind = has(SpotProps.WIND)
+        val dotRadius = switchCase(hasWind, literal(DOT_RADIUS), literal(EMPTY_DOT_RADIUS))
+
+        // A soft shadow under every marker lifts it off the basemap and the wind wash
+        style.addLayer(
+            CircleLayer(LAYER_SHADOWS, SOURCE).withProperties(
+                circleColor(0xFF000000.toInt()),
+                circleOpacity(0.35f),
+                circleBlur(0.6f),
+                circleRadius(switchCase(isCluster, literal(CLUSTER_RADIUS_DP + 3f), switchCase(hasWind, literal(DOT_RADIUS + 3f), literal(EMPTY_DOT_RADIUS + 2f)))),
+                circleTranslate(arrayOf(0f, 1.5f)),
+            ),
+        )
         style.addLayer(
             CircleLayer(LAYER_CLUSTERS, SOURCE)
-                .withFilter(has("point_count"))
+                .withFilter(isCluster)
                 .withProperties(
                     circleColor(clusterFill),
-                    circleRadius(step(get("point_count"), literal(16f), stop(5, 19f), stop(10, 22f), stop(25, 25f))),
-                    circleStrokeColor(outline),
+                    circleRadius(CLUSTER_RADIUS_DP),
+                    circleStrokeColor(RIM),
                     circleStrokeWidth(2f),
                 ),
         )
+        // The strongest wind of the cluster in the middle, its size on a badge
         style.addLayer(
             SymbolLayer(LAYER_CLUSTER_LABELS, SOURCE)
-                .withFilter(has("point_count"))
+                .withFilter(isCluster)
                 .withProperties(
-                    // Count, with the strongest wind of the cluster underneath
                     textField(
                         switchCase(
                             gte(get(SpotProps.MAX_WIND), literal(0)),
-                            concat(exprToString(get("point_count")), literal("\n▲"), exprToString(get(SpotProps.MAX_WIND))),
+                            exprToString(get(SpotProps.MAX_WIND)),
                             exprToString(get("point_count")),
                         ),
                     ),
-                    textFont(arrayOf(MapStyles.FONT)),
-                    textSize(11f),
-                    textLineHeight(1.0f),
-                    // White with a dark halo reads on every class colour and on both basemaps
-                    textColor(0xFFFFFFFF.toInt()),
-                    textHaloColor(0xCC000000.toInt()),
-                    textHaloWidth(1.2f),
+                    textFont(arrayOf(MapStyles.FONT_BOLD)),
+                    textSize(14f),
+                    textColor(clusterText),
+                    textAllowOverlap(true),
+                    textIgnorePlacement(true),
+                ),
+        )
+        val hasBadge = all(isCluster, gte(get(SpotProps.MAX_WIND), literal(0)))
+        style.addLayer(
+            CircleLayer(LAYER_CLUSTER_BADGES, SOURCE)
+                .withFilter(hasBadge)
+                .withProperties(
+                    circleColor(BADGE),
+                    circleRadius(BADGE_RADIUS),
+                    circleStrokeColor(RIM),
+                    circleStrokeWidth(1.5f),
+                    circleTranslate(arrayOf(BADGE_OFFSET, -BADGE_OFFSET)),
+                ),
+        )
+        style.addLayer(
+            SymbolLayer(LAYER_CLUSTER_COUNTS, SOURCE)
+                .withFilter(hasBadge)
+                .withProperties(
+                    textField(exprToString(get("point_count"))),
+                    textFont(arrayOf(MapStyles.FONT_BOLD)),
+                    textSize(10f),
+                    textColor(LIGHT_TEXT),
+                    textTranslate(arrayOf(BADGE_OFFSET, -BADGE_OFFSET)),
                     textAllowOverlap(true),
                     textIgnorePlacement(true),
                 ),
         )
 
-        val isSpot = not(has("point_count"))
-        style.addLayer(
-            SymbolLayer(LAYER_ARROWS, SOURCE)
-                .withFilter(all(isSpot, has(SpotProps.DIR_INDEX)))
-                .withProperties(
-                    iconImage(ARROW_IMAGE),
-                    // The arrow sits on the downwind side of the dot and points where the wind
-                    // blows to (a north wind points down), like the app's WindArrow
-                    iconRotate(product(get(SpotProps.DIR_INDEX), literal(45f))),
-                    iconRotationAlignment(Property.ICON_ROTATION_ALIGNMENT_MAP),
-                    iconOffset(arrayOf(0f, ARROW_OFFSET)),
-                    iconAllowOverlap(true),
-                    iconIgnorePlacement(true),
-                ),
-        )
         style.addLayer(
             CircleLayer(LAYER_DOTS, SOURCE)
                 .withFilter(isSpot)
                 .withProperties(
-                    circleColor(
-                        match(
-                            get(SpotProps.WIND_CLASS),
-                            color(colors.calm.copy(alpha = 0.6f).toArgb()),
-                            stop(MapFeatures.windClassKey(0.0), color(colors.calm.toArgb())),
-                            stop(WindClass.LIGHT.name.lowercase(), color(colors.light.toArgb())),
-                            stop(WindClass.MODERATE.name.lowercase(), color(colors.moderate.toArgb())),
-                            stop(WindClass.STRONG.name.lowercase(), color(colors.strong.toArgb())),
-                            stop(WindClass.EXTREME.name.lowercase(), color(colors.extreme.toArgb())),
-                        ),
-                    ),
-                    circleRadius(switchCase(has(SpotProps.WIND), literal(12f), literal(6f))),
-                    circleStrokeColor(outline),
-                    circleStrokeWidth(1.5f),
+                    circleColor(dotFill),
+                    circleRadius(dotRadius),
+                    circleStrokeColor(RIM),
+                    circleStrokeWidth(switchCase(hasWind, literal(2f), literal(1.5f))),
                 ),
         )
         style.addLayer(
             SymbolLayer(LAYER_LABELS, SOURCE)
-                .withFilter(all(isSpot, has(SpotProps.WIND)))
+                .withFilter(all(isSpot, hasWind))
                 .withProperties(
                     textField(exprToString(get(SpotProps.WIND))),
-                    textFont(arrayOf(MapStyles.FONT)),
+                    textFont(arrayOf(MapStyles.FONT_BOLD)),
                     textSize(12f),
-                    textColor(0xFFFFFFFF.toInt()),
-                    textHaloColor(0xCC000000.toInt()),
-                    textHaloWidth(1.2f),
+                    textColor(dotText),
                     textAllowOverlap(true),
                     textIgnorePlacement(true),
                 ),
         )
     }
 
+    /**
+     * Where the markers are on screen right now, as discs in pixels, so the wind
+     * field can leave them clear (it is drawn above the map, so it cannot go under
+     * them). Main thread only.
+     */
+    fun markerHoles(width: Float, height: Float): List<MarkerHole> {
+        if (!markersVisible) return emptyList()
+        val density = context.resources.displayMetrics.density
+        val features = map.queryRenderedFeatures(RectF(0f, 0f, width, height), LAYER_CLUSTERS, LAYER_DOTS)
+        return features.flatMap { feature ->
+            val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@flatMap emptyList()
+            val centre = project(point.latitude(), point.longitude())
+            val cluster = feature.hasProperty("point_count")
+            val wind = feature.hasProperty(SpotProps.WIND)
+            val radius = when {
+                cluster -> CLUSTER_RADIUS_DP + 3f
+                wind -> DOT_RADIUS + 3f
+                else -> EMPTY_DOT_RADIUS + 2f
+            } * density
+            buildList {
+                add(MarkerHole(centre.x, centre.y, radius))
+                if (cluster && feature.getNumberProperty(SpotProps.MAX_WIND)?.toDouble()?.let { it >= 0 } == true) {
+                    add(MarkerHole(centre.x + BADGE_OFFSET * density, centre.y - BADGE_OFFSET * density, (BADGE_RADIUS + 2f) * density))
+                }
+            }
+        }
+    }
+
     companion object {
         const val SOURCE = "spots"
+        const val LAYER_SHADOWS = "spot-shadows"
         const val LAYER_CLUSTERS = "spot-clusters"
         const val LAYER_CLUSTER_LABELS = "spot-cluster-labels"
-        const val LAYER_ARROWS = "spot-arrows"
+        const val LAYER_CLUSTER_BADGES = "spot-cluster-badges"
+        const val LAYER_CLUSTER_COUNTS = "spot-cluster-counts"
         const val LAYER_DOTS = "spot-dots"
         const val LAYER_LABELS = "spot-labels"
-        val SPOT_LAYERS = listOf(LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_ARROWS, LAYER_DOTS, LAYER_LABELS)
+        val SPOT_LAYERS = listOf(
+            LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_CLUSTER_BADGES,
+            LAYER_CLUSTER_COUNTS, LAYER_DOTS, LAYER_LABELS,
+        )
 
-        const val ARROW_IMAGE = "wind-arrow"
+        /** Marker geometry in dp (MapLibre circle radii and translations are in dp). */
+        private const val CLUSTER_RADIUS_DP = 18f
+        private const val DOT_RADIUS = 13f
+        private const val EMPTY_DOT_RADIUS = 5f
+        private const val BADGE_RADIUS = 9f
+        private const val BADGE_OFFSET = 15f
+
+        private const val RIM = 0xFFFFFFFF.toInt()
+        private const val BADGE = 0xFF1C1E21.toInt()
+        private const val DARK_TEXT = 0xFF0B0F14.toInt()
+        private const val LIGHT_TEXT = 0xFFFFFFFF.toInt()
+
         const val CLUSTER_RADIUS = 60
         const val CLUSTER_MAX_ZOOM = 9
         const val FOCUS_ZOOM = 10.0
-
-        /** Icon offset is in icon pixels and rotates with the icon: below the dot at 0° (a north wind). */
-        private const val ARROW_OFFSET = 20f
-
-        /** A downward arrow, white with a dark rim so it reads on any basemap. */
-        private fun arrowBitmap(context: Context, darkBasemap: Boolean): Bitmap {
-            val density = context.resources.displayMetrics.density
-            val size = (14 * density).toInt().coerceAtLeast(8)
-            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            val w = size.toFloat()
-            val path = Path().apply {
-                moveTo(w / 2, w * 0.94f)
-                lineTo(w * 0.86f, w * 0.46f)
-                lineTo(w * 0.60f, w * 0.52f)
-                lineTo(w * 0.60f, w * 0.06f)
-                lineTo(w * 0.40f, w * 0.06f)
-                lineTo(w * 0.40f, w * 0.52f)
-                lineTo(w * 0.14f, w * 0.46f)
-                close()
-            }
-            canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = if (darkBasemap) 0xFFF2F3F4.toInt() else 0xFF1F2933.toInt() })
-            canvas.drawPath(
-                path,
-                Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    style = Paint.Style.STROKE
-                    strokeWidth = density
-                    color = if (darkBasemap) 0xCC000000.toInt() else 0xCCFFFFFF.toInt()
-                },
-            )
-            return bitmap
-        }
     }
 }

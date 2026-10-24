@@ -128,7 +128,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     LaunchedEffect(controller, satellite) {
         val map = controller ?: return@LaunchedEffect
         val builder = if (satellite) Style.Builder().fromJson(MapStyles.satelliteJson) else Style.Builder().fromUri(MapStyles.STREET)
-        map.setStyle(builder, windColors, darkBasemap = satellite) { cameraVersion++ }
+        map.setStyle(builder, windColors) { cameraVersion++ }
     }
     LaunchedEffect(controller, state.features) { controller?.setFeatures(state.features) }
     LaunchedEffect(controller, state.settings.mapMarkers) { controller?.setMarkersVisible(state.settings.mapMarkers) }
