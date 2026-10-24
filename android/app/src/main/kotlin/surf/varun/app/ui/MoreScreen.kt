@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import surf.varun.app.R
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.navigation.AboutRoute
 import surf.varun.core.navigation.AlertsRoute
 import surf.varun.core.navigation.CalculatorRoute
@@ -48,6 +49,7 @@ fun MoreScreen() {
 @Composable
 private fun MoreItem(icon: ImageVector, title: Int, summary: Int, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary), color = MaterialTheme.colorScheme.onSurfaceVariant) },
         leadingContent = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },

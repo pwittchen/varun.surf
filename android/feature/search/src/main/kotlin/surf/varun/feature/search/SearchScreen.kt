@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import surf.varun.core.designsystem.component.EmptyState
 import surf.varun.core.designsystem.component.SectionHeader
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.domain.Countries
 import surf.varun.core.model.Spot
 import surf.varun.core.navigation.LocalNavigator
@@ -111,6 +112,7 @@ fun SearchScreen(viewModel: SearchViewModel) {
                     }
                     items(state.recentSearches, key = { "q-$it" }) { recent ->
                         ListItem(
+                            colors = transparentListItemColors(),
                             headlineContent = { Text(recent) },
                             leadingContent = { Icon(Icons.Rounded.History, null) },
                             modifier = Modifier.clickable { viewModel.onQueryChange(recent) },
@@ -122,7 +124,7 @@ fun SearchScreen(viewModel: SearchViewModel) {
                     items(state.recentSpots, key = { "r-${it.wgId}" }) { spot -> SpotRow(spot) { open(spot) } }
                 }
                 if (!state.hasSpots) {
-                    item(key = "no-spots") { ListItem(headlineContent = { Text(stringResource(R.string.no_spots_cached)) }) }
+                    item(key = "no-spots") { ListItem(colors = transparentListItemColors(), headlineContent = { Text(stringResource(R.string.no_spots_cached)) }) }
                 }
             } else if (state.results.isEmpty()) {
                 item(key = "empty") {
@@ -143,6 +145,7 @@ fun SearchScreen(viewModel: SearchViewModel) {
 @Composable
 private fun SpotRow(spot: Spot, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(spot.name) },
         supportingContent = { Text("${Countries.of(spot.country).flag} ${countryName(spot.country)}".trim()) },
         leadingContent = { Icon(Icons.Rounded.Place, null) },

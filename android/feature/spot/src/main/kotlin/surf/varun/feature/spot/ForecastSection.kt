@@ -74,6 +74,7 @@ import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.WindArrow
 import surf.varun.core.designsystem.component.WindCell
 import surf.varun.core.designsystem.component.WindNumber
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
 import surf.varun.core.designsystem.theme.forClass
@@ -232,6 +233,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
             val models = spot.availableModels.ifEmpty { listOf(ForecastModelOption(state.model, modelName)) }
             models.forEach { model ->
                 ListItem(
+                    colors = transparentListItemColors(),
                     headlineContent = { Text(model.name) },
                     leadingContent = { RadioButton(selected = model.key == state.model, onClick = null) },
                     modifier = Modifier.selectable(

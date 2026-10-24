@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import surf.varun.core.designsystem.component.SectionHeader
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.model.AppLanguage
 import surf.varun.core.model.CardDensity
 import surf.varun.core.model.ParticleQuality
@@ -172,6 +173,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 @Composable
 private fun SwitchSetting(title: Int, summary: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary)) },
         trailingContent = { Switch(checked = checked, onCheckedChange = null) },
@@ -182,6 +184,7 @@ private fun SwitchSetting(title: Int, summary: Int, checked: Boolean, onChange: 
 @Composable
 private fun ClickSetting(title: Int, summary: Int, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary)) },
         modifier = Modifier.clickable(onClick = onClick),
@@ -193,6 +196,7 @@ private fun ClickSetting(title: Int, summary: Int, onClick: () -> Unit) {
 private fun <T> ChoiceSetting(title: Int, options: List<T>, selected: T, label: (T) -> Int, onSelect: (T) -> Unit) {
     var open by remember { mutableStateOf(false) }
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(label(selected)), color = MaterialTheme.colorScheme.primary) },
         modifier = Modifier.clickable { open = true },
@@ -205,6 +209,7 @@ private fun <T> ChoiceSetting(title: Int, options: List<T>, selected: T, label: 
                 Column {
                     options.forEach { option ->
                         ListItem(
+                            colors = transparentListItemColors(),
                             headlineContent = { Text(stringResource(label(option))) },
                             leadingContent = { RadioButton(selected = option == selected, onClick = null) },
                             modifier = Modifier.selectable(selected = option == selected, role = Role.RadioButton) {

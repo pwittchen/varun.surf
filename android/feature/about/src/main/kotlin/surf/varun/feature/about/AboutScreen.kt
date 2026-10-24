@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import surf.varun.core.designsystem.component.SectionHeader
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.navigation.LicencesRoute
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.ui.Format
@@ -160,6 +161,7 @@ fun AboutScreen(viewModel: AboutViewModel) {
                 }
                 item {
                     ListItem(
+                        colors = transparentListItemColors(),
                         headlineContent = { Text(stringResource(R.string.licences)) },
                         supportingContent = { Text(stringResource(R.string.licences_summary)) },
                         leadingContent = { Icon(Icons.Rounded.Gavel, null) },
@@ -180,7 +182,7 @@ private fun StatusRow(state: AboutUiState) {
         state.status != null -> Triple(Icons.Rounded.Error, stringResource(R.string.status_down), MaterialTheme.colorScheme.error)
         else -> return
     }
-    ListItem(headlineContent = { Text(text) }, leadingContent = { Icon(icon, null, tint = tint) })
+    ListItem(colors = transparentListItemColors(), headlineContent = { Text(text) }, leadingContent = { Icon(icon, null, tint = tint) })
 }
 
 @Composable
@@ -205,6 +207,7 @@ private fun SubHeader(text: String) {
 internal fun LinkRow(link: Link) {
     val context = LocalContext.current
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(link.name) },
         supportingContent = { Text(link.detail, color = MaterialTheme.colorScheme.onSurfaceVariant) },
         trailingContent = { Icon(Icons.AutoMirrored.Rounded.OpenInNew, contentDescription = null) },
@@ -214,5 +217,5 @@ internal fun LinkRow(link: Link) {
 
 @Composable
 private fun ActionRow(icon: ImageVector, text: String, onClick: () -> Unit) {
-    ListItem(headlineContent = { Text(text) }, leadingContent = { Icon(icon, null) }, modifier = Modifier.clickable(onClick = onClick))
+    ListItem(colors = transparentListItemColors(), headlineContent = { Text(text) }, leadingContent = { Icon(icon, null) }, modifier = Modifier.clickable(onClick = onClick))
 }

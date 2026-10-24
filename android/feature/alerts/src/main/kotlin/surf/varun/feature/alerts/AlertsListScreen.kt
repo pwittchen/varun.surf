@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.Banner
 import surf.varun.core.designsystem.component.EmptyState
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.model.WindAlert
 import surf.varun.core.navigation.AlertEditorRoute
 import surf.varun.core.navigation.LocalNavigator
@@ -149,6 +150,7 @@ private fun AlertRow(
     val muted = alert.mutedUntil?.takeIf { it.isAfter(now.toInstant()) }
     val enabledDescription = stringResource(R.string.alerts_enabled_description, alert.spotName)
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(alert.spotName) },
         supportingContent = {
             Text(

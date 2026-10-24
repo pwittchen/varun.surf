@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.designsystem.component.WindArrow
 import surf.varun.core.designsystem.component.WindNumber
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
 import surf.varun.core.domain.Conditions
@@ -189,18 +191,18 @@ fun CountrySheet(
         LazyColumn {
             item {
                 ListItem(
+                    colors = countryRowColors(selected == null),
                     headlineContent = { Text(stringResource(R.string.map_filter_country_all)) },
                     trailingContent = { Text(pluralStringResource(R.plurals.map_spots_count, spots.size, spots.size)) },
                     modifier = Modifier.clickable { onSelect(null) },
-                    tonalElevation = if (selected == null) 4.dp else 0.dp,
                 )
             }
             items(rows, key = { it.first }) { (country, name, count) ->
                 ListItem(
+                    colors = countryRowColors(selected == country),
                     headlineContent = { Text("${Countries.of(country).flag} $name".trim()) },
                     trailingContent = { Text(pluralStringResource(R.plurals.map_spots_count, count, count)) },
                     modifier = Modifier.clickable { onSelect(country) },
-                    tonalElevation = if (selected == country) 4.dp else 0.dp,
                 )
             }
         }
@@ -254,6 +256,7 @@ fun SpotSearchSheet(
         LazyColumn {
             items(results, key = { it.wgId }) { spot ->
                 ListItem(
+                    colors = transparentListItemColors(),
                     headlineContent = { Text(spot.name) },
                     supportingContent = { Text("${Countries.of(spot.country).flag} ${countryName(spot.country)}".trim()) },
                     leadingContent = { Icon(Icons.Rounded.Place, contentDescription = null) },
@@ -266,3 +269,8 @@ fun SpotSearchSheet(
 
 /** Enough to find the spot meant without the sheet turning into the spots list. */
 private const val MAX_SEARCH_RESULTS = 30
+
+/** The picked country stands out against the sheet; the rest take the sheet's colour. */
+@Composable
+private fun countryRowColors(selected: Boolean) =
+    if (selected) ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest) else transparentListItemColors()
