@@ -123,6 +123,10 @@ class MapController(val map: MapLibreMap, private val context: Context) {
     }
 
     /** Fit the camera to [points]; a single point is centred instead. */
+    fun zoomBy(delta: Double) {
+        map.animateCamera(CameraUpdateFactory.zoomBy(delta), 250)
+    }
+
     fun fit(points: List<Coordinates>, paddingPx: Int) {
         when (points.size) {
             0 -> return

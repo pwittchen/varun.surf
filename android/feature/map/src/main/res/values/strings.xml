@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="map_search_hint">Search spots…</string>
+    <string name="map_search">Search spots</string>
     <string name="map_filter_country_all">All countries</string>
     <string name="map_filter_favourites">Favourites</string>
     <string name="map_filter_live">Live stations</string>
@@ -13,7 +13,8 @@
 
     <string name="map_my_location">My location</string>
     <string name="map_layers">Map layers</string>
-    <string name="map_fit_favourites">Show favourites</string>
+    <string name="map_zoom_in">Zoom in</string>
+    <string name="map_zoom_out">Zoom out</string>
     <string name="map_no_favourites">No favourites with a location yet</string>
     <string name="map_location_unavailable">Location unavailable</string>
     <string name="map_wind_field">Wind field</string>

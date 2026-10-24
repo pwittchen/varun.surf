@@ -9,38 +9,33 @@ import android.content.IntentFilter
 import android.os.PowerManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
@@ -64,10 +59,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -259,54 +256,49 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     )
                 }
 
-                TopChrome(
+                if (state.settings.mapWindField) {
+                    Text(
+                        stringResource(R.string.map_wind_field_disclaimer),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(16.dp),
+                    )
+                }
+
+                val noFavourites = stringResource(R.string.map_no_favourites)
+                MapControls(
                     state = state,
+                    showLayers = showLayers,
                     onSearch = { navigator.navigate(SearchRoute) },
                     onCountry = { showCountries = true },
-                    onFavourites = viewModel::toggleFavouritesOnly,
+                    onFavourites = {
+                        val points = state.allSpots.filter { it.wgId in state.favourites }.mapNotNull { it.coordinates }
+                        when {
+                            state.filters.favouritesOnly -> viewModel.toggleFavouritesOnly()
+                            points.isEmpty() -> scope.launch { snackbar.showSnackbar(noFavourites) }
+                            else -> {
+                                viewModel.toggleFavouritesOnly()
+                                controller?.fit(points, with(density) { 64.dp.roundToPx() })
+                            }
+                        }
+                    },
                     onLive = viewModel::toggleLiveOnly,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                )
-
-                Column(
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = if (wide && selected != null) 376.dp else 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    SmallFloatingActionButton(onClick = {
+                    onLayers = { showLayers = it },
+                    onMyLocation = {
                         if (viewModel.hasLocationPermission()) {
                             scope.launch { centreOnMe(viewModel, controller, snackbar, context) }
                         } else {
                             // Asked here, at the moment it is needed - never on launch
                             locationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                         }
-                    }) { Icon(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location)) }
-                    Box {
-                        SmallFloatingActionButton(onClick = { showLayers = true }) {
-                            Icon(Icons.Rounded.Layers, stringResource(R.string.map_layers))
-                        }
-                        LayersMenu(
-                            expanded = showLayers,
-                            windField = state.settings.mapWindField,
-                            markers = state.settings.mapMarkers,
-                            satellite = satellite,
-                            onDismiss = { showLayers = false },
-                            onWindField = viewModel::setWindField,
-                            onMarkers = viewModel::setMarkers,
-                            onSatellite = viewModel::setSatellite,
-                        )
-                    }
-                    val noFavourites = stringResource(R.string.map_no_favourites)
-                    SmallFloatingActionButton(onClick = {
-                        val points = state.allSpots.filter { it.wgId in state.favourites }.mapNotNull { it.coordinates }
-                        if (points.isEmpty()) {
-                            scope.launch { snackbar.showSnackbar(noFavourites) }
-                        } else {
-                            controller?.fit(points, with(density) { 64.dp.roundToPx() })
-                        }
-                    }) { Icon(Icons.Rounded.Star, stringResource(R.string.map_fit_favourites)) }
-                }
+                    },
+                    onZoom = { controller?.zoomBy(it) },
+                    viewModel = viewModel,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .statusBarsPadding()
+                        .padding(top = 12.dp, end = if (wide && selected != null) 376.dp else 12.dp),
+                )
 
                 if (wide && selected != null) {
                     // Expanded width: a side sheet instead of the bottom one (spec 9.6)
@@ -367,78 +359,74 @@ private suspend fun centreOnMe(
     }
 }
 
-/** Search field (opens the search screen) and the filter chips. */
+/**
+ * Every map control in one column on the right: filters (search, country,
+ * favourites, live stations), then layers and location, then zoom. Filters that
+ * are on are filled with the accent colour.
+ */
 @Composable
-private fun TopChrome(
+private fun MapControls(
     state: MapUiState,
+    showLayers: Boolean,
     onSearch: () -> Unit,
     onCountry: () -> Unit,
     onFavourites: () -> Unit,
     onLive: () -> Unit,
+    onLayers: (Boolean) -> Unit,
+    onMyLocation: () -> Unit,
+    onZoom: (Double) -> Unit,
+    viewModel: MapViewModel,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier.fillMaxWidth().statusBarsPadding().padding(top = 8.dp)) {
-        Surface(
-            shape = RoundedCornerShape(28.dp),
-            tonalElevation = 3.dp,
-            shadowElevation = 3.dp,
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .fillMaxWidth()
-                .height(48.dp)
-                .clickable(onClick = onSearch),
-        ) {
-            Row(Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.width(12.dp))
-                Text(stringResource(R.string.map_search_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-        Row(
-            Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 12.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            val chipColors = FilterChipDefaults.filterChipColors(containerColor = MaterialTheme.colorScheme.surface)
-            FilterChip(
-                selected = state.filters.country != null,
-                onClick = onCountry,
-                label = {
-                    Text(
-                        state.filters.country?.let { countryName(it) } ?: stringResource(R.string.map_filter_country_all),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-                leadingIcon = { Icon(Icons.Rounded.Public, null, Modifier.size(FilterChipDefaults.IconSize)) },
-                colors = chipColors,
-            )
-            FilterChip(
-                selected = state.filters.favouritesOnly,
-                onClick = onFavourites,
-                label = { Text(stringResource(R.string.map_filter_favourites)) },
-                leadingIcon = { Icon(Icons.Rounded.Star, null, Modifier.size(FilterChipDefaults.IconSize)) },
-                colors = chipColors,
-            )
-            FilterChip(
-                selected = state.filters.liveOnly,
-                onClick = onLive,
-                label = { Text(stringResource(R.string.map_filter_live)) },
-                leadingIcon = { Icon(Icons.Rounded.Sensors, null, Modifier.size(FilterChipDefaults.IconSize)) },
-                colors = chipColors,
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        ControlButton(Icons.Rounded.Search, stringResource(R.string.map_search), onSearch)
+        ControlButton(
+            Icons.Rounded.Public,
+            state.filters.country?.let { countryName(it) } ?: stringResource(R.string.map_filter_country_all),
+            onCountry,
+            active = state.filters.country != null,
+        )
+        ControlButton(
+            if (state.filters.favouritesOnly) Icons.Rounded.Star else Icons.Rounded.StarBorder,
+            stringResource(R.string.map_filter_favourites),
+            onFavourites,
+            active = state.filters.favouritesOnly,
+        )
+        ControlButton(Icons.Rounded.Sensors, stringResource(R.string.map_filter_live), onLive, active = state.filters.liveOnly)
+
+        Spacer(Modifier.height(8.dp))
+        Box {
+            ControlButton(Icons.Rounded.Layers, stringResource(R.string.map_layers), { onLayers(true) })
+            LayersMenu(
+                expanded = showLayers,
+                windField = state.settings.mapWindField,
+                markers = state.settings.mapMarkers,
+                satellite = state.settings.mapSatellite,
+                onDismiss = { onLayers(false) },
+                onWindField = viewModel::setWindField,
+                onMarkers = viewModel::setMarkers,
+                onSatellite = viewModel::setSatellite,
             )
         }
-        if (state.settings.mapWindField) {
-            Text(
-                stringResource(R.string.map_wind_field_disclaimer),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .clickable(enabled = false) {},
-            )
-        }
+        ControlButton(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location), onMyLocation)
+
+        Spacer(Modifier.height(8.dp))
+        ControlButton(Icons.Rounded.Add, stringResource(R.string.map_zoom_in), { onZoom(1.0) })
+        ControlButton(Icons.Rounded.Remove, stringResource(R.string.map_zoom_out), { onZoom(-1.0) })
+    }
+}
+
+/** A small map button; [active] marks a filter that is on, for TalkBack as well as visually. */
+@Composable
+private fun ControlButton(icon: ImageVector, description: String, onClick: () -> Unit, active: Boolean? = null) {
+    val on = active == true
+    SmallFloatingActionButton(
+        onClick = onClick,
+        containerColor = if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentColor = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+        modifier = if (active != null) Modifier.semantics { selected = on } else Modifier,
+    ) {
+        Icon(icon, contentDescription = description)
     }
 }
 
