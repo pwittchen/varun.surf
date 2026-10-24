@@ -82,6 +82,7 @@ fun SpotPanel(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(spot.name, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(Modifier.height(4.dp))
                 Text(
                     "${country.flag} ${countryName(spot.country)}".trim(),
                     style = MaterialTheme.typography.bodySmall,
@@ -96,7 +97,7 @@ fun SpotPanel(
             Text(stringResource(R.string.map_sheet_no_wind), color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                WindNumber(formatWind(reading.wind), reading.wind, style = Numbers.large, windClass = reading.windClass)
+                WindNumber(formatWind(reading.wind), reading.wind, style = Numbers.medium, windClass = reading.windClass)
                 Text(
                     "/ ${if (reading.gusts.isNaN()) "–" else formatWind(reading.gusts)} $unit",
                     style = Numbers.medium,
