@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Favourites, alerts and settings are worth restoring; the session cookie and caches are not -->
+<full-backup-content>
+    <exclude domain="file" path="datastore/session.preferences_pb" />
+    <exclude domain="database" path="varun.db" />
+</full-backup-content>

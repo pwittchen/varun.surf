@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="alerts_title">Alerty wiatrowe</string>
+    <string name="alerts_empty_title">Brak alertów wiatrowych</string>
+    <string name="alerts_empty_message">Dostaniesz powiadomienie, gdy na spocie zawieje tak, jak chcesz - według stacji na żywo albo prognozy.</string>
+    <string name="alerts_create">Nowy alert</string>
+    <string name="alerts_enabled_description">Alert dla %1$s włączony</string>
+    <string name="alerts_delete">Usuń alert</string>
+    <string name="alerts_deleted">Usunięto alert</string>
+    <string name="alerts_undo">Cofnij</string>
+    <string name="alerts_muted_until">Wyciszony do %1$s</string>
+    <string name="alerts_notifications_off">Powiadomienia varun.surf są wyłączone, więc alerty do Ciebie nie dotrą. Włącz je w ustawieniach systemu.</string>
+    <string name="alerts_open_settings">Ustawienia</string>
+    <string name="back">Wstecz</string>
+
+    <string name="alert_rule_min">≥ %1$s %2$s</string>
+    <string name="alert_rule_range">%1$s-%2$s %3$s</string>
+    <string name="alert_any_direction">dowolny kierunek</string>
+    <string name="alert_trigger_live">stacja na żywo</string>
+    <plurals name="alert_trigger_forecast_days">
+        <item quantity="one">prognoza, najbliższy %d dzień</item>
+        <item quantity="few">prognoza, najbliższe %d dni</item>
+        <item quantity="many">prognoza, najbliższe %d dni</item>
+        <item quantity="other">prognoza, najbliższe %d dnia</item>
+    </plurals>
+
+    <string name="editor_new_title">Nowy alert wiatrowy</string>
+    <string name="editor_edit_title">Edytuj alert wiatrowy</string>
+    <string name="editor_save">Zapisz</string>
+    <string name="editor_spot">Spot</string>
+    <string name="editor_spot_search">Wyszukaj spot</string>
+    <string name="editor_change_spot">Zmień</string>
+    <string name="editor_min_wind">Minimalny wiatr: %1$s</string>
+    <string name="editor_max_wind_toggle">Górny limit</string>
+    <string name="editor_max_wind">Maksymalny wiatr: %1$s</string>
+    <string name="editor_directions">Kierunki wiatru</string>
+    <string name="editor_directions_hint">Brak zaznaczenia oznacza dowolny kierunek. Wstępnie wypełnione według najlepszego wiatru na spocie.</string>
+    <string name="editor_any">Dowolny</string>
+    <string name="editor_trigger">Powiadom, gdy</string>
+    <string name="editor_trigger_forecast">Prognoza</string>
+    <string name="editor_trigger_live">Stacja na żywo</string>
+    <string name="editor_trigger_forecast_hint">Dowolna godzina dzienna (06:00-21:00 na spocie) w oknie prognozy spełnia warunek wystarczająco długo. Najwyżej jedno powiadomienie dziennie.</string>
+    <string name="editor_trigger_live_hint">Stacja pogodowa na spocie mierzy taki wiatr teraz. Sprawdzane co 15 minut, najwyżej jedno powiadomienie na 3 godziny.</string>
+    <string name="editor_no_live_station">Ten spot nie ma stacji na żywo - użyj alertu z prognozy.</string>
+    <plurals name="editor_horizon_days">
+        <item quantity="one">Najbliższy %d dzień</item>
+        <item quantity="few">Najbliższe %d dni</item>
+        <item quantity="many">Najbliższe %d dni</item>
+        <item quantity="other">Najbliższe %d dnia</item>
+    </plurals>
+    <plurals name="editor_consecutive_hours">
+        <item quantity="one">Przez co najmniej %d godzinę</item>
+        <item quantity="few">Przez co najmniej %d godziny z rzędu</item>
+        <item quantity="many">Przez co najmniej %d godzin z rzędu</item>
+        <item quantity="other">Przez co najmniej %d godziny z rzędu</item>
+    </plurals>
+    <string name="editor_quiet_hours">Godziny ciszy</string>
+    <string name="editor_quiet_from">Od</string>
+    <string name="editor_quiet_to">Do</string>
+    <string name="editor_decrease">Zmniejsz</string>
+    <string name="editor_increase">Zwiększ</string>
+    <string name="editor_error_spot">Najpierw wybierz spot</string>
+    <string name="editor_error_range">Maksimum nie może być mniejsze od minimum</string>
+    <string name="editor_permission_title">Powiadomienia są zablokowane</string>
+    <string name="editor_permission_message">Alert jest zapisany, ale Android nie pokaże powiadomień, dopóki nie zezwolisz na nie dla varun.surf w ustawieniach systemu.</string>
+    <string name="editor_ok">OK</string>
+
+    <string name="alert_channel_name">Alerty wiatrowe</string>
+    <string name="alert_channel_description">Gdy na spocie zawieje tak, jak w jednym z Twoich alertów</string>
+    <string name="alert_live_title">Na %1$s wieje!</string>
+    <string name="alert_forecast_title">Okno wiatrowe: %1$s</string>
+    <string name="alert_live_body">Na %1$s wieje - %2$s %3$s %4$s (porywy %5$s)</string>
+    <string name="alert_forecast_body">Okno wiatrowe %1$s %2$s-%3$s na %4$s, do %5$s %6$s</string>
+    <string name="alert_mute_today">Wycisz na dziś</string>
+</resources>

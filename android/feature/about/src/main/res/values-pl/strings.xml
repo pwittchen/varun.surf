@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_title">O aplikacji</string>
+    <string name="back">Wstecz</string>
+    <string name="about_description">VARUN.SURF prezentuje kite spoty, prognozy pogody i aktualne warunki wiatrowe dla kitesurferów na całym świecie. Celem projektu jest promocja sportów wodnych i aktywności fizycznej oraz zachęcanie do odkrywania nowych miejsc.</string>
+    <string name="app_version">Wersja aplikacji</string>
+    <string name="section_status">Status usługi</string>
+    <string name="status_up">Wszystkie systemy działają</string>
+    <string name="status_down">Wykryto problemy z usługą</string>
+    <string name="status_unreachable">Brak połączenia</string>
+    <string name="backend_version">Wersja serwera</string>
+    <string name="uptime">Czas działania</string>
+    <string name="started">Uruchomiono</string>
+    <string name="spots_count">Spoty</string>
+    <string name="countries_count">Kraje</string>
+    <string name="live_stations_count">Stacje live</string>
+    <string name="forecast_sweep">Odświeżanie prognoz</string>
+    <string name="forecast_sweep_running">W toku: %1$d / %2$d spotów</string>
+    <string name="forecast_sweep_done">Ostatnio zakończone %1$s</string>
+    <string name="section_sources">Źródła danych</string>
+    <string name="sources_forecasts">Prognozy</string>
+    <string name="sources_live">Stacje live</string>
+    <string name="sources_spots">Dane o spotach</string>
+    <string name="section_sponsors">Sponsorzy</string>
+    <string name="section_contact">Kontakt i projekt</string>
+    <string name="author">Zrobione w 🇵🇱 przez Piotra Wittchena</string>
+    <string name="contact_email">hello@varun.surf</string>
+    <string name="github">Kod źródłowy na GitHubie</string>
+    <string name="suggest_spot">Zaproponuj nowy kite spot</string>
+    <string name="website">varun.surf w przeglądarce</string>
+    <string name="section_privacy">Prywatność</string>
+    <string name="privacy_text">Aplikacja nie zbiera danych osobowych: bez kont, analityki, reklam i raportowania awarii. Ulubione, alerty i ustawienia zostają na tym telefonie. Lokalizacja, jeśli na nią pozwolisz, służy wyłącznie do liczenia odległości na telefonie i nigdzie nie jest wysyłana. Serwer wydaje funkcjonalne ciasteczko sesji, które Cię nie identyfikuje.</string>
+    <string name="licences">Licencje open source</string>
+    <string name="licences_summary">Biblioteki, z których zbudowano aplikację</string>
+    <string name="map_data">Dane mapy © współtwórcy OpenStreetMap, kafelki OpenFreeMap</string>
+</resources>

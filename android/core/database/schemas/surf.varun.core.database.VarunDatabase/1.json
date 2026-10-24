@@ -1,0 +1,751 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "a9b18e4d50543f2c61b6d1f709639e60",
+    "entities": [
+      {
+        "tableName": "spot",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `name` TEXT NOT NULL, `country` TEXT NOT NULL, `serverOrder` INTEGER NOT NULL, `windguruUrl` TEXT, `windfinderUrl` TEXT, `icmUrl` TEXT, `webcamUrl` TEXT, `locationUrl` TEXT, `lat` REAL, `lon` REAL, `photoUrl` TEXT, `sponsors` TEXT, `lastUpdated` TEXT, `fetchedAt` INTEGER NOT NULL, `info_type` TEXT, `info_bestWind` TEXT, `info_waterTemp` TEXT, `info_experience` TEXT, `info_launch` TEXT, `info_hazards` TEXT, `info_season` TEXT, `info_description` TEXT, `info_pl_type` TEXT, `info_pl_bestWind` TEXT, `info_pl_waterTemp` TEXT, `info_pl_experience` TEXT, `info_pl_launch` TEXT, `info_pl_hazards` TEXT, `info_pl_season` TEXT, `info_pl_description` TEXT, PRIMARY KEY(`wgId`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serverOrder",
+            "columnName": "serverOrder",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windguruUrl",
+            "columnName": "windguruUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "windfinderUrl",
+            "columnName": "windfinderUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "icmUrl",
+            "columnName": "icmUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "webcamUrl",
+            "columnName": "webcamUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "locationUrl",
+            "columnName": "locationUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "lat",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "lon",
+            "columnName": "lon",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "photoUrl",
+            "columnName": "photoUrl",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sponsors",
+            "columnName": "sponsors",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastUpdated",
+            "columnName": "lastUpdated",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "info.type",
+            "columnName": "info_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.bestWind",
+            "columnName": "info_bestWind",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.waterTemp",
+            "columnName": "info_waterTemp",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.experience",
+            "columnName": "info_experience",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.launch",
+            "columnName": "info_launch",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.hazards",
+            "columnName": "info_hazards",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.season",
+            "columnName": "info_season",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "info.description",
+            "columnName": "info_description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.type",
+            "columnName": "info_pl_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.bestWind",
+            "columnName": "info_pl_bestWind",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.waterTemp",
+            "columnName": "info_pl_waterTemp",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.experience",
+            "columnName": "info_pl_experience",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.launch",
+            "columnName": "info_pl_launch",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.hazards",
+            "columnName": "info_pl_hazards",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.season",
+            "columnName": "info_pl_season",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "infoPl.description",
+            "columnName": "info_pl_description",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId"
+          ]
+        }
+      },
+      {
+        "tableName": "live_conditions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `rawDate` TEXT NOT NULL, `observedAt` TEXT, `wind` INTEGER NOT NULL, `gusts` INTEGER NOT NULL, `direction` TEXT, `temp` INTEGER, `fetchedAt` INTEGER NOT NULL, PRIMARY KEY(`wgId`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rawDate",
+            "columnName": "rawDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observedAt",
+            "columnName": "observedAt",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "wind",
+            "columnName": "wind",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gusts",
+            "columnName": "gusts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direction",
+            "columnName": "direction",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "temp",
+            "columnName": "temp",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId"
+          ]
+        }
+      },
+      {
+        "tableName": "live_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `position` INTEGER NOT NULL, `rawDate` TEXT NOT NULL, `observedAt` TEXT, `wind` INTEGER NOT NULL, `gusts` INTEGER NOT NULL, `direction` TEXT, `temp` INTEGER, PRIMARY KEY(`wgId`, `position`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rawDate",
+            "columnName": "rawDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observedAt",
+            "columnName": "observedAt",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "wind",
+            "columnName": "wind",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gusts",
+            "columnName": "gusts",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "direction",
+            "columnName": "direction",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "temp",
+            "columnName": "temp",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "position"
+          ]
+        }
+      },
+      {
+        "tableName": "daily_forecast",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `position` INTEGER NOT NULL, `rawDate` TEXT NOT NULL, `wind` REAL NOT NULL, `gusts` REAL NOT NULL, `direction` TEXT, `temp` REAL, `precipitation` REAL, `cloudCoverPercent` REAL, `pressureHpa` REAL, `wave` REAL, `wavePeriod` REAL, `waveDirection` TEXT, PRIMARY KEY(`wgId`, `position`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.rawDate",
+            "columnName": "rawDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.wind",
+            "columnName": "wind",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.gusts",
+            "columnName": "gusts",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.direction",
+            "columnName": "direction",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "values.temp",
+            "columnName": "temp",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.precipitation",
+            "columnName": "precipitation",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.cloudCoverPercent",
+            "columnName": "cloudCoverPercent",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.pressureHpa",
+            "columnName": "pressureHpa",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.wave",
+            "columnName": "wave",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.wavePeriod",
+            "columnName": "wavePeriod",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.waveDirection",
+            "columnName": "waveDirection",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "position"
+          ]
+        }
+      },
+      {
+        "tableName": "hourly_forecast",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `model` TEXT NOT NULL, `time` TEXT NOT NULL, `rawDate` TEXT NOT NULL, `wind` REAL NOT NULL, `gusts` REAL NOT NULL, `direction` TEXT, `temp` REAL, `precipitation` REAL, `cloudCoverPercent` REAL, `pressureHpa` REAL, `wave` REAL, `wavePeriod` REAL, `waveDirection` TEXT, PRIMARY KEY(`wgId`, `model`, `time`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.rawDate",
+            "columnName": "rawDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.wind",
+            "columnName": "wind",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.gusts",
+            "columnName": "gusts",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "values.direction",
+            "columnName": "direction",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "values.temp",
+            "columnName": "temp",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.precipitation",
+            "columnName": "precipitation",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.cloudCoverPercent",
+            "columnName": "cloudCoverPercent",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.pressureHpa",
+            "columnName": "pressureHpa",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.wave",
+            "columnName": "wave",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.wavePeriod",
+            "columnName": "wavePeriod",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "values.waveDirection",
+            "columnName": "waveDirection",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "model",
+            "time"
+          ]
+        }
+      },
+      {
+        "tableName": "spot_detail",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `model` TEXT NOT NULL, `fetchedAt` INTEGER NOT NULL, PRIMARY KEY(`wgId`, `model`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "model"
+          ]
+        }
+      },
+      {
+        "tableName": "ai_analysis",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `lang` TEXT NOT NULL, `text` TEXT NOT NULL, `createdAt` INTEGER, PRIMARY KEY(`wgId`, `lang`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lang",
+            "columnName": "lang",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "lang"
+          ]
+        }
+      },
+      {
+        "tableName": "available_model",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `key` TEXT NOT NULL, `name` TEXT NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`wgId`, `key`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId",
+            "key"
+          ]
+        }
+      },
+      {
+        "tableName": "favourite",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `position` INTEGER NOT NULL, PRIMARY KEY(`wgId`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId"
+          ]
+        }
+      },
+      {
+        "tableName": "alert",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `wgId` INTEGER NOT NULL, `spotName` TEXT NOT NULL, `minWind` INTEGER NOT NULL, `maxWind` INTEGER, `directions` INTEGER NOT NULL, `trigger` TEXT NOT NULL, `horizonDays` INTEGER NOT NULL, `minConsecutiveHours` INTEGER NOT NULL, `quietStartHour` INTEGER, `quietEndHour` INTEGER, `lastFiredAt` INTEGER, `mutedUntil` INTEGER, `enabled` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spotName",
+            "columnName": "spotName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minWind",
+            "columnName": "minWind",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxWind",
+            "columnName": "maxWind",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "directions",
+            "columnName": "directions",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trigger",
+            "columnName": "trigger",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "horizonDays",
+            "columnName": "horizonDays",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minConsecutiveHours",
+            "columnName": "minConsecutiveHours",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "quietStartHour",
+            "columnName": "quietStartHour",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "quietEndHour",
+            "columnName": "quietEndHour",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastFiredAt",
+            "columnName": "lastFiredAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "mutedUntil",
+            "columnName": "mutedUntil",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_alert_wgId",
+            "unique": false,
+            "columnNames": [
+              "wgId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_alert_wgId` ON `${TABLE_NAME}` (`wgId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "recent_spot",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`wgId` INTEGER NOT NULL, `openedAt` INTEGER NOT NULL, PRIMARY KEY(`wgId`))",
+        "fields": [
+          {
+            "fieldPath": "wgId",
+            "columnName": "wgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openedAt",
+            "columnName": "openedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "wgId"
+          ]
+        }
+      },
+      {
+        "tableName": "recent_search",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`query` TEXT NOT NULL, `at` INTEGER NOT NULL, PRIMARY KEY(`query`))",
+        "fields": [
+          {
+            "fieldPath": "query",
+            "columnName": "query",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "at",
+            "columnName": "at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "query"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a9b18e4d50543f2c61b6d1f709639e60')"
+    ]
+  }
+}

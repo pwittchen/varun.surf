@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spots_title">Spots</string>
+    <string name="favourites_title">Favourites</string>
+    <string name="search_hint">Search spots…</string>
+
+    <string name="country_all">All countries</string>
+    <string name="country_sheet_title">Country</string>
+    <string name="country_search_hint">Find a country</string>
+    <plurals name="spots_count">
+        <item quantity="one">%d spot</item>
+        <item quantity="other">%d spots</item>
+    </plurals>
+
+    <string name="sort_label">Sort</string>
+    <string name="sort_firing">Firing now</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_forecast_today">Forecast today</string>
+    <string name="sort_distance">Distance</string>
+    <string name="filter_live">Live only</string>
+    <string name="filter_nearby">Nearby</string>
+    <string name="filter_windy_today">Windy today</string>
+    <string name="location_denied">Location permission is needed for nearby spots</string>
+
+    <string name="no_favourites_title">No favourites yet</string>
+    <string name="no_favourites_message">Tap ☆ on any spot to add it to your favourites.</string>
+    <string name="no_spots_title">No spots found</string>
+    <string name="no_spots_message">Try another country or turn off a filter.</string>
+    <string name="clear_filters">Clear filters</string>
+    <string name="offline_empty_title">No connection</string>
+    <string name="offline_empty_message">Connect to the internet once to load the spots - they stay available offline afterwards.</string>
+    <string name="loading_spots">Searching for the wind…</string>
+
+    <string name="reorder">Reorder</string>
+    <string name="reorder_done">Done</string>
+    <string name="drag_handle">Drag to reorder %1$s</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="sponsors_title">Sponsors</string>
+    <string name="favourite_missing">This spot no longer exists</string>
+    <string name="remove">Remove</string>
+</resources>

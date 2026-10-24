@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_map"
+        android:shortcutId="map"
+        android:shortcutLongLabel="@string/shortcut_map_long"
+        android:shortcutShortLabel="@string/shortcut_map_short">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="varun://map"
+            android:targetClass="surf.varun.app.MainActivity"
+            android:targetPackage="surf.varun.app" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutId="search"
+        android:shortcutLongLabel="@string/shortcut_search_long"
+        android:shortcutShortLabel="@string/shortcut_search_short">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="varun://search"
+            android:targetClass="surf.varun.app.MainActivity"
+            android:targetPackage="surf.varun.app" />
+    </shortcut>
+</shortcuts>

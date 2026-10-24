@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_spot_name">Spot wind</string>
+    <string name="widget_spot_description">Live wind at one spot, with the next hours of forecast when there\'s room</string>
+    <string name="widget_favourites_name">Favourites</string>
+    <string name="widget_favourites_description">Your favourite spots, strongest wind first</string>
+    <string name="widget_favourites_title">Favourites</string>
+    <string name="widget_config_title">Pick a spot for the widget</string>
+    <string name="widget_config_search">Search spots</string>
+    <string name="widget_refresh">Refresh</string>
+    <string name="widget_no_spot">Star a spot in the app or pick one for this widget</string>
+    <string name="widget_no_favourites">Tap ☆ on any spot in the app to see it here</string>
+    <string name="widget_no_data">No data yet</string>
+    <string name="widget_live">live</string>
+    <string name="widget_forecast">forecast</string>
+    <string name="widget_just_now">just now</string>
+    <plurals name="widget_minutes_ago">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d min ago</item>
+    </plurals>
+    <plurals name="widget_hours_ago">
+        <item quantity="one">%d h ago</item>
+        <item quantity="other">%d h ago</item>
+    </plurals>
+</resources>

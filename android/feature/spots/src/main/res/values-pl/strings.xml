@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spots_title">Spoty</string>
+    <string name="favourites_title">Ulubione</string>
+    <string name="search_hint">Szukaj spotów…</string>
+
+    <string name="country_all">Wszystkie kraje</string>
+    <string name="country_sheet_title">Kraj</string>
+    <string name="country_search_hint">Znajdź kraj</string>
+    <plurals name="spots_count">
+        <item quantity="one">%d spot</item>
+        <item quantity="few">%d spoty</item>
+        <item quantity="many">%d spotów</item>
+        <item quantity="other">%d spotu</item>
+    </plurals>
+
+    <string name="sort_label">Sortuj</string>
+    <string name="sort_firing">Najsilniejszy wiatr</string>
+    <string name="sort_name">Nazwa</string>
+    <string name="sort_forecast_today">Prognoza na dziś</string>
+    <string name="sort_distance">Odległość</string>
+    <string name="filter_live">Tylko stacje live</string>
+    <string name="filter_nearby">W pobliżu</string>
+    <string name="filter_windy_today">Wietrznie dziś</string>
+    <string name="location_denied">Spoty w pobliżu wymagają dostępu do lokalizacji</string>
+
+    <string name="no_favourites_title">Brak ulubionych</string>
+    <string name="no_favourites_message">Stuknij ☆ przy dowolnym spocie, aby dodać go do ulubionych.</string>
+    <string name="no_spots_title">Nie znaleziono spotów</string>
+    <string name="no_spots_message">Wybierz inny kraj lub wyłącz któryś filtr.</string>
+    <string name="clear_filters">Wyczyść filtry</string>
+    <string name="offline_empty_title">Brak połączenia</string>
+    <string name="offline_empty_message">Połącz się raz z internetem, aby wczytać spoty - potem są dostępne także offline.</string>
+    <string name="loading_spots">Szukam wiatru…</string>
+
+    <string name="reorder">Zmień kolejność</string>
+    <string name="reorder_done">Gotowe</string>
+    <string name="drag_handle">Przeciągnij, aby przenieść %1$s</string>
+    <string name="move_up">Przesuń w górę</string>
+    <string name="move_down">Przesuń w dół</string>
+    <string name="sponsors_title">Sponsorzy</string>
+    <string name="favourite_missing">Ten spot już nie istnieje</string>
+    <string name="remove">Usuń</string>
+</resources>

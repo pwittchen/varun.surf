@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calculator_title">Kite &amp; board size</string>
+    <string name="back">Back</string>
+    <string name="wind_speed_label">Wind speed (knots)</string>
+    <string name="rider_weight_label">Rider weight (kg)</string>
+    <string name="skill_level_label">Skill level &amp; conditions</string>
+    <string name="skill_level_placeholder">Select skill level &amp; conditions</string>
+    <string name="skill_beginner_flat">Beginner - Flat water</string>
+    <string name="skill_beginner_small">Beginner - Small waves</string>
+    <string name="skill_intermediate_flat">Intermediate - Flat water</string>
+    <string name="skill_intermediate_medium">Intermediate - Medium waves</string>
+    <string name="skill_advanced_flat">Advanced - Flat water</string>
+    <string name="skill_advanced_medium">Advanced - Medium waves</string>
+    <string name="skill_advanced_large">Advanced - Large waves</string>
+    <string name="recommended_equipment">Recommended equipment</string>
+    <string name="kite_size_label">Kite size</string>
+    <string name="board_size_label">Board size</string>
+    <string name="kite_size_value">%1$d m²</string>
+    <string name="board_twin_tip">%1$d × %2$d cm (twin tip)</string>
+    <string name="board_directional">%1$s (surfboard / directional)</string>
+    <string name="calc_disclaimer">These are general recommendations. Actual equipment choice may vary based on specific kite model, board type, and personal preference. Always consult with experienced riders or instructors for your local conditions.</string>
+    <string name="prefilled_from_spot">Wind prefilled from the spot</string>
+
+    <string name="warning_invalid_wind_title">Invalid wind speed</string>
+    <string name="warning_invalid_wind">Please enter a valid wind speed between 5 and 50 knots.</string>
+    <string name="warning_invalid_weight_title">Invalid rider weight</string>
+    <string name="warning_invalid_weight">Please enter a valid rider weight between 40 and 150 kg.</string>
+    <string name="warning_weight_low_title">Weight too low</string>
+    <string name="warning_weight_low">Your weight is too low and riding may be dangerous. Kitesurfing requires sufficient body weight for control and safety.</string>
+    <string name="warning_skill_title">Skill level required</string>
+    <string name="warning_skill">Please select your skill level and conditions.</string>
+    <string name="warning_weight_high_title">😉</string>
+    <string name="warning_weight_high">Maybe you should lose some weight before going onto the water!</string>
+    <string name="warning_extreme_title">Extreme conditions!</string>
+    <string name="warning_extreme">Wind speeds above 40 knots are extremely dangerous. We strongly recommend NOT going onto the water in these conditions. Stay safe!</string>
+    <string name="warning_low_wind_title">Low wind conditions</string>
+    <string name="warning_low_wind">There is not enough wind for riding with a regular setup. However, you could try going on a kite foil board, which works great in light wind!</string>
+    <string name="warning_waves_title">Insufficient wind for wave conditions</string>
+    <string name="warning_waves">Wind speed below 15 knots is not enough for riding in medium or large waves. Waves create additional resistance and you need more wind power to maintain speed and control. We do not recommend going on the water in these conditions.</string>
+</resources>

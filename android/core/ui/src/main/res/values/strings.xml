@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unit_knots">kts</string>
+    <string name="unit_ms">m/s</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_beaufort">Bft</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+
+    <string name="now_label">Now</string>
+    <string name="live_label">Live</string>
+    <string name="forecast_label">Forecast</string>
+    <string name="stale_label">outdated</string>
+    <string name="gusts_short">gusts %1$s</string>
+
+    <string name="day_today">Today</string>
+    <string name="day_tomorrow">Tomorrow</string>
+    <string name="day_n">Day %1$d</string>
+
+    <string name="just_now">just now</string>
+    <plurals name="minutes_ago">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d min ago</item>
+    </plurals>
+    <plurals name="hours_ago">
+        <item quantity="one">%d h ago</item>
+        <item quantity="other">%d h ago</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <string name="updated_ago">Updated %1$s</string>
+    <string name="never_updated">Not updated yet</string>
+
+    <string name="offline_banner">You\'re offline - showing saved data</string>
+    <string name="refresh_failed_banner">Couldn\'t refresh - showing saved data</string>
+    <string name="retry">Retry</string>
+    <string name="forecast_progress">Loading forecasts: %1$d / %2$d spots</string>
+
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
+    <string name="favourite_added">Added to favourites</string>
+    <string name="favourite_removed">Removed from favourites</string>
+    <string name="share">Share</string>
+    <string name="navigate">Navigate</string>
+    <string name="create_alert">Create wind alert</string>
+    <string name="open_on_web">Open on varun.surf</string>
+    <string name="share_text">%1$s: %2$s - varun.surf</string>
+    <string name="share_text_conditions">%1$s %2$s %3$s, gusts %4$s</string>
+    <string name="no_maps_app">No maps app installed</string>
+    <string name="no_browser">No app can open this link</string>
+
+    <string name="spot_card_description">%1$s, %2$s, %3$s</string>
+    <string name="conditions_description">%1$s %2$s gusting %3$s, %4$s</string>
+    <string name="no_data">No data yet</string>
+    <string name="km_away">%1$s km</string>
+</resources>

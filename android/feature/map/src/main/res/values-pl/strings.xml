@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_search_hint">Szukaj spotów…</string>
+    <string name="map_filter_country_all">Wszystkie kraje</string>
+    <string name="map_filter_favourites">Ulubione</string>
+    <string name="map_filter_live">Stacje live</string>
+    <string name="map_country_sheet_title">Kraj</string>
+    <string name="map_country_search">Filtruj kraje</string>
+    <plurals name="map_spots_count">
+        <item quantity="one">%d spot</item>
+        <item quantity="few">%d spoty</item>
+        <item quantity="many">%d spotów</item>
+        <item quantity="other">%d spotu</item>
+    </plurals>
+
+    <string name="map_my_location">Moja lokalizacja</string>
+    <string name="map_layers">Warstwy mapy</string>
+    <string name="map_fit_favourites">Pokaż ulubione</string>
+    <string name="map_no_favourites">Brak ulubionych spotów z lokalizacją</string>
+    <string name="map_location_unavailable">Lokalizacja niedostępna</string>
+    <string name="map_wind_field">Pole wiatru</string>
+    <string name="map_spots_layer">Spoty</string>
+    <string name="map_satellite">Satelita</string>
+    <string name="map_wind_field_disclaimer">Interpolacja z danych spotów</string>
+
+    <string name="timeline_title">Prognoza wiatru</string>
+    <string name="timeline_now">Teraz</string>
+    <string name="timeline_play">Odtwórz prognozę</string>
+    <string name="timeline_pause">Pauza</string>
+    <string name="timeline_prev_hour">Poprzednia godzina</string>
+    <string name="timeline_next_hour">Następna godzina</string>
+    <string name="timeline_unavailable">Oś czasu prognozy niedostępna</string>
+
+    <string name="map_sheet_open_spot">Otwórz spot</string>
+    <string name="map_sheet_live_now">Na żywo</string>
+    <string name="map_sheet_no_wind">Brak prognozy na tę godzinę</string>
+    <string name="map_sheet_close">Zamknij</string>
+    <string name="map_wind_gusts">%1$s / %2$s %3$s</string>
+</resources>

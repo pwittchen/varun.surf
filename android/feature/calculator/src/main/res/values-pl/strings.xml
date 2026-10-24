@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calculator_title">Rozmiar latawca i deski</string>
+    <string name="back">Wstecz</string>
+    <string name="wind_speed_label">Prędkość wiatru (węzły)</string>
+    <string name="rider_weight_label">Waga ridera (kg)</string>
+    <string name="skill_level_label">Poziom umiejętności i warunki</string>
+    <string name="skill_level_placeholder">Wybierz poziom umiejętności i warunki</string>
+    <string name="skill_beginner_flat">Początkujący - Płaska woda</string>
+    <string name="skill_beginner_small">Początkujący - Małe fale</string>
+    <string name="skill_intermediate_flat">Średniozaawansowany - Płaska woda</string>
+    <string name="skill_intermediate_medium">Średniozaawansowany - Średnie fale</string>
+    <string name="skill_advanced_flat">Zaawansowany - Płaska woda</string>
+    <string name="skill_advanced_medium">Zaawansowany - Średnie fale</string>
+    <string name="skill_advanced_large">Zaawansowany - Duże fale</string>
+    <string name="recommended_equipment">Zalecany sprzęt</string>
+    <string name="kite_size_label">Rozmiar latawca</string>
+    <string name="board_size_label">Rozmiar deski</string>
+    <string name="kite_size_value">%1$d m²</string>
+    <string name="board_twin_tip">%1$d × %2$d cm (twin tip)</string>
+    <string name="board_directional">%1$s (surfboard / deska kierunkowa)</string>
+    <string name="calc_disclaimer">To są ogólne zalecenia. Rzeczywisty wybór sprzętu może się różnić w zależności od konkretnego modelu latawca, typu deski i osobistych preferencji. Zawsze konsultuj się z doświadczonymi riderami lub instruktorami dla swoich lokalnych warunków.</string>
+    <string name="prefilled_from_spot">Wiatr wpisany ze spotu</string>
+
+    <string name="warning_invalid_wind_title">Nieprawidłowa prędkość wiatru</string>
+    <string name="warning_invalid_wind">Wprowadź prawidłową prędkość wiatru między 5 a 50 węzłów.</string>
+    <string name="warning_invalid_weight_title">Nieprawidłowa waga ridera</string>
+    <string name="warning_invalid_weight">Wprowadź prawidłową wagę między 40 a 150 kg.</string>
+    <string name="warning_weight_low_title">Waga zbyt niska</string>
+    <string name="warning_weight_low">Twoja waga jest zbyt niska i jazda może być niebezpieczna. Kitesurfing wymaga odpowiedniej wagi ciała dla kontroli i bezpieczeństwa.</string>
+    <string name="warning_skill_title">Wymagany poziom umiejętności</string>
+    <string name="warning_skill">Wybierz swój poziom umiejętności i warunki.</string>
+    <string name="warning_weight_high_title">😉</string>
+    <string name="warning_weight_high">Może powinieneś schudnąć przed wyjściem na wodę!</string>
+    <string name="warning_extreme_title">Ekstremalne warunki!</string>
+    <string name="warning_extreme">Prędkość wiatru powyżej 40 węzłów jest bardzo niebezpieczna. Zdecydowanie odradzamy wychodzenie na wodę w takich warunkach. Bądź bezpieczny!</string>
+    <string name="warning_low_wind_title">Słabe warunki wiatrowe</string>
+    <string name="warning_low_wind">Nie ma wystarczającego wiatru do jazdy ze standardowym setupem. Możesz jednak spróbować deski foilowej, która świetnie sprawdza się w słabym wietrze!</string>
+    <string name="warning_waves_title">Niewystarczający wiatr dla warunków falowych</string>
+    <string name="warning_waves">Prędkość wiatru poniżej 15 węzłów jest niewystarczająca do jazdy na średnich lub dużych falach. Fale tworzą dodatkowy opór i potrzebujesz więcej mocy wiatru, aby utrzymać prędkość i kontrolę. Nie zalecamy wychodzenia na wodę w takich warunkach.</string>
+</resources>

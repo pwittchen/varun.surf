@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_spot_name">Wiatr na spocie</string>
+    <string name="widget_spot_description">Wiatr na żywo na jednym spocie, a gdy jest miejsce - prognoza na najbliższe godziny</string>
+    <string name="widget_favourites_name">Ulubione</string>
+    <string name="widget_favourites_description">Twoje ulubione spoty, od najsilniejszego wiatru</string>
+    <string name="widget_favourites_title">Ulubione</string>
+    <string name="widget_config_title">Wybierz spot dla widżetu</string>
+    <string name="widget_config_search">Szukaj spotów</string>
+    <string name="widget_refresh">Odśwież</string>
+    <string name="widget_no_spot">Dodaj spot do ulubionych w aplikacji albo wybierz go dla tego widżetu</string>
+    <string name="widget_no_favourites">Kliknij ☆ przy dowolnym spocie w aplikacji, żeby zobaczyć go tutaj</string>
+    <string name="widget_no_data">Brak danych</string>
+    <string name="widget_live">na żywo</string>
+    <string name="widget_forecast">prognoza</string>
+    <string name="widget_just_now">przed chwilą</string>
+    <plurals name="widget_minutes_ago">
+        <item quantity="one">%d min temu</item>
+        <item quantity="few">%d min temu</item>
+        <item quantity="many">%d min temu</item>
+        <item quantity="other">%d min temu</item>
+    </plurals>
+    <plurals name="widget_hours_ago">
+        <item quantity="one">%d godz. temu</item>
+        <item quantity="few">%d godz. temu</item>
+        <item quantity="many">%d godz. temu</item>
+        <item quantity="other">%d godz. temu</item>
+    </plurals>
+</resources>

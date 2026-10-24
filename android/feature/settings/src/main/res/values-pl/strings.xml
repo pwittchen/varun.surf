@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Ustawienia</string>
+    <string name="back">Wstecz</string>
+
+    <string name="section_appearance">Wygląd</string>
+    <string name="theme">Motyw</string>
+    <string name="theme_system">Systemowy</string>
+    <string name="theme_light">Jasny</string>
+    <string name="theme_dark">Ciemny</string>
+    <string name="dynamic_color">Kolory dynamiczne</string>
+    <string name="dynamic_color_summary">Kolory z Twojej tapety</string>
+    <string name="language">Język</string>
+    <string name="language_system">Systemowy</string>
+    <string name="language_en">English</string>
+    <string name="language_pl">Polski</string>
+    <string name="density">Gęstość kart</string>
+    <string name="density_comfortable">Wygodna</string>
+    <string name="density_compact">Kompaktowa</string>
+    <string name="start_tab">Ekran startowy</string>
+    <string name="start_auto">Ulubione, jeśli są, w przeciwnym razie spoty</string>
+    <string name="start_spots">Spoty</string>
+    <string name="start_favourites">Ulubione</string>
+    <string name="start_map">Mapa</string>
+
+    <string name="section_units">Jednostki</string>
+    <string name="wind_unit">Wiatr</string>
+    <string name="wind_knots">Węzły (kts)</string>
+    <string name="wind_ms">Metry na sekundę (m/s)</string>
+    <string name="wind_kmh">Kilometry na godzinę (km/h)</string>
+    <string name="wind_beaufort">Skala Beauforta</string>
+    <string name="temperature_unit">Temperatura</string>
+    <string name="temperature_c">Celsjusz (°C)</string>
+    <string name="temperature_f">Fahrenheit (°F)</string>
+
+    <string name="section_forecast">Prognoza i mapa</string>
+    <string name="remember_model">Zapamiętaj model prognozy</string>
+    <string name="remember_model_summary">Otwieraj każdy spot z ostatnio wybranym modelem</string>
+    <string name="timeline_reach">Oś czasu mapy</string>
+    <string name="timeline_five_days">5 dni</string>
+    <string name="timeline_full">Cały przebieg prognozy</string>
+    <string name="particles">Cząsteczki pola wiatru</string>
+    <string name="particles_auto">Automatycznie</string>
+    <string name="particles_low">Mało</string>
+    <string name="particles_high">Dużo</string>
+    <string name="particles_off">Wyłączone</string>
+
+    <string name="section_privacy">Lokalizacja i powiadomienia</string>
+    <string name="use_location">Używaj mojej lokalizacji</string>
+    <string name="use_location_summary">Odległości i spoty w pobliżu. Lokalizacja nigdy nie opuszcza telefonu.</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="notifications_summary">Zarządzaj powiadomieniami alertów w ustawieniach systemu</string>
+
+    <string name="section_data">Dane</string>
+    <string name="clear_cache">Wyczyść pamięć podręczną</string>
+    <string name="clear_cache_summary">Usuwa zapisane prognozy, zdjęcia i kafelki mapy. Ulubione i alerty zostają.</string>
+    <string name="clear_cache_confirm">Wyczyścić pamięć podręczną?</string>
+    <string name="clear_cache_done">Wyczyszczono</string>
+    <string name="clear">Wyczyść</string>
+    <string name="cancel">Anuluj</string>
+    <string name="send_diagnostics">Wyślij diagnostykę</string>
+    <string name="send_diagnostics_summary">Otwiera e-mail z wersją aplikacji i urządzenia - nic nie jest wysyłane automatycznie</string>
+    <string name="diagnostics_subject">varun.surf Android - diagnostyka</string>
+    <string name="no_email_app">Brak aplikacji pocztowej. Napisz na hello@varun.surf</string>
+</resources>

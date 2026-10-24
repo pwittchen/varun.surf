@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="back">Back</string>
+
+    <string name="section_appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="dynamic_color">Dynamic colour</string>
+    <string name="dynamic_color_summary">Use colours from your wallpaper</string>
+    <string name="language">Language</string>
+    <string name="language_system">System default</string>
+    <string name="language_en">English</string>
+    <string name="language_pl">Polski</string>
+    <string name="density">Card density</string>
+    <string name="density_comfortable">Comfortable</string>
+    <string name="density_compact">Compact</string>
+    <string name="start_tab">Start screen</string>
+    <string name="start_auto">Favourites if you have any, else spots</string>
+    <string name="start_spots">Spots</string>
+    <string name="start_favourites">Favourites</string>
+    <string name="start_map">Map</string>
+
+    <string name="section_units">Units</string>
+    <string name="wind_unit">Wind</string>
+    <string name="wind_knots">Knots (kts)</string>
+    <string name="wind_ms">Metres per second (m/s)</string>
+    <string name="wind_kmh">Kilometres per hour (km/h)</string>
+    <string name="wind_beaufort">Beaufort</string>
+    <string name="temperature_unit">Temperature</string>
+    <string name="temperature_c">Celsius (°C)</string>
+    <string name="temperature_f">Fahrenheit (°F)</string>
+
+    <string name="section_forecast">Forecast &amp; map</string>
+    <string name="remember_model">Remember forecast model</string>
+    <string name="remember_model_summary">Open every spot with the model you picked last</string>
+    <string name="timeline_reach">Map timeline</string>
+    <string name="timeline_five_days">5 days</string>
+    <string name="timeline_full">Whole forecast run</string>
+    <string name="particles">Wind field particles</string>
+    <string name="particles_auto">Automatic</string>
+    <string name="particles_low">Low</string>
+    <string name="particles_high">High</string>
+    <string name="particles_off">Off</string>
+
+    <string name="section_privacy">Location &amp; notifications</string>
+    <string name="use_location">Use my location</string>
+    <string name="use_location_summary">Distances and nearby spots. Your location never leaves the phone.</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_summary">Manage wind alert notifications in system settings</string>
+
+    <string name="section_data">Data</string>
+    <string name="clear_cache">Clear cache</string>
+    <string name="clear_cache_summary">Delete cached forecasts, images and map tiles. Favourites and alerts stay.</string>
+    <string name="clear_cache_confirm">Clear the cache?</string>
+    <string name="clear_cache_done">Cache cleared</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="send_diagnostics">Send diagnostics</string>
+    <string name="send_diagnostics_summary">Opens an email with the app and device versions - nothing is sent automatically</string>
+    <string name="diagnostics_subject">varun.surf Android diagnostics</string>
+    <string name="no_email_app">No email app installed. Write to hello@varun.surf</string>
+</resources>

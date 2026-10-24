@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="direction_n">północy</string>
+    <string name="direction_ne">północnego wschodu</string>
+    <string name="direction_e">wschodu</string>
+    <string name="direction_se">południowego wschodu</string>
+    <string name="direction_s">południa</string>
+    <string name="direction_sw">południowego zachodu</string>
+    <string name="direction_w">zachodu</string>
+    <string name="direction_nw">północnego zachodu</string>
+    <string name="direction_unknown">kierunek wiatru nieznany</string>
+    <string name="wind_from">wiatr z %1$s</string>
+</resources>

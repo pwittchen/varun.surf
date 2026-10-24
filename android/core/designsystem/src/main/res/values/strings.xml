@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="direction_n">north</string>
+    <string name="direction_ne">north-east</string>
+    <string name="direction_e">east</string>
+    <string name="direction_se">south-east</string>
+    <string name="direction_s">south</string>
+    <string name="direction_sw">south-west</string>
+    <string name="direction_w">west</string>
+    <string name="direction_nw">north-west</string>
+    <string name="direction_unknown">wind direction unknown</string>
+    <string name="wind_from">wind from %1$s</string>
+</resources>

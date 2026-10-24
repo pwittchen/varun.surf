@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_search_hint">Search spots…</string>
+    <string name="map_filter_country_all">All countries</string>
+    <string name="map_filter_favourites">Favourites</string>
+    <string name="map_filter_live">Live stations</string>
+    <string name="map_country_sheet_title">Country</string>
+    <string name="map_country_search">Filter countries</string>
+    <plurals name="map_spots_count">
+        <item quantity="one">%d spot</item>
+        <item quantity="other">%d spots</item>
+    </plurals>
+
+    <string name="map_my_location">My location</string>
+    <string name="map_layers">Map layers</string>
+    <string name="map_fit_favourites">Show favourites</string>
+    <string name="map_no_favourites">No favourites with a location yet</string>
+    <string name="map_location_unavailable">Location unavailable</string>
+    <string name="map_wind_field">Wind field</string>
+    <string name="map_spots_layer">Spots</string>
+    <string name="map_satellite">Satellite</string>
+    <string name="map_wind_field_disclaimer">Interpolated from spot data</string>
+
+    <string name="timeline_title">Wind forecast</string>
+    <string name="timeline_now">Now</string>
+    <string name="timeline_play">Play the forecast</string>
+    <string name="timeline_pause">Pause</string>
+    <string name="timeline_prev_hour">Previous hour</string>
+    <string name="timeline_next_hour">Next hour</string>
+    <string name="timeline_unavailable">Forecast timeline unavailable</string>
+
+    <string name="map_sheet_open_spot">Open spot</string>
+    <string name="map_sheet_live_now">Live now</string>
+    <string name="map_sheet_no_wind">No forecast for this hour</string>
+    <string name="map_sheet_close">Close</string>
+    <string name="map_wind_gusts">%1$s / %2$s %3$s</string>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_spots">Spoty</string>
+    <string name="tab_favourites">Ulubione</string>
+    <string name="tab_map">Mapa</string>
+    <string name="tab_more">Więcej</string>
+
+    <string name="more_calculator">Kalkulator latawca i deski</string>
+    <string name="more_calculator_summary">Rozmiar latawca i deski do wiatru i Twojej wagi</string>
+    <string name="more_alerts">Alerty wiatrowe</string>
+    <string name="more_alerts_summary">Powiadomienia, gdy na Twoich spotach wieje</string>
+    <string name="more_search">Szukaj spotów</string>
+    <string name="more_search_summary">Znajdź spot po nazwie lub kraju</string>
+    <string name="more_settings">Ustawienia</string>
+    <string name="more_settings_summary">Motyw, język, jednostki, mapa</string>
+    <string name="more_about">O aplikacji</string>
+    <string name="more_about_summary">Status usługi, źródła danych, sponsorzy</string>
+
+    <string name="shortcut_map_short">Mapa wiatru</string>
+    <string name="shortcut_map_long">Otwórz mapę wiatru</string>
+    <string name="shortcut_search_short">Szukaj</string>
+    <string name="shortcut_search_long">Szukaj spotów</string>
+</resources>

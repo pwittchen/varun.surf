@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Wstecz</string>
+    <string name="more_actions">Więcej akcji</string>
+    <string name="kite_size">Rozmiar latawca</string>
+    <string name="kite_size_description">Oblicz rozmiar latawca do tego wiatru</string>
+
+    <string name="section_now">Teraz</string>
+    <string name="section_forecast">Prognoza</string>
+    <string name="section_ai">Analiza AI</string>
+    <string name="section_icm">Prognoza ICM</string>
+    <string name="section_about">Informacje o spocie</string>
+    <string name="section_location">Lokalizacja</string>
+    <string name="section_links">Linki</string>
+    <string name="section_sponsors">Sponsorzy spotu</string>
+
+    <string name="wind">Wiatr</string>
+    <string name="gusts">Szkwały</string>
+    <string name="direction">Kierunek</string>
+    <string name="temperature">Temp</string>
+    <string name="rain">Deszcz</string>
+    <string name="clouds">Chmury</string>
+    <string name="pressure">Ciśnienie</string>
+    <string name="wave">Fala</string>
+    <string name="wave_period">Okres</string>
+    <string name="wave_direction">Kier. fali</string>
+    <string name="time">Czas</string>
+    <string name="reading_age">Odczyt %1$s</string>
+    <string name="stale_reading">Nieaktualny odczyt - %1$s</string>
+    <string name="history_title">Ostatnie 12 godzin</string>
+    <string name="history_description">Wiatr na żywo w ostatnich 12 godzinach, od %1$s do %2$s %3$s</string>
+    <string name="history_too_short">Za mało odczytów na żywo, by narysować wykres</string>
+    <string name="gusting">w porywach %1$s</string>
+
+    <string name="model">Model</string>
+    <string name="model_sheet_title">Model prognozy</string>
+    <string name="windy_days">Wietrzne dni</string>
+    <string name="view_table">Tabela</string>
+    <string name="view_chart">Wykres</string>
+    <string name="no_windy_days">Brak wietrznych dni!</string>
+    <string name="no_hourly_forecast">Wczytuję prognozę godzinową…</string>
+    <string name="chart_description">Wykres godzinowy wiatru i porywów</string>
+
+    <string name="ai_disclaimer">⚠️ Te dane są generowane przez AI i mogą zawierać błędy lub nieprawidłowe informacje! Mogą być też nieaktualne: dla optymalizacji kosztów analiza jest generowana na żądanie i jest ważna przez 24 godziny, a sama prognoza jest aktualizowana co 3 godziny.</string>
+    <string name="ai_generated_at">Wygenerowano: %1$s</string>
+    <string name="ai_other_language">po angielsku</string>
+    <string name="ai_generate_button">Generuj analizę AI</string>
+    <string name="ai_generating">Generowanie analizy AI…</string>
+    <string name="ai_error">Nie udało się wygenerować analizy AI. Spróbuj ponownie później.</string>
+    <string name="ai_modal_title">Generuj analizę AI</string>
+    <string name="ai_modal_question">Czy na pewno chcesz wygenerować analizę?</string>
+    <string name="ai_modal_hint">Napisanie analizy kosztuje wywołanie AI, dlatego jest generowana na żądanie i jest ważna przez 24 godziny. Widzą ją wszyscy odwiedzający spot, a powstaje od razu po polsku i po angielsku, więc zmiana języka nadal działa. Pojawi się w tym miejscu, zamiast tego przycisku.</string>
+    <string name="icm_generate_button">Generuj prognozę ICM</string>
+    <string name="icm_generating">Generowanie prognozy ICM…</string>
+    <string name="icm_error">Nie udało się wygenerować prognozy ICM. Spróbuj ponownie później.</string>
+    <string name="icm_modal_title">Generuj prognozę ICM</string>
+    <string name="icm_modal_question">Czy na pewno chcesz wygenerować prognozę?</string>
+    <string name="icm_modal_hint">Odczyt meteogramu ICM kosztuje wywołanie AI, dlatego prognoza jest generowana na żądanie i jest ważna przez 24 godziny. Pojawi się na liście modeli prognozy. Sam meteogram ICM możesz obejrzeć przez link do meteogramu poniżej - to nic nie kosztuje.</string>
+    <string name="icm_ready">Wybrano prognozę ICM</string>
+    <string name="icm_show">Pokaż prognozę ICM</string>
+    <string name="icm_available">Prognoza ICM jest gotowa - wybierz ją na liście modeli.</string>
+    <string name="cancel">Anuluj</string>
+    <string name="generate">Generuj</string>
+
+    <string name="info_type">Typ spotu</string>
+    <string name="info_best_wind">Najlepszy wiatr</string>
+    <string name="info_water_temp">Temperatura wody</string>
+    <string name="info_experience">Poziom doświadczenia</string>
+    <string name="info_launch">Typ startu</string>
+    <string name="info_hazards">Zagrożenia</string>
+    <string name="info_season">Sezon</string>
+
+    <string name="coordinates">Współrzędne</string>
+    <string name="copy_coordinates">Kopiuj współrzędne</string>
+    <string name="coordinates_copied">Skopiowano współrzędne</string>
+    <string name="map_attribution">Kafelki © Esri — źródło: Esri, Maxar, Earthstar Geographics i społeczność GIS</string>
+    <string name="mini_map_description">Mapa lokalizacji spotu</string>
+
+    <string name="link_windguru">Windguru</string>
+    <string name="link_windfinder">Windfinder</string>
+    <string name="link_icm">Meteogram ICM</string>
+    <string name="link_webcam">Kamera</string>
+    <string name="link_location">Mapy Google</string>
+
+    <string name="data_updated">Dane zaktualizowane %1$s</string>
+
+    <string name="not_found_title">Ten spot już nie istnieje</string>
+    <string name="not_found_message">Został usunięty z varun.surf. Możesz usunąć go z ulubionych i alertów.</string>
+    <string name="not_found_remove">Usuń z ulubionych i alertów</string>
+    <string name="not_found_removed">Usunięto</string>
+    <string name="offline_title">Jesteś offline</string>
+    <string name="offline_message">Ten spot nie został jeszcze zapisany na urządzeniu. Połącz się z internetem, aby go wczytać.</string>
+    <string name="error_title">Nie można załadować spotu</string>
+    <string name="error_message">Nie można załadować informacji o spocie. Spróbuj ponownie za chwilę.</string>
+    <string name="loading">Sprawdzam warunki na spocie…</string>
+</resources>

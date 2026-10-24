@@ -1,0 +1,150 @@
+package surf.varun.feature.spot
+
+import surf.varun.core.ui.MapStyles
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Place
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import org.maplibre.android.MapLibre
+import org.maplibre.android.camera.CameraPosition
+import org.maplibre.android.geometry.LatLng
+import org.maplibre.android.snapshotter.MapSnapshotter
+import surf.varun.core.model.Spot
+import surf.varun.core.ui.Intents
+import timber.log.Timber
+import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+
+/**
+ * Static map of the spot (spec 2.2: MapSnapshotter image instead of a live map),
+ * rendered once per spot from satellite imagery and cached as a PNG - a spot doesn't move.
+ * Tapping it hands over to a maps app. Without an image (offline on first open,
+ * no GL) the pin still marks the place on a plain tile.
+ */
+@Composable
+internal fun MiniMap(spot: Spot) {
+    val coordinates = spot.coordinates ?: return
+    val context = LocalContext.current
+    val density = androidx.compose.ui.platform.LocalDensity.current.density
+    var image by remember(spot.wgId) { mutableStateOf<ImageBitmap?>(null) }
+
+    LaunchedEffect(spot.wgId) {
+        val file = File(context.cacheDir, "minimap/${spot.wgId}-satellite.png")
+        image = withContext(Dispatchers.IO) { readCached(file) }
+            ?: snapshot(context, coordinates.lat, coordinates.lon, density)?.also { bitmap ->
+                withContext(Dispatchers.IO) { writeCache(file, bitmap) }
+            }?.asImageBitmap()
+    }
+
+    Column {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .aspectRatio(2f)
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                .clickable { Intents.navigate(context, spot) },
+            contentAlignment = Alignment.Center,
+        ) {
+            image?.let {
+                Image(it, contentDescription = stringResource(R.string.mini_map_description), contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+            }
+            Icon(
+                Icons.Rounded.Place,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                // The pin's tip, not its centre, marks the spot
+                modifier = Modifier.size(32.dp).offset(y = (-16).dp),
+            )
+        }
+        Text(
+            stringResource(R.string.map_attribution),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+    }
+}
+
+private val CACHE_TTL_MS = TimeUnit.DAYS.toMillis(30)
+
+private fun readCached(file: File): ImageBitmap? {
+    if (!file.exists() || System.currentTimeMillis() - file.lastModified() > CACHE_TTL_MS) return null
+    return runCatching { BitmapFactory.decodeFile(file.path)?.asImageBitmap() }.getOrNull()
+}
+
+private fun writeCache(file: File, bitmap: Bitmap) {
+    runCatching {
+        file.parentFile?.mkdirs()
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+    }.onFailure { Timber.w(it, "Mini map not cached") }
+}
+
+/** Render the map off screen; null when the style or tiles can't be loaded. Must start on the main thread. */
+private suspend fun snapshot(context: Context, lat: Double, lon: Double, density: Float): Bitmap? =
+    withTimeoutOrNull(20_000) {
+        withContext(Dispatchers.Main) {
+            try {
+                MapLibre.getInstance(context.applicationContext)
+                val options = MapSnapshotter.Options(WIDTH, HEIGHT)
+                    .withStyleJson(MapStyles.satelliteJson)
+                    .withCameraPosition(CameraPosition.Builder().target(LatLng(lat, lon)).zoom(13.0).build())
+                    .withPixelRatio(density)
+                    .withLogo(false)
+                    .withAttribution(false)
+                val snapshotter = MapSnapshotter(context.applicationContext, options)
+                suspendCancellableCoroutine { cont ->
+                    cont.invokeOnCancellation { snapshotter.cancel() }
+                    snapshotter.start(
+                        { snapshot -> if (cont.isActive) cont.resume(snapshot.bitmap) },
+                        { error ->
+                            Timber.w("Mini map snapshot failed: %s", error)
+                            if (cont.isActive) cont.resume(null)
+                        },
+                    )
+                }
+            } catch (e: Throwable) {
+                // No native library or GL context: the plain pin is enough
+                Timber.w(e, "Mini map unavailable")
+                null
+            }
+        }
+    }
+
+private const val WIDTH = 360
+private const val HEIGHT = 180

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Szukaj spotów lub krajów</string>
+    <string name="search_back">Wstecz</string>
+    <string name="search_clear">Wyczyść</string>
+    <string name="recent_searches">Ostatnie wyszukiwania</string>
+    <string name="recent_spots">Ostatnio oglądane</string>
+    <string name="results">Wyniki</string>
+    <string name="clear_history">Wyczyść historię</string>
+    <string name="no_results_title">Nie znaleziono spotów</string>
+    <string name="no_results_message">Nic nie pasuje do \"%1$s\". Spróbuj krótszej nazwy lub kraju.</string>
+    <string name="no_spots_cached">Spoty wczytają się, gdy będziesz online.</string>
+</resources>
