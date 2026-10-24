@@ -1087,8 +1087,10 @@ body.index-page .header-title {
     min-width: 300px;
 }
 
+/* Left-aligned even inside the mobile drawer, which centres its own text */
 .spot-search-option {
     justify-content: flex-start;
+    text-align: left;
 }
 
 .spot-search-flag {
