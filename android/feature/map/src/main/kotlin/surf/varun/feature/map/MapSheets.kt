@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Directions
+import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +29,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,9 +37,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import surf.varun.core.designsystem.component.InfoChip
@@ -199,3 +206,63 @@ fun CountrySheet(
         }
     }
 }
+
+/**
+ * The map's own spot search: the spots the map is showing, matched as the global
+ * search matches them. A pick hands the spot back to the map, which flies to it
+ * and opens its panel - opening the spot page from here would leave the map,
+ * which is not what searching on the map is for.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpotSearchSheet(
+    spots: List<Spot>,
+    onPick: (Spot) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val index = remember(spots) { SpotSearch.index(spots) }
+    val results = remember(index, query) { SpotSearch.search(index, query, limit = MAX_SEARCH_RESULTS) }
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            placeholder = { Text(stringResource(R.string.map_search)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { results.firstOrNull()?.let(onPick) }),
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) {
+                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.map_search_clear))
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(16.dp).focusRequester(focus),
+        )
+        if (query.isNotBlank() && results.isEmpty()) {
+            Text(
+                stringResource(R.string.map_search_no_results),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
+        LazyColumn {
+            items(results, key = { it.wgId }) { spot ->
+                ListItem(
+                    headlineContent = { Text(spot.name) },
+                    supportingContent = { Text("${Countries.of(spot.country).flag} ${countryName(spot.country)}".trim()) },
+                    leadingContent = { Icon(Icons.Rounded.Place, contentDescription = null) },
+                    modifier = Modifier.clickable { onPick(spot) },
+                )
+            }
+        }
+    }
+}
+
+/** Enough to find the spot meant without the sheet turning into the spots list. */
+private const val MAX_SEARCH_RESULTS = 30

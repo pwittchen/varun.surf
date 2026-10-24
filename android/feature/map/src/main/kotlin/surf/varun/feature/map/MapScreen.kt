@@ -79,7 +79,6 @@ import surf.varun.core.model.Direction
 import surf.varun.core.model.ParticleQuality
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.navigation.MapRoute
-import surf.varun.core.navigation.SearchRoute
 import surf.varun.core.navigation.SpotRoute
 import surf.varun.core.ui.Intents
 import surf.varun.core.ui.LocalReduceMotion
@@ -116,6 +115,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     var cameraVersion by remember { mutableIntStateOf(0) }
     var playing by rememberSaveable { mutableStateOf(false) }
     var showCountries by rememberSaveable { mutableStateOf(false) }
+    var showSearch by rememberSaveable { mutableStateOf(false) }
     var showLayers by remember { mutableStateOf(false) }
     var focused by rememberSaveable { mutableStateOf(false) }
     val powerSave = rememberPowerSaveMode()
@@ -269,7 +269,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 MapControls(
                     state = state,
                     showLayers = showLayers,
-                    onSearch = { navigator.navigate(SearchRoute) },
+                    onSearch = { showSearch = true },
                     onCountry = { showCountries = true },
                     onFavourites = {
                         val points = state.allSpots.filter { it.wgId in state.favourites }.mapNotNull { it.coordinates }
@@ -328,6 +328,20 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 }
             }
         }
+    }
+
+    if (showSearch) {
+        SpotSearchSheet(
+            spots = state.spots,
+            onPick = { spot ->
+                showSearch = false
+                // Deep enough that the spot stands on its own rather than in a
+                // cluster, but never zoomed back out from a closer look
+                spot.coordinates?.let { controller?.centreOn(it, zoom = maxOf(camera.zoom, MapController.FOCUS_ZOOM)) }
+                viewModel.select(spot.wgId)
+            },
+            onDismiss = { showSearch = false },
+        )
     }
 
     if (showCountries) {

@@ -378,6 +378,8 @@ live wind (or the selected hour's forecast).
 - Full-screen map, top: search field + filter chips (country, favourites only, live
   only); right-side FABs: my location, layers (wind field on/off, markers on/off,
   satellite/light), fit to favourites.
+- The map's search button opens its own sheet over the spots the map shows; a pick
+  flies the camera to the spot and opens its panel instead of leaving for the spot page
 - Rendering: MapLibre Native via `maplibre-compose`. Spots are one GeoJSON source
   (feature per spot with `wgId`, `wind`, `gusts`, `dirIndex`, `windClass` properties for
   the selected hour) and are drawn with style layers, not per-marker views - so ~820
@@ -412,7 +414,7 @@ live wind (or the selected hour's forecast).
 Full-screen `SearchBar` results, local and instant (in-memory index over the cached
 spots list): matches name, country (EN + PL names), with diacritics folded ("Leba" →
 "Łeba"). Sections: recent searches, recently viewed spots, results. Also reachable
-from the Spots and Map top bars and from an app shortcut.
+from the Spots top bar and from an app shortcut (the map searches in place, see 5.4).
 
 ### 5.6 Calculator
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="map_search">Szukaj spotów</string>
+    <string name="map_search_clear">Wyczyść</string>
+    <string name="map_search_no_results">Nie znaleziono spotów na mapie</string>
     <string name="map_filter_country_all">Wszystkie kraje</string>
     <string name="map_filter_favourites">Ulubione</string>
     <string name="map_filter_live">Stacje live</string>
