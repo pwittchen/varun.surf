@@ -1,6 +1,7 @@
 # varun.surf for Android
 
 Native Android client for the varun.surf backend, built from [SPEC.md](SPEC.md).
+Google Play release plan and checklist: [PUBLISHING.md](PUBLISHING.md).
 Kotlin, Jetpack Compose (Material 3), Navigation 3, Hilt, Room, DataStore,
 Retrofit/OkHttp, Coil, MapLibre Native, WorkManager and Glance.
 
