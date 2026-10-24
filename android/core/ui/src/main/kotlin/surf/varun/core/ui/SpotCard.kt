@@ -30,8 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.designsystem.component.WindArrow
 import surf.varun.core.designsystem.component.WindNumber
@@ -80,6 +82,9 @@ data class SpotCardModel(
         }
     }
 }
+
+/** Wind and gust numbers on a card: between [Numbers.medium] and [Numbers.large]. */
+private val CardWind = Numbers.large.copy(fontSize = 22.sp, lineHeight = 26.sp)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -160,12 +165,22 @@ fun SpotCard(
             if (reading != null) {
                 Column(horizontalAlignment = Alignment.End, modifier = Modifier.clearAndSetSemantics { }) {
                     Row(verticalAlignment = Alignment.Bottom) {
-                        WindNumber(formatWind(reading.wind), reading.wind, style = Numbers.large, windClass = windClass)
-                        Text(
-                            " / ${formatWind(reading.gusts)} $unit",
-                            style = Numbers.medium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        // Wind and gusts share one size; the gusts stay muted so the wind still leads
+                        WindNumber(
+                            formatWind(reading.wind),
+                            reading.wind,
+                            style = CardWind,
+                            windClass = windClass,
+                            modifier = Modifier.alignByBaseline(),
                         )
+                        Text(" / ", style = Numbers.small, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
+                        Text(
+                            formatWind(reading.gusts),
+                            style = CardWind.copy(fontWeight = FontWeight.Normal),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.alignByBaseline(),
+                        )
+                        Text(" $unit", style = Numbers.small, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         WindArrow(reading.direction, size = 16.dp, color = VarunTheme.wind.forClass(windClass), describe = false)
