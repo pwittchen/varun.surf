@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spots tab: a location pin standing in a ring -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path
+        android:fillColor="#FF000000"
+        android:fillType="evenOdd"
+        android:pathData="M256,418C225,380 160,300 140,262A145,145 0,1 1,372 262C352,300 287,380 256,418ZM198,170a58,58 0,1 0,116 0a58,58 0,1 0,-116 0Z" />
+    <path
+        android:strokeColor="#FF000000"
+        android:strokeWidth="30"
+        android:strokeLineCap="round"
+        android:pathData="M152,352C100,368 70,385 70,405C70,440 155,463 256,463C357,463 442,440 442,405C442,385 412,368 360,352" />
+</vector>

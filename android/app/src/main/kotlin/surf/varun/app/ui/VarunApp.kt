@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Air
 import androidx.compose.material.icons.rounded.Map
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Star
@@ -20,6 +19,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -126,11 +128,12 @@ fun VarunApp(
     }
 }
 
-private fun TopLevel.icon() = when (this) {
-    TopLevel.SPOTS -> Icons.Rounded.Air
-    TopLevel.FAVOURITES -> Icons.Rounded.Star
-    TopLevel.MAP -> Icons.Rounded.Map
-    TopLevel.MORE -> Icons.Rounded.MoreHoriz
+@Composable
+private fun TopLevel.icon(): Painter = when (this) {
+    TopLevel.SPOTS -> painterResource(R.drawable.ic_tab_spots)
+    TopLevel.FAVOURITES -> rememberVectorPainter(Icons.Rounded.Star)
+    TopLevel.MAP -> rememberVectorPainter(Icons.Rounded.Map)
+    TopLevel.MORE -> rememberVectorPainter(Icons.Rounded.MoreHoriz)
 }
 
 private fun TopLevel.label() = when (this) {
