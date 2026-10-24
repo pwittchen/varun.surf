@@ -8,7 +8,7 @@ import surf.varun.core.model.Spot
 import surf.varun.core.ui.SpotCardModel
 import java.time.ZonedDateTime
 
-enum class SpotSort { FIRING, NAME, FORECAST_TODAY, DISTANCE }
+enum class SpotSort { FIRING, NAME, WINDIEST_TODAY, DISTANCE }
 
 data class SpotFilters(
     val country: String? = null,
@@ -54,7 +54,7 @@ object SpotListing {
         return when (sort) {
             SpotSort.FIRING -> models.sortedByDescending { it.reading?.average ?: Double.NEGATIVE_INFINITY }
             SpotSort.NAME -> models.sortedBy { it.spot.name.lowercase() }
-            SpotSort.FORECAST_TODAY -> models.sortedByDescending { todayAverage(it.spot) ?: Double.NEGATIVE_INFINITY }
+            SpotSort.WINDIEST_TODAY -> models.sortedByDescending { todayAverage(it.spot) ?: Double.NEGATIVE_INFINITY }
             SpotSort.DISTANCE -> models.sortedBy { it.distanceKm ?: Double.MAX_VALUE }
         }
     }

@@ -288,7 +288,7 @@ private fun FilterChips(
 private fun SpotSort.label() = when (this) {
     SpotSort.FIRING -> R.string.sort_firing
     SpotSort.NAME -> R.string.sort_name
-    SpotSort.FORECAST_TODAY -> R.string.sort_forecast_today
+    SpotSort.WINDIEST_TODAY -> R.string.sort_windiest_today
     SpotSort.DISTANCE -> R.string.sort_distance
 }
 

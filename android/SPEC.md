@@ -52,7 +52,7 @@ shape. **Drop** = not built, with the reason. **New** = mobile-only.
 | Country filter | **Keep** | Bottom sheet with flags + spot counts, searchable |
 | Favourites | **Keep** | Star on card / spot screen; own tab |
 | Custom ordering with drag & drop | **Adapt** | Long-press reorder only in the Favourites tab (the only list a user curates) |
-| "Firing now" sort (by live wind) | **Keep** | Default sort; sort chip menu: Firing now / Name / Forecast today / Distance (new) |
+| "Firing now" sort (by live wind) | **Keep** | Default sort; sort chip menu: Firing now / Name / Windiest today / Distance (new) |
 | Live-stations-only filter | **Keep** | Filter chip |
 | 2-column / 3-column toggle | **Drop** | Desktop layout concern. Replaced by a density setting (comfortable / compact) |
 | List view with sortable columns | **Drop** | Tabular layout doesn't fit a phone; sort chips cover it |

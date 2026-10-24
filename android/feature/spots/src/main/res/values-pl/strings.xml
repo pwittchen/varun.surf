@@ -17,7 +17,7 @@
     <string name="sort_label">Sortuj</string>
     <string name="sort_firing">Najsilniejszy wiatr</string>
     <string name="sort_name">Nazwa</string>
-    <string name="sort_forecast_today">Prognoza na dziś</string>
+    <string name="sort_windiest_today">Najwietrzniej dziś</string>
     <string name="sort_distance">Odległość</string>
     <string name="filter_live">Tylko stacje live</string>
     <string name="filter_nearby">W pobliżu</string>
