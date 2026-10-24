@@ -15,7 +15,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import surf.varun.core.model.AppLanguage
 import surf.varun.core.model.WindUnit
-import surf.varun.core.testing.FakeServiceRepository
 import surf.varun.core.testing.FakeSettingsRepository
 import surf.varun.core.testing.FakeSpotsRepository
 import java.io.File
@@ -33,7 +32,7 @@ class SettingsViewModelTest {
 
     private val settings = FakeSettingsRepository()
     private val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-    private val vm = SettingsViewModel(settings, FakeSpotsRepository(), FakeServiceRepository(), context, dispatcher)
+    private val vm = SettingsViewModel(settings, FakeSpotsRepository(), context, dispatcher)
 
     @Test
     fun updatesAreWrittenThrough() = runTest {

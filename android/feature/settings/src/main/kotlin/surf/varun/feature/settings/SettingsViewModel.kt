@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import surf.varun.core.data.repository.ServiceRepository
 import surf.varun.core.data.repository.SettingsRepository
 import surf.varun.core.data.repository.SpotsRepository
 import surf.varun.core.data.util.IoDispatcher
@@ -28,7 +27,6 @@ data class SettingsUiState(val settings: UserSettings = UserSettings(), val lang
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val spotsRepository: SpotsRepository,
-    private val serviceRepository: ServiceRepository,
     @param:ApplicationContext private val context: Context,
     @param:IoDispatcher private val io: CoroutineDispatcher,
 ) : ViewModel() {
@@ -58,7 +56,4 @@ class SettingsViewModel @Inject constructor(
             onDone()
         }
     }
-
-    /** Backend version for the diagnostics email, if reachable. */
-    suspend fun backendVersion(): String? = serviceRepository.status().getOrNull()?.version
 }

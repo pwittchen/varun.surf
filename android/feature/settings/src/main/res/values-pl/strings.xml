@@ -58,8 +58,4 @@
     <string name="clear_cache_done">Wyczyszczono</string>
     <string name="clear">Wyczyść</string>
     <string name="cancel">Anuluj</string>
-    <string name="send_diagnostics">Wyślij diagnostykę</string>
-    <string name="send_diagnostics_summary">Otwiera e-mail z wersją aplikacji i urządzenia - nic nie jest wysyłane automatycznie</string>
-    <string name="diagnostics_subject">varun.surf Android - diagnostyka</string>
-    <string name="no_email_app">Brak aplikacji pocztowej. Napisz na hello@varun.surf</string>
 </resources>

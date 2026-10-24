@@ -439,8 +439,7 @@ Inputs persisted (web persists them too).
 Theme (system/light/dark), dynamic colour on/off, language (system/EN/PL), units
 (wind, temperature), card density, hero photo on/off, default start tab, map timeline
 reach (5 days / full run), wind field particle quality (auto/low/high), location usage,
-notifications, clear cache, "send diagnostics" (opens an email draft with app/backend
-version - no automatic telemetry).
+notifications, clear cache.
 
 ### 5.9 About
 

@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,7 +42,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.SectionHeader
 import surf.varun.core.model.AppLanguage
 import surf.varun.core.model.CardDensity
@@ -62,7 +60,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val s = state.settings
     val navigator = LocalNavigator.current
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var confirmClear by remember { mutableStateOf(false) }
 
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -153,11 +150,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             item { HorizontalDivider(Modifier.padding(vertical = 8.dp)) }
             item { SectionHeader(stringResource(R.string.section_data)) }
             item { ClickSetting(R.string.clear_cache, R.string.clear_cache_summary) { confirmClear = true } }
-            item {
-                ClickSetting(R.string.send_diagnostics, R.string.send_diagnostics_summary) {
-                    scope.launch { sendDiagnostics(context, viewModel.backendVersion()) }
-                }
-            }
         }
     }
 
@@ -234,26 +226,6 @@ private fun openNotificationSettings(context: Context) {
         context.startActivity(intent)
     } catch (_: ActivityNotFoundException) {
         context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri()))
-    }
-}
-
-/** An email draft with versions only - the app has no telemetry (spec 6.10). */
-private fun sendDiagnostics(context: Context, backendVersion: String?) {
-    val appVersion = runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
-    val body = buildString {
-        appendLine("App: ${context.packageName} $appVersion")
-        appendLine("Backend: ${backendVersion ?: "unreachable"}")
-        appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
-        appendLine("Locale: ${context.resources.configuration.locales[0]}")
-    }
-    val intent = Intent(Intent.ACTION_SENDTO, "mailto:hello@varun.surf".toUri())
-        .putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.diagnostics_subject))
-        .putExtra(Intent.EXTRA_TEXT, body)
-    try {
-        context.startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
-        Toast.makeText(context, R.string.no_email_app, Toast.LENGTH_LONG).show()
     }
 }
 

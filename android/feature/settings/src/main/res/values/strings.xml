@@ -58,8 +58,4 @@
     <string name="clear_cache_done">Cache cleared</string>
     <string name="clear">Clear</string>
     <string name="cancel">Cancel</string>
-    <string name="send_diagnostics">Send diagnostics</string>
-    <string name="send_diagnostics_summary">Opens an email with the app and device versions - nothing is sent automatically</string>
-    <string name="diagnostics_subject">varun.surf Android diagnostics</string>
-    <string name="no_email_app">No email app installed. Write to hello@varun.surf</string>
 </resources>
