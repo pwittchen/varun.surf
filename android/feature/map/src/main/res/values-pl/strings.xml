@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="map_search_hint">Szukaj spotów…</string>
+    <string name="map_search">Szukaj spotów</string>
+    <string name="map_search_clear">Wyczyść</string>
+    <string name="map_search_no_results">Nie znaleziono spotów na mapie</string>
     <string name="map_filter_country_all">Wszystkie kraje</string>
     <string name="map_filter_favourites">Ulubione</string>
     <string name="map_filter_live">Stacje live</string>
@@ -15,7 +17,8 @@
 
     <string name="map_my_location">Moja lokalizacja</string>
     <string name="map_layers">Warstwy mapy</string>
-    <string name="map_fit_favourites">Pokaż ulubione</string>
+    <string name="map_zoom_in">Przybliż</string>
+    <string name="map_zoom_out">Oddal</string>
     <string name="map_no_favourites">Brak ulubionych spotów z lokalizacją</string>
     <string name="map_location_unavailable">Lokalizacja niedostępna</string>
     <string name="map_wind_field">Pole wiatru</string>

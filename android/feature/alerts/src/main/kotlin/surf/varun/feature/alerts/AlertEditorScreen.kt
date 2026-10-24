@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import surf.varun.core.designsystem.component.WindArrow
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.domain.Units
 import surf.varun.core.model.AlertTrigger
 import surf.varun.core.model.Direction
@@ -162,6 +163,7 @@ private fun SpotSection(state: AlertEditorState, results: List<Spot>, viewModel:
     val spot = state.spot
     if (spot != null) {
         ListItem(
+            colors = transparentListItemColors(),
             headlineContent = { Text(spot.name) },
             supportingContent = { if (spot.country.isNotEmpty()) Text(countryName(spot.country)) },
             trailingContent = { TextButton(onClick = viewModel::clearSpot) { Text(stringResource(R.string.editor_change_spot)) } },
@@ -178,6 +180,7 @@ private fun SpotSection(state: AlertEditorState, results: List<Spot>, viewModel:
     )
     results.forEach { result ->
         ListItem(
+            colors = transparentListItemColors(),
             headlineContent = { Text(result.name) },
             supportingContent = { Text(countryName(result.country)) },
             modifier = Modifier.clickable { viewModel.selectSpot(result) },

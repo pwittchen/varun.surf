@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -15,8 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.onSizeChanged
@@ -36,12 +43,15 @@ import kotlin.random.Random
 /** A spot's wind at the selected hour, before projection. */
 data class WindSample(val lat: Double, val lon: Double, val wind: Double, val direction: Direction?)
 
+/** A marker's disc on screen, in pixels, that the wind field leaves clear. */
+data class MarkerHole(val x: Float, val y: Float, val radius: Float)
+
 /** How the particles behave; decided by the screen from settings, battery saver and reduced motion. */
 enum class ParticleMode { OFF, STATIC, ANIMATED }
 
 /**
  * The wind field overlay (spec 6.4): a colour wash by speed plus particles riding
- * the interpolated wind, drawn above the map with the maths ported from the web's
+ * the interpolated wind, drawn above the map (leaving the markers clear) with the maths ported from the web's
  * `map.js` ([WindField]).
  *
  * Everything is computed in dp-space so radii and speeds match the web's CSS pixels;
@@ -64,6 +74,7 @@ fun WindFieldOverlay(
     val density = LocalDensity.current.density
     var size by remember { mutableStateOf(IntSize.Zero) }
     var field by remember { mutableStateOf<BuiltField?>(null) }
+    var holes by remember { mutableStateOf<Path?>(null) }
 
     LaunchedEffect(controller, samples, cameraVersion, size) {
         if (controller == null || size == IntSize.Zero) return@LaunchedEffect
@@ -78,20 +89,43 @@ fun WindFieldOverlay(
         }
     }
 
+    // The holes follow what the map has actually drawn: asked once it has rendered
+    // (re-clustered after a zoom, spots shown or hidden), never from a stale camera
+    DisposableEffect(controller, size) {
+        val map = controller
+        if (map == null || size == IntSize.Zero) return@DisposableEffect onDispose { }
+        val update = { holes = map.markerHoles(size.width.toFloat(), size.height.toFloat()).toPath() }
+        update()
+        val unsubscribe = map.onRendered(update)
+        onDispose { unsubscribe() }
+    }
+    // Markers move with the camera: holes cut for the old view would be left behind
+    LaunchedEffect(moving) { if (moving) holes = null }
+
     val built = field
     Canvas(modifier.onSizeChanged { size = it }) {
         if (moving || built == null) return@Canvas
-        drawImage(
-            built.heat,
-            dstSize = IntSize((built.heat.width * built.heatStep * density).toInt(), (built.heat.height * built.heatStep * density).toInt()),
-            dstOffset = IntOffset.Zero,
-            filterQuality = FilterQuality.Low,
-        )
+        clearOf(holes) {
+            drawImage(
+                built.heat,
+                dstSize = IntSize((built.heat.width * built.heatStep * density).toInt(), (built.heat.height * built.heatStep * density).toInt()),
+                dstOffset = IntOffset.Zero,
+                filterQuality = FilterQuality.Low,
+            )
+        }
     }
 
     if (built != null && !moving && particleMode != ParticleMode.OFF && built.points.isNotEmpty()) {
-        Particles(built, density, particleMode, particleScale, modifier)
+        Particles(built, density, particleMode, particleScale, holes, modifier)
     }
+}
+
+private fun List<MarkerHole>.toPath(): Path? =
+    if (isEmpty()) null else Path().apply { forEach { addOval(Rect(Offset(it.x, it.y), it.radius)) } }
+
+/** Draw [block] everywhere except inside the marker [holes], so the markers stay clean. */
+private inline fun DrawScope.clearOf(holes: Path?, block: DrawScope.() -> Unit) {
+    if (holes == null) block() else clipPath(holes, ClipOp.Difference, block)
 }
 
 /** A field ready to draw: the wash as a cell bitmap, the vector field and the spots that seed particles. */
@@ -131,7 +165,7 @@ internal fun buildField(samples: List<WindField.ScreenSample>, widthDp: Int, hei
  * water); the budget scales with the spots in view and shrinks when frames run long.
  */
 @Composable
-private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, scale: Float, modifier: Modifier) {
+private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, scale: Float, holes: Path?, modifier: Modifier) {
     var frame by remember { mutableIntStateOf(0) }
     val trails = remember(field) {
         Bitmap.createBitmap(
@@ -177,7 +211,7 @@ private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, sca
 
     Canvas(modifier) {
         // Reading the frame counter here is what redraws the trails every advected frame
-        if (frame >= 0) drawIntoCanvas { it.nativeCanvas.drawBitmap(trails, 0f, 0f, null) }
+        if (frame >= 0) clearOf(holes) { drawIntoCanvas { it.nativeCanvas.drawBitmap(trails, 0f, 0f, null) } }
     }
 }
 

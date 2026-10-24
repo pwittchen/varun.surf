@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.domain.Countries
 import surf.varun.core.domain.SpotSearch
 import surf.varun.core.model.Sponsor
@@ -134,6 +135,7 @@ fun CountrySheet(
 @Composable
 private fun CountryRow(flag: String, name: String, count: Int, selected: Boolean, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         leadingContent = { Text(flag.ifEmpty { "🏳" }, style = MaterialTheme.typography.titleLarge) },
         headlineContent = { Text(name) },
         supportingContent = { Text(pluralStringResource(R.plurals.spots_count, count, count)) },

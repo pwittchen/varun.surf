@@ -15,7 +15,7 @@
     <string name="sort_label">Sort</string>
     <string name="sort_firing">Firing now</string>
     <string name="sort_name">Name</string>
-    <string name="sort_forecast_today">Forecast today</string>
+    <string name="sort_windiest_today">Windiest today</string>
     <string name="sort_distance">Distance</string>
     <string name="filter_live">Live only</string>
     <string name="filter_nearby">Nearby</string>

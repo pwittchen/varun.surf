@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,8 +42,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.SectionHeader
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.model.AppLanguage
 import surf.varun.core.model.CardDensity
 import surf.varun.core.model.ParticleQuality
@@ -62,7 +61,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val s = state.settings
     val navigator = LocalNavigator.current
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var confirmClear by remember { mutableStateOf(false) }
 
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -153,11 +151,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             item { HorizontalDivider(Modifier.padding(vertical = 8.dp)) }
             item { SectionHeader(stringResource(R.string.section_data)) }
             item { ClickSetting(R.string.clear_cache, R.string.clear_cache_summary) { confirmClear = true } }
-            item {
-                ClickSetting(R.string.send_diagnostics, R.string.send_diagnostics_summary) {
-                    scope.launch { sendDiagnostics(context, viewModel.backendVersion()) }
-                }
-            }
         }
     }
 
@@ -180,6 +173,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 @Composable
 private fun SwitchSetting(title: Int, summary: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary)) },
         trailingContent = { Switch(checked = checked, onCheckedChange = null) },
@@ -190,6 +184,7 @@ private fun SwitchSetting(title: Int, summary: Int, checked: Boolean, onChange: 
 @Composable
 private fun ClickSetting(title: Int, summary: Int, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary)) },
         modifier = Modifier.clickable(onClick = onClick),
@@ -201,6 +196,7 @@ private fun ClickSetting(title: Int, summary: Int, onClick: () -> Unit) {
 private fun <T> ChoiceSetting(title: Int, options: List<T>, selected: T, label: (T) -> Int, onSelect: (T) -> Unit) {
     var open by remember { mutableStateOf(false) }
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(label(selected)), color = MaterialTheme.colorScheme.primary) },
         modifier = Modifier.clickable { open = true },
@@ -213,6 +209,7 @@ private fun <T> ChoiceSetting(title: Int, options: List<T>, selected: T, label: 
                 Column {
                     options.forEach { option ->
                         ListItem(
+                            colors = transparentListItemColors(),
                             headlineContent = { Text(stringResource(label(option))) },
                             leadingContent = { RadioButton(selected = option == selected, onClick = null) },
                             modifier = Modifier.selectable(selected = option == selected, role = Role.RadioButton) {
@@ -234,26 +231,6 @@ private fun openNotificationSettings(context: Context) {
         context.startActivity(intent)
     } catch (_: ActivityNotFoundException) {
         context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri()))
-    }
-}
-
-/** An email draft with versions only - the app has no telemetry (spec 6.10). */
-private fun sendDiagnostics(context: Context, backendVersion: String?) {
-    val appVersion = runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull()
-    val body = buildString {
-        appendLine("App: ${context.packageName} $appVersion")
-        appendLine("Backend: ${backendVersion ?: "unreachable"}")
-        appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
-        appendLine("Locale: ${context.resources.configuration.locales[0]}")
-    }
-    val intent = Intent(Intent.ACTION_SENDTO, "mailto:hello@varun.surf".toUri())
-        .putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.diagnostics_subject))
-        .putExtra(Intent.EXTRA_TEXT, body)
-    try {
-        context.startActivity(intent)
-    } catch (_: ActivityNotFoundException) {
-        Toast.makeText(context, R.string.no_email_app, Toast.LENGTH_LONG).show()
     }
 }
 

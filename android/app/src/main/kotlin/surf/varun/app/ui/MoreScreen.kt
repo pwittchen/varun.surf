@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.NotificationsActive
@@ -22,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.unit.dp
 import surf.varun.app.R
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.navigation.AboutRoute
 import surf.varun.core.navigation.AlertsRoute
 import surf.varun.core.navigation.CalculatorRoute
@@ -50,10 +49,10 @@ fun MoreScreen() {
 @Composable
 private fun MoreItem(icon: ImageVector, title: Int, summary: Int, onClick: () -> Unit) {
     ListItem(
+        colors = transparentListItemColors(),
         headlineContent = { Text(stringResource(title)) },
         supportingContent = { Text(stringResource(summary), color = MaterialTheme.colorScheme.onSurfaceVariant) },
-        leadingContent = { Icon(icon, contentDescription = null) },
-        trailingContent = { Icon(Icons.AutoMirrored.Rounded.ArrowForwardIos, contentDescription = null, modifier = Modifier.padding(4.dp)) },
+        leadingContent = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
         modifier = Modifier.clickable(onClick = onClick),
     )
 }

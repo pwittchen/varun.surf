@@ -108,7 +108,7 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                     onClick = { navigator.navigate(SearchRoute) },
                     modifier = Modifier
                         .windowInsetsPadding(WindowInsets.statusBars)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp),
                 )
             }
         },
@@ -288,7 +288,7 @@ private fun FilterChips(
 private fun SpotSort.label() = when (this) {
     SpotSort.FIRING -> R.string.sort_firing
     SpotSort.NAME -> R.string.sort_name
-    SpotSort.FORECAST_TODAY -> R.string.sort_forecast_today
+    SpotSort.WINDIEST_TODAY -> R.string.sort_windiest_today
     SpotSort.DISTANCE -> R.string.sort_distance
 }
 

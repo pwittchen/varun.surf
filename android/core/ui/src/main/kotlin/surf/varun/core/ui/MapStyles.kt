@@ -19,6 +19,9 @@ object MapStyles {
     /** A font OpenFreeMap serves for every style. */
     const val FONT = "Noto Sans Regular"
 
+    /** Its bold cut, for the numbers on map markers. */
+    const val FONT_BOLD = "Noto Sans Bold"
+
     private const val SATELLITE_TILES =
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 

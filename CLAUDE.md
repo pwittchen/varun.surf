@@ -574,7 +574,9 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Spot details: description, links (Windguru, Windfinder, ICM), location, webcam
 - [x] Country-based filtering
 - [x] Search functionality, focused from anywhere with the "/" key (the field
-      carries a "/" hint on the desktop layout)
+      carries a "/" hint on the desktop layout). On the map view the field drops
+      a list of matching spots instead of switching to the list, and a pick flies
+      the map to the spot, opening its popup and (desktop) its side peek
 - [x] Header search on the single spot page (desktop only): with no list on the
       page to filter it drops a list of matching spots and jumps to the one
       picked, keyboard included; the spots list is fetched once on first focus

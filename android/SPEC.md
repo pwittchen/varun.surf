@@ -52,7 +52,7 @@ shape. **Drop** = not built, with the reason. **New** = mobile-only.
 | Country filter | **Keep** | Bottom sheet with flags + spot counts, searchable |
 | Favourites | **Keep** | Star on card / spot screen; own tab |
 | Custom ordering with drag & drop | **Adapt** | Long-press reorder only in the Favourites tab (the only list a user curates) |
-| "Firing now" sort (by live wind) | **Keep** | Default sort; sort chip menu: Firing now / Name / Forecast today / Distance (new) |
+| "Firing now" sort (by live wind) | **Keep** | Default sort; sort chip menu: Firing now / Name / Windiest today / Distance (new) |
 | Live-stations-only filter | **Keep** | Filter chip |
 | 2-column / 3-column toggle | **Drop** | Desktop layout concern. Replaced by a density setting (comfortable / compact) |
 | List view with sortable columns | **Drop** | Tabular layout doesn't fit a phone; sort chips cover it |
@@ -378,6 +378,8 @@ live wind (or the selected hour's forecast).
 - Full-screen map, top: search field + filter chips (country, favourites only, live
   only); right-side FABs: my location, layers (wind field on/off, markers on/off,
   satellite/light), fit to favourites.
+- The map's search button opens its own sheet over the spots the map shows; a pick
+  flies the camera to the spot and opens its panel instead of leaving for the spot page
 - Rendering: MapLibre Native via `maplibre-compose`. Spots are one GeoJSON source
   (feature per spot with `wgId`, `wind`, `gusts`, `dirIndex`, `windClass` properties for
   the selected hour) and are drawn with style layers, not per-marker views - so ~820
@@ -412,7 +414,7 @@ live wind (or the selected hour's forecast).
 Full-screen `SearchBar` results, local and instant (in-memory index over the cached
 spots list): matches name, country (EN + PL names), with diacritics folded ("Leba" →
 "Łeba"). Sections: recent searches, recently viewed spots, results. Also reachable
-from the Spots and Map top bars and from an app shortcut.
+from the Spots top bar and from an app shortcut (the map searches in place, see 5.4).
 
 ### 5.6 Calculator
 
@@ -439,8 +441,7 @@ Inputs persisted (web persists them too).
 Theme (system/light/dark), dynamic colour on/off, language (system/EN/PL), units
 (wind, temperature), card density, hero photo on/off, default start tab, map timeline
 reach (5 days / full run), wind field particle quality (auto/low/high), location usage,
-notifications, clear cache, "send diagnostics" (opens an email draft with app/backend
-version - no automatic telemetry).
+notifications, clear cache.
 
 ### 5.9 About
 

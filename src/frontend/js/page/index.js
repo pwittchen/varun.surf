@@ -13,6 +13,7 @@ import * as modals from '../common/modals.js';
 import * as calculator from '../common/calculator.js';
 import * as appShell from '../common/appShell.js';
 import * as sideMenu from '../common/sideMenu.js';
+import * as spotSearch from '../common/spotSearch.js';
 import { normalizeForSearch, spotMatchesQuery } from '../common/search.js';
 
 // ============================================================================
@@ -1896,12 +1897,43 @@ function displaySpots(filteredSpots, spotsGrid, searchQuery) {
 // SEARCH FUNCTIONALITY
 // ============================================================================
 
+// On the map the field stops filtering the list: it drops the spots the map is
+// showing that match, and a pick flies the map to the spot. The globe keeps the
+// old behaviour - the field takes the visitor back to the list.
+function isMapSearchActive() {
+    return isMapView && !isGlobeView;
+}
+
 function setupSearch() {
+    const searchContainer = document.getElementById('searchContainer');
     const searchInput = document.getElementById('searchInput');
     const searchClear = document.getElementById('searchClear');
+    const mapSearchResults = document.getElementById('mapSearchResults');
     let searchTimeout;
+    let mapSearchTimeout;
+
+    mapSearchMenu = spotSearch.createResultsMenu({
+        container: searchContainer,
+        input: searchInput,
+        menu: mapSearchResults,
+        getSpots: () => onlyFavorites(filterSpots(globalWeatherData, currentFilter, '')),
+        onPick: (spot) => {
+            searchInput.value = '';
+            searchClear.classList.remove('visible');
+            searchInput.blur();
+            focusSpotOnMap(spot);
+        },
+        isEnabled: isMapSearchActive
+    });
 
     searchInput.addEventListener('focus', () => {
+        if (isMapSearchActive()) {
+            if (searchInput.value.trim() !== '') {
+                mapSearchMenu.search(searchInput.value);
+            }
+            return;
+        }
+
         if (isMapView) {
             hideMapView({ skipRender: true });
         }
@@ -1909,6 +1941,22 @@ function setupSearch() {
 
     searchInput.addEventListener('input', (e) => {
         const value = e.target.value;
+
+        if (isMapSearchActive()) {
+            searchClear.classList.toggle('visible', value.trim() !== '');
+
+            // The field now holds a spot to fly to, not a filter: a query the
+            // map was opened with from the list stops thinning out its markers,
+            // or the spot being looked for might not be on it.
+            if (currentSearchQuery !== '') {
+                currentSearchQuery = '';
+                updateMapMarkers();
+            }
+
+            clearTimeout(mapSearchTimeout);
+            mapSearchTimeout = setTimeout(() => mapSearchMenu.search(value), spotSearch.DEBOUNCE_MS);
+            return;
+        }
 
         if (isMapView) {
             hideMapView({ skipRender: true });
@@ -1939,6 +1987,18 @@ function setupSearch() {
     });
 
     searchClear.addEventListener('click', () => {
+        if (isMapSearchActive()) {
+            searchInput.value = '';
+            searchClear.classList.remove('visible');
+            mapSearchMenu.close();
+            if (currentSearchQuery !== '') {
+                currentSearchQuery = '';
+                updateMapMarkers();
+            }
+            searchInput.focus();
+            return;
+        }
+
         if (isMapView) {
             hideMapView({ skipRender: true });
         }
@@ -1978,6 +2038,18 @@ function setupSearch() {
 
     // Clear search on an Escape key
     searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isMapSearchActive()) {
+            if (mapSearchMenu.isOpen()) {
+                mapSearchMenu.close();
+            } else if (searchInput.value !== '') {
+                searchInput.value = '';
+                searchClear.classList.remove('visible');
+            } else {
+                searchInput.blur();
+            }
+            return;
+        }
+
         if (e.key === 'Escape' && searchInput.value !== '') {
             if (isMapView) {
                 hideMapView({ skipRender: true });
@@ -3215,6 +3287,54 @@ function openMapSidePeek(wgId) {
     }
 }
 
+// The results hanging from the header search while the map is on screen
+let mapSearchMenu = null;
+
+// Deep enough that no spot is swallowed by a cluster, so the one searched for
+// has a marker of its own to open.
+const MAP_SEARCH_ZOOM = map.CLUSTER_MAX_ZOOM + 1;
+
+// A spot picked from the header search: the map flies over to it, its popup
+// opens, and on the desktop layout the side peek with it - the same place a
+// click on the marker followed by its peek button would have led.
+function focusSpotOnMap(spot) {
+    if (!leafletMap || !spot || !spot.coordinates) {
+        return;
+    }
+
+    const { lat, lon } = spot.coordinates;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+        return;
+    }
+
+    // On a phone the field sits in the drawer, which covers the map
+    const headerControls = document.getElementById('headerControls');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    if (headerControls && hamburgerMenu && headerControls.classList.contains('show')) {
+        hamburgerMenu.click();
+    }
+
+    // The flight ends on a zoomend, which rebuilds the markers first - the
+    // popup is looked for among the new ones
+    leafletMap.once('moveend', () => {
+        if (!isMapSearchActive()) {
+            return;
+        }
+
+        if (mapSpotsVisible && mapMarkerLayer) {
+            mapMarkerLayer.eachLayer(group => map.openSpotPopup(group, spot.wgId));
+        }
+
+        if (!isMobileView()) {
+            openMapSidePeek(spot.wgId);
+        }
+    });
+
+    // Leaflet times a flight by its distance, which from the whole world down
+    // to a single beach is several seconds of watching tiles go by
+    leafletMap.flyTo([lat, lon], Math.max(leafletMap.getZoom(), MAP_SEARCH_ZOOM), { duration: 1.5 });
+}
+
 function closeMapSidePeek() {
     if (mapSidePeek) {
         mapSidePeek.close();
@@ -3473,6 +3593,18 @@ function leaveLeafletMap() {
     }
     ensureWindOverlayDisclaimer(false);
     closeMapSidePeek();
+
+    // Whatever was typed to find a spot on the map is not a filter for the
+    // list or the globe; the field goes back to the query they are showing
+    if (mapSearchMenu) {
+        mapSearchMenu.close();
+    }
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    if (searchInput && searchInput.value !== currentSearchQuery) {
+        searchInput.value = currentSearchQuery;
+        if (searchClear) searchClear.classList.toggle('visible', currentSearchQuery.trim() !== '');
+    }
 
     if (mapContainer) mapContainer.style.display = 'none';
     if (mapToggle) mapToggle.classList.remove('active');

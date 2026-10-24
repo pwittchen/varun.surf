@@ -52,6 +52,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import surf.varun.core.designsystem.component.EmptyState
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.navigation.AlertEditorRoute
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.navigation.SearchRoute
@@ -158,6 +159,7 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
                     }
                     items(state.missing, key = { "missing-$it" }) { wgId ->
                         ListItem(
+                            colors = transparentListItemColors(),
                             leadingContent = { Icon(Icons.Rounded.ErrorOutline, null, tint = MaterialTheme.colorScheme.error) },
                             headlineContent = { Text(stringResource(R.string.favourite_missing)) },
                             supportingContent = { Text("#$wgId") },

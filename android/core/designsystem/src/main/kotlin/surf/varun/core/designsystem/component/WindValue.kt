@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
@@ -19,7 +18,7 @@ import surf.varun.core.domain.WindClass
 
 /**
  * A wind number coloured by its class. Colour is never the only signal (spec 8.2):
- * rideable classes are bold, extreme is also underlined.
+ * the number itself carries the class, and rideable classes are also bold.
  */
 @Composable
 fun WindNumber(
@@ -32,10 +31,7 @@ fun WindNumber(
     Text(
         text = text,
         modifier = modifier,
-        style = style.copy(
-            fontWeight = if (windClass.isRideable) FontWeight.Bold else FontWeight.Normal,
-            textDecoration = if (windClass == WindClass.EXTREME) TextDecoration.Underline else null,
-        ),
+        style = style.copy(fontWeight = if (windClass.isRideable) FontWeight.Bold else FontWeight.Normal),
         color = VarunTheme.wind.forClass(windClass),
         maxLines = 1,
     )
@@ -52,8 +48,8 @@ fun WindCell(
     val windClass = WindClass.of(knots)
     Box(
         modifier
-            .background(VarunTheme.wind.fillForClass(windClass), RoundedCornerShape(4.dp))
-            .padding(horizontal = 4.dp, vertical = 2.dp),
+            .background(VarunTheme.wind.fillForClass(windClass), RoundedCornerShape(6.dp))
+            .padding(horizontal = 6.dp, vertical = 2.dp),
     ) {
         WindNumber(text, knots, style = style, windClass = windClass)
     }

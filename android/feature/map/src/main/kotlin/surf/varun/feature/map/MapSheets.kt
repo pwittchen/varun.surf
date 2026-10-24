@@ -11,21 +11,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Directions
+import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +38,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.designsystem.component.WindArrow
 import surf.varun.core.designsystem.component.WindNumber
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
 import surf.varun.core.domain.Conditions
@@ -82,6 +91,7 @@ fun SpotPanel(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(spot.name, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(Modifier.height(4.dp))
                 Text(
                     "${country.flag} ${countryName(spot.country)}".trim(),
                     style = MaterialTheme.typography.bodySmall,
@@ -96,7 +106,7 @@ fun SpotPanel(
             Text(stringResource(R.string.map_sheet_no_wind), color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                WindNumber(formatWind(reading.wind), reading.wind, style = Numbers.large, windClass = reading.windClass)
+                WindNumber(formatWind(reading.wind), reading.wind, style = Numbers.medium, windClass = reading.windClass)
                 Text(
                     "/ ${if (reading.gusts.isNaN()) "–" else formatWind(reading.gusts)} $unit",
                     style = Numbers.medium,
@@ -181,20 +191,86 @@ fun CountrySheet(
         LazyColumn {
             item {
                 ListItem(
+                    colors = countryRowColors(selected == null),
                     headlineContent = { Text(stringResource(R.string.map_filter_country_all)) },
                     trailingContent = { Text(pluralStringResource(R.plurals.map_spots_count, spots.size, spots.size)) },
                     modifier = Modifier.clickable { onSelect(null) },
-                    tonalElevation = if (selected == null) 4.dp else 0.dp,
                 )
             }
             items(rows, key = { it.first }) { (country, name, count) ->
                 ListItem(
+                    colors = countryRowColors(selected == country),
                     headlineContent = { Text("${Countries.of(country).flag} $name".trim()) },
                     trailingContent = { Text(pluralStringResource(R.plurals.map_spots_count, count, count)) },
                     modifier = Modifier.clickable { onSelect(country) },
-                    tonalElevation = if (selected == country) 4.dp else 0.dp,
                 )
             }
         }
     }
 }
+
+/**
+ * The map's own spot search: the spots the map is showing, matched as the global
+ * search matches them. A pick hands the spot back to the map, which flies to it
+ * and opens its panel - opening the spot page from here would leave the map,
+ * which is not what searching on the map is for.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpotSearchSheet(
+    spots: List<Spot>,
+    onPick: (Spot) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val index = remember(spots) { SpotSearch.index(spots) }
+    val results = remember(index, query) { SpotSearch.search(index, query, limit = MAX_SEARCH_RESULTS) }
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            placeholder = { Text(stringResource(R.string.map_search)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { results.firstOrNull()?.let(onPick) }),
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) {
+                        Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.map_search_clear))
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(16.dp).focusRequester(focus),
+        )
+        if (query.isNotBlank() && results.isEmpty()) {
+            Text(
+                stringResource(R.string.map_search_no_results),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
+        LazyColumn {
+            items(results, key = { it.wgId }) { spot ->
+                ListItem(
+                    colors = transparentListItemColors(),
+                    headlineContent = { Text(spot.name) },
+                    supportingContent = { Text("${Countries.of(spot.country).flag} ${countryName(spot.country)}".trim()) },
+                    leadingContent = { Icon(Icons.Rounded.Place, contentDescription = null) },
+                    modifier = Modifier.clickable { onPick(spot) },
+                )
+            }
+        }
+    }
+}
+
+/** Enough to find the spot meant without the sheet turning into the spots list. */
+private const val MAX_SEARCH_RESULTS = 30
+
+/** The picked country stands out against the sheet; the rest take the sheet's colour. */
+@Composable
+private fun countryRowColors(selected: Boolean) =
+    if (selected) ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest) else transparentListItemColors()

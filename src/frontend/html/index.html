@@ -329,17 +329,23 @@
                 </span>
                 <span id="langCode">EN</span>
             </button>
-            <div class="search-container">
+            <div class="search-container" id="searchContainer">
                 <input type="text"
                        class="search-input"
                        id="searchInput"
                        placeholder="Search spots..."
-                       autocomplete="off">
+                       autocomplete="off"
+                       aria-autocomplete="list"
+                       aria-expanded="false"
+                       aria-controls="mapSearchResults">
                 <button class="search-clear" id="searchClear">✕</button>
                 <!-- Keyboard hint: "/" focuses the field. Hidden by CSS while
                      the input is focused or holds text (the clear button takes
                      that corner), and on the mobile layout with no key to press -->
                 <kbd class="search-shortcut" id="searchShortcut" aria-hidden="true">/</kbd>
+                <!-- Map view only: the field stops filtering the list and drops
+                     the matching spots instead, a pick flies the map to it -->
+                <div class="dropdown-menu spot-search-results" id="mapSearchResults" role="listbox"></div>
             </div>
             <div class="dropdown-container">
                 <button class="dropdown-button" id="dropdownButton">

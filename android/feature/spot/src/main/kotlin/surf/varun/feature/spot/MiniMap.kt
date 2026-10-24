@@ -58,18 +58,9 @@ import kotlin.coroutines.resume
  */
 @Composable
 internal fun MiniMap(spot: Spot) {
-    val coordinates = spot.coordinates ?: return
+    if (spot.coordinates == null) return
     val context = LocalContext.current
-    val density = androidx.compose.ui.platform.LocalDensity.current.density
-    var image by remember(spot.wgId) { mutableStateOf<ImageBitmap?>(null) }
-
-    LaunchedEffect(spot.wgId) {
-        val file = File(context.cacheDir, "minimap/${spot.wgId}-satellite.png")
-        image = withContext(Dispatchers.IO) { readCached(file) }
-            ?: snapshot(context, coordinates.lat, coordinates.lon, density)?.also { bitmap ->
-                withContext(Dispatchers.IO) { writeCache(file, bitmap) }
-            }?.asImageBitmap()
-    }
+    val image = rememberSpotMapImage(spot)
 
     Column {
         Box(
@@ -99,6 +90,28 @@ internal fun MiniMap(spot: Spot) {
             modifier = Modifier.padding(top = 4.dp),
         )
     }
+}
+
+/**
+ * The satellite snapshot centred on the spot, null until it is read or rendered (and for
+ * good without coordinates or GL). Shared by the location section and the top bar of a
+ * spot without a photo, so both read the same cached PNG.
+ */
+@Composable
+internal fun rememberSpotMapImage(spot: Spot?): ImageBitmap? {
+    val coordinates = spot?.coordinates ?: return null
+    val context = LocalContext.current
+    val density = androidx.compose.ui.platform.LocalDensity.current.density
+    var image by remember(spot.wgId) { mutableStateOf<ImageBitmap?>(null) }
+
+    LaunchedEffect(spot.wgId) {
+        val file = File(context.cacheDir, "minimap/${spot.wgId}-satellite.png")
+        image = withContext(Dispatchers.IO) { readCached(file) }
+            ?: snapshot(context, coordinates.lat, coordinates.lon, density)?.also { bitmap ->
+                withContext(Dispatchers.IO) { writeCache(file, bitmap) }
+            }?.asImageBitmap()
+    }
+    return image
 }
 
 private val CACHE_TTL_MS = TimeUnit.DAYS.toMillis(30)

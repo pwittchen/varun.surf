@@ -23,7 +23,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ShowChart
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.TableRows
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,6 +74,7 @@ import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.WindArrow
 import surf.varun.core.designsystem.component.WindCell
 import surf.varun.core.designsystem.component.WindNumber
+import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
 import surf.varun.core.designsystem.theme.forClass
@@ -130,7 +133,29 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val modelName = spot.availableModels.firstOrNull { it.key == state.model }?.name ?: state.model.uppercase()
     val spotToday = remember(spot.wgId) { Conditions.now(spot, ZonedDateTime.now()).toLocalDate() }
 
-    SectionCard(stringResource(R.string.section_forecast)) {
+    SectionCard(
+        stringResource(R.string.section_forecast),
+        action = {
+            SingleChoiceSegmentedButtonRow {
+                ForecastView.entries.forEachIndexed { index, option ->
+                    val label = stringResource(if (option == ForecastView.TABLE) R.string.view_table else R.string.view_chart)
+                    SegmentedButton(
+                        selected = view == option,
+                        onClick = { view = option },
+                        shape = SegmentedButtonDefaults.itemShape(index, ForecastView.entries.size),
+                        icon = {},
+                        label = {
+                            Icon(
+                                if (option == ForecastView.TABLE) Icons.Rounded.TableRows else Icons.AutoMirrored.Rounded.ShowChart,
+                                contentDescription = label,
+                                modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
+                            )
+                        },
+                    )
+                }
+            }
+        },
+    ) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -152,16 +177,6 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                     null
                 },
             )
-            SingleChoiceSegmentedButtonRow {
-                ForecastView.entries.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        selected = view == option,
-                        onClick = { view = option },
-                        shape = SegmentedButtonDefaults.itemShape(index, ForecastView.entries.size),
-                        label = { Text(stringResource(if (option == ForecastView.TABLE) R.string.view_table else R.string.view_chart)) },
-                    )
-                }
-            }
         }
 
         if (spot.daily.isNotEmpty()) {
@@ -218,6 +233,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
             val models = spot.availableModels.ifEmpty { listOf(ForecastModelOption(state.model, modelName)) }
             models.forEach { model ->
                 ListItem(
+                    colors = transparentListItemColors(),
                     headlineContent = { Text(model.name) },
                     leadingContent = { RadioButton(selected = model.key == state.model, onClick = null) },
                     modifier = Modifier.selectable(
@@ -305,7 +321,7 @@ private fun DayHeader(date: LocalDate) {
     Text(
         Format.dayHeader(context, date),
         style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.onSurface,
         softWrap = false,
         maxLines = 1,
         // Wider than one column on purpose: columns don't clip, the label runs over the next hours
@@ -330,29 +346,23 @@ private fun TableRow.label(): Int = when (this) {
 @Composable
 private fun TableCell(row: TableRow, hour: ForecastEntry) {
     val wind = VarunTheme.wind
+    val text = MaterialTheme.colorScheme.onSurface
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    // Only wind is coloured: every other row stays neutral so the wind classes stand out
     when (row) {
         TableRow.TIME -> Text("%02d".format(hour.time!!.hour), style = Numbers.tiny, color = muted)
         TableRow.WIND -> WindCell(formatWind(hour.wind), hour.wind)
         TableRow.GUSTS -> WindCell(formatWind(hour.gusts), hour.gusts)
         TableRow.DIRECTION -> WindArrow(hour.direction, size = 18.dp, color = wind.forClass(WindClass.of(hour.wind)), animate = false)
         TableRow.TEMP -> hour.temp?.let {
-            // Same split as the web's temp-positive / temp-negative
-            Text(formatTemperature(it), style = Numbers.tiny, color = if (it >= 18) wind.tempWarm else wind.tempCold)
+            Text(formatTemperature(it), style = Numbers.tiny, color = text)
         } ?: Dash()
         TableRow.RAIN -> hour.precipitation?.let {
             Text(if (it == 0.0) "0" else "%.1f".format(it), style = Numbers.tiny, color = if (it > 0) wind.rain else muted)
         } ?: Dash()
         TableRow.CLOUD -> hour.cloudCoverPercent?.let { Text("${it.roundToInt()}%", style = Numbers.tiny, color = muted) } ?: Dash()
-        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = Numbers.tiny, color = wind.pressure) } ?: Dash()
-        TableRow.WAVE -> hour.wave?.let {
-            val color = when {
-                it < 1.0 -> wind.waveSmall
-                it < 2.0 -> wind.waveModerate
-                else -> wind.waveLarge
-            }
-            Text("%.1f".format(it), style = Numbers.tiny, color = color)
-        } ?: Dash()
+        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = Numbers.tiny, color = muted) } ?: Dash()
+        TableRow.WAVE -> hour.wave?.let { Text("%.1f".format(it), style = Numbers.tiny, color = text) } ?: Dash()
         TableRow.WAVE_PERIOD -> hour.wavePeriod?.let { Text("${it.roundToInt()}s", style = Numbers.tiny, color = muted) } ?: Dash()
         TableRow.WAVE_DIRECTION -> if (hour.waveDirection != null) {
             WindArrow(hour.waveDirection, size = 16.dp, color = muted, animate = false)

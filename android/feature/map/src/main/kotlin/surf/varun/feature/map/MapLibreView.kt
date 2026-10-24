@@ -99,7 +99,7 @@ fun MapLibreView(
                 currentTap(map.projection.toScreenLocation(latLng))
                 true
             }
-            currentOnReady(MapController(map, context))
+            currentOnReady(MapController(map, mapView, context))
         }
         onDispose {
             lifecycle.removeObserver(observer)
