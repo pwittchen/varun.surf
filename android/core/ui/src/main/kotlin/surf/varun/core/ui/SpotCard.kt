@@ -84,7 +84,7 @@ data class SpotCardModel(
 }
 
 /** Wind and gust numbers on a card: between [Numbers.medium] and [Numbers.large]. */
-private val CardWind = Numbers.large.copy(fontSize = 22.sp, lineHeight = 26.sp)
+private val CardWind = Numbers.large.copy(fontSize = 20.sp, lineHeight = 24.sp)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -173,7 +173,7 @@ fun SpotCard(
                             windClass = windClass,
                             modifier = Modifier.alignByBaseline(),
                         )
-                        Text(" / ", style = Numbers.small, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
+                        Text(" / ", style = CardWind.copy(fontWeight = FontWeight.Normal), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
                         Text(
                             formatWind(reading.gusts),
                             style = CardWind.copy(fontWeight = FontWeight.Normal),
