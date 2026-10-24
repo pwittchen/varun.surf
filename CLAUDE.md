@@ -856,6 +856,23 @@ When adding a new kite spot manually, follow this process:
 - Water temperature and best wind directions must be accurate
 - Always provide Polish translations in `spotInfoPL`
 
+## Android App
+
+- Location: `android/` - a separate Gradle build (Kotlin 2.4, AGP 9, Compose, Navigation 3, Hilt,
+  Room, MapLibre, WorkManager, Glance). Spec: `android/SPEC.md`; developer notes and module map:
+  `android/README.md`
+- Consumes the public API only (`/api/v1/session`, `/spots`, `/spots/{id}[/{model}]`, `/forecast/{id}`,
+  `/wind`, `/status`, `/status/forecast`, `/sponsors`, and the two paid POSTs behind a confirmation).
+  Sends `X-Client: varun-android/<version>`. Changing these response shapes affects the app: its
+  DTOs tolerate missing/extra fields, but renamed fields silently become absent
+- Web domain rules are ported to `android/core/domain` and must stay in sync with
+  `src/frontend/js/common/{weather,date,calculator,map}.js` (wind classes, 60 min staleness,
+  windy days, calculator - golden-tested against calculator.js, wind field maths)
+- Commands (from `android/`): `./gradlew test lintDebug assembleRelease`
+- CI: `.github/workflows/android.yml` (runs on `android/**` changes; `android-v*` tags upload a
+  signed AAB to the Play internal track). The backend `ci.yml` ignores `android/**`
+- App Links need `/.well-known/assetlinks.json` served by the backend (not added yet)
+
 ## Related Documentation
 
 For comprehensive project documentation, refer to these additional files:

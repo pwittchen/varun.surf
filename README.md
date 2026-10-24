@@ -530,6 +530,14 @@ The two wind documents read the same grid-aligned hourly forecast `/api/v1/forec
 
 An unknown spot or country answers 404; a span longer than the forecast reaches is trimmed to what there is.
 
+## android app
+
+A native Android client lives in [`android/`](android/README.md): Kotlin, Jetpack Compose,
+offline-first on top of this backend's public API, with a wind map, wind alerts and home-screen
+widgets. It is a separate Gradle build (`cd android && ./gradlew assembleDebug`) with its own
+workflow, `.github/workflows/android.yml`; the product and technical spec is
+[`android/SPEC.md`](android/SPEC.md).
+
 ## data sources
 
 Forecasts come from [Windguru](https://www.windguru.cz), [Windfinder](https://www.windfinder.com)
