@@ -65,13 +65,12 @@ internal fun NowSection(spot: Spot, now: ZonedDateTime) {
     SectionCard(stringResource(R.string.section_now)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Column {
-                Row(verticalAlignment = Alignment.Bottom) {
-                    WindNumber(formatWind(live.wind.toDouble()), live.wind.toDouble(), style = Numbers.hero, windClass = windClass)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    WindNumber(formatWind(live.wind.toDouble()), live.wind.toDouble(), style = Numbers.medium, windClass = windClass)
                     Text(
                         " / ${formatWind(live.gusts.toDouble())} ${windUnitLabel()}",
                         style = Numbers.medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 6.dp),
                     )
                 }
                 Text(
@@ -82,7 +81,7 @@ internal fun NowSection(spot: Spot, now: ZonedDateTime) {
             }
             Spacer(Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                WindArrow(live.direction, size = 40.dp, color = VarunTheme.wind.forClass(windClass))
+                WindArrow(live.direction, size = 24.dp, color = VarunTheme.wind.forClass(windClass))
                 Text(live.direction?.name ?: "-", style = MaterialTheme.typography.labelLarge)
             }
             live.temp?.let {
