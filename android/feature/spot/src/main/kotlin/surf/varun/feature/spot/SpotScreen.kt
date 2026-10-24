@@ -1,5 +1,6 @@
 package surf.varun.feature.spot
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -215,8 +216,12 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
     val unit = LocalUserSettings.current.windUnit
     val spot = state.spot
     val photo = spot?.photoUrl
+    // A spot without a photo shows where it is instead: the satellite snapshot the
+    // location section renders anyway, so it costs no extra tiles
+    val mapImage = if (photo == null) rememberSpotMapImage(spot) else null
+    val hasBackdrop = photo != null || mapImage != null
     val fraction = scrollBehavior.state.collapsedFraction
-    val overPhoto = photo != null && fraction < 0.6f
+    val overPhoto = hasBackdrop && fraction < 0.6f
     val contentColor = if (overPhoto) Color.White else MaterialTheme.colorScheme.onSurface
     var menuOpen by remember { mutableStateOf(false) }
 
@@ -228,6 +233,15 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize().graphicsLayer { alpha = 1f - scrollBehavior.state.collapsedFraction },
             )
+        } else if (mapImage != null) {
+            Image(
+                mapImage,
+                contentDescription = stringResource(R.string.mini_map_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize().graphicsLayer { alpha = 1f - scrollBehavior.state.collapsedFraction },
+            )
+        }
+        if (hasBackdrop) {
             Box(
                 Modifier.matchParentSize()
                     .graphicsLayer { alpha = 1f - scrollBehavior.state.collapsedFraction }
@@ -286,7 +300,7 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = if (photo != null) Color.Transparent else MaterialTheme.colorScheme.surface,
+                containerColor = if (hasBackdrop) Color.Transparent else MaterialTheme.colorScheme.surface,
                 scrolledContainerColor = MaterialTheme.colorScheme.surface,
                 titleContentColor = contentColor,
                 navigationIconContentColor = contentColor,
