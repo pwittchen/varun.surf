@@ -1,5 +1,10 @@
 package surf.varun.app.ui
 
+import android.graphics.Color
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material.icons.Icons
@@ -12,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -26,6 +32,7 @@ import surf.varun.app.R
 import surf.varun.app.navigation.DeepLink
 import surf.varun.app.navigation.rememberAppNavState
 import surf.varun.core.designsystem.theme.VarunTheme
+import surf.varun.core.designsystem.theme.isDarkTheme
 import surf.varun.core.model.UserSettings
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.navigation.MoreRoute
@@ -61,6 +68,15 @@ fun VarunApp(
             navState.handle(it)
             onLinkHandled()
         }
+    }
+
+    // System bar icons follow the app's theme, which can differ from the system's
+    val dark = isDarkTheme(settings.theme)
+    val activity = LocalActivity.current as? ComponentActivity
+    DisposableEffect(dark, activity) {
+        val style = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { dark }
+        activity?.enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
+        onDispose { }
     }
 
     VarunTheme(themeMode = settings.theme, dynamicColor = settings.dynamicColor) {

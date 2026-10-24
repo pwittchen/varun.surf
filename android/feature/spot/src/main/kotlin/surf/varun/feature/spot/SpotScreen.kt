@@ -1,7 +1,6 @@
 package surf.varun.feature.spot
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,7 +27,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -143,15 +142,6 @@ internal fun SpotContent(state: SpotUiState, snackbar: SnackbarHostState, action
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { SpotTopBar(state, scrollBehavior, actions) },
         snackbarHost = { SnackbarHost(snackbar) },
-        floatingActionButton = {
-            if (spot != null) {
-                ExtendedFloatingActionButton(
-                    text = { Text(stringResource(R.string.kite_size)) },
-                    icon = { Icon(Icons.Rounded.Kitesurfing, contentDescription = null) },
-                    onClick = { navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) },
-                )
-            }
-        },
     ) { padding ->
         when {
             spot == null && state.notFound -> NotFound(state, actions, Modifier.padding(padding))
@@ -190,23 +180,31 @@ private fun SpotBody(state: SpotUiState, actions: SpotActions) {
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
-        contentPadding = PaddingValues(bottom = 96.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(bottom = 24.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
         item(key = "banner") { SyncBanner(state.sync, state.online, actions.refresh) }
         if (state.notFound) item(key = "notfound") { NotFound(state, actions, Modifier) }
         if (spot.live != null) item(key = "now") { NowSection(spot, now) }
         item(key = "forecast") { ForecastSection(state, actions) }
-        item(key = "ai") { AiSection(state, actions) }
-        if (spot.links.icm != null) item(key = "icm") { IcmSection(state, actions) }
-        item(key = "about") { AboutSection(spot) }
-        if (spot.coordinates != null) item(key = "location") { LocationSection(spot) }
-        item(key = "links") { LinksSection(spot) }
-        if (spot.sponsors.isNotEmpty()) item(key = "sponsors") { SponsorsSection(spot) }
+        item(key = "ai") { Divided { AiSection(state, actions) } }
+        if (spot.links.icm != null) item(key = "icm") { Divided { IcmSection(state, actions) } }
+        item(key = "about") { Divided { AboutSection(spot) } }
+        if (spot.coordinates != null) item(key = "location") { Divided { LocationSection(spot) } }
+        item(key = "links") { Divided { LinksSection(spot) } }
+        if (spot.sponsors.isNotEmpty()) item(key = "sponsors") { Divided { SponsorsSection(spot) } }
         item(key = "footer") { Footer(spot) }
     }
     ConfirmDialog(state.pendingConfirm, actions)
+}
+
+/** A section with a hairline above it, so the flat sections still read as separate. */
+@Composable
+private fun Divided(content: @Composable () -> Unit) {
+    Column {
+        HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        content()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -253,11 +251,8 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
             actions = {
                 if (spot != null) {
                     FavouriteButton(state.favourite, actions.toggleFavourite)
-                    IconButton(onClick = {
-                        val reading = Conditions.current(spot, java.time.ZonedDateTime.now())
-                        Intents.share(context, spot, shareConditions(context, reading, unit))
-                    }) {
-                        Icon(Icons.Rounded.Share, contentDescription = stringResource(CoreUiR.string.share))
+                    IconButton(onClick = { navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) }) {
+                        Icon(Icons.Rounded.Kitesurfing, contentDescription = stringResource(R.string.kite_size_description))
                     }
                     IconButton(onClick = { menuOpen = true }) {
                         Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_actions))
@@ -279,9 +274,13 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                             onClick = { menuOpen = false; Intents.navigate(context, spot) },
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.kite_size_description)) },
-                            leadingIcon = { Icon(Icons.Rounded.Kitesurfing, null) },
-                            onClick = { menuOpen = false; navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) },
+                            text = { Text(stringResource(CoreUiR.string.share)) },
+                            leadingIcon = { Icon(Icons.Rounded.Share, null) },
+                            onClick = {
+                                menuOpen = false
+                                val reading = Conditions.current(spot, java.time.ZonedDateTime.now())
+                                Intents.share(context, spot, shareConditions(context, reading, unit))
+                            },
                         )
                     }
                 }

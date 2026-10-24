@@ -9,7 +9,6 @@
 
     <string name="now_label">Teraz</string>
     <string name="live_label">Na żywo</string>
-    <string name="forecast_label">Prognoza</string>
     <string name="stale_label">nieaktualne</string>
     <string name="gusts_short">porywy %1$s</string>
 

@@ -27,7 +27,8 @@ import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.Waves
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -96,11 +97,11 @@ internal fun LocationSection(spot: Spot) {
             IconButton(onClick = { copy(context, text) }) {
                 Icon(Icons.Rounded.ContentCopy, contentDescription = stringResource(R.string.copy_coordinates))
             }
-        }
-        Button(onClick = { Intents.navigate(context, spot) }) {
-            Icon(Icons.Rounded.Directions, null, Modifier.size(18.dp))
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(CoreUiR.string.navigate))
+            FilledTonalButton(onClick = { Intents.navigate(context, spot) }) {
+                Icon(Icons.Rounded.Directions, null, Modifier.size(ButtonDefaults.IconSize))
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(stringResource(CoreUiR.string.navigate))
+            }
         }
     }
 }

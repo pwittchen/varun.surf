@@ -10,7 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.ShowChart
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -109,7 +109,7 @@ private fun PaidButton(
     onClick: () -> Unit,
 ) {
     Column {
-        Button(onClick = onClick, enabled = state != OnDemandState.Running) {
+        FilledTonalButton(onClick = onClick, enabled = state != OnDemandState.Running) {
             icon()
             Spacer(Modifier.size(8.dp))
             Text(label)

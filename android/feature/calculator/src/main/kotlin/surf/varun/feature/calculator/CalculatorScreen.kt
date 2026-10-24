@@ -86,8 +86,8 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
             Slider(
                 value = (state.wind ?: 15.0).toFloat().coerceIn(5f, 50f),
                 onValueChange = viewModel::onWindSlider,
+                // No steps: 44 tick marks are noise, and the view model rounds to whole knots
                 valueRange = 5f..50f,
-                steps = 44,
             )
             OutlinedTextField(
                 value = state.weightText,

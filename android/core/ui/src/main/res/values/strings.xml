@@ -9,7 +9,6 @@
 
     <string name="now_label">Now</string>
     <string name="live_label">Live</string>
-    <string name="forecast_label">Forecast</string>
     <string name="stale_label">outdated</string>
     <string name="gusts_short">gusts %1$s</string>
 
