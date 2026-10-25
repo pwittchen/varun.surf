@@ -19,6 +19,7 @@ class WindFieldTest {
         for (quarter in 0..160) {
             val knots = quarter / 4.0
             assertThat(WindField.particleColorCached(knots)).isEqualTo(WindField.particleColor(knots))
+            assertThat(WindField.colorCached(knots)).isEqualTo(WindField.color(knots))
         }
         assertThat(WindField.particleColorCached(-3.0)).isEqualTo(WindField.particleColor(0.0))
         assertThat(WindField.particleColorCached(80.0)).isEqualTo(WindField.particleColor(80.0))

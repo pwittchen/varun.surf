@@ -164,6 +164,122 @@ class GlobeMathTest {
         assertThat(sphericalFrame(emptyList())).isNull()
     }
 
+    /** Every command a clipper sends, in order. */
+    private class Commands : PathSink {
+        val list = ArrayList<Triple<Char, Float, Float>>()
+
+        override fun moveTo(x: Float, y: Float) {
+            list += Triple('M', x, y)
+        }
+
+        override fun lineTo(x: Float, y: Float) {
+            list += Triple('L', x, y)
+        }
+
+        override fun close() {
+            list += Triple('Z', 0f, 0f)
+        }
+    }
+
+    @Test
+    fun `culling what faces away leaves the outlines exactly as they were`() {
+        val landCaps = HorizonClipper.caps(coarse.land)
+        val borderCaps = HorizonClipper.caps(coarse.borders)
+        val random = Random(7)
+        repeat(60) {
+            val p = GlobeProjection(200.0, 380.0, 160.0, random.nextDouble(-75.0, 75.0), random.nextDouble(-180.0, 180.0))
+            val plain = Commands()
+            val culled = Commands()
+            HorizonClipper().polygons(coarse.land, p, plain)
+            HorizonClipper().lines(coarse.borders, p, plain)
+            HorizonClipper().polygons(coarse.land, p, culled, caps = landCaps)
+            HorizonClipper().lines(coarse.borders, p, culled, caps = borderCaps)
+            assertThat(culled.list).isEqualTo(plain.list)
+        }
+    }
+
+    @Test
+    fun `culling what is off screen only drops points outside it`() {
+        val landCaps = HorizonClipper.caps(coarse.land)
+        val borderCaps = HorizonClipper.caps(coarse.borders)
+        val random = Random(11)
+        repeat(60) {
+            val p = GlobeProjection(200.0, 380.0, radiusForZoom(random.nextDouble(3.0, 7.0)), random.nextDouble(-60.0, 60.0), random.nextDouble(-180.0, 180.0))
+            val plain = Commands()
+            val culled = Commands()
+            HorizonClipper().polygons(coarse.land, p, plain)
+            HorizonClipper().lines(coarse.borders, p, plain)
+            HorizonClipper().polygons(coarse.land, p, culled, caps = landCaps, width = 400.0, height = 760.0)
+            HorizonClipper().lines(coarse.borders, p, culled, caps = borderCaps, width = 400.0, height = 760.0)
+            fun onScreen(c: Triple<Char, Float, Float>) = c.first != 'Z' && c.second in 0f..400f && c.third in 0f..760f
+            assertThat(culled.list.filter(::onScreen)).containsExactlyElementsIn(plain.list.filter(::onScreen))
+            assertThat(culled.list.size).isAtMost(plain.list.size)
+        }
+    }
+
+    @Test
+    fun `field index matches interpolating over every spot`() {
+        val random = Random(3)
+        val samples = List(400) {
+            GlobeSample.of(
+                WindSample(
+                    random.nextDouble(-60.0, 70.0),
+                    random.nextDouble(-180.0, 180.0),
+                    random.nextDouble(0.0, 35.0),
+                    if (random.nextInt(5) == 0) null else surf.varun.core.model.Direction.entries.random(random),
+                ),
+            )
+        }
+        val index = FieldIndex(samples, radiusDeg = 6.0, pxPerDeg = 12.0, radiusPx = 72.0)
+        val out = DoubleArray(5)
+        repeat(2_000) {
+            val lat = random.nextDouble(-70.0, 80.0)
+            val lon = random.nextDouble(-200.0, 200.0)
+            val expected = bruteForce(samples, lat, lon, 6.0, 12.0)
+            assertThat(index.sample(lon, lat, out)).isEqualTo(expected != null)
+            if (expected != null) for (i in 0 until 5) assertThat(out[i]).isWithin(1e-9).of(expected[i])
+        }
+    }
+
+    /** [FieldIndex.sample] written out over every spot, no buckets. */
+    private fun bruteForce(samples: List<GlobeSample>, lat: Double, lon: Double, radiusDeg: Double, pxPerDeg: Double): DoubleArray? {
+        val cosLat = maxOf(0.05, kotlin.math.cos(lat * DEG))
+        var weightSum = 0.0
+        var magSum = 0.0
+        var vectorWeight = 0.0
+        var uSum = 0.0
+        var vSum = 0.0
+        var nearestAll = Double.MAX_VALUE
+        var nearestDir = Double.MAX_VALUE
+        for (s in samples) {
+            val dLat = s.lat - lat
+            val dLon = normalizeLon(s.lon - lon) * cosLat
+            val distSq = dLat * dLat + dLon * dLon
+            nearestAll = minOf(nearestAll, distSq)
+            if (s.hasDirection) nearestDir = minOf(nearestDir, distSq)
+            if (distSq > radiusDeg * radiusDeg) continue
+            val weight = 1 / (distSq * pxPerDeg * pxPerDeg + 1)
+            weightSum += weight
+            magSum += weight * s.wind
+            if (s.hasDirection) {
+                vectorWeight += weight
+                uSum += weight * s.u
+                vSum += weight * s.v
+            }
+        }
+        if (weightSum == 0.0) return null
+        val fadeSpan = radiusDeg * (1 - surf.varun.core.domain.WindField.FADE_FROM)
+        val out = DoubleArray(5)
+        out[0] = magSum / weightSum
+        out[3] = ((radiusDeg - kotlin.math.sqrt(nearestAll)) / fadeSpan).coerceIn(0.0, 1.0)
+        if (vectorWeight > 0) {
+            out[1] = uSum / vectorWeight
+            out[2] = vSum / vectorWeight
+            out[4] = ((radiusDeg - kotlin.math.sqrt(nearestDir)) / fadeSpan).coerceIn(0.0, 1.0)
+        }
+        return out
+    }
+
     private fun feature(id: Int, lat: Double, lon: Double, wind: Int?) =
         MapSpotFeature(id, "spot $id", lat, lon, wind, null, null, MapFeatures.windClassKey(wind?.toDouble()), false)
 }

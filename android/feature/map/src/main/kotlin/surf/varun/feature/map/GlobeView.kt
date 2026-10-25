@@ -99,6 +99,8 @@ internal fun GlobeView(
     val renderer = remember { GlobeRenderer() }
     val currentOnSelect by rememberUpdatedState(onSelect)
     var frame by remember { mutableIntStateOf(0) }
+    // A finger on the globe: frames follow it at the display's full rate
+    val touch = remember { BooleanArray(1) }
 
     var coarse by remember { mutableStateOf<GlobeOutlines?>(null) }
     var detailed by remember { mutableStateOf<GlobeOutlines?>(null) }
@@ -136,6 +138,10 @@ internal fun GlobeView(
                 last = 0L
             }
             withFrameNanos { now ->
+                // Left to itself (spin, particles) a 90/120 Hz display would rebuild the globe
+                // twice as often for nothing; a drag, fling or flight keeps the full rate
+                val paced = !touch[0] && !camera.animating
+                if (paced && last != 0L && now - last < MIN_IDLE_STEP_NANOS) return@withFrameNanos
                 val elapsedMs = if (last == 0L) 16.67 else (now - last) / 1_000_000.0
                 last = now
                 if (renderer.update(camera, now / 1_000_000, elapsedMs, spinning)) frame++
@@ -155,36 +161,41 @@ internal fun GlobeView(
             .pointerInput(camera, density) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false)
-                    camera.stop(nowMs())
-                    val tracker = VelocityTracker()
-                    tracker.addPosition(down.uptimeMillis, down.position)
-                    var travelled = Offset.Zero
-                    var dragging = false
-                    var pointers = 1
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val pressed = event.changes.filter { it.pressed }
-                        if (pressed.isEmpty()) break
-                        val zoom = event.calculateZoom()
-                        val pan = event.calculatePan()
-                        if (!dragging) {
-                            travelled += pan
-                            dragging = travelled.getDistance() > viewConfiguration.touchSlop || abs(zoom - 1f) > 0.02f
+                    touch[0] = true
+                    try {
+                        camera.stop(nowMs())
+                        val tracker = VelocityTracker()
+                        tracker.addPosition(down.uptimeMillis, down.position)
+                        var travelled = Offset.Zero
+                        var dragging = false
+                        var pointers = 1
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val pressed = event.changes.filter { it.pressed }
+                            if (pressed.isEmpty()) break
+                            val zoom = event.calculateZoom()
+                            val pan = event.calculatePan()
+                            if (!dragging) {
+                                travelled += pan
+                                dragging = travelled.getDistance() > viewConfiguration.touchSlop || abs(zoom - 1f) > 0.02f
+                            }
+                            if (!dragging) continue
+                            if (pressed.size != pointers) {
+                                // The centroid jumps when a finger joins or leaves: start the fling afresh
+                                tracker.resetTracking()
+                                pointers = pressed.size
+                            }
+                            camera.pan(pan.x / density.toDouble(), pan.y / density.toDouble(), nowMs())
+                            if (zoom != 1f) camera.zoomBy(ln(zoom.toDouble()) / ln(2.0), nowMs())
+                            tracker.addPosition(pressed.first().uptimeMillis, event.calculateCentroid())
+                            event.changes.forEach { if (it.positionChanged()) it.consume() }
                         }
-                        if (!dragging) continue
-                        if (pressed.size != pointers) {
-                            // The centroid jumps when a finger joins or leaves: start the fling afresh
-                            tracker.resetTracking()
-                            pointers = pressed.size
+                        if (dragging && pointers == 1) {
+                            val velocity = tracker.calculateVelocity()
+                            camera.fling(velocity.x / density.toDouble(), velocity.y / density.toDouble(), nowMs())
                         }
-                        camera.pan(pan.x / density.toDouble(), pan.y / density.toDouble(), nowMs())
-                        if (zoom != 1f) camera.zoomBy(ln(zoom.toDouble()) / ln(2.0), nowMs())
-                        tracker.addPosition(pressed.first().uptimeMillis, event.calculateCentroid())
-                        event.changes.forEach { if (it.positionChanged()) it.consume() }
-                    }
-                    if (dragging && pointers == 1) {
-                        val velocity = tracker.calculateVelocity()
-                        camera.fling(velocity.x / density.toDouble(), velocity.y / density.toDouble(), nowMs())
+                    } finally {
+                        touch[0] = false
                     }
                 }
             }
@@ -217,6 +228,9 @@ internal fun GlobeView(
 }
 
 private fun nowMs(): Long = System.nanoTime() / 1_000_000
+
+/** Shorter than a 60 Hz frame with room for jitter, longer than a 120 Hz one. */
+private const val MIN_IDLE_STEP_NANOS = 10_000_000L
 
 /** From this equivalent zoom on the 1:110m coastlines look blocky and the 1:50m set is used. */
 private const val DETAILED_OUTLINES_FROM_ZOOM = 3.5
@@ -363,6 +377,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private val bordersPath = Path()
     private val graticulePath = Path()
     private val graticule = graticuleLines()
+    private val graticuleCaps = HorizonClipper.caps(graticule)
     private var hasOutlines = false
 
     private var fieldIndex: FieldIndex? = null
@@ -447,10 +462,10 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         bordersPath.rewind()
         graticulePath.rewind()
         hasOutlines = set != null
-        clipper.lines(graticule, p, PathSink(graticulePath), minStep = 1f)
+        clipper.lines(graticule, p, PathSink(graticulePath), minStep = 1f, caps = graticuleCaps, width = widthDp, height = heightDp)
         if (set != null) {
-            clipper.polygons(set.land, p, PathSink(landPath))
-            clipper.lines(set.borders, p, PathSink(bordersPath))
+            clipper.polygons(set.land, p, PathSink(landPath), caps = set.landCaps, width = widthDp, height = heightDp)
+            clipper.lines(set.borders, p, PathSink(bordersPath), caps = set.borderCaps, width = widthDp, height = heightDp)
         }
 
         updateFieldIndex(p)
@@ -505,7 +520,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
                 if (!index.sample(latLon[1], latLon[0], sampleOut)) continue
                 val alpha = WindField.HEAT_BASE_ALPHA * sampleOut[3]
                 if (alpha <= 0.01) continue
-                washPixels[row * cols + col] = ((alpha * 255).roundToInt() shl 24) or WindField.color(sampleOut[0])
+                washPixels[row * cols + col] = ((alpha * 255).roundToInt() shl 24) or WindField.colorCached(sampleOut[0])
             }
         }
         val bitmap = wash?.takeIf { it.width == cols && it.height == rows }

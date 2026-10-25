@@ -20,6 +20,10 @@ import kotlin.math.sin
  * globe works offline. The 1:50m set is only read once the globe is zoomed in.
  */
 internal class GlobeOutlines(val land: List<FloatArray>, val borders: List<FloatArray>) {
+    /** Bounding caps of every ring and line ([HorizonClipper.caps]), worked out once on load. */
+    val landCaps: FloatArray = HorizonClipper.caps(land)
+    val borderCaps: FloatArray = HorizonClipper.caps(borders)
+
     companion object {
         const val COARSE = "globe/outlines-110m.bin"
         const val DETAILED = "globe/outlines-50m.bin"

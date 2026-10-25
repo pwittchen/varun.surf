@@ -174,15 +174,45 @@ internal class HorizonClipper {
      * Rings are Earth-fixed unit vectors, xyz interleaved, closed (last == first).
      * [minStep] drops points closer than this to the last one kept.
      */
-    fun polygons(rings: List<FloatArray>, projection: GlobeProjection, sink: PathSink, minStep: Float = 0.5f) {
+    fun polygons(
+        rings: List<FloatArray>,
+        projection: GlobeProjection,
+        sink: PathSink,
+        minStep: Float = 0.5f,
+        caps: FloatArray? = null,
+        width: Double = Double.POSITIVE_INFINITY,
+        height: Double = Double.POSITIVE_INFINITY,
+    ) {
         segments.clear()
-        for (ring in rings) clipRing(ring, projection, sink, minStep)
+        for ((index, ring) in rings.withIndex()) {
+            if (caps != null) {
+                val facing = facing(caps, index, projection)
+                // Wholly behind the globe: it would leave no stretch to draw or rejoin
+                if (facing < -caps[index * CAP_SIZE + CAP_SIN]) continue
+                // Wholly in front and off screen; one crossing the horizon is kept, its
+                // stretches take part in the rim rejoin
+                if (facing > caps[index * CAP_SIZE + CAP_SIN] && offScreen(caps, index, projection, width, height)) continue
+            }
+            clipRing(ring, projection, sink, minStep)
+        }
         rejoin(projection, sink)
     }
 
     /** Open polylines, cut where they cross the horizon. */
-    fun lines(lines: List<FloatArray>, projection: GlobeProjection, sink: PathSink, minStep: Float = 0.5f) {
-        for (line in lines) {
+    fun lines(
+        lines: List<FloatArray>,
+        projection: GlobeProjection,
+        sink: PathSink,
+        minStep: Float = 0.5f,
+        caps: FloatArray? = null,
+        width: Double = Double.POSITIVE_INFINITY,
+        height: Double = Double.POSITIVE_INFINITY,
+    ) {
+        for ((index, line) in lines.withIndex()) {
+            if (caps != null) {
+                if (facing(caps, index, projection) < -caps[index * CAP_SIZE + CAP_SIN]) continue
+                if (offScreen(caps, index, projection, width, height)) continue
+            }
             val n = line.size / 3
             if (n < 2) continue
             viewAll(line, n, projection)
@@ -213,6 +243,26 @@ internal class HorizonClipper {
                 lastY = y
             }
         }
+    }
+
+    private fun facing(caps: FloatArray, index: Int, p: GlobeProjection): Double {
+        val i = index * CAP_SIZE
+        p.view(caps[i].toDouble(), caps[i + 1].toDouble(), caps[i + 2].toDouble(), point)
+        return point[2]
+    }
+
+    /**
+     * The orthographic projection never stretches: every point of the line is within
+     * r x chord of where its cap's centre lands, whichever side that is on.
+     */
+    private fun offScreen(caps: FloatArray, index: Int, p: GlobeProjection, width: Double, height: Double): Boolean {
+        if (width.isInfinite()) return false
+        val i = index * CAP_SIZE
+        p.view(caps[i].toDouble(), caps[i + 1].toDouble(), caps[i + 2].toDouble(), point)
+        val x = p.cx + p.r * point[0]
+        val y = p.cy - p.r * point[1]
+        val reach = p.r * caps[i + CAP_CHORD]
+        return x < -reach || x > width + reach || y < -reach || y > height + reach
     }
 
     private fun viewAll(coords: FloatArray, n: Int, projection: GlobeProjection) {
@@ -357,8 +407,57 @@ internal class HorizonClipper {
         }
     }
 
-    private companion object {
-        const val RIM_STEP = 4 * DEG
+    companion object {
+        private const val RIM_STEP = 4 * DEG
+
+        /** Per line: the cap's centre (xyz), sin of its angular radius (2 past 90°) and its chord. */
+        internal const val CAP_SIZE = 5
+        private const val CAP_SIN = 3
+        private const val CAP_CHORD = 4
+
+        /**
+         * Bounding caps of [lines] (unit vectors, xyz interleaved), for [polygons] and
+         * [lines] to skip what is behind the globe or off screen without rotating it.
+         */
+        fun caps(lines: List<FloatArray>): FloatArray {
+            val out = FloatArray(lines.size * CAP_SIZE)
+            lines.forEachIndexed { index, line ->
+                val n = line.size / 3
+                var x = 0.0
+                var y = 0.0
+                var z = 0.0
+                for (k in 0 until n) {
+                    x += line[k * 3]
+                    y += line[k * 3 + 1]
+                    z += line[k * 3 + 2]
+                }
+                val length = sqrt(x * x + y * y + z * z)
+                val o = index * CAP_SIZE
+                if (n == 0 || length < 1e-6) {
+                    // No useful centre (a ring round the planet): never culled
+                    out[o + CAP_SIN] = 2f
+                    out[o + CAP_CHORD] = 2f
+                    return@forEachIndexed
+                }
+                x /= length
+                y /= length
+                z /= length
+                var minDot = 1.0
+                for (k in 0 until n) {
+                    minDot = min(minDot, x * line[k * 3] + y * line[k * 3 + 1] + z * line[k * 3 + 2])
+                }
+                // Float storage of the outlines: a little slack so a cap never ends inside its line
+                val angle = acos(minDot.coerceIn(-1.0, 1.0)) + CAP_SLACK
+                out[o] = x.toFloat()
+                out[o + 1] = y.toFloat()
+                out[o + 2] = z.toFloat()
+                out[o + CAP_SIN] = if (angle >= PI / 2) 2f else sin(angle).toFloat()
+                out[o + CAP_CHORD] = (2 * sin(min(angle, PI) / 2)).toFloat()
+            }
+            return out
+        }
+
+        private const val CAP_SLACK = 1e-3
     }
 }
 
@@ -434,14 +533,56 @@ internal class FieldIndex(samples: List<GlobeSample>, val radiusDeg: Double, var
     private val cell = max(radiusDeg, 0.01)
     private val cols = ceil(360 / cell).toInt()
     private val rows = ceil(180 / cell).toInt() + 1
-    private val buckets = HashMap<Int, MutableList<GlobeSample>>()
+
+    // Queried thousands of times a frame (the wash and every particle), so no map and no
+    // objects: the occupied buckets' keys sorted for a binary search, each bucket a run
+    // of the flat sample arrays from bucketStart[i] until bucketStart[i + 1]
+    private val keys: IntArray
+    private val bucketStart: IntArray
+    private val sLat: DoubleArray
+    private val sLon: DoubleArray
+    private val sWind: DoubleArray
+    private val sU: DoubleArray
+    private val sV: DoubleArray
+    private val sDirected: BooleanArray
 
     init {
-        for (s in samples) {
+        val keyOf = IntArray(samples.size) { i ->
+            val s = samples[i]
             val row = floor((s.lat + 90) / cell).toInt().coerceIn(0, rows - 1)
             val col = floor((normalizeLon(s.lon) + 180) / cell).toInt().coerceIn(0, cols - 1)
-            buckets.getOrPut(row * cols + col) { ArrayList() } += s
+            row * cols + col
         }
+        val order = samples.indices.sortedBy { keyOf[it] }
+        sLat = DoubleArray(order.size) { samples[order[it]].lat }
+        sLon = DoubleArray(order.size) { normalizeLon(samples[order[it]].lon) }
+        sWind = DoubleArray(order.size) { samples[order[it]].wind }
+        sU = DoubleArray(order.size) { samples[order[it]].u }
+        sV = DoubleArray(order.size) { samples[order[it]].v }
+        sDirected = BooleanArray(order.size) { samples[order[it]].hasDirection }
+        val distinct = order.map { keyOf[it] }.distinct()
+        keys = distinct.toIntArray()
+        bucketStart = IntArray(keys.size + 1)
+        var bucket = 0
+        for (i in order.indices) {
+            while (keyOf[order[i]] != keys[bucket]) bucketStart[++bucket] = i
+        }
+        bucketStart[keys.size] = order.size
+    }
+
+    private fun bucketOf(key: Int): Int {
+        var low = 0
+        var high = keys.size - 1
+        while (low <= high) {
+            val mid = (low + high) ushr 1
+            val k = keys[mid]
+            when {
+                k < key -> low = mid + 1
+                k > key -> high = mid - 1
+                else -> return mid
+            }
+        }
+        return -1
     }
 
     /**
@@ -474,21 +615,26 @@ internal class FieldIndex(samples: List<GlobeSample>, val radiusDeg: Double, var
         for (r in row - 1..row + 1) {
             if (r < 0 || r >= rows) continue
             for (c in col - span..col + span) {
-                val bucket = buckets[r * cols + ((c % cols) + cols) % cols] ?: continue
-                for (s in bucket) {
-                    val dLat = s.lat - lat
-                    val dLon = normalizeLon(s.lon - lonN) * cosLat
+                val bucket = bucketOf(r * cols + ((c % cols) + cols) % cols)
+                if (bucket < 0) continue
+                for (i in bucketStart[bucket] until bucketStart[bucket + 1]) {
+                    val dLat = sLat[i] - lat
+                    // Both longitudes are normalized, so one wrap is enough
+                    var dLonRaw = sLon[i] - lonN
+                    if (dLonRaw > 180) dLonRaw -= 360 else if (dLonRaw < -180) dLonRaw += 360
+                    val dLon = dLonRaw * cosLat
                     val distSq = dLat * dLat + dLon * dLon
+                    val directed = sDirected[i]
                     if (distSq < nearestAll) nearestAll = distSq
-                    if (s.hasDirection && distSq < nearestDir) nearestDir = distSq
+                    if (directed && distSq < nearestDir) nearestDir = distSq
                     if (distSq > radiusSq) continue
                     val weight = 1 / (distSq * pxPerDegSq + 1)
                     weightSum += weight
-                    magSum += weight * s.wind
-                    if (s.hasDirection) {
+                    magSum += weight * sWind[i]
+                    if (directed) {
                         vectorWeight += weight
-                        uSum += weight * s.u
-                        vSum += weight * s.v
+                        uSum += weight * sU[i]
+                        vSum += weight * sV[i]
                     }
                 }
             }

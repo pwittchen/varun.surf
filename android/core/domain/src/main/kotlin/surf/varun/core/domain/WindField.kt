@@ -78,6 +78,12 @@ object WindField {
         return rgb(IntArray(3) { (channels[it] + (255 - channels[it]) * PARTICLE_LIGHTEN).roundToInt() })
     }
 
+    /** [color] read from a table at [PARTICLE_COLOR_STEPS] per knot, for washes redrawn every frame. */
+    fun colorCached(knots: Double): Int {
+        val index = (knots * PARTICLE_COLOR_STEPS).roundToInt()
+        return COLORS[index.coerceIn(0, COLORS.lastIndex)]
+    }
+
     /**
      * [particleColor] read from a table at [PARTICLE_COLOR_STEPS] per knot: the
      * particles ask for it once per segment per frame, and the exact version
@@ -215,6 +221,10 @@ object WindField {
     private const val PARTICLE_COLOR_STEPS = 4
 
     // Declared after STOPS: object properties are initialised in order
+    private val COLORS = IntArray((STOPS.last().first * PARTICLE_COLOR_STEPS).toInt() + 1) {
+        color(it.toDouble() / PARTICLE_COLOR_STEPS)
+    }
+
     private val PARTICLE_COLORS = IntArray((STOPS.last().first * PARTICLE_COLOR_STEPS).toInt() + 1) {
         particleColor(it.toDouble() / PARTICLE_COLOR_STEPS)
     }
