@@ -9,7 +9,7 @@ on:
 jobs:
   ci:
     name: CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
@@ -77,7 +77,7 @@ jobs:
 
   docker:
     name: DOCKER
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: ci
     permissions:
       contents: read
@@ -104,7 +104,7 @@ jobs:
 
   deploy:
     name: DEPLOY
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: docker
     timeout-minutes: 45
 
@@ -184,7 +184,7 @@ jobs:
 
   release:
     name: RELEASE
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: deploy
     permissions:
       contents: write

@@ -19,7 +19,7 @@ defaults:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
@@ -49,13 +49,13 @@ jobs:
 
       - name: Upload test reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-reports
           path: android/**/build/reports/tests/
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: varun-surf-apk
           path: android/app/build/outputs/apk/release/*.apk
@@ -64,7 +64,7 @@ jobs:
     # android-vX.Y.Z tag -> signed AAB on the Play Console internal track; promotion is manual
     if: startsWith(github.ref, 'refs/tags/android-v')
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
