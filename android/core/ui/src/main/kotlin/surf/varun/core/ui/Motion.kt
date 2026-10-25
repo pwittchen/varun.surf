@@ -1,10 +1,13 @@
 package surf.varun.core.ui
 
 import android.provider.Settings
+import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -20,6 +23,22 @@ fun rememberReduceMotion(): Boolean {
     return remember {
         Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
     }
+}
+
+/**
+ * True once this screen has finished coming in and while it is not on its way out:
+ * the moment for work that would stutter the transition, or that can't take part in
+ * it (a SurfaceView ignores the fade). Only valid inside a NavDisplay entry.
+ */
+@Composable
+fun rememberScreenSettled(): Boolean {
+    val transition = LocalNavAnimatedContentScope.current.transition
+    val settled by remember(transition) {
+        derivedStateOf {
+            transition.currentState == EnterExitState.Visible && transition.targetState == EnterExitState.Visible
+        }
+    }
+    return settled
 }
 
 /** Provided by the app around its NavDisplay so cards and detail screens can share elements. */

@@ -26,6 +26,7 @@
     <string name="map_satellite">Satelita</string>
     <string name="map_globe">Widok globusa</string>
     <string name="map_globe_spin">Obracaj globus</string>
+    <string name="map_loading">Ładowanie mapy…</string>
     <string name="map_wind_field_disclaimer">Interpolacja z danych spotów</string>
 
     <string name="timeline_title">Prognoza wiatru</string>

@@ -24,6 +24,7 @@
     <string name="map_satellite">Satellite</string>
     <string name="map_globe">Globe view</string>
     <string name="map_globe_spin">Rotate the globe</string>
+    <string name="map_loading">Loading map…</string>
     <string name="map_wind_field_disclaimer">Interpolated from spot data</string>
 
     <string name="timeline_title">Wind forecast</string>

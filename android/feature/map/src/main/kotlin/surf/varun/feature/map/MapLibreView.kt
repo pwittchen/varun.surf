@@ -45,6 +45,8 @@ fun MapLibreView(
     onTap: (PointF) -> Unit,
     attributionMarginBottomPx: Int,
     modifier: Modifier = Modifier,
+    /** Called once, the first time the map has finished drawing what it was asked to. */
+    onFirstRender: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -52,6 +54,7 @@ fun MapLibreView(
     val currentMoveStarted by rememberUpdatedState(onCameraMoveStarted)
     val currentIdle by rememberUpdatedState(onCameraIdle)
     val currentTap by rememberUpdatedState(onTap)
+    val currentFirstRender by rememberUpdatedState(onFirstRender)
 
     val mapView = remember {
         ensureMapLibre(context)
@@ -81,6 +84,15 @@ fun MapLibreView(
             }
         }
         lifecycle.addObserver(observer)
+        var rendered = false
+        // Removed on dispose rather than from inside the callback, while MapLibre iterates its listeners
+        val firstRender = MapView.OnDidFinishRenderingMapListener {
+            if (!rendered) {
+                rendered = true
+                currentFirstRender()
+            }
+        }
+        mapView.addOnDidFinishRenderingMapListener(firstRender)
         mapView.getMapAsync { map: MapLibreMap ->
             map.uiSettings.apply {
                 isAttributionEnabled = true
@@ -103,6 +115,7 @@ fun MapLibreView(
         }
         onDispose {
             lifecycle.removeObserver(observer)
+            mapView.removeOnDidFinishRenderingMapListener(firstRender)
             // Leaving the screen: stop and destroy the GL surface
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) mapView.onPause()
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) mapView.onStop()

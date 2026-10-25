@@ -6,9 +6,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.ColorStateList
 import android.os.PowerManager
+import android.view.View
+import android.widget.ProgressBar
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,6 +68,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -68,6 +78,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -86,10 +97,18 @@ import surf.varun.core.navigation.SpotRoute
 import surf.varun.core.ui.Intents
 import surf.varun.core.ui.LocalReduceMotion
 import surf.varun.core.ui.countryName
+import surf.varun.core.ui.rememberScreenSettled
 
 private val PEEK_HEIGHT = 156.dp
 private val SIDE_SHEET_BREAKPOINT = 840.dp
 private const val PLAY_STEP_MS = 650L
+
+/** Longest the cover waits for the map's first complete frame. */
+private const val MAP_REVEAL_TIMEOUT_MS = 3_000L
+
+/** How long the cover takes to fade off a drawn map. */
+private const val MAP_REVEAL_MS = 250
+
 
 /** Europe, where most spots are, when there is nothing better to show. */
 private val DEFAULT_CAMERA = SavedCamera(lat = 48.0, lon = 10.0, zoom = 3.3)
@@ -139,6 +158,22 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     }
     SideEffect { globeCamera.reduceMotion = reduceMotion }
     LaunchedEffect(globe) { if (globe) controller = null }
+
+    // MapLibre draws into a SurfaceView: costly to create, and it ignores the screen's
+    // fade, so it would pop in mid-transition and stutter it. It is made once the screen
+    // has settled and stays under a cover until it has drawn its first frame
+    val settled = rememberScreenSettled()
+    var mapCreated by remember { mutableStateOf(false) }
+    var mapDrawn by remember { mutableStateOf(false) }
+    LaunchedEffect(settled) { if (settled) mapCreated = true }
+    LaunchedEffect(globe) { if (globe) mapDrawn = false }
+    LaunchedEffect(mapCreated, globe) {
+        // Tiles that never finish (offline, a slow server) must not hold the map back for good
+        if (mapCreated && !globe) {
+            delay(MAP_REVEAL_TIMEOUT_MS)
+            mapDrawn = true
+        }
+    }
 
     fun centreOn(coordinates: Coordinates, zoom: Double = MapController.FOCUS_ZOOM) {
         if (globe) {
@@ -304,10 +339,11 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         onSelect = viewModel::select,
                         modifier = Modifier.fillMaxSize(),
                     )
-                } else {
+                } else if (mapCreated) {
                     MapLibreView(
                         initialCamera = camera,
                         onReady = { controller = it },
+                        onFirstRender = { mapDrawn = true },
                         onCameraMoveStarted = { moving = true },
                         onCameraIdle = {
                             camera = it
@@ -330,6 +366,15 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
+                }
+
+                if (!globe) {
+                    // Over the map and its wind field; the controls stay usable above it
+                    MapCover(
+                        covered = state.loading || !mapDrawn || !settled,
+                        satellite = state.settings.mapSatellite,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
 
                 if (state.settings.mapWindField) {
@@ -582,3 +627,54 @@ private fun rememberPowerSaveMode(): Boolean {
     }
     return saving
 }
+
+/**
+ * Stands in for the map while its GL surface is made and draws its first frame, and
+ * while the screen comes in or goes out (a SurfaceView would not fade with it). Coloured
+ * like the basemap underneath, so lifting it reads as the map sharpening, not swapping.
+ */
+@Composable
+private fun MapCover(covered: Boolean, satellite: Boolean, modifier: Modifier = Modifier) {
+    val alpha = remember { Animatable(1f) }
+    LaunchedEffect(covered) {
+        if (covered) alpha.snapTo(1f) else alpha.animateTo(0f, tween(MAP_REVEAL_MS))
+    }
+    if (alpha.value == 0f) return
+    val tint = if (satellite) Color.White.copy(alpha = 0.85f) else MaterialTheme.colorScheme.primary
+    Box(
+        modifier
+            .graphicsLayer { this.alpha = alpha.value }
+            .background(if (satellite) SATELLITE_COVER else STREET_COVER),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(bottom = PEEK_HEIGHT),
+        ) {
+            // The platform spinner, not Compose's: its animated vector runs on the render
+            // thread and keeps turning while the main thread is busy building the map
+            AndroidView(
+                factory = { context ->
+                    ProgressBar(context).apply {
+                        isIndeterminate = true
+                        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                    }
+                },
+                update = { it.indeterminateTintList = ColorStateList.valueOf(tint.toArgb()) },
+                modifier = Modifier.size(40.dp),
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.map_loading),
+                style = MaterialTheme.typography.labelLarge,
+                color = if (satellite) Color.White.copy(alpha = 0.85f) else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/** Deep ocean, what most of the satellite basemap is at the zooms the map opens on. */
+private val SATELLITE_COVER = Color(0xFF0D2A3C)
+
+/** The street basemap's land colour. */
+private val STREET_COVER = Color(0xFFF2EFE9)
