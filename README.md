@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="varun.surf logo" width="160">
+  <img src="logo.png" alt="varun.surf logo" width="120">
 </p>
 
 <h2 align="center">varun.surf 🏄</h2>
