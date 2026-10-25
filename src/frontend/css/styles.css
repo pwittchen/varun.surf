@@ -2472,6 +2472,13 @@ body.index-page .header-title {
     gap: 8px;
 }
 
+.modal-title-logo {
+    display: block;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+}
+
 /* Running version next to the about modal's title: present for whoever looks
    for it, quiet enough not to read as part of the heading. */
 .modal-title-version {

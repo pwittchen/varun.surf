@@ -195,7 +195,7 @@ const MODALS_HTML = `
     <div class="modal">
         <div class="modal-header">
             <div class="modal-title">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="fill: white; vertical-align: middle;"><path d="M8,13H0V11H8Zm12.915-1.894A5,5,0,1,0,12,8V9h2V8a3,3,0,1,1,3,3H10v2H20a2,2,0,1,1-2,2H16a4,4,0,1,0,4.915-3.894ZM11,16H0v2H11a2,2,0,1,1-2,2H7a4,4,0,1,0,4-4ZM11,4A4,4,0,0,0,3,4H5A2,2,0,1,1,7,6H0V8H7A4,4,0,0,0,11,4Z"/></svg>
+                <img src="/app-icon.png" alt="" class="modal-title-logo" width="28" height="28">
                 <span id="appInfoModalTitle">About VARUN.SURF</span>
                 <span class="modal-title-version" id="appInfoModalVersion"></span>
             </div>
