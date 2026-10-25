@@ -23,6 +23,9 @@ const HTML_ENTRIES = [
 const STATIC_ASSETS = [
   // the root copy stays for absolute URLs referenced outside the app (og:image, social cards)
   { src: "assets/logo.png", dest: "logo.png" },
+  { src: "assets/logo-light.png", dest: "logo-light.png" },
+  { src: "assets/favicon-dark.png", dest: "favicon-dark.png" },
+  { src: "assets/favicon-light.png", dest: "favicon-light.png" },
   { src: "assets/ai.txt", dest: "ai.txt" },
   { src: "assets/llms.txt", dest: "llms.txt" },
   { src: "assets/robots.txt", dest: "robots.txt" },

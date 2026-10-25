@@ -10,7 +10,10 @@ import * as api from './api.js';
 
 const SIDEBAR_HTML = `
 <div class="sidebar-brand" id="sidebarBrand">
-    <img src="/logo.png" alt="VARUN.SURF Logo" class="header-logo" id="headerLogo">
+    <span class="header-logo" id="headerLogo">
+        <img src="/logo.png" alt="VARUN.SURF Logo" class="header-logo-dark">
+        <img src="/logo-light.png" alt="VARUN.SURF Logo" class="header-logo-light">
+    </span>
     <h1 class="header-title"><span id="headerTitle">VARUN.SURF</span></h1>
 </div>
 <nav class="sidebar-nav">

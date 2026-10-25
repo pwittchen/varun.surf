@@ -471,14 +471,32 @@ body {
 /* Logo + wordmark live in the sidebar brand row on desktop and are moved into
    the header by sideMenu.setup() at <=929px, where the drawer takes over. */
 .header-logo {
-    height: auto;
-    width: auto;
+    display: inline-flex;
+    height: 32px;
+    width: 32px;
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
 
 .header-logo:hover {
     opacity: 0.8;
+}
+
+/* Both theme variants are in the markup; the one matching data-theme is shown */
+.header-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+}
+
+.header-logo .header-logo-light,
+[data-theme="light"] .header-logo .header-logo-dark {
+    display: none;
+}
+
+[data-theme="light"] .header-logo .header-logo-light {
+    display: block;
 }
 
 .header-controls {
