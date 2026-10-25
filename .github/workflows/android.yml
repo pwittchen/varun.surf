@@ -1,4 +1,4 @@
-name: Android # lint, unit tests and a release build of the Android app (android/)
+name: ANDROID # lint, unit tests and a release build of the Android app (android/)
 
 on:
   push:
