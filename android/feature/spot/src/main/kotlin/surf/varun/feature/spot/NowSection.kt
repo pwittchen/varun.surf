@@ -146,13 +146,19 @@ private fun HistoryChart(history: List<LiveConditions>) {
     val last = readings.last().observedAt
     val firstLabel = first?.let { Format.hour(context, it) } ?: readings.first().rawDate
     val lastLabel = last?.let { Format.hour(context, it) } ?: readings.last().rawDate
+    // Some stations report no gusts (Turawa sends 0): the gust line would hug the
+    // floor and the scale would be cut below the wind, so it is drawn only when
+    // reported, and a gust never sits under its own wind
+    val hasGusts = readings.any { it.gusts > 0 }
+    fun gustOf(r: LiveConditions) = maxOf(r.gusts, r.wind)
+    val top = readings.maxOf { gustOf(it) }
     val description = stringResource(
         R.string.history_description,
         firstLabel,
         lastLabel,
-        "${formatWind(readings.minOf { it.wind }.toDouble())}-${formatWind(readings.maxOf { it.gusts }.toDouble())} $unit",
+        "${formatWind(readings.minOf { it.wind }.toDouble())}-${formatWind(top.toDouble())} $unit",
     )
-    val maxValue = maxOf(readings.maxOf { it.gusts }, 10) * 1.15f
+    val maxValue = maxOf(top, 10) * 1.15f
     val gridSteps = listOf(10, 20, 30, 40).filter { it < maxValue }
     val gridLabels = gridSteps.map { formatWind(it.toDouble()) }
 
@@ -174,16 +180,18 @@ private fun HistoryChart(history: List<LiveConditions>) {
             drawText(measurer, gridLabels[index], Offset(2f, gy - 14.sp.toPx()), labelStyle)
         }
 
-        val band = Path().apply {
-            moveTo(x(0), y(readings[0].wind))
-            readings.forEachIndexed { i, r -> lineTo(x(i), y(r.wind)) }
-            for (i in count - 1 downTo 0) lineTo(x(i), y(readings[i].gusts))
-            close()
-        }
-        drawPath(band, bandColor)
+        if (hasGusts) {
+            val band = Path().apply {
+                moveTo(x(0), y(readings[0].wind))
+                readings.forEachIndexed { i, r -> lineTo(x(i), y(r.wind)) }
+                for (i in count - 1 downTo 0) lineTo(x(i), y(gustOf(readings[i])))
+                close()
+            }
+            drawPath(band, bandColor)
 
-        val gusts = Path().apply { readings.forEachIndexed { i, r -> if (i == 0) moveTo(x(i), y(r.gusts)) else lineTo(x(i), y(r.gusts)) } }
-        drawPath(gusts, gustColor.copy(alpha = 0.7f), style = Stroke(width = 1.5.dp.toPx()))
+            val gusts = Path().apply { readings.forEachIndexed { i, r -> if (i == 0) moveTo(x(i), y(gustOf(r))) else lineTo(x(i), y(gustOf(r))) } }
+            drawPath(gusts, gustColor.copy(alpha = 0.7f), style = Stroke(width = 1.5.dp.toPx()))
+        }
         val wind = Path().apply { readings.forEachIndexed { i, r -> if (i == 0) moveTo(x(i), y(r.wind)) else lineTo(x(i), y(r.wind)) } }
         drawPath(wind, windColor, style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round))
 
