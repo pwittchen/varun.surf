@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,12 +28,13 @@ fun WindNumber(
     modifier: Modifier = Modifier,
     style: TextStyle = Numbers.medium,
     windClass: WindClass = WindClass.of(knots),
+    color: Color = VarunTheme.wind.forClass(windClass),
 ) {
     Text(
         text = text,
         modifier = modifier,
         style = style.copy(fontWeight = if (windClass.isRideable) FontWeight.Bold else FontWeight.Normal),
-        color = VarunTheme.wind.forClass(windClass),
+        color = color,
         maxLines = 1,
     )
 }

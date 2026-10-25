@@ -29,6 +29,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
@@ -171,8 +172,9 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                     // Daily rows are Today, Tomorrow, Day 3... - one per day from the spot's today
                     val date = spotToday.plusDays(index.toLong())
                     val windClass = WindClass.ofAverage(day.wind, day.gusts)
+                    val selected = selectedDay == date.toString()
                     FilterChip(
-                        selected = selectedDay == date.toString(),
+                        selected = selected,
                         onClick = {
                             selectedDay = date.toString()
                             scrollTo(hours.indexOfFirst { it.time!!.toLocalDate() >= date })
@@ -180,8 +182,10 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                         label = {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Text(Format.dayLabel(context, day.day, day.rawDate))
-                                WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass)
-                                WindArrow(day.direction, size = 14.dp, color = VarunTheme.wind.forClass(windClass), animate = false)
+                                // On the selected chip's fill the class colours wash out: take the label colour instead
+                                val windColor = if (selected) LocalContentColor.current else VarunTheme.wind.forClass(windClass)
+                                WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass, color = windColor)
+                                WindArrow(day.direction, size = 14.dp, color = windColor, animate = false)
                             }
                         },
                     )
