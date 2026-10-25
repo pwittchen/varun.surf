@@ -8,7 +8,7 @@ import surf.varun.core.model.Spot
 import surf.varun.core.ui.SpotCardModel
 import java.time.ZonedDateTime
 
-enum class SpotSort { FIRING, NAME, WINDIEST_TODAY, DISTANCE }
+enum class SpotSort { FIRING, WINDIEST_TODAY, DISTANCE, NAME }
 
 data class SpotFilters(
     val country: String? = null,
