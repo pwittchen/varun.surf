@@ -4,6 +4,8 @@
 
 <h2 align="center">varun.surf 🏄</h2>
 
+<p align="center"><b><a href="https://varun.surf">https://varun.surf</a></b></p>
+
 <p align="center">
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg" alt="CD"></a>
@@ -11,9 +13,7 @@
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml/badge.svg" alt="ANDROID"></a>
 </p>
 
-kite spots database and weather forecast for kitesurfers on the web
-
-see it online at: https://varun.surf
+<p align="center">kite spots database and weather forecast for kitesurfers on the web</p>
 
 [![screenshot](screenshot.png)](https://varun.surf)
 
