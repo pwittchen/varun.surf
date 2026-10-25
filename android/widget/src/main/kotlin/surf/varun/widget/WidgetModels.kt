@@ -23,7 +23,7 @@ data class SpotWidgetModel(
 }
 
 object WidgetModels {
-    /** The strip covers the next 12 hours in 2 hour steps - what fits a 4×2 widget. */
+    /** The strip covers the next 12 hours in 2 hour steps - what fits a 3×1 widget. */
     const val STRIP_HOURS = 12
     const val STRIP_STEP = 2
 

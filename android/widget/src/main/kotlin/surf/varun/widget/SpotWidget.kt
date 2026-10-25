@@ -39,11 +39,12 @@ import surf.varun.core.domain.WindClass
 import surf.varun.core.ui.Format
 
 /**
- * One spot's wind (spec 6.8): 2×1 wind number and arrow, 3×2 adds gusts,
- * temperature and the reading's age, 4×2 adds the next 12 hours of forecast.
+ * One spot's wind (spec 6.8): 2×1 wind number and arrow; from 3×1 the name, gusts,
+ * temperature, the reading's age and the next 12 hours of forecast, packed tight
+ * enough to fit a single row.
  */
 class SpotWidget : GlanceAppWidget() {
-    override val sizeMode = SizeMode.Responsive(setOf(SMALL, MEDIUM, LARGE))
+    override val sizeMode = SizeMode.Responsive(setOf(SMALL, FULL))
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val initialId = getAppWidgetState<Preferences>(context, id)[WidgetKeys.SPOT_ID]
@@ -61,8 +62,7 @@ class SpotWidget : GlanceAppWidget() {
 
     internal companion object {
         val SMALL = DpSize(110.dp, 40.dp)
-        val MEDIUM = DpSize(180.dp, 110.dp)
-        val LARGE = DpSize(250.dp, 110.dp)
+        val FULL = DpSize(180.dp, 80.dp)
     }
 }
 
@@ -92,7 +92,7 @@ private fun SpotWidgetContent(data: SpotWidgetData) {
             .appWidgetBackground()
             .cornerRadius(16.dp)
             .background(GlanceTheme.colors.widgetBackground)
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
             .clickable(actionStartActivity(WidgetData.spotIntent(context, model?.wgId))),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -101,10 +101,9 @@ private fun SpotWidgetContent(data: SpotWidgetData) {
             return@Column
         }
         val reading = model.reading
-        val large = size.width >= SpotWidget.LARGE.width && size.height >= SpotWidget.LARGE.height
-        val medium = size.width >= SpotWidget.MEDIUM.width && size.height >= SpotWidget.MEDIUM.height
+        val full = size.width >= SpotWidget.FULL.width && size.height >= SpotWidget.FULL.height
 
-        if (!medium) {
+        if (!full) {
             // 2×1: just the number, the arrow and the name
             Row(verticalAlignment = Alignment.CenterVertically, modifier = GlanceModifier.fillMaxWidth()) {
                 if (reading != null) {
@@ -130,18 +129,19 @@ private fun SpotWidgetContent(data: SpotWidgetData) {
                 maxLines = 1,
                 modifier = GlanceModifier.defaultWeight(),
             )
-            RefreshButton(context)
+            RefreshButton(context, 20.dp)
         }
         if (reading == null) {
             SecondaryText(context.getString(R.string.widget_no_data))
             return@Column
         }
-        Row(verticalAlignment = Alignment.Bottom) {
-            WindText(Format.wind(reading.wind, data.windUnit), model.windClass, 34.sp)
+        // Wind and gusts share one size, so the whole reading fits a single-row widget
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            WindText(Format.wind(reading.wind, data.windUnit), model.windClass, 16.sp)
             Spacer(GlanceModifier.width(4.dp))
             SecondaryText("/ ${Format.wind(reading.gusts, data.windUnit)} $unit", 16.sp)
             Spacer(GlanceModifier.width(8.dp))
-            WindText(WidgetModels.arrow(reading.direction), model.windClass, 26.sp)
+            WindText(WidgetModels.arrow(reading.direction), model.windClass, 16.sp)
             Spacer(GlanceModifier.width(2.dp))
             SecondaryText(reading.direction?.name.orEmpty(), 14.sp)
         }
@@ -156,15 +156,17 @@ private fun SpotWidgetContent(data: SpotWidgetData) {
             )
             SecondaryText(parts.joinToString(" · "), color = if (model.stale) staleColor else null)
         }
-        if (large && model.strip.isNotEmpty()) {
-            Spacer(GlanceModifier.width(4.dp))
-            Row(GlanceModifier.fillMaxWidth().padding(top = 6.dp)) {
+        if (model.strip.isNotEmpty()) {
+            Row(GlanceModifier.fillMaxWidth().padding(top = 4.dp)) {
                 model.strip.forEach { hour ->
                     val windClass = WindClass.of(hour.wind)
                     Column(GlanceModifier.defaultWeight(), horizontalAlignment = Alignment.CenterHorizontally) {
                         SecondaryText(hour.time!!.hour.toString().padStart(2, '0'), 10.sp)
-                        WindText(Format.wind(hour.wind, data.windUnit), windClass, 13.sp)
-                        WindText(WidgetModels.arrow(hour.direction), windClass, 11.sp)
+                        // The arrow rides next to the number: two lines instead of three
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            WindText(Format.wind(hour.wind, data.windUnit), windClass, 12.sp)
+                            WindText(WidgetModels.arrow(hour.direction), windClass, 10.sp)
+                        }
                     }
                 }
             }

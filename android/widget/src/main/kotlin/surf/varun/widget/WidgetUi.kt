@@ -2,6 +2,7 @@ package surf.varun.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,11 +59,11 @@ internal fun SecondaryText(text: String, size: TextUnit = 12.sp, color: ColorPro
 }
 
 @Composable
-internal fun RefreshButton(context: Context) {
+internal fun RefreshButton(context: Context, size: Dp = 24.dp) {
     Image(
         provider = ImageProvider(R.drawable.ic_widget_refresh),
         contentDescription = context.getString(R.string.widget_refresh),
-        modifier = GlanceModifier.size(24.dp).clickable(actionRunCallback<RefreshCallback>()),
+        modifier = GlanceModifier.size(size).clickable(actionRunCallback<RefreshCallback>()),
         colorFilter = androidx.glance.ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
     )
 }

@@ -114,10 +114,11 @@ private fun FavouritesContent(data: FavouritesWidgetData) {
                         SecondaryText(status, 11.sp, if (model.stale) staleColor else null)
                     }
                     if (reading != null) {
-                        WindText(Format.wind(reading.wind, data.windUnit), model.windClass, 20.sp)
-                        SecondaryText(" / ${Format.wind(reading.gusts, data.windUnit)} $unit", 12.sp)
+                        // Wind and gusts share one size; colour and weight keep the wind leading
+                        WindText(Format.wind(reading.wind, data.windUnit), model.windClass, 14.sp)
+                        SecondaryText(" / ${Format.wind(reading.gusts, data.windUnit)} $unit", 14.sp)
                         Spacer(GlanceModifier.width(6.dp))
-                        WindText(WidgetModels.arrow(reading.direction), model.windClass, 18.sp)
+                        WindText(WidgetModels.arrow(reading.direction), model.windClass, 14.sp)
                     }
                 }
             }

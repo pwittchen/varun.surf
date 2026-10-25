@@ -75,6 +75,8 @@ benchmark/           baseline profile generator and startup/scroll macrobenchmar
   countries (`SpotTimeZones`) instead of a bundled tz-boundary dataset.
 - **Play upload**: the `r0adkll/upload-google-play` action instead of Gradle Play Publisher.
 - **Tests**: JUnit 4 + Truth + Turbine + Robolectric; no Roborazzi screenshots, Maestro flows or Kover yet.
+- **Spot widget**: two layouts instead of three - 2×1 (wind number + arrow) and, from 3×1, everything
+  else at once (gusts, temp, age and the 12 h strip), with wind and gusts at one size so it fits a row.
 - **Large screens**: navigation rail from 600 dp and a map side sheet; no list-detail pane yet.
 - Not built (v1.1 in the spec): compass-relative wind, Quick Settings tile, webcam previews,
   favourites import from the web, offline map regions.
