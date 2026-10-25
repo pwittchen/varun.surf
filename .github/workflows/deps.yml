@@ -149,3 +149,95 @@ jobs:
           git add -A
           git commit -m "update dependencies" -m "$BODY"
           git push
+
+  # The Android app (android/) is a separate Gradle build with its own version
+  # catalog. It runs after the backend job, whatever that job's outcome, so a
+  # breaking bump on one side never holds back the other, and commits on its own.
+  # A push made with GITHUB_TOKEN does not start the ANDROID workflow, so the
+  # same lint, tests and release build run here before anything is pushed.
+  update-android-dependencies:
+    needs: update-dependencies
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # the branch tip, which includes the backend job's commit if it pushed one
+          ref: ${{ github.ref_name }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Update Gradle wrapper
+        id: gradle-wrapper
+        run: |
+          CURRENT_GRADLE=$(grep distributionUrl gradle/wrapper/gradle-wrapper.properties | sed 's/.*gradle-\(.*\)-bin.zip/\1/')
+          LATEST_GRADLE=$(curl -s https://services.gradle.org/versions/current | jq -r '.version')
+          if [ "$CURRENT_GRADLE" != "$LATEST_GRADLE" ]; then
+            ./gradlew wrapper --gradle-version="$LATEST_GRADLE"
+            echo "updated=- gradle wrapper: $CURRENT_GRADLE -> $LATEST_GRADLE" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update version catalog
+        id: catalog
+        run: |
+          ./gradlew dependencyUpdates
+          UPDATES=$(python3 -I ../.github/scripts/update-android-catalog.py \
+            build/dependencyUpdates/report.json gradle/libs.versions.toml)
+          echo "$UPDATES"
+          if [ -n "$UPDATES" ]; then
+            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+            echo "updated<<$EOF" >> "$GITHUB_OUTPUT"
+            echo "$UPDATES" >> "$GITHUB_OUTPUT"
+            echo "$EOF" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet -- .; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Lint
+        if: steps.changes.outputs.has_changes == 'true'
+        run: ./gradlew lintDebug --stacktrace
+
+      - name: Unit tests
+        if: steps.changes.outputs.has_changes == 'true'
+        run: ./gradlew test --stacktrace
+
+      - name: Assemble release (R8)
+        if: steps.changes.outputs.has_changes == 'true'
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Commit and push
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          BODY=""
+          if [ -n "${{ steps.gradle-wrapper.outputs.updated }}" ]; then
+            BODY="${BODY}${{ steps.gradle-wrapper.outputs.updated }}"$'\n'
+          fi
+          if [ -n "${{ steps.catalog.outputs.updated }}" ]; then
+            BODY="${BODY}${{ steps.catalog.outputs.updated }}"$'\n'
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A .
+          git commit -m "update Android dependencies" -m "$BODY"
+          git push

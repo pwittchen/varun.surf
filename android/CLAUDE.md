@@ -16,7 +16,7 @@ from `android/`, never from the root.
 - Retrofit 3 + OkHttp 5 + kotlinx.serialization, Coil 3, MapLibre Native, Timber
 - Tests: JUnit 4, Truth, Turbine, MockK, Robolectric, MockWebServer
 - Application id `surf.varun.app` (permanent once on Play), minSdk 28, targetSdk 36, compileSdk 37
-- All versions live in `gradle/libs.versions.toml`; never hardcode a version in a module
+- All versions live in `gradle/libs.versions.toml`; never hardcode a version in a module. The DEPS workflow bumps them daily (stable releases within the current major, via the `com.github.ben-manes.versions` report and `../.github/scripts/update-android-catalog.py`)
 
 ## Build & Test
 

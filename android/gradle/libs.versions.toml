@@ -3,6 +3,7 @@ kotlin = "2.4.21"
 agp = "9.4.1"
 ksp = "2.3.12"
 hilt = "2.60.1"
+versionsPlugin = "0.66.0"
 
 compileSdk = "37"
 minSdk = "28"
@@ -135,6 +136,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 room = { id = "androidx.room", version.ref = "room" }
+versions = { id = "com.github.ben-manes.versions", version.ref = "versionsPlugin" }
 
 # Convention plugins (build-logic)
 varun-android-application = { id = "varun.android.application" }
