@@ -36,6 +36,7 @@
     <string name="timeline_pause">Pause</string>
     <string name="timeline_prev_hour">Previous hour</string>
     <string name="timeline_next_hour">Next hour</string>
+    <string name="timeline_go_now">Back to now</string>
     <string name="timeline_unavailable">Forecast timeline unavailable</string>
 
     <string name="map_sheet_open_spot">Open spot</string>

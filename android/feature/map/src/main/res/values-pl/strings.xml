@@ -38,6 +38,7 @@
     <string name="timeline_pause">Pauza</string>
     <string name="timeline_prev_hour">Poprzednia godzina</string>
     <string name="timeline_next_hour">Następna godzina</string>
+    <string name="timeline_go_now">Wróć do teraz</string>
     <string name="timeline_unavailable">Oś czasu prognozy niedostępna</string>
 
     <string name="map_sheet_open_spot">Otwórz spot</string>

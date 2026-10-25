@@ -12,6 +12,7 @@ import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,8 @@ import kotlin.math.roundToInt
 
 /**
  * The hourly forecast timeline under the map (spec 5.4): step 0 is now, then one
- * step per hour of the grid; day ticks under the slider, play/pause, and a haptic
+ * step per hour of the grid; day ticks under the slider, play/pause, a jump back
+ * to now, and a haptic
  * tick per hour with a stronger one at midnight (spec 2.5.12).
  */
 @Composable
@@ -45,6 +47,7 @@ fun TimelineBar(
     unavailable: Boolean,
     onStep: (Int) -> Unit,
     onTogglePlay: () -> Unit,
+    onNow: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -90,6 +93,9 @@ fun TimelineBar(
             )
             IconButton(onClick = { go(step + 1) }, enabled = step < steps.lastStep) {
                 Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = stringResource(R.string.timeline_next_hour))
+            }
+            IconButton(onClick = onNow, enabled = step > 0) {
+                Icon(Icons.Rounded.Schedule, contentDescription = stringResource(R.string.timeline_go_now))
             }
         }
         if (!unavailable && steps.lastStep > 0) {

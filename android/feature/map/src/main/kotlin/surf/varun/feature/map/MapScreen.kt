@@ -321,6 +321,10 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         if (!playing && state.step >= state.steps.lastStep) viewModel.setStep(0)
                         playing = !playing
                     },
+                    onNow = {
+                        playing = false
+                        viewModel.setStep(0)
+                    },
                     onRetry = { viewModel.loadTimeline(force = true) },
                 )
                 if (selected != null && !wide) {
