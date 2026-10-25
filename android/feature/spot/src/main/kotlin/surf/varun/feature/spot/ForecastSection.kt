@@ -6,8 +6,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -60,6 +58,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
@@ -86,7 +86,7 @@ import java.time.ZonedDateTime
 import kotlin.math.roundToInt
 
 /** Section 2: model, windy-days filter, day chips and the hourly table or chart (spec 5.3.2). */
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val spot = state.spot ?: return
@@ -127,28 +127,41 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val spotToday = remember(spot.wgId) { Conditions.now(spot, ZonedDateTime.now()).toLocalDate() }
 
     SectionCard(stringResource(R.string.section_forecast)) {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            itemVerticalAlignment = Alignment.CenterVertically,
-        ) {
+        // One line whatever the model is called: the chips grow to span the full width (the
+        // switch keeps the live history's size), and on a narrow screen the model chip gives way first
+        FillRow {
             AssistChip(
                 onClick = { modelSheet = true },
-                label = { Text(modelName) },
+                label = {
+                    Text(
+                        modelName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                },
                 trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, contentDescription = null) },
                 modifier = Modifier.semantics { contentDescription = "$modelLabel: $modelName" },
             )
             FilterChip(
                 selected = state.windyOnly,
                 onClick = { actions.setWindyOnly(!state.windyOnly) },
-                label = { Text(stringResource(R.string.windy_days)) },
+                label = {
+                    Text(
+                        stringResource(R.string.windy_days),
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                },
                 leadingIcon = if (state.windyOnly) {
                     { Icon(Icons.Rounded.Check, null, Modifier.size(FilterChipDefaults.IconSize)) }
                 } else {
                     null
                 },
             )
-            DataViewSwitch(view, onChange = { view = it })
+            DataViewSwitch(view, onChange = { view = it }, Modifier.fixedInFillRow())
         }
 
         if (spot.daily.isNotEmpty()) {
