@@ -20,9 +20,6 @@
     <string name="sort_windiest_today">Najwietrzniej dziś</string>
     <string name="sort_distance">Odległość</string>
     <string name="filter_live">Tylko stacje live</string>
-    <string name="filter_nearby">W pobliżu</string>
-    <string name="filter_windy_today">Wietrznie dziś</string>
-    <string name="location_denied">Spoty w pobliżu wymagają dostępu do lokalizacji</string>
 
     <string name="no_favourites_title">Brak ulubionych</string>
     <string name="no_favourites_message">Stuknij ☆ przy dowolnym spocie, aby dodać go do ulubionych.</string>

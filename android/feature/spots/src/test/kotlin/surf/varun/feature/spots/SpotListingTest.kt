@@ -35,18 +35,18 @@ class SpotListingTest {
     fun filtersCombine() {
         val live = SpotListing.apply(spots, SpotFilters(liveOnly = true), SpotSort.FIRING, emptySet(), null, now)
         assertThat(live.map { it.spot.wgId }).containsExactly(1)
-        val windy = SpotListing.apply(spots, SpotFilters(windyToday = true, country = "Poland"), SpotSort.NAME, emptySet(), null, now)
-        assertThat(windy.map { it.spot.name }).containsExactly("Jastarnia", "Łeba").inOrder()
+        val polishLive = SpotListing.apply(spots, SpotFilters(liveOnly = true, country = "Poland"), SpotSort.NAME, emptySet(), null, now)
+        assertThat(polishLive.map { it.spot.wgId }).containsExactly(1)
+        val polish = SpotListing.apply(spots, SpotFilters(country = "Poland"), SpotSort.NAME, emptySet(), null, now)
+        assertThat(polish.map { it.spot.name }).containsExactly("Jastarnia", "Łeba").inOrder()
     }
 
     @Test
-    fun nearbyKeepsSpotsWithinFiftyKilometres() {
+    fun distanceSortPutsTheClosestFirst() {
         val gdansk = Coordinates(54.35, 18.65)
-        val nearby = SpotListing.apply(spots, SpotFilters(nearby = true), SpotSort.DISTANCE, emptySet(), gdansk, now)
-        assertThat(nearby.map { it.spot.wgId }).containsExactly(1)
-        assertThat(nearby.single().distanceKm!!).isWithin(2.0).of(38.0)
         val all = SpotListing.apply(spots, SpotFilters(), SpotSort.DISTANCE, emptySet(), gdansk, now)
         assertThat(all.map { it.spot.wgId }).containsExactly(1, 2, 3, 4).inOrder()
+        assertThat(all.first().distanceKm!!).isWithin(2.0).of(38.0)
     }
 
     @Test

@@ -72,21 +72,4 @@ class SpotsViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
-    @Test
-    fun nearbyUsesTheLocationAndSortsByDistance() = runTest(dispatcher) {
-        val vm = viewModel()
-        vm.uiState.test {
-            var state = awaitItem()
-            while (state.loading) state = awaitItem()
-            vm.enableNearby()
-            runCurrent()
-            state = expectMostRecentItem()
-            assertThat(state.filters.nearby).isTrue()
-            assertThat(state.sort).isEqualTo(SpotSort.DISTANCE)
-            assertThat(state.items.map { it.spot.wgId }).containsExactly(1)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
 }

@@ -18,9 +18,6 @@
     <string name="sort_windiest_today">Windiest today</string>
     <string name="sort_distance">Distance</string>
     <string name="filter_live">Live only</string>
-    <string name="filter_nearby">Nearby</string>
-    <string name="filter_windy_today">Windy today</string>
-    <string name="location_denied">Location permission is needed for nearby spots</string>
 
     <string name="no_favourites_title">No favourites yet</string>
     <string name="no_favourites_message">Tap ☆ on any spot to add it to your favourites.</string>

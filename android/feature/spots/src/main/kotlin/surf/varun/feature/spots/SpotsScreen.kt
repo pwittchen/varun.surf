@@ -1,8 +1,5 @@
 package surf.varun.feature.spots
 
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -92,13 +89,8 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                 is SpotsEffect.Favourite -> snackbar.showSnackbar(
                     resources.getString(if (effect.added) UiR.string.favourite_added else UiR.string.favourite_removed),
                 )
-                SpotsEffect.LocationUnavailable -> snackbar.showSnackbar(resources.getString(R.string.location_denied))
             }
         }
-    }
-
-    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) viewModel.enableNearby() else scope.launch { snackbar.showSnackbar(resources.getString(R.string.location_denied)) }
     }
 
     Scaffold(
@@ -147,14 +139,6 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                                 onCountry = { showCountries = true },
                                 onSort = viewModel::setSort,
                                 onLiveOnly = viewModel::toggleLiveOnly,
-                                onWindyToday = viewModel::toggleWindyToday,
-                                onNearby = {
-                                    when {
-                                        state.filters.nearby -> viewModel.disableNearby()
-                                        viewModel.hasLocationPermission() -> viewModel.enableNearby()
-                                        else -> locationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                                    }
-                                },
                             )
                         }
                     }
@@ -239,8 +223,6 @@ private fun FilterChips(
     onCountry: () -> Unit,
     onSort: (SpotSort) -> Unit,
     onLiveOnly: () -> Unit,
-    onWindyToday: () -> Unit,
-    onNearby: () -> Unit,
 ) {
     var sortMenu by remember { mutableStateOf(false) }
     Row(
@@ -286,8 +268,6 @@ private fun FilterChips(
             }
         }
         FilterChip(selected = state.filters.liveOnly, onClick = onLiveOnly, label = { Text(stringResource(R.string.filter_live)) })
-        FilterChip(selected = state.filters.nearby, onClick = onNearby, label = { Text(stringResource(R.string.filter_nearby)) })
-        FilterChip(selected = state.filters.windyToday, onClick = onWindyToday, label = { Text(stringResource(R.string.filter_windy_today)) })
     }
 }
 

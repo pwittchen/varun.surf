@@ -63,7 +63,6 @@ data class SpotsUiState(
 
 sealed interface SpotsEffect {
     data class Favourite(val added: Boolean) : SpotsEffect
-    data object LocationUnavailable : SpotsEffect
 }
 
 @HiltViewModel(assistedFactory = SpotsViewModel.Factory::class)
@@ -183,33 +182,9 @@ class SpotsViewModel @AssistedInject constructor(
 
     fun toggleLiveOnly() = filters.update { it.copy(liveOnly = !it.liveOnly) }
 
-    fun toggleWindyToday() = filters.update { it.copy(windyToday = !it.windyToday) }
-
     fun clearFilters() {
         filters.value = SpotFilters()
     }
-
-    /** Called once the permission is granted (or already was). */
-    fun enableNearby() {
-        viewModelScope.launch {
-            settingsRepository.update { it.copy(useLocation = true) }
-            val here = locationRepository.currentLocation()
-            if (here == null) {
-                effects.send(SpotsEffect.LocationUnavailable)
-                return@launch
-            }
-            location.value = here
-            filters.update { it.copy(nearby = !it.nearby) }
-            if (sort.value == SpotSort.FIRING) sort.value = SpotSort.DISTANCE
-        }
-    }
-
-    fun disableNearby() {
-        filters.update { it.copy(nearby = false) }
-        if (sort.value == SpotSort.DISTANCE) sort.value = SpotSort.FIRING
-    }
-
-    fun hasLocationPermission() = locationRepository.hasPermission()
 
     fun toggleFavourite(wgId: Int) {
         viewModelScope.launch { effects.send(SpotsEffect.Favourite(favouritesRepository.toggle(wgId))) }
