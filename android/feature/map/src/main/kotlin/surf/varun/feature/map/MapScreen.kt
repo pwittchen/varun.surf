@@ -10,6 +10,19 @@ import android.content.res.ColorStateList
 import android.os.PowerManager
 import android.view.View
 import android.widget.ProgressBar
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
@@ -103,6 +116,9 @@ private val PEEK_HEIGHT = 156.dp
 private val SIDE_SHEET_BREAKPOINT = 840.dp
 private const val PLAY_STEP_MS = 650L
 
+/** Close enough to see the spots round the user, not so close that none are left in view. */
+private const val MY_LOCATION_ZOOM = 8.0
+
 /** Longest the cover waits for the map's first complete frame. */
 private const val MAP_REVEAL_TIMEOUT_MS = 3_000L
 
@@ -130,6 +146,7 @@ private const val GLOBE_ZOOM_OFFSET = 1.0
 @Composable
 fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val myLocation by viewModel.myLocation.collectAsStateWithLifecycle()
     val navigator = LocalNavigator.current
     val context = LocalContext.current
     val density = LocalDensity.current
@@ -222,6 +239,22 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     }
     LaunchedEffect(controller, state.features) { controller?.setFeatures(state.features) }
     LaunchedEffect(controller, state.settings.mapMarkers) { controller?.setMarkersVisible(state.settings.mapMarkers) }
+    LaunchedEffect(controller, myLocation.position) { controller?.setMyLocation(myLocation.position) }
+
+    // Found: the map is unblocked and flies to the user; not found: unblocked with a message
+    val locationUnavailable = stringResource(R.string.map_location_unavailable)
+    val onLocated by rememberUpdatedState<(LocateResult) -> Unit> { result ->
+        when (result) {
+            is LocateResult.Found -> centreOn(result.position, zoom = MY_LOCATION_ZOOM)
+            LocateResult.Failed -> scope.launch { snackbar.showSnackbar(locationUnavailable) }
+        }
+    }
+    LaunchedEffect(viewModel) { viewModel.locateResults.collect { onLocated(it) } }
+    // A search still running when the map is left is dropped, never landed later on a map the user moved
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { viewModel.cancelLocate() }
+    DisposableEffect(viewModel) { onDispose { viewModel.cancelLocate() } }
+    // Back gets the user out of a search that takes too long
+    BackHandler(enabled = myLocation.locating) { viewModel.cancelLocate() }
 
     // A MapRoute(focusWgId) centres and opens that spot once
     LaunchedEffect(controller, globe, state.loading, route.focusWgId, state.allSpots) {
@@ -248,7 +281,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     }
 
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) scope.launch { centreOnMe(viewModel, snackbar, context) { centreOn(it, zoom = 8.0) } }
+        if (granted) viewModel.locate()
     }
 
     val sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.PartiallyExpanded, skipHiddenState = true)
@@ -329,6 +362,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         features = state.features,
                         samples = samples,
                         selectedWgId = selected?.wgId,
+                        myLocation = myLocation.position,
                         windVisible = state.settings.mapWindField,
                         markersVisible = state.settings.mapMarkers,
                         particleMode = mode,
@@ -412,7 +446,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     onLayers = { showLayers = it },
                     onMyLocation = {
                         if (viewModel.hasLocationPermission()) {
-                            scope.launch { centreOnMe(viewModel, snackbar, context) { centreOn(it, zoom = 8.0) } }
+                            viewModel.locate()
                         } else {
                             // Asked here, at the moment it is needed - never on launch
                             locationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -456,6 +490,10 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 }
             }
         }
+
+        // Over everything, the timeline sheet and the controls included: nothing moves the map
+        // while the user is being found, so the result never lands on a view they changed
+        LocatingOverlay(visible = myLocation.locating, modifier = Modifier.fillMaxSize())
     }
 
     if (showSearch) {
@@ -487,17 +525,37 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     }
 }
 
-private suspend fun centreOnMe(
-    viewModel: MapViewModel,
-    snackbar: SnackbarHostState,
-    context: Context,
-    centreOn: (Coordinates) -> Unit,
-) {
-    val location = viewModel.currentLocation()
-    if (location == null) {
-        snackbar.showSnackbar(context.getString(R.string.map_location_unavailable))
-    } else {
-        centreOn(location)
+/** A dimmed screen that swallows every touch while the user's location is being found. */
+@Composable
+private fun LocatingOverlay(visible: Boolean, modifier: Modifier = Modifier) {
+    AnimatedVisibility(visible, enter = fadeIn(), exit = fadeOut(), modifier = modifier) {
+        val message = stringResource(R.string.map_locating)
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.45f))
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) awaitPointerEvent(PointerEventPass.Initial).changes.forEach { it.consume() }
+                    }
+                }
+                .semantics {
+                    liveRegion = LiveRegionMode.Polite
+                    contentDescription = message
+                },
+            contentAlignment = Alignment.Center,
+        ) {
+            Surface(shape = RoundedCornerShape(16.dp), tonalElevation = 6.dp, shadowElevation = 6.dp) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+                ) {
+                    CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 3.dp)
+                    Text(message, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+        }
     }
 }
 

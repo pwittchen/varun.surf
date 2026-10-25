@@ -1,5 +1,6 @@
 package surf.varun.feature.map
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -81,6 +82,15 @@ internal class FakeWindTimelineRepository(private val data: WindTimeline?, priva
 }
 
 internal class FakeLocationRepository(var location: Coordinates? = null) : LocationRepository {
+    var calls = 0
+
+    /** Completed to answer; a fresh one by default answers at once. */
+    var answer: CompletableDeferred<Unit> = CompletableDeferred(Unit)
+
     override fun hasPermission() = location != null
-    override suspend fun currentLocation() = location
+    override suspend fun currentLocation(): Coordinates? {
+        calls++
+        answer.await()
+        return location
+    }
 }

@@ -44,6 +44,9 @@ import org.maplibre.android.style.layers.PropertyFactory.visibility
 import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonOptions
 import org.maplibre.android.style.sources.GeoJsonSource
+import org.maplibre.geojson.Feature
+import org.maplibre.geojson.FeatureCollection
+import org.maplibre.geojson.Point
 import surf.varun.core.designsystem.theme.WindColors
 import surf.varun.core.domain.WindClass
 import surf.varun.core.model.Coordinates
@@ -59,6 +62,7 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
     private var style: Style? = null
     private var pendingFeatures: List<MapSpotFeature>? = null
     private var markersVisible = true
+    private var myLocation: Coordinates? = null
 
     /** Apply a basemap and re-add the spot layers on top once it has loaded. */
     fun setStyle(builder: Style.Builder, colors: WindColors, onLoaded: () -> Unit = {}) {
@@ -66,6 +70,7 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         map.setStyle(builder) { loaded ->
             style = loaded
             addSpotLayers(loaded, colors)
+            addMyLocationLayers(loaded)
             pendingFeatures?.let { setFeatures(it) }
             setMarkersVisible(markersVisible)
             onLoaded()
@@ -75,6 +80,12 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
     fun setFeatures(features: List<MapSpotFeature>) {
         pendingFeatures = features
         style?.getSourceAs<GeoJsonSource>(SOURCE)?.setGeoJson(features.toFeatureCollection())
+    }
+
+    /** The blue dot where the user was found; null takes it off the map. */
+    fun setMyLocation(position: Coordinates?) {
+        myLocation = position
+        style?.getSourceAs<GeoJsonSource>(SOURCE_MY_LOCATION)?.setGeoJson(myLocationFeatures(position))
     }
 
     fun setMarkersVisible(visible: Boolean) {
@@ -253,16 +264,42 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         )
     }
 
+    /** Above the spots, so the user is never hidden under a cluster; shown whatever the spots layer is set to. */
+    private fun addMyLocationLayers(style: Style) {
+        style.addSource(GeoJsonSource(SOURCE_MY_LOCATION, myLocationFeatures(myLocation)))
+        style.addLayer(
+            CircleLayer(LAYER_MY_LOCATION_HALO, SOURCE_MY_LOCATION).withProperties(
+                circleColor(MY_LOCATION_BLUE),
+                circleOpacity(0.2f),
+                circleRadius(MY_LOCATION_HALO_RADIUS),
+            ),
+        )
+        style.addLayer(
+            CircleLayer(LAYER_MY_LOCATION, SOURCE_MY_LOCATION).withProperties(
+                circleColor(MY_LOCATION_BLUE),
+                circleRadius(MY_LOCATION_RADIUS),
+                circleStrokeColor(RIM),
+                circleStrokeWidth(2.5f),
+            ),
+        )
+    }
+
+    private fun myLocationFeatures(position: Coordinates?): FeatureCollection = FeatureCollection.fromFeatures(
+        listOfNotNull(position?.let { Feature.fromGeometry(Point.fromLngLat(it.lon, it.lat)) }),
+    )
+
     /**
      * Where the markers are on screen right now, as discs in pixels, so the wind
      * field can leave them clear (it is drawn above the map, so it cannot go under
      * them). Main thread only.
      */
     fun markerHoles(width: Float, height: Float): List<MarkerHole> {
-        if (!markersVisible) return emptyList()
         val density = context.resources.displayMetrics.density
+        val me = myLocation?.let { project(it.lat, it.lon) }
+            ?.let { MarkerHole(it.x, it.y, MY_LOCATION_HALO_RADIUS * density) }
+        if (!markersVisible) return listOfNotNull(me)
         val features = map.queryRenderedFeatures(RectF(0f, 0f, width, height), LAYER_CLUSTERS, LAYER_DOTS)
-        return features.mapNotNull { feature ->
+        return listOfNotNull(me) + features.mapNotNull { feature ->
             val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@mapNotNull null
             val centre = project(point.latitude(), point.longitude())
             val count = feature.getNumberProperty("point_count")?.toInt()
@@ -286,6 +323,15 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         val SPOT_LAYERS = listOf(
             LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_DOTS, LAYER_LABELS,
         )
+
+        const val SOURCE_MY_LOCATION = "my-location"
+        const val LAYER_MY_LOCATION_HALO = "my-location-halo"
+        const val LAYER_MY_LOCATION = "my-location-dot"
+
+        /** The blue dot, in dp; the globe draws the same one. */
+        const val MY_LOCATION_RADIUS = 7f
+        const val MY_LOCATION_HALO_RADIUS = 18f
+        const val MY_LOCATION_BLUE = 0xFF1A73E8.toInt()
 
         /** Marker geometry in dp (MapLibre circle radii and translations are in dp). */
         const val DOT_RADIUS = 13f

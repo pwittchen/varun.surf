@@ -1,6 +1,7 @@
 package surf.varun.feature.map
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -10,9 +11,11 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import surf.varun.core.model.Coordinates
 import surf.varun.core.model.TimelineReach
 import java.time.Clock
 
@@ -29,8 +32,10 @@ class MapViewModelTest {
     @After
     fun tearDown() = Dispatchers.resetMain()
 
-    private fun viewModel(timeline: FakeWindTimelineRepository = FakeWindTimelineRepository(TestData.timeline)) =
-        MapViewModel(spots, favourites, settings, timeline, FakeLocationRepository(), clock)
+    private fun viewModel(
+        timeline: FakeWindTimelineRepository = FakeWindTimelineRepository(TestData.timeline),
+        location: FakeLocationRepository = FakeLocationRepository(),
+    ) = MapViewModel(spots, favourites, settings, timeline, location, clock)
 
     /** Collect until the state satisfies [predicate] (the state is built on Dispatchers.Default). */
     private suspend fun MapViewModel.awaitState(predicate: (MapUiState) -> Boolean): MapUiState =
@@ -121,5 +126,52 @@ class MapViewModelTest {
         val vm = viewModel()
         vm.toggleFavourite(1)
         assertThat(vm.awaitState { 1 in it.favourites }.favourites).containsExactly(1)
+    }
+
+    @Test
+    fun locateShowsTheDotAndSendsWhereTheUserIs() = runBlocking<Unit> {
+        val here = Coordinates(54.5, 18.5)
+        val location = FakeLocationRepository(here).apply { answer = CompletableDeferred() }
+        val vm = viewModel(location = location)
+        vm.locate()
+        assertThat(vm.myLocation.value.locating).isTrue()
+        location.answer.complete(Unit)
+        assertThat(withTimeout(5_000) { vm.locateResults.first() }).isEqualTo(LocateResult.Found(here))
+        assertThat(vm.myLocation.value).isEqualTo(MyLocationState(position = here, locating = false))
+    }
+
+    @Test
+    fun pressesDuringASearchJoinItInsteadOfQueueing() = runBlocking<Unit> {
+        val location = FakeLocationRepository(Coordinates(54.5, 18.5)).apply { answer = CompletableDeferred() }
+        val vm = viewModel(location = location)
+        repeat(3) { vm.locate() }
+        location.answer.complete(Unit)
+        withTimeout(5_000) { vm.locateResults.first() }
+        assertThat(location.calls).isEqualTo(1)
+    }
+
+    @Test
+    fun failedSearchUnblocksAndKeepsTheLastDot() = runBlocking<Unit> {
+        val here = Coordinates(54.5, 18.5)
+        val location = FakeLocationRepository(here)
+        val vm = viewModel(location = location)
+        vm.locate()
+        withTimeout(5_000) { vm.locateResults.first() }
+        location.location = null
+        vm.locate()
+        assertThat(withTimeout(5_000) { vm.locateResults.first() }).isEqualTo(LocateResult.Failed)
+        assertThat(vm.myLocation.value).isEqualTo(MyLocationState(position = here, locating = false))
+    }
+
+    @Test
+    fun cancelledSearchSendsNothing() = runBlocking<Unit> {
+        val location = FakeLocationRepository(Coordinates(54.5, 18.5)).apply { answer = CompletableDeferred() }
+        val vm = viewModel(location = location)
+        vm.locate()
+        vm.cancelLocate()
+        location.answer.complete(Unit)
+        assertThat(vm.myLocation.value.locating).isFalse()
+        assertThat(withTimeoutOrNull(200) { vm.locateResults.first() }).isNull()
+        assertThat(vm.myLocation.value.position).isNull()
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.SystemClock
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,23 +45,39 @@ class PlatformLocationRepository @Inject constructor(
     override suspend fun currentLocation(): Coordinates? {
         if (!hasPermission()) return null
         val manager = context.getSystemService(LocationManager::class.java) ?: return last
-        val provider = listOf(LocationManager.NETWORK_PROVIDER, LocationManager.FUSED_PROVIDER, LocationManager.GPS_PROVIDER)
-            .firstOrNull { runCatching { manager.isProviderEnabled(it) }.getOrDefault(false) }
-        val fresh = provider?.let {
-            withTimeoutOrNull(10_000) {
-                suspendCancellableCoroutine<Location?> { cont ->
-                    val signal = androidx.core.os.CancellationSignal()
-                    cont.invokeOnCancellation { signal.cancel() }
-                    LocationManagerCompat.getCurrentLocation(manager, it, signal, executor) { location ->
+        val lastKnown = manager.getProviders(true)
+            .mapNotNull { runCatching { manager.getLastKnownLocation(it) }.getOrNull() }
+            .maxByOrNull { it.elapsedRealtimeNanos }
+        // A fix from a moment ago is as good as a new one, and there is no waiting for it
+        val age = lastKnown?.let { SystemClock.elapsedRealtimeNanos() - it.elapsedRealtimeNanos }
+        val location = if (age != null && age < RECENT_FIX_NANOS) lastKnown else freshLocation(manager) ?: lastKnown
+        location?.let { last = Coordinates(it.latitude, it.longitude) }
+        return last
+    }
+
+    /** One fix from the quickest enabled provider: fused (wifi and cell) first, GPS last. */
+    @SuppressLint("MissingPermission")
+    private suspend fun freshLocation(manager: LocationManager): Location? {
+        val provider = PROVIDERS.firstOrNull { runCatching { manager.isProviderEnabled(it) }.getOrDefault(false) } ?: return null
+        return withTimeoutOrNull(FIX_TIMEOUT_MS) {
+            suspendCancellableCoroutine { cont ->
+                val signal = androidx.core.os.CancellationSignal()
+                cont.invokeOnCancellation { signal.cancel() }
+                try {
+                    LocationManagerCompat.getCurrentLocation(manager, provider, signal, executor) { location ->
                         if (cont.isActive) cont.resume(location)
                     }
+                } catch (_: SecurityException) {
+                    // GPS needs the fine permission before Android 12
+                    if (cont.isActive) cont.resume(null)
                 }
             }
         }
-        val location = fresh ?: manager.getProviders(true)
-            .mapNotNull { runCatching { manager.getLastKnownLocation(it) }.getOrNull() }
-            .maxByOrNull { it.time }
-        location?.let { last = Coordinates(it.latitude, it.longitude) }
-        return last
+    }
+
+    private companion object {
+        val PROVIDERS = listOf(LocationManager.FUSED_PROVIDER, LocationManager.NETWORK_PROVIDER, LocationManager.GPS_PROVIDER)
+        const val RECENT_FIX_NANOS = 2 * 60 * 1_000_000_000L
+        const val FIX_TIMEOUT_MS = 8_000L
     }
 }

@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -49,6 +53,17 @@ data class MapUiState(
     val settings: UserSettings = UserSettings(),
     val now: ZonedDateTime = ZonedDateTime.now(),
 )
+
+data class MyLocationState(
+    val position: Coordinates? = null,
+    val locating: Boolean = false,
+)
+
+sealed interface LocateResult {
+    data class Found(val position: Coordinates) : LocateResult
+
+    data object Failed : LocateResult
+}
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -174,7 +189,36 @@ class MapViewModel @Inject constructor(
 
     fun hasLocationPermission(): Boolean = locationRepository.hasPermission()
 
-    suspend fun currentLocation(): Coordinates? = locationRepository.currentLocation()
+    private val _myLocation = MutableStateFlow(MyLocationState())
+
+    /** Where the user was last found (the blue dot) and whether a search is running. */
+    val myLocation: StateFlow<MyLocationState> = _myLocation
+
+    private val locateResultsChannel = Channel<LocateResult>(Channel.CONFLATED)
+
+    /** One result per [locate] that ran to the end; a cancelled search sends none. */
+    val locateResults: Flow<LocateResult> = locateResultsChannel.receiveAsFlow()
+
+    private var locateJob: Job? = null
+
+    /** Find the user. Presses while a search is running join it instead of queueing another. */
+    fun locate() {
+        if (locateJob?.isActive == true) return
+        _myLocation.update { it.copy(locating = true) }
+        locateJob = viewModelScope.launch {
+            val found = locationRepository.currentLocation()
+            _myLocation.update { MyLocationState(position = found ?: it.position, locating = false) }
+            locateResultsChannel.send(if (found != null) LocateResult.Found(found) else LocateResult.Failed)
+        }
+    }
+
+    /** Drop a running search, so a fix arriving later never moves a map the user has left. */
+    fun cancelLocate() {
+        locateJob?.cancel()
+        locateJob = null
+        locateResultsChannel.tryReceive()
+        _myLocation.update { it.copy(locating = false) }
+    }
 
     private companion object {
         const val REFRESH_PERIOD_MS = 60_000L

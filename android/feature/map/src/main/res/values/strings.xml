@@ -18,7 +18,8 @@
     <string name="map_zoom_in">Zoom in</string>
     <string name="map_zoom_out">Zoom out</string>
     <string name="map_no_favourites">No favourites with a location yet</string>
-    <string name="map_location_unavailable">Location unavailable</string>
+    <string name="map_location_unavailable">Could not find your location</string>
+    <string name="map_locating">Finding your location…</string>
     <string name="map_wind_field">Wind field</string>
     <string name="map_spots_layer">Spots</string>
     <string name="map_satellite">Satellite</string>

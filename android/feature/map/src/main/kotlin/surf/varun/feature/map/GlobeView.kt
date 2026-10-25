@@ -50,6 +50,7 @@ import surf.varun.core.designsystem.theme.VarunTheme
 import surf.varun.core.designsystem.theme.WindColors
 import surf.varun.core.domain.WindClass
 import surf.varun.core.domain.WindField
+import surf.varun.core.model.Coordinates
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -80,6 +81,8 @@ internal fun GlobeView(
     features: List<MapSpotFeature>,
     samples: List<WindSample>,
     selectedWgId: Int?,
+    /** The blue dot where the user was found. */
+    myLocation: Coordinates?,
     windVisible: Boolean,
     markersVisible: Boolean,
     particleMode: ParticleMode,
@@ -118,6 +121,7 @@ internal fun GlobeView(
             features = features,
             samples = samples,
             selectedWgId = selectedWgId,
+            myLocation = myLocation,
             windVisible = windVisible,
             markersVisible = markersVisible,
             particleMode = particleMode,
@@ -286,6 +290,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private var samples: List<GlobeSample> = emptyList()
     private var sampleSource: List<WindSample>? = null
     private var selectedWgId: Int? = null
+    private var myLocation: Coordinates? = null
     private var windVisible = true
     private var markersVisible = true
     private var particleMode = ParticleMode.ANIMATED
@@ -303,6 +308,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         features: List<MapSpotFeature>,
         samples: List<WindSample>,
         selectedWgId: Int?,
+        myLocation: Coordinates?,
         windVisible: Boolean,
         markersVisible: Boolean,
         particleMode: ParticleMode,
@@ -330,9 +336,10 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
             clearTrails = true
             changed = true
         }
-        if (selectedWgId != this.selectedWgId || markersVisible != this.markersVisible) {
+        if (selectedWgId != this.selectedWgId || markersVisible != this.markersVisible || myLocation != this.myLocation) {
             this.selectedWgId = selectedWgId
             this.markersVisible = markersVisible
+            this.myLocation = myLocation
             changed = true
         }
         if (windVisible != this.windVisible || particleMode != this.particleMode || particleScale != this.particleScale) {
@@ -661,9 +668,22 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
 
     private val placed = ArrayList<Placed>()
 
+    /** The blue dot on screen (dp); a zero alpha when the user is round the back of the globe. */
+    private var meX = 0f
+    private var meY = 0f
+    private var meAlpha = 0f
+
     private fun layoutMarkers(p: GlobeProjection) {
         placed.clear()
         targets.clear()
+        meAlpha = 0f
+        myLocation?.let { me ->
+            if (p.project(me.lat, me.lon, point) && p.onScreen(point[0], point[1], widthDp, heightDp, 40.0)) {
+                meX = point[0].toFloat()
+                meY = point[1].toFloat()
+                meAlpha = (point[2] * 4).coerceIn(0.0, 1.0).toFloat()
+            }
+        }
         if (!markersVisible) return
         for (cluster in clusters) {
             if (!p.project(cluster.lat, cluster.lon, point) || !p.onScreen(point[0], point[1], widthDp, heightDp, 40.0)) continue
@@ -781,7 +801,21 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         canvas.save()
         canvas.scale(density, density)
         for (marker in placed) drawMarker(canvas, marker)
+        if (meAlpha > 0f) drawMyLocation(canvas)
         canvas.restore()
+    }
+
+    /** The map's blue dot (MapController's my-location layers): a soft halo, a white rim, the dot. */
+    private fun drawMyLocation(canvas: Canvas) {
+        val alpha = (meAlpha * 255).toInt()
+        markerFill.color = MapController.MY_LOCATION_BLUE
+        markerFill.alpha = (0.2f * alpha).toInt()
+        canvas.drawCircle(meX, meY, MapController.MY_LOCATION_HALO_RADIUS, markerFill)
+        markerFill.alpha = alpha
+        canvas.drawCircle(meX, meY, MapController.MY_LOCATION_RADIUS, markerFill)
+        markerRim.strokeWidth = 2.5f
+        markerRim.alpha = alpha
+        canvas.drawCircle(meX, meY, MapController.MY_LOCATION_RADIUS, markerRim)
     }
 
     /** The map's markers: a wind-coloured dot with the knots in it, or a bubble with the count. */
