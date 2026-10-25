@@ -57,6 +57,12 @@
     <string name="icm_modal_hint">Reading the ICM meteogram costs an AI call, so the forecast is generated on request and stays valid for 24 hours. It will appear in the forecast model list. To just look at the meteogram itself, use the ICM meteogram link below - that costs nothing.</string>
     <string name="icm_ready">ICM forecast selected</string>
     <string name="icm_show">Show ICM forecast</string>
+    <string name="ai_report">Report analysis</string>
+    <string name="ai_report_subject">Report: AI analysis for %1$s</string>
+    <string name="ai_report_body">What is wrong with this analysis?\n\n\n---\nSpot: %1$s (%2$s)\nGenerated: %3$s\n\n%4$s</string>
+    <string name="icm_report">Report ICM forecast</string>
+    <string name="icm_report_subject">Report: ICM forecast for %1$s</string>
+    <string name="icm_report_body">What is wrong with this ICM forecast?\n\n\n---\nSpot: %1$s (%2$s)</string>
     <string name="icm_available">The ICM forecast is ready - pick it in the model list.</string>
     <string name="cancel">Cancel</string>
     <string name="generate">Generate</string>

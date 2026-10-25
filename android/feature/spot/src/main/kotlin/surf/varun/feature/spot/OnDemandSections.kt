@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.OutlinedFlag
 import androidx.compose.material.icons.rounded.ShowChart
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledTonalButton
@@ -26,7 +27,9 @@ import androidx.compose.ui.unit.dp
 import surf.varun.core.data.repository.OnDemandState
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.model.ForecastModelOption
+import surf.varun.core.model.Spot
 import surf.varun.core.ui.Format
+import surf.varun.core.ui.Intents
 import surf.varun.core.ui.localizedAnalysis
 
 /** Section 3: the AI analysis, or the button that pays for one (spec 5.3.3, 6.5). */
@@ -57,6 +60,12 @@ internal fun AiSection(state: SpotUiState, actions: SpotActions) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            val generatedAt = text.createdAt?.let { Format.instant(context, it) } ?: "-"
+            ReportButton(
+                label = stringResource(R.string.ai_report),
+                subject = stringResource(R.string.ai_report_subject, spot.name),
+                body = stringResource(R.string.ai_report_body, spot.name, spotUrl(spot), generatedAt, text.text),
+            )
         } else {
             PaidButton(
                 state = state.analysisState,
@@ -85,6 +94,11 @@ internal fun IcmSection(state: SpotUiState, actions: SpotActions) {
                     Text(stringResource(R.string.icm_show))
                 }
             }
+            ReportButton(
+                label = stringResource(R.string.icm_report),
+                subject = stringResource(R.string.icm_report_subject, spot.name),
+                body = stringResource(R.string.icm_report_body, spot.name, spotUrl(spot)),
+            )
         } else {
             PaidButton(
                 state = state.icmState,
@@ -95,6 +109,22 @@ internal fun IcmSection(state: SpotUiState, actions: SpotActions) {
                 onClick = actions.requestIcm,
             )
         }
+    }
+}
+
+private fun spotUrl(spot: Spot) = Intents.spotWebUrl(spot.wgId)
+
+/**
+ * Flags model output that is wrong or offensive, without leaving the app for anything but the
+ * user's mail app - Play's AI-generated content policy asks for an in-app way to report it.
+ */
+@Composable
+private fun ReportButton(label: String, subject: String, body: String) {
+    val context = LocalContext.current
+    TextButton(onClick = { Intents.email(context, subject, body) }) {
+        Icon(Icons.Rounded.OutlinedFlag, null, Modifier.size(18.dp))
+        Spacer(Modifier.size(8.dp))
+        Text(label)
     }
 }
 

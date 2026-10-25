@@ -9,9 +9,10 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import surf.varun.core.model.Spot
 
-/** Links out of the app: Custom Tabs, maps, the share sheet. */
+/** Links out of the app: Custom Tabs, maps, the share sheet, email. */
 object Intents {
     const val WEB_BASE = "https://varun.surf"
+    const val CONTACT_EMAIL = "hello@varun.surf"
 
     fun spotWebUrl(wgId: Int) = "$WEB_BASE/spot/$wgId"
 
@@ -41,6 +42,26 @@ object Intents {
         } catch (_: ActivityNotFoundException) {
             spot.links.location?.let { openUrl(context, it) }
                 ?: Toast.makeText(context, R.string.no_maps_app, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * A prefilled email to [CONTACT_EMAIL], sent by the user's own mail app. Reporting AI output
+     * this way keeps the app from collecting anything itself (Play's AI-generated content policy).
+     * Subject and body ride in the mailto: URI as well as the extras, since mail apps honour
+     * one or the other.
+     */
+    fun email(context: Context, subject: String, body: String) {
+        val uri = "mailto:$CONTACT_EMAIL?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}".toUri()
+        val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(CONTACT_EMAIL))
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+            putExtra(Intent.EXTRA_TEXT, body)
+        }
+        try {
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (_: ActivityNotFoundException) {
+            Toast.makeText(context, context.getString(R.string.no_email_app, CONTACT_EMAIL), Toast.LENGTH_LONG).show()
         }
     }
 

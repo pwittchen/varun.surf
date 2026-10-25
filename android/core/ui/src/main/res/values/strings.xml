@@ -49,6 +49,7 @@
     <string name="share_text_conditions">%1$s %2$s %3$s, gusts %4$s</string>
     <string name="no_maps_app">No maps app installed</string>
     <string name="no_browser">No app can open this link</string>
+    <string name="no_email_app">No email app installed. Write to %1$s</string>
 
     <string name="spot_card_description">%1$s, %2$s, %3$s</string>
     <string name="conditions_description">%1$s %2$s gusting %3$s, %4$s</string>

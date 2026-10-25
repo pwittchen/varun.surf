@@ -55,6 +55,7 @@
     <string name="share_text_conditions">%1$s %2$s %3$s, porywy %4$s</string>
     <string name="no_maps_app">Brak aplikacji z mapami</string>
     <string name="no_browser">Żadna aplikacja nie otworzy tego linku</string>
+    <string name="no_email_app">Brak aplikacji pocztowej. Napisz na %1$s</string>
 
     <string name="spot_card_description">%1$s, %2$s, %3$s</string>
     <string name="conditions_description">%1$s %2$s w porywach %3$s, %4$s</string>
