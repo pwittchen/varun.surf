@@ -46,6 +46,7 @@ object Licences {
         Link("MapLibre Native", "https://github.com/maplibre/maplibre-native", "BSD 2-Clause"),
         Link("OpenFreeMap", "https://openfreemap.org", "MIT / ODbL map data"),
         Link("OpenStreetMap data", "https://www.openstreetmap.org/copyright", "ODbL 1.0"),
+        Link("World Atlas TopoJSON (globe outlines)", "https://github.com/topojson/world-atlas", "ISC, Natural Earth public domain data"),
         Link("Timber", "https://github.com/JakeWharton/timber", "Apache License 2.0"),
         Link("Material Symbols", "https://fonts.google.com/icons", "Apache License 2.0"),
     )

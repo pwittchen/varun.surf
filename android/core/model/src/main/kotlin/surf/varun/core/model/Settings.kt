@@ -32,4 +32,8 @@ data class UserSettings(
     val mapWindField: Boolean = true,
     val mapMarkers: Boolean = true,
     val mapSatellite: Boolean = true,
+    /** The map tab shows the spots on a rotating globe instead of the flat map. */
+    val mapGlobe: Boolean = false,
+    /** The globe's idle spin. */
+    val mapGlobeSpin: Boolean = true,
 )

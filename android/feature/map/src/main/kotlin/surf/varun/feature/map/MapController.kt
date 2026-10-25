@@ -288,13 +288,13 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         )
 
         /** Marker geometry in dp (MapLibre circle radii and translations are in dp). */
-        private const val DOT_RADIUS = 13f
-        private const val EMPTY_DOT_RADIUS = 5f
+        const val DOT_RADIUS = 13f
+        const val EMPTY_DOT_RADIUS = 5f
 
         /** Bubble radius from this many spots on: the web's 32/38/44/50 px diameters. */
         private val CLUSTER_SIZE_STEPS = listOf(5 to 19f, 10 to 22f, 25 to 25f)
 
-        private fun clusterRadiusDp(count: Int): Float =
+        internal fun clusterRadiusDp(count: Int): Float =
             CLUSTER_SIZE_STEPS.lastOrNull { (from, _) -> count >= from }?.second ?: 16f
 
         private const val RIM = 0xFFFFFFFF.toInt()

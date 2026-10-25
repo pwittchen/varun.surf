@@ -68,6 +68,13 @@ benchmark/           baseline profile generator and startup/scroll macrobenchmar
 
 - **Maps**: MapLibre Native SDK in an `AndroidView` instead of `maplibre-compose` - the wind field
   overlay needs the raw projection every frame.
+- **Globe view**: built after all (the spec dropped it). A globe button on the map swaps MapLibre
+  for a Compose Canvas port of the web's `common/globe.js` (`feature/map/Globe*.kt`): orthographic
+  projection, land clipped at the horizon, wind wash and particles, clusters, drag/pinch/fling and
+  an idle spin (layers menu; off under battery saver and reduced motion). MapLibre Native has no
+  globe projection. Coastlines are world-atlas 1:110m and 1:50m (the outlines the web loads),
+  shipped in `assets/globe/` - regenerate with `feature/map/tools/globe_outlines.py`. The choice is
+  kept in settings (`mapGlobe`, `mapGlobeSpin`).
 - **Basemaps**: only free, keyless sources - Esri World Imagery satellite (the default, same tiles as
   the web map) and the OpenFreeMap "liberty" map; no MapTiler key and no dark basemap (spec 5.4/Q4).
 - **Charts**: drawn with Compose Canvas instead of Vico.

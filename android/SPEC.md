@@ -95,7 +95,7 @@ shape. **Drop** = not built, with the reason. **New** = mobile-only.
 | Hourly forecast timeline slider | **Keep** | Bottom slider; phone default reach 120 h (same as web phone), "full run" option in settings |
 | Popups with wind for selected hour | **Adapt** | Tap a marker → peekable `BottomSheetScaffold` with the spot summary for the selected hour; expand → full spot screen |
 | Spot side peek (desktop) | **Drop** | See above |
-| Globe view (/globe) | **Drop** | Desktop-only on the web too; heavy, decorative, and the 2D map answers the same question |
+| Globe view (/globe) | **Build** | A switch on the map tab; Canvas port of `common/globe.js` (see README deviations) |
 
 ### 2.4 Other pages
 

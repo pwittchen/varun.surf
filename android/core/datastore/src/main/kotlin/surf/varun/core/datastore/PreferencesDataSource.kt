@@ -41,6 +41,8 @@ class PreferencesDataSource @Inject constructor(
         val mapWindField = booleanPreferencesKey("map_wind_field")
         val mapMarkers = booleanPreferencesKey("map_markers")
         val mapSatellite = booleanPreferencesKey("map_satellite")
+        val mapGlobe = booleanPreferencesKey("map_globe")
+        val mapGlobeSpin = booleanPreferencesKey("map_globe_spin")
         val calcWind = doublePreferencesKey("calc_wind")
         val calcWeight = doublePreferencesKey("calc_weight")
         val calcSkill = stringPreferencesKey("calc_skill")
@@ -103,6 +105,8 @@ class PreferencesDataSource @Inject constructor(
             mapWindField = this[Keys.mapWindField] ?: defaults.mapWindField,
             mapMarkers = this[Keys.mapMarkers] ?: defaults.mapMarkers,
             mapSatellite = this[Keys.mapSatellite] ?: defaults.mapSatellite,
+            mapGlobe = this[Keys.mapGlobe] ?: defaults.mapGlobe,
+            mapGlobeSpin = this[Keys.mapGlobeSpin] ?: defaults.mapGlobeSpin,
         )
     }
 
@@ -121,6 +125,8 @@ class PreferencesDataSource @Inject constructor(
         this[Keys.mapWindField] = s.mapWindField
         this[Keys.mapMarkers] = s.mapMarkers
         this[Keys.mapSatellite] = s.mapSatellite
+        this[Keys.mapGlobe] = s.mapGlobe
+        this[Keys.mapGlobeSpin] = s.mapGlobeSpin
     }
 
     private fun <T> MutablePreferences.putOrRemove(key: Preferences.Key<T>, value: T?) {

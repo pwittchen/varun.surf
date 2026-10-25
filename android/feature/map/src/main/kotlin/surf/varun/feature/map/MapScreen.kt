@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Flag
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.icons.rounded.Public
@@ -49,6 +50,7 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -75,6 +77,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.maplibre.android.maps.Style
 import surf.varun.core.designsystem.theme.VarunTheme
+import surf.varun.core.model.Coordinates
 import surf.varun.core.model.Direction
 import surf.varun.core.model.ParticleQuality
 import surf.varun.core.navigation.LocalNavigator
@@ -95,6 +98,14 @@ private val cameraSaver = listSaver<SavedCamera, Double>(
     save = { listOf(it.lat, it.lon, it.zoom) },
     restore = { SavedCamera(it[0], it[1], it[2]) },
 )
+
+private val globeCameraSaver = listSaver<GlobeCamera, Double>(
+    save = { listOf(it.lat, it.lon, it.leafletZoom) },
+    restore = { GlobeCamera(it[0], it[1], it[2]) },
+)
+
+/** A MapLibre zoom `z` is Leaflet zoom `z + 1`, which is what the globe's zoom is kept in. */
+private const val GLOBE_ZOOM_OFFSET = 1.0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,6 +131,50 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     var focused by rememberSaveable { mutableStateOf(false) }
     val powerSave = rememberPowerSaveMode()
 
+    // The globe takes over from the map while it is on; the map's camera is handed
+    // across both ways, so switching keeps looking at the same place
+    val globe = state.settings.mapGlobe
+    val globeCamera = rememberSaveable(saver = globeCameraSaver) {
+        GlobeCamera(camera.lat, camera.lon, camera.zoom + GLOBE_ZOOM_OFFSET).apply { introPending = true }
+    }
+    SideEffect { globeCamera.reduceMotion = reduceMotion }
+    LaunchedEffect(globe) { if (globe) controller = null }
+
+    fun centreOn(coordinates: Coordinates, zoom: Double = MapController.FOCUS_ZOOM) {
+        if (globe) {
+            globeCamera.introPending = false
+            globeCamera.centreOn(coordinates.lat, coordinates.lon, zoom + GLOBE_ZOOM_OFFSET, System.nanoTime() / 1_000_000)
+        } else {
+            controller?.centreOn(coordinates, zoom)
+        }
+    }
+
+    fun fit(points: List<Coordinates>) {
+        if (globe) {
+            globeCamera.introPending = false
+            globeCamera.fit(
+                points.map { it.lat to it.lon },
+                GlobeCamera.FILTER_FIT_PADDING,
+                GlobeCamera.FILTER_FIT_MAX_ZOOM,
+                System.nanoTime() / 1_000_000,
+            )
+        } else {
+            controller?.fit(points, with(density) { 64.dp.roundToPx() })
+        }
+    }
+
+    fun toggleGlobe() {
+        if (globe) {
+            camera = SavedCamera(globeCamera.lat, globeCamera.lon, (globeCamera.leafletZoom - GLOBE_ZOOM_OFFSET).coerceAtLeast(0.0))
+        } else {
+            globeCamera.jumpTo(camera.lat, camera.lon, camera.zoom + GLOBE_ZOOM_OFFSET)
+            globeCamera.introPending = true
+            // The map view is about to go: nothing may reach its controller any more
+            controller = null
+        }
+        viewModel.setGlobe(!globe)
+    }
+
     // Refresh only while visible (spec 6.1)
     LaunchedEffect(lifecycle) { lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) { viewModel.keepFresh() } }
 
@@ -134,12 +189,12 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     LaunchedEffect(controller, state.settings.mapMarkers) { controller?.setMarkersVisible(state.settings.mapMarkers) }
 
     // A MapRoute(focusWgId) centres and opens that spot once
-    LaunchedEffect(controller, route.focusWgId, state.allSpots) {
+    LaunchedEffect(controller, globe, state.loading, route.focusWgId, state.allSpots) {
         val id = route.focusWgId ?: return@LaunchedEffect
-        val map = controller ?: return@LaunchedEffect
+        if (state.loading || (!globe && controller == null)) return@LaunchedEffect
         if (focused) return@LaunchedEffect
         val spot = state.allSpots.firstOrNull { it.wgId == id } ?: return@LaunchedEffect
-        spot.coordinates?.let { map.centreOn(it) }
+        spot.coordinates?.let { centreOn(it) }
         viewModel.select(id)
         focused = true
     }
@@ -158,7 +213,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     }
 
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) scope.launch { centreOnMe(viewModel, controller, snackbar, context) }
+        if (granted) scope.launch { centreOnMe(viewModel, snackbar, context) { centreOn(it, zoom = 8.0) } }
     }
 
     val sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.PartiallyExpanded, skipHiddenState = true)
@@ -212,48 +267,69 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
             },
         ) {
             Box(Modifier.fillMaxSize()) {
-                MapLibreView(
-                    initialCamera = camera,
-                    onReady = { controller = it },
-                    onCameraMoveStarted = { moving = true },
-                    onCameraIdle = {
-                        camera = it
-                        moving = false
-                        cameraVersion++
-                    },
-                    onTap = { point -> viewModel.select(controller?.handleTap(point)) },
-                    attributionMarginBottomPx = with(density) { (PEEK_HEIGHT + 8.dp).roundToPx() },
-                    modifier = Modifier.fillMaxSize(),
-                )
+                val samples = remember(state.features) {
+                    state.features.mapNotNull { f ->
+                        f.wind?.let { WindSample(f.lat, f.lon, it.toDouble(), Direction.fromIndex(f.dirIndex)) }
+                    }
+                }
+                val quality = state.settings.particleQuality
+                val mode = when {
+                    quality == ParticleQuality.OFF -> ParticleMode.OFF
+                    // Battery saver turns the particles off unless the user forced them (spec 6.4)
+                    powerSave && quality != ParticleQuality.HIGH -> ParticleMode.OFF
+                    reduceMotion -> ParticleMode.STATIC
+                    else -> ParticleMode.ANIMATED
+                }
+                val scale = when (quality) {
+                    ParticleQuality.LOW -> 0.4f
+                    ParticleQuality.HIGH -> 1f
+                    else -> 0.75f
+                }
 
-                if (state.settings.mapWindField) {
-                    val samples = remember(state.features) {
-                        state.features.mapNotNull { f ->
-                            f.wind?.let { WindSample(f.lat, f.lon, it.toDouble(), Direction.fromIndex(f.dirIndex)) }
-                        }
-                    }
-                    val quality = state.settings.particleQuality
-                    val mode = when {
-                        quality == ParticleQuality.OFF -> ParticleMode.OFF
-                        // Battery saver turns the particles off unless the user forced them (spec 6.4)
-                        powerSave && quality != ParticleQuality.HIGH -> ParticleMode.OFF
-                        reduceMotion -> ParticleMode.STATIC
-                        else -> ParticleMode.ANIMATED
-                    }
-                    val scale = when (quality) {
-                        ParticleQuality.LOW -> 0.4f
-                        ParticleQuality.HIGH -> 1f
-                        else -> 0.75f
-                    }
-                    WindFieldOverlay(
-                        controller = controller,
+                if (state.loading) {
+                    // Settings not read yet: neither the map nor the globe until it's known which one
+                } else if (globe) {
+                    GlobeView(
+                        camera = globeCamera,
+                        features = state.features,
                         samples = samples,
-                        cameraVersion = cameraVersion,
-                        moving = moving,
+                        selectedWgId = selected?.wgId,
+                        windVisible = state.settings.mapWindField,
+                        markersVisible = state.settings.mapMarkers,
                         particleMode = mode,
                         particleScale = scale,
+                        // Battery saver and reduced motion keep the globe still
+                        spin = state.settings.mapGlobeSpin && !powerSave && !reduceMotion,
+                        bottomInset = PEEK_HEIGHT,
+                        onSelect = viewModel::select,
                         modifier = Modifier.fillMaxSize(),
                     )
+                } else {
+                    MapLibreView(
+                        initialCamera = camera,
+                        onReady = { controller = it },
+                        onCameraMoveStarted = { moving = true },
+                        onCameraIdle = {
+                            camera = it
+                            moving = false
+                            cameraVersion++
+                        },
+                        onTap = { point -> viewModel.select(controller?.handleTap(point)) },
+                        attributionMarginBottomPx = with(density) { (PEEK_HEIGHT + 8.dp).roundToPx() },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+
+                    if (state.settings.mapWindField) {
+                        WindFieldOverlay(
+                            controller = controller,
+                            samples = samples,
+                            cameraVersion = cameraVersion,
+                            moving = moving,
+                            particleMode = mode,
+                            particleScale = scale,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
 
                 if (state.settings.mapWindField) {
@@ -269,6 +345,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 MapControls(
                     state = state,
                     showLayers = showLayers,
+                    globe = globe,
                     onSearch = { showSearch = true },
                     onCountry = { showCountries = true },
                     onFavourites = {
@@ -278,21 +355,24 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             points.isEmpty() -> scope.launch { snackbar.showSnackbar(noFavourites) }
                             else -> {
                                 viewModel.toggleFavouritesOnly()
-                                controller?.fit(points, with(density) { 64.dp.roundToPx() })
+                                fit(points)
                             }
                         }
                     },
                     onLive = viewModel::toggleLiveOnly,
+                    onGlobe = ::toggleGlobe,
                     onLayers = { showLayers = it },
                     onMyLocation = {
                         if (viewModel.hasLocationPermission()) {
-                            scope.launch { centreOnMe(viewModel, controller, snackbar, context) }
+                            scope.launch { centreOnMe(viewModel, snackbar, context) { centreOn(it, zoom = 8.0) } }
                         } else {
                             // Asked here, at the moment it is needed - never on launch
                             locationPermission.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                         }
                     },
-                    onZoom = { controller?.zoomBy(it) },
+                    onZoom = {
+                        if (globe) globeCamera.zoomBy(it, System.nanoTime() / 1_000_000) else controller?.zoomBy(it)
+                    },
                     viewModel = viewModel,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -337,7 +417,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 showSearch = false
                 // Deep enough that the spot stands on its own rather than in a
                 // cluster, but never zoomed back out from a closer look
-                spot.coordinates?.let { controller?.centreOn(it, zoom = maxOf(camera.zoom, MapController.FOCUS_ZOOM)) }
+                spot.coordinates?.let { centreOn(it, zoom = maxOf(camera.zoom, MapController.FOCUS_ZOOM)) }
                 viewModel.select(spot.wgId)
             },
             onDismiss = { showSearch = false },
@@ -352,7 +432,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 viewModel.setCountry(it)
                 showCountries = false
                 val points = state.allSpots.filter { spot -> it == null || spot.country == it }.mapNotNull { spot -> spot.coordinates }
-                if (it != null) controller?.fit(points, with(density) { 64.dp.roundToPx() })
+                if (it != null) fit(points)
             },
             onDismiss = { showCountries = false },
         )
@@ -361,31 +441,33 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
 
 private suspend fun centreOnMe(
     viewModel: MapViewModel,
-    controller: MapController?,
     snackbar: SnackbarHostState,
     context: Context,
+    centreOn: (Coordinates) -> Unit,
 ) {
     val location = viewModel.currentLocation()
     if (location == null) {
         snackbar.showSnackbar(context.getString(R.string.map_location_unavailable))
     } else {
-        controller?.centreOn(location, zoom = 8.0)
+        centreOn(location)
     }
 }
 
 /**
  * Every map control in one column on the right: filters (search, country,
- * favourites, live stations), then layers and location, then zoom. Filters that
- * are on are filled with the accent colour.
+ * favourites, live stations), then the globe switch, layers and location, then
+ * zoom. Filters that are on (and the globe) are filled with the accent colour.
  */
 @Composable
 private fun MapControls(
     state: MapUiState,
     showLayers: Boolean,
+    globe: Boolean,
     onSearch: () -> Unit,
     onCountry: () -> Unit,
     onFavourites: () -> Unit,
     onLive: () -> Unit,
+    onGlobe: () -> Unit,
     onLayers: (Boolean) -> Unit,
     onMyLocation: () -> Unit,
     onZoom: (Double) -> Unit,
@@ -395,7 +477,7 @@ private fun MapControls(
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ControlButton(Icons.Rounded.Search, stringResource(R.string.map_search), onSearch)
         ControlButton(
-            Icons.Rounded.Public,
+            Icons.Rounded.Flag,
             state.filters.country?.let { countryName(it) } ?: stringResource(R.string.map_filter_country_all),
             onCountry,
             active = state.filters.country != null,
@@ -409,17 +491,21 @@ private fun MapControls(
         ControlButton(Icons.Rounded.Sensors, stringResource(R.string.map_filter_live), onLive, active = state.filters.liveOnly)
 
         Spacer(Modifier.height(8.dp))
+        ControlButton(Icons.Rounded.Public, stringResource(R.string.map_globe), onGlobe, active = globe)
         Box {
             ControlButton(Icons.Rounded.Layers, stringResource(R.string.map_layers), { onLayers(true) })
             LayersMenu(
                 expanded = showLayers,
+                globe = globe,
                 windField = state.settings.mapWindField,
                 markers = state.settings.mapMarkers,
                 satellite = state.settings.mapSatellite,
+                spin = state.settings.mapGlobeSpin,
                 onDismiss = { onLayers(false) },
                 onWindField = viewModel::setWindField,
                 onMarkers = viewModel::setMarkers,
                 onSatellite = viewModel::setSatellite,
+                onSpin = viewModel::setGlobeSpin,
             )
         }
         ControlButton(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location), onMyLocation)
@@ -444,21 +530,29 @@ private fun ControlButton(icon: ImageVector, description: String, onClick: () ->
     }
 }
 
+/** Layers; the globe has no basemap to switch, so it offers its idle spin instead of satellite. */
 @Composable
 private fun LayersMenu(
     expanded: Boolean,
+    globe: Boolean,
     windField: Boolean,
     markers: Boolean,
     satellite: Boolean,
+    spin: Boolean,
     onDismiss: () -> Unit,
     onWindField: (Boolean) -> Unit,
     onMarkers: (Boolean) -> Unit,
     onSatellite: (Boolean) -> Unit,
+    onSpin: (Boolean) -> Unit,
 ) {
     DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
         CheckItem(stringResource(R.string.map_wind_field), windField) { onWindField(!windField) }
         CheckItem(stringResource(R.string.map_spots_layer), markers) { onMarkers(!markers) }
-        CheckItem(stringResource(R.string.map_satellite), satellite) { onSatellite(!satellite) }
+        if (globe) {
+            CheckItem(stringResource(R.string.map_globe_spin), spin) { onSpin(!spin) }
+        } else {
+            CheckItem(stringResource(R.string.map_satellite), satellite) { onSatellite(!satellite) }
+        }
     }
 }
 

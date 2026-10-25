@@ -164,6 +164,10 @@ class MapViewModel @Inject constructor(
 
     fun setSatellite(enabled: Boolean) = updateSettings { it.copy(mapSatellite = enabled) }
 
+    fun setGlobe(enabled: Boolean) = updateSettings { it.copy(mapGlobe = enabled) }
+
+    fun setGlobeSpin(enabled: Boolean) = updateSettings { it.copy(mapGlobeSpin = enabled) }
+
     private fun updateSettings(transform: (UserSettings) -> UserSettings) {
         viewModelScope.launch { settingsRepository.update(transform) }
     }
