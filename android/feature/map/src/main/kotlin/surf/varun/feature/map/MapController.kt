@@ -17,7 +17,6 @@ import org.maplibre.android.style.expressions.Expression.all
 import org.maplibre.android.style.expressions.Expression.coalesce
 import org.maplibre.android.style.expressions.Expression.color
 import org.maplibre.android.style.expressions.Expression.get
-import org.maplibre.android.style.expressions.Expression.gte
 import org.maplibre.android.style.expressions.Expression.has
 import org.maplibre.android.style.expressions.Expression.literal
 import org.maplibre.android.style.expressions.Expression.match
@@ -41,7 +40,6 @@ import org.maplibre.android.style.layers.PropertyFactory.textField
 import org.maplibre.android.style.layers.PropertyFactory.textFont
 import org.maplibre.android.style.layers.PropertyFactory.textIgnorePlacement
 import org.maplibre.android.style.layers.PropertyFactory.textSize
-import org.maplibre.android.style.layers.PropertyFactory.textTranslate
 import org.maplibre.android.style.layers.PropertyFactory.visibility
 import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonOptions
@@ -190,6 +188,12 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         val isSpot = not(isCluster)
         val hasWind = has(SpotProps.WIND)
         val dotRadius = switchCase(hasWind, literal(DOT_RADIUS), literal(EMPTY_DOT_RADIUS))
+        // Grows with the number of spots like the web bubble (map.js clusterBubbleSize)
+        val clusterRadius = step(
+            get("point_count"),
+            literal(clusterRadiusDp(0)),
+            *CLUSTER_SIZE_STEPS.map { (count, radius) -> stop(count, radius) }.toTypedArray(),
+        )
 
         // A soft shadow under every marker lifts it off the basemap and the wind wash
         style.addLayer(
@@ -197,7 +201,7 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
                 circleColor(0xFF000000.toInt()),
                 circleOpacity(0.35f),
                 circleBlur(0.6f),
-                circleRadius(switchCase(isCluster, literal(CLUSTER_RADIUS_DP + 3f), switchCase(hasWind, literal(DOT_RADIUS + 3f), literal(EMPTY_DOT_RADIUS + 2f)))),
+                circleRadius(switchCase(isCluster, Expression.sum(clusterRadius, literal(3f)), switchCase(hasWind, literal(DOT_RADIUS + 3f), literal(EMPTY_DOT_RADIUS + 2f)))),
                 circleTranslate(arrayOf(0f, 1.5f)),
             ),
         )
@@ -206,51 +210,20 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
                 .withFilter(isCluster)
                 .withProperties(
                     circleColor(clusterFill),
-                    circleRadius(CLUSTER_RADIUS_DP),
+                    circleRadius(clusterRadius),
                     circleStrokeColor(RIM),
                     circleStrokeWidth(2f),
                 ),
         )
-        // The strongest wind of the cluster in the middle, its size on a badge
+        // One bubble with the number of spots inside, as on the web; the fill keeps the wind
         style.addLayer(
             SymbolLayer(LAYER_CLUSTER_LABELS, SOURCE)
                 .withFilter(isCluster)
                 .withProperties(
-                    textField(
-                        switchCase(
-                            gte(get(SpotProps.MAX_WIND), literal(0)),
-                            exprToString(get(SpotProps.MAX_WIND)),
-                            exprToString(get("point_count")),
-                        ),
-                    ),
-                    textFont(arrayOf(MapStyles.FONT_BOLD)),
-                    textSize(14f),
-                    textColor(clusterText),
-                    textAllowOverlap(true),
-                    textIgnorePlacement(true),
-                ),
-        )
-        val hasBadge = all(isCluster, gte(get(SpotProps.MAX_WIND), literal(0)))
-        style.addLayer(
-            CircleLayer(LAYER_CLUSTER_BADGES, SOURCE)
-                .withFilter(hasBadge)
-                .withProperties(
-                    circleColor(BADGE),
-                    circleRadius(BADGE_RADIUS),
-                    circleStrokeColor(RIM),
-                    circleStrokeWidth(1.5f),
-                    circleTranslate(arrayOf(BADGE_OFFSET, -BADGE_OFFSET)),
-                ),
-        )
-        style.addLayer(
-            SymbolLayer(LAYER_CLUSTER_COUNTS, SOURCE)
-                .withFilter(hasBadge)
-                .withProperties(
                     textField(exprToString(get("point_count"))),
                     textFont(arrayOf(MapStyles.FONT_BOLD)),
-                    textSize(10f),
-                    textColor(LIGHT_TEXT),
-                    textTranslate(arrayOf(BADGE_OFFSET, -BADGE_OFFSET)),
+                    textSize(13f),
+                    textColor(clusterText),
                     textAllowOverlap(true),
                     textIgnorePlacement(true),
                 ),
@@ -289,22 +262,17 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         if (!markersVisible) return emptyList()
         val density = context.resources.displayMetrics.density
         val features = map.queryRenderedFeatures(RectF(0f, 0f, width, height), LAYER_CLUSTERS, LAYER_DOTS)
-        return features.flatMap { feature ->
-            val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@flatMap emptyList()
+        return features.mapNotNull { feature ->
+            val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@mapNotNull null
             val centre = project(point.latitude(), point.longitude())
-            val cluster = feature.hasProperty("point_count")
+            val count = feature.getNumberProperty("point_count")?.toInt()
             val wind = feature.hasProperty(SpotProps.WIND)
             val radius = when {
-                cluster -> CLUSTER_RADIUS_DP + 3f
+                count != null -> clusterRadiusDp(count) + 3f
                 wind -> DOT_RADIUS + 3f
                 else -> EMPTY_DOT_RADIUS + 2f
             } * density
-            buildList {
-                add(MarkerHole(centre.x, centre.y, radius))
-                if (cluster && feature.getNumberProperty(SpotProps.MAX_WIND)?.toDouble()?.let { it >= 0 } == true) {
-                    add(MarkerHole(centre.x + BADGE_OFFSET * density, centre.y - BADGE_OFFSET * density, (BADGE_RADIUS + 2f) * density))
-                }
-            }
+            MarkerHole(centre.x, centre.y, radius)
         }
     }
 
@@ -313,24 +281,23 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         const val LAYER_SHADOWS = "spot-shadows"
         const val LAYER_CLUSTERS = "spot-clusters"
         const val LAYER_CLUSTER_LABELS = "spot-cluster-labels"
-        const val LAYER_CLUSTER_BADGES = "spot-cluster-badges"
-        const val LAYER_CLUSTER_COUNTS = "spot-cluster-counts"
         const val LAYER_DOTS = "spot-dots"
         const val LAYER_LABELS = "spot-labels"
         val SPOT_LAYERS = listOf(
-            LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_CLUSTER_BADGES,
-            LAYER_CLUSTER_COUNTS, LAYER_DOTS, LAYER_LABELS,
+            LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_DOTS, LAYER_LABELS,
         )
 
         /** Marker geometry in dp (MapLibre circle radii and translations are in dp). */
-        private const val CLUSTER_RADIUS_DP = 18f
         private const val DOT_RADIUS = 13f
         private const val EMPTY_DOT_RADIUS = 5f
-        private const val BADGE_RADIUS = 9f
-        private const val BADGE_OFFSET = 15f
+
+        /** Bubble radius from this many spots on: the web's 32/38/44/50 px diameters. */
+        private val CLUSTER_SIZE_STEPS = listOf(5 to 19f, 10 to 22f, 25 to 25f)
+
+        private fun clusterRadiusDp(count: Int): Float =
+            CLUSTER_SIZE_STEPS.lastOrNull { (from, _) -> count >= from }?.second ?: 16f
 
         private const val RIM = 0xFFFFFFFF.toInt()
-        private const val BADGE = 0xFF1C1E21.toInt()
         private const val DARK_TEXT = 0xFF0B0F14.toInt()
         private const val LIGHT_TEXT = 0xFFFFFFFF.toInt()
 
