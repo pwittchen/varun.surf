@@ -21,6 +21,7 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.SearchOff
+import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -267,7 +268,12 @@ private fun FilterChips(
                     }
             }
         }
-        FilterChip(selected = state.filters.liveOnly, onClick = onLiveOnly, label = { Text(stringResource(R.string.filter_live)) })
+        // The map's live-stations icon; the text stays as its TalkBack label
+        FilterChip(
+            selected = state.filters.liveOnly,
+            onClick = onLiveOnly,
+            label = { Icon(Icons.Rounded.Sensors, contentDescription = stringResource(R.string.filter_live)) },
+        )
     }
 }
 
