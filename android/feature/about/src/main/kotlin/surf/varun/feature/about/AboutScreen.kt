@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Gavel
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.AddLocationAlt
+import androidx.compose.material.icons.rounded.Policy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -158,6 +159,11 @@ fun AboutScreen(viewModel: AboutViewModel) {
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
+                }
+                item {
+                    ActionRow(Icons.Rounded.Policy, stringResource(R.string.privacy_policy)) {
+                        Intents.openUrl(context, "${Intents.WEB_BASE}/privacy")
+                    }
                 }
                 item {
                     ListItem(

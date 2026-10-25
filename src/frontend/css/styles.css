@@ -5292,6 +5292,40 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     text-decoration: underline;
 }
 
+/* Privacy Policy */
+.privacy-text {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.privacy-text p {
+    margin: 0 0 12px 0;
+}
+
+.privacy-text ul {
+    margin: 0 0 12px 0;
+    padding-left: 20px;
+}
+
+.privacy-text li + li {
+    margin-top: 8px;
+}
+
+.privacy-text > :last-child {
+    margin-bottom: 0;
+}
+
+.privacy-text strong {
+    color: var(--text-primary);
+}
+
+.privacy-text a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 /* MCP Server Card */
 .mcp-description {
     color: var(--text-secondary);

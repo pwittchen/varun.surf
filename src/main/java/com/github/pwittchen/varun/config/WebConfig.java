@@ -135,6 +135,22 @@ public class WebConfig implements WebFluxConfigurer {
         );
     }
 
+    // Linked from the Play Store listing and the Android app, so it has to stay
+    // public and at this exact path
+    @Bean
+    public RouterFunction<ServerResponse> privacyRouter() {
+        return RouterFunctions.route(
+                GET("/privacy"),
+                _ -> {
+                    Resource privacyHtml = new ClassPathResource("static/privacy.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(privacyHtml);
+                }
+        );
+    }
+
     @Bean
     public RouterFunction<ServerResponse> metricsRouter() {
         return RouterFunctions.route(

@@ -29,6 +29,7 @@
     <string name="suggest_spot">Suggest a new kite spot</string>
     <string name="website">varun.surf on the web</string>
     <string name="section_privacy">Privacy</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="privacy_text">The app collects no personal data: no accounts, analytics, ads or crash reporting. Favourites, alerts and settings stay on this phone. Your location, when you allow it, is only used on the phone to compute distances and is never sent anywhere. The backend hands out a functional session cookie that does not identify you.</string>
     <string name="licences">Open-source licences</string>
     <string name="licences_summary">Libraries this app is built with</string>

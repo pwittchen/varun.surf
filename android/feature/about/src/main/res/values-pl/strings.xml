@@ -29,6 +29,7 @@
     <string name="suggest_spot">Zaproponuj nowy kite spot</string>
     <string name="website">varun.surf w przeglądarce</string>
     <string name="section_privacy">Prywatność</string>
+    <string name="privacy_policy">Polityka prywatności</string>
     <string name="privacy_text">Aplikacja nie zbiera danych osobowych: bez kont, analityki, reklam i raportowania awarii. Ulubione, alerty i ustawienia zostają na tym telefonie. Lokalizacja, jeśli na nią pozwolisz, służy wyłącznie do liczenia odległości na telefonie i nigdzie nie jest wysyłana. Serwer wydaje funkcjonalne ciasteczko sesji, które Cię nie identyfikuje.</string>
     <string name="licences">Licencje open source</string>
     <string name="licences_summary">Biblioteki, z których zbudowano aplikację</string>
