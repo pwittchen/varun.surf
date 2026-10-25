@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="brand_background">#FFFFFFFF</color>
     <color name="brand_icon_background">#FF0E5D70</color>
 
@@ -7,6 +7,9 @@
         <item name="android:windowBackground">@color/brand_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Just the logo on the splash: a plain drawable with no icon background, so no circle is drawn behind it -->
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/brand_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/splash_logo</item>
     </style>
 
 </resources>
