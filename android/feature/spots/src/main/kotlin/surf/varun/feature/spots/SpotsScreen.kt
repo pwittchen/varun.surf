@@ -1,7 +1,6 @@
 package surf.varun.feature.spots
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.CloudOff
@@ -52,6 +50,7 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -229,10 +228,10 @@ private fun FilterChips(
     Row(
         Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        // Never scrolled: the text chips split what the live chip leaves, filling the row, and truncate their labels
         val country = state.filters.country
         FilterChip(
             selected = country != null,
@@ -241,16 +240,20 @@ private fun FilterChips(
                 Text(
                     if (country == null) stringResource(R.string.country_all)
                     else "${Countries.of(country).flag} ${countryName(country)}".trim(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             },
+            modifier = Modifier.weight(1f),
             leadingIcon = if (country == null) ({ Icon(Icons.Rounded.Public, null) }) else null,
             trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, null) },
         )
-        Box {
+        Box(Modifier.weight(1f)) {
             FilterChip(
                 selected = state.sort != SpotSort.FIRING,
                 onClick = { sortMenu = true },
-                label = { Text(stringResource(state.sort.label())) },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(state.sort.label()), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 leadingIcon = { Icon(Icons.Rounded.Sort, contentDescription = stringResource(R.string.sort_label)) },
                 trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, null) },
             )
