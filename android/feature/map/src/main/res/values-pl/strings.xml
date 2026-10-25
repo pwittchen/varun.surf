@@ -25,6 +25,7 @@
     <string name="map_locating">Ustalam Twoją lokalizację…</string>
     <string name="map_wind_field">Pole wiatru</string>
     <string name="map_spots_layer">Spoty</string>
+    <string name="map_timeline_layer">Oś czasu wiatru</string>
     <string name="map_satellite">Satelita</string>
     <string name="map_globe">Widok globusa</string>
     <string name="map_globe_spin">Obracaj globus</string>

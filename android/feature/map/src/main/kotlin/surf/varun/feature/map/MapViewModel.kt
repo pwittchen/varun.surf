@@ -183,6 +183,12 @@ class MapViewModel @Inject constructor(
 
     fun setGlobeSpin(enabled: Boolean) = updateSettings { it.copy(mapGlobeSpin = enabled) }
 
+    /** Hidden, the timeline takes the map back to now: no hour on show without the bar that names it. */
+    fun setTimeline(enabled: Boolean) {
+        if (!enabled) step.value = 0
+        updateSettings { it.copy(mapTimeline = enabled) }
+    }
+
     private fun updateSettings(transform: (UserSettings) -> UserSettings) {
         viewModelScope.launch { settingsRepository.update(transform) }
     }

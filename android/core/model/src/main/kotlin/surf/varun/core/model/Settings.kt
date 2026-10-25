@@ -36,4 +36,6 @@ data class UserSettings(
     val mapGlobe: Boolean = false,
     /** The globe's idle spin. */
     val mapGlobeSpin: Boolean = true,
+    /** The wind timeline along the bottom of the map and the globe. */
+    val mapTimeline: Boolean = true,
 )

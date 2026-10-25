@@ -91,6 +91,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -288,6 +289,11 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     val sheetState = rememberStandardBottomSheetState(initialValue = SheetValue.PartiallyExpanded, skipHiddenState = true)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState, snackbarHostState = snackbar)
 
+    // Hidden, the timeline leaves no peeking sheet: a spot opened on a phone still slides it up
+    val timeline = state.settings.mapTimeline
+    val peek = if (timeline) PEEK_HEIGHT else 0.dp
+    LaunchedEffect(timeline) { if (!timeline) playing = false }
+
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val wide = maxWidth >= SIDE_SHEET_BREAKPOINT
         val selected = state.selected
@@ -302,10 +308,10 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
 
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
-            sheetPeekHeight = PEEK_HEIGHT,
+            sheetPeekHeight = peek,
             snackbarHost = { SnackbarHost(snackbar) },
             sheetContent = {
-                TimelineBar(
+                if (timeline) TimelineBar(
                     steps = state.steps,
                     step = state.step,
                     playing = playing,
@@ -370,7 +376,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         particleScale = scale,
                         // Battery saver and reduced motion keep the globe still
                         spin = state.settings.mapGlobeSpin && !powerSave && !reduceMotion,
-                        bottomInset = PEEK_HEIGHT,
+                        bottomInset = peek,
                         onSelect = viewModel::select,
                         modifier = Modifier.fillMaxSize(),
                     )
@@ -388,7 +394,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             cameraVersion++
                         },
                         onTap = { point -> viewModel.select(controller?.handleTap(point)) },
-                        attributionMarginBottomPx = with(density) { (PEEK_HEIGHT + 8.dp).roundToPx() },
+                        attributionMarginBottomPx = with(density) { (peek + 8.dp).roundToPx() },
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -411,6 +417,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     MapCover(
                         covered = state.loading || !mapDrawn,
                         satellite = state.settings.mapSatellite,
+                        bottomInset = peek,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -475,7 +482,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             .width(360.dp)
                             .fillMaxHeight()
                             .statusBarsPadding()
-                            .padding(bottom = PEEK_HEIGHT),
+                            .padding(bottom = peek),
                     ) {
                         SpotPanel(
                             spot = selected,
@@ -611,11 +618,13 @@ private fun MapControls(
                 markers = state.settings.mapMarkers,
                 satellite = state.settings.mapSatellite,
                 spin = state.settings.mapGlobeSpin,
+                timeline = state.settings.mapTimeline,
                 onDismiss = { onLayers(false) },
                 onWindField = viewModel::setWindField,
                 onMarkers = viewModel::setMarkers,
                 onSatellite = viewModel::setSatellite,
                 onSpin = viewModel::setGlobeSpin,
+                onTimeline = viewModel::setTimeline,
             )
         }
         ControlButton(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location), onMyLocation)
@@ -650,15 +659,18 @@ private fun LayersMenu(
     markers: Boolean,
     satellite: Boolean,
     spin: Boolean,
+    timeline: Boolean,
     onDismiss: () -> Unit,
     onWindField: (Boolean) -> Unit,
     onMarkers: (Boolean) -> Unit,
     onSatellite: (Boolean) -> Unit,
     onSpin: (Boolean) -> Unit,
+    onTimeline: (Boolean) -> Unit,
 ) {
     DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
         CheckItem(stringResource(R.string.map_wind_field), windField) { onWindField(!windField) }
         CheckItem(stringResource(R.string.map_spots_layer), markers) { onMarkers(!markers) }
+        CheckItem(stringResource(R.string.map_timeline_layer), timeline) { onTimeline(!timeline) }
         if (globe) {
             CheckItem(stringResource(R.string.map_globe_spin), spin) { onSpin(!spin) }
         } else {
@@ -700,7 +712,7 @@ private fun rememberPowerSaveMode(): Boolean {
  * swapping. Leaving needs no cover: the surface is hidden then instead.
  */
 @Composable
-private fun MapCover(covered: Boolean, satellite: Boolean, modifier: Modifier = Modifier) {
+private fun MapCover(covered: Boolean, satellite: Boolean, bottomInset: Dp, modifier: Modifier = Modifier) {
     val alpha = remember { Animatable(1f) }
     LaunchedEffect(covered) {
         if (covered) alpha.snapTo(1f) else alpha.animateTo(0f, tween(MAP_REVEAL_MS))
@@ -715,7 +727,7 @@ private fun MapCover(covered: Boolean, satellite: Boolean, modifier: Modifier = 
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(bottom = PEEK_HEIGHT),
+            modifier = Modifier.padding(bottom = bottomInset),
         ) {
             // The platform spinner, not Compose's: its animated vector runs on the render
             // thread and keeps turning while the main thread is busy building the map

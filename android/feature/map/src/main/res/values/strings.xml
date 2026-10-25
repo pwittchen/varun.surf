@@ -23,6 +23,7 @@
     <string name="map_locating">Finding your location…</string>
     <string name="map_wind_field">Wind field</string>
     <string name="map_spots_layer">Spots</string>
+    <string name="map_timeline_layer">Wind timeline</string>
     <string name="map_satellite">Satellite</string>
     <string name="map_globe">Globe view</string>
     <string name="map_globe_spin">Rotate the globe</string>

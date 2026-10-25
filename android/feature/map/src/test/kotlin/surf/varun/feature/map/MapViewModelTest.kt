@@ -113,6 +113,19 @@ class MapViewModelTest {
     }
 
     @Test
+    fun hidingTheTimelineGoesBackToNow() = runBlocking<Unit> {
+        val vm = viewModel()
+        vm.awaitState { it.timeline != null }
+        vm.setStep(2)
+        vm.awaitState { it.step == 2 }
+        vm.setTimeline(false)
+        assertThat(settings.state.value.mapTimeline).isFalse()
+        assertThat(vm.awaitState { !it.settings.mapTimeline }.step).isEqualTo(0)
+        vm.setTimeline(true)
+        assertThat(settings.state.value.mapTimeline).isTrue()
+    }
+
+    @Test
     fun keepFreshRefreshesTheListWhileRunning() = runBlocking<Unit> {
         val vm = viewModel()
         val job = launch(Dispatchers.Default) { vm.keepFresh() }
