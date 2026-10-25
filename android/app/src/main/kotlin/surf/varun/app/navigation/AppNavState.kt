@@ -30,21 +30,30 @@ class AppNavState(
     var currentTab by mutableStateOf(initialTab)
         private set
 
-    val visibleStack: List<Route>
-        get() {
-            val start = stacks.getValue(startTab)
-            return if (currentTab == startTab) start else start + stacks.getValue(currentTab)
-        }
+    /** The stacks on display: the start tab's, with the current tab's on top of it. */
+    val visibleTabs: List<TopLevel>
+        get() = if (currentTab == startTab) listOf(startTab) else listOf(startTab, currentTab)
+
+    /**
+     * Whether the last change moved between tabs rather than within one, which is
+     * animated differently. Read when the transition starts, so it is no state.
+     */
+    var lastChangeSwitchedTab = false
+        private set
 
     fun stack(tab: TopLevel): List<Route> = stacks.getValue(tab)
 
     override fun navigate(route: Route) {
         val stack = stacks.getValue(currentTab)
-        if (stack.lastOrNull() != route) stack.add(route)
+        if (stack.lastOrNull() != route) {
+            lastChangeSwitchedTab = false
+            stack.add(route)
+        }
     }
 
     override fun switchTo(tab: TopLevel, route: Route?) {
         val stack = stacks.getValue(tab)
+        lastChangeSwitchedTab = tab != currentTab
         if (route != null) {
             stack.clear()
             stack.add(route)
@@ -58,8 +67,14 @@ class AppNavState(
     override fun back() {
         val stack = stacks.getValue(currentTab)
         when {
-            stack.size > 1 -> stack.removeAt(stack.lastIndex)
-            currentTab != startTab -> currentTab = startTab
+            stack.size > 1 -> {
+                lastChangeSwitchedTab = false
+                stack.removeAt(stack.lastIndex)
+            }
+            currentTab != startTab -> {
+                lastChangeSwitchedTab = true
+                currentTab = startTab
+            }
         }
     }
 
