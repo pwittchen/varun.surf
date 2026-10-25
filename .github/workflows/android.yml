@@ -93,6 +93,9 @@ jobs:
           VARUN_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew bundleRelease -Pvarun.versionName="${GITHUB_REF_NAME#android-v}" --stacktrace
 
+      # Until the app has been reviewed and published once, the Play API only accepts
+      # draft releases: set the PLAY_RELEASE_STATUS repository variable to "completed"
+      # after the first publish
       - name: Upload to Play Console (internal track)
         uses: r0adkll/upload-google-play@v1
         with:
@@ -100,4 +103,6 @@ jobs:
           packageName: surf.varun.app
           releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
           track: internal
-          status: completed
+          status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
+          mappingFile: android/app/build/outputs/mapping/release/mapping.txt
+          whatsNewDirectory: android/distribution/whatsnew

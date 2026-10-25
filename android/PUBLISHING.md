@@ -3,7 +3,7 @@
 This is the plan and checklist for the first Google Play release of `surf.varun.app`, and for the
 updates after it. Section numbers like "spec 12.1" point to [SPEC.md](SPEC.md).
 
-**Where things stand (2026-10-24)**
+**Where things stand (2026-10-25)**
 
 | Area | State |
 |---|---|
@@ -15,7 +15,8 @@ updates after it. Section numbers like "spec 12.1" point to [SPEC.md](SPEC.md).
 | Privacy | No analytics, ads, Firebase or crash SDK. Location stays on the device. The in-app privacy text is in `feature/about` |
 | Backup | The session cookie and the Room cache are excluded. Favourites, alerts and settings are backed up |
 | Native code | MapLibre 13.7.1. Its `.so` files support 16 KB pages, which Play requires for targetSdk 35+ |
-| **Missing** | Public privacy policy URL, `/.well-known/assetlinks.json`, a way to report AI output, store listing assets, native debug symbols and the R8 mapping upload in CI |
+| Done | Privacy policy at `/privacy` (EN + PL), a report action under the AI analysis and the ICM reading, CI uploads as a draft with the R8 mapping and release notes |
+| **Missing** | `/.well-known/assetlinks.json` (needs the Play signing SHA-256), a committed baseline profile, store listing assets |
 
 ---
 
@@ -48,10 +49,10 @@ updates after it. Section numbers like "spec 12.1" point to [SPEC.md](SPEC.md).
 
 These go into the backend repo and are deployed before the app ships.
 
-1. **Privacy policy page**, e.g. `https://varun.surf/privacy`, in EN and PL. Play requires one for
+1. **Privacy policy page** *(done: `src/frontend/html/privacy.html`, served at `/privacy`)*, in EN and PL. Play requires one for
    every app, and in particular for apps that request location. It has to be public, not a
-   PDF, not geo-blocked, and needs no session cookie (exempt it in
-   `SessionAuthenticationFilter`, the same way `/llms/**` is). It should cover:
+   PDF, not geo-blocked, and needs no session cookie (it is a page visit, which the session
+   filter never gates). It should cover:
    - no accounts, analytics, ads or crash reporting
    - coarse location used only on the device to compute distances, never transmitted
    - favourites, alerts and settings stored on the device and included in Android backup
@@ -85,21 +86,22 @@ These go into the backend repo and are deployed before the app ships.
 
 ### Phase 2: App changes before the first upload
 
-1. **AI content reporting.** Play's AI-Generated Content policy requires apps that show
-   generative AI output to let users report or flag offensive content without leaving the app.
-   Add a "Report" action under the AI analysis (and under the ICM reading, which also comes
-   from a model). It can open a prefilled email or post to a small backend endpoint. Put the
-   strings in both `values` and `values-pl`.
-2. **Native debug symbols.** Set `ndk.debugSymbolLevel = "SYMBOL_TABLE"` on the release build
-   type so that MapLibre crashes are symbolicated in Android vitals and Play stops warning
-   about missing symbols.
-3. **R8 mapping in CI.** Pass `mappingFile: android/app/build/outputs/mapping/release/mapping.txt`
-   to the upload step so stack traces from obfuscated code can be read in Play Console.
-4. **Release notes in CI.** Add `whatsNewDirectory: android/distribution/whatsnew` containing
-   `whatsnew-en-US` and `whatsnew-pl-PL`, each 500 characters or fewer.
-5. **Draft-app status.** Until the app has been reviewed and published once, the Play API only
-   accepts `status: draft`, so the current `status: completed` will fail. Change it to
-   `draft` for the first releases, or make it an input, and switch back afterwards.
+1. **AI content reporting** *(done)*. Play's AI-Generated Content policy requires apps that
+   show generative AI output to let users report or flag offensive content without leaving the
+   app. A "Report" button under the AI analysis and under the ICM reading opens a prefilled
+   email to `hello@varun.surf` in the user's mail app (`Intents.email`), so the app itself
+   collects nothing and the Data safety answers stay "None".
+2. **Native debug symbols** *(not possible)*. The prebuilt `.so` files (MapLibre, AndroidX
+   graphics-path, DataStore) ship already stripped, so `ndk.debugSymbolLevel` has nothing to
+   extract. Play shows a "no native debug symbols" warning, which does not block a release.
+3. **R8 mapping in CI** *(done)*. The upload step passes
+   `mappingFile: android/app/build/outputs/mapping/release/mapping.txt`.
+4. **Release notes in CI** *(done)*. `whatsNewDirectory: android/distribution/whatsnew` holds
+   `whatsnew-en-US` and `whatsnew-pl-PL`, each 500 characters or fewer. Rewrite them for every
+   release.
+5. **Draft-app status** *(done)*. Until the app has been reviewed and published once, the Play
+   API only accepts `status: draft`. The upload step reads the `PLAY_RELEASE_STATUS` repository
+   variable and defaults to `draft`; set it to `completed` after the first publish.
 6. **Baseline profile.** Run `./gradlew :app:generateBaselineProfile` on a device and commit the
    result so the first install gets the startup improvement.
 7. **Version 1.0.0.** Tag `android-v1.0.0`. `versionCode` is `github.run_number`, so it always
@@ -181,15 +183,16 @@ These go into the backend repo and are deployed before the app ships.
 - [ ] Data sources credited in About and in the full description
 
 ### 2.2 Backend
-- [ ] `https://varun.surf/privacy` live (EN + PL), works without a cookie, linked from the web footer/sidebar
+- [x] `https://varun.surf/privacy` (EN + PL), works without a cookie, linked from the web footer
+- [ ] Privacy page deployed; access-log retention and the DataFast cookie wording checked against reality
 - [ ] `/.well-known/assetlinks.json` live with the Play app signing SHA-256, `application/json`, no cookie, no redirect
 - [ ] AI and ICM either enabled in production or hidden in the app when disabled
 - [ ] nginx rate limits leave room for app traffic (`X-Client: varun-android/*`)
 
 ### 2.3 App build
-- [ ] AI output report action (analysis + ICM), EN + PL strings
-- [ ] `ndk.debugSymbolLevel = "SYMBOL_TABLE"` on release
-- [ ] CI uploads the R8 mapping file and release notes; status `draft` until the first publish
+- [x] AI output report action (analysis + ICM), EN + PL strings
+- [x] CI uploads the R8 mapping file and release notes; status `draft` until the first publish
+- [ ] `PLAY_RELEASE_STATUS` repository variable set to `completed` after the first publish
 - [ ] Baseline profile generated and committed
 - [ ] `./gradlew lintDebug test assembleRelease` green
 - [ ] Release AAB installed on a physical device (`bundletool` or internal track) with **R8 on**: lists, spot, map, widgets, alerts all work (serialization and reflection survive minification)
@@ -238,7 +241,7 @@ These go into the backend repo and are deployed before the app ships.
 - [ ] App signing SHA-256 copied into `assetlinks.json` and deployed
 - [ ] Service account invited (this app, testing-track release permissions only)
 - [ ] GitHub secrets set: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `PLAY_SERVICE_ACCOUNT_JSON`
-- [ ] Tag `android-vX.Y.Z` pushed → workflow uploads to internal (as a draft until the first publish, then completed)
+- [ ] Tag `android-vX.Y.Z` pushed → workflow uploads to internal (as a draft until `PLAY_RELEASE_STATUS` is `completed`)
 - [ ] Release notes in EN and PL
 
 ### 2.7 Smoke test on the Play-installed build
