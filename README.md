@@ -15,11 +15,6 @@
 
 <p align="center">kite spots database and weather forecast for kitesurfers on the web</p>
 
-[![screenshot](screenshot.png)](https://varun.surf)
-
-[![screenshot-2](screenshot-2.png)](https://varun.surf)
-
-
 ## tech stack overview
 
 - **infra**: Docker, Docker Compose, Nginx, GitHub, GitHub Actions, GHCR, Cloudflare, SeoHost, Mikrus
