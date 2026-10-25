@@ -463,7 +463,14 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     onZoom = {
                         if (globe) globeCamera.zoomBy(it, System.nanoTime() / 1_000_000) else controller?.zoomBy(it)
                     },
-                    onResetView = { centreOn(Coordinates(DEFAULT_CAMERA.lat, DEFAULT_CAMERA.lon), zoom = DEFAULT_CAMERA.zoom) },
+                    onResetView = {
+                        if (globe) {
+                            globeCamera.introPending = false
+                            globeCamera.reset(System.nanoTime() / 1_000_000)
+                        } else {
+                            controller?.centreOn(Coordinates(DEFAULT_CAMERA.lat, DEFAULT_CAMERA.lon), DEFAULT_CAMERA.zoom)
+                        }
+                    },
                     viewModel = viewModel,
                     modifier = Modifier
                         .align(Alignment.TopEnd)

@@ -56,6 +56,18 @@ class GlobeCameraTest {
     }
 
     @Test
+    fun `reset zooms back out to the whole planet the globe opens on`() {
+        val camera = camera()
+        camera.flyTo(-33.9, 18.4, 9.0, 0)
+        val now = camera.settle(0)
+        camera.reset(now)
+        camera.settle(now)
+        assertThat(camera.lat).isWithin(1e-9).of(GlobeCamera.DEFAULT_LAT)
+        assertThat(camera.lon).isWithin(1e-9).of(GlobeCamera.DEFAULT_LON)
+        assertThat(camera.leafletZoom).isWithin(1e-9).of(camera.wholeGlobeZoom())
+    }
+
+    @Test
     fun `reduced motion jumps instead of flying`() {
         val camera = camera().apply { reduceMotion = true }
         camera.flyTo(10.0, 20.0, 5.0, 0)

@@ -162,6 +162,9 @@ internal class GlobeCamera(lat: Double, lon: Double, leafletZoom: Double) {
         fly = Fly(nowMs, this.lat, this.lon, this.leafletZoom, toLat, toZoom, normalizeLon(toLon - this.lon))
     }
 
+    /** Back to the whole planet the globe opens on, zooming out as far as it takes. */
+    fun reset(nowMs: Long) = flyTo(DEFAULT_LAT, DEFAULT_LON, wholeGlobeZoom(), nowMs)
+
     /** Fly to a point keeping the zoom, or to [leafletZoom] when closer than now. */
     fun centreOn(lat: Double, lon: Double, leafletZoom: Double, nowMs: Long) =
         flyTo(lat, lon, max(this.leafletZoom, leafletZoom), nowMs)
