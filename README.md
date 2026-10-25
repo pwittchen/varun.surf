@@ -25,6 +25,7 @@
 - **infra**: Docker, Docker Compose, Nginx, GitHub, GitHub Actions, GHCR, Cloudflare, SeoHost, Mikrus
 - **backend**: Java, Spring Boot, Gradle
 - **frontend** (bundled with the backend app): Vanilla JS, HTML, CSS, Bun
+- **mobile**: Android, Kotlin
 
 ## building
 
