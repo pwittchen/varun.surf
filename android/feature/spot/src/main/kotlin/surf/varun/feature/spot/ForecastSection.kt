@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -133,29 +134,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val modelName = spot.availableModels.firstOrNull { it.key == state.model }?.name ?: state.model.uppercase()
     val spotToday = remember(spot.wgId) { Conditions.now(spot, ZonedDateTime.now()).toLocalDate() }
 
-    SectionCard(
-        stringResource(R.string.section_forecast),
-        action = {
-            SingleChoiceSegmentedButtonRow {
-                ForecastView.entries.forEachIndexed { index, option ->
-                    val label = stringResource(if (option == ForecastView.TABLE) R.string.view_table else R.string.view_chart)
-                    SegmentedButton(
-                        selected = view == option,
-                        onClick = { view = option },
-                        shape = SegmentedButtonDefaults.itemShape(index, ForecastView.entries.size),
-                        icon = {},
-                        label = {
-                            Icon(
-                                if (option == ForecastView.TABLE) Icons.Rounded.TableRows else Icons.AutoMirrored.Rounded.ShowChart,
-                                contentDescription = label,
-                                modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
-                            )
-                        },
-                    )
-                }
-            }
-        },
-    ) {
+    SectionCard(stringResource(R.string.section_forecast)) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -177,6 +156,27 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                     null
                 },
             )
+            // Same height and rounded-square corners as the chips it sits next to
+            SingleChoiceSegmentedButtonRow(Modifier.height(32.dp)) {
+                ForecastView.entries.forEachIndexed { index, option ->
+                    val label = stringResource(if (option == ForecastView.TABLE) R.string.view_table else R.string.view_chart)
+                    SegmentedButton(
+                        selected = view == option,
+                        onClick = { view = option },
+                        shape = SegmentedButtonDefaults.itemShape(index, ForecastView.entries.size, MaterialTheme.shapes.small),
+                        modifier = Modifier.width(44.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        icon = {},
+                        label = {
+                            Icon(
+                                if (option == ForecastView.TABLE) Icons.Rounded.TableRows else Icons.AutoMirrored.Rounded.ShowChart,
+                                contentDescription = label,
+                                modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
+                            )
+                        },
+                    )
+                }
+            }
         }
 
         if (spot.daily.isNotEmpty()) {

@@ -6,18 +6,16 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Place
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -54,7 +53,7 @@ import kotlin.coroutines.resume
  * Static map of the spot (spec 2.2: MapSnapshotter image instead of a live map),
  * rendered once per spot from satellite imagery and cached as a PNG - a spot doesn't move.
  * Tapping it hands over to a maps app. Without an image (offline on first open,
- * no GL) the pin still marks the place on a plain tile.
+ * no GL) the dot still marks the place on a plain tile.
  */
 @Composable
 internal fun MiniMap(spot: Spot) {
@@ -75,12 +74,13 @@ internal fun MiniMap(spot: Spot) {
             image?.let {
                 Image(it, contentDescription = stringResource(R.string.mini_map_description), contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
             }
-            Icon(
-                Icons.Rounded.Place,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                // The pin's tip, not its centre, marks the spot
-                modifier = Modifier.size(32.dp).offset(y = (-16).dp),
+            // The white ring keeps the dot readable on dark water and red rooftops alike
+            Box(
+                Modifier
+                    .size(14.dp)
+                    .border(2.dp, Color.White, CircleShape)
+                    .padding(2.dp)
+                    .background(Color(0xFFE53935), CircleShape),
             )
         }
         Text(
