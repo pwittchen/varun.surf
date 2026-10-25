@@ -2,6 +2,8 @@ package surf.varun.core.domain
 
 import surf.varun.core.model.Coordinates
 import java.time.ZoneId
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The time zone a spot's forecast and station times are written in.
@@ -37,9 +39,12 @@ object SpotTimeZones {
         "Argentina" to "America/Argentina/Buenos_Aires",
     )
 
+    /** Asked for every spot on every list tick; `ZoneId.of` parses its id each time. */
+    private val zones = ConcurrentHashMap<String, Optional<ZoneId>>()
+
     fun zoneFor(country: String?, coordinates: Coordinates?, fallback: ZoneId = ZoneId.systemDefault()): ZoneId {
         val id = idFor(country, coordinates) ?: return fallback
-        return runCatching { ZoneId.of(id) }.getOrDefault(fallback)
+        return zones.getOrPut(id) { Optional.ofNullable(runCatching { ZoneId.of(id) }.getOrNull()) }.orElse(fallback)
     }
 
     internal fun idFor(country: String?, coordinates: Coordinates?): String? {

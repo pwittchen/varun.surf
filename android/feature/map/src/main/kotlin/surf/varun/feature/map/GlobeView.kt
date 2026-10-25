@@ -330,9 +330,13 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
             changed = true
         }
         if (palette != this.palette || windColors != this.windColors || density != this.density) {
+            val densityChanged = density != this.density
             this.palette = palette
             this.windColors = windColors
             this.density = density
+            this.markerColors = MarkerColors.of(windColors)
+            shadersFor = null
+            if (densityChanged && widthPx > 0) allocateTrails()
             changed = true
         }
         if (changed) {
@@ -347,6 +351,9 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private var heightPx = 0
     private val widthDp: Double get() = widthPx / density.toDouble()
     private val heightDp: Double get() = heightPx / density.toDouble()
+
+    /** Pixels per dp of the trail bitmap, capped like the map's (see [trailDensity]). */
+    private var trailScale = 1f
     private var dirty = true
     private var drawnVersion = -1
     private var projection: GlobeProjection? = null
@@ -377,10 +384,19 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         if (width == widthPx && height == heightPx) return
         widthPx = width
         heightPx = height
+        allocateTrails()
+        dirty = true
+    }
+
+    private fun allocateTrails() {
+        trailScale = trailDensity(density)
+        val width = (widthDp * trailScale).toInt()
+        val height = (heightDp * trailScale).toInt()
+        if (trails?.width == width && trails?.height == height) return
         trails?.recycle()
         trails = if (width > 0 && height > 0) Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) else null
         trailsCanvas = trails?.let(::Canvas)
-        dirty = true
+        clearTrails = true
     }
 
 
@@ -572,13 +588,13 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private fun stepParticles(canvas: Canvas, frames: Double, fadeFast: Boolean, allowRespawn: Boolean) {
         // Erase part of the last frame to leave trails; cut short while the globe turns under them
         fade.alpha = ((if (fadeFast) MOVING_TRAIL_FADE else WindField.PARTICLE_TRAIL_FADE) * 255).toInt()
-        canvas.drawRect(0f, 0f, widthPx.toFloat(), heightPx.toFloat(), fade)
+        canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), fade)
         val p = projection ?: return
         val index = fieldIndex ?: return
         if (!windVisible || particleCount == 0) return
 
         val degPerPx = 1 / p.pxPerDeg
-        val d = density
+        val d = trailScale
         halo.strokeWidth = HALO_WIDTH * d
         streak.strokeWidth = LINE_WIDTH * d
         for (i in 0 until particleCount) {
@@ -611,7 +627,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
             val y1 = (to[1] * d).toFloat()
             halo.color = ((HALO_ALPHA * edge * 255).toInt() shl 24) or HALO_RGB
             canvas.drawLine(x0, y0, x1, y1, halo)
-            streak.color = (((0.35 + 0.5 * edge) * 255).toInt() shl 24) or WindField.particleColor(speed)
+            streak.color = (((0.35 + 0.5 * edge) * 255).toInt() shl 24) or WindField.particleColorCached(speed)
             canvas.drawLine(x0, y0, x1, y1, streak)
         }
     }
@@ -659,6 +675,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val stroke = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val washPaint = Paint(Paint.FILTER_BITMAP_FLAG)
+    private val trailPaint = Paint(Paint.FILTER_BITMAP_FLAG)
     private val markerFill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val markerShadow = Paint(Paint.ANTI_ALIAS_FLAG)
     private val markerRim = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -673,10 +690,16 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
     private var ocean: Shader? = null
     private var limb: Shader? = null
 
+    /** Centre and radius the gradients were made for; a spinning globe keeps them, a zoom does not. */
+    private var shadersFor: Triple<Float, Float, Float>? = null
+
     private fun shaders(p: GlobeProjection) {
         val cx = p.cx.toFloat()
         val cy = p.cy.toFloat()
         val r = p.r.toFloat()
+        val key = Triple(cx, cy, r)
+        if (key == shadersFor) return
+        shadersFor = key
         val atmosphere = palette.atmosphere
         // Atmosphere: a soft glow just outside the rim
         glow = RadialGradient(
@@ -731,7 +754,14 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         fill.shader = null
         canvas.restore()
 
-        if (windVisible && particleMode != ParticleMode.OFF) trails?.let { canvas.drawBitmap(it, 0f, 0f, null) }
+        if (windVisible && particleMode != ParticleMode.OFF) {
+            trails?.let {
+                canvas.save()
+                canvas.scale(density / trailScale, density / trailScale)
+                canvas.drawBitmap(it, 0f, 0f, trailPaint)
+                canvas.restore()
+            }
+        }
 
         canvas.save()
         canvas.scale(density, density)
@@ -741,7 +771,7 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
 
     /** The map's markers: a wind-coloured dot with the knots in it, or a bubble with the count. */
     private fun drawMarker(canvas: Canvas, marker: Placed) {
-        val colors = windColors ?: return
+        val colors = markerColors ?: return
         val cluster = marker.cluster
         val single = cluster.single
         val radius = markerRadius(cluster)
@@ -753,15 +783,15 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         val label: String?
         if (single != null) {
             val windClass = single.windClass
-            fillColor = classColor(windClass, colors)
-            textColor = if (windClass in DARK_TEXT_CLASSES) DARK_TEXT else LIGHT_TEXT
-            label = single.wind?.toString()
+            fillColor = colors.fill(windClass)
+            textColor = colors.text(windClass)
+            label = cluster.label
         } else {
             val wind = cluster.maxWind
             val windClass = if (wind == null) MapFeatures.NO_DATA else MapFeatures.windClassKey(wind.toDouble())
-            fillColor = classColor(windClass, colors)
-            textColor = if (windClass in DARK_TEXT_CLASSES) DARK_TEXT else LIGHT_TEXT
-            label = cluster.members.size.toString()
+            fillColor = colors.fill(windClass)
+            textColor = colors.text(windClass)
+            label = cluster.label
         }
 
         markerShadow.color = SHADOW
@@ -785,13 +815,26 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         }
     }
 
-    private fun classColor(windClass: String, colors: WindColors): Int = when (windClass) {
-        WindClass.LIGHT.name.lowercase() -> colors.light
-        WindClass.MODERATE.name.lowercase() -> colors.moderate
-        WindClass.STRONG.name.lowercase() -> colors.strong
-        WindClass.EXTREME.name.lowercase() -> colors.extreme
-        else -> colors.calm
-    }.toArgb()
+    private var markerColors: MarkerColors? = null
+
+    /** Marker fill and text per wind class key, resolved once per palette instead of on every frame. */
+    private class MarkerColors(private val fills: Map<String, Int>, private val calm: Int) {
+        fun fill(windClass: String): Int = fills[windClass] ?: calm
+
+        fun text(windClass: String): Int = if (windClass in DARK_TEXT_CLASSES) DARK_TEXT else LIGHT_TEXT
+
+        companion object {
+            fun of(colors: WindColors) = MarkerColors(
+                mapOf(
+                    WindClass.LIGHT.name.lowercase() to colors.light.toArgb(),
+                    WindClass.MODERATE.name.lowercase() to colors.moderate.toArgb(),
+                    WindClass.STRONG.name.lowercase() to colors.strong.toArgb(),
+                    WindClass.EXTREME.name.lowercase() to colors.extreme.toArgb(),
+                ),
+                colors.calm.toArgb(),
+            )
+        }
+    }
 
     private companion object {
         /** The wash is sampled every few dp and stretched with smoothing, like the web. */

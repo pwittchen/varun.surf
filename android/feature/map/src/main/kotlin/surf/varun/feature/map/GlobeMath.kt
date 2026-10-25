@@ -527,7 +527,10 @@ internal class GlobeCluster(
     /** Strongest wind among the members, as the map's cluster bubbles are coloured; null when none has data. */
     val maxWind: Int?,
 ) {
-    val single: MapSpotFeature? get() = members.singleOrNull()
+    val single: MapSpotFeature? = members.singleOrNull()
+
+    /** What the marker shows: a spot's knots or a bubble's count, made once rather than every frame. */
+    val label: String? = if (single != null) single.wind?.toString() else members.size.toString()
 }
 
 /**

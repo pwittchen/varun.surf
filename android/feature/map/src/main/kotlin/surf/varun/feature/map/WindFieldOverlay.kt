@@ -167,15 +167,17 @@ internal fun buildField(samples: List<WindField.ScreenSample>, widthDp: Int, hei
 @Composable
 private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, scale: Float, holes: Path?, modifier: Modifier) {
     var frame by remember { mutableIntStateOf(0) }
-    val trails = remember(field) {
+    val trailDensity = trailDensity(density)
+    val trails = remember(field, trailDensity) {
         Bitmap.createBitmap(
-            max(1, (field.widthDp * density).toInt()),
-            max(1, (field.heightDp * density).toInt()),
+            max(1, (field.widthDp * trailDensity).toInt()),
+            max(1, (field.heightDp * trailDensity).toInt()),
             Bitmap.Config.ARGB_8888,
         )
     }
+    val upscale = remember { Paint(Paint.FILTER_BITMAP_FLAG) }
 
-    LaunchedEffect(field, mode, scale) {
+    LaunchedEffect(trails, mode, scale) {
         val canvas = Canvas(trails)
         canvas.drawColor(0, PorterDuff.Mode.CLEAR)
         val system = ParticleSystem(field, WindField.particleBudget(field.points.size, scale))
@@ -183,7 +185,7 @@ private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, sca
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
             alpha = (WindField.PARTICLE_TRAIL_FADE * 255).toInt()
         }
-        val renderer = ParticleRenderer(density)
+        val renderer = ParticleRenderer(trailDensity)
         if (mode == ParticleMode.STATIC) {
             // Reduced motion: one still frame of streaklines instead of an animation
             repeat(STATIC_STEPS) { system.step(1f) { x0, y0, x1, y1, kt -> renderer.segment(canvas, x0, y0, x1, y1, kt) } }
@@ -194,6 +196,8 @@ private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, sca
         var slowFrames = 0
         while (isActive) {
             withFrameNanos { now ->
+                // A 90/120 Hz display would advance the field twice as often for no visible gain
+                if (last != 0L && now - last < MIN_STEP_NANOS) return@withFrameNanos
                 val dtMs = if (last == 0L) 16f else (now - last) / 1_000_000f
                 last = now
                 // Auto-degrade: sustained long frames shed particles (spec 6.3)
@@ -211,9 +215,29 @@ private fun Particles(field: BuiltField, density: Float, mode: ParticleMode, sca
 
     Canvas(modifier) {
         // Reading the frame counter here is what redraws the trails every advected frame
-        if (frame >= 0) clearOf(holes) { drawIntoCanvas { it.nativeCanvas.drawBitmap(trails, 0f, 0f, null) } }
+        if (frame >= 0) {
+            clearOf(holes) {
+                drawIntoCanvas {
+                    val canvas = it.nativeCanvas
+                    val save = canvas.save()
+                    canvas.scale(density / trailDensity, density / trailDensity)
+                    canvas.drawBitmap(trails, 0f, 0f, upscale)
+                    canvas.restoreToCount(save)
+                }
+            }
+        }
     }
 }
+
+/**
+ * Pixels per dp of a particle trail bitmap. The trails are drawn in software and
+ * the whole bitmap is uploaded to the GPU every frame, so on a dense screen they
+ * are drawn at most [MAX_TRAIL_DENSITY] and scaled up - thin, soft streaks lose
+ * nothing visible, and a 3.5x screen moves a third of the pixels.
+ */
+internal fun trailDensity(density: Float): Float = min(density, MAX_TRAIL_DENSITY)
+
+private const val MAX_TRAIL_DENSITY = 2f
 
 private class ParticleRenderer(private val density: Float) {
     private val halo = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -233,7 +257,7 @@ private class ParticleRenderer(private val density: Float) {
         val sx1 = x1 * density
         val sy1 = y1 * density
         canvas.drawLine(sx0, sy0, sx1, sy1, halo)
-        line.color = 0xFF000000.toInt() or WindField.particleColor(knots.toDouble())
+        line.color = 0xFF000000.toInt() or WindField.particleColorCached(knots.toDouble())
         canvas.drawLine(sx0, sy0, sx1, sy1, line)
     }
 
@@ -310,4 +334,7 @@ internal class ParticleSystem(private val field: BuiltField, budget: Int, privat
 
 private const val STATIC_STEPS = 26
 private const val FRAME_BUDGET_MS = 20f
+
+/** Shorter than a 60 Hz frame with room for jitter, longer than a 120 Hz one. */
+private const val MIN_STEP_NANOS = 10_000_000L
 private const val SLOW_FRAMES_BEFORE_SHEDDING = 30

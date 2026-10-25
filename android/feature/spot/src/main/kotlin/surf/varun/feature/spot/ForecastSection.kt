@@ -339,7 +339,7 @@ private fun TableCell(row: TableRow, hour: ForecastEntry) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     // Only wind is coloured: every other row stays neutral so the wind classes stand out
     when (row) {
-        TableRow.TIME -> Text("%02d".format(hour.time!!.hour), style = Numbers.tiny, color = muted)
+        TableRow.TIME -> Text(twoDigits(hour.time!!.hour), style = Numbers.tiny, color = muted)
         TableRow.WIND -> WindCell(formatWind(hour.wind), hour.wind)
         TableRow.GUSTS -> WindCell(formatWind(hour.gusts), hour.gusts)
         TableRow.DIRECTION -> WindArrow(hour.direction, size = 18.dp, color = wind.forClass(WindClass.of(hour.wind)), animate = false)
@@ -360,6 +360,9 @@ private fun TableCell(row: TableRow, hour: ForecastEntry) {
         }
     }
 }
+
+/** "07" without `String.format`, which is slow enough to show in a scrolling table. */
+private fun twoDigits(value: Int): String = if (value < 10) "0$value" else value.toString()
 
 @Composable
 private fun Dash() = Text("-", style = Numbers.tiny, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -425,7 +428,7 @@ private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWid
                     )
                 }
                 if (h.time!!.hour % 3 == 0) {
-                    drawText(measurer, "%02d".format(h.time!!.hour), Offset(x(i) - 6.dp.toPx(), size.height - labelsHeight), labelStyle)
+                    drawText(measurer, twoDigits(h.time!!.hour), Offset(x(i) - 6.dp.toPx(), size.height - labelsHeight), labelStyle)
                 }
             }
             val gusts = Path().apply { hours.forEachIndexed { i, h -> if (i == 0) moveTo(x(i), y(h.gusts)) else lineTo(x(i), y(h.gusts)) } }

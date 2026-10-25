@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -29,6 +31,7 @@ import surf.varun.core.data.repository.ServiceRepository
 import surf.varun.core.data.repository.SettingsRepository
 import surf.varun.core.data.repository.SpotsRepository
 import surf.varun.core.data.util.ConnectivityMonitor
+import surf.varun.core.data.util.DefaultDispatcher
 import surf.varun.core.data.util.SyncStatus
 import surf.varun.core.model.Coordinates
 import surf.varun.core.model.ForecastProgress
@@ -73,6 +76,7 @@ class SpotsViewModel @AssistedInject constructor(
     private val locationRepository: LocationRepository,
     connectivity: ConnectivityMonitor,
     private val clock: Clock,
+    @param:DefaultDispatcher computation: CoroutineDispatcher,
 ) : ViewModel() {
     @AssistedFactory
     interface Factory {
@@ -131,7 +135,10 @@ class SpotsViewModel @AssistedInject constructor(
             settings = settings,
             now = input.now,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpotsUiState())
+    }
+        // Filtering, sorting and building ~820 cards every tick is no work for the main thread
+        .flowOn(computation)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpotsUiState())
 
     init {
         viewModelScope.launch { serviceRepository.sponsors().onSuccess { list -> sponsors.value = list.filter { it.main } } }

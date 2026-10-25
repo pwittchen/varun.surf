@@ -33,14 +33,23 @@ class VarunNetworkDataSource @Inject constructor(
         }
     }
 
+    // Retrofit decodes on OkHttp's threads, but mapping hundreds of hourly rows (and
+    // parsing their dates) would run on the caller's - usually the main thread
     suspend fun spot(wgId: Int, model: String? = null): Spot = apiCall {
         val dto = if (model == null) api.spot(wgId) else api.spot(wgId, model)
-        dto.toModel(config.baseUrl) ?: throw ApiError.BadData(IllegalStateException("Spot $wgId without id or name"))
+        withContext(Dispatchers.Default) { dto.toModel(config.baseUrl) }
+            ?: throw ApiError.BadData(IllegalStateException("Spot $wgId without id or name"))
     }
 
-    suspend fun hourlyForecast(wgId: Int): List<ForecastEntry> = apiCall { api.forecast(wgId).toModel() }
+    suspend fun hourlyForecast(wgId: Int): List<ForecastEntry> = apiCall {
+        val dto = api.forecast(wgId)
+        withContext(Dispatchers.Default) { dto.toModel() }
+    }
 
-    suspend fun windTimeline(hours: Int): WindTimeline = apiCall { api.wind(hours).toModel() }
+    suspend fun windTimeline(hours: Int): WindTimeline = apiCall {
+        val dto = api.wind(hours)
+        withContext(Dispatchers.Default) { dto.toModel() }
+    }
 
     /** The timeline as raw JSON, for callers that cache the payload as it came. */
     suspend fun windTimelineJson(hours: Int): String = apiCall {

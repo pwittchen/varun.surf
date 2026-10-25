@@ -58,8 +58,19 @@ object Conditions {
         return spot.daily.firstOrNull { it.day == DayLabel.Today } ?: spot.daily.firstOrNull()
     }
 
-    fun closestHour(hours: List<ForecastEntry>, now: LocalDateTime): ForecastEntry? =
-        hours.filter { it.time != null }.minByOrNull { Duration.between(now, it.time).abs() }
+    fun closestHour(hours: List<ForecastEntry>, now: LocalDateTime): ForecastEntry? {
+        var best: ForecastEntry? = null
+        var bestDistance = Duration.ZERO
+        for (entry in hours) {
+            val time = entry.time ?: continue
+            val distance = Duration.between(now, time).abs()
+            if (best == null || distance < bestDistance) {
+                best = entry
+                bestDistance = distance
+            }
+        }
+        return best
+    }
 
     /** The web's "firing now" sort key: average of wind and gusts, -∞ without data so it sinks. */
     fun firingScore(spot: Spot, at: ZonedDateTime): Double =

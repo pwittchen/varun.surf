@@ -30,6 +30,7 @@ import surf.varun.core.data.repository.WindTimelineRepository
 import surf.varun.core.data.util.AndroidConnectivityMonitor
 import surf.varun.core.data.util.ApplicationScope
 import surf.varun.core.data.util.ConnectivityMonitor
+import surf.varun.core.data.util.DefaultDispatcher
 import surf.varun.core.data.util.IoDispatcher
 import java.time.Clock
 import javax.inject.Singleton
@@ -65,6 +66,10 @@ abstract class DataModule {
         @Provides
         @IoDispatcher
         fun io(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @DefaultDispatcher
+        fun computation(): CoroutineDispatcher = Dispatchers.Default
 
         @Provides
         @Singleton

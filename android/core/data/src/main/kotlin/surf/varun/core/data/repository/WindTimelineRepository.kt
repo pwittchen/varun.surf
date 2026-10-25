@@ -56,8 +56,11 @@ class CachedWindTimelineRepository @Inject constructor(
 
         val fetched = catching {
             val json = network.windTimelineJson(hours)
-            val parsed = network.parseWindTimeline(json)
-            withContext(io) { writeCache(hours, json) }
+            // Megabytes of JSON for the full run: parsed off the caller's (often the main) thread
+            val parsed = withContext(io) {
+                writeCache(hours, json)
+                network.parseWindTimeline(json)
+            }
             CachedTimeline(parsed, hours, clock.instant())
         }
         fetched.onSuccess { _timeline.value = it }

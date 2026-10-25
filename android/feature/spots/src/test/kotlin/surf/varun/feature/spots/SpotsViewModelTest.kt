@@ -43,7 +43,7 @@ class SpotsViewModelTest {
     private fun viewModel(route: SpotsRoute = SpotsRoute()) = SpotsViewModel(
         route, spots, favourites, FakeSettingsRepository(), FakeServiceRepository(),
         FakeLocationRepository(permission = true, location = Coordinates(54.35, 18.65)),
-        FakeConnectivityMonitor(), Clock.systemUTC(),
+        FakeConnectivityMonitor(), Clock.systemUTC(), dispatcher,
     )
 
     @Test

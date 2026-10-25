@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 /** Formatting shared by every screen: units, dates, ages, localized server labels. */
 object Format {
@@ -67,14 +68,20 @@ object Format {
 
     fun hour(context: Context, time: LocalDateTime): String {
         val pattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "h a"
-        return time.format(DateTimeFormatter.ofPattern(pattern, locale(context)))
+        return time.format(formatter(pattern, locale(context)))
     }
 
     /** Like [hour], but keeps the minutes in 12-hour format too - live readings rarely land on the hour. */
     fun clock(context: Context, time: LocalDateTime): String {
         val pattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm a"
-        return time.format(DateTimeFormatter.ofPattern(pattern, locale(context)))
+        return time.format(formatter(pattern, locale(context)))
     }
+
+    /** Formatters are immutable and parsing a pattern is not free: the timeline slider asks on every step. */
+    private val formatters = ConcurrentHashMap<Pair<String, Locale>, DateTimeFormatter>()
+
+    private fun formatter(pattern: String, locale: Locale): DateTimeFormatter =
+        formatters.getOrPut(pattern to locale) { DateTimeFormatter.ofPattern(pattern, locale) }
 
     /** "Sat 24 Oct" for day headers. */
     fun dayHeader(context: Context, date: LocalDate): String =

@@ -1,11 +1,13 @@
 package surf.varun.core.data.repository
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
@@ -51,8 +53,12 @@ class OfflineFirstSpotsRepository @Inject constructor(
     private val detailErrors = MutableStateFlow<Map<String, Throwable?>>(emptyMap())
     private val detailRefreshing = MutableStateFlow<Set<String>>(emptySet())
 
+    // Room re-emits on every write to the tables behind the list, changed or not; the
+    // ~820 rows are compared before they are mapped, and mapped off the main thread
     override val spots: Flow<List<Spot>> = dao.observeSpots()
+        .distinctUntilChanged()
         .map { rows -> rows.map { it.toModel() } }
+        .flowOn(Dispatchers.Default)
 
     override suspend fun refreshSpots(maxAge: Duration): Result<Unit> = listMutex.withLock {
         val last = dao.lastListFetch()
@@ -82,12 +88,14 @@ class OfflineFirstSpotsRepository @Inject constructor(
         result.onFailure { Timber.w(it, "Spots refresh failed") }.map { }
     }
 
+    // Every list refresh touches the spot tables and every grid forecast the hourly one,
+    // which re-emits each of these for spots that did not change
     override fun observeSpot(wgId: Int, model: String): Flow<Spot?> = combine(
-        dao.observeSpot(wgId),
-        dao.observeHistory(wgId),
-        dao.observeHourly(wgId, model),
-        dao.observeAnalysis(wgId),
-        dao.observeModels(wgId),
+        dao.observeSpot(wgId).distinctUntilChanged(),
+        dao.observeHistory(wgId).distinctUntilChanged(),
+        dao.observeHourly(wgId, model).distinctUntilChanged(),
+        dao.observeAnalysis(wgId).distinctUntilChanged(),
+        dao.observeModels(wgId).distinctUntilChanged(),
     ) { row, history, hourly, analysis, models ->
         row?.toModel()?.copy(
             liveHistory = history.map { it.toModel() },
@@ -96,7 +104,7 @@ class OfflineFirstSpotsRepository @Inject constructor(
             aiAnalysisPl = analysis.analysis(LANG_PL),
             availableModels = models.map { it.toModel() },
         )
-    }.distinctUntilChanged()
+    }.distinctUntilChanged().flowOn(Dispatchers.Default)
 
     override fun spotSync(wgId: Int, model: String): Flow<SyncStatus> {
         val key = key(wgId, model)
@@ -149,7 +157,10 @@ class OfflineFirstSpotsRepository @Inject constructor(
     }
 
     override fun observeGridForecast(wgId: Int): Flow<List<ForecastEntry>> =
-        dao.observeHourly(wgId, SpotsRepository.GRID_MODEL).map { rows -> rows.map { it.toModel() } }
+        dao.observeHourly(wgId, SpotsRepository.GRID_MODEL)
+            .distinctUntilChanged()
+            .map { rows -> rows.map { it.toModel() } }
+            .flowOn(Dispatchers.Default)
 
     override suspend fun refreshGridForecast(wgId: Int, maxAge: Duration): Result<List<ForecastEntry>> {
         val model = SpotsRepository.GRID_MODEL

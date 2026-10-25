@@ -15,6 +15,16 @@ class WindFieldTest {
     }
 
     @Test
+    fun cachedParticleColourMatchesTheExactOne() {
+        for (quarter in 0..160) {
+            val knots = quarter / 4.0
+            assertThat(WindField.particleColorCached(knots)).isEqualTo(WindField.particleColor(knots))
+        }
+        assertThat(WindField.particleColorCached(-3.0)).isEqualTo(WindField.particleColor(0.0))
+        assertThat(WindField.particleColorCached(80.0)).isEqualTo(WindField.particleColor(80.0))
+    }
+
+    @Test
     fun radiusGrowsAboveReferenceZoomAndIsCapped() {
         assertThat(WindField.radius(5.0)).isEqualTo(70.0)
         assertThat(WindField.radius(9.0)).isEqualTo(140.0)
