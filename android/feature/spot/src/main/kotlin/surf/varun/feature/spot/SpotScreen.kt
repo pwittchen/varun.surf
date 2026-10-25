@@ -5,11 +5,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -37,12 +45,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,19 +74,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil3.compose.AsyncImage
 import surf.varun.core.designsystem.component.EmptyState
+import surf.varun.core.domain.Conditions
 import surf.varun.core.navigation.AlertEditorRoute
 import surf.varun.core.navigation.CalculatorRoute
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.ui.FavouriteButton
 import surf.varun.core.ui.Intents
+import surf.varun.core.ui.LocalFloatingNavigationGutter
 import surf.varun.core.ui.LocalUserSettings
+import surf.varun.core.ui.R as CoreUiR
 import surf.varun.core.ui.SyncBanner
+import surf.varun.core.ui.isCompactHeight
 import surf.varun.core.ui.isPolish
 import surf.varun.core.ui.rememberNow
-import surf.varun.core.ui.sharedElement
 import surf.varun.core.ui.shareConditions
-import surf.varun.core.domain.Conditions
-import surf.varun.core.ui.R as CoreUiR
+import surf.varun.core.ui.sharedElement
 
 @Composable
 fun SpotScreen(viewModel: SpotViewModel) {
@@ -136,7 +148,13 @@ class SpotActions(
 @Composable
 internal fun SpotContent(state: SpotUiState, snackbar: SnackbarHostState, actions: SpotActions) {
     val navigator = LocalNavigator.current
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    // One header state per orientation: turned upright, the large header starts open
+    // rather than half-collapsed by however far the sideways bar had scrolled. Sideways the
+    // one-line bar stays put: there is nothing to collapse
+    val compact = isCompactHeight()
+    val scrollBehavior = key(compact) {
+        if (compact) TopAppBarDefaults.pinnedScrollBehavior() else TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    }
     val spot = state.spot
 
     Scaffold(
@@ -166,7 +184,12 @@ internal fun SpotContent(state: SpotUiState, snackbar: SnackbarHostState, action
             else -> PullToRefreshBox(
                 isRefreshing = state.sync.refreshing,
                 onRefresh = actions.refresh,
-                modifier = Modifier.fillMaxSize().padding(padding),
+                // Clear of a camera cut-out on the side too, now that no rail stands there
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
             ) {
                 SpotBody(state, actions)
             }
@@ -179,6 +202,7 @@ private fun SpotBody(state: SpotUiState, actions: SpotActions) {
     val spot = state.spot ?: return
     val now = rememberNow()
     val listState = rememberLazyListState()
+    val compact = isCompactHeight()
     LazyColumn(
         state = listState,
         contentPadding = PaddingValues(bottom = 24.dp),
@@ -188,12 +212,33 @@ private fun SpotBody(state: SpotUiState, actions: SpotActions) {
         if (state.notFound) item(key = "notfound") { NotFound(state, actions, Modifier) }
         if (spot.live != null) item(key = "now") { NowSection(spot, now) }
         item(key = "forecast") { ForecastSection(state, actions) }
-        item(key = "ai") { Divided { AiSection(state, actions) } }
-        if (spot.links.icm != null) item(key = "icm") { Divided { IcmSection(state, actions) } }
-        item(key = "about") { Divided { AboutSection(spot) } }
-        if (spot.coordinates != null) item(key = "location") { Divided { LocationSection(spot) } }
-        item(key = "links") { Divided { LinksSection(spot) } }
-        if (spot.sponsors.isNotEmpty()) item(key = "sponsors") { Divided { SponsorsSection(spot) } }
+        if (compact) {
+            // Sideways one column would leave most of every row empty: what is read (analysis,
+            // the spot) goes left, where it is and the links out go right
+            item(key = "columns") {
+                Divided {
+                    Row(verticalAlignment = Alignment.Top) {
+                        Column(Modifier.weight(1f)) {
+                            AiSection(state, actions)
+                            if (spot.links.icm != null) Divided { IcmSection(state, actions) }
+                            Divided { AboutSection(spot) }
+                        }
+                        Column(Modifier.weight(1f)) {
+                            if (spot.coordinates != null) LocationSection(spot)
+                            Divided { LinksSection(spot) }
+                            if (spot.sponsors.isNotEmpty()) Divided { SponsorsSection(spot) }
+                        }
+                    }
+                }
+            }
+        } else {
+            item(key = "ai") { Divided { AiSection(state, actions) } }
+            if (spot.links.icm != null) item(key = "icm") { Divided { IcmSection(state, actions) } }
+            item(key = "about") { Divided { AboutSection(spot) } }
+            if (spot.coordinates != null) item(key = "location") { Divided { LocationSection(spot) } }
+            item(key = "links") { Divided { LinksSection(spot) } }
+            if (spot.sponsors.isNotEmpty()) item(key = "sponsors") { Divided { SponsorsSection(spot) } }
+        }
         item(key = "footer") { Footer(spot) }
     }
     ConfirmDialog(state.pendingConfirm, actions)
@@ -215,10 +260,12 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
     val context = LocalContext.current
     val unit = LocalUserSettings.current.windUnit
     val spot = state.spot
-    val photo = spot?.photoUrl
+    // Sideways there is no height for a picture: a one-line bar with the name and actions
+    val compact = isCompactHeight()
+    val photo = if (compact) null else spot?.photoUrl
     // A spot without a photo shows where it is instead: the satellite snapshot the
     // location section renders anyway, so it costs no extra tiles
-    val mapImage = if (photo == null) rememberSpotMapImage(spot) else null
+    val mapImage = if (photo == null && !compact) rememberSpotMapImage(spot) else null
     val hasBackdrop = photo != null || mapImage != null
     val fraction = scrollBehavior.state.collapsedFraction
     val overPhoto = hasBackdrop && fraction < 0.6f
@@ -248,66 +295,84 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                     .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.55f), Color.Black.copy(alpha = 0.15f), Color.Black.copy(alpha = 0.65f)))),
             )
         }
-        LargeTopAppBar(
-            title = {
-                Text(
-                    spot?.name.orEmpty(),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedElement("spot-name-${state.wgId}"),
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { navigator.back() }) {
-                    Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.back))
+        val title: @Composable () -> Unit = {
+            Text(
+                spot?.name.orEmpty(),
+                maxLines = if (compact) 1 else 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.sharedElement("spot-name-${state.wgId}"),
+            )
+        }
+        val navigationIcon: @Composable () -> Unit = {
+            IconButton(onClick = { navigator.back() }) {
+                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = stringResource(R.string.back))
+            }
+        }
+        val barActions: @Composable RowScope.() -> Unit = {
+            if (spot != null) {
+                FavouriteButton(state.favourite, actions.toggleFavourite)
+                IconButton(onClick = { navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) }) {
+                    Icon(Icons.Rounded.Kitesurfing, contentDescription = stringResource(R.string.kite_size_description))
                 }
-            },
-            actions = {
-                if (spot != null) {
-                    FavouriteButton(state.favourite, actions.toggleFavourite)
-                    IconButton(onClick = { navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) }) {
-                        Icon(Icons.Rounded.Kitesurfing, contentDescription = stringResource(R.string.kite_size_description))
-                    }
-                    IconButton(onClick = { menuOpen = true }) {
-                        Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_actions))
-                    }
-                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(CoreUiR.string.open_on_web)) },
-                            leadingIcon = { Icon(Icons.Rounded.OpenInBrowser, null) },
-                            onClick = { menuOpen = false; Intents.openUrl(context, Intents.spotWebUrl(spot.wgId)) },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(CoreUiR.string.create_alert)) },
-                            leadingIcon = { Icon(Icons.Rounded.NotificationAdd, null) },
-                            onClick = { menuOpen = false; navigator.navigate(AlertEditorRoute(wgId = spot.wgId)) },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(CoreUiR.string.navigate)) },
-                            leadingIcon = { Icon(Icons.Rounded.Directions, null) },
-                            onClick = { menuOpen = false; Intents.navigate(context, spot) },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(CoreUiR.string.share)) },
-                            leadingIcon = { Icon(Icons.Rounded.Share, null) },
-                            onClick = {
-                                menuOpen = false
-                                val reading = Conditions.current(spot, java.time.ZonedDateTime.now())
-                                Intents.share(context, spot, shareConditions(context, reading, unit))
-                            },
-                        )
-                    }
+                IconButton(onClick = { menuOpen = true }) {
+                    Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_actions))
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = if (hasBackdrop) Color.Transparent else MaterialTheme.colorScheme.surface,
-                scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = contentColor,
-                navigationIconContentColor = contentColor,
-                actionIconContentColor = contentColor,
-            ),
-            scrollBehavior = scrollBehavior,
+                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(CoreUiR.string.open_on_web)) },
+                        leadingIcon = { Icon(Icons.Rounded.OpenInBrowser, null) },
+                        onClick = { menuOpen = false; Intents.openUrl(context, Intents.spotWebUrl(spot.wgId)) },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(CoreUiR.string.create_alert)) },
+                        leadingIcon = { Icon(Icons.Rounded.NotificationAdd, null) },
+                        onClick = { menuOpen = false; navigator.navigate(AlertEditorRoute(wgId = spot.wgId)) },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(CoreUiR.string.navigate)) },
+                        leadingIcon = { Icon(Icons.Rounded.Directions, null) },
+                        onClick = { menuOpen = false; Intents.navigate(context, spot) },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(CoreUiR.string.share)) },
+                        leadingIcon = { Icon(Icons.Rounded.Share, null) },
+                        onClick = {
+                            menuOpen = false
+                            val reading = Conditions.current(spot, java.time.ZonedDateTime.now())
+                            Intents.share(context, spot, shareConditions(context, reading, unit))
+                        },
+                    )
+                }
+            }
+        }
+        val colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if (hasBackdrop) Color.Transparent else MaterialTheme.colorScheme.surface,
+            scrolledContainerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = contentColor,
+            navigationIconContentColor = contentColor,
+            actionIconContentColor = contentColor,
         )
+        // Clear of the floating navigation's button of a sideways phone
+        val modifier = Modifier.padding(start = LocalFloatingNavigationGutter.current)
+        if (compact) {
+            TopAppBar(
+                title = title,
+                navigationIcon = navigationIcon,
+                actions = barActions,
+                colors = colors,
+                modifier = modifier,
+                scrollBehavior = scrollBehavior,
+            )
+        } else {
+            LargeTopAppBar(
+                title = title,
+                navigationIcon = navigationIcon,
+                actions = barActions,
+                colors = colors,
+                modifier = modifier,
+                scrollBehavior = scrollBehavior,
+            )
+        }
     }
 }
 

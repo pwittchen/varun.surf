@@ -32,26 +32,32 @@ import androidx.compose.ui.unit.dp
 
 /**
  * A titled section of the spot screen. Flat on the page rather than a card, so the
- * chips, buttons and tables inside never sit in a box within a box.
+ * chips, buttons and tables inside never sit in a box within a box. With
+ * [inlineHeading] the content draws the heading itself ([SectionHeading]), on a row
+ * it shares with something else.
  */
 @Composable
 internal fun SectionCard(
     title: String,
     modifier: Modifier = Modifier,
     action: @Composable (() -> Unit)? = null,
+    inlineHeading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
-        Row(Modifier.fillMaxWidth().padding(bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                title,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f).semantics { heading() },
-            )
-            action?.invoke()
+        if (!inlineHeading) {
+            Row(Modifier.fillMaxWidth().padding(bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                SectionHeading(title, Modifier.weight(1f))
+                action?.invoke()
+            }
         }
         content()
     }
+}
+
+@Composable
+internal fun SectionHeading(title: String, modifier: Modifier = Modifier) {
+    Text(title, style = MaterialTheme.typography.titleMedium, modifier = modifier.semantics { heading() })
 }
 
 /** How a section shows a series of readings: the forecast and the live history both offer both. */

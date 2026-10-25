@@ -1,6 +1,5 @@
 package surf.varun.feature.spot
 
-import surf.varun.core.ui.MapStyles
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -34,6 +33,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -44,10 +46,9 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.snapshotter.MapSnapshotter
 import surf.varun.core.model.Spot
 import surf.varun.core.ui.Intents
+import surf.varun.core.ui.MapStyles
+import surf.varun.core.ui.isCompactHeight
 import timber.log.Timber
-import java.io.File
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
 
 /**
  * Static map of the spot (spec 2.2: MapSnapshotter image instead of a live map),
@@ -65,7 +66,8 @@ internal fun MiniMap(spot: Spot) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(2f)
+                // Sideways it sits in a half-width column with little height to spare
+                .aspectRatio(if (isCompactHeight()) 2.6f else 2f)
                 .clip(MaterialTheme.shapes.medium)
                 .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                 .clickable { Intents.navigate(context, spot) },

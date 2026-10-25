@@ -7,13 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.CloudOff
@@ -46,9 +51,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -56,19 +61,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
-import surf.varun.core.domain.Countries
 import surf.varun.core.designsystem.component.EmptyState
+import surf.varun.core.domain.Countries
 import surf.varun.core.navigation.AlertEditorRoute
 import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.navigation.SearchRoute
 import surf.varun.core.navigation.SpotRoute
 import surf.varun.core.ui.ForecastProgressBanner
+import surf.varun.core.ui.LocalFloatingNavigationGutter
+import surf.varun.core.ui.R as UiR
 import surf.varun.core.ui.SpotCard
 import surf.varun.core.ui.SpotCardModel
 import surf.varun.core.ui.SyncBanner
 import surf.varun.core.ui.countryName
+import surf.varun.core.ui.isCompactHeight
 import surf.varun.core.ui.sharedElement
-import surf.varun.core.ui.R as UiR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -93,15 +100,45 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
         }
     }
 
+    // Sideways the screen has no height to spare: the chips join the search field in
+    // the top bar instead of taking a row of their own, and the cards go two abreast
+    val compact = isCompactHeight()
+    val columns = if (compact) 2 else 1
+    val chips = @Composable { modifier: Modifier ->
+        FilterChips(
+            state = state,
+            onCountry = { showCountries = true },
+            onSort = viewModel::setSort,
+            onLiveOnly = viewModel::toggleLiveOnly,
+            modifier = modifier,
+        )
+    }
+
     Scaffold(
         topBar = {
             Surface(color = MaterialTheme.colorScheme.background) {
-                SearchField(
-                    onClick = { navigator.navigate(SearchRoute) },
-                    modifier = Modifier
+                // Right of the floating navigation's button; the list below runs under it
+                val gutter = LocalFloatingNavigationGutter.current
+                Row(
+                    Modifier
                         .windowInsetsPadding(WindowInsets.statusBars)
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp),
-                )
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        .padding(start = gutter),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SearchField(
+                        onClick = { navigator.navigate(SearchRoute) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(
+                                start = if (gutter > 0.dp) 0.dp else 16.dp,
+                                end = if (compact) 0.dp else 16.dp,
+                                top = 8.dp,
+                                bottom = 4.dp,
+                            ),
+                    )
+                    if (compact) chips(Modifier.weight(1.4f))
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbar) },
@@ -121,29 +158,25 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                     modifier = Modifier.fillMaxSize(),
                     action = { TextButton(onClick = viewModel::refresh) { Text(stringResource(UiR.string.retry)) } },
                 )
-                else -> LazyColumn(
+                else -> LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
                     contentPadding = PaddingValues(bottom = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
                 ) {
-                    item(key = "banners") {
+                    item(key = "banners", span = { GridItemSpan(maxLineSpan) }) {
                         Column {
                             ForecastProgressBanner(state.progress)
                             SyncBanner(state.sync, state.online, onRetry = viewModel::refresh)
                         }
                     }
-                    stickyHeader(key = "chips") {
-                        Surface(color = MaterialTheme.colorScheme.background) {
-                            FilterChips(
-                                state = state,
-                                onCountry = { showCountries = true },
-                                onSort = viewModel::setSort,
-                                onLiveOnly = viewModel::toggleLiveOnly,
-                            )
+                    if (!compact) {
+                        stickyHeader(key = "chips") {
+                            Surface(color = MaterialTheme.colorScheme.background) { chips(Modifier) }
                         }
                     }
                     if (state.items.isEmpty()) {
-                        item(key = "empty") {
+                        item(key = "empty", span = { GridItemSpan(maxLineSpan) }) {
                             EmptyState(
                                 icon = Icons.Rounded.SearchOff,
                                 title = stringResource(R.string.no_spots_title),
@@ -152,7 +185,11 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                             )
                         }
                     }
-                    items(state.items, key = { it.spot.wgId }) { model ->
+                    itemsIndexed(state.items, key = { _, model -> model.spot.wgId }) { index, model ->
+                        // Side by side, the 16 dp edge stays on the outside and the pair sits 8 dp apart
+                        val column = index % columns
+                        val start = if (column == 0) 16.dp else 4.dp
+                        val end = if (column == columns - 1) 16.dp else 4.dp
                         CardWithMenu(
                             model = model,
                             onOpen = { navigator.navigate(SpotRoute(model.spot.wgId)) },
@@ -161,10 +198,10 @@ fun SpotsScreen(viewModel: SpotsViewModel) {
                                 viewModel.toggleFavourite(model.spot.wgId)
                             },
                             onCreateAlert = { navigator.navigate(AlertEditorRoute(wgId = model.spot.wgId)) },
-                            modifier = Modifier.padding(horizontal = 16.dp).animateItem(),
+                            modifier = Modifier.padding(start = start, end = end).animateItem(),
                         )
                     }
-                    item(key = "sponsors") { SponsorsRow(state.sponsors) }
+                    item(key = "sponsors", span = { GridItemSpan(maxLineSpan) }) { SponsorsRow(state.sponsors) }
                 }
             }
         }
@@ -223,10 +260,11 @@ private fun FilterChips(
     onCountry: () -> Unit,
     onSort: (SpotSort) -> Unit,
     onLiveOnly: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var sortMenu by remember { mutableStateOf(false) }
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

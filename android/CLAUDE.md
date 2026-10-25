@@ -160,7 +160,12 @@ The design system palette follows the web's theme.
   `res/values-pl/strings.xml` of the module that uses it. No hardcoded UI text
 - Accessibility: touch targets ≥ 48 dp, content descriptions on wind arrows, wind
   classes never conveyed by colour alone, layouts that survive 200% font scale
-- Edge-to-edge everywhere; navigation rail from 600 dp
+- Edge-to-edge everywhere; navigation rail from 600 dp. On a window under 480 dp tall (a phone
+  held sideways - `isCompactHeight()` in `core:ui`, which screens use to adapt too) the navigation
+  floats over the start edge instead: screens keep the collapsed button's strip clear and the
+  opened card floats over them, except entries marked `FULL_BLEED` (map, spots, spot), which run
+  under it: they move their top bar in by `LocalFloatingNavigationGutter` (the map reads
+  `LocalFloatingNavigationInset` instead) and keep the rest clear of the side safe area themselves
 - Room: the schema is exported (`exportSchema = true`). Any entity change bumps
   `VarunDatabase.version`, adds a migration and commits the new
   `core/database/schemas/.../<version>.json`

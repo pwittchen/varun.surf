@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -81,6 +82,7 @@ import surf.varun.core.model.ForecastModelOption
 import surf.varun.core.ui.Format
 import surf.varun.core.ui.formatTemperature
 import surf.varun.core.ui.formatWind
+import surf.varun.core.ui.isCompactHeight
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -127,69 +129,93 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val modelName = spot.availableModels.firstOrNull { it.key == state.model }?.name ?: state.model.uppercase()
     val spotToday = remember(spot.wgId) { Conditions.now(spot, ZonedDateTime.now()).toLocalDate() }
 
-    SectionCard(stringResource(R.string.section_forecast)) {
-        // One line whatever the model is called: the chips grow to span the full width (the
-        // switch keeps the live history's size), and on a narrow screen the model chip gives way first
-        FillRow {
-            AssistChip(
-                onClick = { modelSheet = true },
-                label = {
-                    Text(
-                        modelName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, contentDescription = null) },
-                modifier = Modifier.semantics { contentDescription = "$modelLabel: $modelName" },
-            )
-            FilterChip(
-                selected = state.windyOnly,
-                onClick = { actions.setWindyOnly(!state.windyOnly) },
-                label = {
-                    Text(
-                        stringResource(R.string.windy_days),
-                        maxLines = 1,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                leadingIcon = if (state.windyOnly) {
-                    { Icon(Icons.Rounded.Check, null, Modifier.size(FilterChipDefaults.IconSize)) }
-                } else {
-                    null
-                },
-            )
-            DataViewSwitch(view, onChange = { view = it }, Modifier.fixedInFillRow())
+    // Sideways the controls keep their natural width and the day chips run on beside them,
+    // rather than two rows of controls stretched across the whole screen
+    val compact = isCompactHeight()
+    val modelChip = @Composable { modifier: Modifier ->
+        AssistChip(
+            onClick = { modelSheet = true },
+            label = {
+                Text(
+                    modelName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                    modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
+                )
+            },
+            trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, contentDescription = null) },
+            modifier = modifier.semantics { contentDescription = "$modelLabel: $modelName" },
+        )
+    }
+    val windyChip = @Composable {
+        FilterChip(
+            selected = state.windyOnly,
+            onClick = { actions.setWindyOnly(!state.windyOnly) },
+            label = {
+                Text(
+                    stringResource(R.string.windy_days),
+                    maxLines = 1,
+                    textAlign = TextAlign.Center,
+                    modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
+                )
+            },
+            leadingIcon = if (state.windyOnly) {
+                { Icon(Icons.Rounded.Check, null, Modifier.size(FilterChipDefaults.IconSize)) }
+            } else {
+                null
+            },
+        )
+    }
+    val dayChips = @Composable { modifier: Modifier ->
+        LazyRow(modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            itemsIndexed(spot.daily) { index, day ->
+                // Daily rows are Today, Tomorrow, Day 3... - one per day from the spot's today
+                val date = spotToday.plusDays(index.toLong())
+                val windClass = WindClass.ofAverage(day.wind, day.gusts)
+                val selected = selectedDay == date.toString()
+                FilterChip(
+                    selected = selected,
+                    onClick = {
+                        selectedDay = date.toString()
+                        scrollTo(hours.indexOfFirst { it.time!!.toLocalDate() >= date })
+                    },
+                    label = {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(Format.dayLabel(context, day.day, day.rawDate))
+                            // On the selected chip's fill the class colours wash out: take the label colour instead
+                            val windColor = if (selected) LocalContentColor.current else VarunTheme.wind.forClass(windClass)
+                            WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass, color = windColor)
+                            WindArrow(day.direction, size = 14.dp, color = windColor, animate = false)
+                        }
+                    },
+                )
+            }
         }
+    }
 
-        if (spot.daily.isNotEmpty()) {
-            Spacer(Modifier.height(12.dp))
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                itemsIndexed(spot.daily) { index, day ->
-                    // Daily rows are Today, Tomorrow, Day 3... - one per day from the spot's today
-                    val date = spotToday.plusDays(index.toLong())
-                    val windClass = WindClass.ofAverage(day.wind, day.gusts)
-                    val selected = selectedDay == date.toString()
-                    FilterChip(
-                        selected = selected,
-                        onClick = {
-                            selectedDay = date.toString()
-                            scrollTo(hours.indexOfFirst { it.time!!.toLocalDate() >= date })
-                        },
-                        label = {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text(Format.dayLabel(context, day.day, day.rawDate))
-                                // On the selected chip's fill the class colours wash out: take the label colour instead
-                                val windColor = if (selected) LocalContentColor.current else VarunTheme.wind.forClass(windClass)
-                                WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass, color = windColor)
-                                WindArrow(day.direction, size = 14.dp, color = windColor, animate = false)
-                            }
-                        },
-                    )
-                }
+    // Sideways the heading shares its row with the controls: a row of height saved
+    SectionCard(stringResource(R.string.section_forecast), inlineHeading = compact) {
+        if (compact) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                SectionHeading(stringResource(R.string.section_forecast), Modifier.padding(end = 8.dp))
+                modelChip(Modifier.widthIn(max = MODEL_CHIP_MAX_WIDTH))
+                windyChip()
+                DataViewSwitch(view, onChange = { view = it })
+                if (spot.daily.isNotEmpty()) dayChips(Modifier.weight(1f).padding(start = 8.dp))
+            }
+        } else {
+            // One line whatever the model is called: the chips grow to span the full width (the
+            // switch keeps the live history's size), and on a narrow screen the model chip gives way first
+            FillRow {
+                modelChip(Modifier)
+                windyChip()
+                DataViewSwitch(view, onChange = { view = it }, Modifier.fixedInFillRow())
+            }
+
+            if (spot.daily.isNotEmpty()) {
+                Spacer(Modifier.height(12.dp))
+                dayChips(Modifier)
             }
         }
 
@@ -456,3 +482,5 @@ private fun LegendDot(color: Color, text: String) {
     }
 }
 
+/** Sideways the model chip keeps its name's width, up to this; a long name ellipsizes. */
+private val MODEL_CHIP_MAX_WIDTH = 220.dp

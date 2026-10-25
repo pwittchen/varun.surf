@@ -44,6 +44,7 @@ import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.domain.KiteCalculator
 import surf.varun.core.model.SkillLevel
 import surf.varun.core.navigation.LocalNavigator
+import surf.varun.core.ui.isCompactHeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,51 +63,76 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
             )
         },
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            if (!state.loaded) return@Column
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = state.windText,
-                    onValueChange = viewModel::onWind,
-                    label = { Text(stringResource(R.string.wind_speed_label)) },
-                    supportingText = if (state.prefilledFromSpot) ({ Text(stringResource(R.string.prefilled_from_spot)) }) else null,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
-                )
-                state.wind?.let { WindNumber(it.toInt().toString(), it, style = Numbers.large, modifier = Modifier.padding(start = 16.dp)) }
+        if (!state.loaded) return@Scaffold
+        // Sideways the result would sit below the fold: it goes next to the inputs instead
+        if (isCompactHeight()) {
+            Row(
+                Modifier.fillMaxSize().padding(padding),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Column(
+                    Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) { Inputs(state, viewModel) }
+                Column(
+                    Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(16.dp),
+                ) { Outcome(state) }
             }
-            Slider(
-                value = (state.wind ?: 15.0).toFloat().coerceIn(5f, 50f),
-                onValueChange = viewModel::onWindSlider,
-                // No steps: 44 tick marks are noise, and the view model rounds to whole knots
-                valueRange = 5f..50f,
-            )
-            OutlinedTextField(
-                value = state.weightText,
-                onValueChange = viewModel::onWeight,
-                label = { Text(stringResource(R.string.rider_weight_label)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            SkillDropdown(state.skill, viewModel::onSkill)
-
-            val warning = state.warning
-            val result = state.result
-            when {
-                state.pristine -> Unit
-                warning != null -> WarningCard(warning)
-                result != null -> ResultCard(result)
+        } else {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Inputs(state, viewModel)
+                Outcome(state)
             }
         }
+    }
+}
+
+@Composable
+private fun Inputs(state: CalculatorUiState, viewModel: CalculatorViewModel) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        OutlinedTextField(
+            value = state.windText,
+            onValueChange = viewModel::onWind,
+            label = { Text(stringResource(R.string.wind_speed_label)) },
+            supportingText = if (state.prefilledFromSpot) ({ Text(stringResource(R.string.prefilled_from_spot)) }) else null,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            singleLine = true,
+            modifier = Modifier.weight(1f),
+        )
+        state.wind?.let { WindNumber(it.toInt().toString(), it, style = Numbers.large, modifier = Modifier.padding(start = 16.dp)) }
+    }
+    Slider(
+        value = (state.wind ?: 15.0).toFloat().coerceIn(5f, 50f),
+        onValueChange = viewModel::onWindSlider,
+        // No steps: 44 tick marks are noise, and the view model rounds to whole knots
+        valueRange = 5f..50f,
+    )
+    OutlinedTextField(
+        value = state.weightText,
+        onValueChange = viewModel::onWeight,
+        label = { Text(stringResource(R.string.rider_weight_label)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    SkillDropdown(state.skill, viewModel::onSkill)
+}
+
+@Composable
+private fun Outcome(state: CalculatorUiState) {
+    val warning = state.warning
+    val result = state.result
+    when {
+        state.pristine -> Unit
+        warning != null -> WarningCard(warning)
+        result != null -> ResultCard(result)
     }
 }
 

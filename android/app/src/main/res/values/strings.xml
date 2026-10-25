@@ -5,6 +5,8 @@
     <string name="tab_favourites">Favourites</string>
     <string name="tab_map">Map</string>
     <string name="tab_more">More</string>
+    <string name="navigation_expand">Show navigation</string>
+    <string name="navigation_collapse">Hide navigation</string>
 
     <string name="more_calculator">Kite &amp; board calculator</string>
     <string name="more_calculator_summary">Kite and board size for the wind and your weight</string>

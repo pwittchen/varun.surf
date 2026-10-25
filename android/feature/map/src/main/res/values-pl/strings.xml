@@ -20,6 +20,8 @@
     <string name="map_zoom_in">Przybliż</string>
     <string name="map_zoom_out">Oddal</string>
     <string name="map_reset_view">Przywróć widok</string>
+    <string name="map_controls_show">Pokaż sterowanie mapą</string>
+    <string name="map_controls_hide">Ukryj sterowanie mapą</string>
     <string name="map_no_favourites">Brak ulubionych spotów z lokalizacją</string>
     <string name="map_location_unavailable">Nie udało się ustalić Twojej lokalizacji</string>
     <string name="map_locating">Ustalam Twoją lokalizację…</string>

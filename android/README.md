@@ -87,5 +87,17 @@ benchmark/           baseline profile generator and startup/scroll macrobenchmar
 - **Spots list chips**: no "Nearby" (spots within 50 km) or "Windy today" chips - country, sort and
   "Live only" only. Distances on cards and the distance sort stay, once location is on in settings.
 - **Large screens**: navigation rail from 600 dp and a map side sheet; no list-detail pane yet.
+- **Map controls**: all in one floating card that folds away to a single button (portrait and
+  landscape), rather than a column of separate small FABs.
+- **Landscape phones** (window under 480 dp tall): instead of the bottom bar, a floating navigation
+  card that collapses to a single menu button and floats over every screen (the map, the spots list
+  and the spot page run under it, moving only their top bar clear of the button; the others keep
+  the button's strip clear); the spots list in two columns with its chips beside the search field;
+  a spot page with a one-line bar (no photo or map preview), the forecast controls and day chips on
+  the heading's row and the sections below the forecast in two columns; the calculator's result
+  beside its inputs; and on the map the controls card in three short columns, the spot in a popup
+  floating over the right of the map (the controls step aside while it is open) and the timeline
+  hidden until the layers menu shows it (without a drag handle, and without changing the setting
+  portrait uses).
 - Not built (v1.1 in the spec): compass-relative wind, Quick Settings tile, webcam previews,
   favourites import from the web, offline map regions.

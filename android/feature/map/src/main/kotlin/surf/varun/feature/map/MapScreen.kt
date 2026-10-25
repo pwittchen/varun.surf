@@ -1,5 +1,12 @@
 package surf.varun.feature.map
 
+import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.expandIn
 import surf.varun.core.ui.MapStyles
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -15,6 +22,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -61,7 +70,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -110,11 +118,16 @@ import surf.varun.core.navigation.LocalNavigator
 import surf.varun.core.navigation.MapRoute
 import surf.varun.core.navigation.SpotRoute
 import surf.varun.core.ui.Intents
+import surf.varun.core.ui.LocalFloatingNavigationInset
 import surf.varun.core.ui.LocalReduceMotion
 import surf.varun.core.ui.countryName
+import surf.varun.core.ui.isCompactHeight
 import surf.varun.core.ui.rememberScreenSettled
 
 private val PEEK_HEIGHT = 156.dp
+
+/** The timeline alone, without the drag handle a phone held sideways has no height for. */
+private val COMPACT_PEEK_HEIGHT = 112.dp
 private val SIDE_SHEET_BREAKPOINT = 840.dp
 private const val PLAY_STEP_MS = 650L
 
@@ -290,25 +303,55 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState, snackbarHostState = snackbar)
 
     // Hidden, the timeline leaves no peeking sheet: a spot opened on a phone still slides it up
-    val timeline = state.settings.mapTimeline
-    val peek = if (timeline) PEEK_HEIGHT else 0.dp
-    LaunchedEffect(timeline) { if (!timeline) playing = false }
+    // Sideways the timeline starts hidden whatever the setting says, so the map gets the
+    // little height there is; the layers menu shows it again without touching the setting.
+    // Saved, so turning the phone back and forth keeps the choice for the visit
+    val compact = isCompactHeight()
+    // The map runs under the floating navigation of a sideways phone; what it puts on the start edge doesn't
+    val navigationInset = LocalFloatingNavigationInset.current
+    var landscapeTimeline by rememberSaveable { mutableStateOf(false) }
+    val timeline = if (compact) landscapeTimeline else state.settings.mapTimeline
+    val onTimeline: (Boolean) -> Unit = { if (compact) landscapeTimeline = it else viewModel.setTimeline(it) }
+    // Sideways the bottom sheet only ever carries the timeline: the spot opens on the side
+    val peek = when {
+        !timeline -> 0.dp
+        compact -> COMPACT_PEEK_HEIGHT
+        else -> PEEK_HEIGHT
+    }
+    LaunchedEffect(timeline) {
+        // No hour on show without the bar that names it
+        if (!timeline) {
+            playing = false
+            viewModel.setStep(0)
+        }
+    }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val wide = maxWidth >= SIDE_SHEET_BREAKPOINT
+        val wide = maxWidth >= SIDE_SHEET_BREAKPOINT || compact
         val selected = state.selected
 
+        // The sheet only opens for a spot it shows: with none, or the spot on the side, it rests
         LaunchedEffect(selected?.wgId, wide) {
-            if (selected != null && !wide) sheetState.expand()
+            if (selected != null && !wide) sheetState.expand() else sheetState.partialExpand()
         }
+        // Collapsing the sheet back to the timeline closes the spot - only once it was open:
+        // a spot opened on the side of a sideways phone survives being turned upright
+        var sheetWasExpanded by remember { mutableStateOf(false) }
         LaunchedEffect(sheetState.currentValue) {
-            // Collapsing the sheet back to the timeline closes the spot
-            if (sheetState.currentValue == SheetValue.PartiallyExpanded && !wide) viewModel.select(null)
+            when {
+                sheetState.currentValue == SheetValue.Expanded -> sheetWasExpanded = true
+                sheetWasExpanded && !wide -> {
+                    sheetWasExpanded = false
+                    viewModel.select(null)
+                }
+                else -> sheetWasExpanded = false
+            }
         }
 
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = peek,
+            sheetDragHandle = if (compact) null else ({ BottomSheetDefaults.DragHandle() }),
             snackbarHost = { SnackbarHost(snackbar) },
             sheetContent = {
                 if (timeline) TimelineBar(
@@ -399,6 +442,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         },
                         onTap = { point -> viewModel.select(controller?.handleTap(point)) },
                         attributionMarginBottomPx = with(density) { (peek + 8.dp).roundToPx() },
+                        attributionMarginStartPx = with(density) { navigationInset.roundToPx() },
                         modifier = Modifier.fillMaxSize(),
                     )
 
@@ -431,12 +475,15 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         stringResource(R.string.map_wind_field_disclaimer),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(16.dp),
+                        modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(16.dp).padding(start = navigationInset),
                     )
                 }
 
                 val noFavourites = stringResource(R.string.map_no_favourites)
-                MapControls(
+                // Sideways the spot's sheet takes the right edge and the floating navigation the
+                // left, which leaves the controls nowhere clear of the spot centred between them:
+                // they step aside until the sheet is closed
+                if (!(compact && selected != null)) MapControls(
                     state = state,
                     showLayers = showLayers,
                     globe = globe,
@@ -475,25 +522,39 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             controller?.centreOn(Coordinates(DEFAULT_CAMERA.lat, DEFAULT_CAMERA.lon), DEFAULT_CAMERA.zoom)
                         }
                     },
+                    timeline = timeline,
+                    onTimeline = onTimeline,
                     viewModel = viewModel,
+                    compact = compact,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .statusBarsPadding()
-                        .padding(top = 12.dp, end = if (wide && selected != null) 376.dp else 12.dp),
+                        // Sideways level with the floating navigation on the other edge
+                        .padding(top = if (compact) 4.dp else 12.dp, end = if (wide && selected != null) 376.dp else 12.dp),
                 )
 
                 if (wide && selected != null) {
-                    // Expanded width: a side sheet instead of the bottom one (spec 9.6)
+                    // Expanded width: a side sheet instead of the bottom one (spec 9.6). Sideways
+                    // it is a popup floating over the map instead, only as tall as the spot needs
                     Surface(
                         tonalElevation = 3.dp,
                         shadowElevation = 6.dp,
-                        shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp),
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .width(360.dp)
-                            .fillMaxHeight()
-                            .statusBarsPadding()
-                            .padding(bottom = peek),
+                        shape = if (compact) RoundedCornerShape(16.dp) else RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp),
+                        modifier = if (compact) {
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .safeDrawingPadding()
+                                .padding(bottom = peek)
+                                .padding(16.dp)
+                                .width(360.dp)
+                        } else {
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .width(360.dp)
+                                .fillMaxHeight()
+                                .statusBarsPadding()
+                                .padding(bottom = peek)
+                        },
                     ) {
                         SpotPanel(
                             spot = selected,
@@ -505,6 +566,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                             onToggleFavourite = { viewModel.toggleFavourite(selected.wgId) },
                             onNavigate = { Intents.navigate(context, selected) },
                             onClose = { viewModel.select(null) },
+                            modifier = if (compact) Modifier.padding(bottom = 8.dp) else Modifier,
                         )
                     }
                 }
@@ -580,10 +642,12 @@ private fun LocatingOverlay(visible: Boolean, modifier: Modifier = Modifier) {
 }
 
 /**
- * Every map control in one column on the right: filters (search, country,
- * favourites, live stations), then the globe switch, layers and location, then
- * zoom and the reset to the opening view. Filters that are on (and the globe)
- * are filled with the accent colour.
+ * Every map control in one card floating on the right, folded away to a single
+ * button on request: filters (search, country, favourites, live stations), then
+ * the globe switch, layers and location, then zoom and the reset to the opening
+ * view. Filters that are on (and the globe) are filled with the accent colour.
+ * With no height to spare ([compact]) the three groups stand side by side
+ * instead of one under another.
  */
 @Composable
 private fun MapControls(
@@ -599,62 +663,135 @@ private fun MapControls(
     onMyLocation: () -> Unit,
     onZoom: (Double) -> Unit,
     onResetView: () -> Unit,
+    timeline: Boolean,
+    onTimeline: (Boolean) -> Unit,
     viewModel: MapViewModel,
+    compact: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        ControlButton(Icons.Rounded.Search, stringResource(R.string.map_search), onSearch)
-        ControlButton(
-            Icons.Rounded.Flag,
-            state.filters.country?.let { countryName(it) } ?: stringResource(R.string.map_filter_country_all),
-            onCountry,
-            active = state.filters.country != null,
-        )
-        ControlButton(
-            if (state.filters.favouritesOnly) Icons.Rounded.Star else Icons.Rounded.StarBorder,
-            stringResource(R.string.map_filter_favourites),
-            onFavourites,
-            active = state.filters.favouritesOnly,
-        )
-        ControlButton(Icons.Rounded.Sensors, stringResource(R.string.map_filter_live), onLive, active = state.filters.liveOnly)
-
-        Spacer(Modifier.height(8.dp))
-        ControlButton(Icons.Rounded.Public, stringResource(R.string.map_globe), onGlobe, active = globe)
-        Box {
-            ControlButton(Icons.Rounded.Layers, stringResource(R.string.map_layers), { onLayers(true) })
-            LayersMenu(
-                expanded = showLayers,
-                globe = globe,
-                windField = state.settings.mapWindField,
-                markers = state.settings.mapMarkers,
-                satellite = state.settings.mapSatellite,
-                spin = state.settings.mapGlobeSpin,
-                timeline = state.settings.mapTimeline,
-                onDismiss = { onLayers(false) },
-                onWindField = viewModel::setWindField,
-                onMarkers = viewModel::setMarkers,
-                onSatellite = viewModel::setSatellite,
-                onSpin = viewModel::setGlobeSpin,
-                onTimeline = viewModel::setTimeline,
-            )
+    // Kept for the visit: whoever folds the controls away to look at the map wants them folded
+    var expanded by rememberSaveable { mutableStateOf(true) }
+    Surface(
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 3.dp,
+        shadowElevation = 6.dp,
+        modifier = modifier,
+    ) {
+        Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(4.dp)) {
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(
+                    if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.Tune,
+                    contentDescription = stringResource(if (expanded) R.string.map_controls_hide else R.string.map_controls_show),
+                )
+            }
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn() + expandIn(expandFrom = Alignment.TopEnd),
+                exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.TopEnd),
+            ) {
+                if (compact) {
+                    Row {
+                        Column { ZoomControls(onZoom, onResetView) }
+                        Column { ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel) }
+                        Column { FilterControls(state, onSearch, onCountry, onFavourites, onLive) }
+                    }
+                } else {
+                    Column {
+                        GroupDivider()
+                        FilterControls(state, onSearch, onCountry, onFavourites, onLive)
+                        GroupDivider()
+                        ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel)
+                        GroupDivider()
+                        ZoomControls(onZoom, onResetView)
+                    }
+                }
+            }
         }
-        ControlButton(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location), onMyLocation)
-
-        Spacer(Modifier.height(8.dp))
-        ControlButton(Icons.Rounded.Add, stringResource(R.string.map_zoom_in), { onZoom(1.0) })
-        ControlButton(Icons.Rounded.Remove, stringResource(R.string.map_zoom_out), { onZoom(-1.0) })
-        ControlButton(Icons.Rounded.Home, stringResource(R.string.map_reset_view), onResetView)
     }
 }
 
-/** A small map button; [active] marks a filter that is on, for TalkBack as well as visually. */
+/** A short hairline between the groups of controls in their card. */
+@Composable
+private fun GroupDivider() {
+    HorizontalDivider(
+        Modifier.width(48.dp).padding(horizontal = 12.dp, vertical = 4.dp),
+        color = MaterialTheme.colorScheme.outlineVariant,
+    )
+}
+
+@Composable
+private fun FilterControls(
+    state: MapUiState,
+    onSearch: () -> Unit,
+    onCountry: () -> Unit,
+    onFavourites: () -> Unit,
+    onLive: () -> Unit,
+) {
+    ControlButton(Icons.Rounded.Search, stringResource(R.string.map_search), onSearch)
+    ControlButton(
+        Icons.Rounded.Flag,
+        state.filters.country?.let { countryName(it) } ?: stringResource(R.string.map_filter_country_all),
+        onCountry,
+        active = state.filters.country != null,
+    )
+    ControlButton(
+        if (state.filters.favouritesOnly) Icons.Rounded.Star else Icons.Rounded.StarBorder,
+        stringResource(R.string.map_filter_favourites),
+        onFavourites,
+        active = state.filters.favouritesOnly,
+    )
+    ControlButton(Icons.Rounded.Sensors, stringResource(R.string.map_filter_live), onLive, active = state.filters.liveOnly)
+}
+
+@Composable
+private fun ViewControls(
+    state: MapUiState,
+    showLayers: Boolean,
+    globe: Boolean,
+    timeline: Boolean,
+    onGlobe: () -> Unit,
+    onLayers: (Boolean) -> Unit,
+    onTimeline: (Boolean) -> Unit,
+    onMyLocation: () -> Unit,
+    viewModel: MapViewModel,
+) {
+    ControlButton(Icons.Rounded.Public, stringResource(R.string.map_globe), onGlobe, active = globe)
+    Box {
+        ControlButton(Icons.Rounded.Layers, stringResource(R.string.map_layers), { onLayers(true) })
+        LayersMenu(
+            expanded = showLayers,
+            globe = globe,
+            windField = state.settings.mapWindField,
+            markers = state.settings.mapMarkers,
+            satellite = state.settings.mapSatellite,
+            spin = state.settings.mapGlobeSpin,
+            timeline = timeline,
+            onDismiss = { onLayers(false) },
+            onWindField = viewModel::setWindField,
+            onMarkers = viewModel::setMarkers,
+            onSatellite = viewModel::setSatellite,
+            onSpin = viewModel::setGlobeSpin,
+            onTimeline = onTimeline,
+        )
+    }
+    ControlButton(Icons.Rounded.MyLocation, stringResource(R.string.map_my_location), onMyLocation)
+}
+
+@Composable
+private fun ZoomControls(onZoom: (Double) -> Unit, onResetView: () -> Unit) {
+    ControlButton(Icons.Rounded.Add, stringResource(R.string.map_zoom_in), { onZoom(1.0) })
+    ControlButton(Icons.Rounded.Remove, stringResource(R.string.map_zoom_out), { onZoom(-1.0) })
+    ControlButton(Icons.Rounded.Home, stringResource(R.string.map_reset_view), onResetView)
+}
+
+/** A map button in the controls card; [active] marks a filter that is on, for TalkBack as well as visually. */
 @Composable
 private fun ControlButton(icon: ImageVector, description: String, onClick: () -> Unit, active: Boolean? = null) {
     val on = active == true
-    SmallFloatingActionButton(
+    IconButton(
         onClick = onClick,
-        containerColor = if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
-        contentColor = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+        colors = if (on) IconButtonDefaults.filledIconButtonColors() else IconButtonDefaults.iconButtonColors(),
         modifier = if (active != null) Modifier.semantics { selected = on } else Modifier,
     ) {
         Icon(icon, contentDescription = description)

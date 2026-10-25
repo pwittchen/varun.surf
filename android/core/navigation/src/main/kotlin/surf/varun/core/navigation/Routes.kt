@@ -63,6 +63,12 @@ val TopLevel.root: Route
         TopLevel.MORE -> MoreRoute
     }
 
+/**
+ * Entry metadata of a screen drawn edge to edge under the floating navigation of a
+ * sideways phone (the map), rather than laid out beside it like the others.
+ */
+const val FULL_BLEED = "varun.fullBleed"
+
 interface Navigator {
     /** Push [route] on top of the current tab. */
     fun navigate(route: Route)

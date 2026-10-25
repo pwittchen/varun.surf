@@ -4,6 +4,8 @@
     <string name="tab_favourites">Ulubione</string>
     <string name="tab_map">Mapa</string>
     <string name="tab_more">Więcej</string>
+    <string name="navigation_expand">Pokaż nawigację</string>
+    <string name="navigation_collapse">Ukryj nawigację</string>
 
     <string name="more_calculator">Kalkulator latawca i deski</string>
     <string name="more_calculator_summary">Rozmiar latawca i deski do wiatru i Twojej wagi</string>

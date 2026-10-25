@@ -12,13 +12,40 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavEntryDecorator
+import surf.varun.core.navigation.FULL_BLEED
+import surf.varun.core.ui.LocalFloatingNavigationGutter
+import surf.varun.core.ui.LocalFloatingNavigationInset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Map
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -52,6 +79,7 @@ import surf.varun.core.navigation.TopLevel
 import surf.varun.core.ui.LocalReduceMotion
 import surf.varun.core.ui.LocalSharedTransitionScope
 import surf.varun.core.ui.LocalUserSettings
+import surf.varun.core.ui.isCompactHeight
 import surf.varun.core.ui.rememberReduceMotion
 import surf.varun.feature.about.aboutEntries
 import surf.varun.feature.alerts.alertsEntries
@@ -96,7 +124,19 @@ fun VarunApp(
             LocalNavigator provides navState,
             LocalReduceMotion provides rememberReduceMotion(),
         ) {
+            // Material picks the bar or the rail by width alone; a phone held sideways is
+            // wide enough for a bar, which then takes a third of its height. It gets neither:
+            // its navigation floats over the screen (FloatingNavigation, below)
+            val compact = isCompactHeight()
+            var navigationExpanded by rememberSaveable { mutableStateOf(true) }
+            var navigationWidth by remember { mutableStateOf(0.dp) }
+            val density = LocalDensity.current
             NavigationSuiteScaffold(
+                layoutType = if (compact) {
+                    NavigationSuiteType.None
+                } else {
+                    NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
+                },
                 navigationSuiteItems = {
                     TopLevel.entries.forEach { tab ->
                         item(
@@ -122,6 +162,12 @@ fun VarunApp(
                 // Each tab's stack decorated on its own: an entry's ViewModels and saved state
                 // (scroll, map camera) are dropped when it is popped from its tab, not every
                 // time another tab is shown and its entries leave the displayed list
+                val inset = if (compact) navigationWidth else 0.dp
+                // Other screens keep only the collapsed button's strip: open, the card floats over them
+                val safeStart = WindowInsets.safeDrawing.only(WindowInsetsSides.Start).asPaddingValues()
+                    .calculateStartPadding(LocalLayoutDirection.current)
+                val gutter = if (compact) safeStart + FloatingNavigationCollapsedWidth else 0.dp
+                val floatingInset = remember { floatingNavigationDecorator() }
                 val entriesByTab = TopLevel.entries.associateWith { tab ->
                     key(tab) {
                         rememberDecoratedNavEntries(
@@ -129,13 +175,19 @@ fun VarunApp(
                             entryDecorators = listOf(
                                 rememberSaveableStateHolderNavEntryDecorator(),
                                 rememberViewModelStoreNavEntryDecorator(),
+                                floatingInset,
                             ),
                             entryProvider = entryProvider,
                         )
                     }
                 }
                 SharedTransitionLayout {
-                    CompositionLocalProvider(LocalSharedTransitionScope provides this) {
+                    CompositionLocalProvider(
+                        LocalSharedTransitionScope provides this,
+                        LocalFloatingNavigationInset provides inset,
+                        LocalNavigationGutter provides gutter,
+                        LocalFloatingNavigationGutter provides if (compact) FloatingNavigationCollapsedWidth else 0.dp,
+                    ) {
                         NavDisplay(
                             entries = navState.visibleTabs.flatMap { entriesByTab.getValue(it) },
                             onBack = { navState.back() },
@@ -148,8 +200,36 @@ fun VarunApp(
                             },
                         )
                     }
+                    if (compact) {
+                        FloatingNavigation(
+                            current = navState.currentTab,
+                            expanded = navigationExpanded,
+                            onToggle = { navigationExpanded = !navigationExpanded },
+                            onSelect = navState::switchTo,
+                            modifier = Modifier.onSizeChanged { navigationWidth = with(density) { it.width.toDp() } },
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+/** The strip a screen keeps clear for the collapsed floating navigation; zero without it. */
+private val LocalNavigationGutter = compositionLocalOf { 0.dp }
+
+/**
+ * Keeps every screen clear of the collapsed floating navigation - opened, it floats over
+ * them - except one drawn edge to edge under it ([FULL_BLEED], the map), which is told how
+ * far it reaches instead. Without the floating navigation this changes nothing.
+ */
+private fun floatingNavigationDecorator() = NavEntryDecorator<Route> { entry ->
+    if (entry.metadata[FULL_BLEED] == true) {
+        entry.Content()
+    } else {
+        val padding = PaddingValues(start = LocalNavigationGutter.current)
+        Box(Modifier.padding(padding).consumeWindowInsets(padding)) {
+            CompositionLocalProvider(LocalFloatingNavigationInset provides 0.dp) { entry.Content() }
         }
     }
 }
@@ -166,14 +246,14 @@ private const val TAB_FADE_OUT_MS = 90
 private const val TAB_FADE_IN_MS = 210
 
 @Composable
-private fun TopLevel.icon(): Painter = when (this) {
+internal fun TopLevel.icon(): Painter = when (this) {
     TopLevel.SPOTS -> painterResource(R.drawable.ic_tab_spots)
     TopLevel.FAVOURITES -> rememberVectorPainter(Icons.Rounded.Star)
     TopLevel.MAP -> rememberVectorPainter(Icons.Rounded.Map)
     TopLevel.MORE -> rememberVectorPainter(Icons.Rounded.MoreHoriz)
 }
 
-private fun TopLevel.label() = when (this) {
+internal fun TopLevel.label() = when (this) {
     TopLevel.SPOTS -> R.string.tab_spots
     TopLevel.FAVOURITES -> R.string.tab_favourites
     TopLevel.MAP -> R.string.tab_map

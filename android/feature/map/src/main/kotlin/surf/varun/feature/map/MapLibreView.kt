@@ -7,9 +7,12 @@ import android.view.Gravity
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -46,6 +49,8 @@ fun MapLibreView(
     onTap: (PointF) -> Unit,
     attributionMarginBottomPx: Int,
     modifier: Modifier = Modifier,
+    /** Clear of whatever floats over the start edge (the floating navigation of a sideways phone). */
+    attributionMarginStartPx: Int = 0,
     /** Called once, the first time the map has finished drawing what it was asked to. */
     onFirstRender: () -> Unit = {},
     /**
@@ -62,6 +67,7 @@ fun MapLibreView(
     val currentIdle by rememberUpdatedState(onCameraIdle)
     val currentTap by rememberUpdatedState(onTap)
     val currentFirstRender by rememberUpdatedState(onFirstRender)
+    var readyMap by remember { mutableStateOf<MapLibreMap?>(null) }
 
     val mapView = remember {
         ensureMapLibre(context)
@@ -105,7 +111,6 @@ fun MapLibreView(
                 isAttributionEnabled = true
                 // OSM / provider attribution must stay visible (licence requirement)
                 attributionGravity = Gravity.BOTTOM or Gravity.START
-                setAttributionMargins(24, 0, 0, attributionMarginBottomPx)
                 compassGravity = Gravity.TOP or Gravity.END
             }
             map.addOnCameraMoveStartedListener { currentMoveStarted() }
@@ -118,6 +123,7 @@ fun MapLibreView(
                 currentTap(map.projection.toScreenLocation(latLng))
                 true
             }
+            readyMap = map
             currentOnReady(MapController(map, mapView, context))
         }
         onDispose {
@@ -128,6 +134,11 @@ fun MapLibreView(
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) mapView.onStop()
             mapView.onDestroy()
         }
+    }
+
+    // Followed rather than set once: the timeline and the floating navigation come and go
+    LaunchedEffect(readyMap, attributionMarginStartPx, attributionMarginBottomPx) {
+        readyMap?.uiSettings?.setAttributionMargins(24 + attributionMarginStartPx, 0, 0, attributionMarginBottomPx)
     }
 
     AndroidView(
