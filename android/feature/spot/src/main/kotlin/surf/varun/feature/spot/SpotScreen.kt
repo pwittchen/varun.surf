@@ -58,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -289,10 +290,22 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
             )
         }
         if (hasBackdrop) {
+            // Dark behind the bar's icons and the title, then the picture melts into the
+            // page over the strip under the title rather than ending on a hard edge
+            val surface = MaterialTheme.colorScheme.surface
             Box(
                 Modifier.matchParentSize()
                     .graphicsLayer { alpha = 1f - scrollBehavior.state.collapsedFraction }
-                    .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.55f), Color.Black.copy(alpha = 0.15f), Color.Black.copy(alpha = 0.65f)))),
+                    .drawWithCache {
+                        val fadeStart = (1f - (BackdropFade + TitleClearance).toPx() / size.height).coerceIn(0.4f, 1f)
+                        val brush = Brush.verticalGradient(
+                            0f to Color.Black.copy(alpha = 0.55f),
+                            0.3f to Color.Black.copy(alpha = 0.15f),
+                            fadeStart to Color.Black.copy(alpha = 0.6f),
+                            1f to surface,
+                        )
+                        onDrawBehind { drawRect(brush) }
+                    },
             )
         }
         val title: @Composable () -> Unit = {
@@ -364,17 +377,27 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                 scrollBehavior = scrollBehavior,
             )
         } else {
-            LargeTopAppBar(
-                title = title,
-                navigationIcon = navigationIcon,
-                actions = barActions,
-                colors = colors,
-                modifier = modifier,
-                scrollBehavior = scrollBehavior,
-            )
+            Column {
+                LargeTopAppBar(
+                    title = title,
+                    navigationIcon = navigationIcon,
+                    actions = barActions,
+                    colors = colors,
+                    modifier = modifier,
+                    scrollBehavior = scrollBehavior,
+                )
+                // Room under the title for the backdrop to fade out in, closing with the bar
+                if (hasBackdrop) Spacer(Modifier.height(BackdropFade * (1f - fraction)))
+            }
         }
     }
 }
+
+/** How far the photo or map runs on under the title while it fades into the page. */
+private val BackdropFade = 32.dp
+
+/** The large bar's space under the title's baseline, which the fade starts above. */
+private val TitleClearance = 8.dp
 
 @Composable
 private fun NotFound(state: SpotUiState, actions: SpotActions, modifier: Modifier) {
