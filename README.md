@@ -9,8 +9,8 @@
 <p align="center">
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg" alt="CD"></a>
+  <a href="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml/badge.svg" alt="ANDROID"></a>  
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/deps.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/deps.yml/badge.svg" alt="DEPS"></a>
-  <a href="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/android.yml/badge.svg" alt="ANDROID"></a>
 </p>
 
 <p align="center">kite spots database and weather forecast for kitesurfers on the web</p>
