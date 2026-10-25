@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +48,12 @@ fun MapLibreView(
     modifier: Modifier = Modifier,
     /** Called once, the first time the map has finished drawing what it was asked to. */
     onFirstRender: () -> Unit = {},
+    /**
+     * False hides the map's surface. It is a SurfaceView, composed by the system under
+     * the window: it ignores fades and alpha, so a screen leaving would keep showing
+     * it at full strength until it is destroyed.
+     */
+    surfaceVisible: Boolean = true,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -123,7 +130,11 @@ fun MapLibreView(
         }
     }
 
-    AndroidView(factory = { mapView }, modifier = modifier)
+    AndroidView(
+        factory = { mapView },
+        update = { it.visibility = if (surfaceVisible) View.VISIBLE else View.INVISIBLE },
+        modifier = modifier,
+    )
 }
 
 private var mapLibreReady = false

@@ -344,6 +344,8 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         initialCamera = camera,
                         onReady = { controller = it },
                         onFirstRender = { mapDrawn = true },
+                        // Leaving: gone in the frame the transition starts, not after it
+                        surfaceVisible = settled,
                         onCameraMoveStarted = { moving = true },
                         onCameraIdle = {
                             camera = it
@@ -355,7 +357,8 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         modifier = Modifier.fillMaxSize(),
                     )
 
-                    if (state.settings.mapWindField) {
+                    // Leaves with the map's surface: over nothing, its cut-outs round the markers show as black discs
+                    if (state.settings.mapWindField && settled) {
                         WindFieldOverlay(
                             controller = controller,
                             samples = samples,
@@ -371,7 +374,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 if (!globe) {
                     // Over the map and its wind field; the controls stay usable above it
                     MapCover(
-                        covered = state.loading || !mapDrawn || !settled,
+                        covered = state.loading || !mapDrawn,
                         satellite = state.settings.mapSatellite,
                         modifier = Modifier.fillMaxSize(),
                     )
@@ -629,9 +632,9 @@ private fun rememberPowerSaveMode(): Boolean {
 }
 
 /**
- * Stands in for the map while its GL surface is made and draws its first frame, and
- * while the screen comes in or goes out (a SurfaceView would not fade with it). Coloured
- * like the basemap underneath, so lifting it reads as the map sharpening, not swapping.
+ * Stands in for the map while its GL surface is made and draws its first frame.
+ * Coloured like the basemap underneath, so lifting it reads as the map sharpening, not
+ * swapping. Leaving needs no cover: the surface is hidden then instead.
  */
 @Composable
 private fun MapCover(covered: Boolean, satellite: Boolean, modifier: Modifier = Modifier) {
