@@ -805,15 +805,13 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         canvas.restore()
     }
 
-    /** The map's blue dot (MapController's my-location layers): a soft halo, a white rim, the dot. */
+    /** The map's blue dot (MapController's my-location layer): the dot in a white rim, nothing round it. */
     private fun drawMyLocation(canvas: Canvas) {
         val alpha = (meAlpha * 255).toInt()
         markerFill.color = MapController.MY_LOCATION_BLUE
-        markerFill.alpha = (0.2f * alpha).toInt()
-        canvas.drawCircle(meX, meY, MapController.MY_LOCATION_HALO_RADIUS, markerFill)
         markerFill.alpha = alpha
         canvas.drawCircle(meX, meY, MapController.MY_LOCATION_RADIUS, markerFill)
-        markerRim.strokeWidth = 2.5f
+        markerRim.strokeWidth = MapController.MY_LOCATION_RIM
         markerRim.alpha = alpha
         canvas.drawCircle(meX, meY, MapController.MY_LOCATION_RADIUS, markerRim)
     }

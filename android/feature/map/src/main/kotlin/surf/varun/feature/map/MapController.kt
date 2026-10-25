@@ -268,18 +268,11 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
     private fun addMyLocationLayers(style: Style) {
         style.addSource(GeoJsonSource(SOURCE_MY_LOCATION, myLocationFeatures(myLocation)))
         style.addLayer(
-            CircleLayer(LAYER_MY_LOCATION_HALO, SOURCE_MY_LOCATION).withProperties(
-                circleColor(MY_LOCATION_BLUE),
-                circleOpacity(0.2f),
-                circleRadius(MY_LOCATION_HALO_RADIUS),
-            ),
-        )
-        style.addLayer(
             CircleLayer(LAYER_MY_LOCATION, SOURCE_MY_LOCATION).withProperties(
                 circleColor(MY_LOCATION_BLUE),
                 circleRadius(MY_LOCATION_RADIUS),
                 circleStrokeColor(RIM),
-                circleStrokeWidth(2.5f),
+                circleStrokeWidth(MY_LOCATION_RIM),
             ),
         )
     }
@@ -296,7 +289,7 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
     fun markerHoles(width: Float, height: Float): List<MarkerHole> {
         val density = context.resources.displayMetrics.density
         val me = myLocation?.let { project(it.lat, it.lon) }
-            ?.let { MarkerHole(it.x, it.y, MY_LOCATION_HALO_RADIUS * density) }
+            ?.let { MarkerHole(it.x, it.y, (MY_LOCATION_RADIUS + MY_LOCATION_RIM / 2) * density) }
         if (!markersVisible) return listOfNotNull(me)
         val features = map.queryRenderedFeatures(RectF(0f, 0f, width, height), LAYER_CLUSTERS, LAYER_DOTS)
         return listOfNotNull(me) + features.mapNotNull { feature ->
@@ -325,12 +318,11 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         )
 
         const val SOURCE_MY_LOCATION = "my-location"
-        const val LAYER_MY_LOCATION_HALO = "my-location-halo"
         const val LAYER_MY_LOCATION = "my-location-dot"
 
         /** The blue dot, in dp; the globe draws the same one. */
         const val MY_LOCATION_RADIUS = 7f
-        const val MY_LOCATION_HALO_RADIUS = 18f
+        const val MY_LOCATION_RIM = 2.5f
         const val MY_LOCATION_BLUE = 0xFF1A73E8.toInt()
 
         /** Marker geometry in dp (MapLibre circle radii and translations are in dp). */
