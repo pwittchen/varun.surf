@@ -207,6 +207,7 @@ internal fun CardWithMenu(
     onToggleFavourite: () -> Unit,
     onCreateAlert: () -> Unit,
     modifier: Modifier = Modifier,
+    menuEnabled: Boolean = true,
     trailing: @Composable (() -> Unit)? = null,
 ) {
     var menu by remember { mutableStateOf(false) }
@@ -216,14 +217,19 @@ internal fun CardWithMenu(
             model = model,
             onClick = onOpen,
             onToggleFavourite = onToggleFavourite,
-            onLongClick = {
-                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                menu = true
+            // Off while reordering: a long press on the drag handle would open the menu and take the gesture
+            onLongClick = if (menuEnabled) {
+                {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    menu = true
+                }
+            } else {
+                null
             },
             trailing = trailing,
             modifier = Modifier.sharedElement("spot-card-${model.spot.wgId}"),
         )
-        SpotContextMenu(model, menu, onDismiss = { menu = false }, onToggleFavourite = onToggleFavourite, onCreateAlert = onCreateAlert)
+        SpotContextMenu(model, menu && menuEnabled, onDismiss = { menu = false }, onToggleFavourite = onToggleFavourite, onCreateAlert = onCreateAlert)
     }
 }
 

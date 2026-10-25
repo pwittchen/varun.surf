@@ -125,6 +125,7 @@ fun FavouritesScreen(viewModel: FavouritesViewModel) {
                                 viewModel.remove(model.spot.wgId)
                             },
                             onCreateAlert = { navigator.navigate(AlertEditorRoute(wgId = model.spot.wgId)) },
+                            menuEnabled = !state.reordering,
                             trailing = if (state.reordering) {
                                 {
                                     DragHandle(
