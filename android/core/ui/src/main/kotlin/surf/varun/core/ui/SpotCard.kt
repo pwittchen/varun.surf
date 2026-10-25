@@ -86,6 +86,9 @@ data class SpotCardModel(
 /** Wind and gust numbers on a card: between [Numbers.medium] and [Numbers.large]. */
 private val CardWind = Numbers.large.copy(fontSize = 20.sp, lineHeight = 24.sp)
 
+/** The compact card's smaller wind and gust numbers, to match its tighter row. */
+private val CompactCardWind = Numbers.large.copy(fontSize = 16.sp, lineHeight = 20.sp)
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SpotCard(
@@ -103,6 +106,7 @@ fun SpotCard(
     val windClass = reading?.windClass ?: WindClass.WEAK
     val country = Countries.of(spot.country)
     val unit = windUnitLabel()
+    val windStyle = if (density == CardDensity.COMPACT) CompactCardWind else CardWind
     val readingText = reading?.let {
         stringResource(
             R.string.conditions_description,
@@ -169,14 +173,14 @@ fun SpotCard(
                         WindNumber(
                             formatWind(reading.wind),
                             reading.wind,
-                            style = CardWind,
+                            style = windStyle,
                             windClass = windClass,
                             modifier = Modifier.alignByBaseline(),
                         )
-                        Text(" / ", style = CardWind.copy(fontWeight = FontWeight.Normal), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
+                        Text(" / ", style = windStyle.copy(fontWeight = FontWeight.Normal), color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.alignByBaseline())
                         Text(
                             formatWind(reading.gusts),
-                            style = CardWind.copy(fontWeight = FontWeight.Normal),
+                            style = windStyle.copy(fontWeight = FontWeight.Normal),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.alignByBaseline(),
                         )
