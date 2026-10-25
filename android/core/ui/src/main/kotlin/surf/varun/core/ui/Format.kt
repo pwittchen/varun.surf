@@ -70,6 +70,12 @@ object Format {
         return time.format(DateTimeFormatter.ofPattern(pattern, locale(context)))
     }
 
+    /** Like [hour], but keeps the minutes in 12-hour format too - live readings rarely land on the hour. */
+    fun clock(context: Context, time: LocalDateTime): String {
+        val pattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "h:mm a"
+        return time.format(DateTimeFormatter.ofPattern(pattern, locale(context)))
+    }
+
     /** "Sat 24 Oct" for day headers. */
     fun dayHeader(context: Context, date: LocalDate): String =
         "${weekday(context, date.dayOfWeek)} ${date.dayOfMonth} " +

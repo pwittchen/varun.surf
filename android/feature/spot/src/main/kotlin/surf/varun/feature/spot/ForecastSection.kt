@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,9 +23,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ShowChart
 import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.material.icons.rounded.TableRows
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,9 +34,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,8 +85,6 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import kotlin.math.roundToInt
 
-private enum class ForecastView { TABLE, CHART }
-
 /** Section 2: model, windy-days filter, day chips and the hourly table or chart (spec 5.3.2). */
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +92,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     val spot = state.spot ?: return
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var view by rememberSaveable { mutableStateOf(ForecastView.TABLE) }
+    var view by rememberSaveable { mutableStateOf(DataView.TABLE) }
     var modelSheet by remember { mutableStateOf(false) }
     var selectedDay by rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -114,8 +106,8 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
         if (index < 0) return
         scope.launch {
             when (view) {
-                ForecastView.TABLE -> tableState.animateScrollToItem(index)
-                ForecastView.CHART -> chartScroll.animateScrollTo(with(density) { (chartHourWidth * index).roundToPx() })
+                DataView.TABLE -> tableState.animateScrollToItem(index)
+                DataView.CHART -> chartScroll.animateScrollTo(with(density) { (chartHourWidth * index).roundToPx() })
             }
         }
     }
@@ -156,27 +148,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                     null
                 },
             )
-            // Same height and rounded-square corners as the chips it sits next to
-            SingleChoiceSegmentedButtonRow(Modifier.height(32.dp)) {
-                ForecastView.entries.forEachIndexed { index, option ->
-                    val label = stringResource(if (option == ForecastView.TABLE) R.string.view_table else R.string.view_chart)
-                    SegmentedButton(
-                        selected = view == option,
-                        onClick = { view = option },
-                        shape = SegmentedButtonDefaults.itemShape(index, ForecastView.entries.size, MaterialTheme.shapes.small),
-                        modifier = Modifier.width(44.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp),
-                        icon = {},
-                        label = {
-                            Icon(
-                                if (option == ForecastView.TABLE) Icons.Rounded.TableRows else Icons.AutoMirrored.Rounded.ShowChart,
-                                contentDescription = label,
-                                modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
-                            )
-                        },
-                    )
-                }
-            }
+            DataViewSwitch(view, onChange = { view = it })
         }
 
         if (spot.daily.isNotEmpty()) {
@@ -218,7 +190,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
-            view == ForecastView.TABLE -> HourlyTable(hours, spot.hasWaveData, tableState)
+            view == DataView.TABLE -> HourlyTable(hours, spot.hasWaveData, tableState)
             else -> HourlyChart(hours, chartScroll, chartHourWidth)
         }
     }
@@ -256,7 +228,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
 private enum class TableRow { TIME, WIND, GUSTS, DIRECTION, TEMP, RAIN, CLOUD, PRESSURE, WAVE, WAVE_PERIOD, WAVE_DIRECTION }
 
 @Composable
-private fun scaled(value: Dp): Dp = value * LocalDensity.current.fontScale.coerceAtLeast(1f)
+internal fun scaled(value: Dp): Dp = value * LocalDensity.current.fontScale.coerceAtLeast(1f)
 
 @Composable
 private fun chartHourWidth(): Dp = 28.dp

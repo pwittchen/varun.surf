@@ -2,19 +2,27 @@ package surf.varun.feature.spot
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Sensors
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -37,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.designsystem.component.WindArrow
+import surf.varun.core.designsystem.component.WindCell
 import surf.varun.core.designsystem.component.WindNumber
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
@@ -61,6 +70,7 @@ internal fun NowSection(spot: Spot, now: ZonedDateTime) {
     val stale = Conditions.isStale(live, zone, now)
     val age = Conditions.ageOf(live, zone, now)?.let { Format.age(context, it) } ?: live.rawDate
     val windClass = WindClass.ofAverage(live.wind.toDouble(), live.gusts.toDouble())
+    var view by rememberSaveable { mutableStateOf(DataView.CHART) }
 
     SectionCard(stringResource(R.string.section_now)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -95,10 +105,17 @@ internal fun NowSection(spot: Spot, now: ZonedDateTime) {
             icon = if (stale) Icons.Rounded.Warning else Icons.Rounded.Sensors,
         )
         Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.history_title), style = MaterialTheme.typography.labelLarge)
+        val enoughHistory = spot.liveHistory.size >= MIN_HISTORY
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.history_title), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
+            if (enoughHistory) DataViewSwitch(view, onChange = { view = it })
+        }
         Spacer(Modifier.height(8.dp))
-        if (spot.liveHistory.size >= MIN_HISTORY) {
-            HistoryChart(spot.liveHistory)
+        if (enoughHistory) {
+            when (view) {
+                DataView.CHART -> HistoryChart(spot.liveHistory)
+                DataView.TABLE -> HistoryTable(spot.liveHistory)
+            }
         } else {
             Text(
                 stringResource(R.string.history_too_short),
@@ -181,6 +198,74 @@ private fun HistoryChart(history: List<LiveConditions>) {
         Spacer(Modifier.weight(1f))
         Text(lastLabel, style = MaterialTheme.typography.labelSmall, color = labelColor)
     }
+}
+
+private enum class HistoryRow { TIME, WIND, GUSTS, DIRECTION, TEMP }
+
+/**
+ * The same readings as the chart, one column each, newest on the left - where the
+ * web's live table starts too - so the latest reading is in view without scrolling.
+ */
+@Composable
+private fun HistoryTable(history: List<LiveConditions>) {
+    val context = LocalContext.current
+    val readings = remember(history) { history.sortedByDescending { it.observedAt } }
+    val rows = remember(readings) {
+        HistoryRow.entries.filter { it != HistoryRow.TEMP || readings.any { r -> r.temp != null } }
+    }
+    val rowHeight = scaled(32.dp)
+    val columnWidth = scaled(52.dp)
+    val text = MaterialTheme.colorScheme.onSurface
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+
+    Row {
+        Column(Modifier.width(scaled(72.dp))) {
+            rows.forEach { row ->
+                Box(Modifier.height(rowHeight), contentAlignment = Alignment.CenterStart) {
+                    Text(stringResource(row.label()), style = MaterialTheme.typography.labelSmall, color = muted, maxLines = 1)
+                }
+            }
+        }
+        LazyRow(Modifier.weight(1f)) {
+            items(readings) { reading ->
+                Column(Modifier.width(columnWidth), horizontalAlignment = Alignment.CenterHorizontally) {
+                    rows.forEach { row ->
+                        Box(Modifier.height(rowHeight), contentAlignment = Alignment.Center) {
+                            when (row) {
+                                HistoryRow.TIME -> Text(
+                                    reading.observedAt?.let { Format.clock(context, it) } ?: reading.rawDate,
+                                    style = Numbers.tiny,
+                                    color = muted,
+                                    maxLines = 1,
+                                )
+                                HistoryRow.WIND -> WindCell(formatWind(reading.wind.toDouble()), reading.wind.toDouble())
+                                HistoryRow.GUSTS -> WindCell(formatWind(reading.gusts.toDouble()), reading.gusts.toDouble())
+                                HistoryRow.DIRECTION -> WindArrow(
+                                    reading.direction,
+                                    size = 18.dp,
+                                    color = VarunTheme.wind.forClass(WindClass.of(reading.wind.toDouble())),
+                                    animate = false,
+                                )
+                                HistoryRow.TEMP -> Text(
+                                    reading.temp?.let { formatTemperature(it.toDouble()) } ?: "-",
+                                    style = Numbers.tiny,
+                                    color = if (reading.temp != null) text else muted,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun HistoryRow.label(): Int = when (this) {
+    HistoryRow.TIME -> R.string.time
+    HistoryRow.WIND -> R.string.wind
+    HistoryRow.GUSTS -> R.string.gusts
+    HistoryRow.DIRECTION -> R.string.direction
+    HistoryRow.TEMP -> R.string.temperature
 }
 
 /** Small arrow pointing where the wind blows to, centred on [center]. */

@@ -70,7 +70,7 @@ shape. **Drop** = not built, with the reason. **New** = mobile-only.
 | Web feature | Android | Notes |
 |---|---|---|
 | Spot header, country, links | **Keep** | Large collapsing header with spot photo |
-| Live conditions + 12 h history | **Keep** | Live card + 12 h sparkline chart (wind/gust band, direction arrows) |
+| Live conditions + 12 h history | **Keep** | Live card + 12 h sparkline chart (wind/gust band, direction arrows), switchable to a table |
 | Daily forecast | **Keep** | Horizontally scrolling day chips that also act as day selector for the hourly view |
 | Hourly forecast (Windguru-style table) | **Adapt** | Hourly timeline: a horizontally scrollable, sticky-label table on the phone, with a chart toggle (section 5.3) |
 | "Windy days only" filter | **Keep** | Toggle in the forecast toolbar |
@@ -343,7 +343,7 @@ title. Actions: favourite, share, overflow (open on web, create alert, navigate)
 Sections in order:
 
 1. **Now** - live wind card (wind, gusts, direction arrow + cardinal, temp, reading
-   age, source). Below: 12 h history chart (wind line, gust band, direction ticks).
+   age, source). Below: 12 h history chart (wind line, gust band, direction ticks), with a switch to a table of the readings (newest first); the chart is the default.
    Hidden if the spot has no live station.
 2. **Forecast** - toolbar: model chip (`GFS 13 km ▾`), "windy days" toggle, table/chart
    toggle.
