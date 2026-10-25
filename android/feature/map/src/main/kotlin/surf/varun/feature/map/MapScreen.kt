@@ -45,6 +45,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Flag
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.icons.rounded.Public
@@ -455,6 +456,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     onZoom = {
                         if (globe) globeCamera.zoomBy(it, System.nanoTime() / 1_000_000) else controller?.zoomBy(it)
                     },
+                    onResetView = { centreOn(Coordinates(DEFAULT_CAMERA.lat, DEFAULT_CAMERA.lon), zoom = DEFAULT_CAMERA.zoom) },
                     viewModel = viewModel,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -562,7 +564,8 @@ private fun LocatingOverlay(visible: Boolean, modifier: Modifier = Modifier) {
 /**
  * Every map control in one column on the right: filters (search, country,
  * favourites, live stations), then the globe switch, layers and location, then
- * zoom. Filters that are on (and the globe) are filled with the accent colour.
+ * zoom and the reset to the opening view. Filters that are on (and the globe)
+ * are filled with the accent colour.
  */
 @Composable
 private fun MapControls(
@@ -577,6 +580,7 @@ private fun MapControls(
     onLayers: (Boolean) -> Unit,
     onMyLocation: () -> Unit,
     onZoom: (Double) -> Unit,
+    onResetView: () -> Unit,
     viewModel: MapViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -619,6 +623,7 @@ private fun MapControls(
         Spacer(Modifier.height(8.dp))
         ControlButton(Icons.Rounded.Add, stringResource(R.string.map_zoom_in), { onZoom(1.0) })
         ControlButton(Icons.Rounded.Remove, stringResource(R.string.map_zoom_out), { onZoom(-1.0) })
+        ControlButton(Icons.Rounded.Home, stringResource(R.string.map_reset_view), onResetView)
     }
 }
 
