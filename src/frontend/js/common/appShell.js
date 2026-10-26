@@ -26,8 +26,11 @@ const SIDEBAR_HTML = `
             <span class="sidebar-label" id="infoToggleSidebarLabel">Info</span>
         </button>
     </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionAppearance">Appearance</div>
+    <div class="sidebar-section" data-section="appearance">
+        <button type="button" class="sidebar-section-title" aria-expanded="true">
+            <span id="sidebarSectionAppearance">Appearance</span>
+            <svg class="sidebar-section-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.293,8.293a1,1,0,0,1,1.414,0L12,14.586l6.293-6.293a1,1,0,1,1,1.414,1.414l-7,7a1,1,0,0,1-1.414,0l-7-7A1,1,0,0,1,4.293,8.293Z"/></svg>
+        </button>
         <button class="theme-toggle sidebar-item" id="themeToggle" title="Toggle theme">
             <svg class="icon theme-icon" id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M15,24a12.021,12.021,0,0,1-8.914-3.966,11.9,11.9,0,0,1-3.02-9.309A12.122,12.122,0,0,1,13.085.152a13.061,13.061,0,0,1,5.031.205,2.5,2.5,0,0,1,1.108,4.226c-4.56,4.166-4.164,10.644.807,14.41a2.5,2.5,0,0,1-.7,4.32A13.894,13.894,0,0,1,15,24Z"/>
@@ -43,8 +46,11 @@ const SIDEBAR_HTML = `
             <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionView">View</div>
+    <div class="sidebar-section" data-section="view">
+        <button type="button" class="sidebar-section-title" aria-expanded="true">
+            <span id="sidebarSectionView">View</span>
+            <svg class="sidebar-section-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.293,8.293a1,1,0,0,1,1.414,0L12,14.586l6.293-6.293a1,1,0,1,1,1.414,1.414l-7,7a1,1,0,0,1-1.414,0l-7-7A1,1,0,0,1,4.293,8.293Z"/></svg>
+        </button>
         <button class="theme-toggle view-toggle sidebar-item" id="gridViewBtn" title="Grid view">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path d="M42.667,373.333H96c23.564,0,42.667,19.102,42.667,42.667v53.333C138.667,492.898,119.564,512,96,512H42.667C19.103,512,0,492.898,0,469.333V416C0,392.436,19.103,373.333,42.667,373.333z"/>
@@ -81,8 +87,11 @@ const SIDEBAR_HTML = `
             <span class="sidebar-label" id="globeToggleSidebarLabel">Globe</span>
         </button>
     </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionFilters">Filters</div>
+    <div class="sidebar-section" data-section="filters">
+        <button type="button" class="sidebar-section-title" aria-expanded="true">
+            <span id="sidebarSectionFilters">Filters</span>
+            <svg class="sidebar-section-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.293,8.293a1,1,0,0,1,1.414,0L12,14.586l6.293-6.293a1,1,0,1,1,1.414,1.414l-7,7a1,1,0,0,1-1.414,0l-7-7A1,1,0,0,1,4.293,8.293Z"/></svg>
+        </button>
         <button class="theme-toggle sidebar-item sidebar-toggle" id="favoritesToggle" role="switch" aria-checked="false" title="View favorites">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M1.327,12.4,4.887,15,3.535,19.187A3.178,3.178,0,0,0,4.719,22.8a3.177,3.177,0,0,0,3.8-.019L12,20.219l3.482,2.559a3.227,3.227,0,0,0,4.983-3.591L19.113,15l3.56-2.6a3.227,3.227,0,0,0-1.9-5.832H16.4L15.073,2.432a3.227,3.227,0,0,0-6.146,0L7.6,6.568H3.231a3.227,3.227,0,0,0-1.9,5.832Z"/>
@@ -109,8 +118,11 @@ const SIDEBAR_HTML = `
             <span class="sidebar-switch" aria-hidden="true"></span>
         </button>
     </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionTools">Tools</div>
+    <div class="sidebar-section" data-section="tools">
+        <button type="button" class="sidebar-section-title" aria-expanded="true">
+            <span id="sidebarSectionTools">Tools</span>
+            <svg class="sidebar-section-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.293,8.293a1,1,0,0,1,1.414,0L12,14.586l6.293-6.293a1,1,0,1,1,1.414,1.414l-7,7a1,1,0,0,1-1.414,0l-7-7A1,1,0,0,1,4.293,8.293Z"/></svg>
+        </button>
         <button class="theme-toggle sidebar-item" id="kiteSizeToggle" title="Kite/Board Size Calculator">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="m18.5 24h-13a5.506 5.506 0 0 1 -5.5-5.5v-13a5.506 5.506 0 0 1 5.5-5.5h13a5.506 5.506 0 0 1 5.5 5.5v13a5.506 5.506 0 0 1 -5.5 5.5zm-13-21a2.5 2.5 0 0 0 -2.5 2.5v13a2.5 2.5 0 0 0 2.5 2.5h13a2.5 2.5 0 0 0 2.5-2.5v-13a2.5 2.5 0 0 0 -2.5-2.5zm13.5 4a2 2 0 0 0 -2-2h-10a2 2 0 0 0 -2 2 2 2 0 0 0 2 2h10a2 2 0 0 0 2-2zm-12.5 4.5a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0 -1.5-1.5zm5 0a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0 -1.5-1.5zm-5 4.5a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0 -1.5-1.5zm5 0a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0 -1.5-1.5zm7.5 1.5a1.5 1.5 0 0 0 -1.5-1.5h-1a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 1.5-1.5zm0-4.5a1.5 1.5 0 0 0 -1.5-1.5h-1a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 0 1.5-1.5z"/>
@@ -129,8 +141,11 @@ const SIDEBAR_HTML = `
             <span class="sidebar-label" id="randomSpotToggleSidebarLabel">Random spot</span>
         </button>
     </div>
-    <div class="sidebar-section">
-        <div class="sidebar-section-title" id="sidebarSectionMore">More</div>
+    <div class="sidebar-section" data-section="more">
+        <button type="button" class="sidebar-section-title" aria-expanded="true">
+            <span id="sidebarSectionMore">More</span>
+            <svg class="sidebar-section-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.293,8.293a1,1,0,0,1,1.414,0L12,14.586l6.293-6.293a1,1,0,1,1,1.414,1.414l-7,7a1,1,0,0,1-1.414,0l-7-7A1,1,0,0,1,4.293,8.293Z"/></svg>
+        </button>
         <a class="theme-toggle sidebar-link" id="statusLink" href="/status" title="System status and stats">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect x="3" y="12" width="4.5" height="9" rx="1.5"/>

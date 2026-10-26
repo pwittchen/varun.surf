@@ -54,7 +54,10 @@ export const STORAGE_KEYS = {
     GLOBE_AUTO_ROTATE: 'globeAutoRotate',
 
     // Sidebar collapsed to an icon rail (desktop / tablet)
-    SIDEBAR_COLLAPSED: 'sidebarCollapsed'
+    SIDEBAR_COLLAPSED: 'sidebarCollapsed',
+
+    // Sidebar sections folded shut (JSON array of data-section keys)
+    SIDEBAR_FOLDED_SECTIONS: 'sidebarFoldedSections'
 };
 
 // ============================================================================
@@ -205,6 +208,20 @@ export function getSidebarCollapsed() {
 
 export function setSidebarCollapsed(collapsed) {
     localStorage.setItem(STORAGE_KEYS.SIDEBAR_COLLAPSED, collapsed ? 'true' : 'false');
+}
+
+// Every section starts unfolded; only the ones the user folds are stored
+export function getFoldedSidebarSections() {
+    try {
+        const folded = JSON.parse(localStorage.getItem(STORAGE_KEYS.SIDEBAR_FOLDED_SECTIONS));
+        return Array.isArray(folded) ? folded : [];
+    } catch {
+        return [];
+    }
+}
+
+export function setFoldedSidebarSections(sections) {
+    localStorage.setItem(STORAGE_KEYS.SIDEBAR_FOLDED_SECTIONS, JSON.stringify(sections));
 }
 
 // ============================================================================

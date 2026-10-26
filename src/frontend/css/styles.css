@@ -622,15 +622,54 @@ body.sidebar-collapsed .side-menu .header-title {
     margin-top: 16px;
 }
 
+/* The heading is a button that folds its section away (see setupFolding) */
 .sidebar-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
     padding: 0 10px 6px;
+    background: none;
+    border: 0;
+    font-family: inherit;
     font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    text-align: left;
     color: var(--text-tertiary);
     white-space: nowrap;
     overflow: hidden;
+    cursor: pointer;
+}
+
+.sidebar-section-title:hover {
+    color: var(--text-primary);
+}
+
+.sidebar-section-title:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: -2px;
+    border-radius: var(--radius-md);
+}
+
+.sidebar-section-chevron {
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    transition: transform 0.18s ease;
+}
+
+.sidebar-section.folded .sidebar-section-chevron {
+    transform: rotate(-90deg);
+}
+
+/* Only the expanded sidebar folds: the rail keeps every icon in reach.
+   Important to win over .desktop-only, which forces its entries to flex. */
+body:not(.sidebar-collapsed) .sidebar-section.folded > :not(.sidebar-section-title) {
+    display: none !important;
 }
 
 /* Collapsed, the group headings turn into the hairlines they were implying */
@@ -638,8 +677,14 @@ body.sidebar-collapsed .sidebar-section-title {
     height: 1px;
     padding: 0;
     margin: 8px 12px;
+    width: auto;
     font-size: 0;
     background: var(--border-primary);
+    pointer-events: none;
+}
+
+body.sidebar-collapsed .sidebar-section-chevron {
+    display: none;
 }
 
 /* Menu entries are full-width rows: icon, then label. They are chrome-less —

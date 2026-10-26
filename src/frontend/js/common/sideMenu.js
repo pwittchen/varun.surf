@@ -1,8 +1,8 @@
 // ============================================================================
 // SIDEBAR
 // Behaviour of the sidebar every page shares (its markup lives in appShell.js):
-// a brand, labelled menu entries grouped into sections, and a collapse switch
-// that shrinks it to an icon rail (remembered across visits).
+// a brand, labelled menu entries grouped into foldable sections, and a collapse
+// switch that shrinks it to an icon rail (both remembered across visits).
 // At mobile widths (<=929px) the sidebar steps aside. Where the page has a
 // drawer (main page, single spot page) its entries move into #headerIcons
 // (inside .header-controls) and the brand into the header; on the pages with no
@@ -239,6 +239,41 @@ function setupCollapse() {
     });
 }
 
+// Section folding: each titled section's heading is a button that folds its
+// entries away behind a chevron. Which sections are folded is stored, so the
+// sidebar opens the way it was left. Only the expanded sidebar folds (see the
+// CSS): the icon rail has no headings to unfold from, and in the drawer the
+// entries have left their sections.
+function setupFolding() {
+    const folded = new Set(state.getFoldedSidebarSections());
+
+    document.querySelectorAll('.sidebar-section[data-section]').forEach(section => {
+        const key = section.dataset.section;
+        const title = section.querySelector('.sidebar-section-title');
+        if (!title) {
+            return;
+        }
+
+        function apply() {
+            const isFolded = folded.has(key);
+            section.classList.toggle('folded', isFolded);
+            title.setAttribute('aria-expanded', isFolded ? 'false' : 'true');
+        }
+
+        apply();
+
+        title.addEventListener('click', () => {
+            if (folded.has(key)) {
+                folded.delete(key);
+            } else {
+                folded.add(key);
+            }
+            state.setFoldedSidebarSections([...folded]);
+            apply();
+        });
+    });
+}
+
 // Debounced, and registered even on the pages whose menu has nothing to hand
 // over to a drawer, so the narrow-width rail always follows the window
 function onResize(handler) {
@@ -264,6 +299,7 @@ export function setup() {
     const headerContent = document.querySelector('.header-content');
 
     setupCollapse();
+    setupFolding();
     setupSwitches();
     onResize(syncCollapsed);
 
