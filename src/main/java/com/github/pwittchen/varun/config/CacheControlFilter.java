@@ -44,6 +44,9 @@ public class CacheControlFilter implements WebFilter {
     private static final String HASHED_ASSETS_PATH = "/assets/";
     private static final String IMAGES_PATH = "/images/";
 
+    /** {@code assetlinks.json} lives here: a changed signing key must reach Android's verifier at once */
+    private static final String WELL_KNOWN_PATH = "/.well-known/";
+
     private static final List<String> VERSIONABLE_EXTENSIONS = List.of(
             ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico",
             ".txt", ".xml", ".json", ".webmanifest", ".woff2"
@@ -82,6 +85,10 @@ public class CacheControlFilter implements WebFilter {
     String cacheControlFor(String path, boolean versioned, @Nullable MediaType contentType) {
         if (path.startsWith(HASHED_ASSETS_PATH)) {
             return IMMUTABLE;
+        }
+
+        if (path.startsWith(WELL_KNOWN_PATH)) {
+            return REVALIDATE;
         }
 
         if (path.startsWith(IMAGES_PATH) || hasVersionableExtension(path)) {

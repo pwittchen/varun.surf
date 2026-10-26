@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "surf.varun.app",
+      "sha256_cert_fingerprints": [
+        "CD:57:C4:8D:EA:CE:5D:10:5C:0D:DE:AC:AB:76:90:4A:43:E7:5B:E5:F8:CE:E2:91:DC:87:D3:69:9E:14:D3:D9",
+        "7F:81:22:01:68:B2:C5:A2:B6:FF:E6:35:AD:42:8B:A6:44:56:CF:95:AC:BA:B2:61:55:8F:62:17:62:2C:B6:0E",
+        "11:38:83:E5:3D:4E:32:CA:49:37:6A:8A:C5:C3:7A:51:42:B9:B8:E6:17:0F:A6:4A:89:47:E4:CE:60:A7:F8:DC"
+      ]
+    }
+  }
+]

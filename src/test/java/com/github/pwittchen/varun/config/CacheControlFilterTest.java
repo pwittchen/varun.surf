@@ -47,6 +47,14 @@ class CacheControlFilterTest {
     }
 
     @Test
+    void shouldRevalidateWellKnownFiles() {
+        assertThat(filter.cacheControlFor("/.well-known/assetlinks.json", false, MediaType.APPLICATION_JSON))
+                .isEqualTo(CacheControlFilter.REVALIDATE);
+        assertThat(filter.cacheControlFor("/.well-known/assetlinks.json", true, null))
+                .isEqualTo(CacheControlFilter.REVALIDATE);
+    }
+
+    @Test
     void shouldRevalidateHtml() {
         assertThat(filter.cacheControlFor("/", false, MediaType.TEXT_HTML))
                 .isEqualTo(CacheControlFilter.REVALIDATE);

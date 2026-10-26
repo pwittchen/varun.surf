@@ -16,7 +16,7 @@ updates after it. Section numbers like "spec 12.1" point to [SPEC.md](SPEC.md).
 | Backup | The session cookie and the Room cache are excluded. Favourites, alerts and settings are backed up |
 | Native code | MapLibre 13.7.1. Its `.so` files support 16 KB pages, which Play requires for targetSdk 35+ |
 | Done | Privacy policy at `/privacy` (EN + PL), a report action under the AI analysis and the ICM reading, CI uploads as a draft with the R8 mapping and release notes |
-| **Missing** | `/.well-known/assetlinks.json` (needs the Play signing SHA-256), a committed baseline profile, store listing assets |
+| **Missing** | A committed baseline profile. `assetlinks.json` is in the repo (`src/frontend/assets/`) and goes live with the next backend deploy |
 
 ---
 

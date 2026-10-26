@@ -59,8 +59,8 @@ benchmark/           baseline profile generator and startup/scroll macrobenchmar
 
 ## Deep links
 
-- `https://varun.surf/spot/{id}`, `/country/{name}`, `/map` (verified App Links: needs
-  `/.well-known/assetlinks.json` on the server with the release certificate, spec 12.1)
+- `https://varun.surf/spot/{id}`, `/country/{name}`, `/map` (verified App Links through
+  `/.well-known/assetlinks.json`, source in `../src/frontend/assets/assetlinks.json`, spec 12.1)
 - `varun://spot/{id}?focus=<spot-local ISO time>`, `varun://map`, `varun://search` (widgets,
   notifications, shortcuts)
 

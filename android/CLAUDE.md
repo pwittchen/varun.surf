@@ -179,7 +179,6 @@ The design system palette follows the web's theme.
 
 ## Not Built Yet
 
-- Verified App Links need `/.well-known/assetlinks.json` served by the backend (spec 12.1)
 - v1.1 items from the spec: compass-relative wind, Quick Settings tile, webcam previews,
   favourites import from the web, offline map regions
 - Roborazzi screenshots, Maestro flows, Kover coverage, list-detail pane on large screens

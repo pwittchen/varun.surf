@@ -875,7 +875,7 @@ When adding a new kite spot manually, follow this process:
 - Commands (from `android/`): `./gradlew test lintDebug assembleRelease`
 - CI: `.github/workflows/android.yml` (runs on `android/**` changes; `android-v*` tags upload a
   signed AAB to the Play internal track). The backend `ci.yml` ignores `android/**`
-- App Links need `/.well-known/assetlinks.json` served by the backend (not added yet)
+- App Links are verified through `/.well-known/assetlinks.json` (source `src/frontend/assets/assetlinks.json`, copied by `build.ts`; fingerprints from Play Console → Grow users → Deep links)
 
 ## Related Documentation
 
