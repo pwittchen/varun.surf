@@ -199,6 +199,16 @@
     --globe-space-inner: #0d1a26;
     --globe-space-outer: #050608;
 
+    /* Hero banner grade. The photos come from everywhere and in every light, so
+       each one is pulled toward the page: a touch muted, its edges sinking into
+       --bg-primary, a faint accent cast from the top-left corner, and a scrim
+       deep enough at the bottom to carry the white slogan. */
+    --hero-image-filter: saturate(0.9) contrast(1.05) brightness(0.94);
+    --hero-tint: linear-gradient(135deg, rgba(34, 195, 230, 0.16) 0%, rgba(34, 195, 230, 0) 55%);
+    --hero-vignette: radial-gradient(ellipse 85% 120% at 50% 35%, rgba(8, 9, 10, 0) 50%, rgba(8, 9, 10, 0.6) 100%);
+    --hero-scrim: linear-gradient(to bottom, rgba(8, 9, 10, 0.3) 0%, rgba(8, 9, 10, 0) 28%, rgba(8, 9, 10, 0) 45%, rgba(8, 9, 10, 0.78) 100%);
+    --hero-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
     /* Leaflet Controls (always light) */
     --leaflet-bg: #ffffff;
     --leaflet-text: #333333;
@@ -257,6 +267,16 @@
     --globe-space-inner: #f3f7f9;
     --globe-space-outer: #dfe8ee;
     --surface-glass-border: rgba(15, 15, 15, 0.09);
+
+    /* Hero banner grade: a full-contrast photo is the loudest thing on a white
+       page, so here it is flattened and lifted instead - lower contrast, a thin
+       paper haze over it, and edges that fade toward --bg-secondary rather than
+       darken. The dark ground is kept only in the corner the white slogan sits in. */
+    --hero-image-filter: saturate(0.86) contrast(0.88) brightness(1.06);
+    --hero-tint: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(8, 145, 178, 0) 55%), linear-gradient(rgba(247, 247, 245, 0.1), rgba(247, 247, 245, 0.1));
+    --hero-vignette: radial-gradient(ellipse 90% 125% at 50% 40%, rgba(247, 247, 245, 0) 55%, rgba(247, 247, 245, 0.5) 100%);
+    --hero-scrim: radial-gradient(ellipse 80% 95% at 0% 100%, rgba(31, 30, 27, 0.62) 0%, rgba(31, 30, 27, 0) 72%), linear-gradient(to bottom, rgba(31, 30, 27, 0) 55%, rgba(31, 30, 27, 0.16) 100%);
+    --hero-edge: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
 
     /* Button & Active Backgrounds */
     --gradient-button: #ffffff;
@@ -7105,17 +7125,19 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     object-fit: cover;
     object-position: center 35%;
     display: block;
+    filter: var(--hero-image-filter);
 }
 
+/* Layers from the top: accent cast, legibility scrim, vignette. The scrim sits
+   above the vignette so the light theme's paler edges never wash out the ground
+   under the slogan. The inset hairline gives the photo the same edge every card
+   has. */
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.15) 0%,
-        rgba(0, 0, 0, 0) 40%,
-        rgba(0, 0, 0, 0.4) 100%
-    );
+    border-radius: inherit;
+    background: var(--hero-tint), var(--hero-scrim), var(--hero-vignette);
+    box-shadow: var(--hero-edge);
     display: flex;
     align-items: flex-end;
     padding: 24px;
