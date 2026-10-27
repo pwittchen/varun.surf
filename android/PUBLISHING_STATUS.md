@@ -46,8 +46,8 @@ production in Play Console, wait for the review, then click **Publish** under
 - [ ] Add native debug symbols to the next release: `ndk { debugSymbolLevel = "FULL" }` in the
       release build type
 - [ ] Add pl-PL release notes in future updates
-- [ ] Deploy `/.well-known/assetlinks.json`. The file (`../src/frontend/assets/assetlinks.json`)
+- [x] Deploy `/.well-known/assetlinks.json`. The file (`../src/frontend/assets/assetlinks.json`)
       carries the 3 SHA-256 fingerprints Play Console lists under Grow users → Deep links. After
       the deploy, press **Recheck verification** there for `varun.surf`
-- [ ] Fix or unpublish the old EEG Analyzer app (`com.pwittchen.eeganalyzer`). It has 2 policy
-      issues on the same developer account
+- [x] Fix or unpublish the old EEG Analyzer app (`com.pwittchen.eeganalyzer`). It had 2 policy
+      issues on the same developer account; it is now unpublished
