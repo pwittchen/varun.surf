@@ -115,7 +115,10 @@ private fun copy(context: Context, text: String) {
     }
 }
 
-/** Section 7: Windguru, Windfinder, ICM meteogram, webcam in Custom Tabs. */
+/**
+ * Section 7: Windguru, Windfinder, webcam in Custom Tabs. No ICM link: on a phone the meteogram
+ * page only offers the ICM app in Google Play, and the app shows the ICM forecast itself.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun LinksSection(spot: Spot) {
@@ -123,7 +126,6 @@ internal fun LinksSection(spot: Spot) {
     val links = listOfNotNull(
         spot.links.windguru?.let { R.string.link_windguru to it },
         spot.links.windfinder?.let { R.string.link_windfinder to it },
-        spot.links.icm?.let { R.string.link_icm to it },
         spot.links.webcam?.let { R.string.link_webcam to it },
         spot.links.location?.let { R.string.link_location to it },
     )
@@ -156,10 +158,12 @@ internal fun SponsorsSection(spot: Spot) {
     }
 }
 
-/** Footer: when the server last refreshed the spot, and a way out to the web. */
+/**
+ * Footer: when the server last refreshed the spot. No "open on varun.surf": the spot URL is a
+ * verified App Link, so it would only open this screen again.
+ */
 @Composable
 internal fun Footer(spot: Spot) {
-    val context = LocalContext.current
     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         spot.lastUpdated?.let {
             Text(
@@ -167,9 +171,6 @@ internal fun Footer(spot: Spot) {
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-        }
-        TextButton(onClick = { Intents.openUrl(context, Intents.spotWebUrl(spot.wgId)) }) {
-            Text(stringResource(CoreUiR.string.open_on_web))
         }
     }
 }

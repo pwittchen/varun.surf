@@ -29,7 +29,6 @@ import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Kitesurfing
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.NotificationAdd
-import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -327,11 +326,6 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
                     Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_actions))
                 }
                 DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(CoreUiR.string.open_on_web)) },
-                        leadingIcon = { Icon(Icons.Rounded.OpenInBrowser, null) },
-                        onClick = { menuOpen = false; Intents.openUrl(context, Intents.spotWebUrl(spot.wgId)) },
-                    )
                     DropdownMenuItem(
                         text = { Text(stringResource(CoreUiR.string.create_alert)) },
                         leadingIcon = { Icon(Icons.Rounded.NotificationAdd, null) },

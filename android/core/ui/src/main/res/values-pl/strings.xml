@@ -50,7 +50,6 @@
     <string name="share">Udostępnij</string>
     <string name="navigate">Nawiguj</string>
     <string name="create_alert">Utwórz alert wiatrowy</string>
-    <string name="open_on_web">Otwórz na varun.surf</string>
     <string name="share_text">%1$s: %2$s - varun.surf</string>
     <string name="share_text_conditions">%1$s %2$s %3$s, porywy %4$s</string>
     <string name="no_maps_app">Brak aplikacji z mapami</string>

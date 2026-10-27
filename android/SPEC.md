@@ -366,9 +366,9 @@ Sections in order:
    model selector with the other models.
 5. **About this spot** - `spotInfo`/`spotInfoPL` fields with icons; description.
 6. **Location** - static map thumbnail, coordinates (copyable), "Navigate" button.
-7. **Links** - Windguru, Windfinder, ICM meteogram, webcam (Custom Tabs).
+7. **Links** - Windguru, Windfinder, webcam (Custom Tabs).
 8. **Sponsors** of the spot, if any.
-9. Footer: "Data updated 12:01 UTC" (`lastUpdated`), "Open on varun.surf".
+9. Footer: "Data updated 12:01 UTC" (`lastUpdated`).
 
 Floating "Kite size" action (or overflow item) opens the calculator prefilled with the
 live wind (or the selected hour's forecast).

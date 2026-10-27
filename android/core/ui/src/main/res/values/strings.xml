@@ -44,7 +44,6 @@
     <string name="share">Share</string>
     <string name="navigate">Navigate</string>
     <string name="create_alert">Create wind alert</string>
-    <string name="open_on_web">Open on varun.surf</string>
     <string name="share_text">%1$s: %2$s - varun.surf</string>
     <string name="share_text_conditions">%1$s %2$s %3$s, gusts %4$s</string>
     <string name="no_maps_app">No maps app installed</string>
