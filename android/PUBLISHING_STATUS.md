@@ -3,7 +3,8 @@
 A snapshot of where the first Google Play release of `surf.varun.app` stands. The full plan is in
 [PUBLISHING.md](PUBLISHING.md) and the required minimum in [PUBLISHING_MINIMAL.md](PUBLISHING_MINIMAL.md).
 
-**As of 2026-10-26: version 1.0.0 is in Google review on the production track.**
+**As of 2026-10-27: version 1.0.0 is live on Google Play:
+<https://play.google.com/store/apps/details?id=surf.varun.app>**
 
 ## Play Console setup
 
@@ -16,7 +17,7 @@ A snapshot of where the first Google Play release of `surf.varun.app` stands. Th
 | Closed testing | Testers selected, no release. Not needed for launch |
 | Managed publishing | **On**: an approved release doesn't go live until someone clicks **Publish** |
 
-## The submitted release
+## The released version
 
 | Field | Value |
 |---|---|
@@ -26,20 +27,19 @@ A snapshot of where the first Google Play release of `surf.varun.app` stands. Th
 | Download size | 8.55 MB for new installs |
 | Release notes (en-US) | "First release of varun.surf: live wind and forecasts for 800+ kite spots." |
 | Release notes (pl-PL) | None (optional) |
-| Submitted | 2026-10-26. Google says reviews usually take up to 7 days, sometimes longer |
+| Submitted | 2026-10-26 |
+| Released | 2026-10-27 |
+| Store listing | <https://play.google.com/store/apps/details?id=surf.varun.app> |
 
 Review warning (not a blocker): *"This App Bundle contains native code, and you've not uploaded
 debug symbols."* Crashes and ANRs in native code will be harder to read in Android vitals.
 
-## Next steps
+## Releasing an update
 
-1. **Wait for the review.** Track it in Play Console → varun.surf → Publishing overview
-   (or Submission activity). Google emails the account owner when it's done. To pull the
-   submission back while it's in review, use "Remove changes".
-2. **Publish.** Once approved, the release moves to "Changes ready to publish". Click **Publish**.
-   The listing usually appears on Google Play within a few hours.
-3. **If it's rejected**, fix whatever the email names (usually a declaration or the listing) and
-   resubmit from Publishing overview.
+Managed publishing is still on, so every future release follows the same path: push an
+`android-v<x.y.z>` tag (CI uploads the signed AAB to the internal track), promote it to
+production in Play Console, wait for the review, then click **Publish** under
+"Changes ready to publish".
 
 ## Follow-ups after launch
 
