@@ -10,7 +10,7 @@ updates after it. Section numbers like "spec 12.1" point to [SPEC.md](SPEC.md).
 | Application id | `surf.varun.app`. It can't be changed after the first upload (spec D2) |
 | SDK levels | minSdk 28, targetSdk 36, compileSdk 37. Target 36 meets the Play requirement for new apps in 2026 |
 | Release build | R8 + resource shrinking, signed from `VARUN_*` env vars, `versionName` from the tag, `versionCode` from the CI run number |
-| CI | An `android-v*` tag builds a signed AAB and uploads it to the **internal** track (`r0adkll/upload-google-play`). Promotion is manual |
+| CI | An `android-v*` tag builds a signed AAB and uploads it to the **production** track for all users (`r0adkll/upload-google-play`). It goes live after review and a manual "Publish changes" (managed publishing) |
 | Permissions | `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_COARSE_LOCATION` (foreground only, asked for when needed), `POST_NOTIFICATIONS` (asked for when the first alert is created) |
 | Privacy | No analytics, ads, Firebase or crash SDK. Location stays on the device. The in-app privacy text is in `feature/about` |
 | Backup | The session cookie and the Room cache are excluded. Favourites, alerts and settings are backed up |
@@ -159,8 +159,8 @@ These go into the backend repo and are deployed before the app ships.
 
 ### Phase 6: Ongoing releases
 
-- Every release goes tag → internal → (closed) → staged production. Never upload straight to
-  production.
+- Every release goes tag → production review → **Publish changes** (managed publishing).
+  CI uploads straight to production at 100 %, so smoke-test the release build before tagging.
 - Watch Android vitals thresholds (user-perceived crash rate < 1.09 %, ANR rate < 0.47 %).
   Going over them reduces the app's visibility on Play.
 - Raise **targetSdk** within a year of each Android release. Play's deadline is 31 August each
@@ -239,9 +239,9 @@ These go into the backend repo and are deployed before the app ships.
 ### 2.6 Release mechanics
 - [ ] App created in Play Console; first AAB uploaded **by hand** to Internal testing
 - [ ] App signing SHA-256 copied into `assetlinks.json` and deployed
-- [ ] Service account invited (this app, testing-track release permissions only)
+- [ ] Service account invited (this app, with the production release permission)
 - [ ] GitHub secrets set: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, `PLAY_SERVICE_ACCOUNT_JSON`
-- [ ] Tag `android-vX.Y.Z` pushed → workflow uploads to internal (as a draft until `PLAY_RELEASE_STATUS` is `completed`)
+- [ ] Tag `android-vX.Y.Z` pushed → workflow uploads to production (as a draft until `PLAY_RELEASE_STATUS` is `completed`)
 - [ ] Release notes in EN and PL
 
 ### 2.7 Smoke test on the Play-installed build
@@ -269,5 +269,5 @@ These go into the backend repo and are deployed before the app ships.
 - [ ] `lintDebug test assembleRelease` green, release build smoke-tested
 - [ ] Data safety form still accurate after dependency or feature changes
 - [ ] Release notes EN + PL
-- [ ] Internal → staged production; watch vitals for 48 h before widening
+- [ ] Tag pushed → production review → Publish changes; watch vitals for 48 h after
 - [ ] targetSdk within Play's yearly deadline (31 August)

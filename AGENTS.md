@@ -1299,7 +1299,7 @@ When adding a new kite spot manually, follow this workflow:
   windy days, calculator - golden-tested against calculator.js, wind field maths)
 - Commands (from `android/`): `./gradlew test lintDebug assembleRelease`
 - CI: `.github/workflows/android.yml` (runs on `android/**` changes; `android-v*` tags upload a
-  signed AAB to the Play internal track). The backend `ci.yml` ignores `android/**`
+  signed AAB to the Play production track). The backend `ci.yml` ignores `android/**`
 - App Links are verified through `/.well-known/assetlinks.json` (source `src/frontend/assets/assetlinks.json`, copied by `build.ts`; fingerprints from Play Console → Grow users → Deep links)
 
 ## Related Documentation

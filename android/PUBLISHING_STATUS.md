@@ -37,8 +37,8 @@ debug symbols."* Crashes and ANRs in native code will be harder to read in Andro
 ## Releasing an update
 
 Managed publishing is still on, so every future release follows the same path: push an
-`android-v<x.y.z>` tag (CI uploads the signed AAB to the internal track), promote it to
-production in Play Console, wait for the review, then click **Publish** under
+`android-v<x.y.z>` tag (CI uploads the signed AAB straight to the production track, for
+all users), wait for the review, then click **Publish** under
 "Changes ready to publish".
 
 ## Follow-ups after launch

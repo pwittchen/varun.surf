@@ -32,7 +32,8 @@ from `android/`, never from the root.
 
 CI (`../.github/workflows/android.yml`) runs `lintDebug`, `test` and `assembleRelease` on
 changes under `android/**` (a push or PR touching only `.md` files there is skipped). Run the same three before calling a change done. An
-`android-v<x.y.z>` tag builds a signed AAB and uploads it to the Play internal track.
+`android-v<x.y.z>` tag builds a signed AAB and uploads it to the Play production track (100 %; it goes live once
+reviewed and published under "Publishing overview", since managed publishing is on).
 
 ## Module Structure
 

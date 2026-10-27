@@ -63,7 +63,8 @@ jobs:
           path: android/app/build/outputs/apk/release/*.apk
 
   release:
-    # android-vX.Y.Z tag -> signed AAB on the Play Console internal track; promotion is manual
+    # android-vX.Y.Z tag -> signed AAB on the Play Console production track, to all users.
+    # Managed publishing is on, so it still waits for "Publish changes" in Play Console
     if: startsWith(github.ref, 'refs/tags/android-v')
     needs: build
     runs-on: ubuntu-24.04
@@ -98,13 +99,13 @@ jobs:
       # Until the app has been reviewed and published once, the Play API only accepts
       # draft releases: set the PLAY_RELEASE_STATUS repository variable to "completed"
       # after the first publish
-      - name: Upload to Play Console (internal track)
+      - name: Upload to Play Console (production track)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: surf.varun.app
           releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
-          track: internal
+          track: production
           status: ${{ vars.PLAY_RELEASE_STATUS || 'draft' }}
           mappingFile: android/app/build/outputs/mapping/release/mapping.txt
           whatsNewDirectory: android/distribution/whatsnew
