@@ -4401,6 +4401,62 @@
     }
   },
   {
+    "name": "Moitas",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/206870",
+    "windfinderUrl": "https://www.windfinder.com/forecast/moitas",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-2.9965,-39.6893",
+    "spotInfo": {
+      "type": "Bay and river mouth, flat water",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy beach at the river mouth, reached by dirt road or by downwind from Icaraizinho",
+      "hazards": "Tides and river current at the mouth, shallow water at low tide, fishing boats, remote location with no quick rescue",
+      "season": "July-January",
+      "description": "Moitas is a small village on the Ceará coast in the Amontada municipality, about 10 km from Icaraizinho. The bay is flat near the river mouth at low tide, and the trade winds blow 18-25 knots from July to January. It is the classic finish of the Icaraizinho downwinder and the starting point for trips to the Patos lagoon."
+    },
+    "spotInfoPL": {
+      "type": "Zatoka i ujście rzeki, płaska woda",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysta plaża przy ujściu rzeki, dojazd drogą gruntową lub downwindem z Icaraizinho",
+      "hazards": "Pływy i prąd rzeki przy ujściu, płytka woda przy odpływie, łodzie rybackie, odludne miejsce bez szybkiej pomocy",
+      "season": "Lipiec-Styczeń",
+      "description": "Moitas to mała wioska na wybrzeżu Ceará w gminie Amontada, około 10 km od Icaraizinho. Zatoka ma płaską wodę przy ujściu rzeki podczas odpływu, a pasaty wieją 18-25 węzłów od lipca do stycznia. To klasyczna meta downwindu z Icaraizinho i punkt wypadowy na lagunę Patos."
+    }
+  },
+  {
+    "name": "Patos",
+    "country": "Brazil",
+    "windguruUrl": "https://www.windguru.cz/206853",
+    "windfinderUrl": "",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=-2.9936,-39.7337",
+    "spotInfo": {
+      "type": "Lagoon, flat water",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Beginner to Advanced",
+      "launch": "Sandy lagoon shore, reached by buggy or boat from Moitas, or by downwind",
+      "hazards": "Remote with no facilities, shallow water, tides change the lagoon level, no quick rescue",
+      "season": "July-January",
+      "description": "Lagoa dos Patos (Praia de Patos) is a flat water lagoon on the Ceará coast, a few km downwind of Moitas and about 10 km from Icaraizinho. The water is a flat mirror with strong wind, and the place is often almost empty. It suits beginners and freestylers, and is a favorite destination of downwinders from Icaraizinho. Not to be confused with Lagoa dos Patos in Rio Grande do Sul."
+    },
+    "spotInfoPL": {
+      "type": "Laguna, płaska woda",
+      "bestWind": "E, ENE",
+      "waterTemp": "26-29°C",
+      "experience": "Od początkującego do zaawansowanego",
+      "launch": "Piaszczysty brzeg laguny, dojazd buggy lub łodzią z Moitas albo downwindem",
+      "hazards": "Odludzie bez infrastruktury, płytka woda, pływy zmieniają poziom laguny, brak szybkiej pomocy",
+      "season": "Lipiec-Styczeń",
+      "description": "Lagoa dos Patos (Praia de Patos) to laguna z płaską wodą na wybrzeżu Ceará, kilka km z wiatrem od Moitas i około 10 km od Icaraizinho. Woda jest gładka jak lustro przy silnym wietrze, a miejsce jest często prawie puste. Nadaje się dla początkujących i freestylerów i jest ulubionym celem downwindów z Icaraizinho. Nie mylić z Lagoa dos Patos w stanie Rio Grande do Sul."
+    }
+  },
+  {
     "name": "Lagoa da Conceição (Florianópolis)",
     "country": "Brazil",
     "windguruUrl": "https://www.windguru.cz/3624",
