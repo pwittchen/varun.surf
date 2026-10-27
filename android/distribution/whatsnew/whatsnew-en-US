@@ -1,1 +1,1 @@
-First release: live wind and forecasts for 800+ kitesurfing spots, wind map, favourites, home screen widgets, wind alerts and a kite size calculator.
+Forecast models now show a loading indicator while they are being fetched, and the ICM forecast is loaded automatically with the other models - no separate button needed. Removed the outdated ICM meteogram link.
