@@ -252,9 +252,10 @@ function updateFetchingMetrics(counters, timers) {
 
 }
 
-// On-demand generation: an AI analysis or an ICM meteogram reading, each paid for
-// per call. The request rows carry the button presses including the ones the
-// day-long cache answered, so the gap between them and the totals is the saving.
+// On-demand generation: an AI analysis, paid for per call, and an ICM forecast
+// fetched by name (free; opening a spot fetches it anyway). The request rows carry
+// the button presses including the ones the cache answered, so the gap between
+// them and the totals is the saving.
 function updateOnDemandMetrics(counters, timers) {
     document.getElementById('ai-analysis-total').textContent = formatNumber(counters.aiAnalysisTotal);
     document.getElementById('ai-analysis-success').textContent = formatNumber(counters.aiAnalysisSuccess);

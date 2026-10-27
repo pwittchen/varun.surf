@@ -35,7 +35,7 @@ public class StatusController {
     private static final List<SourceDefinition> FORECAST_SOURCES = List.of(
             new SourceDefinition("Windguru", "https://www.windguru.cz", "windguru.cz"),
             new SourceDefinition("Windfinder", "https://www.windfinder.com", "windfinder.com"),
-            new SourceDefinition("ICM Meteo", "https://www.meteo.pl", "meteo.pl")
+            new SourceDefinition("ICM Meteo", "https://app.meteo.pl", "app.meteo.pl")
     );
 
     private static final List<SourceDefinition> LIVE_STATION_SOURCES = List.of(

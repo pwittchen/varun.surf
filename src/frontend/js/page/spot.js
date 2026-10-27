@@ -42,12 +42,10 @@ let currentLoadingKey = 'loadingSpotData';
 // languages, so the spinner belongs to the spot rather than to the language that
 // happens to be on screen while it runs.
 const aiAnalysisGenerating = new Set();
-const icmForecastGenerating = new Set();
 
 // The last failed generation per spot, so the card can say so instead of silently
 // showing the button again. Cleared as soon as another attempt starts.
 const aiAnalysisErrors = new Map();
-const icmForecastErrors = new Map();
 
 // Polling and refresh interval IDs
 let forecastPollIntervalId = null;
@@ -412,12 +410,12 @@ function getAiAnalysisTimestampHtml(spot) {
 }
 
 // ============================================================================
-// ON-DEMAND GENERATION (AI ANALYSIS AND ICM FORECAST)
+// ON-DEMAND GENERATION (AI ANALYSIS)
 //
-// Neither is produced in the background any more: each costs an LLM call, so a
-// visitor asks for one and the server holds the result for 24 hours. While one is
-// running the button is replaced by a spinner, and once the result is in, the
-// button is gone for the rest of the day.
+// Not produced in the background any more: it costs an LLM call, so a visitor
+// asks for one and the server holds the result for 24 hours. While it is running
+// the button is replaced by a spinner, and once the result is in, the button is
+// gone for the rest of the day.
 // ============================================================================
 
 // The two sides of this feature name the same spot differently: the route hands
@@ -430,26 +428,14 @@ function spotKey(wgId) {
 }
 
 // The one breakpoint the whole page splits on: below it the card drops the map,
-// the AI analysis and the ICM control, and the generate buttons move into the
-// forecast model dropdown in the header instead.
+// and the AI analysis, and the generate button moves under the forecast model
+// dropdown in the header instead.
 function isDesktopLayout() {
     return window.matchMedia('(min-width: 1005px)').matches;
 }
 
 function isAiAnalysisGenerating(wgId) {
     return aiAnalysisGenerating.has(spotKey(wgId));
-}
-
-function isIcmForecastGenerating(wgId) {
-    return icmForecastGenerating.has(spotKey(wgId));
-}
-
-// Whether the spot already carries an ICM forecast, which is what takes the
-// generate button away. The server publishes it as another entry in the model
-// list, and drops it from there once it expires.
-function hasIcmForecast(spot) {
-    return Array.isArray(spot?.availableModels)
-        && spot.availableModels.some(model => model.key === 'icm');
 }
 
 // One press writes the analysis in both languages - the language passed on is only
@@ -486,60 +472,22 @@ async function requestAiAnalysis(wgId) {
     }
 }
 
-async function requestIcmForecast(wgId) {
-    const key = spotKey(wgId);
-    if (icmForecastGenerating.has(key)) {
-        return;
-    }
-
-    icmForecastGenerating.add(key);
-    icmForecastErrors.delete(key);
-
-    if (currentSpot) {
-        displaySpot(currentSpot);
-    }
-
-    try {
-        const updatedSpot = await api.generateIcmForecast(wgId);
-        icmForecastGenerating.delete(key);
-        displaySpot(updatedSpot);
-        // displaySpot only refreshes the dropdown from the spot it was handed, and
-        // the point of the whole exercise is the new entry in it.
-        if (updatedSpot && updatedSpot.availableModels) {
-            updateModelDropdownOptions(updatedSpot.availableModels, updatedSpot);
-        }
-    } catch (error) {
-        console.error('Failed to generate ICM forecast:', error);
-        icmForecastGenerating.delete(key);
-        icmForecastErrors.set(key, true);
-        if (currentSpot) {
-            displaySpot(currentSpot);
-        }
-    }
-}
-
-// Wires the two generate buttons up after every card rebuild. The markup is thrown
+// Wires the generate button up after every card rebuild. The markup is thrown
 // away and rewritten each time, so the listeners have to go back on with it.
 function setupOnDemandGenerationButtons() {
     const analysisButton = document.getElementById('generateAiAnalysisButton');
     if (analysisButton && currentSpotId) {
         analysisButton.addEventListener('click', () => openAiGenerateModal());
     }
-
-    const icmButton = document.getElementById('generateIcmForecastButton');
-    if (icmButton && currentSpotId) {
-        icmButton.addEventListener('click', () => openIcmGenerateModal());
-    }
 }
 
 // ----------------------------------------------------------------------------
-// The same two generations on the mobile layout.
+// The same generation on the mobile layout.
 //
-// The cards holding them sit under the map, which a phone does not render at all,
-// so there they become two buttons under the forecast model dropdown in the
-// header - next to the dropdown the ICM forecast lands in once it has been read.
+// The card holding it sits under the map, which a phone does not render at all,
+// so there it becomes a button under the forecast model dropdown in the header.
 //
-// Each button passes through the same three states as its desktop card, in the
+// The button passes through the same three states as its desktop card, in the
 // same order: a result already in hand takes it away entirely, a generation in
 // flight replaces it with a spinner, and otherwise it is the button opening the
 // confirmation modal. Which of the three shows is derived from the spot and the
@@ -561,17 +509,6 @@ function updateOnDemandGenerationControls(spot) {
             buttonLabel: translations.t('generateAiAnalysisButton'),
             error: aiAnalysisErrors.has(spotKey(spot.wgId)) ? translations.t('generateAiAnalysisError') : '',
             onClick: openAiGenerateModal
-        }));
-    }
-
-    // Only for spots the ICM grid covers, and only until a forecast has been read
-    if (spot.icmUrl && !hasIcmForecast(spot)) {
-        container.appendChild(createOnDemandControl({
-            generating: isIcmForecastGenerating(spot.wgId),
-            generatingLabel: translations.t('generatingIcmForecast'),
-            buttonLabel: translations.t('generateIcmForecastButton'),
-            error: icmForecastErrors.has(spotKey(spot.wgId)) ? translations.t('generateIcmForecastError') : '',
-            onClick: openIcmGenerateModal
         }));
     }
 }
@@ -701,25 +638,8 @@ function closeAIModal() {
     modals.closeModal('aiModal');
 }
 
-// Open ICM forecast modal
-function openIcmModal(spotName, icmUrl) {
-    const modalTitle = document.getElementById('icmModalTitle');
-    const icmImage = document.getElementById('icmImage');
-
-    modalTitle.textContent = `${spotName} - ICM Forecast`;
-    icmImage.src = icmUrl;
-
-    modals.openModal('icmModal');
-}
-
-// Close ICM forecast modal
-function closeIcmModal() {
-    modals.closeModal('icmModal');
-}
-
-// Ask before spending a model call on the analysis. Same guard as the ICM one
-// below, for the same reason: the click is what costs money, so it should never
-// be an accident.
+// Ask before spending a model call on the analysis: the click is what costs
+// money, so it should never be an accident.
 function openAiGenerateModal() {
     updateAiGenerateModalTranslations();
     modals.openModal('aiGenerateModal');
@@ -739,28 +659,9 @@ function updateAiGenerateModalTranslations() {
     updateConfirmModalHint('aiGenerateModalHint');
 }
 
-// Ask before spending a vision call on the meteogram, and say where the result
-// will turn up - the forecast lands in the model dropdown rather than in the card
-// the button sits in, which is not obvious from the button alone.
-function openIcmGenerateModal() {
-    updateAiGenerateModalTranslations();
-    updateIcmGenerateModalTranslations();
-    modals.openModal('icmGenerateModal');
-}
-
-function updateIcmGenerateModalTranslations() {
-    updateConfirmModalTranslations([
-        'icmGenerateModalTitle',
-        'icmGenerateModalQuestion',
-        'icmGenerateModalCancel',
-        'icmGenerateModalConfirm'
-    ]);
-    updateConfirmModalHint('icmGenerateModalHint');
-}
-
-// Both hints say where the result will turn up, and the two layouts put it in
-// different places: the desktop cards under the map, or the AI button and the
-// model dropdown the mobile buttons sit under. Same key with a "Mobile" suffix.
+// The hint says where the result will turn up, and the two layouts put it in
+// different places: the desktop card under the map, or the AI button in the
+// header the mobile button sits next to. Same key with a "Mobile" suffix.
 function updateConfirmModalHint(elementId) {
     const element = document.getElementById(elementId);
     if (!element) return;
@@ -778,10 +679,6 @@ function updateConfirmModalTranslations(elementIds) {
             element.textContent = translations.t(elementId);
         }
     });
-}
-
-function closeIcmGenerateModal() {
-    modals.closeModal('icmGenerateModal');
 }
 
 const embedDropdownRegistry = [];
@@ -2937,47 +2834,6 @@ function createSpotCard(spot) {
     }
 
     // ========================================================================
-    // BUILD ICM GENERATION CONTROL (its own row under the AI analysis)
-    //
-    // Only for spots the ICM grid actually covers, and only until one has been
-    // read: once the forecast is in the model dropdown the button has nothing left
-    // to offer, so both it and the spinner disappear.
-    //
-    // Desktop only, like the analysis above it - both are paid generations sitting
-    // under a map that a phone does not render at all.
-    // ========================================================================
-
-    // Shown in live-data mode too: the button used to sit in the forecast filter
-    // row, which that mode hides wholesale, but the forecast it produces lands in
-    // the model dropdown either way - so tying it to the mode would only make it
-    // vanish for no reason a visitor could see.
-    let icmGenerateHtml = '';
-    if (isDesktopView && spot.icmUrl && !hasIcmForecast(spot)) {
-        if (isIcmForecastGenerating(spot.wgId)) {
-            icmGenerateHtml = `
-                <div class="icm-generate-card">
-                    <div class="icm-generate-container">
-                        <span class="icm-generate-spinner" aria-hidden="true"></span>
-                        <span class="icm-generate-status">${translations.t('generatingIcmForecast')}</span>
-                    </div>
-                </div>
-            `;
-        } else {
-            const error = icmForecastErrors.get(spotKey(spot.wgId));
-            icmGenerateHtml = `
-                <div class="icm-generate-card">
-                    <div class="icm-generate-container">
-                        <button type="button" class="ondemand-generate-button icm-generate-button" id="generateIcmForecastButton">
-                            ${translations.t('generateIcmForecastButton')}
-                        </button>
-                        ${error ? `<span class="icm-generate-error">${translations.t('generateIcmForecastError')}</span>` : ''}
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    // ========================================================================
     // BUILD SPONSORS CARD (sidebar)
     // ========================================================================
 
@@ -3021,7 +2877,7 @@ function createSpotCard(spot) {
                     ${spot.spotInfo ? `<span class="external-link info-link" onclick="openInfoModal('${spot.name}')"></span>` : ''}
                     ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
-                    ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
+                    ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
                     <span class="external-link embed-link" onclick="openEmbedModal()">${translations.t('embedLinkLabel')}</span>
@@ -3049,7 +2905,6 @@ function createSpotCard(spot) {
                     <div class="spot-detail-right">
                         ${embeddedMapHtml}
                         ${aiAnalysisCardHtml}
-                        ${icmGenerateHtml}
                         ${isDesktopView ? `
                         <div class="forecast-tabs-container">
                             <div class="forecast-tabs">
@@ -3204,7 +3059,7 @@ function displaySpot(spot) {
         // Setup media tabs if available
         setupSpotMediaTabs();
 
-        // Setup the on-demand generate buttons (AI analysis, ICM forecast)
+        // Setup the on-demand generate button (AI analysis)
         setupOnDemandGenerationButtons();
     }
 
@@ -3381,8 +3236,6 @@ function updateUITranslations() {
         aiModalDisclaimer.textContent = translations.t('aiDisclaimer');
     }
 
-    updateIcmGenerateModalTranslations();
-
     const aiModalTitle = document.getElementById('aiModalTitle');
     if (aiModalTitle && currentSpot) {
         aiModalTitle.textContent = `${currentSpot.name} - ${translations.t('aiAnalysisTitle')}`;
@@ -3525,9 +3378,7 @@ function setupModals() {
     const modalConfigs = [
         { modalId: 'infoModal', closeButtonId: 'infoModalClose', closeCallback: closeInfoModal },
         { modalId: 'aiModal', closeButtonId: 'aiModalClose', closeCallback: closeAIModal },
-        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal },
         { modalId: 'aiGenerateModal', closeButtonId: 'aiGenerateModalClose', closeCallback: closeAiGenerateModal },
-        { modalId: 'icmGenerateModal', closeButtonId: 'icmGenerateModalClose', closeCallback: closeIcmGenerateModal },
         { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
         { modalId: 'embedModal', closeButtonId: 'embedModalClose', closeCallback: closeEmbedModal }
     ];
@@ -3545,21 +3396,6 @@ function setupModals() {
             closeAiGenerateModal();
             if (currentSpotId) {
                 requestAiAnalysis(currentSpotId);
-            }
-        });
-    }
-
-    const icmGenerateCancel = document.getElementById('icmGenerateModalCancel');
-    if (icmGenerateCancel) {
-        icmGenerateCancel.addEventListener('click', closeIcmGenerateModal);
-    }
-
-    const icmGenerateConfirm = document.getElementById('icmGenerateModalConfirm');
-    if (icmGenerateConfirm) {
-        icmGenerateConfirm.addEventListener('click', () => {
-            closeIcmGenerateModal();
-            if (currentSpotId) {
-                requestIcmForecast(currentSpotId);
             }
         });
     }
@@ -3840,8 +3676,6 @@ function updateModelDropdownOptions(availableModels, spot = currentSpot) {
         modelDropdownMenu.appendChild(option);
     });
 
-    // A new model list is also how the ICM forecast announces itself, which is
-    // what takes the mobile button under this dropdown away
     updateOnDemandGenerationControls(spot);
 }
 
@@ -3921,8 +3755,6 @@ window.openAIModal = openAIModal;
 window.closeAIModal = closeAIModal;
 window.openInfoModal = openInfoModal;
 window.closeInfoModal = closeInfoModal;
-window.openIcmModal = openIcmModal;
-window.closeIcmModal = closeIcmModal;
 window.openEmbedModal = openEmbedModal;
 window.closeEmbedModal = closeEmbedModal;
 

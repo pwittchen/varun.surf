@@ -167,21 +167,21 @@ public class MetricsConfig {
     @Bean
     public Counter icmAnalysisCounter(MeterRegistry registry) {
         return Counter.builder("varun.ondemand.icm.total")
-                .description("Total number of on-demand ICM meteogram readings")
+                .description("Total number of ICM forecast fetches requested by name")
                 .register(registry);
     }
 
     @Bean
     public Counter icmAnalysisSuccessCounter(MeterRegistry registry) {
         return Counter.builder("varun.ondemand.icm.success")
-                .description("Number of successful on-demand ICM meteogram readings")
+                .description("Number of successful ICM forecast fetches requested by name")
                 .register(registry);
     }
 
     @Bean
     public Counter icmAnalysisFailureCounter(MeterRegistry registry) {
         return Counter.builder("varun.ondemand.icm.failure")
-                .description("Number of failed on-demand ICM meteogram readings")
+                .description("Number of failed ICM forecast fetches requested by name")
                 .register(registry);
     }
 
@@ -209,7 +209,7 @@ public class MetricsConfig {
     @Bean
     public Timer icmAnalysisTimer(MeterRegistry registry) {
         return Timer.builder("varun.ondemand.icm.duration")
-                .description("Duration of on-demand ICM meteogram readings")
+                .description("Duration of ICM forecast fetches requested by name")
                 .register(registry);
     }
 }

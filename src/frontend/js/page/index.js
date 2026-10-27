@@ -1077,25 +1077,6 @@ function closeAIModal() {
     modals.closeModal('aiModal');
 }
 
-function openIcmModal(spotName, icmUrl) {
-    const modalSpotName = document.getElementById('icmModalSpotName');
-    const icmImage = document.getElementById('icmImage');
-
-    modalSpotName.textContent = `${spotName} - ${translations.t('icmForecastTitle')}`;
-    icmImage.src = icmUrl;
-    icmImage.alt = `${translations.t('icmForecastTitle')} for ${spotName}`;
-
-    modals.openModal('icmModal');
-}
-
-function closeIcmModal() {
-    modals.closeModal('icmModal');
-
-    // Clear the image source to stop loading
-    const icmImage = document.getElementById('icmImage');
-    icmImage.src = '';
-}
-
 function openHeroCloseModal() {
     modals.openModal('heroCloseModal');
 }
@@ -1108,7 +1089,6 @@ function setupModals() {
     const modalConfigs = [
         { modalId: 'aiModal', closeButtonId: 'modalClose', closeCallback: closeAIModal },
         { modalId: 'appInfoModal', closeButtonId: 'appInfoModalClose', closeCallback: closeAppInfoModal },
-        { modalId: 'icmModal', closeButtonId: 'icmModalClose', closeCallback: closeIcmModal },
         { modalId: 'heroCloseModal', closeButtonId: 'heroCloseModalClose', closeCallback: closeHeroCloseModal }
     ];
 
@@ -1323,7 +1303,7 @@ function buildExternalLinks(spot) {
                 <div class="external-links">
                     ${spot.windguruUrl || spot.windguruFallbackUrl ? `<a href="${!spot.windguruUrl && spot.windguruFallbackUrl ? spot.windguruFallbackUrl : spot.windguruUrl}" target="_blank" class="external-link">WG</a>` : ''}
                     ${spot.windfinderUrl ? `<a href="${spot.windfinderUrl}" target="_blank" class="external-link">WF</a>` : ''}
-                    ${spot.icmUrl ? `<span class="external-link" onclick="openIcmModal('${spot.name}', '${spot.icmUrl}')">ICM</span>` : ''}
+                    ${spot.icmUrl ? `<a href="${spot.icmUrl}" target="_blank" class="external-link">ICM</a>` : ''}
                     ${spot.webcamUrl ? `<a href="${spot.webcamUrl}" target="_blank" class="external-link webcam-link">${translations.t('camLinkLabel')}</a>` : ''}
                     ${spot.locationUrl ? `<a href="${spot.locationUrl}" target="_blank" class="external-link location-link">${translations.t('mapLinkLabel')}</a>` : ''}
                     ${(state.getLanguage() === 'pl' ? spot.aiAnalysisPl : spot.aiAnalysisEn) ? `<span class="external-link ai-link" onclick="openAIModal('${spot.name}')">AI</span>` : ''}
@@ -4099,8 +4079,6 @@ window.openAppInfoModal = openAppInfoModal;
 window.closeAppInfoModal = closeAppInfoModal;
 window.openAIModal = openAIModal;
 window.closeAIModal = closeAIModal;
-window.openIcmModal = openIcmModal;
-window.closeIcmModal = closeIcmModal;
 window.toggleFavorite = toggleFavorite;
 window.openMapSidePeek = openMapSidePeek;
 

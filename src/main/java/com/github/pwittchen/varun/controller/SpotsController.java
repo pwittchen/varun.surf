@@ -133,18 +133,18 @@ public class SpotsController {
     }
 
     /**
-     * Reads one spot's ICM meteogram through the vision model, and answers with the
+     * Fetches one spot's ICM forecast from the meteo.pl API, and answers with the
      * spot carrying the result - so the caller can repopulate its model dropdown
      * from {@code availableModels} without a second request.
      *
-     * Like the analysis above, this is the only path that pays for a meteogram
-     * reading, and a spot that already has one from within the day is answered from
+     * Opening a spot fetches ICM along with every other model, so this only serves
+     * clients that ask for it by name; a spot that already has one is answered from
      * the cache.
      *
      * @param id Windguru id of the spot
      * @return the spot with ICM among its models; 404 for an unknown spot, 503 when
-     * the meteogram could not be read (no ICM grid point, feature off, or the model
-     * read nothing)
+     * no forecast could be fetched (country outside ICM, no coordinates, or the API
+     * failed)
      */
     @PostMapping("spots/{id}/icm")
     public Mono<ResponseEntity<Spot>> generateIcmForecast(@PathVariable int id) {

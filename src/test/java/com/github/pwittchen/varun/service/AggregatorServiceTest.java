@@ -14,8 +14,7 @@ import com.github.pwittchen.varun.model.spot.Spot;
 import com.github.pwittchen.varun.data.spots.SpotsDataProvider;
 import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
-import com.github.pwittchen.varun.service.forecast.IcmForecastVisionService;
-import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
+import com.github.pwittchen.varun.service.forecast.IcmForecastService;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
@@ -40,7 +39,6 @@ import java.util.function.BooleanSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -72,13 +70,10 @@ class AggregatorServiceTest {
     @Mock
     private GoogleMapsService googleMapsService;
 
-    @Mock
-    private IcmGridMapper icmGridMapper;
-
     private final HourlyForecastMapper hourlyForecastMapper = new HourlyForecastMapper();
 
     @Mock
-    private IcmForecastVisionService icmForecastVisionService;
+    private IcmForecastService icmForecastService;
 
     @Mock
     private SponsorsService sponsorsService;
@@ -97,9 +92,8 @@ class AggregatorServiceTest {
                 aiServiceEn,
                 aiServicePl,
                 googleMapsService,
-                icmGridMapper,
                 hourlyForecastMapper,
-                icmForecastVisionService,
+                icmForecastService,
                 sponsorsService,
                 metricsService
         );
@@ -1101,8 +1095,8 @@ class AggregatorServiceTest {
 
     @Test
     void shouldExposeOnlyDefaultModelWhenModelDiscoveryHasNotFinishedYet() {
-        // given - a spot that already carries an on-demand ICM forecast, opened
-        // before model discovery has run
+        // given - a spot that already carries an ICM forecast fetched by name,
+        // opened before model discovery has run
         var spot = createTestSpot(123, "Test Spot");
         var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
         var icmHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 21.0, 0.0, 0, 0));
@@ -1118,7 +1112,6 @@ class AggregatorServiceTest {
                 ForecastModel.GFS, gfsHourly,
                 ForecastModel.ICM_METEO, icmHourly
         )));
-        markIcmForecastAsFresh(123);
 
         // when
         var result = aggregatorService.getSpotById(123);
@@ -1150,7 +1143,6 @@ class AggregatorServiceTest {
                 ForecastModel.ICM_METEO, icmHourly
         )));
         markModelDiscoveryAsCompleted(123);
-        markIcmForecastAsFresh(123);
 
         // when
         var result = aggregatorService.getSpotById(123);
@@ -1161,15 +1153,6 @@ class AggregatorServiceTest {
                 .map(m -> m.key())
                 .toList();
         assertThat(modelKeys).containsExactly("gfs", "icm", "average");
-    }
-
-    // The ICM model is published only while its on-demand result is still valid, so
-    // a test seeding one straight into the forecast cache has to date it as well.
-    private void markIcmForecastAsFresh(int spotId) {
-        @SuppressWarnings("unchecked")
-        var createdAt = (java.util.concurrent.ConcurrentMap<Integer, Long>)
-                ReflectionTestUtils.getField(aggregatorService, "icmForecastCreatedAt");
-        createdAt.put(spotId, System.currentTimeMillis());
     }
 
     private void markModelDiscoveryAsCompleted(int spotId) {
@@ -1227,29 +1210,7 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldResolveIcmUrlOnStartupWithoutAnyApiCall() {
-        // given
-        var spot = createTestSpotWithLocation(123, "Test Spot");
-        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
-        when(googleMapsService.getCoordinates(any(Spot.class)))
-                .thenReturn(Mono.just(new Coordinates(54.0, 19.0)));
-        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
-
-        // when - nobody calls getSpots(), only the application starts
-        aggregatorService.init();
-
-        // then
-        @SuppressWarnings("unchecked")
-        var icmUrls = (java.util.concurrent.ConcurrentMap<Integer, String>)
-                ReflectionTestUtils.getField(aggregatorService, "icmUrls");
-        awaitUntil("ICM URL to be resolved during warm-up", () -> icmUrls.containsKey(123));
-
-        verify(icmGridMapper).toIcmUrl(54.0, 19.0, "Poland");
-        assertThat(icmUrls).containsEntry(123, "https://meteo.pl/icm");
-    }
-
-    @Test
-    void shouldServeCachedIcmUrlWithoutResolvingTheGridWhileServingSpots() {
+    void shouldLinkTheIcmMeteogramOfACoveredSpot() {
         // given
         var spot = createTestSpot(123, "Test Spot");
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
@@ -1260,40 +1221,52 @@ class AggregatorServiceTest {
         var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
                 ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
         coordinates.put(123, new Coordinates(54.0, 19.0));
-
-        @SuppressWarnings("unchecked")
-        var icmUrls = (java.util.concurrent.ConcurrentMap<Integer, String>)
-                ReflectionTestUtils.getField(aggregatorService, "icmUrls");
-        icmUrls.put(123, "https://meteo.pl/icm");
+        when(icmForecastService.toMeteogramUrl(new Coordinates(54.0, 19.0), "Poland"))
+                .thenReturn(Optional.of("https://app.meteo.pl/meteogram/54.0000,19.0000"));
 
         // when
         var result = aggregatorService.getSpots();
 
-        // then - the grid is never validated over HTTP while a request is being served
+        // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).icmUrl()).isEqualTo("https://meteo.pl/icm");
-        verify(icmGridMapper, never()).toIcmUrl(anyDouble(), anyDouble(), any());
+        assertThat(result.get(0).icmUrl()).isEqualTo("https://app.meteo.pl/meteogram/54.0000,19.0000");
     }
 
     @Test
-    void shouldNotGenerateIcmForecastWhenVisionIsDisabled() {
+    void shouldFetchIcmForecastAlongWithTheOtherModels() {
         // given
         var spot = createTestSpot(123, "Test Spot");
+        var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
+        var gfsHourly = List.of(new Forecast("Mon 01 Jan 2025 12:00", 10.0, 15.0, "N", 20.0, 0.0, 0, 0));
+
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
         ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
-        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", false);
+
+        @SuppressWarnings("unchecked")
+        var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
+                ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
+        coordinates.put(123, new Coordinates(54.0, 19.0));
+
+        when(forecastService.getForecastData(anyInt(), any(ForecastModel.class)))
+                .thenReturn(Mono.just(new ForecastData(List.of(), Map.of())));
+        when(forecastService.getForecastData(123, ForecastModel.GFS))
+                .thenReturn(Mono.just(new ForecastData(List.of(), Map.of(ForecastModel.GFS, gfsHourly))));
+        when(icmForecastService.isCountrySupported("Poland")).thenReturn(true);
+        when(icmForecastService.fetchForecast(new Coordinates(54.0, 19.0))).thenReturn(Optional.of(icmForecast));
 
         // when
-        var generated = aggregatorService.generateIcmForecast(123).block();
+        aggregatorService.fetchForecastsForAllModels(123);
 
         // then
-        assertThat(generated).isFalse();
-        verify(icmForecastVisionService, never()).extractForecastFromMeteogram(any());
+        var modelKeys = aggregatorService.getSpotById(123).orElseThrow().availableModels().stream()
+                .map(m -> m.key())
+                .toList();
+        assertThat(modelKeys).containsExactly("gfs", "icm", "average");
     }
 
     @Test
-    void shouldGenerateIcmForecastOnDemandAndCacheIt() {
+    void shouldFetchIcmForecastByNameAndKeepIt() {
         // given
         var spot = createTestSpot(123, "Test Spot");
         var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
@@ -1301,31 +1274,30 @@ class AggregatorServiceTest {
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
         ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
-        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
 
         @SuppressWarnings("unchecked")
         var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
                 ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
         coordinates.put(123, new Coordinates(54.0, 19.0));
 
-        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(true);
-        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
-        when(icmForecastVisionService.extractForecastFromMeteogram("https://meteo.pl/icm"))
-                .thenReturn(Optional.of(icmForecast));
+        when(icmForecastService.isCountrySupported("Poland")).thenReturn(true);
+        when(icmForecastService.fetchForecast(new Coordinates(54.0, 19.0))).thenReturn(Optional.of(icmForecast));
 
         // when
         var generated = aggregatorService.generateIcmForecast(123).block();
+        var second = aggregatorService.generateIcmForecast(123).block();
 
         // then
         assertThat(generated).isTrue();
-        assertThat(aggregatorService.hasValidIcmForecast(123)).isTrue();
+        assertThat(second).isTrue();
+        verify(icmForecastService, times(1)).fetchForecast(any());
 
         @SuppressWarnings("unchecked")
         var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
                 ReflectionTestUtils.getField(aggregatorService, "forecastCache");
         assertThat(forecastCache.get(123).hourly(ForecastModel.ICM_METEO)).isEqualTo(icmForecast);
 
-        // and the on-demand discovery of the remaining models is not blocked by a fresh timestamp
+        // and the discovery of the remaining models is not blocked by a fresh timestamp
         @SuppressWarnings("unchecked")
         var timestamps = (java.util.concurrent.ConcurrentMap<Integer, Long>)
                 ReflectionTestUtils.getField(aggregatorService, "hourlyForecastCacheTimestamps");
@@ -1333,92 +1305,43 @@ class AggregatorServiceTest {
     }
 
     @Test
-    void shouldNotReadTheMeteogramTwiceWithinItsLifetime() {
+    void shouldNotFetchIcmForecastWhenTheApiReturnsNothing() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
-
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
         ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
-        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
 
         @SuppressWarnings("unchecked")
         var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
                 ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
         coordinates.put(123, new Coordinates(54.0, 19.0));
 
-        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(true);
-        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
-        when(icmForecastVisionService.extractForecastFromMeteogram("https://meteo.pl/icm"))
-                .thenReturn(Optional.of(icmForecast));
-
-        // when
-        aggregatorService.generateIcmForecast(123).block();
-        var second = aggregatorService.generateIcmForecast(123).block();
-
-        // then
-        assertThat(second).isTrue();
-        verify(icmForecastVisionService, times(1)).extractForecastFromMeteogram(any());
-    }
-
-    @Test
-    void shouldSkipIcmForecastForCountriesOutsideTheIcmGrid() {
-        // given
-        var spot = createTestSpot(123, "Test Spot");
-        var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
-        spotsMap.put(spot.wgId(), spot);
-        ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
-        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
-        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(false);
+        when(icmForecastService.isCountrySupported("Poland")).thenReturn(true);
+        when(icmForecastService.fetchForecast(any())).thenReturn(Optional.empty());
 
         // when
         var generated = aggregatorService.generateIcmForecast(123).block();
 
         // then
         assertThat(generated).isFalse();
-        verify(icmForecastVisionService, never()).extractForecastFromMeteogram(any());
     }
 
     @Test
-    void shouldDropAnExpiredIcmForecastFromTheModelList() {
+    void shouldSkipIcmForecastForCountriesOutsideTheIcmModel() {
         // given
         var spot = createTestSpot(123, "Test Spot");
-        var icmForecast = List.of(new Forecast("Mon 01 Jan 2025 12:00", 12.0, 18.0, "N", 15.0, 0.0, 0, 0));
-
         var spotsMap = new java.util.concurrent.ConcurrentHashMap<Integer, Spot>();
         spotsMap.put(spot.wgId(), spot);
         ReflectionTestUtils.setField(aggregatorService, "spots", spotsMap);
-        ReflectionTestUtils.setField(aggregatorService, "icmVisionEnabled", true);
+        when(icmForecastService.isCountrySupported("Poland")).thenReturn(false);
 
-        @SuppressWarnings("unchecked")
-        var coordinates = (java.util.concurrent.ConcurrentMap<Integer, Coordinates>)
-                ReflectionTestUtils.getField(aggregatorService, "locationCoordinates");
-        coordinates.put(123, new Coordinates(54.0, 19.0));
+        // when
+        var generated = aggregatorService.generateIcmForecast(123).block();
 
-        when(icmGridMapper.isCountrySupported("Poland")).thenReturn(true);
-        when(icmGridMapper.toIcmUrl(54.0, 19.0, "Poland")).thenReturn(Optional.of("https://meteo.pl/icm"));
-        when(icmForecastVisionService.extractForecastFromMeteogram("https://meteo.pl/icm"))
-                .thenReturn(Optional.of(icmForecast));
-
-        aggregatorService.generateIcmForecast(123).block();
-
-        // when - backdated past its 24 hour lifetime
-        @SuppressWarnings("unchecked")
-        var createdAt = (java.util.concurrent.ConcurrentMap<Integer, Long>)
-                ReflectionTestUtils.getField(aggregatorService, "icmForecastCreatedAt");
-        createdAt.put(123, System.currentTimeMillis() - Duration.ofHours(25).toMillis());
-
-        assertThat(aggregatorService.hasValidIcmForecast(123)).isFalse();
-
-        aggregatorService.evictExpiredOnDemandData();
-
-        // then - the forecast itself is gone, and so is the entry in the dropdown
-        @SuppressWarnings("unchecked")
-        var forecastCache = (java.util.concurrent.ConcurrentMap<Integer, ForecastData>)
-                ReflectionTestUtils.getField(aggregatorService, "forecastCache");
-        assertThat(forecastCache.get(123).hourly(ForecastModel.ICM_METEO)).isEmpty();
-        assertThat(createdAt).doesNotContainKey(123);
+        // then
+        assertThat(generated).isFalse();
+        verify(icmForecastService, never()).fetchForecast(any());
     }
 
     @Test

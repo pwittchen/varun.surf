@@ -23,8 +23,7 @@ import com.github.pwittchen.varun.service.ai.AiServiceEn;
 import com.github.pwittchen.varun.service.ai.AiServicePl;
 import com.github.pwittchen.varun.service.forecast.ForecastAverageCalculator;
 import com.github.pwittchen.varun.service.forecast.ForecastService;
-import com.github.pwittchen.varun.service.forecast.IcmForecastVisionService;
-import com.github.pwittchen.varun.service.forecast.IcmGridMapper;
+import com.github.pwittchen.varun.service.forecast.IcmForecastService;
 import com.github.pwittchen.varun.service.live.CurrentConditionsService;
 import com.github.pwittchen.varun.service.map.GoogleMapsService;
 import com.github.pwittchen.varun.service.sponsors.SponsorsService;
@@ -92,17 +91,15 @@ public class AggregatorService {
     private static final long CONDITIONS_FETCH_INTERVAL_MS = 60_000;              // 1 minute
     private static final long HOURLY_FORECAST_CACHE_TTL_HOURS = 3;
 
-    // The AI analysis and the ICM meteogram reading are the only two things here
-    // that cost money per call, and both used to run on a timer over the whole spot
-    // list: a daily pass in two languages over ~800 spots, and a meteogram read
-    // every three hours for every Polish and Czech spot. That spent the bulk of the
-    // budget on spots nobody opened that day. Both are now generated only when a
-    // visitor asks for one, and the result is held for a day - long enough that a
-    // popular spot is paid for once, short enough that the text never trails the
-    // forecast by more than a day.
+    // The AI analysis is the only thing here that costs money per call, and it used
+    // to run on a timer over the whole spot list: a daily pass in two languages over
+    // ~800 spots, which spent the bulk of the budget on spots nobody opened that day.
+    // It is now generated only when a visitor asks for one, and the result is held
+    // for a day - long enough that a popular spot is paid for once, short enough
+    // that the text never trails the forecast by more than a day.
     private static final long ON_DEMAND_TTL_MS = 24 * 60 * 60 * 1000;             // 24 hours
 
-    // How often expired analyses and meteogram forecasts are dropped. Validity is
+    // How often expired analyses are dropped. Validity is
     // checked on read anyway, so this only reclaims the memory of what nobody came
     // back for; hourly keeps the caches from holding a day of stale text.
     private static final long ON_DEMAND_EVICTION_INTERVAL_MS = 60 * 60 * 1000;    // 1 hour
@@ -131,9 +128,6 @@ public class AggregatorService {
     @Value("${app.feature.ai.forecast.analysis.enabled}")
     private boolean aiForecastAnalysisEnabled;
 
-    @Value("${app.feature.icm.vision.enabled}")
-    private boolean icmVisionEnabled;
-
     /**
      * Every scheduled fetch and every startup warm-up hangs off this flag. Booting the application
      * loads ~800 spots and immediately resolves coordinates and forecasts for all of them, which is
@@ -154,10 +148,8 @@ public class AggregatorService {
     // strings for everything that only reads them.
     private final ConcurrentMap<Integer, Long> aiAnalysisEnCreatedAt;
     private final ConcurrentMap<Integer, Long> aiAnalysisPlCreatedAt;
-    private final ConcurrentMap<Integer, Long> icmForecastCreatedAt;
     private final ConcurrentMap<Integer, Long> hourlyForecastCacheTimestamps;
     private final ConcurrentMap<Integer, Coordinates> locationCoordinates;
-    private final ConcurrentMap<Integer, String> icmUrls;
     private final ConcurrentMap<Integer, String> spotPhotos;
 
     private final SpotsDataProvider spotsDataProvider;
@@ -166,9 +158,8 @@ public class AggregatorService {
     private final AiServiceEn aiServiceEn;
     private final AiServicePl aiServicePl;
     private final GoogleMapsService googleMapsService;
-    private final IcmGridMapper icmGridMapper;
     private final HourlyForecastMapper hourlyForecastMapper;
-    private final IcmForecastVisionService icmForecastVisionService;
+    private final IcmForecastService icmForecastService;
     private final SponsorsService sponsorsService;
     private final AggregatorServiceMetrics metricsService;
 
@@ -177,7 +168,6 @@ public class AggregatorService {
     private final Semaphore currentConditionsLimiter = new Semaphore(CONDITIONS_SEMAPHORE_PERMITS);
     private final Semaphore discoveryLimiter = new Semaphore(DISCOVERY_SEMAPHORE_PERMITS);
     private final ConcurrentMap<Integer, Disposable> locationCoordinatesFetchSubscriptions;
-    private final ConcurrentMap<Integer, Disposable> icmUrlResolutionSubscriptions;
     private final ConcurrentMap<Integer, Object> forecastModelsLocks;
 
     // A windy Saturday puts several visitors on the same spot within seconds of each
@@ -185,7 +175,6 @@ public class AggregatorService {
     // The first call publishes its Mono here and everyone who arrives while it is
     // still running subscribes to that one instead of starting a second.
     private final ConcurrentMap<String, Mono<String>> aiAnalysisInFlight;
-    private final ConcurrentMap<Integer, Mono<Boolean>> icmForecastInFlight;
 
     // Progress of the forecast sweep, read by /api/v1/status/forecast
     private final AtomicBoolean forecastFetchInProgress = new AtomicBoolean();
@@ -204,9 +193,8 @@ public class AggregatorService {
             AiServiceEn aiServiceEn,
             AiServicePl aiServicePl,
             GoogleMapsService googleMapsService,
-            IcmGridMapper icmGridMapper,
             HourlyForecastMapper hourlyForecastMapper,
-            IcmForecastVisionService icmForecastVisionService,
+            IcmForecastService icmForecastService,
             SponsorsService sponsorsService,
             AggregatorServiceMetrics metricsService) {
         this.spots = new ConcurrentHashMap<>();
@@ -217,14 +205,10 @@ public class AggregatorService {
         this.aiAnalysisPl = new ConcurrentHashMap<>();
         this.aiAnalysisEnCreatedAt = new ConcurrentHashMap<>();
         this.aiAnalysisPlCreatedAt = new ConcurrentHashMap<>();
-        this.icmForecastCreatedAt = new ConcurrentHashMap<>();
         this.aiAnalysisInFlight = new ConcurrentHashMap<>();
-        this.icmForecastInFlight = new ConcurrentHashMap<>();
         this.hourlyForecastCacheTimestamps = new ConcurrentHashMap<>();
         this.locationCoordinatesFetchSubscriptions = new ConcurrentHashMap<>();
-        this.icmUrlResolutionSubscriptions = new ConcurrentHashMap<>();
         this.locationCoordinates = new ConcurrentHashMap<>();
-        this.icmUrls = new ConcurrentHashMap<>();
         this.spotPhotos = new ConcurrentHashMap<>();
         this.forecastModelsLocks = new ConcurrentHashMap<>();
         this.spotsDataProvider = spotsDataProvider;
@@ -233,9 +217,8 @@ public class AggregatorService {
         this.aiServiceEn = aiServiceEn;
         this.aiServicePl = aiServicePl;
         this.googleMapsService = googleMapsService;
-        this.icmGridMapper = icmGridMapper;
         this.hourlyForecastMapper = hourlyForecastMapper;
-        this.icmForecastVisionService = icmForecastVisionService;
+        this.icmForecastService = icmForecastService;
         this.sponsorsService = sponsorsService;
         this.metricsService = metricsService;
     }
@@ -258,7 +241,7 @@ public class AggregatorService {
 
     /**
      * Resolves everything that used to be resolved lazily on the first API call, so that a freshly
-     * started instance serves complete spots (coordinates, ICM URLs, photos) without waiting for a
+     * started instance serves complete spots (coordinates, ICM links, photos) without waiting for a
      * visitor to warm the caches up.
      */
     private void warmUpSpots() {
@@ -268,12 +251,8 @@ public class AggregatorService {
         log.info("Warming up spots");
         spots.values().forEach(spot -> {
             spotPhotos.computeIfAbsent(spot.wgId(), this::loadSpotPhotoPath);
-            var coords = locationCoordinates.get(spot.wgId());
-            if (coords == null) {
-                // the ICM URL is resolved as soon as the coordinates arrive
+            if (!locationCoordinates.containsKey(spot.wgId())) {
                 scheduleLocationCoordinatesFetch(spot);
-            } else if (!icmUrls.containsKey(spot.wgId())) {
-                scheduleIcmUrlResolution(spot, coords);
             }
         });
     }
@@ -295,8 +274,6 @@ public class AggregatorService {
         }
         locationCoordinatesFetchSubscriptions.values().forEach(Disposable::dispose);
         locationCoordinatesFetchSubscriptions.clear();
-        icmUrlResolutionSubscriptions.values().forEach(Disposable::dispose);
-        icmUrlResolutionSubscriptions.clear();
     }
 
     public List<Spot> getSpots() {
@@ -438,17 +415,12 @@ public class AggregatorService {
             }
 
             // Model discovery runs asynchronously once a spot is opened, so until it has finished
-            // the cache may already hold a partial set of models (ICM is pre-fetched for Polish and
-            // Czech spots by a separate scheduled job). Publishing that partial set would make the
-            // frontend treat the model list as complete and stop waiting for the remaining models,
-            // so only the default model is exposed until discovery completes.
+            // the cache may already hold a partial set of models (ICM can be fetched on its own
+            // through generateIcmForecast). Publishing that partial set would make the frontend
+            // treat the model list as complete and stop waiting for the remaining models, so only
+            // the default model is exposed until discovery completes.
             Stream<ForecastModel> discoveredModels = data.hourly().keySet().stream()
-                    .filter(m -> !data.hourly(m).isEmpty())
-                    // ICM is generated on demand and expires after a day. The eviction
-                    // sweep drops it from the cache hourly, so between expiry and the
-                    // next sweep the dropdown would still offer a forecast the frontend
-                    // treats as gone.
-                    .filter(m -> m != ForecastModel.ICM_METEO || hasValidIcmForecast(spot.wgId()));
+                    .filter(m -> !data.hourly(m).isEmpty());
             if (!hourlyForecastCacheTimestamps.containsKey(spot.wgId())) {
                 discoveredModels = discoveredModels.filter(m -> m == ForecastModel.GFS);
             }
@@ -502,12 +474,9 @@ public class AggregatorService {
         var coords = locationCoordinates.get(spot.wgId());
         if (coords != null) {
             enrichedSpot = enrichedSpot.withCoordinates(coords);
-            // Only the cached value, resolving it validates ICM grid points over HTTP
-            var icmUrl = icmUrls.get(spot.wgId());
-            if (icmUrl != null) {
-                enrichedSpot = enrichedSpot.withIcmUrl(icmUrl);
-            } else {
-                scheduleIcmUrlResolution(spot, coords);
+            var icmUrl = icmForecastService.toMeteogramUrl(coords, spot.country());
+            if (icmUrl.isPresent()) {
+                enrichedSpot = enrichedSpot.withIcmUrl(icmUrl.get());
             }
         } else {
             scheduleLocationCoordinatesFetch(spot);
@@ -528,45 +497,11 @@ public class AggregatorService {
         locationCoordinatesFetchSubscriptions.computeIfAbsent(spot.wgId(), id ->
                 loadCoordinates(spot)
                         .subscribeOn(Schedulers.boundedElastic())
-                        .doOnNext(c -> {
-                            locationCoordinates.put(id, c);
-                            resolveAndCacheIcmUrl(id, spot, c);
-                        })
+                        .doOnNext(c -> locationCoordinates.put(id, c))
                         .doOnError(error -> log.warn("Coordinates fetch failed for spot {}", id, error))
                         .doFinally(_ -> locationCoordinatesFetchSubscriptions.remove(id))
                         .subscribe()
         );
-    }
-
-    /**
-     * Resolves the ICM meteogram URL off the request path. Snapping coordinates to a valid ICM grid
-     * point costs a few HTTP calls, so it must never happen while serving a spot.
-     */
-    private void scheduleIcmUrlResolution(final Spot spot, final Coordinates coords) {
-        if (!backgroundTasksEnabled) {
-            return;
-        }
-        if (!icmGridMapper.isCountrySupported(spot.country())) {
-            return;
-        }
-        icmUrlResolutionSubscriptions.computeIfAbsent(spot.wgId(), id ->
-                Mono.fromRunnable(() -> resolveAndCacheIcmUrl(id, spot, coords))
-                        .subscribeOn(Schedulers.boundedElastic())
-                        .doOnError(error -> log.warn("ICM URL resolution failed for spot {}", id, error))
-                        .onErrorComplete()
-                        .doFinally(_ -> icmUrlResolutionSubscriptions.remove(id))
-                        .subscribe()
-        );
-    }
-
-    private Optional<String> resolveAndCacheIcmUrl(int spotId, Spot spot, Coordinates coords) {
-        String cached = icmUrls.get(spotId);
-        if (cached != null) {
-            return Optional.of(cached);
-        }
-        Optional<String> icmUrl = icmGridMapper.toIcmUrl(coords.lat(), coords.lon(), spot.country());
-        icmUrl.ifPresent(url -> icmUrls.put(spotId, url));
-        return icmUrl;
     }
 
     private Mono<Coordinates> loadCoordinates(Spot spot) {
@@ -957,10 +892,15 @@ public class AggregatorService {
         }
     }
 
-    private Optional<List<Forecast>> fetchIcmForecast(String icmUrl) {
-        return icmForecastVisionService
-                .extractForecastFromMeteogram(icmUrl)
-                .filter(forecasts -> !forecasts.isEmpty());
+    /**
+     * Fetches the ICM forecast of a spot from the meteo.pl API, or empty when ICM does
+     * not cover the spot's country, its coordinates cannot be resolved or the API failed.
+     */
+    private Optional<List<Forecast>> fetchIcmForecast(int spotId, Spot spot) {
+        if (spot == null || !icmForecastService.isCountrySupported(spot.country())) {
+            return Optional.empty();
+        }
+        return resolveCoordinates(spotId, spot).flatMap(icmForecastService::fetchForecast);
     }
 
     /**
@@ -1029,11 +969,16 @@ public class AggregatorService {
                         }))
                         .toList());
 
-                // ICM is deliberately not fetched here. Reading a meteogram costs a
-                // vision call, and this runs on every spot anyone opens - which used
-                // to buy one for every Polish and Czech spot a visitor merely looked
-                // at. It is generated only when someone asks for it by name, through
-                // generateIcmForecast.
+                // ICM comes from meteo.pl rather than Windguru, so it is not held back
+                // by the discovery limiter. It is one free request now that the forecast
+                // is read from the meteogram API instead of off the image by a model.
+                if (spot != null && icmForecastService.isCountrySupported(spot.country())) {
+                    tasks.add(scope.fork(() -> Pair.with(
+                            ForecastModel.ICM_METEO,
+                            new ForecastData(List.of(), fetchIcmForecast(spotId, spot)
+                                    .map(forecasts -> Map.of(ForecastModel.ICM_METEO, forecasts))
+                                    .orElse(Map.of())))));
+                }
 
                 try {
                     scope.join();
@@ -1048,23 +993,16 @@ public class AggregatorService {
         }
     }
 
-    private Optional<String> resolveIcmUrl(int spotId, Spot spot) {
-        String cached = icmUrls.get(spotId);
-        if (cached != null) {
-            return Optional.of(cached);
-        }
+    private Optional<Coordinates> resolveCoordinates(int spotId, Spot spot) {
         Coordinates coords = locationCoordinates.get(spotId);
         if (coords == null) {
-            log.info("Coordinates not cached for spot {}, loading synchronously for ICM resolution", spotId);
+            log.info("Coordinates not cached for spot {}, loading synchronously for the ICM forecast", spotId);
             coords = loadCoordinates(spot).block();
             if (coords != null) {
                 locationCoordinates.put(spotId, coords);
             }
         }
-        if (coords == null) {
-            return Optional.empty();
-        }
-        return resolveAndCacheIcmUrl(spotId, spot, coords);
+        return Optional.ofNullable(coords);
     }
 
     private boolean isHourlyForecastCacheTimestampNotExpired(int spotId) {
@@ -1128,10 +1066,12 @@ public class AggregatorService {
     }
 
     // ========================================================================
-    // ON-DEMAND GENERATION (AI ANALYSIS AND ICM METEOGRAM)
+    // ON-DEMAND GENERATION (AI ANALYSIS AND ICM FORECAST)
     //
-    // Both cost an LLM call per spot, so neither runs on a timer any more. A
+    // The analysis costs an LLM call per spot, so it does not run on a timer. A
     // visitor asks for one, it is generated once, and it stays valid for a day.
+    // ICM is free and normally arrives with model discovery; the endpoint below
+    // only fetches it ahead of that for clients that ask for it by name.
     // ========================================================================
 
     /**
@@ -1144,13 +1084,6 @@ public class AggregatorService {
      */
     public boolean hasValidAiAnalysis(int wgId, String language) {
         return isOnDemandEntryValid(aiAnalysisCreatedAt(language).get(wgId));
-    }
-
-    /**
-     * Whether this spot's ICM meteogram has been read within the last day.
-     */
-    public boolean hasValidIcmForecast(int wgId) {
-        return isOnDemandEntryValid(icmForecastCreatedAt.get(wgId));
     }
 
     /**
@@ -1275,60 +1208,28 @@ public class AggregatorService {
     }
 
     /**
-     * Reads one spot's ICM meteogram through the vision model and merges the result
-     * into its cached forecasts, where it shows up as another entry in the model
-     * dropdown. Held for a day like the analysis, and shared between concurrent
-     * callers the same way.
+     * Makes sure a spot carries an ICM forecast, fetching it from the meteo.pl API when
+     * model discovery has not brought one in yet. Model discovery fetches ICM along with
+     * every other model, so this only serves clients that ask for it by name (the
+     * Android app keeps a button for it).
      *
-     * @return true when the spot now carries an ICM forecast, false when it could
-     * not be produced (no grid point, feature off, or the model read nothing)
+     * @return true when the spot now carries an ICM forecast, false when it could not
+     * be produced (country outside ICM, no coordinates, or the API failed)
      */
     public Mono<Boolean> generateIcmForecast(int wgId) {
         Spot spot = spots.get(wgId);
-        if (spot == null) {
+        if (spot == null || !icmForecastService.isCountrySupported(spot.country())) {
             return Mono.just(false);
         }
 
-        if (!icmVisionEnabled) {
-            log.info("ICM vision is DISABLED, skipping generation for spot {}", wgId);
-            return Mono.just(false);
-        }
-
-        if (!icmGridMapper.isCountrySupported(spot.country())) {
-            return Mono.just(false);
-        }
-
-        if (hasValidIcmForecast(wgId)) {
-            log.info("ICM forecast for spot {} is still valid, not generating another", wgId);
+        if (hasIcmForecast(wgId)) {
             return Mono.just(true);
         }
 
-        return icmForecastInFlight
-                .computeIfAbsent(wgId, _ -> generateIcmForecastOnce(wgId, spot)
-                        .doFinally(_ -> icmForecastInFlight.remove(wgId))
-                        .cache());
-    }
-
-    private Mono<Boolean> generateIcmForecastOnce(int wgId, Spot spot) {
         return Mono
-                .fromCallable(() -> {
-                    Optional<String> icmUrl = resolveIcmUrl(wgId, spot);
-                    if (icmUrl.isEmpty()) {
-                        log.warn("No ICM grid point for spot {}, cannot generate a forecast", wgId);
-                        return false;
-                    }
-                    boolean updated = updateIcmForecast(wgId, fetchIcmForecast(icmUrl.get()));
-                    if (updated) {
-                        icmForecastCreatedAt.put(wgId, System.currentTimeMillis());
-                        log.info("ICM forecast for spot {} generated", wgId);
-                    }
-                    return updated;
-                })
+                .fromCallable(() -> updateIcmForecast(wgId, fetchIcmForecast(wgId, spot)))
                 .subscribeOn(Schedulers.boundedElastic())
-                .doOnSubscribe(_ -> {
-                    log.info("Generating ICM forecast for spot {}", wgId);
-                    metricsService.incrementIcmAnalysisCounter();
-                })
+                .doOnSubscribe(_ -> metricsService.incrementIcmAnalysisCounter())
                 .doOnNext(updated -> {
                     if (updated) {
                         metricsService.incrementIcmAnalysisSuccessCounter();
@@ -1337,7 +1238,7 @@ public class AggregatorService {
                     }
                 })
                 .doOnError(error -> {
-                    log.warn("Failed to generate ICM forecast for spot {}", wgId, error);
+                    log.warn("Failed to fetch ICM forecast for spot {}", wgId, error);
                     metricsService.incrementIcmAnalysisFailureCounter();
                 })
                 .onErrorReturn(false)
@@ -1346,28 +1247,22 @@ public class AggregatorService {
                 .map(Tuple2::getT2);
     }
 
+    private boolean hasIcmForecast(int wgId) {
+        ForecastData data = forecastCache.get(wgId);
+        return data != null && !data.hourly(ForecastModel.ICM_METEO).isEmpty();
+    }
+
     /**
      * Drops what has outlived its day. Validity is checked on read anyway, so this
-     * only reclaims the memory of analyses and meteogram forecasts nobody came back
-     * for - and, for ICM, takes the model back out of the spot's dropdown so the
-     * list never offers a forecast that is no longer there.
+     * only reclaims the memory of analyses nobody came back for.
      */
     @Scheduled(fixedRate = ON_DEMAND_EVICTION_INTERVAL_MS, initialDelay = ON_DEMAND_EVICTION_INTERVAL_MS)
     public void evictExpiredOnDemandData() {
         int analyses = evictExpiredAnalyses(aiAnalysisEn, aiAnalysisEnCreatedAt)
                 + evictExpiredAnalyses(aiAnalysisPl, aiAnalysisPlCreatedAt);
 
-        int icmForecasts = 0;
-        for (Integer wgId : List.copyOf(icmForecastCreatedAt.keySet())) {
-            if (!isOnDemandEntryValid(icmForecastCreatedAt.get(wgId))) {
-                icmForecastCreatedAt.remove(wgId);
-                removeIcmForecast(wgId);
-                icmForecasts++;
-            }
-        }
-
-        if (analyses > 0 || icmForecasts > 0) {
-            log.info("Evicted {} expired AI analyses and {} expired ICM forecasts", analyses, icmForecasts);
+        if (analyses > 0) {
+            log.info("Evicted {} expired AI analyses", analyses);
         }
     }
 
@@ -1384,18 +1279,6 @@ public class AggregatorService {
             }
         }
         return evicted;
-    }
-
-    /**
-     * Takes the ICM model back out of a spot's cached forecasts, leaving every other
-     * model and the daily rows untouched.
-     */
-    private void removeIcmForecast(int wgId) {
-        forecastCache.computeIfPresent(wgId, (_, existing) -> {
-            Map<ForecastModel, List<Forecast>> hourly = new HashMap<>(existing.hourly());
-            hourly.remove(ForecastModel.ICM_METEO);
-            return new ForecastData(existing.daily(), hourly);
-        });
     }
 
     /**

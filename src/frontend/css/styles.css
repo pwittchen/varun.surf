@@ -2667,22 +2667,6 @@ body.index-page .header-title {
     line-height: 1.5;
 }
 
-/* ICM Modal Styles */
-.icm-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 300px;
-}
-
-.icm-forecast-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    display: block;
-}
-
 
 /* ============================================================================
    13. SPOT INFO & AI ANALYSIS
@@ -3588,10 +3572,8 @@ body.forecasts-loading .skeleton-text {
     gap: 10px;
 }
 
-/* The two on-demand buttons sit in stacked cards, so a difference in label length
-   reads as a ragged edge. They share one rule and one min-width, sized for the
-   longest label in any language ("Generate ICM forecast" / "Generuj prognozę ICM"),
-   which lands both of them on the same floor whichever language is on. */
+/* One min-width, sized for the longest label in any language, so the button keeps
+   its width whichever language is on. */
 .ondemand-generate-button {
     min-width: 13rem;
     padding: 7px 14px;
@@ -3626,9 +3608,7 @@ body.forecasts-loading .skeleton-text {
     color: var(--warning-color);
 }
 
-/* One spinner shape for both on-demand generations */
-.ai-analysis-spinner,
-.icm-generate-spinner {
+.ai-analysis-spinner {
     display: inline-block;
     width: 14px;
     height: 14px;
@@ -3645,37 +3625,8 @@ body.forecasts-loading .skeleton-text {
     }
 }
 
-/* ICM generation, on its own row under the AI analysis. Same card shell as the
-   analysis above it, so the two paid generations read as one group rather than
-   one of them being tucked into the forecast filter row. */
-.icm-generate-card {
-    width: 100%;
-    margin-top: 15px;
-    padding: 12px 14px;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius-lg);
-}
-
-.icm-generate-container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.icm-generate-status {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-.icm-generate-error {
-    font-size: 0.75rem;
-    line-height: 1.4;
-    color: var(--warning-color);
-}
-
-/* The same two generations on the mobile layout, where the cards above are not
-   rendered at all: two buttons under the forecast model dropdown in the header.
+/* The same generation on the mobile layout, where the card above is not
+   rendered at all: a button under the forecast model dropdown in the header.
    Empty on desktop - the container collapses rather than being hidden, so it
    leaves no gap in the header row it sits in. */
 .ondemand-actions {

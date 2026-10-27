@@ -12,7 +12,7 @@
                                        +-----------------------------------v-----------------------------------+
                                        |             AggregatorService (core orchestrator)                     |
                          +-------------+  - schedules: forecasts (3h), conditions (1m), eviction (1h)          |
-                         |             |  - on demand only: AI analysis and ICM forecast (24h TTL each)        |
+                         |             |  - on demand only: AI analysis (24h TTL); ICM fetched with models     |
                          |             |  - caches: spots, forecasts (40+ models), conditions, AI, maps        |
                          |             |  - semaphore-based rate limiting (4 forecasts, 32 conditions)         |
                          |             |  - uses Java 25 StructuredTaskScope for concurrent execution          |
@@ -131,13 +131,13 @@
     -> caches each text and dates it, then re-reads the spot
     -> returns Mono<Spot> [503 when nothing was written in the requested language]
 
-  POST /api/v1/spots/{id}/icm
+  POST /api/v1/spots/{id}/icm   (the Android app's button; the web page has none)
     -> SpotsController.generateIcmForecast(id)
     -> AggregatorService.generateIcmForecast(id)
-       [cached and still inside its 24h -> returned without reaching the model]
-       [otherwise IcmForecastVisionService reads the meteogram image]
-    -> merges ICM_METEO into forecastCache and dates it
-    -> returns Mono<Spot> [ICM now among availableModels; 503 when it could not be read]
+       [already in forecastCache -> returned without a request]
+       [otherwise IcmForecastService fetches it from the meteo.pl API]
+    -> merges ICM_METEO into forecastCache
+    -> returns Mono<Spot> [ICM now among availableModels; 503 when nothing was fetched]
 
   GET /api/v1/wind?hours=N
     -> SpotsController.wind(hours)
@@ -302,15 +302,19 @@ Outgoing proxy (optional, OxylabsProxy)
    - Credentials from OXYLABS_USERNAME / OXYLABS_PASSWORD, optional OXYLABS_COUNTRY
    - Spring AI (OpenAI) uses its own HTTP client and is never proxied
 
-5. ICM Meteogram Integration (Poland & Czech Republic only)
-   - IcmGridMapper converts lat/lon to ICM grid coordinates
-   - Uses empirically fitted coefficients for UM 4km grid
-   - Validates meteogram availability via HTTP HEAD requests
-   - Caches validated grid points to avoid repeated checks
-   - Search radius of 8 grid points for finding valid meteograms
-   - The meteogram image is read by the vision model on demand only
-     (POST /api/v1/spots/{id}/icm), never on a timer and never as a side effect
-     of opening a spot
+5. ICM UM 4 km Integration (Poland & Czech Republic only)
+   - IcmForecastService reads the JSON behind the app.meteo.pl meteogram:
+       GET  https://devmgramapi.meteo.pl/meteorograms/available  -> latest run
+       POST https://devmgramapi.meteo.pl/meteorograms/um4_120    (fallback um4_60)
+            {"point":{"lat":"..","lon":".."},"date":<run epoch seconds>}
+   - 120 hourly rows: wind, gusts, direction, temperature, rain, cloud cover and
+     pressure (m/s -> knots, Pa -> hPa), rendered in Europe/Warsaw time
+   - Fetched in fetchForecastsForAllModels next to the Windguru models when a spot
+     is opened (outside the discovery limiter - another host), 3h TTL like them
+   - Free, no LLM. ICM retired the old meteogram images (mgram_pict.php now
+     serves a "new app" banner), which used to be read by a vision model
+   - Spot.icmUrl is https://app.meteo.pl/meteogram/{lat},{lon}, built from the
+     spot's coordinates
 ```
 
 ### Multi-Language Support
@@ -329,7 +333,7 @@ Frontend (JavaScript):
   - Dynamic content switching:
     - AI analysis: displays aiAnalysisEn or aiAnalysisPl based on current language
     - Spot info: displays spotInfo or spotInfoPL
-    - Modal titles: aiAnalysisTitle, icmForecastTitle
+    - Modal titles: aiAnalysisTitle
     - Disclaimers: aiDisclaimer
   - Language toggle button updates all content reactively
   - Applies to both views:
@@ -360,7 +364,6 @@ Configuration:
   - application.yml (NOT .properties)
   - Feature flags:
       app.feature.ai.forecast.analysis.enabled: false (default)
-      app.feature.icm.vision.enabled: false (default)
 
 Containerization:
   - Dockerfile -> multi-stage build
@@ -412,11 +415,11 @@ In-Memory Caches (ConcurrentHashMap):
      - Lifetime: 24 hours, then evicted
      - Conditional: only enabled if feature flag is true
 
-  5b. aiAnalysisEnCreatedAt / aiAnalysisPlCreatedAt / icmForecastCreatedAt: Map<Integer, Long>
+  5b. aiAnalysisEnCreatedAt / aiAnalysisPlCreatedAt: Map<Integer, Long>
      - Key: spotId (wgId)
-     - Value: when the on-demand result was generated (epoch millis)
-     - This is what makes a result expire; the hourly eviction sweep reads it,
-       and so does every read of the analysis or of availableModels
+     - Value: when the analysis was generated (epoch millis)
+     - This is what makes it expire; the hourly eviction sweep reads it, and so
+       does every read of the analysis
 
   6. locationCoordinates: Map<Integer, Coordinates>
      - Key: spotId (wgId)
@@ -536,12 +539,11 @@ Spots:
     - Response: Mono<Spot>
 
   POST /api/v1/spots/{id}/icm
-    - Reads the spot's ICM meteogram through the vision model and answers with the
-      spot carrying ICM among its availableModels, so the caller can repopulate
-      the model dropdown from one response
-    - Same bargain as the analysis: one call, cached 24 hours, single-flight
-    - 404 unknown spot, 503 when there is no grid point, the feature is off, or
-      the model read nothing
+    - Fetches the spot's ICM forecast from the meteo.pl API unless it is already
+      cached, and answers with the spot carrying ICM among its availableModels,
+      so the caller can repopulate the model dropdown from one response
+    - Opening a spot fetches ICM anyway; kept for the Android app's button
+    - 404 unknown spot, 503 when ICM does not cover the spot or nothing was fetched
     - Response: Mono<Spot>
 
   GET /api/v1/wind?hours=N
@@ -760,8 +762,7 @@ src/main/java/com/github/pwittchen/varun/
 │   │   ├── ForecastModel.java (enum: 40+ models - GFS, IFS, ICON, etc.)
 │   │   ├── ForecastWg.java
 │   │   ├── HourlyForecast.java           # One spot's hourly forecast on the shared grid
-│   │   ├── WindTimeline.java             # All spots' wind on one shared hourly grid
-│   │   └── IcmGrid.java                  # ICM meteogram grid coordinates
+│   │   └── WindTimeline.java             # All spots' wind on one shared hourly grid
 │   ├── live/                             # Live conditions
 │   │   ├── CurrentConditions.java
 │   │   ├── filter/CurrentConditionsEmptyFilter.java
@@ -784,8 +785,7 @@ src/main/java/com/github/pwittchen/varun/
     │   └── AiServicePl.java              # Polish AI analysis
     ├── forecast/
     │   ├── ForecastService.java          # Windguru API client
-    │   ├── IcmGridMapper.java            # Lat/lon to ICM grid conversion
-    │   ├── IcmForecastVisionService.java # ICM meteogram parsing (feature-flagged)
+    │   ├── IcmForecastService.java       # ICM UM 4 km from the meteo.pl API
     │   └── ForecastAverageCalculator.java # Daily averages from hourly rows
     ├── live/                             # Live conditions
     │   ├── CurrentConditionsService.java # Station data aggregator
@@ -919,7 +919,7 @@ Counters (cumulative):
   - varun.fetch.forecasts.total/success/failure  # Forecast fetch counts
   - varun.fetch.conditions.total/success/failure # Conditions fetch counts
   - varun.ondemand.ai.total/success/failure      # AI analysis generations (one per call)
-  - varun.ondemand.icm.total/success/failure     # ICM meteogram readings (one per call)
+  - varun.ondemand.icm.total/success/failure     # ICM fetches asked for by name (free)
   - varun.api.spots.requests       # GET /api/v1/spots requests
   - varun.api.spot.requests        # GET /api/v1/spots/{id} requests
   - varun.api.analysis.requests    # POST /api/v1/spots/{id}/analysis requests
@@ -932,7 +932,7 @@ Timers (duration tracking):
   - varun.fetch.forecasts.duration   # Time to fetch all forecasts
   - varun.fetch.conditions.duration  # Time to fetch all conditions
   - varun.ondemand.ai.duration       # Time to write one AI analysis
-  - varun.ondemand.icm.duration      # Time to read one ICM meteogram
+  - varun.ondemand.icm.duration      # Time to fetch one ICM forecast by name
 
 HTTP Client Metrics:
   - varun.http.client.active_requests      # In-flight requests

@@ -175,7 +175,7 @@ DOM Manipulation (vanilla JS)
   close button ends it. Below 930px neither the panel nor the button that opens
   it exists: a 360px panel would be the whole screen, and the spot page is the
   better answer there
-- Modal overlays (AI analysis, spot info, ICM forecast, kite calculator, hide-banner confirmation)
+- Modal overlays (AI analysis, spot info, kite calculator, hide-banner confirmation)
 
 **JavaScript Logic** (`page/index.js`):
 - `fetchWeatherData()` - Fetch all spots from API
@@ -192,35 +192,31 @@ DOM Manipulation (vanilla JS)
 
 **Features**:
 - Two-column layout (desktop): left sidebar (map, current conditions, spot info, AI analysis), right main content (forecast table)
-- On-demand generation under the map on the desktop layout (`isDesktopLayout()`,
-  min-width 1005px), each of the two in its own card:
+- On-demand AI analysis under the map on the desktop layout (`isDesktopLayout()`,
+  min-width 1005px), in its own card:
   - AI analysis: one slot with three states - the analysis, a spinner while it is
     being written, or the button offering to write one. The heading only appears
     with the text it labels; a failed generation puts a warning beside the button.
     Under the paragraph sits the generation time (`aiAnalysisEnCreatedAt` /
     `aiAnalysisPlCreatedAt`, an ISO-8601 instant formatted by `date.formatInstant`
     in the browser's own time zone), and the disclaimer under that
-  - ICM forecast: a button below the analysis. Both button and spinner disappear
-    once the forecast is read, and come back when it expires a day later
-  - Each button opens a confirmation modal first (`#aiGenerateModal`,
-    `#icmGenerateModal`), since the click is what spends the money. The ICM one
-    also says the forecast will appear in the model dropdown in the top right
-    corner, which the button's own position does not suggest
-  - Both share `.ondemand-generate-button`, whose `min-width` is sized for the
-    longest label in any language so the two line up whichever language is on
+  - The button opens a confirmation modal first (`#aiGenerateModal`), since the
+    click is what spends the money
+  - `.ondemand-generate-button` has a `min-width` sized for the longest label in
+    any language, so it keeps its width whichever language is on
   - Which state renders is derived from the spot data and the in-memory sets on
     every rebuild, never from what the previous render left in the DOM
-- The same two generations on the mobile layout: the card renders no map to put
-  them under, so `updateOnDemandGenerationControls()` fills `#ondemandActions` -
-  the container right under the forecast model dropdown in the header, which is
-  the drawer at <=929px - with the same buttons, the same three states and the
-  same confirmation modals. Pressing one closes the drawer so the modal is not
-  opened behind it, and the modal hint switches to its `*ModalHintMobile`
-  wording, since the analysis turns up behind the card's AI link and the ICM
-  forecast in the dropdown in the menu rather than in the window's corners.
-  The container is rebuilt on every `displaySpot()` and whenever the model list
-  is rewritten (a new ICM entry is what takes that button away), and collapses
+- The same generation on the mobile layout: the card renders no map to put it
+  under, so `updateOnDemandGenerationControls()` fills `#ondemandActions` - the
+  container right under the forecast model dropdown in the header, which is the
+  drawer at <=929px - with the same button, the same three states and the same
+  confirmation modal. Pressing it closes the drawer so the modal is not opened
+  behind it, and the modal hint switches to its `*ModalHintMobile` wording, since
+  the analysis turns up behind the card's AI link. The container is rebuilt on
+  every `displaySpot()` and whenever the model list is rewritten, and collapses
   with `:empty` so it leaves no gap in the header on desktop
+- No ICM button: the ICM UM 4 km forecast is fetched by the backend with the other
+  models when the spot is opened, and simply appears in the model dropdown
 - Forecast view tabs: Table View (vertical) and Windguru View (horizontal)
 - Real-time current conditions card with live indicator
 - Current conditions history chart (12-hour wind trend)
@@ -235,7 +231,8 @@ DOM Manipulation (vanilla JS)
   `map.findOpenSpotPopup` / `map.openSpotPopup` carry an open popup across the
   rebuild
 - Spot photo display (when available)
-- ICM meteogram link (for Poland/Czech Republic spots)
+- ICM meteogram link (for Poland/Czech Republic spots), opening the spot's
+  meteogram on app.meteo.pl in a new tab (index and spot pages alike)
 - Dynamic forecast model selector (40+ Windguru models, populated from `availableModels`)
 - Header spot search (`common/spotSearch.js`), desktop only: with no list on the
   page to filter, it opens a list of matching spots to jump straight to. Same
@@ -469,8 +466,8 @@ let autoRefreshInterval = null;       // Auto-refresh timer
 - **Rendering**: `renderSpots()`, `createSpotCard()`, `renderForecastTable()`
 - **Filtering**: `filterSpots()`, `searchSpots()`, `populateCountryDropdown()`
 - **Drag & Drop**: `initDragAndDrop()` (custom ordering, persisted in `localStorage`)
-- **Modals**: `openInfoModal()`, `openAIModal()`, `openIcmModal()`, `openKiteSizeModal()`,
-  `openAiGenerateModal()` / `openIcmGenerateModal()` (spot page, confirm a generation)
+- **Modals**: `openInfoModal()`, `openAIModal()`, `openKiteSizeModal()`,
+  `openAiGenerateModal()` (spot page, confirm a generation)
 
 #### `page/spot.js` - Spot Detail Logic
 **State Management**:
@@ -481,16 +478,14 @@ let selectedModel = 'gfs';            // Forecast model (GFS/IFS)
 let forecastPollIntervalId = null;    // IFS polling timer
 let backgroundRefreshIntervalId = null; // Auto-refresh timer
 
-// Which on-demand generations are running, kept here rather than in the DOM: the
+// Which analysis generations are running, kept here rather than in the DOM: the
 // card is rebuilt from scratch every minute by the background refresh, so a
 // spinner living only in the markup would vanish mid-generation.
 const aiAnalysisGenerating = new Set();  // keys: wgId (one press writes both languages)
-const icmForecastGenerating = new Set(); // keys: wgId
 const aiAnalysisErrors = new Map();      // last failure per spot
-const icmForecastErrors = new Map();
 ```
 
-`spotKey(wgId)` coerces to Number before touching any of those four: the route
+`spotKey(wgId)` coerces to Number before touching either of those: the route
 hands over a string while the spot object carries a number, and Set/Map compare by
 identity, so mixing the two would silently lose every lookup.
 
@@ -501,9 +496,8 @@ identity, so mixing the two would silently lose every lookup.
 - **Forecast Views**: `switchToTableView()`, `switchToWindguruView()` (desktop only)
 - **On-demand generation**: `requestAiAnalysis(wgId)` (one press writes the analysis
   in Polish and English, so the language switch keeps working for the rest of the
-  day), `requestIcmForecast(wgId)`,
-  `setupOnDemandGenerationButtons()` (re-wired after every card rebuild),
-  `openAiGenerateModal()` / `openIcmGenerateModal()` and their close pairs,
+  day), `setupOnDemandGenerationButtons()` (re-wired after every card rebuild),
+  `openAiGenerateModal()` / `closeAiGenerateModal()`,
   `updateConfirmModalTranslations(ids)` (each element id doubles as its key)
 - **Helpers**: `getWindArrow()`, `getWindRotation()`, `translateDayName()`, `formatForecastDateLabel()`
 
@@ -625,7 +619,6 @@ identity, so mixing the two would silently lose every lookup.
 **Types**:
 - **Info Modal**: Spot details (type, best wind, hazards, season)
 - **AI Modal**: LLM-generated forecast analysis
-- **ICM Modal**: ICM forecast image viewer
 - **Kite Size Modal**: Kite/board size calculator
 - **App Info Modal**: About page (contact, collaboration), with the running
   version greyed out next to its title
@@ -1110,7 +1103,6 @@ if (conditions.includes('Waves')) kiteSize *= 1.1;
 **Types**:
 - **Spot Info**: Static spot data (type, hazards, season)
 - **AI Analysis**: LLM-generated forecast summary
-- **ICM Forecast**: Large image viewer
 - **Kite Calculator**: Interactive form with validation
 - **App Info**: About page with contact info
 

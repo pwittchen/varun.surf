@@ -161,9 +161,9 @@ as a free backend by someone else's app.
   that cost real work or real bytes - `/api/v1/wind`, `/llms/**`, `/mcp/**` and
   `/api/v1/logs`, where the trickle is also what stops a brute force on the basic auth.
   The two on-demand generation endpoints (`/api/v1/spots/{id}/analysis` and
-  `/api/v1/spots/{id}/icm`) get their own 20 r/m: they are the only requests that spend
-  money, and at the general api rate one client could walk the whole spot list and run
-  up the OpenAI bill in minutes. They also get a longer proxy timeout, since the visitor
+  `/api/v1/spots/{id}/icm`) get their own 20 r/m: the analysis is the only request that
+  spends money, and at the general api rate one client could walk the whole spot list and
+  run up the OpenAI bill in minutes. They also get a longer proxy timeout, since the visitor
   is waiting on a model. SSE connections are capped at 4 per client. Over the limit is a 429.
 - **real client address**: behind Cloudflare `$remote_addr` is the edge, so nginx trusts
   `CF-Connecting-IP` from the Cloudflare ranges listed in the config. Without this every
@@ -305,16 +305,14 @@ docker run -p 8080:8080 varun-surf \
 
 Nothing is generated in the background. The analysis is written only when someone
 presses "generate AI analysis" on a spot page, and then held for 24 hours - so a
-reload, or a second visitor on the same spot that day, costs nothing. The same
-applies to the ICM forecast, which is read off the meteogram image by a vision
-model from its own button.
+reload, or a second visitor on the same spot that day, costs nothing. The ICM
+forecast no longer involves a model at all: it is read from the meteo.pl meteogram
+API, for free, together with the other forecast models.
 
 > **NOTE:** I added this feature as an experiment, but it does not really add any big value to this particular project,
-so I disabled it by default. It also used to run on a timer - a daily pass over every spot in two languages, plus an
-ICM meteogram reading every three hours for each Polish and Czech spot - which spent most of the budget on spots
-nobody opened that day. On-demand generation ties the cost to what people actually look at, and stops it growing
-with the spot list. A single analysis is roughly 2.2-2.5k input tokens on gpt-4o-mini; reading an ICM meteogram is
-far more expensive, because the image alone is ~25k tokens.
+so I disabled it by default. It also used to run on a timer - a daily pass over every spot in two languages - which
+spent most of the budget on spots nobody opened that day. On-demand generation ties the cost to what people actually
+look at, and stops it growing with the spot list. A single analysis is roughly 2.2-2.5k input tokens on gpt-4o-mini.
 
 ## architecture
 
@@ -413,8 +411,9 @@ Skill definitions are located in `.claude/skills/`.
 - mobile-friendly UI
 - kite and board size calculator
 - AI forecast analysis, generated on demand from a button under the spot map, written in Polish and English at once so the language switch keeps working, and valid for 24 hours
-- ICM forecast generated on demand from a button under the AI analysis, valid for 24 hours
-- on a phone, where the spot page renders no map, both generate buttons sit under the
+- ICM UM 4 km forecast for Polish and Czech spots in the model dropdown, read from the meteo.pl meteogram API, with
+  the ICM link opening the spot's meteogram on app.meteo.pl
+- on a phone, where the spot page renders no map, the generate button sits under the
   forecast model dropdown in the menu instead
 - single spot view with hourly forecast (in horizontal and vertical view)
 - additional TV-friendly view for the single spot

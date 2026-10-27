@@ -96,30 +96,6 @@ export async function generateAiAnalysis(spotId, language) {
 }
 
 /**
- * Ask the server to read this spot's ICM meteogram through the vision model.
- *
- * Same bargain as the analysis above: one call, cached for 24 hours. The spot
- * comes back carrying ICM among its `availableModels`, so the caller can
- * repopulate the model dropdown without a second request.
- *
- * @param {string|number} spotId - Windguru id of the spot
- * @returns {Promise<Object>} the spot, with ICM among its available models
- * @throws {Error} carrying `status` when the forecast could not be produced
- */
-export async function generateIcmForecast(spotId) {
-    const url = `${API_ENDPOINT_SPOTS}/${spotId}/icm`;
-    const response = await fetch(url, { method: 'POST', credentials: 'same-origin' });
-
-    if (!response.ok) {
-        const error = new Error(`HTTP error! status: ${response.status}`);
-        error.status = response.status;
-        throw error;
-    }
-
-    return await response.json();
-}
-
-/**
  * Fetch the hourly wind timeline: every spot's wind laid out on one shared grid
  * of hours, which is what the map's forecast slider steps through. Per-spot
  * hourly forecasts are stripped from the spots response, so the map reads this

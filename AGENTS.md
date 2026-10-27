@@ -42,7 +42,7 @@ REST API Controllers (/api/v1/*)
     ├─→ /api/v1/spots/{id} (single spot, triggers IFS fetch)
     ├─→ /api/v1/spots/{id}/{model} (GFS or IFS)
     ├─→ POST /api/v1/spots/{id}/analysis (on-demand AI analysis, cached 24h)
-    ├─→ POST /api/v1/spots/{id}/icm (on-demand ICM meteogram reading, cached 24h)
+    ├─→ POST /api/v1/spots/{id}/icm (fetch the ICM forecast by name, for the Android app)
     ├─→ /api/v1/wind (hourly wind for all spots on one shared grid, for the maps)
     ├─→ /api/v1/forecast/{wgId} (one spot's full hourly forecast: wind, temp, rain, cloud, pressure, waves)
     ├─→ /api/v1/sponsors (sponsors list)
@@ -74,11 +74,10 @@ AggregatorService (orchestrates with Java 25 StructuredTaskScope)
 **Scheduled Tasks** (run in parallel with `@Async`):
 - **Forecasts**: Every 3 hours - GFS model, daily + hourly for all ~820 spots
 - **Current Conditions**: Every 1 minute - real-time wind data
-- **On-demand eviction**: Every 1 hour - drops expired AI analyses and ICM forecasts
+- **On-demand eviction**: Every 1 hour - drops expired AI analyses
 
-Nothing scheduled calls an LLM. The AI analysis and the ICM meteogram reading are
-the only two paid operations, and both are generated only when a visitor presses a
-button - see On-Demand Generation below.
+Nothing scheduled calls an LLM. The AI analysis is the only paid operation, and it
+is generated only when a visitor presses a button - see On-Demand Generation below.
 
 **Java 25 StructuredTaskScope**:
 - Uses virtual threads via `Thread.ofVirtual().factory()`
@@ -101,9 +100,9 @@ button - see On-Demand Generation below.
 3. `currentConditionsHistory: Map<Integer, EvictingQueue<CurrentConditions>>` - 12h history
 4. `aiAnalysisEn: Map<Integer, String>` - AI summaries (English), 24h TTL
 5. `aiAnalysisPl: Map<Integer, String>` - AI summaries (Polish), 24h TTL
-6. `aiAnalysisEnCreatedAt` / `aiAnalysisPlCreatedAt` / `icmForecastCreatedAt: Map<Integer, Long>`
-   - when each on-demand result was generated, which is what makes it expire
-7. `aiAnalysisInFlight: Map<String, Mono<String>>` / `icmForecastInFlight: Map<Integer, Mono<Boolean>>`
+6. `aiAnalysisEnCreatedAt` / `aiAnalysisPlCreatedAt: Map<Integer, Long>`
+   - when each analysis was generated, which is what makes it expire
+7. `aiAnalysisInFlight: Map<String, Mono<String>>`
    - single-flight, so concurrent callers share one generation
 8. `hourlyForecastCacheTimestamps: Map<Integer, Long>` - 3h TTL for IFS
 9. `locationCoordinates: Map<Integer, Coordinates>` - parsed GPS coordinates
@@ -125,6 +124,19 @@ button - see On-Demand Generation below.
 - 40+ forecast models defined in `ForecastModel` enum (GFS, IFS, ICON, NAM, HRRR, AROME, etc.)
 - Each model has a `modelKey` (Windguru API key) and `displayName` (human-readable)
 - GFS is the default model; all others are discovered on-demand per spot
+
+**ICM UM 4 km** (`IcmForecastService`, Poland and Czech Republic only):
+- The one model not taken from Windguru. Fetched in `fetchForecastsForAllModels`
+  next to the Windguru models (outside the discovery limiter - it is another host)
+- Reads the JSON behind the app.meteo.pl meteogram: `GET
+  https://devmgramapi.meteo.pl/meteorograms/available` for the latest run, then
+  `POST /meteorograms/um4_120` (fallback `um4_60`) with
+  `{"point":{"lat","lon"},"date":<run>}`
+- 120 hourly rows: wind, gusts, direction (meteorological), temperature, rain,
+  cloud cover and pressure, rendered in Europe/Warsaw time
+- Free, no LLM. ICM retired the old meteogram images (`mgram_pict.php` now serves a
+  "new app" banner), which a vision model used to read on demand
+- Builds `Spot.icmUrl` as `https://app.meteo.pl/meteogram/{lat},{lon}`
 
 **Data Format**:
 - Fetches text-based exports from Windguru micro API
@@ -505,9 +517,6 @@ app:
       forecast:
         analysis:
           enabled: false           # AI analysis feature flag (default: off)
-    icm:
-      vision:
-        enabled: false           # ICM meteogram parsing feature flag (default: off)
   analytics:
     password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
@@ -711,7 +720,7 @@ src/main/java/com/github/pwittchen/varun/
 │   └── HttpClientMetricsEventListener.java
 ├── model/                           # Domain models (records)
 │   ├── forecast/                   # Forecast, ForecastData, ForecastModel (40+ models), AvailableModel,
-│   │                               # HourlyForecast, WindTimeline, ForecastWg, IcmGrid
+│   │                               # HourlyForecast, WindTimeline, ForecastWg
 │   ├── spot/                       # Spot, SpotInfo
 │   ├── sponsor/                    # Sponsor
 │   ├── live/                       # CurrentConditions, filter/
@@ -725,8 +734,7 @@ src/main/java/com/github/pwittchen/varun/
     │   └── AiServicePl.java        # Polish summaries
     ├── forecast/                    # Forecast services
     │   ├── ForecastService.java
-    │   ├── IcmGridMapper.java
-    │   ├── IcmForecastVisionService.java
+    │   ├── IcmForecastService.java
     │   └── ForecastAverageCalculator.java
     ├── live/                        # Current conditions
     │   ├── CurrentConditionsService.java
@@ -833,21 +841,23 @@ Implemented features (complete):
 - SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
 - MCP server exposing the spot data as tools (/mcp/sse)
 
-## On-Demand Generation (AI Analysis and ICM Forecast)
+## On-Demand Generation (AI Analysis)
 
-These are the only two operations that cost money per call, and neither runs on a
-timer. Both used to sweep the whole spot list - a daily AI pass in two languages
-over ~780 spots, and an ICM meteogram reading every three hours for every Polish
-and Czech spot - which spent almost the entire budget on spots nobody opened.
+The AI analysis is the only operation that costs money per call, and it does not
+run on a timer. It used to sweep the whole spot list - a daily AI pass in two
+languages over ~780 spots - which spent almost the entire budget on spots nobody
+opened. (ICM used to be the second one, a vision model reading the meteogram
+image; it is now read for free from the meteo.pl API - see ForecastService.)
 
 **Entry points** (`AggregatorService`):
 - `generateAiAnalysisInAllLanguages(wgId, language)` - what the endpoint calls: runs
   the per-language generation for Polish and English concurrently, answers with the
   requested language, and treats the other one as best effort
 - `generateAiAnalysis(wgId, language)` - the per-language primitive underneath it
-- `generateIcmForecast(wgId)` - the only path that reads a meteogram
-- `hasValidAiAnalysis(wgId, language)` / `hasValidIcmForecast(wgId)` - whether a
-  result is present and still inside its 24 hours
+- `hasValidAiAnalysis(wgId, language)` - whether a result is present and still
+  inside its 24 hours
+- `generateIcmForecast(wgId)` - not a paid generation any more: fetches ICM from
+  the meteo.pl API unless the spot already carries it, for clients that ask by name
 
 **Behaviour**:
 - A result still inside its day is served from the cache without reaching a model,
@@ -856,38 +866,35 @@ and Czech spot - which spent almost the entire budget on spots nobody opened.
 - An analysis is written in both languages on one press: the page has a language
   switch, and one language only would leave the other half of it empty until the
   next day, or show a paragraph in the language the visitor just switched away from
-- Concurrent callers for the same spot share one generation (`aiAnalysisInFlight`,
-  `icmForecastInFlight` hold a `.cache()`d Mono)
+- Concurrent callers for the same spot share one generation (`aiAnalysisInFlight`
+  holds a `.cache()`d Mono)
 - `evictExpiredOnDemandData()` runs hourly; validity is also checked on read, so an
   expired result stops being served immediately rather than at the next sweep
-- An expired ICM forecast is taken back out of `Spot.availableModels`
-- `fetchForecastsForAllModels` no longer forks an ICM vision task: merely opening a
-  Polish spot used to buy a meteogram reading
 
 **REST**:
 - `POST /api/v1/spots/{id}/analysis?lang=en|pl` - `lang` is the language being read,
   and only decides whose failure is reported; both are written
-- `POST /api/v1/spots/{id}/icm`
+- `POST /api/v1/spots/{id}/icm` - kept for the Android app's ICM button; the web
+  page no longer has one, since opening a spot fetches ICM anyway
 
-Both answer with the enriched `Spot` (404 unknown spot, 503 when the generation
-produced nothing), so the frontend can re-render the card and the model dropdown
-from one response.
+Both answer with the enriched `Spot` (404 unknown spot, 503 when nothing was
+produced), so the client can re-render the card and the model dropdown from one
+response.
 
-**Frontend**: buttons on the single spot page. On the desktop layout
-(`isDesktopLayout()`, min-width 1005px) they are cards under the map; below it the
-card renders no map, so `updateOnDemandGenerationControls()` puts the same two
-buttons into `#ondemandActions`, under the forecast model dropdown in the header
-(the drawer at <=929px). Both layouts run the same three states - result in hand,
-spinner, button - and both sit behind a confirmation modal (`#aiGenerateModal`,
-`#icmGenerateModal`), since the click is what spends the money. The modal hint
+**Frontend**: a button on the single spot page. On the desktop layout
+(`isDesktopLayout()`, min-width 1005px) it is a card under the map; below it the
+card renders no map, so `updateOnDemandGenerationControls()` puts the same button
+into `#ondemandActions`, under the forecast model dropdown in the header (the
+drawer at <=929px). Both layouts run the same three states - result in hand,
+spinner, button - and sit behind a confirmation modal (`#aiGenerateModal`), since
+the click is what spends the money. The modal hint
 names where the result will turn up, which differs by layout
 (`*ModalHintMobile`). In-flight state lives in module-level Sets in `spot.js`,
 because the card is rebuilt from scratch every minute by the background refresh.
 
 **Cost per generation on gpt-4o-mini**: an analysis prompt is ~2200 input tokens
 (EN) or ~2500 (PL) plus ~120 output, and a press buys both - ~4700 input plus ~240
-output per spot per day; an ICM meteogram is a 630x780 image = 25 501
-image tokens (2833 base + 4 tiles x 5667) plus ~1200 output. The bill is
+output per spot per day. The bill is
 proportional to how many spots people open, not to the size of the spot list.
 
 ## AI Analysis Feature Details
@@ -960,7 +967,8 @@ public Spot getSpot(int id) {
 - Forecasts: Refreshed every 3 hours (via `@Scheduled`)
 - Current conditions: Refreshed every 1 minute (via `@Scheduled`)
 - Current conditions history: 12h rolling window (via `EvictingQueue`)
-- AI analysis and ICM forecast: generated on demand, 24h TTL, evicted hourly
+- ICM forecast: fetched with the other models when a spot is opened, 3h TTL
+- AI analysis: generated on demand, 24h TTL, evicted hourly
   (language-specific caches aiAnalysisEn / aiAnalysisPl, dated by the *CreatedAt maps,
   whose instants also travel to the frontend as `aiAnalysisEnCreatedAt` /
   `aiAnalysisPlCreatedAt` and are printed under the analysis)
@@ -1023,8 +1031,8 @@ Data fetching is **automated** via Spring's `@Scheduled` annotation.
 - Frontend shows cached data (not real-time WebSocket)
 - Users must refresh page to see new data
 - Scheduled tasks run in background threads
-- Nothing scheduled calls an LLM: the AI analysis and the ICM forecast are
-  generated only from their endpoints
+- Nothing scheduled calls an LLM: the AI analysis is generated only from its
+  endpoint
 
 ### 6. Cardinal Direction Mapping
 Wind directions are converted from degrees (0-360) to cardinal directions (N, NE, E, etc.).
