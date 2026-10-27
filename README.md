@@ -4,9 +4,6 @@
 
 <h2 align="center">varun.surf 🏄</h2>
 
-<p align="center">online (web): <b><a href="https://varun.surf">https://varun.surf</a></b></p>
-<p align="center">google play (mobile - android): <b><a href="https://play.google.com/store/apps/details?id=surf.varun.app">https://play.google.com/store/apps/details?id=surf.varun.app</a></b></p>
-
 <p align="center">
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/cd.yml/badge.svg" alt="CD"></a>
@@ -15,6 +12,15 @@
 </p>
 
 <p align="center">kite spots database and weather forecast for kitesurfers on the web</p>
+
+<div align="center">
+
+| platform | link |
+|----------|------|
+| web | **[https://varun.surf](https://varun.surf)** |
+| android | **[https://play.google.com/store/apps/details?id=surf.varun.app](https://play.google.com/store/apps/details?id=surf.varun.app)** |
+
+</div>
 
 ## tech stack overview
 
