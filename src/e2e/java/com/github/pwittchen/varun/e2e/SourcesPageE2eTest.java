@@ -67,7 +67,8 @@ class SourcesPageE2eTest extends BaseE2eTest {
             .setTimeout(DEFAULT_TIMEOUT));
 
         assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
-            .isEqualTo(List.of("/status", "/metrics", "/sources", "/mcp", "/logs",
+            .isEqualTo(List.of("https://play.google.com/store/apps/details?id=surf.varun.app",
+                "/status", "/metrics", "/sources", "/mcp", "/logs",
                 "https://github.com/pwittchen/varun.surf"));
 
         Locator active = page.locator("#sideMenu [aria-current='page']");
