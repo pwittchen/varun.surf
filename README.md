@@ -4,7 +4,8 @@
 
 <h2 align="center">varun.surf 🏄</h2>
 
-<p align="center">online: <b><a href="https://varun.surf">https://varun.surf</a></b></p>
+<p align="center">online (web): <b><a href="https://varun.surf">https://varun.surf</a></b></p>
+<p align="center">google play (mobile - android): <b><a href="https://play.google.com/store/apps/details?id=surf.varun.app">https://play.google.com/store/apps/details?id=surf.varun.app</a></b></p>
 
 <p align="center">
   <a href="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml"><img src="https://github.com/pwittchen/varun.surf/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
