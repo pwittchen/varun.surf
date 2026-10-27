@@ -11,6 +11,7 @@
 // ============================================================================
 
 import * as state from './state.js';
+import * as androidApp from './androidApp.js';
 
 export const BREAKPOINT = 929;
 
@@ -23,6 +24,7 @@ export const NARROW_BREAKPOINT = 1100;
 // menu can use this as-is.
 const TOOLTIP_KEYS = {
     infoToggle: 'infoToggleTooltip',
+    androidAppLink: 'androidAppLinkTooltip',
     themeToggle: 'themeToggleTooltip',
     favoritesToggle: 'favoritesToggleTooltip',
     firingSortToggle: 'firingSortTooltip',
@@ -46,6 +48,7 @@ const TOOLTIP_KEYS = {
 // design: the full sentence stays in the tooltip.
 const SIDEBAR_LABEL_KEYS = {
     infoToggleSidebarLabel: 'sidebarInfo',
+    androidAppLinkSidebarLabel: 'sidebarAndroidApp',
     themeToggleSidebarLabel: 'sidebarTheme',
     listViewBtnSidebarLabel: 'sidebarListView',
     gridViewBtnSidebarLabel: 'sidebarGridView',
@@ -74,7 +77,8 @@ const SIDEBAR_LABEL_KEYS = {
 // sidebar's own labels are dropped.
 const LABEL_KEYS = {
     infoToggleLabel: 'infoButtonLabel',
-    mapToggleLabel: 'mapButtonLabel'
+    mapToggleLabel: 'mapButtonLabel',
+    androidAppLinkLabel: 'androidAppModalConfirmLabel'
 };
 
 // Kept from the last updateTranslations() call so the collapse switch can
@@ -100,6 +104,7 @@ export function updateTranslations(t) {
     });
 
     updateCollapseLabel();
+    androidApp.updateTranslations();
 
     convertTitlesToHints(Object.keys(TOOLTIP_KEYS));
 }

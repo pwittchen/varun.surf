@@ -9,6 +9,7 @@
 // plus language switch — is the whole chrome, with the wordmark leading home.
 // ============================================================================
 
+import * as androidApp from './androidApp.js';
 import * as appShell from './appShell.js';
 import * as calculator from './calculator.js';
 import * as constants from './constants.js';
@@ -168,4 +169,5 @@ export function setup(options = {}) {
 
     sideMenu.setup();
     sideMenu.setupHints();
+    androidApp.setup();
 }

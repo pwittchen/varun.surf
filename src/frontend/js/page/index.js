@@ -13,6 +13,7 @@ import * as modals from '../common/modals.js';
 import * as calculator from '../common/calculator.js';
 import * as appShell from '../common/appShell.js';
 import * as sideMenu from '../common/sideMenu.js';
+import * as androidApp from '../common/androidApp.js';
 import * as spotSearch from '../common/spotSearch.js';
 import { normalizeForSearch, spotMatchesQuery } from '../common/search.js';
 
@@ -4124,6 +4125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupHamburgerMenu();
     sideMenu.setup();
     sideMenu.setupHints();
+    androidApp.setup();
     calculator.setupKiteSizeCalculator();
     setupColumnToggle();
     setupFiringSortToggle();

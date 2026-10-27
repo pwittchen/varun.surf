@@ -12,6 +12,7 @@ import * as modals from '../common/modals.js';
 import * as appShell from '../common/appShell.js';
 import * as mainPageShortcuts from '../common/mainPageShortcuts.js';
 import * as sideMenu from '../common/sideMenu.js';
+import * as androidApp from '../common/androidApp.js';
 import * as calculator from '../common/calculator.js';
 import * as spotSearch from '../common/spotSearch.js';
 
@@ -3980,6 +3981,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     setupHamburgerMenu();
     sideMenu.setup();
     sideMenu.setupHints();
+    androidApp.setup();
     setupHeaderNavigation();
     setupResizeHandler();
     setupModelDropdown();

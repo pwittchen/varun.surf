@@ -622,6 +622,14 @@ body.sidebar-collapsed .side-menu .header-title {
     display: none;
 }
 
+/* The Google Play mark keeps its own colours wherever it sits; in the dialog's
+   button it is sized like a label glyph (the sidebar and drawer size .icon). */
+.play-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
 .sidebar-nav {
     flex: 1 1 auto;
     overflow-y: auto;
@@ -857,7 +865,8 @@ body:not(.sidebar-collapsed) .side-menu .theme-toggle.sidebar-toggle.active:hove
 /* The sidebar rows carry their own labels; these spans stay hidden everywhere,
    the drawer included — there each entry is an icon in a three-across grid. */
 .side-menu .info-label,
-.side-menu .map-label {
+.side-menu .map-label,
+.side-menu .drawer-label {
     display: none !important;
 }
 
@@ -7448,7 +7457,8 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     /* Three rows of three icons in the mobile drawer:
        row 1: language, theme, favorites
        row 2: list, map, calculator   — where the spots list is shown
-       row 3: live stations, firing sort, info — the two filters plus about */
+       row 3: live stations, firing sort, info — the two filters plus about
+       row 4: the Android app link */
     #languageToggle,
     #themeToggle,
     #favoritesToggle,
@@ -7476,6 +7486,31 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     .live-stations-toggle { order: 7; }
     .firing-toggle        { order: 8; }
     .info-toggle          { order: 9; }
+    /* A labelled row of its own under the icon grid, as wide as the three
+       buttons above it. Not offered on iOS, where it leads nowhere. */
+    #androidAppLink {
+        flex: 0 0 100%;
+        order: 9;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        width: auto;
+        min-width: 0;
+        max-width: none;
+        padding: 10px 14px;
+        text-decoration: none;
+    }
+
+    #androidAppLink .drawer-label {
+        display: inline;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .ios #androidAppLink {
+        display: none;
+    }
 
     .search-container {
         width: 100%;

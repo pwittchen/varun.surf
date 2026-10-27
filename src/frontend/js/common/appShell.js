@@ -7,6 +7,15 @@
 // ============================================================================
 
 import * as api from './api.js';
+import { PLAY_STORE_URL } from './androidApp.js';
+
+// The Google Play mark, in its own four colours in both themes
+const PLAY_ICON_SVG = `<svg class="icon play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#00c3ff" d="M3.6,1.8,13.4,12,3.6,22.2A1.24,1.24,0,0,1,3,21.1V2.9A1.24,1.24,0,0,1,3.6,1.8Z"/>
+    <path fill="#00e676" d="M3.6,1.8A1.4,1.4,0,0,1,5,1.9L16.6,8.6,13.4,12Z"/>
+    <path fill="#ff3d00" d="M3.6,22.2,13.4,12l3.2,3.4L5,22.1A1.4,1.4,0,0,1,3.6,22.2Z"/>
+    <path fill="#ffc400" d="M16.6,8.6l3.7,2.1a1.5,1.5,0,0,1,0,2.6l-3.7,2.1L13.4,12Z"/>
+</svg>`;
 
 const SIDEBAR_HTML = `
 <div class="sidebar-brand" id="sidebarBrand">
@@ -25,6 +34,11 @@ const SIDEBAR_HTML = `
             <span class="info-label" id="infoToggleLabel">Info</span>
             <span class="sidebar-label" id="infoToggleSidebarLabel">Info</span>
         </button>
+        <a class="theme-toggle sidebar-item sidebar-link" id="androidAppLink" href="${PLAY_STORE_URL}" target="_blank" rel="noopener" title="Get the Android app on Google Play">
+            ${PLAY_ICON_SVG}
+            <span class="sidebar-label" id="androidAppLinkSidebarLabel">Android app</span>
+            <span class="drawer-label" id="androidAppLinkLabel">Get it on Google Play</span>
+        </a>
     </div>
     <div class="sidebar-section" data-section="appearance">
         <button type="button" class="sidebar-section-title" aria-expanded="true">
@@ -233,6 +247,28 @@ const MODALS_HTML = `
             <div class="modal-section">
                 <h3 id="appInfoDevTitle">Developers and AI assistants</h3>
                 <p id="appInfoDevText">Kite spots, forecasts and live conditions are available to AI assistants through the <a href="/mcp" class="modal-link">MCP server</a> and the <a href="/llms.txt" class="modal-link">llms.txt</a> file with LLM-friendly Markdown endpoints. Service statistics and uptime are on the <a href="/status" class="modal-link">status page</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="androidAppModal">
+    <div class="modal modal-confirm">
+        <div class="modal-header">
+            <div class="modal-title">
+                <img src="/app-icon.png" alt="" class="modal-title-logo" width="28" height="28">
+                <span id="androidAppModalTitle">VARUN.SURF for Android</span>
+            </div>
+            <button class="modal-close" id="androidAppModalClose">&times;</button>
+        </div>
+        <div class="modal-content">
+            <p class="modal-intro" id="androidAppModalText">The same spots, forecasts and live wind in an app made for your phone, with your favourites and a home screen widget.</p>
+            <div class="modal-actions">
+                <button class="modal-button modal-button-secondary" id="androidAppModalCancel">Not now</button>
+                <a class="modal-button modal-button-primary" id="androidAppModalConfirm" href="${PLAY_STORE_URL}" target="_blank" rel="noopener">
+                    ${PLAY_ICON_SVG}
+                    <span id="androidAppModalConfirmLabel">Get it on Google Play</span>
+                </a>
             </div>
         </div>
     </div>

@@ -57,7 +57,10 @@ export const STORAGE_KEYS = {
     SIDEBAR_COLLAPSED: 'sidebarCollapsed',
 
     // Sidebar sections folded shut (JSON array of data-section keys)
-    SIDEBAR_FOLDED_SECTIONS: 'sidebarFoldedSections'
+    SIDEBAR_FOLDED_SECTIONS: 'sidebarFoldedSections',
+
+    // The one-off invitation to install the Android app has been shown
+    ANDROID_APP_PROMPT_SHOWN: 'androidAppPromptShown'
 };
 
 // ============================================================================
@@ -222,6 +225,28 @@ export function getFoldedSidebarSections() {
 
 export function setFoldedSidebarSections(sections) {
     localStorage.setItem(STORAGE_KEYS.SIDEBAR_FOLDED_SECTIONS, JSON.stringify(sections));
+}
+
+// ============================================================================
+// ANDROID APP INVITATION
+// ============================================================================
+
+// Storage that cannot be read reads as "shown": an invitation that cannot be
+// remembered would come back on every visit
+export function wasAndroidAppPromptShown() {
+    try {
+        return localStorage.getItem(STORAGE_KEYS.ANDROID_APP_PROMPT_SHOWN) === 'true';
+    } catch {
+        return true;
+    }
+}
+
+export function setAndroidAppPromptShown() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.ANDROID_APP_PROMPT_SHOWN, 'true');
+    } catch {
+        // Nothing to remember it in; wasAndroidAppPromptShown() already says shown
+    }
 }
 
 // ============================================================================
