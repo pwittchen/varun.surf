@@ -24534,5 +24534,34 @@
       "season": "Cały rok (zimą pasaty z SE, latem bryza z NE)",
       "description": "Golden Beach w Caloundrze na Sunshine Coast leży nad Pumicestone Passage, kanałem osłoniętym przez wyspę Bribie. Woda pozostaje płaska, zimą wieją pasaty z SE, a latem bryza z NE, co czyni to miejsce jednym z najpopularniejszych spotów kite w Queensland."
     }
+  },
+  {
+    "name": "Tarnobrzeg",
+    "country": "Poland",
+    "windguruUrl": "https://www.windguru.cz/30390",
+    "windguruFallbackUrl": "https://www.windguru.cz/264104",
+    "windfinderUrl": "https://www.windfinder.com/forecast/jezioro-tarnobrzeskie",
+    "webcamUrl": "",
+    "locationUrl": "https://www.google.com/maps?q=50.5472,21.6318",
+    "spotInfo": {
+      "type": "Large lake (former sulphur mine, Machów)",
+      "bestWind": "SE, W, NW",
+      "waterTemp": "12-23°C",
+      "experience": "Intermediate to Advanced",
+      "launch": "Long sandy beach and grassy/concrete shore areas",
+      "hazards": "Gusty and shifting winds on a big open lake, deep water far from shore (up to ~40 m), swimmers and other water sports users near the beach in summer, parking fee in season",
+      "season": "May-September",
+      "description": "Jezioro Tarnobrzeskie (Machów) is a 455 ha flooded former sulphur mine on the southern edge of Tarnobrzeg and a well-known kite and windsurf spot in south-eastern Poland. It has a very long sandy beach, plenty of room and a steady wind. Kiting is allowed under the lake regulations; with W and NW winds riders usually launch from the opposite shore."
+    },
+    "spotInfoPL": {
+      "type": "Duże jezioro (dawna kopalnia siarki, Machów)",
+      "bestWind": "SE, W, NW",
+      "waterTemp": "12-23°C",
+      "experience": "Od średniozaawansowanego do zaawansowanego",
+      "launch": "Długa piaszczysta plaża oraz trawiaste i betonowe fragmenty brzegu",
+      "hazards": "Porywisty, zmienny wiatr nad dużym otwartym jeziorem, głęboka woda z dala od brzegu (do ok. 40 m), latem plażowicze i inni użytkownicy wody przy plaży, płatny parking w sezonie",
+      "season": "Maj-Wrzesień",
+      "description": "Jezioro Tarnobrzeskie (Machów) to zalana dawna kopalnia siarki o powierzchni 455 ha, na południowych obrzeżach Tarnobrzega i znany spot kite i windsurfingowy w południowo-wschodniej Polsce. Ma bardzo długą piaszczystą plażę, dużo miejsca i dość stały wiatr. Regulamin jeziora dopuszcza kitesurfing; przy wietrze z W i NW kitesurferzy zwykle startują z przeciwległego brzegu."
+    }
   }
 ]
