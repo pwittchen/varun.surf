@@ -5,12 +5,14 @@ on:
     branches: [ "master" ]
     paths:
       - 'android/**'
+      - '!android/**/*.md' # docs only (README, SPEC, CLAUDE.md) - nothing to build
     tags:
       - 'android-v*'
   pull_request:
     branches: [ "master" ]
     paths:
       - 'android/**'
+      - '!android/**/*.md'
   workflow_dispatch:
 
 defaults:
