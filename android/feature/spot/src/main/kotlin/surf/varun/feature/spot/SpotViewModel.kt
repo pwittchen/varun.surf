@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -43,7 +44,7 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 /** Which paid operation the user is being asked to confirm. */
-enum class PendingConfirm { AI_ANALYSIS, ICM_FORECAST }
+enum class PendingConfirm { AI_ANALYSIS }
 
 @Immutable
 data class SpotUiState(
@@ -59,10 +60,11 @@ data class SpotUiState(
     /** Hourly data exists but the windy-days filter hid every day. */
     val noWindyDays: Boolean = false,
     val analysisState: OnDemandState = OnDemandState.Idle,
-    val icmState: OnDemandState = OnDemandState.Idle,
     val pendingConfirm: PendingConfirm? = null,
     val focusTime: LocalDateTime? = null,
     val removedEverywhere: Boolean = false,
+    /** The server is still discovering the spot's forecast models: the model list is not final yet. */
+    val modelsLoading: Boolean = true,
 ) {
     val notFound: Boolean get() = sync.lastError is DataError.NotFound
     val loading: Boolean get() = spot == null && !notFound && sync.lastError == null
@@ -102,6 +104,7 @@ class SpotViewModel @AssistedInject constructor(
         val pendingConfirm: PendingConfirm? = null,
         val focusTime: LocalDateTime? = null,
         val removedEverywhere: Boolean = false,
+        val modelsLoading: Boolean = true,
     )
 
     private data class Detail(val spot: Spot?, val sync: SyncStatus, val model: String)
@@ -111,16 +114,11 @@ class SpotViewModel @AssistedInject constructor(
         combine(spotsRepository.observeSpot(wgId, k), spotsRepository.spotSync(wgId, k)) { spot, sync -> Detail(spot, sync, k) }
     }
 
-    private val onDemand: Flow<Pair<OnDemandState, OnDemandState>> = combine(
-        onDemandRepository.state(wgId, OnDemandKind.AI_ANALYSIS),
-        onDemandRepository.state(wgId, OnDemandKind.ICM_FORECAST),
-    ) { ai, icm -> ai to icm }
-
     val uiState: StateFlow<SpotUiState> = combine(
         detail,
         favouritesRepository.favouriteIds,
         settingsRepository.settings,
-        combine(connectivity.isOnline, onDemand, local) { online, od, l -> Triple(online, od, l) },
+        combine(connectivity.isOnline, onDemandRepository.state(wgId, OnDemandKind.AI_ANALYSIS), local) { online, od, l -> Triple(online, od, l) },
     ) { d, favourites, settings, (online, od, l) ->
         val days = d.spot?.let { ForecastDays.daytimeDays(it.hourly, settings.filterWindyDays) }.orEmpty()
         SpotUiState(
@@ -133,11 +131,11 @@ class SpotViewModel @AssistedInject constructor(
             settings = settings,
             days = days,
             noWindyDays = settings.filterWindyDays && days.isEmpty() && d.spot?.hourly?.any(ForecastDays::isDaytime) == true,
-            analysisState = od.first,
-            icmState = od.second,
+            analysisState = od,
             pendingConfirm = l.pendingConfirm,
             focusTime = l.focusTime,
             removedEverywhere = l.removedEverywhere,
+            modelsLoading = l.modelsLoading,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpotUiState(wgId))
 
@@ -146,8 +144,35 @@ class SpotViewModel @AssistedInject constructor(
             recentsRepository.spotOpened(wgId)
             val key = settingsRepository.modelFor(wgId)
             model.value = key
-            spotsRepository.refreshSpot(wgId, key, maxAge = OPEN_MAX_AGE)
+            awaitModels(spotsRepository.refreshSpot(wgId, key, maxAge = OPEN_MAX_AGE))
         }
+    }
+
+    /**
+     * Opening a spot starts the server's model discovery, and until it has finished the spot
+     * carries only the default model. Polls until the list grows past it - every spot with
+     * discovered models has at least two plus "average", the global ones (GFS, IFS, ICON) cover
+     * the whole planet - and gives up on the first failed refresh or after [MODELS_MAX_POLLS],
+     * leaving whatever models there are to pick from.
+     */
+    private suspend fun awaitModels(first: Result<Unit>) {
+        try {
+            var result = first
+            var polls = 0
+            while (result.isSuccess && polls < MODELS_MAX_POLLS && !modelsDiscovered()) {
+                delay(MODELS_POLL.toMillis())
+                result = spotsRepository.refreshSpot(wgId, currentModel(), maxAge = Duration.ZERO)
+                polls++
+            }
+        } finally {
+            local.update { it.copy(modelsLoading = false) }
+        }
+    }
+
+    // A spot that is not there has no models to wait for
+    private suspend fun modelsDiscovered(): Boolean {
+        val spot = spotsRepository.observeSpot(wgId, currentModel()).first() ?: return true
+        return spot.availableModels.size > 1
     }
 
     private suspend fun currentModel(): String = model.value ?: settingsRepository.modelFor(wgId)
@@ -169,7 +194,7 @@ class SpotViewModel @AssistedInject constructor(
     }
 
     fun selectModel(key: String) {
-        if (key == model.value) return
+        if (key == model.value || local.value.modelsLoading) return
         model.value = key
         viewModelScope.launch {
             settingsRepository.rememberModel(wgId, key)
@@ -191,8 +216,6 @@ class SpotViewModel @AssistedInject constructor(
     /** First step of a paid operation: only asks for confirmation (spec 6.5). */
     fun requestAnalysis() = local.update { it.copy(pendingConfirm = PendingConfirm.AI_ANALYSIS) }
 
-    fun requestIcm() = local.update { it.copy(pendingConfirm = PendingConfirm.ICM_FORECAST) }
-
     fun dismissConfirm() = local.update { it.copy(pendingConfirm = null) }
 
     /**
@@ -207,17 +230,6 @@ class SpotViewModel @AssistedInject constructor(
                 if (uiState.value.analysisState == OnDemandState.Running) return
                 onDemandRepository.acknowledge(wgId, OnDemandKind.AI_ANALYSIS)
                 onDemandRepository.generateAnalysis(wgId, language)
-            }
-            PendingConfirm.ICM_FORECAST -> {
-                if (uiState.value.icmState == OnDemandState.Running) return
-                onDemandRepository.acknowledge(wgId, OnDemandKind.ICM_FORECAST)
-                val deferred = onDemandRepository.generateIcm(wgId)
-                viewModelScope.launch {
-                    if (deferred.await().isSuccess) {
-                        selectModel(ForecastModelOption.ICM_KEY)
-                        effects.send(SpotEffect.Message(R.string.icm_ready))
-                    }
-                }
             }
         }
     }
@@ -242,5 +254,7 @@ class SpotViewModel @AssistedInject constructor(
     companion object {
         val OPEN_MAX_AGE: Duration = Duration.ofMinutes(1)
         val AUTO_REFRESH: Duration = Duration.ofSeconds(60)
+        val MODELS_POLL: Duration = Duration.ofSeconds(3)
+        const val MODELS_MAX_POLLS = 15
     }
 }

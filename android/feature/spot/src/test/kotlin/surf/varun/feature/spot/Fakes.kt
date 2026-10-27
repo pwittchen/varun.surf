@@ -100,17 +100,11 @@ class FakeSettingsRepository(var model: String = ForecastModelOption.DEFAULT_KEY
 class FakeOnDemandRepository : OnDemandRepository {
     val states = MutableStateFlow<Map<OnDemandKind, OnDemandState>>(emptyMap())
     val analysisCalls = mutableListOf<String>()
-    var icmCalls = 0
-    var icmResult: Result<Spot> = Result.failure(IllegalStateException())
 
     override fun state(wgId: Int, kind: OnDemandKind): Flow<OnDemandState> = states.map { it[kind] ?: OnDemandState.Idle }
     override fun generateAnalysis(wgId: Int, language: String): Deferred<Result<Spot>> {
         analysisCalls += language
         return CompletableDeferred(Result.failure(IllegalStateException()))
-    }
-    override fun generateIcm(wgId: Int): Deferred<Result<Spot>> {
-        icmCalls++
-        return CompletableDeferred(icmResult)
     }
     override fun acknowledge(wgId: Int, kind: OnDemandKind) = Unit
 }

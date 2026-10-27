@@ -76,7 +76,7 @@ shape. **Drop** = not built, with the reason. **New** = mobile-only.
 | "Windy days only" filter | **Keep** | Toggle in the forecast toolbar |
 | Forecast model dropdown (GFS, IFS, ... 40+, ICM) | **Keep** | Model selector chip → bottom sheet listing `availableModels` |
 | AI analysis button + confirmation modal | **Keep** | Same flow, confirmation as a `ModalBottomSheet` / dialog (section 6.5) |
-| ICM forecast button + confirmation modal | **Keep** | Same flow, only shown when the spot has `icmUrl` |
+| ICM forecast button + confirmation modal | **Drop** | Removed from the web too: the server fetches ICM with the other models, for free |
 | AI analysis EN/PL + generation time | **Keep** | Shown in app language; "generated at HH:mm" in device time zone |
 | Spot info (type, best wind, water temp, hazards, season, description) | **Keep** | Info section with icons; follows app language (`spotInfo` / `spotInfoPL`) |
 | Embedded map | **Adapt** | Static mini map (MapLibre `MapSnapshotter` image, cached) + "Navigate" button opening any maps app via `geo:` intent |
@@ -170,7 +170,7 @@ Base URL: `https://varun.surf` (configurable per build type: `debug` may point a
 | `/api/v1/forecast/{wgId}` | GET | Grid-aligned hourly forecast (wind, temp, rain, cloud, pressure, waves) | 404 for unknown spot. Used by widgets and alerts worker (smaller than full spot) |
 | `/api/v1/wind?hours=N` | GET | Map timeline + wind field | Default 120 h, max 16 days. ~100 KB gzipped |
 | `/api/v1/spots/{wgId}/analysis?lang=en\|pl` | POST | Generate AI analysis (both languages) | 404 unknown, 503 failed. Costs money - confirmation required |
-| `/api/v1/spots/{wgId}/icm` | POST | Generate ICM forecast | 404 / 503. Costs money - confirmation required |
+| `/api/v1/spots/{wgId}/icm` | POST | Not used | Fetches ICM by name; opening a spot fetches it anyway |
 | `/api/v1/sponsors` | GET | Sponsors row | |
 | `/api/v1/status` | GET | About → service status, backend version | |
 | `/api/v1/status/forecast` | GET | "Forecasts are being refreshed" banner | Poll every 5 s only while visible and `inProgress` |
@@ -362,8 +362,8 @@ Sections in order:
    - If present: text + "Generated 14:32" in device time zone.
    - If absent: "Generate AI analysis" button → confirmation (6.5) → progress (can take
      ~15-30 s) → result. Error 503 → "Couldn't generate the analysis, try later".
-4. **ICM forecast** (only spots with `icmUrl`): button "Read ICM forecast" with the same
-   confirmation flow; on success ICM appears in the model selector and is selected.
+4. **ICM forecast** - no section of its own: for Polish and Czech spots it arrives in the
+   model selector with the other models.
 5. **About this spot** - `spotInfo`/`spotInfoPL` fields with icons; description.
 6. **Location** - static map thumbnail, coordinates (copyable), "Navigate" button.
 7. **Links** - Windguru, Windfinder, ICM meteogram, webcam (Custom Tabs).
@@ -503,7 +503,7 @@ All polling stops when the app is in the background (`repeatOnLifecycle(STARTED)
   matches the web.
 - Off when battery saver is on unless the user forces it.
 
-### 6.5 Paid operations (AI analysis, ICM)
+### 6.5 Paid operations (AI analysis)
 
 Each press may cost an LLM call (the server caches for 24 h, so repeated presses are
 free, but the client cannot know). Therefore:

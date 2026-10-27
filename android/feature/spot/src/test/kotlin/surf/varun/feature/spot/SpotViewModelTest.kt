@@ -41,9 +41,13 @@ class SpotViewModelTest {
         rawDate = "", time = LocalDateTime.of(2026, 10, day, h, 0), wind = wind, gusts = wind + 4, direction = Direction.SW,
     )
 
+    private val gfsOnly = listOf(ForecastModelOption("gfs", "GFS"))
+    private val discovered = gfsOnly + ForecastModelOption("ifs", "IFS") + ForecastModelOption("average", "Average")
+
     private val spot = Spot(
         wgId = 500760, name = "Jastarnia", country = "Poland",
         hourly = listOf(hour(24, 10, 8.0), hour(24, 3, 30.0), hour(25, 12, 14.0), hour(26, 12, 5.0)),
+        availableModels = discovered,
     )
 
     @Before
@@ -116,14 +120,49 @@ class SpotViewModelTest {
     }
 
     @Test
-    fun successfulIcmSelectsTheIcmModel() = runTest(dispatcher) {
-        onDemand.icmResult = Result.success(spot)
+    fun modelsLoadUntilTheServerHasDiscoveredThem() = runTest(dispatcher) {
+        spots.spotsByModel.value = mapOf("gfs" to spot.copy(availableModels = gfsOnly))
         val vm = viewModel()
-        vm.requestIcm()
-        vm.confirm("en")
-        assertThat(onDemand.icmCalls).isEqualTo(1)
-        assertThat(vm.uiState.first { it.model == ForecastModelOption.ICM_KEY }.model).isEqualTo("icm")
-        assertThat(spots.refreshCalls.last().first).isEqualTo("icm")
+        assertThat(vm.uiState.value.modelsLoading).isTrue()
+
+        // no other model can be picked while the list is not final
+        vm.selectModel("ifs")
+        assertThat(vm.uiState.value.model).isEqualTo("gfs")
+        assertThat(settings.remembered).isEmpty()
+
+        spots.spotsByModel.value = mapOf("gfs" to spot)
+        val state = vm.uiState.first { !it.modelsLoading }
+        assertThat(state.spot!!.availableModels).isEqualTo(discovered)
+        assertThat(spots.refreshCalls.drop(1).map { it.second }).containsExactly(Duration.ZERO)
+
+        vm.selectModel("ifs")
+        assertThat(vm.uiState.first { it.model == "ifs" }.model).isEqualTo("ifs")
+    }
+
+    @Test
+    fun modelsAlreadyDiscoveredAreNotWaitedFor() = runTest(dispatcher) {
+        spots.spotsByModel.value = mapOf("gfs" to spot)
+        val vm = viewModel()
+        assertThat(vm.uiState.first { it.spot != null }.modelsLoading).isFalse()
+        assertThat(spots.refreshCalls).hasSize(1)
+    }
+
+    @Test
+    fun aFailedRefreshStopsTheModelsLoading() = runTest(dispatcher) {
+        spots.spotsByModel.value = mapOf("gfs" to spot.copy(availableModels = gfsOnly))
+        spots.refreshResult = Result.failure(DataError.Unavailable(null))
+        val vm = viewModel()
+        val state = vm.uiState.first { it.spot != null && !it.modelsLoading }
+        assertThat(state.spot!!.availableModels).isEqualTo(gfsOnly)
+        assertThat(spots.refreshCalls).hasSize(1)
+    }
+
+    @Test
+    fun modelsLoadingGivesUpAfterTheLastPoll() = runTest(dispatcher) {
+        spots.spotsByModel.value = mapOf("gfs" to spot.copy(availableModels = gfsOnly))
+        val vm = viewModel()
+        vm.uiState.first { it.spot != null && !it.modelsLoading }
+        assertThat(spots.refreshCalls).hasSize(1 + SpotViewModel.MODELS_MAX_POLLS)
     }
 
     @Test

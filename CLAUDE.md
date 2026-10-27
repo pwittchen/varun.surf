@@ -871,7 +871,7 @@ When adding a new kite spot manually, follow this process:
   Room, MapLibre, WorkManager, Glance). Spec: `android/SPEC.md`; developer notes and module map:
   `android/README.md`
 - Consumes the public API only (`/api/v1/session`, `/spots`, `/spots/{id}[/{model}]`, `/forecast/{id}`,
-  `/wind`, `/status`, `/status/forecast`, `/sponsors`, and the two paid POSTs behind a confirmation).
+  `/wind`, `/status`, `/status/forecast`, `/sponsors`, and the paid AI analysis POST behind a confirmation).
   Sends `X-Client: varun-android/<version>`. Changing these response shapes affects the app: its
   DTOs tolerate missing/extra fields, but renamed fields silently become absent
 - Web domain rules are ported to `android/core/domain` and must stay in sync with

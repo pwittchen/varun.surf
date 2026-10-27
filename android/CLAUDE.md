@@ -85,7 +85,8 @@ Module conventions are enforced by the plugins in `build-logic/convention`:
 
 The app consumes the public API only (spec 3): `/api/v1/session`, `/spots`,
 `/spots/{id}[/{model}]`, `/forecast/{id}`, `/wind`, `/status`, `/status/forecast`,
-`/sponsors`, and the two paid POSTs (`/spots/{id}/analysis`, `/spots/{id}/icm`).
+`/sponsors`, and the paid POST `/spots/{id}/analysis`. The app does not call
+`/spots/{id}/icm`: the server fetches ICM with the other models when a spot is opened.
 
 - **Everything is optional on the client.** DTOs (`core/network/dto/Dtos.kt`) give every
   field a default and are decoded with `NetworkJson` (`ignoreUnknownKeys`,
@@ -104,7 +105,7 @@ The app consumes the public API only (spec 3): `/api/v1/session`, `/spots`,
   client and are **never retried automatically**
 - Base URL comes from `-Pvarun.baseUrl` (`BuildConfig.BASE_URL` in `core:network`)
 
-## Paid Operations (AI analysis, ICM)
+## Paid Operations (AI analysis)
 
 Each press can cost an LLM call (spec 6.5):
 
@@ -113,6 +114,15 @@ Each press can cost an LLM call (spec 6.5):
 - Run in the application-scoped coroutine (`@ApplicationScope`) so they survive
   navigation and configuration changes; the result lands in the spot cache
 - **Never** triggered from widgets, workers, alerts or any automatic path
+
+## Forecast Model Loading
+
+Opening a spot starts the server's model discovery, and until it finishes
+`availableModels` holds only the default model. `SpotViewModel.awaitModels()` polls the
+spot (`MODELS_POLL`, at most `MODELS_MAX_POLLS` times) until the list grows past one
+entry; meanwhile `SpotUiState.modelsLoading` replaces the model chip with a disabled
+spinner chip in the same slot of the toolbar row, and `selectModel` is ignored. A failed
+refresh or the last poll ends the loading, leaving whatever models there are to pick
 
 ## Background Work
 

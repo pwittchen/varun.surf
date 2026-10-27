@@ -19,7 +19,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class OnDemandKind { AI_ANALYSIS, ICM_FORECAST }
+enum class OnDemandKind { AI_ANALYSIS }
 
 sealed interface OnDemandState {
     data object Idle : OnDemandState
@@ -29,7 +29,7 @@ sealed interface OnDemandState {
 }
 
 /**
- * The two paid operations (spec 6.5). Each press may cost an LLM call, so:
+ * The paid operation (spec 6.5), the AI analysis. Each press may cost an LLM call, so:
  * one request per spot and kind at a time (a second press joins the running one),
  * never retried automatically, run in the application scope so leaving the screen
  * or rotating doesn't cancel what may already be billed, and the result written to
@@ -43,8 +43,6 @@ interface OnDemandRepository {
 
     /** Generate the AI analysis; the backend writes both languages, [language] decides failure. */
     fun generateAnalysis(wgId: Int, language: String): Deferred<Result<Spot>>
-
-    fun generateIcm(wgId: Int): Deferred<Result<Spot>>
 
     /** Forget a finished state (e.g. after the error was shown). */
     fun acknowledge(wgId: Int, kind: OnDemandKind)
@@ -66,8 +64,6 @@ class NetworkOnDemandRepository @Inject constructor(
 
     override fun generateAnalysis(wgId: Int, language: String) =
         launch(Key(wgId, OnDemandKind.AI_ANALYSIS)) { network.generateAnalysis(wgId, language) }
-
-    override fun generateIcm(wgId: Int) = launch(Key(wgId, OnDemandKind.ICM_FORECAST)) { network.generateIcm(wgId) }
 
     override fun acknowledge(wgId: Int, kind: OnDemandKind) {
         val key = Key(wgId, kind)

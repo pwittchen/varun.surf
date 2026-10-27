@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.OutlinedFlag
-import androidx.compose.material.icons.rounded.ShowChart
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import surf.varun.core.data.repository.OnDemandState
 import surf.varun.core.designsystem.component.InfoChip
-import surf.varun.core.model.ForecastModelOption
 import surf.varun.core.model.Spot
 import surf.varun.core.ui.Format
 import surf.varun.core.ui.Intents
@@ -74,39 +71,6 @@ internal fun AiSection(state: SpotUiState, actions: SpotActions) {
                 error = stringResource(R.string.ai_error),
                 icon = { Icon(Icons.Rounded.AutoAwesome, null, Modifier.size(18.dp)) },
                 onClick = actions.requestAnalysis,
-            )
-        }
-    }
-}
-
-/** Section 4: reading the ICM meteogram, only for spots that have one. */
-@Composable
-internal fun IcmSection(state: SpotUiState, actions: SpotActions) {
-    val spot = state.spot ?: return
-    val icmReady = spot.availableModels.any { it.key == ForecastModelOption.ICM_KEY }
-    SectionCard(stringResource(R.string.section_icm)) {
-        if (icmReady) {
-            // Already generated (by anyone, within 24 h): picking it costs nothing
-            Text(stringResource(R.string.icm_available), style = MaterialTheme.typography.bodyMedium)
-            if (state.model != ForecastModelOption.ICM_KEY) {
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(onClick = { actions.selectModel(ForecastModelOption.ICM_KEY) }) {
-                    Text(stringResource(R.string.icm_show))
-                }
-            }
-            ReportButton(
-                label = stringResource(R.string.icm_report),
-                subject = stringResource(R.string.icm_report_subject, spot.name),
-                body = stringResource(R.string.icm_report_body, spot.name, spotUrl(spot)),
-            )
-        } else {
-            PaidButton(
-                state = state.icmState,
-                label = stringResource(R.string.icm_generate_button),
-                running = stringResource(R.string.icm_generating),
-                error = stringResource(R.string.icm_error),
-                icon = { Icon(Icons.Rounded.ShowChart, null, Modifier.size(18.dp)) },
-                onClick = actions.requestIcm,
             )
         }
     }
@@ -168,17 +132,16 @@ private fun PaidButton(
 @Composable
 internal fun ConfirmDialog(pending: PendingConfirm?, actions: SpotActions) {
     pending ?: return
-    val ai = pending == PendingConfirm.AI_ANALYSIS
     AlertDialog(
         onDismissRequest = actions.dismissConfirm,
-        icon = { Icon(if (ai) Icons.Rounded.AutoAwesome else Icons.Rounded.ShowChart, null) },
-        title = { Text(stringResource(if (ai) R.string.ai_modal_title else R.string.icm_modal_title)) },
+        icon = { Icon(Icons.Rounded.AutoAwesome, null) },
+        title = { Text(stringResource(R.string.ai_modal_title)) },
         text = {
             Column {
-                Text(stringResource(if (ai) R.string.ai_modal_question else R.string.icm_modal_question))
+                Text(stringResource(R.string.ai_modal_question))
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    stringResource(if (ai) R.string.ai_modal_hint else R.string.icm_modal_hint),
+                    stringResource(R.string.ai_modal_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

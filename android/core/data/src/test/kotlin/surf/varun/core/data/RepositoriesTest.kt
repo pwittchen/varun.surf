@@ -149,12 +149,12 @@ class RepositoriesTest {
 
     @Test
     fun paidCallFailureIsReportedNotRetried() = runBlocking<Unit> {
-        backend.overrides["/api/v1/spots/${Fixtures.SPOT_ID}/icm"] = { MockResponse.Builder().code(503).build() }
+        backend.overrides["/api/v1/spots/${Fixtures.SPOT_ID}/analysis"] = { MockResponse.Builder().code(503).build() }
         val repo = NetworkOnDemandRepository(backend.dataSource, db.spotDao(), CoroutineScope(SupervisorJob() + Dispatchers.IO))
-        val result = repo.generateIcm(Fixtures.SPOT_ID).await()
+        val result = repo.generateAnalysis(Fixtures.SPOT_ID, "en").await()
         assertThat(result.exceptionOrNull()).isInstanceOf(DataError.Unavailable::class.java)
-        assertThat(backend.count("/api/v1/spots/${Fixtures.SPOT_ID}/icm")).isEqualTo(1)
-        assertThat(repo.state(Fixtures.SPOT_ID, OnDemandKind.ICM_FORECAST).first()).isInstanceOf(OnDemandState.Failed::class.java)
+        assertThat(backend.count("/api/v1/spots/${Fixtures.SPOT_ID}/analysis")).isEqualTo(1)
+        assertThat(repo.state(Fixtures.SPOT_ID, OnDemandKind.AI_ANALYSIS).first()).isInstanceOf(OnDemandState.Failed::class.java)
     }
 
     @Test

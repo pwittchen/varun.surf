@@ -7,7 +7,6 @@
     <string name="section_now">Now</string>
     <string name="section_forecast">Forecast</string>
     <string name="section_ai">AI Analysis</string>
-    <string name="section_icm">ICM Forecast</string>
     <string name="section_about">Spot Information</string>
     <string name="section_location">Location</string>
     <string name="section_links">Links</string>
@@ -32,6 +31,7 @@
     <string name="gusting">gusting %1$s</string>
 
     <string name="model">Model</string>
+    <string name="models_loading">Loading models…</string>
     <string name="model_sheet_title">Forecast model</string>
     <string name="windy_days">Windy days</string>
     <string name="view_table">Table</string>
@@ -49,21 +49,9 @@
     <string name="ai_modal_title">Generate AI analysis</string>
     <string name="ai_modal_question">Do you really want to generate the analysis?</string>
     <string name="ai_modal_hint">Writing the analysis costs an AI call, so it is generated on request and stays valid for 24 hours. It is shared with every visitor of the spot, and written in Polish and English at once, so changing the language keeps working. It will appear here, in place of this button.</string>
-    <string name="icm_generate_button">Generate ICM forecast</string>
-    <string name="icm_generating">Generating ICM forecast…</string>
-    <string name="icm_error">The ICM forecast could not be generated. Try again later.</string>
-    <string name="icm_modal_title">Generate ICM forecast</string>
-    <string name="icm_modal_question">Do you really want to generate the forecast?</string>
-    <string name="icm_modal_hint">Reading the ICM meteogram costs an AI call, so the forecast is generated on request and stays valid for 24 hours. It will appear in the forecast model list. To just look at the meteogram itself, use the ICM meteogram link below - that costs nothing.</string>
-    <string name="icm_ready">ICM forecast selected</string>
-    <string name="icm_show">Show ICM forecast</string>
     <string name="ai_report">Report analysis</string>
     <string name="ai_report_subject">Report: AI analysis for %1$s</string>
     <string name="ai_report_body">What is wrong with this analysis?\n\n\n---\nSpot: %1$s (%2$s)\nGenerated: %3$s\n\n%4$s</string>
-    <string name="icm_report">Report ICM forecast</string>
-    <string name="icm_report_subject">Report: ICM forecast for %1$s</string>
-    <string name="icm_report_body">What is wrong with this ICM forecast?\n\n\n---\nSpot: %1$s (%2$s)</string>
-    <string name="icm_available">The ICM forecast is ready - pick it in the model list.</string>
     <string name="cancel">Cancel</string>
     <string name="generate">Generate</string>
 

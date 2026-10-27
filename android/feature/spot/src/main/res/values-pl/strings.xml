@@ -7,7 +7,6 @@
     <string name="section_now">Teraz</string>
     <string name="section_forecast">Prognoza</string>
     <string name="section_ai">Analiza AI</string>
-    <string name="section_icm">Prognoza ICM</string>
     <string name="section_about">Informacje o spocie</string>
     <string name="section_location">Lokalizacja</string>
     <string name="section_links">Linki</string>
@@ -32,6 +31,7 @@
     <string name="gusting">w porywach %1$s</string>
 
     <string name="model">Model</string>
+    <string name="models_loading">Wczytywanie modeli…</string>
     <string name="model_sheet_title">Model prognozy</string>
     <string name="windy_days">Wietrzne dni</string>
     <string name="view_table">Tabela</string>
@@ -49,21 +49,9 @@
     <string name="ai_modal_title">Generuj analizę AI</string>
     <string name="ai_modal_question">Czy na pewno chcesz wygenerować analizę?</string>
     <string name="ai_modal_hint">Napisanie analizy kosztuje wywołanie AI, dlatego jest generowana na żądanie i jest ważna przez 24 godziny. Widzą ją wszyscy odwiedzający spot, a powstaje od razu po polsku i po angielsku, więc zmiana języka nadal działa. Pojawi się w tym miejscu, zamiast tego przycisku.</string>
-    <string name="icm_generate_button">Generuj prognozę ICM</string>
-    <string name="icm_generating">Generowanie prognozy ICM…</string>
-    <string name="icm_error">Nie udało się wygenerować prognozy ICM. Spróbuj ponownie później.</string>
-    <string name="icm_modal_title">Generuj prognozę ICM</string>
-    <string name="icm_modal_question">Czy na pewno chcesz wygenerować prognozę?</string>
-    <string name="icm_modal_hint">Odczyt meteogramu ICM kosztuje wywołanie AI, dlatego prognoza jest generowana na żądanie i jest ważna przez 24 godziny. Pojawi się na liście modeli prognozy. Sam meteogram ICM możesz obejrzeć przez link do meteogramu poniżej - to nic nie kosztuje.</string>
-    <string name="icm_ready">Wybrano prognozę ICM</string>
-    <string name="icm_show">Pokaż prognozę ICM</string>
     <string name="ai_report">Zgłoś analizę</string>
     <string name="ai_report_subject">Zgłoszenie: analiza AI dla %1$s</string>
     <string name="ai_report_body">Co jest nie tak z tą analizą?\n\n\n---\nSpot: %1$s (%2$s)\nWygenerowano: %3$s\n\n%4$s</string>
-    <string name="icm_report">Zgłoś prognozę ICM</string>
-    <string name="icm_report_subject">Zgłoszenie: prognoza ICM dla %1$s</string>
-    <string name="icm_report_body">Co jest nie tak z tą prognozą ICM?\n\n\n---\nSpot: %1$s (%2$s)</string>
-    <string name="icm_available">Prognoza ICM jest gotowa - wybierz ją na liście modeli.</string>
     <string name="cancel">Anuluj</string>
     <string name="generate">Generuj</string>
 

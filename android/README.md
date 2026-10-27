@@ -46,7 +46,7 @@ core/ui              SpotCard, formatting, banners, intents (Custom Tabs, geo:, 
 core/navigation      route keys and the Navigator; features never depend on each other
 core/testing         captured production payloads and in-memory fakes
 feature/spots        Spots + Favourites tabs (filters, country sheet, sort, drag reorder)
-feature/spot         spot detail (live + 12 h history chart/table, hourly table/chart, model sheet, AI/ICM with confirmation)
+feature/spot         spot detail (live + 12 h history chart/table, hourly table/chart, model sheet with a loading state, AI with confirmation)
 feature/map          MapLibre map, clustering, wind field overlay with particles, timeline
 feature/search       local instant search with diacritics folding
 feature/calculator   kite & board calculator

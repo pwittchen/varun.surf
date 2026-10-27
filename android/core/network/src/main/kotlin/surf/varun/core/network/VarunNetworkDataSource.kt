@@ -71,10 +71,5 @@ class VarunNetworkDataSource @Inject constructor(
             ?: throw ApiError.BadData(IllegalStateException("Spot $wgId without id or name"))
     }
 
-    suspend fun generateIcm(wgId: Int): Spot = apiCall {
-        paidApi.generateIcm(wgId).toModel(config.baseUrl)
-            ?: throw ApiError.BadData(IllegalStateException("Spot $wgId without id or name"))
-    }
-
     val baseUrl: String get() = config.baseUrl
 }

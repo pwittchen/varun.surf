@@ -120,7 +120,6 @@ fun SpotScreen(viewModel: SpotViewModel) {
             selectModel = viewModel::selectModel,
             setWindyOnly = viewModel::setWindyOnly,
             requestAnalysis = viewModel::requestAnalysis,
-            requestIcm = viewModel::requestIcm,
             confirm = { viewModel.confirm(language) },
             dismissConfirm = viewModel::dismissConfirm,
             removeEverywhere = viewModel::removeEverywhere,
@@ -137,7 +136,6 @@ class SpotActions(
     val selectModel: (String) -> Unit,
     val setWindyOnly: (Boolean) -> Unit,
     val requestAnalysis: () -> Unit,
-    val requestIcm: () -> Unit,
     val confirm: () -> Unit,
     val dismissConfirm: () -> Unit,
     val removeEverywhere: () -> Unit,
@@ -221,7 +219,6 @@ private fun SpotBody(state: SpotUiState, actions: SpotActions) {
                     Row(verticalAlignment = Alignment.Top) {
                         Column(Modifier.weight(1f)) {
                             AiSection(state, actions)
-                            if (spot.links.icm != null) Divided { IcmSection(state, actions) }
                             Divided { AboutSection(spot) }
                         }
                         Column(Modifier.weight(1f)) {
@@ -234,7 +231,6 @@ private fun SpotBody(state: SpotUiState, actions: SpotActions) {
             }
         } else {
             item(key = "ai") { Divided { AiSection(state, actions) } }
-            if (spot.links.icm != null) item(key = "icm") { Divided { IcmSection(state, actions) } }
             item(key = "about") { Divided { AboutSection(spot) } }
             if (spot.coordinates != null) item(key = "location") { Divided { LocationSection(spot) } }
             item(key = "links") { Divided { LinksSection(spot) } }

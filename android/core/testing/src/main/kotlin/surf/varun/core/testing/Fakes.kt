@@ -200,7 +200,6 @@ class FakeOnDemandRepository : OnDemandRepository {
 
     override fun generateAnalysis(wgId: Int, language: String): Deferred<Result<Spot>> = call(wgId, OnDemandKind.AI_ANALYSIS)
 
-    override fun generateIcm(wgId: Int): Deferred<Result<Spot>> = call(wgId, OnDemandKind.ICM_FORECAST)
 
     override fun acknowledge(wgId: Int, kind: OnDemandKind) = states.update { it - (wgId to kind) }
 

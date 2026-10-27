@@ -25,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -132,21 +134,42 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     // Sideways the controls keep their natural width and the day chips run on beside them,
     // rather than two rows of controls stretched across the whole screen
     val compact = isCompactHeight()
+    val modelsLoadingLabel = stringResource(R.string.models_loading)
+    // While the server is still discovering the models the chip holds a spinner in the same slot,
+    // so the row keeps its single line, and it cannot be opened: the list is not final yet
     val modelChip = @Composable { modifier: Modifier ->
-        AssistChip(
-            onClick = { modelSheet = true },
-            label = {
-                Text(
-                    modelName,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
-                )
-            },
-            trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, contentDescription = null) },
-            modifier = modifier.semantics { contentDescription = "$modelLabel: $modelName" },
-        )
+        if (state.modelsLoading) {
+            AssistChip(
+                onClick = {},
+                enabled = false,
+                label = {
+                    Text(
+                        modelsLoadingLabel,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
+                    )
+                },
+                leadingIcon = { CircularProgressIndicator(Modifier.size(AssistChipDefaults.IconSize), strokeWidth = 2.dp) },
+                modifier = modifier.semantics { contentDescription = modelsLoadingLabel },
+            )
+        } else {
+            AssistChip(
+                onClick = { modelSheet = true },
+                label = {
+                    Text(
+                        modelName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                        modifier = if (compact) Modifier else Modifier.fillMaxWidth(),
+                    )
+                },
+                trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, contentDescription = null) },
+                modifier = modifier.semantics { contentDescription = "$modelLabel: $modelName" },
+            )
+        }
     }
     val windyChip = @Composable {
         FilterChip(
@@ -238,7 +261,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
         }
     }
 
-    if (modelSheet) {
+    if (modelSheet && !state.modelsLoading) {
         ModalBottomSheet(onDismissRequest = { modelSheet = false }) {
             Text(
                 stringResource(R.string.model_sheet_title),

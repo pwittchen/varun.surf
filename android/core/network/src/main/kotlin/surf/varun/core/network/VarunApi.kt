@@ -54,6 +54,4 @@ interface VarunPaidApi {
     @POST("api/v1/spots/{wgId}/analysis")
     suspend fun generateAnalysis(@Path("wgId") wgId: Int, @Query("lang") lang: String): SpotDto
 
-    @POST("api/v1/spots/{wgId}/icm")
-    suspend fun generateIcm(@Path("wgId") wgId: Int): SpotDto
 }
