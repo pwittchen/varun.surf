@@ -5,24 +5,30 @@ import static com.github.pwittchen.varun.config.OkHttpClientConfig.LIVE_STATIONS
 import com.github.pwittchen.varun.model.live.CurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditions;
 import com.github.pwittchen.varun.service.live.FetchCurrentConditionsStrategyBase;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Strategy for fetching current conditions for the southern shore of Turawa Lake
- * from the ISZCZE187 personal weather station in Szczedrzyk available on
- * <a href="https://www.wunderground.com/dashboard/pws/ISZCZE187">Weather Underground</a>.
- * The station sits on the southern shore, so it serves the "Turawa Południe" spot,
- * while the northern shore ("Turawa Północ") is covered by
+ * from the ISZCZE187 personal weather station in Szczedrzyk, read from its public
+ * <a href="https://www.wunderground.com/dashboard/pws/ISZCZE187">Weather Underground dashboard</a>.
+ * The page is rendered on the server with the latest observation in the attributes
+ * of its widgets ({@code <wind-widget-view data-wind-speed="...">} and so on), so no
+ * API key is needed. The station sits on the southern shore, so it serves the
+ * "Turawa Południe" spot, while the northern shore ("Turawa Północ") is covered by
  * {@link FetchCurrentConditionsStrategyTurawa} (airmax.pl).
  */
 @Component
@@ -31,34 +37,31 @@ public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurre
     // generated ID of the "Turawa Południe" spot,
     // which shares the Windguru forecast point with "Turawa Północ"
     private static final int TURAWA_SOUTH_WG_ID = 9387270;
-    private static final String STATION_ID = "ISZCZE187";
-    private static final String OBSERVATIONS_URL =
-            "https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&apiKey=%s";
+    private static final String DASHBOARD_URL = "https://www.wunderground.com/dashboard/pws/ISZCZE187";
 
+    private static final Pattern WIND_WIDGET_PATTERN = Pattern.compile("<wind-widget-view\\b[^>]*>");
+    private static final Pattern TEMP_WIDGET_PATTERN = Pattern.compile("<temp-widget-view\\b[^>]*>");
+    private static final Pattern OBS_TIME_PATTERN = Pattern.compile("data-obs-time-utc=\"([^\"]+)\"");
+
+    // e.g. "Tue Oct 27 2026 10:06:19 GMT+0000 (Coordinated Universal Time)"
+    private static final DateTimeFormatter OBS_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'xx", Locale.ENGLISH);
+    private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final ZoneId STATION_ZONE = ZoneId.of("Europe/Warsaw");
+
+    // the dashboard is served in metric units ("m"), where wind is in km/h
+    private static final String METRIC_UNIT = "m";
     private static final double KMH_TO_KNOTS = 0.539957;
 
     private final OkHttpClient httpClient;
-    private final Gson gson;
-    private final String apiKey;
 
-    public FetchCurrentConditionsStrategyTurawaWunderground(
-            @Qualifier(LIVE_STATIONS_HTTP_CLIENT) OkHttpClient httpClient,
-            Gson gson,
-            @Value("${app.wunderground.api-key:}") String apiKey
-    ) {
+    public FetchCurrentConditionsStrategyTurawaWunderground(@Qualifier(LIVE_STATIONS_HTTP_CLIENT) OkHttpClient httpClient) {
         this.httpClient = httpClient;
-        this.gson = gson;
-        this.apiKey = apiKey;
     }
 
-    /**
-     * Without an API key the request could only ever come back unauthorized, so the
-     * strategy stands down and the spot shows no live conditions rather than failing
-     * once a minute forever.
-     */
     @Override
     public boolean canProcess(int wgId) {
-        return wgId == TURAWA_SOUTH_WG_ID && apiKey != null && !apiKey.isBlank();
+        return wgId == TURAWA_SOUTH_WG_ID;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurre
 
     @Override
     protected String getUrl(int wgId) {
-        return OBSERVATIONS_URL.formatted(STATION_ID, apiKey);
+        return DASHBOARD_URL;
     }
 
     @Override
@@ -100,44 +103,62 @@ public class FetchCurrentConditionsStrategyTurawaWunderground extends FetchCurre
     }
 
     private CurrentConditions createCurrentConditions(String body) {
-        JsonObject json = gson.fromJson(body, JsonObject.class);
+        String windWidget = extractTag(body, WIND_WIDGET_PATTERN, "wind widget");
+        String tempWidget = extractTag(body, TEMP_WIDGET_PATTERN, "temperature widget");
 
-        if (json == null || !json.has("observations")) {
-            throw new RuntimeException("No current conditions data available");
+        String unit = extractAttribute(windWidget, "data-unit", "unit");
+        if (!METRIC_UNIT.equals(unit)) {
+            throw new RuntimeException("Unexpected unit system in response: " + unit);
         }
 
-        JsonArray observations = json.getAsJsonArray("observations");
-        if (observations == null || observations.isEmpty()) {
-            throw new RuntimeException("No current conditions data available");
-        }
-
-        JsonObject observation = observations.get(0).getAsJsonObject();
-        JsonObject metric = observation.getAsJsonObject("metric");
-        if (metric == null) {
-            throw new RuntimeException("No metric data available in current conditions");
-        }
-
-        String timestamp = extractString(observation, "obsTimeLocal", "timestamp");
-        int windDirectionDegrees = (int) Math.round(extractDouble(observation, "winddir", "wind direction"));
+        String timestamp = parseObservationTime(extractValue(body, OBS_TIME_PATTERN, "observation time"));
+        int windDirectionDegrees = (int) Math.round(extractDouble(windWidget, "data-wind-dir", "wind direction"));
         String windDirection = windDirectionDegreesToCardinal(windDirectionDegrees);
-        int wind = (int) Math.round(extractDouble(metric, "windSpeed", "wind speed") * KMH_TO_KNOTS);
-        int gusts = (int) Math.round(extractDouble(metric, "windGust", "wind gusts") * KMH_TO_KNOTS);
-        int temperature = (int) Math.round(extractDouble(metric, "temp", "temperature"));
+        int wind = (int) Math.round(extractDouble(windWidget, "data-wind-speed", "wind speed") * KMH_TO_KNOTS);
+        int gusts = (int) Math.round(extractDouble(windWidget, "data-wind-gust", "wind gusts") * KMH_TO_KNOTS);
+        int temperature = (int) Math.round(extractDouble(tempWidget, "data-temp", "temperature"));
 
         return new CurrentConditions(timestamp, wind, gusts, windDirection, temperature);
     }
 
-    private String extractString(JsonObject json, String field, String fieldName) {
-        if (!json.has(field) || json.get(field).isJsonNull()) {
-            throw new RuntimeException("Could not extract " + fieldName + " from response");
+    private String parseObservationTime(String rawTime) {
+        // drop the trailing "(Coordinated Universal Time)" zone name
+        String time = rawTime.replaceAll("\\s*\\(.*\\)$", "");
+        try {
+            return ZonedDateTime.parse(time, OBS_TIME_FORMATTER)
+                    .withZoneSameInstant(STATION_ZONE)
+                    .format(OUTPUT_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Could not parse observation time: " + rawTime, e);
         }
-        return json.get(field).getAsString();
     }
 
-    private double extractDouble(JsonObject json, String field, String fieldName) {
-        if (!json.has(field) || json.get(field).isJsonNull()) {
-            throw new RuntimeException("Could not extract " + fieldName + " from response");
+    private String extractTag(String body, Pattern pattern, String fieldName) {
+        Matcher matcher = pattern.matcher(body);
+        if (!matcher.find()) {
+            throw new RuntimeException("Could not extract " + fieldName + " from HTML");
         }
-        return json.get(field).getAsDouble();
+        return matcher.group();
+    }
+
+    private double extractDouble(String tag, String attribute, String fieldName) {
+        String value = extractAttribute(tag, attribute, fieldName);
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Could not extract " + fieldName + " from HTML", e);
+        }
+    }
+
+    private String extractAttribute(String tag, String attribute, String fieldName) {
+        return extractValue(tag, Pattern.compile(attribute + "=\"([^\"]*)\""), fieldName);
+    }
+
+    private String extractValue(String body, Pattern pattern, String fieldName) {
+        Matcher matcher = pattern.matcher(body);
+        if (!matcher.find()) {
+            throw new RuntimeException("Could not extract " + fieldName + " from HTML");
+        }
+        return matcher.group(1);
     }
 }

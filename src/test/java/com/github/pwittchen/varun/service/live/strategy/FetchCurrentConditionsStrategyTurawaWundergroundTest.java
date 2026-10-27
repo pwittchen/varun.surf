@@ -1,7 +1,6 @@
 package com.github.pwittchen.varun.service.live.strategy;
 
 import com.github.pwittchen.varun.model.live.CurrentConditions;
-import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -17,6 +16,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 class FetchCurrentConditionsStrategyTurawaWundergroundTest {
 
+    private static final String OBS_TIME = "Tue Oct 27 2026 10:06:19 GMT+0000 (Coordinated Universal Time)";
+
     private MockWebServer mockWebServer;
     private FetchCurrentConditionsStrategyTurawaWunderground strategy;
 
@@ -24,7 +25,7 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        strategy = new FetchCurrentConditionsStrategyTurawaWunderground(new OkHttpClient(), new Gson(), "test-api-key");
+        strategy = new FetchCurrentConditionsStrategyTurawaWunderground(new OkHttpClient());
     }
 
     @AfterEach
@@ -35,15 +36,6 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     @Test
     void shouldReturnTrueForTurawaSouthWgId() {
         assertThat(strategy.canProcess(SpotsJson.wgIdOf("Turawa Południe"))).isTrue();
-    }
-
-    @Test
-    void shouldReturnFalseWithoutApiKey() {
-        // without a key the request could only come back unauthorized, so the spot
-        // shows no live conditions instead of failing once a minute
-        var withoutKey = new FetchCurrentConditionsStrategyTurawaWunderground(new OkHttpClient(), new Gson(), "");
-
-        assertThat(withoutKey.canProcess(SpotsJson.wgIdOf("Turawa Południe"))).isFalse();
     }
 
     @Test
@@ -61,15 +53,14 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
 
     @Test
     void shouldReturnCorrectUrl() {
-        assertThat(strategy.getUrl(SpotsJson.wgIdOf("Turawa Południe"))).isEqualTo(
-                "https://api.weather.com/v2/pws/observations/current"
-                        + "?stationId=ISZCZE187&format=json&units=m&apiKey=test-api-key");
+        assertThat(strategy.getUrl(SpotsJson.wgIdOf("Turawa Południe")))
+                .isEqualTo("https://www.wunderground.com/dashboard/pws/ISZCZE187");
     }
 
     @Test
     void shouldParseValidResponse() {
         mockWebServer.enqueue(new MockResponse()
-                .setBody(createResponse(135, 18.5, 27.8, 23))
+                .setBody(createPage("m", "18.5", "27.8", "135", "23.4", OBS_TIME))
                 .setResponseCode(200));
 
         Mono<CurrentConditions> result = strategy.fetchCurrentConditions(url());
@@ -77,12 +68,24 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
         StepVerifier.create(result)
                 .assertNext(conditions -> {
                     assertThat(conditions).isNotNull();
-                    assertThat(conditions.date()).isEqualTo("2026-07-25 20:48:06");
+                    assertThat(conditions.date()).isEqualTo("2026-10-27 11:06:19"); // UTC+1 in October
                     assertThat(conditions.direction()).isEqualTo("SE");
                     assertThat(conditions.wind()).isEqualTo(10); // 18.5 km/h = 9.99 kts
                     assertThat(conditions.gusts()).isEqualTo(15); // 27.8 km/h = 15.01 kts
                     assertThat(conditions.temp()).isEqualTo(23);
                 })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldConvertObservationTimeToSummerTime() {
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(createPage("m", "10", "12", "180", "20",
+                        "Sat Jul 25 2026 18:48:06 GMT+0000 (Coordinated Universal Time)"))
+                .setResponseCode(200));
+
+        StepVerifier.create(strategy.fetchCurrentConditions(url()))
+                .assertNext(conditions -> assertThat(conditions.date()).isEqualTo("2026-07-25 20:48:06"))
                 .verifyComplete();
     }
 
@@ -93,7 +96,7 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
 
         for (int i = 0; i < degrees.length; i++) {
             mockWebServer.enqueue(new MockResponse()
-                    .setBody(createResponse(degrees[i], 10, 12, 15))
+                    .setBody(createPage("m", "10", "12", String.valueOf(degrees[i]), "15", OBS_TIME))
                     .setResponseCode(200));
 
             String expectedDirection = expected[i];
@@ -106,12 +109,24 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     @Test
     void shouldParseNegativeTemperature() {
         mockWebServer.enqueue(new MockResponse()
-                .setBody(createResponse(180, 10, 12, -5))
+                .setBody(createPage("m", "10", "12", "180", "-5.2", OBS_TIME))
                 .setResponseCode(200));
 
         StepVerifier.create(strategy.fetchCurrentConditions(url()))
                 .assertNext(conditions -> assertThat(conditions.temp()).isEqualTo(-5))
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldRejectNonMetricUnits() {
+        // in imperial units the wind would be in mph, read as km/h it would be 40% too low
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(createPage("e", "10", "12", "180", "50", OBS_TIME))
+                .setResponseCode(200));
+
+        StepVerifier.create(strategy.fetchCurrentConditions(url()))
+                .expectError(RuntimeException.class)
+                .verify();
     }
 
     @Test
@@ -133,9 +148,9 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
-    void shouldHandleEmptyObservations() {
+    void shouldHandlePageWithoutWidgets() {
         mockWebServer.enqueue(new MockResponse()
-                .setBody("{\"observations\":[]}")
+                .setBody("<html><body><div>ISZCZE187</div></body></html>")
                 .setResponseCode(200));
 
         StepVerifier.create(strategy.fetchCurrentConditions(url()))
@@ -144,9 +159,9 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
-    void shouldHandleMissingMetricSection() {
+    void shouldHandleEmptyWindSpeed() {
         mockWebServer.enqueue(new MockResponse()
-                .setBody("{\"observations\":[{\"obsTimeLocal\":\"2026-07-25 20:48:06\",\"winddir\":135}]}")
+                .setBody(createPage("m", "", "12", "180", "20", OBS_TIME))
                 .setResponseCode(200));
 
         StepVerifier.create(strategy.fetchCurrentConditions(url()))
@@ -155,16 +170,11 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
-    void shouldHandleNullWindSpeed() {
-        String body = """
-                {"observations":[{
-                  "obsTimeLocal":"2026-07-25 20:48:06",
-                  "winddir":135,
-                  "metric":{"temp":23,"windSpeed":null,"windGust":4}
-                }]}
-                """;
+    void shouldHandleMissingObservationTime() {
+        String page = createPage("m", "10", "12", "180", "20", OBS_TIME)
+                .replace("data-obs-time-utc=\"" + OBS_TIME + "\"", "");
 
-        mockWebServer.enqueue(new MockResponse().setBody(body).setResponseCode(200));
+        mockWebServer.enqueue(new MockResponse().setBody(page).setResponseCode(200));
 
         StepVerifier.create(strategy.fetchCurrentConditions(url()))
                 .expectError(RuntimeException.class)
@@ -172,15 +182,10 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     @Test
-    void shouldHandleMissingTimestamp() {
-        String body = """
-                {"observations":[{
-                  "winddir":135,
-                  "metric":{"temp":23,"windSpeed":4,"windGust":4}
-                }]}
-                """;
-
-        mockWebServer.enqueue(new MockResponse().setBody(body).setResponseCode(200));
+    void shouldHandleMalformedObservationTime() {
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(createPage("m", "10", "12", "180", "20", "yesterday"))
+                .setResponseCode(200));
 
         StepVerifier.create(strategy.fetchCurrentConditions(url()))
                 .expectError(RuntimeException.class)
@@ -188,35 +193,30 @@ class FetchCurrentConditionsStrategyTurawaWundergroundTest {
     }
 
     private String url() {
-        return mockWebServer.url("/v2/pws/observations/current").toString();
+        return mockWebServer.url("/dashboard/pws/ISZCZE187").toString();
     }
 
-    private String createResponse(int windDir, double windSpeedKmh, double windGustKmh, int tempC) {
+    // trimmed copy of the server-rendered dashboard; the widget attributes are
+    // written without spaces between them, exactly as the page serves them
+    private String createPage(String unit, String windSpeed, String windGust, String windDir, String temp, String obsTime) {
         return """
-                {
-                  "observations": [
-                    {
-                      "stationID": "ISZCZE187",
-                      "obsTimeUtc": "2026-07-25T18:48:06Z",
-                      "obsTimeLocal": "2026-07-25 20:48:06",
-                      "neighborhood": "Szczedrzyk",
-                      "country": "PL",
-                      "lon": 18.149062,
-                      "lat": 50.706118,
-                      "winddir": %d,
-                      "humidity": 42,
-                      "qcStatus": 1,
-                      "metric": {
-                        "temp": %d,
-                        "windSpeed": %s,
-                        "windGust": %s,
-                        "pressure": 1011.85,
-                        "precipRate": 0.00,
-                        "elev": 52
-                      }
-                    }
-                  ]
-                }
-                """.formatted(windDir, tempC, windSpeedKmh, windGustKmh);
+                <html><body>
+                <pws-status-view data-time-string="11:06 AM CET" data-pws-id="ISZCZE187" \
+                data-iana-time-zone="Europe/Warsaw" data-status="connected" data-obs-time-utc="%5$s">
+                  <div class="text" id="pws-status-text">connected</div>
+                </pws-status-view>
+                <temp-widget-view data-pws-id="ISZCZE187"data-status="connected"data-unit="%1$s"data-temp="%4$s"\
+                data-feels-like="%4$s"data-main-value="%4$s"aria-valuenow="%4$s"data-secondary-value="%4$s" class="widget-view">
+                  <div class="main-value value-unit degrees" id="temp-widget-main-display">%4$s</div>
+                </temp-widget-view>
+                <wind-widget-view data-pws-id="ISZCZE187"data-status="connected"data-unit="%1$s"data-wind-speed="%2$s"\
+                data-wind-gust="%3$s"data-wind-dir="%6$s"data-description="moderate"data-main-value="%2$s"\
+                aria-valuenow="%2$s"data-secondary-value="%3$s" class="widget-view">
+                </wind-widget-view>
+                <rain-widget-view data-pws-id="ISZCZE187"data-status="connected"data-unit="%1$s"data-precip-rate="0"\
+                data-precip-total="0"data-main-value="0"aria-valuenow="0"data-secondary-value="0" class="widget-view">
+                </rain-widget-view>
+                </body></html>
+                """.formatted(unit, windSpeed, windGust, temp, obsTime, windDir);
     }
 }

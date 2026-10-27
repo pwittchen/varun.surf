@@ -114,7 +114,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - PodersdorfScpodo (Austria - Podersdorf, scpodo.at fallback)
      - Puck (Poland)
      - Turawa (Poland)
-     - TurawaWunderground (Poland - Turawa South, Weather Underground PWS)
+     - TurawaWunderground (Poland - Turawa South, Weather Underground PWS dashboard page)
      - MB (Poland - Mrzeżyno)
      - TarifaArteVida (Spain - Tarifa)
      - Mietkow (Poland)
@@ -354,7 +354,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 - **Weather stations** (14 integrations):
   - wiatrkadyny.pl (Poland - Kadyny, Puck, Mrzeżyno, etc.)
   - kiteriders.at and scpodo.at (Austria - Podersdorf)
-  - Turawa station and Weather Underground PWS (Poland - Turawa)
+  - Turawa station and Weather Underground PWS dashboard (Poland - Turawa)
   - Mietków station (Poland)
   - Svencele station (Lithuania)
   - Tarifa Arte Vida (Spain)
@@ -382,9 +382,6 @@ app:
   session:
     max-age-seconds: 86400      # SESSION cookie max age (24 hours)
     secret: ${APP_SESSION_SECRET:}        # signs the SESSION cookie; random if unset
-  wunderground:
-    api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
-                                          # no default - the station is skipped without it
   proxy:                                  # Oxylabs residential proxy, off by default
     oxylabs:
       host: pr.oxylabs.io

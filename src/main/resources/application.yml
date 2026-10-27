@@ -62,10 +62,6 @@ app:
     # which works but invalidates every cookie on restart and is not shared between
     # the blue and green containers, so set it in production.
     secret: "\${APP_SESSION_SECRET:}"
-  wunderground:
-    # No default on purpose: this repository is public, and a key committed here is
-    # a published key. Without it the Turawa South station is simply skipped.
-    api-key: "\${WUNDERGROUND_API_KEY:}"
   proxy:
     # Oxylabs residential proxy for outgoing requests, off for every target by default.
     # Each target has its own switch because the proxy is paid per gigabyte: Windguru

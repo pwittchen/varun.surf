@@ -150,7 +150,7 @@ button - see On-Demand Generation below.
   - `FetchCurrentConditionsStrategyPodersdorfScpodo` (Austria - Podersdorf, scpodo.at)
   - `FetchCurrentConditionsStrategyPuck` (Poland)
   - `FetchCurrentConditionsStrategyTurawa` (Poland)
-  - `FetchCurrentConditionsStrategyTurawaWunderground` (Poland - Turawa South, Weather Underground PWS)
+  - `FetchCurrentConditionsStrategyTurawaWunderground` (Poland - Turawa South, Weather Underground PWS dashboard page)
   - `FetchCurrentConditionsStrategyMB` (Poland - Mrzeżyno)
   - `FetchCurrentConditionsStrategyTarifaArteVida` (Spain - Tarifa)
   - `FetchCurrentConditionsStrategyMietkow` (Poland)
@@ -480,7 +480,7 @@ public record SpotInfo(
 - **Weather stations** (14 integrations):
   - wiatrkadyny.pl (Poland - Kadyny, Puck, Mrzeżyno, etc.)
   - kiteriders.at and scpodo.at (Austria - Podersdorf, Neusiedler See)
-  - Turawa station and Weather Underground PWS (Poland - Turawa)
+  - Turawa station and Weather Underground PWS dashboard (Poland - Turawa)
   - Mietków station (Poland)
   - Svencele station (Lithuania)
   - Tarifa Arte Vida (Spain)
@@ -513,9 +513,6 @@ app:
   session:
     max-age-seconds: 86400           # SESSION cookie max age (24 hours)
     secret: ${APP_SESSION_SECRET:}   # signs the SESSION cookie; random if unset
-  wunderground:
-    api-key: ${WUNDERGROUND_API_KEY:}     # Weather Underground PWS (Turawa South);
-                                          # no default - the station is skipped without it
   proxy:                                  # Oxylabs residential proxy, off by default
     oxylabs:
       host: pr.oxylabs.io
@@ -561,8 +558,6 @@ management:
 ### Environment Variables
 - `OPENAI_API_KEY`: Required when AI analysis feature is enabled
 - `ANALYTICS_PASSWORD`: Optional password for the logs endpoint
-- `WUNDERGROUND_API_KEY`: Optional key for the Weather Underground PWS station (Turawa South).
-  Without it the station is skipped. No default is committed: this repository is public
 - `APP_SESSION_SECRET`: Optional secret signing the SESSION cookie. Without it a random one
   is generated at startup, so cookies stop working after a restart and are not shared
   between the blue and green containers
