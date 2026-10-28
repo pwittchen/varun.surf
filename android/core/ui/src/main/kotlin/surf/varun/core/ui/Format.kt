@@ -50,10 +50,15 @@ object Format {
 
     fun locale(context: Context): Locale = context.resources.configuration.locales[0] ?: Locale.getDefault()
 
-    fun dayLabel(context: Context, label: DayLabel?, fallback: String): String = when (label) {
+    /**
+     * "Today", "Tomorrow", then weekdays. The server sends "Day 3" onwards; with the
+     * spot's [today] known those become the weekday they fall on.
+     */
+    fun dayLabel(context: Context, label: DayLabel?, fallback: String, today: LocalDate? = null): String = when (label) {
         DayLabel.Today -> context.getString(R.string.day_today)
         DayLabel.Tomorrow -> context.getString(R.string.day_tomorrow)
-        is DayLabel.Offset -> context.getString(R.string.day_n, label.days + 1)
+        is DayLabel.Offset -> today?.let { weekday(context, it.plusDays(label.days.toLong()).dayOfWeek) }
+            ?: context.getString(R.string.day_n, label.days + 1)
         is DayLabel.Weekday -> weekday(context, label.dayOfWeek)
         is DayLabel.Other -> label.text
         null -> fallback

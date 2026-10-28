@@ -141,7 +141,7 @@ fun SpotPanel(
         val days = spot.daily.filter { it.day != DayLabel.Today }.take(3)
         if (days.isNotEmpty()) {
             Spacer(Modifier.height(12.dp))
-            ForecastStrip(days)
+            ForecastStrip(days, Conditions.now(spot, now).toLocalDate())
         }
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

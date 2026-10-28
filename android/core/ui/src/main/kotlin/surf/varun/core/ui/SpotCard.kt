@@ -49,6 +49,7 @@ import surf.varun.core.model.CardDensity
 import surf.varun.core.model.DayLabel
 import surf.varun.core.model.ForecastEntry
 import surf.varun.core.model.Spot
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 /**
@@ -65,6 +66,8 @@ data class SpotCardModel(
     val distanceKm: Double?,
     /** The next days of the daily forecast, "Today" excluded (the readout covers it). */
     val days: List<ForecastEntry>,
+    /** The spot's own today, which names the days after tomorrow by their weekday. */
+    val today: LocalDate,
 ) {
     companion object {
         fun of(spot: Spot, favourite: Boolean, now: ZonedDateTime, distanceKm: Double? = null): SpotCardModel {
@@ -78,6 +81,7 @@ data class SpotCardModel(
                 favourite = favourite,
                 distanceKm = distanceKm,
                 days = spot.daily.filter { it.day != DayLabel.Today }.take(3),
+                today = Conditions.now(spot, now).toLocalDate(),
             )
         }
     }
@@ -210,14 +214,17 @@ fun SpotCard(
             }
         }
         if (model.days.isNotEmpty() && density == CardDensity.COMFORTABLE) {
-            ForecastStrip(model.days, Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp))
+            ForecastStrip(model.days, model.today, Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp))
         }
     }
 }
 
-/** Next days at a glance: label, wind (coloured by class) and direction (spec 5.2). */
+/**
+ * Next days at a glance: label, wind (coloured by class) and direction (spec 5.2).
+ * With the spot's [today] the days after tomorrow are named by their weekday.
+ */
 @Composable
-fun ForecastStrip(days: List<ForecastEntry>, modifier: Modifier = Modifier) {
+fun ForecastStrip(days: List<ForecastEntry>, today: LocalDate?, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         days.forEach { day ->
@@ -232,7 +239,7 @@ fun ForecastStrip(days: List<ForecastEntry>, modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        Format.dayLabel(context, day.day, day.rawDate),
+                        Format.dayLabel(context, day.day, day.rawDate, today),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
