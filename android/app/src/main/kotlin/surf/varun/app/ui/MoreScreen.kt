@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.NotificationsActive
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,10 +26,9 @@ import surf.varun.core.navigation.AboutRoute
 import surf.varun.core.navigation.AlertsRoute
 import surf.varun.core.navigation.CalculatorRoute
 import surf.varun.core.navigation.LocalNavigator
-import surf.varun.core.navigation.SearchRoute
 import surf.varun.core.navigation.SettingsRoute
 
-/** The More tab: tools and app pages (spec 5.1). */
+/** The More tab: tools and app pages (spec 5.1). Search is not here: the Spots and Favourites tabs and the map each have it. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreScreen() {
@@ -39,7 +37,6 @@ fun MoreScreen() {
         LazyColumn(Modifier.fillMaxSize().padding(padding)) {
             item { MoreItem(Icons.Rounded.Calculate, R.string.more_calculator, R.string.more_calculator_summary) { navigator.navigate(CalculatorRoute()) } }
             item { MoreItem(Icons.Rounded.NotificationsActive, R.string.more_alerts, R.string.more_alerts_summary) { navigator.navigate(AlertsRoute) } }
-            item { MoreItem(Icons.Rounded.Search, R.string.more_search, R.string.more_search_summary) { navigator.navigate(SearchRoute) } }
             item { MoreItem(Icons.Rounded.Settings, R.string.more_settings, R.string.more_settings_summary) { navigator.navigate(SettingsRoute) } }
             item { MoreItem(Icons.Rounded.Info, R.string.more_about, R.string.more_about_summary) { navigator.navigate(AboutRoute) } }
         }

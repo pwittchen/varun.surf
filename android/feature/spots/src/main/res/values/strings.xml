@@ -5,6 +5,7 @@
     <string name="search_hint">Search spots…</string>
 
     <string name="country_all">All countries</string>
+    <string name="country_all_short">All</string>
     <string name="country_sheet_title">Country</string>
     <string name="country_search_hint">Find a country</string>
     <plurals name="spots_count">

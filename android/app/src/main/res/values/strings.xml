@@ -12,8 +12,6 @@
     <string name="more_calculator_summary">Kite and board size for the wind and your weight</string>
     <string name="more_alerts">Wind alerts</string>
     <string name="more_alerts_summary">Get notified when your spots fire</string>
-    <string name="more_search">Search spots</string>
-    <string name="more_search_summary">Find a spot by name or country</string>
     <string name="more_settings">Settings</string>
     <string name="more_settings_summary">Theme, language, units, map</string>
     <string name="more_about">About</string>

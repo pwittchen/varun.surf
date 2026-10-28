@@ -276,7 +276,8 @@ private fun FilterChips(
             onClick = onCountry,
             label = {
                 Text(
-                    if (country == null) stringResource(R.string.country_all)
+                    // "All", not "All countries": the globe beside it already says what the chip filters
+                    if (country == null) stringResource(R.string.country_all_short)
                     else "${Countries.of(country).flag} ${countryName(country)}".trim(),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
