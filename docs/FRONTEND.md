@@ -696,7 +696,7 @@ identity, so mixing the two would silently lose every lookup.
 | `tvTheme` | string | Theme for the TV view (kept separate from `theme`) |
 | `tvLanguage` | string | Language for the TV view (kept separate from `language`) |
 | `calculatorInputs` | JSON object | Remembered kite/board calculator inputs |
-| `firingSort` | string | `'true'` or `'false'` (sort by strongest wind) |
+| `firingSort` | string | `'true'` or `'false'` (sort by strongest wind, folding back past 35 kts so a storm ranks below kiteable wind) |
 | `liveStationsOnly` | string | `'true'` or `'false'` (show only spots with live stations) |
 | `windOverlayMode` | string | Wind overlay on the map: `'off'` or `'field'` (default) |
 | `mapSpotsVisible` | string | `'true'` (default) or `'false'` (map spot markers and clusters) |

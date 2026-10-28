@@ -32,6 +32,15 @@ class SpotListingTest {
     }
 
     @Test
+    fun aStormRanksBelowAKiteableSpot() {
+        // 40 kts on average folds back to 30, below a spot blowing a rideable 33
+        val storm = Spot(10, "Storm", "Norway", live = live(39))
+        val firing = Spot(11, "Firing", "Norway", live = live(32))
+        val order = SpotListing.apply(listOf(storm, firing), SpotFilters(), SpotSort.FIRING, emptySet(), null, now).map { it.spot.wgId }
+        assertThat(order).containsExactly(11, 10).inOrder()
+    }
+
+    @Test
     fun filtersCombine() {
         val live = SpotListing.apply(spots, SpotFilters(liveOnly = true), SpotSort.FIRING, emptySet(), null, now)
         assertThat(live.map { it.spot.wgId }).containsExactly(1)

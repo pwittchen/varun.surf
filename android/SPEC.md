@@ -269,7 +269,9 @@ distinguishable without colour (weight / icon / label) for accessibility.
 
 Average of live `wind` and `gusts`; spots without live data fall back to the forecast
 entry closest to now (hourly if present, else today's daily entry); spots with neither
-sort last. Same as `firingScore()` in `src/frontend/js/page/index.js`.
+sort last. Past 35 kts (`FIRING_MAX_KNOTS`) the score folds back down - 40 kts ranks
+like 30 - so a storm doesn't top the list as the best place to ride. Same as
+`firingScore()` in `src/frontend/js/page/index.js`.
 
 ### 4.3 Stale live conditions
 

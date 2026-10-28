@@ -48,6 +48,14 @@ class ConditionsTest {
     }
 
     @Test
+    fun aStormFoldsBackDownTheFiringSort() {
+        val storm = Spot(5, "D", "Poland", live = live.copy(wind = 37, gusts = 43))
+        assertThat(Conditions.firingScore(storm, now)).isEqualTo(30.0)
+        val edge = Spot(6, "E", "Poland", live = live.copy(wind = 33, gusts = 37))
+        assertThat(Conditions.firingScore(edge, now)).isEqualTo(35.0)
+    }
+
+    @Test
     fun spotsWithoutDataSinkInTheFiringSort() {
         val empty = Spot(3, "C", "Poland")
         assertThat(Conditions.current(empty, now)).isNull()

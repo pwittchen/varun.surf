@@ -1686,14 +1686,21 @@ function sortSpots(spots, sortColumn, sortDirection) {
     return sorted;
 }
 
+// Average wind past which a spot is blowing too hard to be "firing"
+// (Conditions.FIRING_MAX_KNOTS in the Android app)
+const FIRING_MAX_KNOTS = 35;
+
 // "Firing now" score: average of current/live wind and gusts. Spots without usable
-// conditions sink to the bottom. Used for the default main-page ordering.
+// conditions sink to the bottom. Past FIRING_MAX_KNOTS the score folds back down -
+// 40 kts ranks like 30 - so a storm doesn't top the list as the best place to ride.
+// Used for the default main-page ordering.
 function firingScore(spot) {
     const conditions = getSpotConditions(spot);
     if (!conditions || !Number.isFinite(conditions.wind) || !Number.isFinite(conditions.gusts)) {
         return -Infinity;
     }
-    return (conditions.wind + conditions.gusts) / 2;
+    const average = (conditions.wind + conditions.gusts) / 2;
+    return average > FIRING_MAX_KNOTS ? 2 * FIRING_MAX_KNOTS - average : average;
 }
 
 function sortByFiringNow(spots) {

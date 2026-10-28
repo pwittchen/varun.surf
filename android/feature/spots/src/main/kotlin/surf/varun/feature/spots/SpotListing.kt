@@ -1,5 +1,6 @@
 package surf.varun.feature.spots
 
+import surf.varun.core.domain.Conditions
 import surf.varun.core.domain.Countries
 import surf.varun.core.domain.Geo
 import surf.varun.core.model.Coordinates
@@ -45,7 +46,7 @@ object SpotListing {
             .map { spot -> SpotCardModel.of(spot, spot.wgId in favourites, now, distanceKm(spot, location)) }
             .toList()
         return when (sort) {
-            SpotSort.FIRING -> models.sortedByDescending { it.reading?.average ?: Double.NEGATIVE_INFINITY }
+            SpotSort.FIRING -> models.sortedByDescending { Conditions.firingScore(it.reading) }
             SpotSort.NAME -> models.sortedBy { it.spot.name.lowercase() }
             SpotSort.WINDIEST_TODAY -> models.sortedByDescending { todayAverage(it.spot) ?: Double.NEGATIVE_INFINITY }
             SpotSort.DISTANCE -> models.sortedBy { it.distanceKm ?: Double.MAX_VALUE }

@@ -72,9 +72,21 @@ object Conditions {
         return best
     }
 
-    /** The web's "firing now" sort key: average of wind and gusts, -∞ without data so it sinks. */
-    fun firingScore(spot: Spot, at: ZonedDateTime): Double =
-        current(spot, at)?.average ?: Double.NEGATIVE_INFINITY
+    /** Average wind past which a spot is blowing too hard to be "firing" (`FIRING_MAX_KNOTS` on the web). */
+    const val FIRING_MAX_KNOTS = 35.0
+
+    /**
+     * The web's "firing now" sort key: average of wind and gusts, -∞ without data so it
+     * sinks. Past [FIRING_MAX_KNOTS] it folds back down - 40 kts ranks like 30 - so a
+     * storm doesn't top the list as the best place to ride.
+     */
+    fun firingScore(spot: Spot, at: ZonedDateTime): Double = firingScore(current(spot, at))
+
+    /** [firingScore] of a reading already taken, as the spots list holds one per card. */
+    fun firingScore(reading: WindReading?): Double {
+        val average = reading?.average ?: return Double.NEGATIVE_INFINITY
+        return if (average > FIRING_MAX_KNOTS) 2 * FIRING_MAX_KNOTS - average else average
+    }
 
     fun isStale(live: LiveConditions, spotZone: ZoneId, at: ZonedDateTime): Boolean {
         val observed = live.observedAt ?: return true
