@@ -20,13 +20,9 @@ public class AggregatorServiceMetrics {
     private final Counter aiAnalysisCounter;
     private final Counter aiAnalysisSuccessCounter;
     private final Counter aiAnalysisFailureCounter;
-    private final Counter icmAnalysisCounter;
-    private final Counter icmAnalysisSuccessCounter;
-    private final Counter icmAnalysisFailureCounter;
     private final Timer forecastFetchTimer;
     private final Timer conditionsFetchTimer;
     private final Timer aiAnalysisTimer;
-    private final Timer icmAnalysisTimer;
     private final AtomicInteger spotsCount;
     private final AtomicInteger countriesCount;
     private final AtomicInteger liveStationsCount;
@@ -45,13 +41,9 @@ public class AggregatorServiceMetrics {
             Counter aiAnalysisCounter,
             Counter aiAnalysisSuccessCounter,
             Counter aiAnalysisFailureCounter,
-            Counter icmAnalysisCounter,
-            Counter icmAnalysisSuccessCounter,
-            Counter icmAnalysisFailureCounter,
             Timer forecastFetchTimer,
             Timer conditionsFetchTimer,
             Timer aiAnalysisTimer,
-            Timer icmAnalysisTimer,
             AtomicInteger spotsCount,
             AtomicInteger countriesCount,
             AtomicInteger liveStationsCount,
@@ -68,13 +60,9 @@ public class AggregatorServiceMetrics {
         this.aiAnalysisCounter = aiAnalysisCounter;
         this.aiAnalysisSuccessCounter = aiAnalysisSuccessCounter;
         this.aiAnalysisFailureCounter = aiAnalysisFailureCounter;
-        this.icmAnalysisCounter = icmAnalysisCounter;
-        this.icmAnalysisSuccessCounter = icmAnalysisSuccessCounter;
-        this.icmAnalysisFailureCounter = icmAnalysisFailureCounter;
         this.forecastFetchTimer = forecastFetchTimer;
         this.conditionsFetchTimer = conditionsFetchTimer;
         this.aiAnalysisTimer = aiAnalysisTimer;
-        this.icmAnalysisTimer = icmAnalysisTimer;
         this.spotsCount = spotsCount;
         this.countriesCount = countriesCount;
         this.liveStationsCount = liveStationsCount;
@@ -120,18 +108,6 @@ public class AggregatorServiceMetrics {
         aiAnalysisFailureCounter.increment();
     }
 
-    public void incrementIcmAnalysisCounter() {
-        icmAnalysisCounter.increment();
-    }
-
-    public void incrementIcmAnalysisSuccessCounter() {
-        icmAnalysisSuccessCounter.increment();
-    }
-
-    public void incrementIcmAnalysisFailureCounter() {
-        icmAnalysisFailureCounter.increment();
-    }
-
     public void recordForecastFetchDuration(long startTimeNanos) {
         forecastFetchTimer.record(Duration.ofNanos(System.nanoTime() - startTimeNanos));
     }
@@ -147,10 +123,6 @@ public class AggregatorServiceMetrics {
      */
     public void recordAiAnalysisDuration(long durationMs) {
         aiAnalysisTimer.record(Duration.ofMillis(durationMs));
-    }
-
-    public void recordIcmAnalysisDuration(long durationMs) {
-        icmAnalysisTimer.record(Duration.ofMillis(durationMs));
     }
 
     public void updateLastForecastFetchTimestamp() {

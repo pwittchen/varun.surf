@@ -46,7 +46,6 @@ import org.springframework.util.DigestUtils;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.util.function.Tuple2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1229,22 +1228,8 @@ public class AggregatorService {
         return Mono
                 .fromCallable(() -> updateIcmForecast(wgId, fetchIcmForecast(wgId, spot)))
                 .subscribeOn(Schedulers.boundedElastic())
-                .doOnSubscribe(_ -> metricsService.incrementIcmAnalysisCounter())
-                .doOnNext(updated -> {
-                    if (updated) {
-                        metricsService.incrementIcmAnalysisSuccessCounter();
-                    } else {
-                        metricsService.incrementIcmAnalysisFailureCounter();
-                    }
-                })
-                .doOnError(error -> {
-                    log.warn("Failed to fetch ICM forecast for spot {}", wgId, error);
-                    metricsService.incrementIcmAnalysisFailureCounter();
-                })
-                .onErrorReturn(false)
-                .elapsed()
-                .doOnNext(timed -> metricsService.recordIcmAnalysisDuration(timed.getT1()))
-                .map(Tuple2::getT2);
+                .doOnError(error -> log.warn("Failed to fetch ICM forecast for spot {}", wgId, error))
+                .onErrorReturn(false);
     }
 
     private boolean hasIcmForecast(int wgId) {

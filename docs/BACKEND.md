@@ -919,11 +919,9 @@ Counters (cumulative):
   - varun.fetch.forecasts.total/success/failure  # Forecast fetch counts
   - varun.fetch.conditions.total/success/failure # Conditions fetch counts
   - varun.ondemand.ai.total/success/failure      # AI analysis generations (one per call)
-  - varun.ondemand.icm.total/success/failure     # ICM fetches asked for by name (free)
   - varun.api.spots.requests       # GET /api/v1/spots requests
   - varun.api.spot.requests        # GET /api/v1/spots/{id} requests
   - varun.api.analysis.requests    # POST /api/v1/spots/{id}/analysis requests
-  - varun.api.icm.requests         # POST /api/v1/spots/{id}/icm requests
 
   The ondemand.* counters count generations and the api.*.requests ones count
   button presses, so the gap between them is what the 24h cache saved.
@@ -932,7 +930,6 @@ Timers (duration tracking):
   - varun.fetch.forecasts.duration   # Time to fetch all forecasts
   - varun.fetch.conditions.duration  # Time to fetch all conditions
   - varun.ondemand.ai.duration       # Time to write one AI analysis
-  - varun.ondemand.icm.duration      # Time to fetch one ICM forecast by name
 
 HTTP Client Metrics:
   - varun.http.client.active_requests      # In-flight requests

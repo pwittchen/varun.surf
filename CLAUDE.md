@@ -760,9 +760,7 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       (total/success/failure plus a duration timer) counts generations, so its
       total is the LLM call count the bill is made of, while
       `varun.api.analysis.requests` counts the button presses - the gap between the
-      two is what the 24h cache saved. `varun.ondemand.icm.*` and
-      `varun.api.icm.requests` count the free ICM fetches asked for by name through
-      `POST /api/v1/spots/{id}/icm`
+      two is what the 24h cache saved
 
 14. **Logs System**:
     - In-memory log buffer via `LogsService` (last 1000 entries)

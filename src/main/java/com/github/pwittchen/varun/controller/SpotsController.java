@@ -148,8 +148,6 @@ public class SpotsController {
      */
     @PostMapping("spots/{id}/icm")
     public Mono<ResponseEntity<Spot>> generateIcmForecast(@PathVariable int id) {
-        metrics.incrementIcmAnalysisRequestCounter();
-
         if (aggregatorService.getSpotById(id).isEmpty()) {
             return Mono.just(ResponseEntity.notFound().build());
         }

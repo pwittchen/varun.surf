@@ -252,10 +252,9 @@ function updateFetchingMetrics(counters, timers) {
 
 }
 
-// On-demand generation: an AI analysis, paid for per call, and an ICM forecast
-// fetched by name (free; opening a spot fetches it anyway). The request rows carry
+// On-demand generation: an AI analysis, paid for per call. The request row carries
 // the button presses including the ones the cache answered, so the gap between
-// them and the totals is the saving.
+// it and the total is the saving.
 function updateOnDemandMetrics(counters, timers) {
     document.getElementById('ai-analysis-total').textContent = formatNumber(counters.aiAnalysisTotal);
     document.getElementById('ai-analysis-success').textContent = formatNumber(counters.aiAnalysisSuccess);
@@ -264,14 +263,6 @@ function updateOnDemandMetrics(counters, timers) {
         formatAverage(timers.aiAnalysisDuration?.meanMs);
     document.getElementById('ai-analysis-requests').textContent =
         formatRequests(counters.apiAiAnalysisRequests);
-
-    document.getElementById('icm-analysis-total').textContent = formatNumber(counters.icmAnalysisTotal);
-    document.getElementById('icm-analysis-success').textContent = formatNumber(counters.icmAnalysisSuccess);
-    document.getElementById('icm-analysis-failure').textContent = formatFailures(counters.icmAnalysisFailure);
-    document.getElementById('icm-analysis-duration').textContent =
-        formatAverage(timers.icmAnalysisDuration?.meanMs);
-    document.getElementById('icm-analysis-requests').textContent =
-        formatRequests(counters.apiIcmAnalysisRequests);
 }
 
 function formatRequests(requests) {

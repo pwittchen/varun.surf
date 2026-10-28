@@ -12,7 +12,6 @@ public class SpotsControllerMetrics {
     private final Counter apiWindRequestCounter;
     private final Counter apiForecastRequestCounter;
     private final Counter apiAiAnalysisRequestCounter;
-    private final Counter apiIcmAnalysisRequestCounter;
 
     public SpotsControllerMetrics(MeterRegistry registry) {
         this.apiSpotsRequestCounter = Counter
@@ -38,10 +37,6 @@ public class SpotsControllerMetrics {
                 .builder("varun.api.analysis.requests")
                 .description("Number of requests to /api/v1/spots/{id}/analysis endpoint")
                 .register(registry);
-        this.apiIcmAnalysisRequestCounter = Counter
-                .builder("varun.api.icm.requests")
-                .description("Number of requests to /api/v1/spots/{id}/icm endpoint")
-                .register(registry);
     }
 
     public void incrementSpotsRequestCounter() {
@@ -62,9 +57,5 @@ public class SpotsControllerMetrics {
 
     public void incrementAiAnalysisRequestCounter() {
         apiAiAnalysisRequestCounter.increment();
-    }
-
-    public void incrementIcmAnalysisRequestCounter() {
-        apiIcmAnalysisRequestCounter.increment();
     }
 }

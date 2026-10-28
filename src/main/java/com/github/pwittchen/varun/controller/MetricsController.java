@@ -109,15 +109,11 @@ public class MetricsController {
         counters.put("aiAnalysisTotal", getCounterValue("varun.ondemand.ai.total"));
         counters.put("aiAnalysisSuccess", getCounterValue("varun.ondemand.ai.success"));
         counters.put("aiAnalysisFailure", getCounterValue("varun.ondemand.ai.failure"));
-        counters.put("icmAnalysisTotal", getCounterValue("varun.ondemand.icm.total"));
-        counters.put("icmAnalysisSuccess", getCounterValue("varun.ondemand.icm.success"));
-        counters.put("icmAnalysisFailure", getCounterValue("varun.ondemand.icm.failure"));
 
         // API request counters
         counters.put("apiSpotsRequests", getCounterValue("varun.api.spots.requests"));
         counters.put("apiSpotRequests", getCounterValue("varun.api.spot.requests"));
         counters.put("apiAiAnalysisRequests", getCounterValue("varun.api.analysis.requests"));
-        counters.put("apiIcmAnalysisRequests", getCounterValue("varun.api.icm.requests"));
 
         return counters;
     }
@@ -128,7 +124,6 @@ public class MetricsController {
         timers.put("forecastsDuration", getTimerStats("varun.fetch.forecasts.duration"));
         timers.put("conditionsDuration", getTimerStats("varun.fetch.conditions.duration"));
         timers.put("aiAnalysisDuration", getTimerStats("varun.ondemand.ai.duration"));
-        timers.put("icmAnalysisDuration", getTimerStats("varun.ondemand.icm.duration"));
 
         return timers;
     }

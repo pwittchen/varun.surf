@@ -5532,6 +5532,10 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
     gap: 20px;
 }
 
+.metrics-grid.metrics-grid-1 {
+    grid-template-columns: 1fr;
+}
+
 .metrics-grid-2 {
     grid-template-columns: repeat(2, 1fr);
 }
