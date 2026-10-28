@@ -319,17 +319,19 @@ private fun SpotTopBar(state: SpotUiState, scrollBehavior: TopAppBarScrollBehavi
         val barActions: @Composable RowScope.() -> Unit = {
             if (spot != null) {
                 FavouriteButton(state.favourite, actions.toggleFavourite)
-                IconButton(onClick = { navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) }) {
-                    Icon(Icons.Rounded.Kitesurfing, contentDescription = stringResource(R.string.kite_size_description))
+                // An alert is what a spot page most often leads to: in the bar, not behind the menu.
+                // The kite size has its own row in the forecast table, so the calculator steps back
+                IconButton(onClick = { navigator.navigate(AlertEditorRoute(wgId = spot.wgId)) }) {
+                    Icon(Icons.Rounded.NotificationAdd, contentDescription = stringResource(CoreUiR.string.create_alert))
                 }
                 IconButton(onClick = { menuOpen = true }) {
                     Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_actions))
                 }
                 DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(CoreUiR.string.create_alert)) },
-                        leadingIcon = { Icon(Icons.Rounded.NotificationAdd, null) },
-                        onClick = { menuOpen = false; navigator.navigate(AlertEditorRoute(wgId = spot.wgId)) },
+                        text = { Text(stringResource(R.string.kite_size_description)) },
+                        leadingIcon = { Icon(Icons.Rounded.Kitesurfing, null) },
+                        onClick = { menuOpen = false; navigator.navigate(CalculatorRoute(windKnots = actions.calculatorWind())) },
                     )
                     DropdownMenuItem(
                         text = { Text(stringResource(CoreUiR.string.navigate)) },

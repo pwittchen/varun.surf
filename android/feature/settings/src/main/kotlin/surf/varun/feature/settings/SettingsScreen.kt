@@ -139,6 +139,16 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                 }
             }
             item {
+                SwitchSetting(R.string.fade_off_direction, R.string.fade_off_direction_summary, s.fadeOffDirection) { on ->
+                    viewModel.update { it.copy(fadeOffDirection = on) }
+                }
+            }
+            item {
+                SwitchSetting(R.string.show_kite_size, R.string.show_kite_size_summary, s.showKiteSize) { on ->
+                    viewModel.update { it.copy(showKiteSize = on) }
+                }
+            }
+            item {
                 ChoiceSetting(R.string.timeline_reach, TimelineReach.entries, s.timelineReach, { it.label() }) { r ->
                     viewModel.update { it.copy(timelineReach = r) }
                 }

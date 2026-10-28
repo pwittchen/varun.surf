@@ -15,6 +15,9 @@
     <string name="wind">Wind</string>
     <string name="gusts">Gusts</string>
     <string name="direction">Direction</string>
+    <string name="kite_row">Kite m²</string>
+    <string name="off_direction">outside the spot\'s best wind directions</string>
+    <string name="off_direction_note">Faded hours blow from outside this spot\'s best directions:</string>
     <string name="temperature">Temp</string>
     <string name="rain">Rain</string>
     <string name="clouds">Clouds</string>

@@ -37,6 +37,10 @@
     <string name="section_forecast">Forecast &amp; map</string>
     <string name="remember_model">Remember forecast model</string>
     <string name="remember_model_summary">Open every spot with the model you picked last</string>
+    <string name="fade_off_direction">Fade off-direction hours</string>
+    <string name="fade_off_direction_summary">Fade the forecast hours when the wind blows from outside the spot\'s best directions</string>
+    <string name="show_kite_size">Suggested kite size</string>
+    <string name="show_kite_size_summary">A row in the forecast table with the kite size for each hour\'s gusts, from your weight in the calculator</string>
     <string name="timeline_reach">Map timeline</string>
     <string name="timeline_five_days">5 days</string>
     <string name="timeline_full">Whole forecast run</string>

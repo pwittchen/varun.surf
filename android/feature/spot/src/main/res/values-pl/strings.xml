@@ -15,6 +15,9 @@
     <string name="wind">Wiatr</string>
     <string name="gusts">Szkwały</string>
     <string name="direction">Kierunek</string>
+    <string name="kite_row">Latawiec m²</string>
+    <string name="off_direction">spoza najlepszych kierunków wiatru dla spotu</string>
+    <string name="off_direction_note">Wyblakłe godziny to wiatr spoza najlepszych kierunków dla tego spotu:</string>
     <string name="temperature">Temp</string>
     <string name="rain">Deszcz</string>
     <string name="clouds">Chmury</string>

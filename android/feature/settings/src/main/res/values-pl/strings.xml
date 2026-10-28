@@ -37,6 +37,10 @@
     <string name="section_forecast">Prognoza i mapa</string>
     <string name="remember_model">Zapamiętaj model prognozy</string>
     <string name="remember_model_summary">Otwieraj każdy spot z ostatnio wybranym modelem</string>
+    <string name="fade_off_direction">Wygaszaj godziny ze złym kierunkiem</string>
+    <string name="fade_off_direction_summary">Wygaszaj w prognozie godziny, gdy wiatr wieje spoza najlepszych kierunków dla spotu</string>
+    <string name="show_kite_size">Sugerowany rozmiar latawca</string>
+    <string name="show_kite_size_summary">Wiersz w tabeli prognozy z rozmiarem latawca dobranym do porywów w każdej godzinie, na podstawie wagi z kalkulatora</string>
     <string name="timeline_reach">Oś czasu mapy</string>
     <string name="timeline_five_days">5 dni</string>
     <string name="timeline_full">Cały przebieg prognozy</string>

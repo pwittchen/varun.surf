@@ -32,8 +32,11 @@ import surf.varun.core.data.repository.SpotsRepository
 import surf.varun.core.data.util.ConnectivityMonitor
 import surf.varun.core.data.util.DataError
 import surf.varun.core.data.util.SyncStatus
+import surf.varun.core.domain.BestWind
 import surf.varun.core.domain.Conditions
 import surf.varun.core.domain.ForecastDays
+import surf.varun.core.model.CalculatorInputs
+import surf.varun.core.model.Direction
 import surf.varun.core.model.ForecastModelOption
 import surf.varun.core.model.Spot
 import surf.varun.core.model.UserSettings
@@ -65,6 +68,13 @@ data class SpotUiState(
     val removedEverywhere: Boolean = false,
     /** The server is still discovering the spot's forecast models: the model list is not final yet. */
     val modelsLoading: Boolean = true,
+    /**
+     * Directions the spot works in, from its "best wind". Empty when unknown or when fading is
+     * switched off in the settings: every direction fits, so nothing fades.
+     */
+    val bestWind: Set<Direction> = emptySet(),
+    /** The calculator's remembered weight and skill, which size the kite for each forecast hour. */
+    val calculator: CalculatorInputs = CalculatorInputs(),
 ) {
     val notFound: Boolean get() = sync.lastError is DataError.NotFound
     val loading: Boolean get() = spot == null && !notFound && sync.lastError == null
@@ -119,7 +129,8 @@ class SpotViewModel @AssistedInject constructor(
         favouritesRepository.favouriteIds,
         settingsRepository.settings,
         combine(connectivity.isOnline, onDemandRepository.state(wgId, OnDemandKind.AI_ANALYSIS), local) { online, od, l -> Triple(online, od, l) },
-    ) { d, favourites, settings, (online, od, l) ->
+        settingsRepository.calculatorInputs,
+    ) { d, favourites, settings, (online, od, l), calculator ->
         val days = d.spot?.let { ForecastDays.daytimeDays(it.hourly, settings.filterWindyDays) }.orEmpty()
         SpotUiState(
             wgId = wgId,
@@ -136,6 +147,12 @@ class SpotViewModel @AssistedInject constructor(
             focusTime = l.focusTime,
             removedEverywhere = l.removedEverywhere,
             modelsLoading = l.modelsLoading,
+            bestWind = if (!settings.fadeOffDirection) {
+                emptySet()
+            } else {
+                d.spot?.info?.bestWind?.let(BestWind::parse)?.ifEmpty { null } ?: BestWind.parse(d.spot?.infoPl?.bestWind)
+            },
+            calculator = calculator,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpotUiState(wgId))
 

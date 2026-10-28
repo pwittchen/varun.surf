@@ -1,4 +1,4 @@
-package surf.varun.feature.alerts
+package surf.varun.core.domain
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -12,6 +12,19 @@ import surf.varun.core.model.Direction.SW
 import surf.varun.core.model.Direction.W
 
 class BestWindTest {
+
+    @Test
+    fun `a direction fits only the sectors the spot works in`() {
+        val best = setOf(SW, W, NW, N)
+        assertThat(BestWind.fits(W, best)).isTrue()
+        assertThat(BestWind.fits(SE, best)).isFalse()
+    }
+
+    @Test
+    fun `nothing known on either side always fits`() {
+        assertThat(BestWind.fits(SE, emptySet())).isTrue()
+        assertThat(BestWind.fits(null, setOf(W))).isTrue()
+    }
     @Test
     fun listsAndSeparators() {
         assertThat(BestWind.parse("W, SW, NW")).containsExactly(W, SW, NW)

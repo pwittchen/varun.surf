@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import surf.varun.core.data.repository.AlertsRepository
 import surf.varun.core.data.repository.SettingsRepository
 import surf.varun.core.data.repository.SpotsRepository
+import surf.varun.core.domain.BestWind
 import surf.varun.core.domain.SpotSearch
 import surf.varun.core.domain.Units
 import surf.varun.core.model.AlertTrigger

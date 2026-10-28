@@ -1,13 +1,21 @@
-package surf.varun.feature.alerts
+package surf.varun.core.domain
 
 import surf.varun.core.model.Direction
 
 /**
  * Directions named in a spot's free-text "best wind" ("W, SW, NW", "Meltemi N, NE",
- * "N-NE", "SW/W", "E, ENE"), used to prefill an alert's direction sectors.
+ * "N-NE", "SW/W", "E, ENE"), used to prefill an alert's direction sectors and to
+ * mark the forecast hours blowing from a direction the spot does not work in.
  * Anything it can't read gives an empty set, which means "any direction".
  */
 object BestWind {
+    /**
+     * Whether wind from [direction] suits a spot working in [best]. Nothing known on
+     * either side is no reason to mark an hour off, so it counts as a fit.
+     */
+    fun fits(direction: Direction?, best: Set<Direction>): Boolean =
+        direction == null || best.isEmpty() || direction in best
+
     // Upper-case compass codes as whole words, so "Levante" or "trade" never match
     private val CODE = Regex("""(?<![A-Za-z])([NSEW]{1,3})(?![A-Za-z])""")
     private val RANGE = Regex("""(?<![A-Za-z])([NSEW]{1,3})\s*[-–]\s*([NSEW]{1,3})(?![A-Za-z])""")

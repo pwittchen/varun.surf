@@ -39,6 +39,8 @@ class PreferencesDataSource @Inject constructor(
         val rememberModelGlobally = booleanPreferencesKey("remember_model_globally")
         val globalModel = stringPreferencesKey("global_model")
         val filterWindyDays = booleanPreferencesKey("filter_windy_days")
+        val fadeOffDirection = booleanPreferencesKey("fade_off_direction")
+        val showKiteSize = booleanPreferencesKey("show_kite_size")
         val mapWindField = booleanPreferencesKey("map_wind_field")
         val mapMarkers = booleanPreferencesKey("map_markers")
         val mapSatellite = booleanPreferencesKey("map_satellite")
@@ -105,6 +107,8 @@ class PreferencesDataSource @Inject constructor(
             useLocation = this[Keys.useLocation] ?: defaults.useLocation,
             rememberModelGlobally = this[Keys.rememberModelGlobally] ?: defaults.rememberModelGlobally,
             filterWindyDays = this[Keys.filterWindyDays] ?: defaults.filterWindyDays,
+            fadeOffDirection = this[Keys.fadeOffDirection] ?: defaults.fadeOffDirection,
+            showKiteSize = this[Keys.showKiteSize] ?: defaults.showKiteSize,
             mapWindField = this[Keys.mapWindField] ?: defaults.mapWindField,
             mapMarkers = this[Keys.mapMarkers] ?: defaults.mapMarkers,
             mapSatellite = this[Keys.mapSatellite] ?: defaults.mapSatellite,
@@ -127,6 +131,8 @@ class PreferencesDataSource @Inject constructor(
         this[Keys.useLocation] = s.useLocation
         this[Keys.rememberModelGlobally] = s.rememberModelGlobally
         this[Keys.filterWindyDays] = s.filterWindyDays
+        this[Keys.fadeOffDirection] = s.fadeOffDirection
+        this[Keys.showKiteSize] = s.showKiteSize
         this[Keys.mapWindField] = s.mapWindField
         this[Keys.mapMarkers] = s.mapMarkers
         this[Keys.mapSatellite] = s.mapSatellite

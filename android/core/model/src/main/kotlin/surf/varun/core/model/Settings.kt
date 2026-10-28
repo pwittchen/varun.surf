@@ -33,6 +33,10 @@ data class UserSettings(
     val useLocation: Boolean = false,
     val rememberModelGlobally: Boolean = false,
     val filterWindyDays: Boolean = false,
+    /** Fade the forecast hours blowing from outside the spot's best directions. */
+    val fadeOffDirection: Boolean = false,
+    /** The forecast table's row of kite sizes for each hour, from the calculator's weight. */
+    val showKiteSize: Boolean = true,
     val mapWindField: Boolean = true,
     val mapMarkers: Boolean = true,
     val mapSatellite: Boolean = true,

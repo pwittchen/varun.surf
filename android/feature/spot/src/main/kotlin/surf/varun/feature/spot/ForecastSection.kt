@@ -1,6 +1,16 @@
 package surf.varun.feature.spot
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.semantics.stateDescription
+import surf.varun.core.domain.BestWind
+import surf.varun.core.domain.KiteCalculator
+import surf.varun.core.model.CalculatorInputs
+import surf.varun.core.model.Direction
+import surf.varun.core.model.SkillLevel
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -101,6 +111,8 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
     var selectedDay by rememberSaveable { mutableStateOf<String?>(null) }
 
     val hours = remember(state.days) { state.days.flatMap { it.hours } }
+    // Switched off in the settings, the table has no weight to size a kite from: no row, no hint
+    val kiteInputs = if (state.settings.showKiteSize) state.calculator else CalculatorInputs()
     val tableState = rememberLazyListState()
     val chartScroll = rememberScrollState()
     val density = LocalDensity.current
@@ -124,6 +136,15 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
         val index = hours.indexOfFirst { it.time!! >= focus.withMinute(0) }.takeIf { it >= 0 } ?: hours.lastIndex
         tableState.scrollToItem(index)
         actions.focusConsumed()
+    }
+    // Without one the table opens on the current hour rather than on this morning's past ones
+    var openedOnNow by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(hours) {
+        if (openedOnNow || state.focusTime != null || hours.isEmpty()) return@LaunchedEffect
+        val now = Conditions.now(spot, ZonedDateTime.now()).withMinute(0).withSecond(0).withNano(0)
+        val index = hours.indexOfFirst { it.time!! >= now }
+        if (index > 0) tableState.scrollToItem(index)
+        openedOnNow = true
     }
 
     val modelLabel = stringResource(R.string.model)
@@ -196,6 +217,7 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                 val date = spotToday.plusDays(index.toLong())
                 val windClass = WindClass.ofAverage(day.wind, day.gusts)
                 val selected = selectedDay == date.toString()
+                val fits = BestWind.fits(day.direction, state.bestWind)
                 FilterChip(
                     selected = selected,
                     onClick = {
@@ -204,11 +226,15 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                     },
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(Format.dayLabel(context, day.day, day.rawDate))
+                            Text(Format.dayLabel(context, day.day, day.rawDate, spotToday))
                             // On the selected chip's fill the class colours wash out: take the label colour instead
                             val windColor = if (selected) LocalContentColor.current else VarunTheme.wind.forClass(windClass)
-                            WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass, color = windColor)
-                            WindArrow(day.direction, size = 14.dp, color = windColor, animate = false)
+                            // A day blowing from the wrong side fades, like its hours in the table -
+                            // unless it is the selected one, which always reads in the label's colour
+                            Row(Modifier.alpha(if (fits || selected) 1f else OFF_DIRECTION_ALPHA), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                WindNumber(formatWind(day.wind), day.wind, style = Numbers.small, windClass = windClass, color = windColor)
+                                WindArrow(day.direction, size = 14.dp, color = windColor, animate = false)
+                            }
                         }
                     },
                 )
@@ -255,8 +281,19 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
-            view == DataView.TABLE -> HourlyTable(hours, spot.hasWaveData, tableState)
-            else -> HourlyChart(hours, chartScroll, chartHourWidth)
+            view == DataView.TABLE -> HourlyTable(hours, spot.hasWaveData, tableState, state.bestWind, kiteInputs)
+            else -> HourlyChart(hours, chartScroll, chartHourWidth, state.bestWind)
+        }
+        if (hours.isNotEmpty() && !state.noWindyDays) {
+            if (hours.any { !BestWind.fits(it.direction, state.bestWind) }) {
+                // The directions on a line of their own, so they stand out from the sentence
+                TableNote(stringResource(R.string.off_direction_note))
+                Text(
+                    state.bestWind.sortedBy { it.ordinal }.joinToString(", "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     }
 
@@ -290,7 +327,17 @@ internal fun ForecastSection(state: SpotUiState, actions: SpotActions) {
 
 // --- table ------------------------------------------------------------------------
 
-private enum class TableRow { TIME, WIND, GUSTS, DIRECTION, TEMP, RAIN, CLOUD, PRESSURE, WAVE, WAVE_PERIOD, WAVE_DIRECTION }
+/**
+ * Rows in reading order: what decides a session first (wind, direction, the kite it takes),
+ * then the sea, then the weather around it, which is drawn quieter ([secondary]).
+ */
+private enum class TableRow(val secondary: Boolean = false) {
+    TIME, WIND, GUSTS, DIRECTION, KITE, WAVE, WAVE_PERIOD(secondary = true), WAVE_DIRECTION,
+    TEMP(secondary = true), RAIN(secondary = true), CLOUD(secondary = true), PRESSURE(secondary = true),
+}
+
+/** How far the hours blowing from outside the spot's best directions fade. */
+private const val OFF_DIRECTION_ALPHA = 0.35f
 
 @Composable
 internal fun scaled(value: Dp): Dp = value * LocalDensity.current.fontScale.coerceAtLeast(1f)
@@ -301,17 +348,30 @@ private fun chartHourWidth(): Dp = 28.dp
 /**
  * Windguru-style table: variables as rows, hours as columns, the label column
  * pinned while the hours scroll, a day header and separator where each day starts.
+ * Hours blowing from outside the spot's [best] directions fade their wind cells;
+ * with a weight in the calculator a row sizes the kite for each hour.
  */
 @Composable
-private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyListState) {
-    val rows = remember(waves) {
-        TableRow.entries.filter { waves || it !in setOf(TableRow.WAVE, TableRow.WAVE_PERIOD, TableRow.WAVE_DIRECTION) }
+private fun HourlyTable(
+    hours: List<ForecastEntry>,
+    waves: Boolean,
+    state: LazyListState,
+    best: Set<Direction>,
+    calculator: CalculatorInputs,
+) {
+    val kite = calculator.weightKg != null
+    val rows = remember(waves, kite) {
+        TableRow.entries.filter {
+            (waves || it !in setOf(TableRow.WAVE, TableRow.WAVE_PERIOD, TableRow.WAVE_DIRECTION)) && (kite || it != TableRow.KITE)
+        }
     }
     val metrics = tableMetrics()
     val rowHeight = metrics.rowHeight
     val headerHeight = metrics.headerHeight
     val columnWidth = metrics.hourWidth
     val separator = MaterialTheme.colorScheme.outline
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val surface = MaterialTheme.colorScheme.surface
 
     Row {
         Column(Modifier.width(metrics.labelWidth)) {
@@ -321,16 +381,18 @@ private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyL
                     Text(
                         stringResource(row.label()),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (row.secondary) labelColor.copy(alpha = SECONDARY_ALPHA) else labelColor,
                         maxLines = 1,
                     )
                 }
             }
         }
-        LazyRow(state = state, modifier = Modifier.weight(1f)) {
+        Box(Modifier.weight(1f)) {
+        LazyRow(state = state) {
             itemsIndexed(hours, key = { _, h -> h.time.toString() }) { index, hour ->
                 val time = hour.time!!
                 val firstOfDay = index == 0 || hours[index - 1].time!!.toLocalDate() != time.toLocalDate()
+                val fits = BestWind.fits(hour.direction, best)
                 Column(
                     Modifier
                         .width(columnWidth)
@@ -347,13 +409,44 @@ private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyL
                         if (firstOfDay) DayHeader(time.toLocalDate())
                     }
                     rows.forEach { row ->
-                        Box(Modifier.height(rowHeight).fillMaxWidth(), contentAlignment = Alignment.Center) { TableCell(row, hour, metrics) }
+                        Box(Modifier.height(rowHeight).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            TableCell(row, hour, metrics, fits, calculator)
+                        }
                     }
                 }
             }
         }
+            // More hours off the right edge: the last column fades out rather than ending in a cut
+            if (state.canScrollForward) {
+                Box(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .matchParentSize()
+                        .wrapContentWidth(Alignment.End)
+                        .width(EDGE_FADE)
+                        .background(Brush.horizontalGradient(listOf(Color.Transparent, surface))),
+                )
+            }
+        }
     }
 }
+
+/** A quiet line under the table explaining what it marks. */
+@Composable
+private fun TableNote(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 8.dp),
+    )
+}
+
+/** Width of the fade over the table's right edge while more hours lie beyond it. */
+private val EDGE_FADE = 28.dp
+
+/** Weather around a session (temperature, rain, clouds, pressure) stays readable but steps back. */
+private const val SECONDARY_ALPHA = 0.7f
 
 @Composable
 private fun DayHeader(date: LocalDate) {
@@ -374,6 +467,7 @@ private fun TableRow.label(): Int = when (this) {
     TableRow.WIND -> R.string.wind
     TableRow.GUSTS -> R.string.gusts
     TableRow.DIRECTION -> R.string.direction
+    TableRow.KITE -> R.string.kite_row
     TableRow.TEMP -> R.string.temperature
     TableRow.RAIN -> R.string.rain
     TableRow.CLOUD -> R.string.clouds
@@ -384,27 +478,47 @@ private fun TableRow.label(): Int = when (this) {
 }
 
 @Composable
-private fun TableCell(row: TableRow, hour: ForecastEntry, metrics: TableMetrics) {
+private fun TableCell(row: TableRow, hour: ForecastEntry, metrics: TableMetrics, fits: Boolean, calculator: CalculatorInputs) {
     val wind = VarunTheme.wind
     val text = MaterialTheme.colorScheme.onSurface
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
-    val style = metrics.text
-    // Only wind is coloured: every other row stays neutral so the wind classes stand out
+    val style = if (row.secondary) metrics.text.copy(color = muted.copy(alpha = SECONDARY_ALPHA)) else metrics.text
+    val offDirection = stringResource(R.string.off_direction)
+    // Only wind is coloured: every other row stays neutral so the wind classes stand out.
+    // An hour blowing from the wrong side fades its wind, and its arrow says why to TalkBack
+    val fade = Modifier.alpha(if (fits) 1f else OFF_DIRECTION_ALPHA)
     when (row) {
         TableRow.TIME -> Text(twoDigits(hour.time!!.hour), style = style, color = muted)
-        TableRow.WIND -> TableWindCell(formatWind(hour.wind), hour.wind, metrics)
-        TableRow.GUSTS -> TableWindCell(formatWind(hour.gusts), hour.gusts, metrics)
-        TableRow.DIRECTION -> WindArrow(hour.direction, size = metrics.arrowSize, color = wind.forClass(WindClass.of(hour.wind)), animate = false)
+        TableRow.WIND -> Box(fade) { TableWindCell(formatWind(hour.wind), hour.wind, metrics) }
+        TableRow.GUSTS -> Box(fade) { TableWindCell(formatWind(hour.gusts), hour.gusts, metrics) }
+        TableRow.DIRECTION -> WindArrow(
+            hour.direction,
+            size = metrics.arrowSize,
+            color = if (fits) wind.forClass(WindClass.of(hour.wind)) else muted,
+            animate = false,
+            modifier = if (fits) Modifier else fade.semantics { stateDescription = offDirection },
+        )
+        TableRow.KITE -> {
+            val weight = calculator.weightKg
+            // Sized for the gusts, not the mean wind: a kite picked for the lulls is overpowered in
+            // every gust. Only where the calculator would answer - no size for gusts too light or
+            // too strong to ride
+            if (weight != null && KiteCalculator.validate(hour.gusts, weight, calculator.skill ?: SkillLevel.INTERMEDIATE_FLAT) == null) {
+                Text("${KiteCalculator.kiteSize(hour.gusts, weight, calculator.skill)}", style = style, color = text, modifier = fade)
+            } else {
+                Dash(style)
+            }
+        }
         TableRow.TEMP -> hour.temp?.let {
-            Text(formatTemperature(it), style = style, color = text)
+            Text(formatTemperature(it), style = style)
         } ?: Dash(style)
         TableRow.RAIN -> hour.precipitation?.let {
-            Text(if (it == 0.0) "0" else "%.1f".format(it), style = style, color = if (it > 0) wind.rain else muted)
+            Text(if (it == 0.0) "0" else "%.1f".format(it), style = if (it > 0) style.copy(color = wind.rain) else style)
         } ?: Dash(style)
-        TableRow.CLOUD -> hour.cloudCoverPercent?.let { Text("${it.roundToInt()}%", style = style, color = muted) } ?: Dash(style)
-        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = style, color = muted) } ?: Dash(style)
+        TableRow.CLOUD -> hour.cloudCoverPercent?.let { Text("${it.roundToInt()}%", style = style) } ?: Dash(style)
+        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = style) } ?: Dash(style)
         TableRow.WAVE -> hour.wave?.let { Text("%.1f".format(it), style = style, color = text) } ?: Dash(style)
-        TableRow.WAVE_PERIOD -> hour.wavePeriod?.let { Text("${it.roundToInt()}s", style = style, color = muted) } ?: Dash(style)
+        TableRow.WAVE_PERIOD -> hour.wavePeriod?.let { Text("${it.roundToInt()}s", style = style) } ?: Dash(style)
         TableRow.WAVE_DIRECTION -> if (hour.waveDirection != null) {
             WindArrow(hour.waveDirection, size = metrics.arrowSize - 2.dp, color = muted, animate = false)
         } else {
@@ -417,13 +531,14 @@ private fun TableCell(row: TableRow, hour: ForecastEntry, metrics: TableMetrics)
 private fun twoDigits(value: Int): String = if (value < 10) "0$value" else value.toString()
 
 @Composable
-private fun Dash(style: TextStyle = Numbers.tiny) = Text("-", style = style, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun Dash(style: TextStyle = Numbers.tiny) =
+    Text("-", style = style.copy(color = style.color.takeOrElse { MaterialTheme.colorScheme.onSurfaceVariant }))
 
 // --- chart ------------------------------------------------------------------------
 
 /** Wind and gust lines over the hours, direction arrows along the top, rain bars along the bottom. */
 @Composable
-private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWidth: Dp) {
+private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWidth: Dp, best: Set<Direction>) {
     val context = LocalContext.current
     val measurer = rememberTextMeasurer()
     val windColors = VarunTheme.wind
@@ -431,6 +546,7 @@ private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWid
     val gustLine = windColors.strong
     val grid = MaterialTheme.colorScheme.outline
     val label = MaterialTheme.colorScheme.onSurfaceVariant
+    val off = label.copy(alpha = OFF_DIRECTION_ALPHA)
     val labelStyle = TextStyle(fontSize = 10.sp, color = label)
     val dayStyle = TextStyle(fontSize = 11.sp, color = MaterialTheme.colorScheme.primary)
     val maxValue = (maxOf(hours.maxOf { it.gusts }, 15.0) * 1.1).toFloat()
@@ -469,7 +585,8 @@ private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWid
                 drawText(measurer, text, Offset(dx + 4.dp.toPx(), 0f), dayStyle)
             }
             hours.forEachIndexed { i, h ->
-                h.direction?.let { drawArrow(it, Offset(x(i), arrowsTop + 10.dp.toPx()), 12.dp.toPx(), windColors.forClass(WindClass.of(h.wind))) }
+                val color = if (BestWind.fits(h.direction, best)) windColors.forClass(WindClass.of(h.wind)) else off
+                h.direction?.let { drawArrow(it, Offset(x(i), arrowsTop + 10.dp.toPx()), 12.dp.toPx(), color) }
                 val rain = (h.precipitation ?: 0.0).toFloat()
                 if (rain > 0f) {
                     val barHeight = rain / maxRain * (rainHeight - 4.dp.toPx())
@@ -488,7 +605,8 @@ private fun HourlyChart(hours: List<ForecastEntry>, scroll: ScrollState, hourWid
             val wind = Path().apply { hours.forEachIndexed { i, h -> if (i == 0) moveTo(x(i), y(h.wind)) else lineTo(x(i), y(h.wind)) } }
             drawPath(wind, windLine, style = Stroke(2.5.dp.toPx(), cap = StrokeCap.Round))
             hours.forEachIndexed { i, h ->
-                drawCircle(windColors.forClass(WindClass.of(h.wind)), 3.dp.toPx(), Offset(x(i), y(h.wind)))
+                val color = if (BestWind.fits(h.direction, best)) windColors.forClass(WindClass.of(h.wind)) else off
+                drawCircle(color, 3.dp.toPx(), Offset(x(i), y(h.wind)))
             }
         }
     }
