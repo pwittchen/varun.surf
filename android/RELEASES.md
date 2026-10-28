@@ -8,6 +8,17 @@ built the tag (`.github/workflows/android.yml`). Dates are when the release was 
 
 Maintained by the `release-notes-android` skill.
 
+## 1.1.0
+
+- Version name: `1.1.0`
+- Version code: `pending`
+- Date: 2026-10-28 14:27 +01:00
+- Tag: `android-v1.1.0`
+
+**EN:** The spot forecast now suggests a kite size for every hour from the weight and skill saved in the calculator, and can fade hours blowing from outside the spot's best directions (see Settings). The table opens on the current hour and a bell on the spot page sets up a wind alert. Map clusters show their strongest wind, forecast days are named by weekday, and storms above 35 kts no longer top the list of spots firing now.
+
+**PL:** Prognoza spotu podpowiada teraz rozmiar latawca na każdą godzinę - na podstawie wagi i poziomu zapisanych w kalkulatorze - i może przygaszać godziny z wiatrem spoza najlepszych kierunków spotu (zobacz Ustawienia). Tabela otwiera się na bieżącej godzinie, a dzwonek na stronie spotu ustawia alert wiatrowy. Klastry na mapie pokazują najsilniejszy wiatr, kolejne dni prognozy mają nazwy dni tygodnia, a sztorm powyżej 35 kn nie trafia już na szczyt listy spotów, gdzie teraz wieje.
+
 ## 1.0.2
 
 - Version name: `1.0.2`
