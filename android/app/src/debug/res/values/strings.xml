@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tells the debug build apart from the Play one installed next to it. -->
+    <string name="app_name" translatable="false">varun DEV</string>
+</resources>
