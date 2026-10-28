@@ -1,9 +1,12 @@
 package surf.varun.feature.spot
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,9 +29,19 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import surf.varun.core.designsystem.component.WindCell
+import surf.varun.core.designsystem.component.WindNumber
+import surf.varun.core.designsystem.theme.Numbers
+import surf.varun.core.designsystem.theme.VarunTheme
+import surf.varun.core.designsystem.theme.fillForClass
+import surf.varun.core.domain.WindClass
+import surf.varun.core.model.TableDensity
+import surf.varun.core.ui.LocalUserSettings
 
 /**
  * A titled section of the spot screen. Flat on the page rather than a card, so the
@@ -130,5 +143,63 @@ internal fun DataViewSwitch(view: DataView, onChange: (DataView) -> Unit, modifi
                 },
             )
         }
+    }
+}
+
+/**
+ * Sizes of the hourly forecast and live history tables, from the table density setting.
+ * Compact packs them like Windguru: short rows, narrow columns, smaller numbers and
+ * wind cells filled edge to edge, so the classes run as unbroken colour bands.
+ */
+internal class TableMetrics(
+    val compact: Boolean,
+    val rowHeight: Dp,
+    val headerHeight: Dp,
+    val labelWidth: Dp,
+    val hourWidth: Dp,
+    val readingWidth: Dp,
+    val arrowSize: Dp,
+    val text: TextStyle,
+)
+
+@Composable
+internal fun tableMetrics(): TableMetrics =
+    if (LocalUserSettings.current.tableDensity == TableDensity.COMPACT) {
+        TableMetrics(
+            compact = true,
+            rowHeight = scaled(22.dp),
+            headerHeight = scaled(18.dp),
+            labelWidth = scaled(64.dp),
+            hourWidth = scaled(30.dp),
+            readingWidth = scaled(40.dp),
+            arrowSize = 14.dp,
+            text = Numbers.tiny.copy(fontSize = 11.sp, lineHeight = 14.sp),
+        )
+    } else {
+        TableMetrics(
+            compact = false,
+            rowHeight = scaled(32.dp),
+            headerHeight = scaled(22.dp),
+            labelWidth = scaled(72.dp),
+            hourWidth = scaled(44.dp),
+            readingWidth = scaled(52.dp),
+            arrowSize = 18.dp,
+            text = Numbers.tiny,
+        )
+    }
+
+/** A wind value in a table: a tinted pill, or in a compact table the whole cell tinted. */
+@Composable
+internal fun TableWindCell(text: String, knots: Double, metrics: TableMetrics) {
+    if (metrics.compact) {
+        val windClass = WindClass.of(knots)
+        Box(
+            Modifier.fillMaxSize().background(VarunTheme.wind.fillForClass(windClass)),
+            contentAlignment = Alignment.Center,
+        ) {
+            WindNumber(text, knots, style = metrics.text, windClass = windClass)
+        }
+    } else {
+        WindCell(text, knots)
     }
 }

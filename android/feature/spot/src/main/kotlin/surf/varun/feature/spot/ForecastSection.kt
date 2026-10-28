@@ -47,7 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -71,7 +71,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import surf.varun.core.designsystem.component.WindArrow
-import surf.varun.core.designsystem.component.WindCell
 import surf.varun.core.designsystem.component.WindNumber
 import surf.varun.core.designsystem.component.transparentListItemColors
 import surf.varun.core.designsystem.theme.Numbers
@@ -308,13 +307,14 @@ private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyL
     val rows = remember(waves) {
         TableRow.entries.filter { waves || it !in setOf(TableRow.WAVE, TableRow.WAVE_PERIOD, TableRow.WAVE_DIRECTION) }
     }
-    val rowHeight = scaled(32.dp)
-    val headerHeight = scaled(22.dp)
-    val columnWidth = scaled(44.dp)
+    val metrics = tableMetrics()
+    val rowHeight = metrics.rowHeight
+    val headerHeight = metrics.headerHeight
+    val columnWidth = metrics.hourWidth
     val separator = MaterialTheme.colorScheme.outline
 
     Row {
-        Column(Modifier.width(scaled(72.dp))) {
+        Column(Modifier.width(metrics.labelWidth)) {
             Spacer(Modifier.height(headerHeight))
             rows.forEach { row ->
                 Box(Modifier.height(rowHeight), contentAlignment = Alignment.CenterStart) {
@@ -334,7 +334,9 @@ private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyL
                 Column(
                     Modifier
                         .width(columnWidth)
-                        .drawBehind {
+                        // Over the cells: a compact table's wind cells fill the column edge to edge
+                        .drawWithContent {
+                            drawContent()
                             if (firstOfDay && index > 0) {
                                 drawLine(separator, Offset(0f, 0f), Offset(0f, size.height), strokeWidth = 1.dp.toPx())
                             }
@@ -345,7 +347,7 @@ private fun HourlyTable(hours: List<ForecastEntry>, waves: Boolean, state: LazyL
                         if (firstOfDay) DayHeader(time.toLocalDate())
                     }
                     rows.forEach { row ->
-                        Box(Modifier.height(rowHeight), contentAlignment = Alignment.Center) { TableCell(row, hour) }
+                        Box(Modifier.height(rowHeight).fillMaxWidth(), contentAlignment = Alignment.Center) { TableCell(row, hour, metrics) }
                     }
                 }
             }
@@ -382,30 +384,31 @@ private fun TableRow.label(): Int = when (this) {
 }
 
 @Composable
-private fun TableCell(row: TableRow, hour: ForecastEntry) {
+private fun TableCell(row: TableRow, hour: ForecastEntry, metrics: TableMetrics) {
     val wind = VarunTheme.wind
     val text = MaterialTheme.colorScheme.onSurface
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val style = metrics.text
     // Only wind is coloured: every other row stays neutral so the wind classes stand out
     when (row) {
-        TableRow.TIME -> Text(twoDigits(hour.time!!.hour), style = Numbers.tiny, color = muted)
-        TableRow.WIND -> WindCell(formatWind(hour.wind), hour.wind)
-        TableRow.GUSTS -> WindCell(formatWind(hour.gusts), hour.gusts)
-        TableRow.DIRECTION -> WindArrow(hour.direction, size = 18.dp, color = wind.forClass(WindClass.of(hour.wind)), animate = false)
+        TableRow.TIME -> Text(twoDigits(hour.time!!.hour), style = style, color = muted)
+        TableRow.WIND -> TableWindCell(formatWind(hour.wind), hour.wind, metrics)
+        TableRow.GUSTS -> TableWindCell(formatWind(hour.gusts), hour.gusts, metrics)
+        TableRow.DIRECTION -> WindArrow(hour.direction, size = metrics.arrowSize, color = wind.forClass(WindClass.of(hour.wind)), animate = false)
         TableRow.TEMP -> hour.temp?.let {
-            Text(formatTemperature(it), style = Numbers.tiny, color = text)
-        } ?: Dash()
+            Text(formatTemperature(it), style = style, color = text)
+        } ?: Dash(style)
         TableRow.RAIN -> hour.precipitation?.let {
-            Text(if (it == 0.0) "0" else "%.1f".format(it), style = Numbers.tiny, color = if (it > 0) wind.rain else muted)
-        } ?: Dash()
-        TableRow.CLOUD -> hour.cloudCoverPercent?.let { Text("${it.roundToInt()}%", style = Numbers.tiny, color = muted) } ?: Dash()
-        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = Numbers.tiny, color = muted) } ?: Dash()
-        TableRow.WAVE -> hour.wave?.let { Text("%.1f".format(it), style = Numbers.tiny, color = text) } ?: Dash()
-        TableRow.WAVE_PERIOD -> hour.wavePeriod?.let { Text("${it.roundToInt()}s", style = Numbers.tiny, color = muted) } ?: Dash()
+            Text(if (it == 0.0) "0" else "%.1f".format(it), style = style, color = if (it > 0) wind.rain else muted)
+        } ?: Dash(style)
+        TableRow.CLOUD -> hour.cloudCoverPercent?.let { Text("${it.roundToInt()}%", style = style, color = muted) } ?: Dash(style)
+        TableRow.PRESSURE -> hour.pressureHpa?.let { Text("${it.roundToInt()}", style = style, color = muted) } ?: Dash(style)
+        TableRow.WAVE -> hour.wave?.let { Text("%.1f".format(it), style = style, color = text) } ?: Dash(style)
+        TableRow.WAVE_PERIOD -> hour.wavePeriod?.let { Text("${it.roundToInt()}s", style = style, color = muted) } ?: Dash(style)
         TableRow.WAVE_DIRECTION -> if (hour.waveDirection != null) {
-            WindArrow(hour.waveDirection, size = 16.dp, color = muted, animate = false)
+            WindArrow(hour.waveDirection, size = metrics.arrowSize - 2.dp, color = muted, animate = false)
         } else {
-            Dash()
+            Dash(style)
         }
     }
 }
@@ -414,7 +417,7 @@ private fun TableCell(row: TableRow, hour: ForecastEntry) {
 private fun twoDigits(value: Int): String = if (value < 10) "0$value" else value.toString()
 
 @Composable
-private fun Dash() = Text("-", style = Numbers.tiny, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun Dash(style: TextStyle = Numbers.tiny) = Text("-", style = style, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
 // --- chart ------------------------------------------------------------------------
 

@@ -31,6 +31,7 @@ class PreferencesDataSource @Inject constructor(
         val windUnit = stringPreferencesKey("wind_unit")
         val temperatureUnit = stringPreferencesKey("temperature_unit")
         val density = stringPreferencesKey("density")
+        val tableDensity = stringPreferencesKey("table_density")
         val startTab = stringPreferencesKey("start_tab")
         val timelineReach = stringPreferencesKey("timeline_reach")
         val particleQuality = stringPreferencesKey("particle_quality")
@@ -97,6 +98,7 @@ class PreferencesDataSource @Inject constructor(
             windUnit = enumOr(this[Keys.windUnit], defaults.windUnit),
             temperatureUnit = enumOr(this[Keys.temperatureUnit], defaults.temperatureUnit),
             density = enumOr(this[Keys.density], defaults.density),
+            tableDensity = enumOr(this[Keys.tableDensity], defaults.tableDensity),
             startTab = enumOr(this[Keys.startTab], defaults.startTab),
             timelineReach = enumOr(this[Keys.timelineReach], defaults.timelineReach),
             particleQuality = enumOr(this[Keys.particleQuality], defaults.particleQuality),
@@ -118,6 +120,7 @@ class PreferencesDataSource @Inject constructor(
         this[Keys.windUnit] = s.windUnit.name
         this[Keys.temperatureUnit] = s.temperatureUnit.name
         this[Keys.density] = s.density.name
+        this[Keys.tableDensity] = s.tableDensity.name
         this[Keys.startTab] = s.startTab.name
         this[Keys.timelineReach] = s.timelineReach.name
         this[Keys.particleQuality] = s.particleQuality.name

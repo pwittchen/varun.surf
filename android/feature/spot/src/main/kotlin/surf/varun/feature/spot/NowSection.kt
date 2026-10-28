@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import surf.varun.core.designsystem.component.InfoChip
 import surf.varun.core.designsystem.component.WindArrow
-import surf.varun.core.designsystem.component.WindCell
 import surf.varun.core.designsystem.component.WindNumber
 import surf.varun.core.designsystem.theme.Numbers
 import surf.varun.core.designsystem.theme.VarunTheme
@@ -221,13 +220,14 @@ private fun HistoryTable(history: List<LiveConditions>) {
     val rows = remember(readings) {
         HistoryRow.entries.filter { it != HistoryRow.TEMP || readings.any { r -> r.temp != null } }
     }
-    val rowHeight = scaled(32.dp)
-    val columnWidth = scaled(52.dp)
+    val metrics = tableMetrics()
+    val rowHeight = metrics.rowHeight
+    val columnWidth = metrics.readingWidth
     val text = MaterialTheme.colorScheme.onSurface
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
 
     Row {
-        Column(Modifier.width(scaled(72.dp))) {
+        Column(Modifier.width(metrics.labelWidth)) {
             rows.forEach { row ->
                 Box(Modifier.height(rowHeight), contentAlignment = Alignment.CenterStart) {
                     Text(stringResource(row.label()), style = MaterialTheme.typography.labelSmall, color = muted, maxLines = 1)
@@ -238,25 +238,25 @@ private fun HistoryTable(history: List<LiveConditions>) {
             items(readings) { reading ->
                 Column(Modifier.width(columnWidth), horizontalAlignment = Alignment.CenterHorizontally) {
                     rows.forEach { row ->
-                        Box(Modifier.height(rowHeight), contentAlignment = Alignment.Center) {
+                        Box(Modifier.height(rowHeight).fillMaxWidth(), contentAlignment = Alignment.Center) {
                             when (row) {
                                 HistoryRow.TIME -> Text(
                                     reading.observedAt?.let { Format.clock(context, it) } ?: reading.rawDate,
-                                    style = Numbers.tiny,
+                                    style = metrics.text,
                                     color = muted,
                                     maxLines = 1,
                                 )
-                                HistoryRow.WIND -> WindCell(formatWind(reading.wind.toDouble()), reading.wind.toDouble())
-                                HistoryRow.GUSTS -> WindCell(formatWind(reading.gusts.toDouble()), reading.gusts.toDouble())
+                                HistoryRow.WIND -> TableWindCell(formatWind(reading.wind.toDouble()), reading.wind.toDouble(), metrics)
+                                HistoryRow.GUSTS -> TableWindCell(formatWind(reading.gusts.toDouble()), reading.gusts.toDouble(), metrics)
                                 HistoryRow.DIRECTION -> WindArrow(
                                     reading.direction,
-                                    size = 18.dp,
+                                    size = metrics.arrowSize,
                                     color = VarunTheme.wind.forClass(WindClass.of(reading.wind.toDouble())),
                                     animate = false,
                                 )
                                 HistoryRow.TEMP -> Text(
                                     reading.temp?.let { formatTemperature(it.toDouble()) } ?: "-",
-                                    style = Numbers.tiny,
+                                    style = metrics.text,
                                     color = if (reading.temp != null) text else muted,
                                 )
                             }

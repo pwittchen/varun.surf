@@ -55,6 +55,7 @@ import surf.varun.core.model.AppLanguage
 import surf.varun.core.model.CardDensity
 import surf.varun.core.model.ParticleQuality
 import surf.varun.core.model.StartTab
+import surf.varun.core.model.TableDensity
 import surf.varun.core.model.TemperatureUnit
 import surf.varun.core.model.ThemeMode
 import surf.varun.core.model.TimelineReach
@@ -109,6 +110,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             }
             item {
                 ChoiceSetting(R.string.density, CardDensity.entries, s.density, { it.label() }) { d -> viewModel.update { it.copy(density = d) } }
+            }
+            item {
+                ChoiceSetting(R.string.table_density, TableDensity.entries, s.tableDensity, { it.label() }) { d ->
+                    viewModel.update { it.copy(tableDensity = d) }
+                }
             }
             item {
                 ChoiceSetting(R.string.start_tab, StartTab.entries, s.startTab, { it.label() }) { t -> viewModel.update { it.copy(startTab = t) } }
@@ -262,6 +268,11 @@ private fun AppLanguage.label() = when (this) {
 private fun CardDensity.label() = when (this) {
     CardDensity.COMFORTABLE -> R.string.density_comfortable
     CardDensity.COMPACT -> R.string.density_compact
+}
+
+private fun TableDensity.label() = when (this) {
+    TableDensity.COMFORTABLE -> R.string.density_comfortable
+    TableDensity.COMPACT -> R.string.density_compact
 }
 
 private fun StartTab.label() = when (this) {

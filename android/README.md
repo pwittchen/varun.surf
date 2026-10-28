@@ -86,6 +86,9 @@ benchmark/           baseline profile generator and startup/scroll macrobenchmar
   else at once (gusts, temp, age and the 12 h strip), with wind and gusts at one size so it fits a row.
 - **Spots list chips**: no "Nearby" (spots within 50 km) or "Windy today" chips - country, sort and
   "Live only" only. Distances on cards and the distance sort stay, once location is on in settings.
+- **Table density**: a setting next to card density (`tableDensity`, compact by default). Compact
+  packs the spot page's hourly forecast and live history tables like Windguru: shorter rows, narrower
+  columns, smaller numbers and wind/gust cells tinted edge to edge (`TableMetrics` in `feature/spot`).
 - **Large screens**: navigation rail from 600 dp and a map side sheet; no list-detail pane yet.
 - **Map controls**: all in one floating card that folds away to a single button (portrait and
   landscape), rather than a column of separate small FABs.

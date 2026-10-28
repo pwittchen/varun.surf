@@ -17,6 +17,7 @@
     <string name="density">Card density</string>
     <string name="density_comfortable">Comfortable</string>
     <string name="density_compact">Compact</string>
+    <string name="table_density">Table density</string>
     <string name="start_tab">Start screen</string>
     <string name="start_auto">Favourites if you have any, else spots</string>
     <string name="start_spots">Spots</string>

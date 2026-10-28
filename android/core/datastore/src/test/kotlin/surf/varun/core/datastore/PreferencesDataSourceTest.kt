@@ -11,6 +11,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import surf.varun.core.model.CalculatorInputs
 import surf.varun.core.model.SkillLevel
+import surf.varun.core.model.TableDensity
 import surf.varun.core.model.ThemeMode
 import surf.varun.core.model.UserSettings
 import surf.varun.core.model.WindUnit
@@ -31,6 +32,14 @@ class PreferencesDataSourceTest {
         val settings = source.settings.first()
         assertThat(settings.theme).isEqualTo(ThemeMode.DARK)
         assertThat(settings.windUnit).isEqualTo(WindUnit.BEAUFORT)
+    }
+
+    @Test
+    fun tableDensityCompactUntilChanged() = runTest(UnconfinedTestDispatcher()) {
+        val source = source()
+        assertThat(source.settings.first().tableDensity).isEqualTo(TableDensity.COMPACT)
+        source.update { it.copy(tableDensity = TableDensity.COMFORTABLE) }
+        assertThat(source.settings.first().tableDensity).isEqualTo(TableDensity.COMFORTABLE)
     }
 
     @Test
