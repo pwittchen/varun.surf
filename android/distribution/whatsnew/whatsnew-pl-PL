@@ -1,1 +1,1 @@
-Modele prognozy pokazują wskaźnik ładowania podczas pobierania, a prognoza ICM wczytuje się automatycznie razem z innymi modelami - bez osobnego przycisku. Usunięto nieaktualny link do meteogramu ICM.
+Tabele prognozy godzinowej i historii pomiarów na stronie spotu są teraz domyślnie kompaktowe - niższe wiersze, węższe kolumny i komórki wiatru oraz porywów pokolorowane na całej szerokości, dzięki czemu na ekranie mieści się więcej godzin. Wolisz luźniejszy układ? Przywrócisz go w Ustawieniach - Gęstość tabel.

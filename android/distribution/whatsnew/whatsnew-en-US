@@ -1,1 +1,1 @@
-Forecast models now show a loading indicator while they are being fetched, and the ICM forecast is loaded automatically with the other models - no separate button needed. Removed the outdated ICM meteogram link.
+The hourly forecast and live history tables on the spot page are now compact by default - shorter rows, narrower columns and wind and gust cells coloured edge to edge, so more hours fit on screen at a glance. Prefer the roomier layout? Switch it back under Settings - Table density.
