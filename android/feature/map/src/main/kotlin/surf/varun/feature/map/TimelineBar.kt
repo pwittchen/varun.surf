@@ -19,6 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -35,9 +38,9 @@ import kotlin.math.roundToInt
 
 /**
  * The hourly forecast timeline under the map (spec 5.4): step 0 is now, then one
- * step per hour of the grid; day ticks under the slider, play/pause, a jump back
- * to now, and a haptic
- * tick per hour with a stronger one at midnight (spec 2.5.12).
+ * step per hour of the grid; day ticks named by their weekday under the slider,
+ * play/pause, a jump back to now, and a haptic tick per hour with a stronger one
+ * at midnight (spec 2.5.12).
  */
 @Composable
 fun TimelineBar(
@@ -105,19 +108,38 @@ fun TimelineBar(
                 valueRange = 0f..steps.lastStep.toFloat(),
                 modifier = Modifier.fillMaxWidth().semantics { stateDescription = label },
             )
-            DayTicks(steps, Modifier.fillMaxWidth().height(6.dp).padding(horizontal = 10.dp))
+            DayTicks(steps, Modifier.fillMaxWidth().height(DAY_TICKS_HEIGHT).padding(horizontal = 10.dp))
         }
     }
 }
 
+/**
+ * A tick where each day starts, with the day's name beside it, so the track reads as
+ * days rather than an unmarked bar. A name with no room before the next tick (or the
+ * end) is left out rather than drawn over its neighbour.
+ */
 @Composable
 private fun DayTicks(steps: TimelineSteps, modifier: Modifier) {
+    val context = LocalContext.current
     val color = MaterialTheme.colorScheme.outline
+    val measurer = rememberTextMeasurer()
+    val style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+    val days = remember(steps, context) {
+        steps.dayStarts.map { s -> s to Format.weekday(context, steps.timeAt(s)!!.dayOfWeek) }
+    }
     Canvas(modifier) {
         val last = steps.lastStep.coerceAtLeast(1)
-        steps.dayStarts.forEach { s ->
+        val tick = 6.dp.toPx()
+        val gap = 4.dp.toPx()
+        days.forEachIndexed { i, (s, name) ->
             val x = size.width * s / last
-            drawLine(color, Offset(x, 0f), Offset(x, size.height), strokeWidth = 2.dp.toPx())
+            drawLine(color, Offset(x, 0f), Offset(x, tick), strokeWidth = 2.dp.toPx())
+            val next = days.getOrNull(i + 1)?.let { size.width * it.first / last } ?: size.width
+            val label = measurer.measure(name, style)
+            if (x + gap + label.size.width <= next - gap) drawText(label, topLeft = Offset(x + gap, 0f))
         }
     }
 }
+
+/** The day ticks and the weekday names beside them. */
+private val DAY_TICKS_HEIGHT = 16.dp

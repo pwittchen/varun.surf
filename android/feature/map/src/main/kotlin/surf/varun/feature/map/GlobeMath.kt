@@ -675,8 +675,11 @@ internal class GlobeCluster(
 ) {
     val single: MapSpotFeature? = members.singleOrNull()
 
-    /** What the marker shows: a spot's knots or a bubble's count, made once rather than every frame. */
-    val label: String? = if (single != null) single.wind?.toString() else members.size.toString()
+    /**
+     * What the marker shows, made once rather than every frame: the knots, a spot's own or a
+     * bubble's strongest, like the map. A bubble's count goes in the caption under it.
+     */
+    val label: String? = if (single != null) single.wind?.toString() else maxWind?.toString()
 }
 
 /**

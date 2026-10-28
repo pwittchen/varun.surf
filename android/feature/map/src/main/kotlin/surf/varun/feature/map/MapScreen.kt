@@ -8,6 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.expandIn
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
@@ -131,12 +132,15 @@ import surf.varun.core.ui.countryName
 import surf.varun.core.ui.isCompactHeight
 import surf.varun.core.ui.rememberScreenSettled
 
-private val PEEK_HEIGHT = 156.dp
+private val PEEK_HEIGHT = 140.dp
 
 /** The timeline alone, without the drag handle a phone held sideways has no height for. */
 private val COMPACT_PEEK_HEIGHT = 112.dp
 private val SIDE_SHEET_BREAKPOINT = 840.dp
 private const val PLAY_STEP_MS = 650L
+
+/** The spot's sheet on the right edge of a wide screen or a phone held sideways. */
+private val SIDE_SHEET_WIDTH = 360.dp
 
 /** Kept clear between the controls card and the sheet's top edge. */
 private val CONTROLS_SHEET_GAP = 12.dp
@@ -364,7 +368,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = peek,
-            sheetDragHandle = if (compact) null else ({ BottomSheetDefaults.DragHandle() }),
+            sheetDragHandle = if (compact) null else ({ SlimDragHandle() }),
             snackbarHost = { SnackbarHost(snackbar) },
             sheetContent = {
                 if (timeline) TimelineBar(
@@ -483,6 +487,23 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     )
                 }
 
+                val noFavourites = stringResource(R.string.map_no_favourites)
+                val statusBarTop = WindowInsets.statusBars.getTop(density)
+                val controlsTop = if (compact) 4.dp else 12.dp
+                // Clear of the side sheet when a spot is open in it
+                val sideSheet = if (wide && selected != null) SIDE_SHEET_WIDTH + 16.dp else 0.dp
+                val onFavourites: () -> Unit = {
+                    val points = state.allSpots.filter { it.wgId in state.favourites }.mapNotNull { it.coordinates }
+                    when {
+                        state.filters.favouritesOnly -> viewModel.toggleFavouritesOnly()
+                        points.isEmpty() -> { scope.launch { snackbar.showSnackbar(noFavourites) } }
+                        else -> {
+                            viewModel.toggleFavouritesOnly()
+                            fit(points)
+                        }
+                    }
+                }
+
                 if (state.settings.mapWindField) {
                     Text(
                         stringResource(R.string.map_wind_field_disclaimer),
@@ -491,10 +512,6 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(16.dp).padding(start = navigationInset),
                     )
                 }
-
-                val noFavourites = stringResource(R.string.map_no_favourites)
-                val statusBarTop = WindowInsets.statusBars.getTop(density)
-                val controlsTop = if (compact) 4.dp else 12.dp
                 // Sideways the spot's sheet takes the right edge and the floating navigation the
                 // left, which leaves the controls nowhere clear of the spot centred between them:
                 // they step aside until the sheet is closed
@@ -504,17 +521,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     globe = globe,
                     onSearch = { showSearch = true },
                     onCountry = { showCountries = true },
-                    onFavourites = {
-                        val points = state.allSpots.filter { it.wgId in state.favourites }.mapNotNull { it.coordinates }
-                        when {
-                            state.filters.favouritesOnly -> viewModel.toggleFavouritesOnly()
-                            points.isEmpty() -> scope.launch { snackbar.showSnackbar(noFavourites) }
-                            else -> {
-                                viewModel.toggleFavouritesOnly()
-                                fit(points)
-                            }
-                        }
-                    },
+                    onFavourites = onFavourites,
                     onLive = viewModel::toggleLiveOnly,
                     onGlobe = ::toggleGlobe,
                     onLayers = { showLayers = it },
@@ -551,7 +558,7 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                         .align(Alignment.TopEnd)
                         .statusBarsPadding()
                         // Sideways level with the floating navigation on the other edge
-                        .padding(top = controlsTop, end = if (wide && selected != null) 376.dp else 12.dp),
+                        .padding(top = controlsTop, end = 12.dp + sideSheet),
                 )
 
                 if (wide && selected != null) {
@@ -567,11 +574,11 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                                 .safeDrawingPadding()
                                 .padding(bottom = peek)
                                 .padding(16.dp)
-                                .width(360.dp)
+                                .width(SIDE_SHEET_WIDTH)
                         } else {
                             Modifier
                                 .align(Alignment.CenterEnd)
-                                .width(360.dp)
+                                .width(SIDE_SHEET_WIDTH)
                                 .fillMaxHeight()
                                 .statusBarsPadding()
                                 .padding(bottom = peek)
@@ -771,6 +778,18 @@ private fun MapControls(
                 }
             }
         }
+    }
+}
+
+/** The sheet's handle with less air round it than the default, so the timeline takes less of the map. */
+@Composable
+private fun SlimDragHandle() {
+    Box(Modifier.fillMaxWidth().padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+            modifier = Modifier.size(width = 32.dp, height = 4.dp),
+        ) {}
     }
 }
 

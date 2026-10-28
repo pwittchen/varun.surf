@@ -44,7 +44,13 @@ import kotlin.random.Random
 data class WindSample(val lat: Double, val lon: Double, val wind: Double, val direction: Direction?)
 
 /** A marker's disc on screen, in pixels, that the wind field leaves clear. */
-data class MarkerHole(val x: Float, val y: Float, val radius: Float)
+data class MarkerHole(
+    val x: Float,
+    val y: Float,
+    val radius: Float,
+    /** Kept clear of the particles only: the colour wash still runs under it (a cluster's caption). */
+    val particlesOnly: Boolean = false,
+)
 
 /** How the particles behave; decided by the screen from settings, battery saver and reduced motion. */
 enum class ParticleMode { OFF, STATIC, ANIMATED }
@@ -75,6 +81,7 @@ fun WindFieldOverlay(
     var size by remember { mutableStateOf(IntSize.Zero) }
     var field by remember { mutableStateOf<BuiltField?>(null) }
     var holes by remember { mutableStateOf<Path?>(null) }
+    var particleHoles by remember { mutableStateOf<Path?>(null) }
 
     LaunchedEffect(controller, samples, cameraVersion, size) {
         if (controller == null || size == IntSize.Zero) return@LaunchedEffect
@@ -94,13 +101,22 @@ fun WindFieldOverlay(
     DisposableEffect(controller, size) {
         val map = controller
         if (map == null || size == IntSize.Zero) return@DisposableEffect onDispose { }
-        val update = { holes = map.markerHoles(size.width.toFloat(), size.height.toFloat()).toPath() }
+        val update = {
+            val all = map.markerHoles(size.width.toFloat(), size.height.toFloat())
+            holes = all.filterNot { it.particlesOnly }.toPath()
+            particleHoles = all.toPath()
+        }
         update()
         val unsubscribe = map.onRendered(update)
         onDispose { unsubscribe() }
     }
     // Markers move with the camera: holes cut for the old view would be left behind
-    LaunchedEffect(moving) { if (moving) holes = null }
+    LaunchedEffect(moving) {
+        if (moving) {
+            holes = null
+            particleHoles = null
+        }
+    }
 
     val built = field
     Canvas(modifier.onSizeChanged { size = it }) {
@@ -116,7 +132,7 @@ fun WindFieldOverlay(
     }
 
     if (built != null && !moving && particleMode != ParticleMode.OFF && built.points.isNotEmpty()) {
-        Particles(built, density, particleMode, particleScale, holes, modifier)
+        Particles(built, density, particleMode, particleScale, particleHoles, modifier)
     }
 }
 

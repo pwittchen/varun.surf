@@ -35,6 +35,10 @@ import org.maplibre.android.style.layers.PropertyFactory.circleStrokeColor
 import org.maplibre.android.style.layers.PropertyFactory.circleStrokeWidth
 import org.maplibre.android.style.layers.PropertyFactory.circleTranslate
 import org.maplibre.android.style.layers.PropertyFactory.textAllowOverlap
+import org.maplibre.android.style.layers.PropertyFactory.textAnchor
+import org.maplibre.android.style.layers.PropertyFactory.textHaloColor
+import org.maplibre.android.style.layers.PropertyFactory.textHaloWidth
+import org.maplibre.android.style.layers.PropertyFactory.textOffset
 import org.maplibre.android.style.layers.PropertyFactory.textColor
 import org.maplibre.android.style.layers.PropertyFactory.textField
 import org.maplibre.android.style.layers.PropertyFactory.textFont
@@ -226,17 +230,42 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
                     circleStrokeWidth(2f),
                 ),
         )
-        // One bubble with the number of spots inside, as on the web; the fill keeps the wind
+        // The bubble reads like a spot's dot - the strongest wind in it, in knots - so a number
+        // in a coloured circle always means wind; how many spots it holds is the caption under it
         style.addLayer(
             SymbolLayer(LAYER_CLUSTER_LABELS, SOURCE)
-                .withFilter(isCluster)
+                .withFilter(all(isCluster, Expression.gte(get(SpotProps.MAX_WIND), literal(0))))
                 .withProperties(
-                    textField(exprToString(get("point_count"))),
+                    textField(exprToString(get(SpotProps.MAX_WIND))),
                     textFont(arrayOf(MapStyles.FONT_BOLD)),
                     textSize(13f),
                     textColor(clusterText),
                     textAllowOverlap(true),
                     textIgnorePlacement(true),
+                ),
+        )
+        style.addLayer(
+            SymbolLayer(LAYER_CLUSTER_COUNTS, SOURCE)
+                .withFilter(isCluster)
+                .withProperties(
+                    textField(clusterCaption(get("point_count"))),
+                    textFont(arrayOf(MapStyles.FONT_BOLD)),
+                    textSize(CAPTION_SIZE),
+                    textColor(LIGHT_TEXT),
+                    textHaloColor(CAPTION_HALO),
+                    textHaloWidth(1.5f),
+                    textAnchor(Property.TEXT_ANCHOR_TOP),
+                    // Just under the bubble, which grows with the count
+                    textOffset(
+                        step(
+                            get("point_count"),
+                            literal(captionOffset(clusterRadiusDp(0))),
+                            *CLUSTER_SIZE_STEPS.map { (count, radius) -> stop(count, literal(captionOffset(radius))) }.toTypedArray(),
+                        ),
+                    ),
+                    // Captions that would run into each other give way; the bubbles never do
+                    textAllowOverlap(false),
+                    textIgnorePlacement(false),
                 ),
         )
 
@@ -263,6 +292,36 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
                 ),
         )
     }
+
+    /**
+     * "118 spots" under a bubble, in the app's language. MapLibre can't read Android plurals,
+     * so the forms are taken from them once and picked by the same rules: English needs only
+     * "other" (a cluster has two spots at least), Polish adds "few" for 2-4 outside 12-14.
+     */
+    private fun clusterCaption(count: Expression): Expression {
+        val res = context.resources
+        fun form(n: Int) = res.getQuantityString(R.plurals.map_spots_count, n, n).replace(n.toString(), "").trim()
+        val many = form(5)
+        val few = form(2)
+        val text = if (few == many) {
+            literal(many)
+        } else {
+            val ones = Expression.mod(count, literal(10))
+            val tens = Expression.mod(count, literal(100))
+            switchCase(
+                all(
+                    Expression.gte(ones, literal(2)),
+                    Expression.lte(ones, literal(4)),
+                    Expression.any(Expression.lt(tens, literal(12)), Expression.gt(tens, literal(14))),
+                ),
+                literal(few),
+                literal(many),
+            )
+        }
+        return Expression.concat(exprToString(count), literal(" "), text)
+    }
+
+    private fun captionOffset(radiusDp: Float): Array<Float> = arrayOf(0f, (radiusDp + 3f) / CAPTION_SIZE)
 
     /** Above the spots, so the user is never hidden under a cluster; shown whatever the spots layer is set to. */
     private fun addMyLocationLayers(style: Style) {
@@ -292,8 +351,8 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
             ?.let { MarkerHole(it.x, it.y, (MY_LOCATION_RADIUS + MY_LOCATION_RIM / 2) * density) }
         if (!markersVisible) return listOfNotNull(me)
         val features = map.queryRenderedFeatures(RectF(0f, 0f, width, height), LAYER_CLUSTERS, LAYER_DOTS)
-        return listOfNotNull(me) + features.mapNotNull { feature ->
-            val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@mapNotNull null
+        return listOfNotNull(me) + features.flatMap { feature ->
+            val point = feature.geometry() as? org.maplibre.geojson.Point ?: return@flatMap emptyList()
             val centre = project(point.latitude(), point.longitude())
             val count = feature.getNumberProperty("point_count")?.toInt()
             val wind = feature.hasProperty(SpotProps.WIND)
@@ -302,7 +361,14 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
                 wind -> DOT_RADIUS + 3f
                 else -> EMPTY_DOT_RADIUS + 2f
             } * density
-            MarkerHole(centre.x, centre.y, radius)
+            val marker = MarkerHole(centre.x, centre.y, radius)
+            if (count == null) {
+                listOf(marker)
+            } else {
+                // The count caption under a bubble is kept clear of particles, which would scratch it out
+                val caption = CAPTION_HOLE_RADIUS * density
+                listOf(marker, MarkerHole(centre.x, centre.y + radius + caption * 0.6f, caption, particlesOnly = true))
+            }
         }
     }
 
@@ -311,10 +377,11 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         const val LAYER_SHADOWS = "spot-shadows"
         const val LAYER_CLUSTERS = "spot-clusters"
         const val LAYER_CLUSTER_LABELS = "spot-cluster-labels"
+        const val LAYER_CLUSTER_COUNTS = "spot-cluster-counts"
         const val LAYER_DOTS = "spot-dots"
         const val LAYER_LABELS = "spot-labels"
         val SPOT_LAYERS = listOf(
-            LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_DOTS, LAYER_LABELS,
+            LAYER_SHADOWS, LAYER_CLUSTERS, LAYER_CLUSTER_LABELS, LAYER_CLUSTER_COUNTS, LAYER_DOTS, LAYER_LABELS,
         )
 
         const val SOURCE_MY_LOCATION = "my-location"
@@ -338,6 +405,13 @@ class MapController(val map: MapLibreMap, private val view: MapView, private val
         private const val RIM = 0xFFFFFFFF.toInt()
         private const val DARK_TEXT = 0xFF0B0F14.toInt()
         private const val LIGHT_TEXT = 0xFFFFFFFF.toInt()
+
+        /** The cluster's count caption: small white text on a dark halo, legible on any basemap. */
+        const val CAPTION_SIZE = 11f
+        const val CAPTION_HALO = 0xB3000000.toInt()
+
+        /** Disc kept clear of particles round a count caption: about half "118 spots" wide. */
+        private const val CAPTION_HOLE_RADIUS = 26f
 
         const val CLUSTER_RADIUS = 60
         const val CLUSTER_MAX_ZOOM = 9

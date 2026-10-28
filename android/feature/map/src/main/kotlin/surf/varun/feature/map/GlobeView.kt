@@ -100,6 +100,12 @@ internal fun GlobeView(
     val dark = VarunTheme.isDark
     val windColors = VarunTheme.wind
     val renderer = remember { GlobeRenderer() }
+    val resources = context.resources
+    SideEffect {
+        // The count under a bubble, from the same plurals as the map's caption; cached, as it is drawn every frame
+        val captions = HashMap<Int, String>()
+        renderer.caption = { n -> captions.getOrPut(n) { resources.getQuantityString(R.plurals.map_spots_count, n, n) } }
+    }
     val currentOnSelect by rememberUpdatedState(onSelect)
     var frame by remember { mutableIntStateOf(0) }
     // A finger on the globe: frames follow it at the display's full rate
@@ -721,6 +727,16 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
         typeface = Typeface.DEFAULT_BOLD
         textAlign = Paint.Align.CENTER
     }
+    private val captionText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Typeface.DEFAULT_BOLD
+        textAlign = Paint.Align.CENTER
+        textSize = MapController.CAPTION_SIZE
+        color = LIGHT_TEXT
+        setShadowLayer(2f, 0f, 0f, MapController.CAPTION_HALO)
+    }
+
+    /** "118 spots" for a bubble's caption; set by the composable, which has the resources. */
+    var caption: (Int) -> String = { it.toString() }
     private var glow: Shader? = null
     private var ocean: Shader? = null
     private var limb: Shader? = null
@@ -859,6 +875,10 @@ internal class GlobeRenderer(private val random: Random = Random.Default) {
             text.color = textColor
             text.alpha = alpha
             canvas.drawText(label, marker.x, marker.y - (text.ascent() + text.descent()) / 2, text)
+        }
+        if (single == null) {
+            captionText.alpha = alpha
+            canvas.drawText(caption(cluster.members.size), marker.x, marker.y + radius + 3f - captionText.ascent(), captionText)
         }
     }
 
