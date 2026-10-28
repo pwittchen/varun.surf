@@ -1,6 +1,6 @@
 ---
 name: release-notes-android
-description: Write or update the Google Play release notes of the Android app (android/distribution/whatsnew, EN + PL) from the changes since the last Android release. Use before tagging an android-vX.Y.Z release, or when the user asks for Android release notes / "what's new".
+description: Write or update the Google Play release notes of the Android app (android/distribution/whatsnew, EN + PL) from the changes since the last Android release, and record the release in android/RELEASES.md. Use before tagging an android-vX.Y.Z release, or when the user asks for Android release notes / "what's new".
 argument-hint: "[base ref, e.g. android-v1.0.1 or a commit; default: last release]"
 ---
 
@@ -15,6 +15,9 @@ Files (plain text, one paragraph each, Play language codes as suffixes):
 
 - `android/distribution/whatsnew/whatsnew-en-US`
 - `android/distribution/whatsnew/whatsnew-pl-PL`
+
+Every release is also recorded in `android/RELEASES.md` (newest first): version name, version
+code, date and time, tag, and both release notes - see step 5.
 
 ## Instructions
 
@@ -81,12 +84,53 @@ printf '%s' 'Polski tekst...' > whatsnew-pl-PL
 wc -m whatsnew-en-US whatsnew-pl-PL   # each must be <= 500
 ```
 
-### 5. Report
+### 5. Record the release in `android/RELEASES.md`
+
+Add a section for the new release at the **top** of the list (right under the intro, above
+the previous release), in the same shape as the existing entries:
+
+```markdown
+## X.Y.Z
+
+- Version name: `X.Y.Z`
+- Version code: `NN`
+- Date: YYYY-MM-DD HH:MM +HH:MM
+- Tag: `android-vX.Y.Z`
+
+**EN:** <the exact text of whatsnew-en-US>
+
+**PL:** <the exact text of whatsnew-pl-PL>
+```
+
+- **Version name**: the one given by the user; otherwise the last `android-v*` tag with the
+  patch number bumped (`1.0.2` -> `1.0.3`). Say which one was assumed, since a feature release
+  may deserve a minor bump instead
+- **Version code**: the CI sets it to the run number of the ANDROID workflow run that builds
+  the tag (`VERSION_CODE: ${{ github.run_number }}`), so it is not known before the tag is
+  pushed. Write `pending` until then. Once the tag's run exists, look it up and fill it in
+  (the active `gh` account gets 403 on this repo, so pass the `pwittchen` token):
+
+  ```bash
+  GH_TOKEN="$(gh auth token --user pwittchen)" gh run list --workflow android.yml \
+    --branch android-vX.Y.Z --limit 1 --json number --jq '.[0].number'
+  ```
+
+  Whenever the skill runs, also fill in any older entry still marked `pending` whose tag now
+  has a run
+- **Date**: the local date and time the entry is written, with the UTC offset
+  (`date '+%Y-%m-%d %H:%M %z'`, written as `+01:00`)
+- **EN/PL**: copied verbatim from the two `whatsnew` files. If the section for this version
+  already exists (the notes are being rewritten), update it in place rather than adding a
+  second one
+
+### 6. Report
 
 Show the user:
 
 - the base used and the commits the notes were written from (one line each)
 - both texts and their character counts
+- the version name and code recorded in `android/RELEASES.md` (and whether the code is still
+  `pending`)
 - anything left out that they might want in
 
 Do not commit, push or tag. The notes are part of a release the user triggers; leave them in
