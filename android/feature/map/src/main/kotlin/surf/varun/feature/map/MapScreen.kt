@@ -7,6 +7,13 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.expandIn
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.layout.onSizeChanged
 import surf.varun.core.ui.MapStyles
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -130,6 +137,12 @@ private val PEEK_HEIGHT = 156.dp
 private val COMPACT_PEEK_HEIGHT = 112.dp
 private val SIDE_SHEET_BREAKPOINT = 840.dp
 private const val PLAY_STEP_MS = 650L
+
+/** Kept clear between the controls card and the sheet's top edge. */
+private val CONTROLS_SHEET_GAP = 12.dp
+
+/** The controls card's padding round its buttons, on each side. */
+private val CONTROLS_PADDING = 4.dp
 
 /** Close enough to see the spots round the user, not so close that none are left in view. */
 private const val MY_LOCATION_ZOOM = 8.0
@@ -480,6 +493,8 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                 }
 
                 val noFavourites = stringResource(R.string.map_no_favourites)
+                val statusBarTop = WindowInsets.statusBars.getTop(density)
+                val controlsTop = if (compact) 4.dp else 12.dp
                 // Sideways the spot's sheet takes the right edge and the floating navigation the
                 // left, which leaves the controls nowhere clear of the spot centred between them:
                 // they step aside until the sheet is closed
@@ -526,11 +541,17 @@ fun MapScreen(route: MapRoute, viewModel: MapViewModel = hiltViewModel()) {
                     onTimeline = onTimeline,
                     viewModel = viewModel,
                     compact = compact,
+                    // Down to the sheet's top edge, which the spot raises half the screen on a phone
+                    room = {
+                        runCatching { sheetState.requireOffset() }.getOrNull()?.let {
+                            with(density) { (it - statusBarTop).toDp() } - controlsTop - CONTROLS_SHEET_GAP
+                        }
+                    },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .statusBarsPadding()
                         // Sideways level with the floating navigation on the other edge
-                        .padding(top = if (compact) 4.dp else 12.dp, end = if (wide && selected != null) 376.dp else 12.dp),
+                        .padding(top = controlsTop, end = if (wide && selected != null) 376.dp else 12.dp),
                 )
 
                 if (wide && selected != null) {
@@ -648,6 +669,11 @@ private fun LocatingOverlay(visible: Boolean, modifier: Modifier = Modifier) {
  * view. Filters that are on (and the globe) are filled with the accent colour.
  * With no height to spare ([compact]) the three groups stand side by side
  * instead of one under another.
+ *
+ * The bottom sheet draws over the card, so where it would cut the card ([room]
+ * shorter than the card) the card folds for as long as the sheet stands that
+ * high, without touching the user's own fold. Unfolded by hand meanwhile, it
+ * fits the room above the sheet and scrolls.
  */
 @Composable
 private fun MapControls(
@@ -667,10 +693,26 @@ private fun MapControls(
     onTimeline: (Boolean) -> Unit,
     viewModel: MapViewModel,
     compact: Boolean,
+    room: () -> Dp?,
     modifier: Modifier = Modifier,
 ) {
+    val density = LocalDensity.current
     // Kept for the visit: whoever folds the controls away to look at the map wants them folded
     var expanded by rememberSaveable { mutableStateOf(true) }
+    // Natural heights, measured whether or not the sheet leaves room for them
+    var headerHeight by remember { mutableIntStateOf(0) }
+    var groupsHeight by remember { mutableIntStateOf(0) }
+    val currentRoom by rememberUpdatedState(room)
+    val covered by remember {
+        derivedStateOf {
+            val space = currentRoom() ?: return@derivedStateOf false
+            groupsHeight > 0 && with(density) { (headerHeight + groupsHeight).toDp() } + CONTROLS_PADDING * 2 > space
+        }
+    }
+    // Unfolded by hand over the sheet: shown in the room there is until the sheet goes down
+    var overSheet by remember { mutableStateOf(false) }
+    LaunchedEffect(covered) { if (!covered) overSheet = false }
+    val shown = expanded && (!covered || overSheet)
     Surface(
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -678,32 +720,53 @@ private fun MapControls(
         shadowElevation = 6.dp,
         modifier = modifier,
     ) {
-        Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(4.dp)) {
-            IconButton(onClick = { expanded = !expanded }) {
+        Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(CONTROLS_PADDING)) {
+            IconButton(
+                onClick = {
+                    if (shown) {
+                        expanded = false
+                        overSheet = false
+                    } else {
+                        expanded = true
+                        overSheet = covered
+                    }
+                },
+                modifier = Modifier.onSizeChanged { headerHeight = it.height },
+            ) {
                 Icon(
-                    if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.Tune,
-                    contentDescription = stringResource(if (expanded) R.string.map_controls_hide else R.string.map_controls_show),
+                    if (shown) Icons.Rounded.ExpandLess else Icons.Rounded.Tune,
+                    contentDescription = stringResource(if (shown) R.string.map_controls_hide else R.string.map_controls_show),
                 )
             }
             AnimatedVisibility(
-                visible = expanded,
+                visible = shown,
                 enter = fadeIn() + expandIn(expandFrom = Alignment.TopEnd),
                 exit = fadeOut() + shrinkOut(shrinkTowards = Alignment.TopEnd),
             ) {
-                if (compact) {
-                    Row {
-                        Column { ZoomControls(onZoom, onResetView) }
-                        Column { ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel) }
-                        Column { FilterControls(state, onSearch, onCountry, onFavourites, onLive) }
-                    }
+                val fit = if (covered) {
+                    val space = (currentRoom() ?: Dp.Infinity) - with(density) { headerHeight.toDp() } - CONTROLS_PADDING * 2
+                    // Never shorter than one button, however high the sheet stands
+                    Modifier.heightIn(max = space.coerceAtLeast(48.dp)).verticalScroll(rememberScrollState())
                 } else {
-                    Column {
-                        GroupDivider()
-                        FilterControls(state, onSearch, onCountry, onFavourites, onLive)
-                        GroupDivider()
-                        ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel)
-                        GroupDivider()
-                        ZoomControls(onZoom, onResetView)
+                    Modifier
+                }
+                Box(fit) {
+                    val measured = Modifier.onSizeChanged { groupsHeight = it.height }
+                    if (compact) {
+                        Row(measured) {
+                            Column { ZoomControls(onZoom, onResetView) }
+                            Column { ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel) }
+                            Column { FilterControls(state, onSearch, onCountry, onFavourites, onLive) }
+                        }
+                    } else {
+                        Column(measured) {
+                            GroupDivider()
+                            FilterControls(state, onSearch, onCountry, onFavourites, onLive)
+                            GroupDivider()
+                            ViewControls(state, showLayers, globe, timeline, onGlobe, onLayers, onTimeline, onMyLocation, viewModel)
+                            GroupDivider()
+                            ZoomControls(onZoom, onResetView)
+                        }
                     }
                 }
             }
