@@ -108,7 +108,7 @@ internal fun rememberSpotMapImage(spot: Spot?): ImageBitmap? {
 
     LaunchedEffect(spot.wgId) {
         val file = File(context.cacheDir, "minimap/${spot.wgId}-satellite.png")
-        image = withContext(Dispatchers.IO) { readCached(file) }
+        image = withContext(Dispatchers.IO) { readCached(file, (WIDTH * density).toInt(), (HEIGHT * density).toInt()) }
             ?: snapshot(context, coordinates.lat, coordinates.lon, density)?.also { bitmap ->
                 withContext(Dispatchers.IO) { writeCache(file, bitmap) }
             }?.asImageBitmap()
@@ -118,9 +118,26 @@ internal fun rememberSpotMapImage(spot: Spot?): ImageBitmap? {
 
 private val CACHE_TTL_MS = TimeUnit.DAYS.toMillis(30)
 
-private fun readCached(file: File): ImageBitmap? {
+/**
+ * The cached snapshot, decoded no larger than [width] x [height] pixels. It was rendered at
+ * that size, but a file left by a denser display (a restored backup, a changed display
+ * size) is sampled down rather than held at full resolution.
+ */
+private fun readCached(file: File, width: Int, height: Int): ImageBitmap? {
     if (!file.exists() || System.currentTimeMillis() - file.lastModified() > CACHE_TTL_MS) return null
-    return runCatching { BitmapFactory.decodeFile(file.path)?.asImageBitmap() }.getOrNull()
+    return runCatching {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(file.path, bounds)
+        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize(bounds.outWidth, bounds.outHeight, width, height) }
+        BitmapFactory.decodeFile(file.path, options)?.asImageBitmap()
+    }.getOrNull()
+}
+
+/** The largest power of two that still leaves the image at least [width] x [height]. */
+internal fun sampleSize(imageWidth: Int, imageHeight: Int, width: Int, height: Int): Int {
+    var sample = 1
+    while (imageWidth / (sample * 2) >= width && imageHeight / (sample * 2) >= height) sample *= 2
+    return sample
 }
 
 private fun writeCache(file: File, bitmap: Bitmap) {
