@@ -20,8 +20,12 @@ living in `cli/`. It gives a terminal the same answers the MCP server gives an L
 - Be a good Unix citizen: readable tables on a TTY, plain text when piped, `--json`
   for scripts and `--format md` for pasting into notes or feeding an LLM.
 - One static binary per platform, no runtime, starts in well under 100 ms.
-- Reuse the existing public API as-is. No backend change is required for v1; optional
-  ones are listed in section 11.
+- **Linux and macOS on Apple Silicon only** (section 1.1). Windows and Intel Macs are not
+  supported.
+- **One-line install** from the varun.surf domain:
+  `curl -fsSL https://varun.surf/cli/install.sh | sh` (section 9.4).
+- Reuse the existing public API as-is. The only backend change v1 needs is serving the
+  install script (section 9.4); optional ones are listed in section 11.
 
 ### Non-goals
 
@@ -31,8 +35,24 @@ living in `cli/`. It gives a terminal the same answers the MCP server gives an L
   gets (section 4.10).
 - No paid operations by default. The AI analysis is out of v1 (see 2.2).
 - No accounts, no server-side state. Favourites live in a local config file.
-- No package-manager distribution in v1 (Homebrew tap, crates.io, winget, AUR) -
-  GitHub Release binaries only. Listed as follow-ups in section 10.
+- No package-manager distribution in v1 (Homebrew tap, crates.io, AUR) - GitHub Release
+  binaries, installed by the install script or by hand. Listed as follow-ups in section 10.
+- No Windows support, not even best-effort: no Windows binary, no Windows CI job, no
+  Windows-specific code paths (config dirs, console colour APIs, PowerShell completions).
+  WSL users install the Linux binary.
+- No Intel Mac (`x86_64-apple-darwin`) binary.
+
+### 1.1 Supported platforms
+
+| OS | Architecture | Rust target | Notes |
+|---|---|---|---|
+| Linux | x86_64 | `x86_64-unknown-linux-musl` | Static (musl), runs on any distro, WSL included |
+| Linux | arm64 | `aarch64-unknown-linux-musl` | Static (musl): Raspberry Pi 4/5, Graviton, ARM laptops |
+| macOS | Apple Silicon (arm64) | `aarch64-apple-darwin` | macOS 13 or newer |
+
+Anything else - Windows, Intel Macs, 32-bit Linux, the BSDs - is unsupported. The install
+script refuses it with a clear message (section 9.4) rather than installing a binary that
+will not start; `cargo build` from source may still work there, but is not tested.
 
 ---
 
@@ -201,7 +221,7 @@ empty forecast right after a deploy explains itself. Parity: `get_status`.
 - `varun fav add <SPOT> [--as ALIAS]`, `fav rm <SPOT|ALIAS>`, `fav ls` - local favourites.
 - `varun open <SPOT>` - open the spot page in the default browser.
 - `varun config [get|set|path|edit]` - read and write the config file.
-- `varun completions <bash|zsh|fish|powershell|elvish>` - print a completion script.
+- `varun completions <bash|zsh|fish>` - print a completion script.
 - `--watch[=SECONDS]` on `now` and `windy` - clear and re-render; floor 60 s; `Ctrl-C` exits.
 
 ### 4.12 Exit codes
@@ -253,10 +273,10 @@ never fails a command on an unparseable date - it prints the raw string instead.
 
 ### 6.1 Files (XDG / platform dirs via the `directories` crate)
 
-| What | Linux | macOS | Windows |
-|---|---|---|---|
-| Config `config.toml` | `~/.config/varun/` | `~/Library/Application Support/surf.varun.cli/` | `%APPDATA%\varun\` |
-| Cache (responses, session cookie) | `~/.cache/varun/` | `~/Library/Caches/surf.varun.cli/` | `%LOCALAPPDATA%\varun\cache\` |
+| What | Linux | macOS |
+|---|---|---|
+| Config `config.toml` | `~/.config/varun/` | `~/Library/Application Support/surf.varun.cli/` |
+| Cache (responses, session cookie) | `~/.cache/varun/` | `~/Library/Caches/surf.varun.cli/` |
 
 ```toml
 base_url = "https://varun.surf"
@@ -402,6 +422,7 @@ on:
     paths:
       - 'cli/**'
       - '!cli/**/*.md'          # docs only - nothing to build
+      - 'src/frontend/assets/cli/install.sh'   # for the install-script job (section 9.4)
       - '.github/workflows/cli.yml'
     tags:
       - 'cli-v*'
@@ -410,6 +431,7 @@ on:
     paths:
       - 'cli/**'
       - '!cli/**/*.md'
+      - 'src/frontend/assets/cli/install.sh'
       - '.github/workflows/cli.yml'
   workflow_dispatch:
 
@@ -434,9 +456,12 @@ defaults:
 8. `cargo build --release --locked` and upload `target/release/varun` as an artifact
 9. On failure: upload test output
 
-A smaller **`check-matrix`** job builds and tests (no release artifacts) on
-`macos-latest` and `windows-latest` on pull requests, so platform-specific paths
-(config dirs, terminal detection) break in review, not at release.
+A smaller **`check-macos`** job builds and tests (no release artifacts) on `macos-latest`
+(Apple Silicon) on pull requests, so platform-specific paths (config dirs, terminal
+detection) break in review, not at release. There is no Windows job.
+
+A **`install-script`** job runs `shellcheck --shell=sh` on the install script
+(section 9.4) on every trigger.
 
 **Job `release`** - only `if: startsWith(github.ref, 'refs/tags/cli-v')`, `needs: build`,
 `permissions: contents: write`. Matrix:
@@ -444,10 +469,11 @@ A smaller **`check-matrix`** job builds and tests (no release artifacts) on
 | Target | Runner | Artifact |
 |---|---|---|
 | `x86_64-unknown-linux-musl` | `ubuntu-24.04` | `varun-<ver>-x86_64-unknown-linux-musl.tar.gz` |
-| `aarch64-unknown-linux-musl` | `ubuntu-24.04` (cross / `cargo-zigbuild`) | `.tar.gz` |
-| `x86_64-apple-darwin` | `macos-13` (or cross from `macos-latest`) | `.tar.gz` |
-| `aarch64-apple-darwin` | `macos-latest` | `.tar.gz` |
-| `x86_64-pc-windows-msvc` | `windows-latest` | `.zip` |
+| `aarch64-unknown-linux-musl` | `ubuntu-24.04-arm` (or cross / `cargo-zigbuild`) | `varun-<ver>-aarch64-unknown-linux-musl.tar.gz` |
+| `aarch64-apple-darwin` | `macos-latest` | `varun-<ver>-aarch64-apple-darwin.tar.gz` |
+
+The archive names are a contract: the install script (section 9.4) builds the download
+URL from them, so renaming one breaks installs.
 
 Each job:
 
@@ -463,6 +489,11 @@ Release `cli-vX.Y.Z` (`softprops/action-gh-release` or `gh release create`) titl
 `varun CLI X.Y.Z`, body taken from the matching section of `cli/RELEASES.md`, with all
 archives and a combined `SHA256SUMS`. Marked as not "latest", so the backend's `v*`
 releases keep the "Latest" badge on the repo page.
+
+A last **`verify-install`** job (`needs: publish`, matrix `ubuntu-24.04`,
+`ubuntu-24.04-arm`, `macos-latest`) runs the install script from the tagged commit with
+`--version <tag version>` into a temporary directory and checks that `varun --version`
+prints the tagged version - the release is proven installable the way users install it.
 
 ### 9.2 Interaction with existing workflows
 
@@ -480,6 +511,85 @@ releases keep the "Latest" badge on the repo page.
 3. The `CLI` workflow builds, tests and publishes the release. Versions follow SemVer;
    the JSON output schema only changes incompatibly on a major bump.
 
+### 9.4 Install script (`https://varun.surf/cli/install.sh`)
+
+The supported way to install and upgrade:
+
+```sh
+curl -fsSL https://varun.surf/cli/install.sh | sh
+# pin a version / pick the directory
+curl -fsSL https://varun.surf/cli/install.sh | sh -s -- --version 1.2.0 --dir /usr/local/bin
+```
+
+**Hosting.** The script is a static file of the website, not a CLI release asset, so it is
+always reachable under the project's own domain:
+
+- Source: `src/frontend/assets/cli/install.sh`. Under `src/frontend`, so a change to it goes
+  through `ci.yml`/`cd.yml` and ships with the next backend deploy, like any other static
+  file (keeping it in `cli/` would put it behind `ci.yml`'s `cli/**` `paths-ignore`, and it
+  would never be deployed).
+- `build.ts` copies it to `static/cli/install.sh` (a `STATIC_ASSETS` entry, as for
+  `assetlinks.json`), not minified and not content-hashed - the URL must stay fixed.
+- Backend changes (small, required for v1):
+  - `SessionAuthenticationFilter`: add `.sh` to `STATIC_ASSET_EXTENSIONS`, so fetching the
+    script is not treated as a page visit and does not mint a `SESSION` cookie.
+  - `CacheControlFilter`: serve `/cli/` with `no-cache, must-revalidate` (like
+    `/.well-known/`), so a fixed script reaches users at once rather than after a CDN TTL;
+    `deployment.sh` already purges Cloudflare after a deploy.
+  - Served as `text/plain; charset=utf-8`, so opening the URL in a browser shows the script
+    for review instead of downloading it.
+- nginx rate limiting applies as for any other static file.
+- The cli.yml `paths` filter also lists `src/frontend/assets/cli/install.sh`, so the
+  `install-script` job (shellcheck) runs when only the script changes.
+
+**Because it ships with the backend, not with a CLI release, the script is
+version-agnostic**: it never hard-codes a CLI version and must keep working for every
+release whose archive names follow section 9.1.
+
+**Behaviour.**
+
+1. POSIX `sh` only (`#!/bin/sh`, no bashisms - `curl | sh` runs `dash` on Debian/Ubuntu);
+   `set -eu`; the whole body is wrapped in a function called on the last line, so a
+   download cut off mid-way runs nothing.
+2. Detects the platform with `uname -s` / `uname -m`:
+   - `Linux` + `x86_64`/`amd64` → `x86_64-unknown-linux-musl`
+   - `Linux` + `aarch64`/`arm64` → `aarch64-unknown-linux-musl`
+   - `Darwin` + `arm64` → `aarch64-apple-darwin`
+   - `Darwin` + `x86_64`: if `sysctl -n sysctl.proc_translated` is `1` (a shell under
+     Rosetta on an Apple Silicon Mac) → `aarch64-apple-darwin`; otherwise exit 1 with
+     "Intel Macs are not supported".
+   - Anything else (Windows shells such as Git Bash/MSYS/Cygwin, FreeBSD, 32-bit, ...) →
+     exit 1 naming the detected OS/arch and the supported list from section 1.1.
+3. Resolves the version: `--version X.Y.Z` (or `VARUN_VERSION`) wins; otherwise the newest
+   `cli-v*` release from the GitHub API (`GET /repos/pwittchen/varun.surf/releases`; the
+   CLI releases are not marked "latest", so `/releases/latest` cannot be used). Parsed with
+   `grep`/`sed` - no `jq` dependency. A GitHub API failure (e.g. its unauthenticated rate
+   limit) exits with a message suggesting `--version`.
+4. Downloads `varun-<ver>-<target>.tar.gz` and its `.sha256` from the GitHub Release into a
+   `mktemp -d` directory (removed by a `trap` on exit), with `curl -fsSL`, falling back to
+   `wget -q` when curl is missing.
+5. Verifies the checksum with `sha256sum` (Linux) or `shasum -a 256` (macOS) and aborts on a
+   mismatch, installing nothing.
+6. Installs `varun` into `--dir` / `VARUN_INSTALL_DIR`, default `~/.local/bin` - no `sudo`,
+   ever; when the target directory is not writable the script says so and suggests `--dir`
+   or re-running with sudo, rather than escalating itself. Installs atomically (copy to a
+   temp name in the target dir, `chmod 755`, `mv`), so an upgrade never leaves a half-written
+   binary.
+7. macOS: the arm64 binary carries the ad-hoc signature the Rust toolchain adds, which is
+   all Apple Silicon requires to run it; a `curl` download is not quarantined, so Gatekeeper
+   does not intervene. Notarisation is not needed for this path (it would be for a
+   browser-downloaded archive - documented in `cli/README.md`).
+8. Prints the installed version (`varun --version`) and, when the directory is not on
+   `PATH`, the exact line to add to `~/.profile` / `~/.zshrc`. It never edits shell rc files
+   itself.
+9. Re-running upgrades (or downgrades, with `--version`) in place. Uninstalling is deleting
+   the binary plus the config/cache dirs of section 6.1; `cli/README.md` lists them.
+10. Flags: `--version`, `--dir`, `--help`. No telemetry; the only hosts contacted are
+    `api.github.com` and `github.com`/`objects.githubusercontent.com`.
+
+`varun.surf` serves the script only; the binaries stay on GitHub Releases, so the backend
+serves no large files and a CLI release needs no deploy.
+
 ---
 
 ## 10. Delivery plan
@@ -489,9 +599,10 @@ releases keep the "Latest" badge on the repo page.
 3. **MCP parity** - `spots`, `spot`, `search`, `countries`, `country`, `wind`, `windy`, `status`
    in all four formats; parity tests.
 4. **CLI-native** - spot resolution by name/alias, `now`, `fav`, `open`, `--watch`, units, completions.
-5. **Release** - matrix build, checksums, GitHub Release on `cli-v*`, `cli/README.md`, `cli/RELEASES.md`,
+5. **Release** - matrix build, checksums, GitHub Release on `cli-v*`, the install script at
+   `https://varun.surf/cli/install.sh` (with its backend changes), `cli/README.md`, `cli/RELEASES.md`,
    a CLI section in the root `README.md`, `CLAUDE.md` and `AGENTS.md`.
-6. **Follow-ups (post v1)** - Homebrew tap, `cargo install`/crates.io, Scoop/winget, `deps.yml` job,
+6. **Follow-ups (post v1)** - Homebrew tap, `cargo install`/crates.io, `deps.yml` job,
    kite calculator, a self-update hint (opt-in), optional AI analysis behind confirmation.
 
 ---
@@ -528,5 +639,9 @@ releases keep the "Latest" badge on the repo page.
 - Piped output contains no ANSI codes; `NO_COLOR` is honoured.
 - Exit codes follow section 4.12; network failures never panic.
 - A push touching `cli/**` (non-docs) runs the `CLI` workflow and only it; a `cli-vX.Y.Z` tag
-  publishes a GitHub Release with five platform archives and checksums.
+  publishes a GitHub Release with three platform archives (Linux x86_64, Linux arm64, macOS
+  arm64) and checksums.
+- `curl -fsSL https://varun.surf/cli/install.sh | sh` installs a working `varun` on a fresh
+  Linux (x86_64, arm64) and Apple Silicon Mac without sudo, verifies its checksum, and
+  refuses Windows and Intel Macs with a clear message.
 - Test coverage at least 80 %; `clippy -D warnings` clean.
