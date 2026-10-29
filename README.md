@@ -28,6 +28,7 @@
 - **backend**: Java, Spring Boot, Gradle
 - **frontend** (bundled with the backend app): Vanilla JS, HTML, CSS, Bun
 - **mobile**: Android, Kotlin
+- **cli**: Rust
 
 ## building
 
