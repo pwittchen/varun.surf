@@ -47,6 +47,9 @@ public class CacheControlFilter implements WebFilter {
     /** {@code assetlinks.json} lives here: a changed signing key must reach Android's verifier at once */
     private static final String WELL_KNOWN_PATH = "/.well-known/";
 
+    /** the CLI install script: a fixed one must reach {@code curl | sh} at once, not after a CDN TTL */
+    private static final String CLI_PATH = "/cli/";
+
     private static final List<String> VERSIONABLE_EXTENSIONS = List.of(
             ".png", ".jpg", ".jpeg", ".webp", ".svg", ".ico",
             ".txt", ".xml", ".json", ".webmanifest", ".woff2"
@@ -87,7 +90,7 @@ public class CacheControlFilter implements WebFilter {
             return IMMUTABLE;
         }
 
-        if (path.startsWith(WELL_KNOWN_PATH)) {
+        if (path.startsWith(WELL_KNOWN_PATH) || path.startsWith(CLI_PATH)) {
             return REVALIDATE;
         }
 

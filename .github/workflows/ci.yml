@@ -8,6 +8,8 @@ on:
       - '**.jpg'
       - 'android/**'
       - '.github/workflows/android.yml'
+      - 'cli/**'
+      - '.github/workflows/cli.yml'
   pull_request:
     branches: [ "master" ]
     paths-ignore:
@@ -15,6 +17,8 @@ on:
       - '**.jpg'
       - 'android/**'
       - '.github/workflows/android.yml'
+      - 'cli/**'
+      - '.github/workflows/cli.yml'
   workflow_dispatch:
 
 jobs:

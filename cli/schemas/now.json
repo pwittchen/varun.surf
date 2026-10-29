@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/now.json",
+  "title": "varun now --json",
+  "description": "Live conditions at the spots asked for, the favourites, or the windiest stations.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "spots"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "spots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "country",
+          "wgId",
+          "live"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "wgId": {
+            "type": "integer",
+            "description": "Windguru spot id"
+          },
+          "live": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Null when the spot has no live weather station.",
+            "required": [
+              "wind",
+              "gusts",
+              "temp",
+              "stale"
+            ],
+            "properties": {
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Station-local time as the station reports it."
+              },
+              "wind": {
+                "type": "integer"
+              },
+              "gusts": {
+                "type": "integer"
+              },
+              "direction": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "temp": {
+                "type": "integer"
+              },
+              "ageMinutes": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "stale": {
+                "type": "boolean",
+                "description": "60 minutes old or more, or unreadable."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

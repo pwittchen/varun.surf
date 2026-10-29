@@ -32,6 +32,8 @@ const STATIC_ASSETS = [
   { src: "assets/robots.txt", dest: "robots.txt" },
   // Digital Asset Links for the Android app's verified App Links (fingerprints from Play Console → Deep links)
   { src: "assets/assetlinks.json", dest: ".well-known/assetlinks.json" },
+  // CLI installer behind `curl -fsSL https://varun.surf/cli/install.sh | sh` - copied as is, the URL must stay fixed
+  { src: "assets/cli/install.sh", dest: "cli/install.sh" },
   // sitemap.xml is served dynamically by SeoController (covers all spot/country pages)
 ];
 

@@ -49,7 +49,9 @@ public class SessionAuthenticationFilter implements WebFilter {
 
     private static final List<String> STATIC_ASSET_EXTENSIONS = List.of(
             ".js", ".css", ".png", ".ico", ".svg", ".webp",
-            ".woff2", ".txt", ".xml", ".webmanifest", ".html", ".json"
+            ".woff2", ".txt", ".xml", ".webmanifest", ".html", ".json",
+            // the CLI install script, fetched with curl: no page visit, so no cookie
+            ".sh"
     );
 
     private static final List<String> STATIC_ASSET_PATHS = List.of(

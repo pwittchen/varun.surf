@@ -1,0 +1,288 @@
+name: CLI # fmt, clippy, tests and release builds of the varun CLI (cli/)
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'cli/**'
+      - '!cli/**/*.md' # docs only (README, SPEC, RELEASES) - nothing to build
+      - 'src/frontend/assets/cli/install.sh'
+      - '.github/workflows/cli.yml'
+    tags:
+      - 'cli-v*'
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'cli/**'
+      - '!cli/**/*.md'
+      - 'src/frontend/assets/cli/install.sh'
+      - '.github/workflows/cli.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: cli
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    # "#no-deploy" in the pushed commit's message skips the run (and with it the release);
+    # a cli-v* tag always builds, whatever the tagged commit says
+    if: github.event_name != 'push' || github.ref_type == 'tag' || !contains(github.event.head_commit.message, '#no-deploy')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install toolchain (rust-toolchain.toml)
+        run: rustup toolchain install # the channel and components of rust-toolchain.toml
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Test
+        shell: bash # pipefail, so a failing test still fails the step
+        run: cargo test --locked 2>&1 | tee test-output.txt
+
+      - name: Licences and advisories
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          manifest-path: cli/Cargo.toml
+
+      - name: Build release
+        run: cargo build --release --locked
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v7
+        with:
+          name: varun-linux-x86_64-gnu
+          path: cli/target/release/varun
+
+      - name: Upload test output
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-output
+          path: cli/test-output.txt
+
+  check-macos:
+    # platform-specific paths (config dirs, terminal detection) break in review, not at release
+    if: github.event_name == 'pull_request'
+    runs-on: macos-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install toolchain (rust-toolchain.toml)
+        run: rustup toolchain install
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+
+      - name: Test
+        run: cargo test --locked
+
+  install-script:
+    if: github.event_name != 'push' || github.ref_type == 'tag' || !contains(github.event.head_commit.message, '#no-deploy')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # `curl | sh` runs dash on Debian/Ubuntu, so the script has to be plain POSIX sh
+      - name: ShellCheck
+        run: shellcheck --shell=sh src/frontend/assets/cli/install.sh
+
+      - name: Syntax check with dash
+        run: dash -n src/frontend/assets/cli/install.sh
+
+  release:
+    # cli-vX.Y.Z tag -> one archive per supported platform (cli/SPEC.md, section 1.1).
+    # The archive names are a contract with the install script: do not rename them
+    if: startsWith(github.ref, 'refs/tags/cli-v')
+    needs: [ build, install-script ]
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            runner: ubuntu-24.04
+          - target: aarch64-unknown-linux-musl
+            runner: ubuntu-24.04-arm
+          - target: aarch64-apple-darwin
+            runner: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Check the tag matches Cargo.toml
+        id: version
+        shell: bash
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#cli-v}"
+          CARGO_VERSION=$(sed -n 's/^version *= *"\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          if [ "$TAG_VERSION" != "$CARGO_VERSION" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match cli/Cargo.toml version $CARGO_VERSION"
+            exit 1
+          fi
+          echo "version=$TAG_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Install musl tools
+        if: contains(matrix.target, 'linux-musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: Install toolchain (rust-toolchain.toml)
+        run: rustup toolchain install && rustup target add ${{ matrix.target }}
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+          key: ${{ matrix.target }}
+
+      - name: Build
+        env:
+          VARUN_GIT_SHA: ${{ github.sha }}
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Package
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          NAME="varun-${VERSION}-${TARGET}"
+          BIN="target/${TARGET}/release/varun"
+          mkdir -p "dist/${NAME}/completions" "dist/${NAME}/man"
+          cp "$BIN" "dist/${NAME}/varun"
+          cp README.md "dist/${NAME}/README.md"
+          cp ../LICENSE "dist/${NAME}/LICENSE"
+          "$BIN" completions bash > "dist/${NAME}/completions/varun.bash"
+          "$BIN" completions zsh > "dist/${NAME}/completions/_varun"
+          "$BIN" completions fish > "dist/${NAME}/completions/varun.fish"
+          "$BIN" man > "dist/${NAME}/man/varun.1"
+          cd dist
+          tar -czf "${NAME}.tar.gz" "${NAME}"
+          if command -v sha256sum >/dev/null; then
+            sha256sum "${NAME}.tar.gz" > "${NAME}.tar.gz.sha256"
+          else
+            shasum -a 256 "${NAME}.tar.gz" > "${NAME}.tar.gz.sha256"
+          fi
+          cat "${NAME}.tar.gz.sha256"
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-${{ matrix.target }}
+          path: |
+            cli/dist/*.tar.gz
+            cli/dist/*.tar.gz.sha256
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/cli-v')
+    needs: release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download archives
+        uses: actions/download-artifact@v5
+        with:
+          pattern: release-*
+          path: cli/dist
+          merge-multiple: true
+
+      - name: Release notes from RELEASES.md
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#cli-v}"
+          # the "## X.Y.Z" section, up to the next "## " heading
+          awk -v v="$VERSION" '
+            $0 ~ "^## " { if (found) exit; if ($2 == v) { found = 1; next } }
+            found { print }
+          ' RELEASES.md > dist/notes.md
+          if [ ! -s dist/notes.md ]; then
+            echo "varun CLI ${VERSION}" > dist/notes.md
+          fi
+          cat dist/notes.md
+
+      - name: Combined checksums
+        working-directory: cli/dist
+        run: cat ./*.tar.gz.sha256 > SHA256SUMS && cat SHA256SUMS
+
+      # not "latest": the backend's v* releases keep the Latest badge on the repo page
+      - name: Create GitHub Release
+        working-directory: cli/dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#cli-v}"
+          gh release create "$GITHUB_REF_NAME" \
+            --title "varun CLI ${VERSION}" \
+            --notes-file notes.md \
+            --latest=false \
+            ./*.tar.gz ./*.tar.gz.sha256 SHA256SUMS
+
+  verify-install:
+    # proves the release installs the way users install it
+    if: startsWith(github.ref, 'refs/tags/cli-v')
+    needs: publish
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ ubuntu-24.04, ubuntu-24.04-arm, macos-latest ]
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install with the install script
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#cli-v}"
+          DIR="$(mktemp -d)"
+          sh src/frontend/assets/cli/install.sh --version "$VERSION" --dir "$DIR"
+          OUTPUT="$("$DIR/varun" --version)"
+          echo "$OUTPUT"
+          case "$OUTPUT" in
+            *"$VERSION"*) ;;
+            *) echo "::error::installed varun reports '$OUTPUT', expected $VERSION"; exit 1 ;;
+          esac

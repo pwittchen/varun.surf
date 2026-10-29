@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/search.json",
+  "title": "varun search --json",
+  "description": "Spots whose name contains the query (find_spot_by_name).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "query",
+    "spots"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "query": {
+      "type": "string"
+    },
+    "spots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "country",
+          "wgId"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "wgId": {
+            "type": "integer",
+            "description": "Windguru spot id"
+          }
+        }
+      }
+    }
+  }
+}

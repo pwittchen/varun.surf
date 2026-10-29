@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/windy.json",
+  "title": "varun windy --json",
+  "description": "Spots reaching a wind speed in the hours ahead, strongest first (find_windy_spots).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "minWind",
+    "hours",
+    "scanned",
+    "matched",
+    "spots"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "minWind": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Floor in knots (default 12)."
+    },
+    "hours": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Hours scanned: the requested span capped by the grid; 0 when no forecast is cached."
+    },
+    "country": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The --country filter as given."
+    },
+    "grid": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "from",
+        "to"
+      ],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        }
+      }
+    },
+    "scanned": {
+      "type": "integer"
+    },
+    "matched": {
+      "type": "integer",
+      "description": "Spots reaching the floor, before --limit."
+    },
+    "spots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "country",
+          "wgId",
+          "from",
+          "to",
+          "windyHours",
+          "peakWind",
+          "peakGusts",
+          "peakDirection"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "wgId": {
+            "type": "integer",
+            "description": "Windguru spot id"
+          },
+          "from": {
+            "type": "string",
+            "description": "First hour reaching the floor."
+          },
+          "to": {
+            "type": "string",
+            "description": "Last hour reaching the floor (the hours between need not all reach it)."
+          },
+          "windyHours": {
+            "type": "integer"
+          },
+          "peakWind": {
+            "type": "integer"
+          },
+          "peakGusts": {
+            "type": "integer"
+          },
+          "peakDirection": {
+            "type": "string",
+            "description": "N, NE, ... or empty when unknown."
+          }
+        }
+      }
+    }
+  }
+}

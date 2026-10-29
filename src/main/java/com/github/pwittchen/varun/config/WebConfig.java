@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 
 @Configuration
@@ -147,6 +149,23 @@ public class WebConfig implements WebFluxConfigurer {
                             .ok()
                             .contentType(MediaType.TEXT_HTML)
                             .bodyValue(privacyHtml);
+                }
+        );
+    }
+
+    // The CLI installer (curl -fsSL https://varun.surf/cli/install.sh | sh). Served as
+    // plain text rather than the application/x-sh a static resource would get, so
+    // opening the URL in a browser shows the script for review instead of downloading it
+    @Bean
+    public RouterFunction<ServerResponse> cliInstallScriptRouter() {
+        return RouterFunctions.route(
+                GET("/cli/install.sh"),
+                _ -> {
+                    Resource installScript = new ClassPathResource("static/cli/install.sh");
+                    return ServerResponse
+                            .ok()
+                            .contentType(new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8))
+                            .bodyValue(installScript);
                 }
         );
     }

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/countries.json",
+  "title": "varun countries --json",
+  "description": "Countries with at least one spot (list_countries).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "total",
+    "countries"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "total": {
+      "type": "integer"
+    },
+    "countries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "spots"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "spots": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

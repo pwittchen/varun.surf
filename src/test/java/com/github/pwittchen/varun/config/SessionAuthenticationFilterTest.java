@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseCookie;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -96,6 +97,19 @@ public class SessionAuthenticationFilterTest {
         var result = webTestClient.get()
                 .uri("/mcp/message")
                 .exchange()
+                .returnResult(String.class);
+
+        assertThat(result.getResponseCookies().getFirst("SESSION")).isNull();
+    }
+
+    @Test
+    void shouldServeCliInstallScriptAsPlainTextWithoutIssuingSessionCookie() {
+        var result = webTestClient.get()
+                .uri("/cli/install.sh")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/plain;charset=UTF-8")
+                .expectHeader().cacheControl(CacheControl.noCache().mustRevalidate())
                 .returnResult(String.class);
 
         assertThat(result.getResponseCookies().getFirst("SESSION")).isNull();

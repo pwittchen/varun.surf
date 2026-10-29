@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/wind.json",
+  "title": "varun wind --json",
+  "description": "One spot's hourly wind (get_wind_forecast).",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "spot",
+    "model",
+    "hours",
+    "minWind",
+    "forecast"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "spot": {
+      "type": "object",
+      "required": [
+        "name",
+        "country",
+        "wgId"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "wgId": {
+          "type": "integer",
+          "description": "Windguru spot id"
+        }
+      }
+    },
+    "model": {
+      "const": "gfs"
+    },
+    "hours": {
+      "type": "integer",
+      "description": "Hours in the window (default 72, capped by the forecast)."
+    },
+    "minWind": {
+      "type": "integer",
+      "description": "Floor the rows are filtered by, 0 for every hour."
+    },
+    "summary": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "peak": {
+          "type": "object",
+          "description": "A Forecast as the backend serves it (/api/v1/forecast/{wgId}); unknown fields may appear.",
+          "properties": {
+            "date": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "wind": {
+              "type": "number"
+            },
+            "gusts": {
+              "type": "number"
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "temp": {
+              "type": "number"
+            },
+            "precipitation": {
+              "type": "number"
+            },
+            "cloudCoverPercent": {
+              "type": "number"
+            },
+            "pressureHpa": {
+              "type": "number"
+            },
+            "wave": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "wavePeriod": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "waveDirection": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "kiteableHours": {
+          "type": "integer",
+          "description": "Hours of the window at 12 kts or more."
+        },
+        "kiteableWindows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to",
+              "hours",
+              "peakWind"
+            ],
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "hours": {
+                "type": "integer"
+              },
+              "peakWind": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "forecast": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "A Forecast as the backend serves it (/api/v1/forecast/{wgId}); unknown fields may appear.",
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "wind": {
+            "type": "number"
+          },
+          "gusts": {
+            "type": "number"
+          },
+          "direction": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "temp": {
+            "type": "number"
+          },
+          "precipitation": {
+            "type": "number"
+          },
+          "cloudCoverPercent": {
+            "type": "number"
+          },
+          "pressureHpa": {
+            "type": "number"
+          },
+          "wave": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "wavePeriod": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "waveDirection": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "description": "Hours of the window reaching minWind."
+    }
+  }
+}

@@ -1,0 +1,44 @@
+[package]
+name = "varun-cli"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "Command-line client for varun.surf - kite spot forecasts and live wind"
+license = "GPL-3.0-only"
+repository = "https://github.com/pwittchen/varun.surf"
+homepage = "https://varun.surf"
+publish = false
+
+[[bin]]
+name = "varun"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+clap = { version = "4", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4"
+clap_mangen = "0.3"
+comfy-table = "8"
+dialoguer = { version = "0.12", default-features = false }
+directories = "6"
+owo-colors = "4"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls", "gzip", "brotli", "json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+terminal_size = "0.4"
+thiserror = "2"
+toml = "1"
+unicode-normalization = "0.1"
+
+[dev-dependencies]
+assert_cmd = "2"
+predicates = "3"
+tempfile = "3"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+opt-level = 3

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://varun.surf/cli/schemas/favorites.json",
+  "title": "varun fav ls --json",
+  "description": "Favourite spots from the local config.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "favorites"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Changes only on a major CLI release."
+    },
+    "favorites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "wgId"
+        ],
+        "properties": {
+          "wgId": {
+            "type": "integer"
+          },
+          "alias": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -55,6 +55,14 @@ class CacheControlFilterTest {
     }
 
     @Test
+    void shouldRevalidateCliInstallScript() {
+        assertThat(filter.cacheControlFor("/cli/install.sh", false, MediaType.TEXT_PLAIN))
+                .isEqualTo(CacheControlFilter.REVALIDATE);
+        assertThat(filter.cacheControlFor("/cli/install.sh", true, null))
+                .isEqualTo(CacheControlFilter.REVALIDATE);
+    }
+
+    @Test
     void shouldRevalidateHtml() {
         assertThat(filter.cacheControlFor("/", false, MediaType.TEXT_HTML))
                 .isEqualTo(CacheControlFilter.REVALIDATE);

@@ -547,6 +547,24 @@ widgets. It is a separate Gradle build (`cd android && ./gradlew assembleDebug`)
 workflow, `.github/workflows/android.yml`; the product and technical spec is
 [`android/SPEC.md`](android/SPEC.md).
 
+## command-line client
+
+`varun`, a command-line client in [`cli/`](cli/README.md) (Rust), answers the same questions as
+the MCP server from a terminal: when it will blow at a spot, and where to go.
+
+```sh
+curl -fsSL https://varun.surf/cli/install.sh | sh    # Linux x86_64/arm64, macOS on Apple Silicon
+
+varun wind jastarnia            # hour-by-hour wind, windiest hour, kiteable windows
+varun windy --country poland    # spots reaching 12 kts in the next 24 h, strongest first
+varun now                       # live conditions at your favourites
+```
+
+Output is a table on a terminal, tab-separated text in a pipe, `--json` for scripts, or
+`--format md` (the `/llms` documents, byte for byte what the MCP tools return). It has its own
+workflow, `.github/workflows/cli.yml`, and `cli-vX.Y.Z` tags publish the binaries as a GitHub
+Release; the product and technical spec is [`cli/SPEC.md`](cli/SPEC.md).
+
 ## data sources
 
 Forecasts come from [Windguru](https://www.windguru.cz), [Windfinder](https://www.windfinder.com)

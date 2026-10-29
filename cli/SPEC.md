@@ -1,6 +1,6 @@
 # varun.surf CLI - Product & Technical Specification
 
-Status: draft v1 (2026-10-29)
+Status: v1 implemented (2026-10-29)
 Scope: a command-line client for the existing varun.surf backend, written in Rust and
 living in `cli/`. It gives a terminal the same answers the MCP server gives an LLM
 (`service/mcp/McpToolService.java`). This document describes **what** to build and
@@ -247,8 +247,8 @@ empty forecast right after a deploy explains itself. Parity: `get_status`.
 - **plain** (pipe default): tab-separated, no colour, no glyphs, header row - friendly to
   `cut`, `awk`, `sort`.
 - **json**: one JSON document on stdout. For pass-through endpoints it is the backend
-  payload as received; for computed commands (`windy`, `search`, `countries`, `now`) it
-  is a documented CLI schema (`cli/schemas/*.json`), versioned with a top-level
+  payload as received; for computed commands (`windy`, `wind`, `search`, `countries`, `now`,
+  `fav ls`) it is a documented CLI schema (`cli/schemas/*.json`), versioned with a top-level
   `"schemaVersion": 1`. Stable across minor CLI versions.
 - **md**: the `/llms` document verbatim where one exists, otherwise a client render with
   the MCP tool's layout (section 3).
@@ -621,12 +621,13 @@ serves no large files and a CLI release needs no deploy.
 
 - **Q1 - time zones.** `Forecast.date` carries no zone. Show hours as served ("spot time") or
   convert to the user's zone? Converting needs the spot's zone, which the API does not expose
-  (the same open question as the Android spec's Q1). Default to `spot` until it is resolved.
+  (the same open question as the Android spec's Q1). Default to `spot` until it is resolved; v1
+  accepts `local` and IANA names but warns and shows spot time.
 - **Q2 - binary name.** `varun` is short and memorable; check it does not clash with a common
   package on Homebrew/AUR before the first public release.
-- **Q3 - JSON for pass-through commands.** Pass the backend payload through (cheap, but its shape is
-  the backend's) or always wrap it in the versioned CLI schema (stable, more code)? Draft: pass
-  through for `spot`/`status`, CLI schema for computed commands.
+- **Q3 - JSON for pass-through commands.** Resolved: `spot`, `spots`/`country` and `status` pass the
+  backend payload through; `wind` joined the computed commands, since `--hours`/`--min-wind` and the
+  summary have no backend twin.
 
 ---
 

@@ -551,8 +551,10 @@ src/main/java/com/github/pwittchen/varun/
 - **CI/CD**: GitHub Actions
   - `ci.yml`: builds the project and runs tests with Gradle
   - `cd.yml`: runs CI, pushes the Docker image to GHCR, deploys to production, creates a GitHub release
+  - `cli.yml`: fmt, clippy, tests and cargo-deny of the Rust CLI in `cli/`; on a `cli-v*` tag, the
+    platform archives, a GitHub Release (not marked latest) and a check that the install script installs it
   - `deps.yml`: scheduled dependency updates - backend and frontend in one job, then the Android app (Gradle wrapper and `android/gradle/libs.versions.toml`) in its own, verified with the ANDROID lint/test/release build before it pushes
-  - A pushed commit whose message contains `#no-deploy` builds nothing: `ci.yml` and `android.yml` skip their jobs (only the last commit of a push is checked; tags, pull requests and manual runs are unaffected)
+  - A pushed commit whose message contains `#no-deploy` builds nothing: `ci.yml`, `android.yml` and `cli.yml` skip their jobs (only the last commit of a push is checked; tags, pull requests and manual runs are unaffected)
 - **Registry**: ghcr.io/pwittchen/varun.surf
 - **VPS**: a [mikr.us](https://mikr.us) server; deployed with the `deployment.sh`
   helper script
@@ -650,6 +652,8 @@ src/main/java/com/github/pwittchen/varun/
 - [x] TV view (/tv) for a full-screen spot display
 - [x] SEO pages rendered server-side (/spot/{id}, /country/{name}) and /sitemap.xml
 - [x] MCP server exposing the spot data as tools (/mcp/sse)
+- [x] Command-line client `varun` (Rust, `cli/`) with the MCP tools' answers in a terminal,
+      installed with `curl -fsSL https://varun.surf/cli/install.sh | sh`
 
 ## On-Demand Generation (AI Analysis)
 
@@ -880,6 +884,33 @@ When adding a new kite spot manually, follow this process:
 - CI: `.github/workflows/android.yml` (runs on `android/**` changes; `android-v*` tags upload a
   signed AAB to the Play production track). The backend `ci.yml` ignores `android/**`
 - App Links are verified through `/.well-known/assetlinks.json` (source `src/frontend/assets/assetlinks.json`, copied by `build.ts`; fingerprints from Play Console → Grow users → Deep links)
+
+## Command-Line Client (CLI)
+
+- Location: `cli/` - a Rust crate (edition 2024, toolchain pinned in `cli/rust-toolchain.toml`),
+  package `varun-cli`, binary `varun`. Spec: `cli/SPEC.md`; usage and developer notes: `cli/README.md`
+- Gives a terminal the MCP server's answers: `spots`, `spot`, `search`, `countries`, `country`,
+  `wind`, `windy`, `status` mirror the MCP tools (same defaults, limits and not-found wording), plus
+  `now`, `fav`, `open`, `config`, `completions` and `--watch`. Never calls the paid AI analysis
+- Consumes the public API only (`/api/v1/session`, `/spots`, `/spots/{id}[/{model}]`, `/forecast/{id}`,
+  `/wind?hours=N`, `/status`, `/status/forecast`, `/api/v1/health`, `/llms/*.md`). Sends
+  `X-Client: varun-cli/<version>`. Its DTOs tolerate missing/extra fields, but renamed fields
+  silently become absent
+- `--format md` prints the `/llms` documents verbatim; the other formats compute client-side with a
+  Rust port of `LlmController` (`cli/src/domain/`, `cli/src/render/md.rs`). `cli/tests/parity.rs`
+  holds that port to the server's output byte for byte, over fixtures captured by
+  `cli/tests/fixtures/capture.sh` - a change to `LlmController`'s renderers or constants needs the
+  fixtures recaptured and the CLI changed with it
+- Wind classes and the 60 min staleness rule must stay in sync with `src/frontend/js/common/{weather,date}.js`
+- Commands (from `cli/`): `cargo test`, `cargo clippy --all-targets -- -D warnings`, `cargo fmt`,
+  `cargo llvm-cov`, `cargo deny check`
+- CI: `.github/workflows/cli.yml` (runs on `cli/**` changes; `cli-v*` tags publish a GitHub Release
+  with Linux x86_64/arm64 musl and macOS arm64 archives, not marked latest). The backend `ci.yml`
+  ignores `cli/**`
+- Installed with `curl -fsSL https://varun.surf/cli/install.sh | sh`. The script's source is
+  `src/frontend/assets/cli/install.sh` (copied by `build.ts`, so it ships with a backend deploy,
+  not with a CLI release); `WebConfig` serves it as `text/plain`, `CacheControlFilter` revalidates
+  `/cli/`, and `SessionAuthenticationFilter` treats `.sh` as a static asset (no cookie)
 
 ## Related Documentation
 
