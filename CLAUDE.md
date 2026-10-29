@@ -552,6 +552,7 @@ src/main/java/com/github/pwittchen/varun/
   - `ci.yml`: builds the project and runs tests with Gradle
   - `cd.yml`: runs CI, pushes the Docker image to GHCR, deploys to production, creates a GitHub release
   - `deps.yml`: scheduled dependency updates - backend and frontend in one job, then the Android app (Gradle wrapper and `android/gradle/libs.versions.toml`) in its own, verified with the ANDROID lint/test/release build before it pushes
+  - A pushed commit whose message contains `#no-deploy` builds nothing: `ci.yml` and `android.yml` skip their jobs (only the last commit of a push is checked; tags, pull requests and manual runs are unaffected)
 - **Registry**: ghcr.io/pwittchen/varun.surf
 - **VPS**: a [mikr.us](https://mikr.us) server; deployed with the `deployment.sh`
   helper script

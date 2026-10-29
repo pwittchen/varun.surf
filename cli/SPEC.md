@@ -418,7 +418,10 @@ defaults:
     working-directory: cli
 ```
 
-**Job `build`** (every trigger), `ubuntu-24.04`, `permissions: contents: read`:
+**Job `build`** (every trigger), `ubuntu-24.04`, `permissions: contents: read`. Like
+`ci.yml` and `android.yml`, it is skipped on a branch push whose commit message contains
+`#no-deploy` (`if: github.event_name != 'push' || github.ref_type == 'tag' ||
+!contains(github.event.head_commit.message, '#no-deploy')`):
 
 1. `actions/checkout`
 2. Install toolchain from `rust-toolchain.toml` (`dtolnay/rust-toolchain` or

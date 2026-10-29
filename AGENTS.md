@@ -768,6 +768,7 @@ src/main/java/com/github/pwittchen/varun/
   - `ci.yml`: builds the project and runs tests with Gradle
   - `cd.yml`: runs CI, builds and pushes the Docker image to GHCR, deploys to production, creates a GitHub release
   - `deps.yml`: scheduled dependency updates
+  - A pushed commit whose message contains `#no-deploy` builds nothing: `ci.yml` and `android.yml` skip their jobs (only the last commit of a push is checked; tags, pull requests and manual runs are unaffected)
 - **Triggers**: Push to master, pull requests
 - **Container Registry**: ghcr.io/pwittchen/varun.surf
 

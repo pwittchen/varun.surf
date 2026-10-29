@@ -21,6 +21,9 @@ defaults:
 
 jobs:
   build:
+    # "#no-deploy" in the pushed commit's message skips the run (and with it the release);
+    # an android-v* tag always builds, whatever the tagged commit says
+    if: github.event_name != 'push' || github.ref_type == 'tag' || !contains(github.event.head_commit.message, '#no-deploy')
     runs-on: ubuntu-24.04
     permissions:
       contents: read
