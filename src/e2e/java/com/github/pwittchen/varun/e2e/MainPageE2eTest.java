@@ -422,6 +422,7 @@ class MainPageE2eTest extends BaseE2eTest {
         assertThat(page.locator("#statusLink").getAttribute("href")).isEqualTo("/status");
         assertThat(page.locator("#sourcesLink").getAttribute("href")).isEqualTo("/sources");
         assertThat(page.locator("#mcpLink").getAttribute("href")).isEqualTo("/mcp");
+        assertThat(page.locator("#cliLink").getAttribute("href")).isEqualTo("/cli");
         assertThat(page.locator("#logsLink").getAttribute("href")).isEqualTo("/logs");
         assertThat(page.locator("#metricsLink").getAttribute("href")).isEqualTo("/metrics");
 

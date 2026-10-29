@@ -19,7 +19,8 @@
 |----------|------|
 | web | **[https://varun.surf](https://varun.surf)** |
 | android | **[https://play.google.com/store/apps/details?id=surf.varun.app](https://play.google.com/store/apps/details?id=surf.varun.app)** |
-| mcp & cli | **[https://varun.surf/mcp](https://varun.surf/mcp)** |
+| mcp | **[https://varun.surf/mcp](https://varun.surf/mcp)** |
+| cli | **[https://varun.surf/cli](https://varun.surf/cli)** |
 
 </div>
 
@@ -566,6 +567,9 @@ Output is a table on a terminal, tab-separated text in a pipe, `--json` for scri
 `--format md` (the `/llms` documents, byte for byte what the MCP tools return). It has its own
 workflow, `.github/workflows/cli.yml`, and `cli-vX.Y.Z` tags publish the binaries as a GitHub
 Release; the product and technical spec is [`cli/SPEC.md`](cli/SPEC.md).
+
+The [/cli](https://varun.surf/cli) page shows the install command with a one-click copy, a few
+example commands and links to the CLI README and GitHub Releases.
 
 ## data sources
 

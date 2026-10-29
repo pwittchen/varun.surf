@@ -105,7 +105,7 @@ class StatusPageE2eTest extends BaseE2eTest {
 
         assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
             .isEqualTo(List.of("https://play.google.com/store/apps/details?id=surf.varun.app",
-                "/status", "/metrics", "/sources", "/mcp", "/logs",
+                "/status", "/metrics", "/sources", "/mcp", "/cli", "/logs",
                 "https://github.com/pwittchen/varun.surf"));
 
         Locator active = page.locator("#sideMenu [aria-current='page']");
@@ -184,18 +184,38 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have sources and mcp links in the footer")
-    void shouldHaveSourcesAndMcpLinksInTheFooter() {
+    @DisplayName("Should navigate to cli page from the sidebar")
+    void shouldNavigateToCliPageFromTheSidebar() {
+        navigateToStatusPage();
+
+        Locator cliLink = page.locator("#cliLink");
+        cliLink.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        cliLink.click();
+
+        page.waitForURL(BASE_URL + "/cli",
+            new Page.WaitForURLOptions().setTimeout(NAVIGATION_TIMEOUT));
+
+        assertThat(page.title()).contains("Command-line Client");
+    }
+
+    @Test
+    @DisplayName("Should have sources, mcp and cli links in the footer")
+    void shouldHaveSourcesMcpAndCliLinksInTheFooter() {
         navigateToStatusPage();
 
         Locator sourcesFooterLink = page.locator(".footer-content a[href='/sources']");
         Locator mcpFooterLink = page.locator(".footer-content a[href='/mcp']");
+        Locator cliFooterLink = page.locator(".footer-content a[href='/cli']");
         sourcesFooterLink.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
         assertThat(sourcesFooterLink.isVisible()).isTrue();
         assertThat(mcpFooterLink.isVisible()).isTrue();
+        assertThat(cliFooterLink.isVisible()).isTrue();
     }
 
     @Test

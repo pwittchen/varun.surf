@@ -806,7 +806,8 @@ Implemented features (complete):
 - Custom logs dashboard (/api/v1/logs) with level filtering and text search
 - Status page with uptime and stats
 - Sources page (/sources) with spots, forecast and live station data sources
-- MCP and CLI page (/mcp, "MCP and CLI" in the sidebar) with the MCP endpoint, install command and JSON config, and the CLI install command and examples
+- MCP page (/mcp, "MCP" in the sidebar) with the MCP endpoint, install command and JSON config
+- CLI page (/cli, "CLI" in the sidebar) with the CLI install command and examples
 - Health check history (90 data points, 1-minute intervals)
 - Session cookie authentication (API access gated behind SESSION cookie)
 - Hero section with random spot photo, name/location, and slogan (EN/PL), closed

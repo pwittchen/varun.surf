@@ -39,6 +39,7 @@ const TOOLTIP_KEYS = {
     statusLink: 'statusLinkTooltip',
     sourcesLink: 'sourcesLinkTooltip',
     mcpLink: 'mcpLinkTooltip',
+    cliLink: 'cliLinkTooltip',
     githubLink: 'githubLinkTooltip',
     logsLink: 'logsLinkTooltip',
     metricsLink: 'metricsLinkTooltip'
@@ -63,6 +64,7 @@ const SIDEBAR_LABEL_KEYS = {
     statusLinkSidebarLabel: 'sidebarStatus',
     sourcesLinkSidebarLabel: 'sidebarSources',
     mcpLinkSidebarLabel: 'sidebarMcp',
+    cliLinkSidebarLabel: 'sidebarCli',
     githubLinkSidebarLabel: 'sidebarGithub',
     logsLinkSidebarLabel: 'sidebarLogs',
     metricsLinkSidebarLabel: 'sidebarMetrics',

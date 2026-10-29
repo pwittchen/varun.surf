@@ -1,6 +1,6 @@
 // ============================================================================
 // TOOLS PAGES
-// The status / sources / MCP / logs / metrics pages share one controller: they
+// The status / sources / MCP / CLI / logs / metrics pages share one controller: they
 // all show the same sidebar as the rest of the app (appShell), a header holding
 // nothing but the language switch, and the same modals. The menu entries that
 // need the spots list hand their mode over and navigate back to it

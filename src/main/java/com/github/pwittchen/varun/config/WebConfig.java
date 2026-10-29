@@ -137,6 +137,22 @@ public class WebConfig implements WebFluxConfigurer {
         );
     }
 
+    // NOTE: only the exact /cli path serves this page; the installer it points to
+    // lives at /cli/install.sh (see cliInstallScriptRouter).
+    @Bean
+    public RouterFunction<ServerResponse> cliPageRouter() {
+        return RouterFunctions.route(
+                GET("/cli"),
+                _ -> {
+                    Resource cliHtml = new ClassPathResource("static/cli.html");
+                    return ServerResponse
+                            .ok()
+                            .contentType(MediaType.TEXT_HTML)
+                            .bodyValue(cliHtml);
+                }
+        );
+    }
+
     // Linked from the Play Store listing and the Android app, so it has to stay
     // public and at this exact path
     @Bean

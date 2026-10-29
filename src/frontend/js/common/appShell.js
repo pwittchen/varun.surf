@@ -183,14 +183,21 @@ const SIDEBAR_HTML = `
             </svg>
             <span class="sidebar-label" id="sourcesLinkSidebarLabel">Sources</span>
         </a>
-        <a class="theme-toggle sidebar-link" id="mcpLink" href="/mcp" title="MCP server and command-line client">
+        <a class="theme-toggle sidebar-link" id="mcpLink" href="/mcp" title="MCP server for AI assistants">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect x="8" y="1" width="2.5" height="6" rx="1.25"/>
                 <rect x="13.5" y="1" width="2.5" height="6" rx="1.25"/>
                 <path d="M5,7h14v2a7,7,0,0,1-14,0Z"/>
                 <rect x="10.5" y="15.5" width="3" height="7.5" rx="1.5"/>
             </svg>
-            <span class="sidebar-label" id="mcpLinkSidebarLabel">MCP and CLI</span>
+            <span class="sidebar-label" id="mcpLinkSidebarLabel">MCP</span>
+        </a>
+        <a class="theme-toggle sidebar-link" id="cliLink" href="/cli" title="Command-line client">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M3.3,5.3a1.25,1.25,0,0,1,1.77,0l5.5,5.5a1.25,1.25,0,0,1,0,1.77l-5.5,5.5a1.25,1.25,0,0,1-1.77-1.77L7.92,11.7,3.3,7.07A1.25,1.25,0,0,1,3.3,5.3Z"/>
+                <rect x="11" y="17" width="10" height="2.5" rx="1.25"/>
+            </svg>
+            <span class="sidebar-label" id="cliLinkSidebarLabel">CLI</span>
         </a>
         <a class="theme-toggle sidebar-link" id="logsLink" href="/logs" title="Application logs">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -246,7 +253,7 @@ const MODALS_HTML = `
             </div>
             <div class="modal-section">
                 <h3 id="appInfoDevTitle">Developers and AI assistants</h3>
-                <p id="appInfoDevText">Kite spots, forecasts and live conditions are available to AI assistants through the <a href="/mcp" class="modal-link">MCP server</a> and the <a href="/llms.txt" class="modal-link">llms.txt</a> file with LLM-friendly Markdown endpoints. Service statistics and uptime are on the <a href="/status" class="modal-link">status page</a>.</p>
+                <p id="appInfoDevText">Kite spots, forecasts and live conditions are available to AI assistants through the <a href="/mcp" class="modal-link">MCP server</a> and the <a href="/llms.txt" class="modal-link">llms.txt</a> file with LLM-friendly Markdown endpoints, and in a terminal through the <a href="/cli" class="modal-link">command-line client</a>. Service statistics and uptime are on the <a href="/status" class="modal-link">status page</a>.</p>
             </div>
         </div>
     </div>

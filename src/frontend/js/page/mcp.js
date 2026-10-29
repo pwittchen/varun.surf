@@ -1,8 +1,8 @@
+import * as copyButtons from '../common/copyButtons.js';
 import * as toolsPage from '../common/toolsPage.js';
-import { t } from '../common/translations.js';
 
 // ============================================================================
-// MCP SERVER AND CLI CONFIGURATION
+// MCP SERVER CONFIGURATION
 // ============================================================================
 
 function initMcpConfig() {
@@ -22,31 +22,12 @@ function initMcpConfig() {
     const installEl = document.getElementById('mcp-install-cmd');
     const jsonEl = document.getElementById('mcp-json-config');
     const llmsEl = document.getElementById('mcp-llms-url');
-    const cliInstallEl = document.getElementById('mcp-cli-install-cmd');
     if (endpointEl) endpointEl.textContent = sseUrl;
     if (installEl) installEl.textContent = installCmd;
     if (jsonEl) jsonEl.textContent = jsonConfig;
     if (llmsEl) llmsEl.textContent = `${origin}/llms.txt`;
-    if (cliInstallEl) cliInstallEl.textContent = `curl -fsSL ${origin}/cli/install.sh | sh`;
 
-    document.querySelectorAll('.mcp-copy-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const targetId = btn.getAttribute('data-copy-target');
-            const target = document.getElementById(targetId);
-            if (!target) return;
-            try {
-                await navigator.clipboard.writeText(target.textContent);
-                btn.textContent = t('mcpCopiedButton');
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = t('mcpCopyButton');
-                    btn.classList.remove('copied');
-                }, 1500);
-            } catch (err) {
-                console.error('Failed to copy', err);
-            }
-        });
-    });
+    copyButtons.setupCopyButtons();
 }
 
 // ============================================================================

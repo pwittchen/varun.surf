@@ -830,6 +830,7 @@ src/e2e/java/com/github/pwittchen/varun/e2e/
 ├── SingleSpotE2eTest.java                # Single spot view tests (tabs, models)
 ├── SourcesPageE2eTest.java               # Sources page tests (data source listings)
 ├── McpPageE2eTest.java                   # MCP page tests (endpoint, install command)
+├── CliPageE2eTest.java                   # CLI page tests (install command, examples)
 └── StatusPageE2eTest.java                # Status page tests (system info, endpoints)
 ```
 

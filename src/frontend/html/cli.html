@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title data-i18n="cliPageTitle">Command-line Client - VARUN.SURF</title>
+    <meta name="description"
+          content="Command-line client for VARUN.SURF - kite spots, forecasts and live wind conditions in a terminal">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script
+            defer
+            data-website-id="dfid_yUtxeXdTh4uWWN5KSQ3qU"
+            data-domain="varun.surf"
+            src="https://datafa.st/js/script.js">
+    </script>
+</head>
+<body class="tools-page">
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container">
+
+        <main class="status-page">
+            <div class="status-container">
+                <div class="status-card" id="cli-card">
+                    <h3 data-i18n="cliTitle">Command-line client (CLI)</h3>
+                    <p class="mcp-description" data-i18n-html="cliDescription">
+                        The same answers in a terminal: <code>varun</code> tells you when it
+                        will blow at a spot and where to go, with live conditions, favourites
+                        and output for scripts (<code>--json</code>) or LLM pipelines
+                        (<code>--format md</code>). It runs on Linux (x86_64, arm64) and macOS
+                        on Apple Silicon; the installer checks the download's checksum and
+                        needs no sudo.
+                    </p>
+                    <div class="mcp-info-grid">
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label" data-i18n="cliInstallLabel">Install</div>
+                            <div class="mcp-code">
+                                <code id="cli-install-cmd">-</code>
+                                <button class="mcp-copy-btn" data-copy-target="cli-install-cmd" type="button" data-i18n="mcpCopyButton">Copy</button>
+                            </div>
+                        </div>
+                        <div class="mcp-info-row">
+                            <div class="mcp-info-label" data-i18n="cliExamplesLabel">Examples</div>
+                            <div class="mcp-code mcp-code-block">
+                                <pre><code id="cli-examples">varun wind jastarnia            # hour-by-hour wind at one spot
+varun windy --country poland    # where it will blow in the next 24 h
+varun now                       # live conditions at your favourites
+varun spot tarifa --model ifs   # everything about one spot</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mcp-description" data-i18n-html="cliMoreInfo">
+                        All commands and options are described in the
+                        <a href="https://github.com/pwittchen/varun.surf/blob/master/cli/README.md" target="_blank" rel="noopener noreferrer">CLI README</a>;
+                        binaries for a manual install are on
+                        <a href="https://github.com/pwittchen/varun.surf/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a>.
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <!-- Footer content rendered by JavaScript -->
+            </div>
+        </footer>
+    </div>
+</div>
+<script type="module" src="../js/page/cli.js"></script>
+</body>
+</html>
