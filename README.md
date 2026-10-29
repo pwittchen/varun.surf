@@ -19,6 +19,7 @@
 |----------|------|
 | web | **[https://varun.surf](https://varun.surf)** |
 | android | **[https://play.google.com/store/apps/details?id=surf.varun.app](https://play.google.com/store/apps/details?id=surf.varun.app)** |
+| mcp & cli | **[https://varun.surf/mcp](https://varun.surf/mcp)** |
 
 </div>
 
