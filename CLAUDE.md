@@ -610,7 +610,8 @@ src/main/java/com/github/pwittchen/varun/
 - [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
 - [x] Status page with uptime and stats
 - [x] Sources page (/sources) with spots, forecast and live station data sources
-- [x] MCP server page (/mcp) with endpoint, install command and JSON config
+- [x] MCP and CLI page (/mcp, "MCP and CLI" in the sidebar) with the MCP endpoint, install
+      command and JSON config, and the CLI install command and examples
 - [x] Privacy policy page (/privacy, EN/PL) covering the website and the Android app,
       linked from the footer, the app's About screen and the Play listing
 - [x] Health check history (90 data points, 1-minute intervals)

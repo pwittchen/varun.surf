@@ -296,17 +296,21 @@ DOM Manipulation (vanilla JS)
 - `renderSources()` - Render health-checked sources with status dots
 - `renderStationLinks()` - Render link-only source lists
 
-#### 5. MCP Page (`mcp.html`)
+#### 5. MCP and CLI Page (`mcp.html`)
 **URL Pattern**:
-- `/mcp` - Model Context Protocol server configuration
+- `/mcp` - Model Context Protocol server configuration and the command-line client
+  ("MCP and CLI" in the sidebar)
 
 **Features**:
 - SSE endpoint URL, resolved from `window.location.origin`
 - Claude Code install command and JSON client config, both copyable
 - List of tools exposed by the MCP server
+- CLI card: the copyable `curl -fsSL <origin>/cli/install.sh | sh` command, example
+  commands and links to the CLI README and GitHub Releases
 
 **JavaScript Logic** (`page/mcp.js`):
-- `initMcpConfig()` - Build endpoint/command/JSON config for the current origin
+- `initMcpConfig()` - Build endpoint/command/JSON config and the CLI install command
+  for the current origin
   and wire up the copy-to-clipboard buttons
 
 > Note: only the exact `/mcp` path serves this page. The MCP server itself is

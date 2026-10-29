@@ -183,14 +183,14 @@ const SIDEBAR_HTML = `
             </svg>
             <span class="sidebar-label" id="sourcesLinkSidebarLabel">Sources</span>
         </a>
-        <a class="theme-toggle sidebar-link" id="mcpLink" href="/mcp" title="MCP server">
+        <a class="theme-toggle sidebar-link" id="mcpLink" href="/mcp" title="MCP server and command-line client">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <rect x="8" y="1" width="2.5" height="6" rx="1.25"/>
                 <rect x="13.5" y="1" width="2.5" height="6" rx="1.25"/>
                 <path d="M5,7h14v2a7,7,0,0,1-14,0Z"/>
                 <rect x="10.5" y="15.5" width="3" height="7.5" rx="1.5"/>
             </svg>
-            <span class="sidebar-label" id="mcpLinkSidebarLabel">MCP</span>
+            <span class="sidebar-label" id="mcpLinkSidebarLabel">MCP and CLI</span>
         </a>
         <a class="theme-toggle sidebar-link" id="logsLink" href="/logs" title="Application logs">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

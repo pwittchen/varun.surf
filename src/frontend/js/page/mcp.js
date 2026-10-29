@@ -2,7 +2,7 @@ import * as toolsPage from '../common/toolsPage.js';
 import { t } from '../common/translations.js';
 
 // ============================================================================
-// MCP SERVER CONFIGURATION
+// MCP SERVER AND CLI CONFIGURATION
 // ============================================================================
 
 function initMcpConfig() {
@@ -22,10 +22,12 @@ function initMcpConfig() {
     const installEl = document.getElementById('mcp-install-cmd');
     const jsonEl = document.getElementById('mcp-json-config');
     const llmsEl = document.getElementById('mcp-llms-url');
+    const cliInstallEl = document.getElementById('mcp-cli-install-cmd');
     if (endpointEl) endpointEl.textContent = sseUrl;
     if (installEl) installEl.textContent = installCmd;
     if (jsonEl) jsonEl.textContent = jsonConfig;
     if (llmsEl) llmsEl.textContent = `${origin}/llms.txt`;
+    if (cliInstallEl) cliInstallEl.textContent = `curl -fsSL ${origin}/cli/install.sh | sh`;
 
     document.querySelectorAll('.mcp-copy-btn').forEach(btn => {
         btn.addEventListener('click', async () => {

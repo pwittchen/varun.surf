@@ -91,7 +91,7 @@ class McpPageE2eTest extends BaseE2eTest {
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(copyButtons.count()).isEqualTo(4);
+        assertThat(copyButtons.count()).isEqualTo(5);
     }
 
     @Test
@@ -116,6 +116,21 @@ class McpPageE2eTest extends BaseE2eTest {
             "/llms/countries.md",
             "/llms/countries/{slug}.md"
         );
+    }
+
+    @Test
+    @DisplayName("Should display the CLI section with the install command")
+    void shouldDisplayTheCliSectionWithTheInstallCommand() {
+        navigateToMcpPage();
+
+        Locator installCmd = page.locator("#mcp-cli-install-cmd");
+        installCmd.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(installCmd.textContent()).isEqualTo("curl -fsSL " + BASE_URL + "/cli/install.sh | sh");
+        assertThat(page.locator("#mcp-cli-examples").textContent()).contains("varun wind jastarnia");
+        assertThat(page.locator("#mcpLinkSidebarLabel").textContent()).isEqualTo("MCP and CLI");
     }
 
     @Test
