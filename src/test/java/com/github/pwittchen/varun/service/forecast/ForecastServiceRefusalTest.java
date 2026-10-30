@@ -44,6 +44,7 @@ class ForecastServiceRefusalTest {
     private final List<RecordedRequest> requests = new CopyOnWriteArrayList<>();
     private volatile int status = 200;
     private volatile boolean refuseWaves = true;
+    private volatile String location;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -55,7 +56,8 @@ class ForecastServiceRefusalTest {
                 requests.add(request);
                 boolean waves = request.getRequestUrl().queryParameter("m").equals("ewam");
                 if (status != 200 && (refuseWaves || !waves)) {
-                    return new MockResponse().setResponseCode(status);
+                    var refusal = new MockResponse().setResponseCode(status);
+                    return location != null ? refusal.setHeader("Location", location) : refusal;
                 }
                 return new MockResponse().setBody(waves ? WAVE_EXPORT : WIND_EXPORT);
             }
@@ -68,6 +70,21 @@ class ForecastServiceRefusalTest {
     @AfterEach
     void tearDown() throws IOException {
         server.shutdown();
+    }
+
+    @Test
+    void shouldNameTheRedirectTargetWithoutPausing() {
+        status = 302;
+        location = "https://example.com/blocked";
+        var noRedirects = new OkHttpClient.Builder().followRedirects(false).build();
+        var redirected = new ForecastService(new WeatherForecastMapper(), noRedirects, server.url("/").toString(), clock);
+
+        StepVerifier.create(redirected.getForecastData(1, ForecastModel.GFS))
+                .expectErrorMatches(e -> e instanceof IOException
+                        && e.getMessage().equals("HTTP 302: https://example.com/blocked"))
+                .verify();
+
+        assertThat(redirected.isPaused()).isFalse();
     }
 
     @Test

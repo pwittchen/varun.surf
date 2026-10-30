@@ -5,11 +5,13 @@ import io.micrometer.core.instrument.MeterRegistry;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -73,9 +75,15 @@ public class OkHttpClientConfig {
         return proxy.apply(builder, OxylabsProxy.Target.OTHER).build();
     }
 
+    /**
+     * HTTP/1.1 on purpose. The proxy's exit IP is picked per connection, and HTTP/2 would multiplex
+     * a whole sweep over one of them, so a single flagged IP could fail every spot in the pass.
+     * One connection per concurrent request spreads the pass over several exit IPs.
+     */
     @Bean(WINDGURU_HTTP_CLIENT)
     public OkHttpClient windguruHttpClient(OkHttpClient okHttpClient, OxylabsProxy proxy) {
-        return proxy.apply(okHttpClient.newBuilder(), OxylabsProxy.Target.WINDGURU).build();
+        final OkHttpClient.Builder builder = okHttpClient.newBuilder().protocols(List.of(Protocol.HTTP_1_1));
+        return proxy.apply(builder, OxylabsProxy.Target.WINDGURU).build();
     }
 
     @Bean(LIVE_STATIONS_HTTP_CLIENT)

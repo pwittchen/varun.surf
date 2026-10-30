@@ -248,7 +248,7 @@ public class ForecastService {
                             return;
                         }
                         if (!response.isSuccessful()) {
-                            sink.error(new IOException("HTTP " + response.code() + ": " + response.message()));
+                            sink.error(new IOException(describeFailure(response)));
                             return;
                         }
                         ResponseBody body = response.body();
@@ -259,6 +259,13 @@ public class ForecastService {
                 }
             });
         }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    // The client follows no redirects, so the target is all there is to tell where one pointed.
+    // Over HTTP/2 the message is empty, which left a whole sweep of "HTTP 302: " in the log.
+    private static String describeFailure(final Response response) {
+        final String location = response.header("Location");
+        return "HTTP " + response.code() + ": " + (location != null ? location : response.message());
     }
 
     private void pauseAfterRefusal(int statusCode) {

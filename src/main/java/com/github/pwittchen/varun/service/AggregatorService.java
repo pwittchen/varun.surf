@@ -103,6 +103,10 @@ public class AggregatorService {
     // back for; hourly keeps the caches from holding a day of stale text.
     private static final long ON_DEMAND_EVICTION_INTERVAL_MS = 60 * 60 * 1000;    // 1 hour
 
+    // How often a mostly empty forecast cache gets another sweep. Forecasts live only in memory,
+    // so a failed sweep after a deploy would otherwise leave the list empty for the full 3 hours.
+    private static final long FORECAST_RECOVERY_INTERVAL_MS = 15 * 60 * 1000;    // 15 minutes
+
     // How far the map's hourly wind timeline reaches when the caller doesn't say.
     // Matched to the five days the daily forecast covers, which is as much as a
     // phone-sized slider has room to step through.
@@ -559,6 +563,23 @@ public class AggregatorService {
         fetchForecasts();
     }
 
+    /**
+     * Runs the sweep again when most spots have no forecast, instead of waiting for the next
+     * three-hour tick. This reads the cache rather than the last pass: the spots visitors open fetch
+     * their own forecast, so a cache holding a few entries can still mean the sweep got nothing.
+     */
+    @Scheduled(fixedRate = FORECAST_RECOVERY_INTERVAL_MS, initialDelay = FORECAST_RECOVERY_INTERVAL_MS)
+    public void refetchForecastsWhenMostAreMissing() throws FetchingForecastException {
+        if (!backgroundTasksEnabled || forecastFetchInProgress.get() || forecastService.isPaused()) {
+            return;
+        }
+        if (forecastCache.size() >= spots.size() / 2) {
+            return;
+        }
+        log.warn("Only {} of {} spots have a forecast, fetching forecasts again", forecastCache.size(), spots.size());
+        fetchForecasts();
+    }
+
     @Recover
     public void recoverFromFetchingForecasts(FetchingForecastException e) {
         log.error("Failed while fetching forecasts after 3 attempts", e);
@@ -622,6 +643,9 @@ public class AggregatorService {
             if (refusedSpots.get() > 0) {
                 // Not thrown: @Retryable would start the pass over, and the pause is there to stop that.
                 log.error("Forecast fetch failed: Windguru refused {} of {} spots", refusedSpots.get(), total);
+                metricsService.incrementForecastFetchFailureCounter();
+            } else if (forecastFetchSucceeded.get() == 0 && forecastFetchFailed.get() > 0) {
+                log.error("Forecast fetch failed: none of the {} spots came back with a forecast", total);
                 metricsService.incrementForecastFetchFailureCounter();
             } else {
                 metricsService.incrementForecastFetchSuccessCounter();

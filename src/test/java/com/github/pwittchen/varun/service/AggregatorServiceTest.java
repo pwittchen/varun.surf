@@ -28,6 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -316,6 +317,89 @@ class AggregatorServiceTest {
         verify(forecastService, times(1)).getForecastData(123);
         verify(metricsService).incrementForecastFetchFailureCounter();
         verify(metricsService, never()).incrementForecastFetchSuccessCounter();
+    }
+
+    @Test
+    void shouldCountAPassThatFetchedNothingAsFailed() throws FetchingForecastException {
+        // given
+        var spot = createTestSpot(123, "Redirected Spot");
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(spot));
+        when(forecastService.getForecastData(123)).thenReturn(Mono.error(new IOException("HTTP 302: ")));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(1);
+
+        // when
+        aggregatorService.fetchForecastsEveryThreeHours();
+
+        // then
+        verify(metricsService).incrementForecastFetchFailureCounter();
+        verify(metricsService, never()).incrementForecastFetchSuccessCounter();
+    }
+
+    /**
+     * The spots visitors open fill the cache on their own, so a couple of entries must not read as
+     * a sweep that worked.
+     */
+    @Test
+    void shouldFetchForecastsAgainWhenMostSpotsHaveNone() throws FetchingForecastException {
+        // given
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+        var opened = createTestSpot(1, "Opened Spot");
+        var missing = List.of(createTestSpot(2, "Missing 1"), createTestSpot(3, "Missing 2"), createTestSpot(4, "Missing 3"));
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.concat(Flux.just(opened), Flux.fromIterable(missing)));
+        when(forecastService.getForecastData(anyInt())).thenReturn(Mono.just(new ForecastData(daily, Map.of())));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(4);
+        forecastCache().put(1, new ForecastData(daily, Map.of()));
+
+        // when
+        aggregatorService.refetchForecastsWhenMostAreMissing();
+
+        // then
+        assertThat(forecastCache()).hasSize(4);
+    }
+
+    @Test
+    void shouldNotFetchForecastsAgainWhenMostSpotsHaveOne() throws FetchingForecastException {
+        // given
+        var daily = List.of(new Forecast("Today", 10.0, 12.0, "N", 15.0, 0.5, 0, 0));
+
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(createTestSpot(1, "One"), createTestSpot(2, "Two")));
+
+        aggregatorService.init();
+        awaitSpotsLoaded(2);
+        forecastCache().put(1, new ForecastData(daily, Map.of()));
+
+        // when
+        aggregatorService.refetchForecastsWhenMostAreMissing();
+
+        // then
+        verify(forecastService, never()).getForecastData(anyInt());
+    }
+
+    @Test
+    void shouldNotFetchForecastsAgainWhileWindguruRequestsArePaused() throws FetchingForecastException {
+        // given
+        when(spotsDataProvider.getSpots()).thenReturn(Flux.just(createTestSpot(1, "One"), createTestSpot(2, "Two")));
+        when(forecastService.isPaused()).thenReturn(true);
+
+        aggregatorService.init();
+        awaitSpotsLoaded(2);
+
+        // when
+        aggregatorService.refetchForecastsWhenMostAreMissing();
+
+        // then
+        verify(forecastService, never()).getForecastData(anyInt());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Integer, ForecastData> forecastCache() {
+        return (Map<Integer, ForecastData>) ReflectionTestUtils.getField(aggregatorService, "forecastCache");
     }
 
     /**

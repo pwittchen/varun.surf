@@ -68,7 +68,9 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
 
 1. **AggregatorService** (`service/AggregatorService.java`)
    - Central orchestrator with scheduled tasks:
-     - Forecasts: every 3 hours (GFS model, daily + hourly)
+     - Forecasts: every 3 hours (GFS model, daily + hourly), and again every 15 minutes
+       while fewer than half of the spots have a forecast, so a failed sweep after a
+       restart does not leave the list empty until the next tick
      - Current conditions: every 1 minute
      - Expired on-demand data eviction: every 1 hour
    - Nothing calls an LLM on a timer. The AI analysis is the only paid operation,
@@ -821,6 +823,9 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       them come from that country (Oxylabs takes one country per username, not a list)
     - The exit IP rotates per connection, not per request: a pooled connection lives up to
       5 minutes and every request sent over it leaves from the same IP
+    - The Windguru client stays on HTTP/1.1: HTTP/2 would multiplex a whole sweep over one
+      connection and so one exit IP. A sweep once failed on every spot with `HTTP 302`;
+      the cause was not confirmed, and the redirect target is logged since then
     - Three `OkHttpClient` beans derived from one: the `@Primary` one is the `other` target,
       and `windguruHttpClient` / `liveStationsHttpClient` (`OkHttpClientConfig.WINDGURU_HTTP_CLIENT`,
       `LIVE_STATIONS_HTTP_CLIENT`) are injected with `@Qualifier`. They share one dispatcher
