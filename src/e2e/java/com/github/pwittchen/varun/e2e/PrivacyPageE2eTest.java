@@ -38,6 +38,19 @@ class PrivacyPageE2eTest extends BaseE2eTest {
     }
 
     @Test
+    @DisplayName("Should render the shared sidebar")
+    void shouldRenderTheSharedSidebar() {
+        navigateToPrivacyPage();
+
+        Locator infoToggle = page.locator("#infoToggle");
+        infoToggle.waitFor(new Locator.WaitForOptions()
+            .setState(WaitForSelectorState.VISIBLE)
+            .setTimeout(DEFAULT_TIMEOUT));
+
+        assertThat(infoToggle.isVisible()).isTrue();
+    }
+
+    @Test
     @DisplayName("Should link privacy page from footer")
     void shouldLinkPrivacyPageFromFooter() {
         page.navigate(BASE_URL + "/mcp");

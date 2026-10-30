@@ -247,6 +247,10 @@ async function processHTML(
       `src="${jsMap.get("cli") || "/assets/cli.js"}"`
     );
     html = html.replace(
+      /src="\.\.\/js\/page\/privacy\.js"/g,
+      `src="${jsMap.get("privacy") || "/assets/privacy.js"}"`
+    );
+    html = html.replace(
       /src="\.\.\/js\/page\/metrics\.js"/g,
       `src="${jsMap.get("metrics") || "/assets/metrics.js"}"`
     );
