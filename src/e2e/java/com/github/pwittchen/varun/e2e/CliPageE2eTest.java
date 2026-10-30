@@ -36,6 +36,7 @@ class CliPageE2eTest extends BaseE2eTest {
             .setTimeout(DEFAULT_TIMEOUT));
 
         assertThat(installCmd.textContent()).isEqualTo("curl -fsSL " + BASE_URL + "/cli/install.sh | sh");
+        assertThat(page.locator("#cli-examples").textContent().split("\n").length).isGreaterThan(1);
         assertThat(page.locator("#cli-examples").textContent()).contains("varun wind jastarnia");
     }
 

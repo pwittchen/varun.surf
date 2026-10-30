@@ -46,10 +46,22 @@
                         <div class="mcp-info-row">
                             <div class="mcp-info-label" data-i18n="cliExamplesLabel">Examples</div>
                             <div class="mcp-code mcp-code-block">
-                                <pre><code id="cli-examples">varun wind jastarnia            # hour-by-hour wind at one spot
-varun windy --country poland    # where it will blow in the next 24 h
-varun now                       # live conditions at your favourites
-varun spot tarifa --model ifs   # everything about one spot</code></pre>
+                                <pre><code id="cli-examples">varun wind jastarnia                  # hour-by-hour wind at one spot
+varun wind puck --min-wind 15         # only the hours reaching 15 kts
+varun wind jastarnia --all            # with temperature, rain, cloud and waves
+varun wind jastarnia --units ms       # wind in m/s
+varun windy --country poland          # where it will blow in the next 24 h
+varun windy --min-wind 20 --hours 48  # spots reaching 20 kts within two days
+varun now                             # live conditions at your favourites
+varun now jastarnia puck              # live conditions at the spots you name
+varun now --watch                     # the same, redrawn every minute
+varun spot jastarnia --model ifs      # everything about one spot
+varun spot jastarnia --models         # forecast models available at a spot
+varun search hel                      # spots whose name contains a word
+varun fav add jastarnia --as home     # save a favourite under a short name
+varun wind home --json | jq .summary  # JSON for scripts
+varun windy | cut -f1,7               # plain columns in a pipe: spot and peak
+varun spot jastarnia --format md      # Markdown for LLM pipelines</code></pre>
                             </div>
                         </div>
                     </div>

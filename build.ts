@@ -276,8 +276,12 @@ async function processHTML(
     // Minify HTML
     const minifiedHtml = await minify(html, HTML_MINIFY_OPTIONS);
 
-    // Make single-line (remove newlines between tags)
-    const singleLineHtml = minifiedHtml.replace(/>\s+</g, "><").replace(/\n/g, "");
+    // Make single-line (remove newlines between tags), leaving <pre> blocks
+    // alone: their line breaks are content
+    const singleLineHtml = minifiedHtml
+      .split(/(<pre[\s>][\s\S]*?<\/pre>)/)
+      .map((part, index) => (index % 2 === 1 ? part : part.replace(/>\s+</g, "><").replace(/\n/g, "")))
+      .join("");
 
     // Write to output
     const outputPath = join(OUTPUT_DIR, `${name}.html`);
