@@ -10,12 +10,17 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.HEAD;
 
 @Configuration
 public class WebConfig implements WebFluxConfigurer {
+
+    static final URI ANDROID_APP_URL =
+            URI.create("https://play.google.com/store/apps/details?id=surf.varun.app");
 
     // NOTE: GET /spot/{id} is handled by SeoController, which injects per-spot
     // SEO metadata into the spot.html template before serving it.
@@ -166,6 +171,16 @@ public class WebConfig implements WebFluxConfigurer {
                             .contentType(MediaType.TEXT_HTML)
                             .bodyValue(privacyHtml);
                 }
+        );
+    }
+
+    // Short link to the Android app, temporary so it can be repointed without browsers
+    // holding on to the old target. HEAD as well, for link checkers and previews
+    @Bean
+    public RouterFunction<ServerResponse> androidRouter() {
+        return RouterFunctions.route(
+                GET("/android").or(HEAD("/android")),
+                _ -> ServerResponse.temporaryRedirect(ANDROID_APP_URL).build()
         );
     }
 

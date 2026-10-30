@@ -808,6 +808,7 @@ Implemented features (complete):
 - Sources page (/sources) with spots, forecast and live station data sources
 - MCP page (/mcp, "MCP" in the sidebar) with the MCP endpoint, install command and JSON config
 - CLI page (/cli, "CLI" in the sidebar) with the CLI install command and examples
+- Short link /android redirecting to the app's Google Play listing (`WebConfig`)
 - Health check history (90 data points, 1-minute intervals)
 - Session cookie authentication (API access gated behind SESSION cookie)
 - Hero section with random spot photo, name/location, and slogan (EN/PL), closed
