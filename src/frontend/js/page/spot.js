@@ -1,6 +1,5 @@
 import * as flags from '../common/flags.js';
 import * as translations from '../common/translations.js';
-import * as footer from '../common/footer.js';
 import * as weather from '../common/weather.js';
 import * as constants from '../common/constants.js';
 import * as date from '../common/date.js';
@@ -3286,6 +3285,26 @@ function updateUITranslations() {
         appInfoDevText.innerHTML = translations.t('appInfoDevText');
     }
 
+    const appInfoAuthorTitle = document.getElementById('appInfoAuthorTitle');
+    if (appInfoAuthorTitle) {
+        appInfoAuthorTitle.textContent = translations.t('appInfoAuthorTitle');
+    }
+
+    const appInfoAuthorText = document.getElementById('appInfoAuthorText');
+    if (appInfoAuthorText) {
+        appInfoAuthorText.innerHTML = translations.t('appInfoAuthorText');
+    }
+
+    const appInfoPrivacyTitle = document.getElementById('appInfoPrivacyTitle');
+    if (appInfoPrivacyTitle) {
+        appInfoPrivacyTitle.textContent = translations.t('appInfoPrivacyTitle');
+    }
+
+    const appInfoPrivacyText = document.getElementById('appInfoPrivacyText');
+    if (appInfoPrivacyText) {
+        appInfoPrivacyText.innerHTML = translations.t('appInfoPrivacyText');
+    }
+
     // Update map layer switcher and forecast timeline labels
     map.updateLayerSwitcherLabels();
     map.updateForecastTimelineLabels();
@@ -3326,9 +3345,6 @@ function updateUITranslations() {
             errorDescription.textContent = currentErrorText;
         }
     }
-
-    // Keep footer text consistent with current language
-    footer.updateFooter(translations.t);
 }
 
 // Initialize language and setup toggle

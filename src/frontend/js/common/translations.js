@@ -106,18 +106,6 @@ export const translations = {
         tempLabel: "Temp",
         precipitationLabel: "Precipitation",
 
-        // Footer
-        footerDisclaimer: "kite spots database and weather forecast for kitesurfers",
-        footerMadeInLabel: "made in 🇵🇱 by",
-        footerOpenSource: "open-source",
-        footerChangelog: "changelog",
-        footerStatus: "status",
-        footerSources: "sources",
-        footerMcp: "mcp",
-        footerCli: "cli",
-        footerLlms: "llms.txt",
-        footerPrivacy: "privacy",
-
         // Status page
         statusPageTitle: "Status - VARUN.SURF",
         statusLoading: "Loading...",
@@ -424,7 +412,11 @@ export const translations = {
         appInfoCollaborationTitle: "Collaboration",
         appInfoCollaborationText: "I welcome collaboration! Open an issue or PR in <a href=\"https://github.com/pwittchen/varun.surf\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">GitHub repository</a> or reach out via email. If you would like to advertise your service related to the kitesurfing or other water sports (e.g. shop, kite school, travels, insurance, etc.) on this website, please contact me.",
         appInfoDevTitle: "Developers and AI assistants",
-        appInfoDevText: "Kite spots, forecasts and live wind conditions are available to AI assistants through the <a href=\"/mcp\" class=\"modal-link\">MCP server</a> and the <a href=\"/llms.txt\" class=\"modal-link\">llms.txt</a> file with LLM-friendly Markdown endpoints, and in a terminal through the <a href=\"/cli\" class=\"modal-link\">command-line client</a>. Service statistics and uptime are on the <a href=\"/status\" class=\"modal-link\">status page</a>.",
+        appInfoDevText: "Kite spots, forecasts and live wind conditions are available to AI assistants through the <a href=\"/mcp\" class=\"modal-link\">MCP server</a> and the <a href=\"/llms.txt\" class=\"modal-link\">llms.txt</a> file with LLM-friendly Markdown endpoints. The <a href=\"/cli\" class=\"modal-link\">varun command-line client (CLI)</a> brings the same data to your terminal. Service statistics and uptime are on the <a href=\"/status\" class=\"modal-link\">status page</a>, and what changed in each version is in the <a href=\"https://github.com/pwittchen/varun.surf/releases\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">changelog</a>.",
+        appInfoAuthorTitle: "Author",
+        appInfoAuthorText: "Made in 🇵🇱 by <a href=\"https://wittchen.io\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">Piotr Wittchen</a>.",
+        appInfoPrivacyTitle: "Privacy",
+        appInfoPrivacyText: "Read how we handle your data in the <a href=\"/privacy\" class=\"modal-link\">privacy policy</a>.",
         embedModalTitle: "Embed Widget",
         embedModalDescription: "Copy the code below to embed this spot's weather data on your website.",
         embedViewConditionsLabel: "Current Conditions",
@@ -704,18 +696,6 @@ export const translations = {
         temperatureLabel: "Temperatura",
         tempLabel: "Temp",
         precipitationLabel: "Opady",
-
-        // Footer
-        footerDisclaimer: "baza kite spotów i prognoza pogody dla kitesurferów",
-        footerMadeInLabel: "stworzył w 🇵🇱",
-        footerOpenSource: "open-source",
-        footerChangelog: "historia zmian",
-        footerStatus: "status",
-        footerSources: "źródła",
-        footerMcp: "mcp",
-        footerCli: "cli",
-        footerLlms: "llms.txt",
-        footerPrivacy: "prywatność",
 
         // Status page
         statusPageTitle: "Status - VARUN.SURF",
@@ -1027,7 +1007,11 @@ export const translations = {
         appInfoCollaborationTitle: "Współpraca",
         appInfoCollaborationText: "Chcesz współtworzyć projekt lub udostępnić nowe źródła danych? Otwórz zgłoszenie albo pull request w <a href=\"https://github.com/pwittchen/varun.surf\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">repozytorium GitHub</a> lub napisz maila. Jeżeli chciałbyś zareklamować swoje usługi związane z kitesurfingiem lub innymi sportami wodnymi (np. sklep, szkółkę, wyjazdy, ubezpieczenia, itd.) na tej stronie, proszę o kontakt.",
         appInfoDevTitle: "Programiści i asystenci AI",
-        appInfoDevText: "Kite spoty, prognozy i aktualne warunki wiatrowe są dostępne dla asystentów AI poprzez <a href=\"/mcp\" class=\"modal-link\">serwer MCP</a> oraz plik <a href=\"/llms.txt\" class=\"modal-link\">llms.txt</a> wraz z endpointami w formacie Markdown przystosowanymi dla modeli językowych, a w terminalu przez <a href=\"/cli\" class=\"modal-link\">klienta wiersza poleceń</a>. Statystyki i dostępność serwisu znajdziesz na <a href=\"/status\" class=\"modal-link\">stronie statusu</a>.",
+        appInfoDevText: "Kite spoty, prognozy i aktualne warunki wiatrowe są dostępne dla asystentów AI poprzez <a href=\"/mcp\" class=\"modal-link\">serwer MCP</a> oraz plik <a href=\"/llms.txt\" class=\"modal-link\">llms.txt</a> wraz z endpointami w formacie Markdown przystosowanymi dla modeli językowych. Te same dane w terminalu daje <a href=\"/cli\" class=\"modal-link\">klient wiersza poleceń (CLI) varun</a>. Statystyki i dostępność serwisu znajdziesz na <a href=\"/status\" class=\"modal-link\">stronie statusu</a>, a zmiany w kolejnych wersjach w <a href=\"https://github.com/pwittchen/varun.surf/releases\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">historii zmian</a>.",
+        appInfoAuthorTitle: "Autor",
+        appInfoAuthorText: "Stworzył w 🇵🇱 <a href=\"https://wittchen.io\" class=\"modal-link\" target=\"_blank\" rel=\"noopener\">Piotr Wittchen</a>.",
+        appInfoPrivacyTitle: "Prywatność",
+        appInfoPrivacyText: "Jak korzystamy z Twoich danych, opisuje <a href=\"/privacy\" class=\"modal-link\">polityka prywatności</a>.",
         embedModalTitle: "Widget osadzenia",
         embedModalDescription: "Skopiuj kod poniżej, aby osadzić dane pogodowe tego spotu na swojej stronie.",
         embedViewConditionsLabel: "Aktualne warunki",

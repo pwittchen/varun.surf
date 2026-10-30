@@ -786,8 +786,6 @@ async function initializeMetrics() {
 
     // Start auto-refresh
     startAutoRefresh();
-
-    // Update footer
 }
 
 document.addEventListener('DOMContentLoaded', initializeMetrics);

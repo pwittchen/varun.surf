@@ -33,7 +33,6 @@ varun.surf/
 │   │   │   ├── api.js             # Fetch helpers for the REST API
 │   │   │   ├── appShell.js        # Shared page shell (header, sidebar wiring)
 │   │   │   ├── sideMenu.js        # Sidebar navigation and mobile drawer
-│   │   │   ├── footer.js          # Shared footer
 │   │   │   ├── map.js             # Leaflet map: markers, clustering, wind field, timeline, side peek
 │   │   │   ├── modals.js          # Modal overlay system
 │   │   │   ├── routing.js         # Client-side routing (History API)

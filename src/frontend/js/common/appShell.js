@@ -253,7 +253,15 @@ const MODALS_HTML = `
             </div>
             <div class="modal-section">
                 <h3 id="appInfoDevTitle">Developers and AI assistants</h3>
-                <p id="appInfoDevText">Kite spots, forecasts and live conditions are available to AI assistants through the <a href="/mcp" class="modal-link">MCP server</a> and the <a href="/llms.txt" class="modal-link">llms.txt</a> file with LLM-friendly Markdown endpoints, and in a terminal through the <a href="/cli" class="modal-link">command-line client</a>. Service statistics and uptime are on the <a href="/status" class="modal-link">status page</a>.</p>
+                <p id="appInfoDevText">Kite spots, forecasts and live conditions are available to AI assistants through the <a href="/mcp" class="modal-link">MCP server</a> and the <a href="/llms.txt" class="modal-link">llms.txt</a> file with LLM-friendly Markdown endpoints. The <a href="/cli" class="modal-link">varun command-line client (CLI)</a> brings the same data to your terminal. Service statistics and uptime are on the <a href="/status" class="modal-link">status page</a>, and what changed in each version is in the <a href="https://github.com/pwittchen/varun.surf/releases" class="modal-link" target="_blank" rel="noopener">changelog</a>.</p>
+            </div>
+            <div class="modal-section">
+                <h3 id="appInfoPrivacyTitle">Privacy</h3>
+                <p id="appInfoPrivacyText">Read how we handle your data in the <a href="/privacy" class="modal-link">privacy policy</a>.</p>
+            </div>
+            <div class="modal-section">
+                <h3 id="appInfoAuthorTitle">Author</h3>
+                <p id="appInfoAuthorText">Made in 🇵🇱 by <a href="https://wittchen.io" class="modal-link" target="_blank" rel="noopener">Piotr Wittchen</a>.</p>
             </div>
         </div>
     </div>

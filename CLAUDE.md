@@ -614,7 +614,7 @@ src/main/java/com/github/pwittchen/varun/
       JSON config
 - [x] CLI page (/cli, "CLI" in the sidebar) with the CLI install command and examples
 - [x] Privacy policy page (/privacy, EN/PL) covering the website and the Android app,
-      linked from the footer, the app's About screen and the Play listing
+      linked from the info modal, the app's About screen and the Play listing
 - [x] Health check history (90 data points, 1-minute intervals)
 - [x] Session cookie authentication (API access gated behind SESSION cookie)
 - [x] Hero section with random spot photo, name/location, and slogan (EN/PL),

@@ -13,7 +13,6 @@ import * as androidApp from './androidApp.js';
 import * as appShell from './appShell.js';
 import * as calculator from './calculator.js';
 import * as constants from './constants.js';
-import * as footer from './footer.js';
 import * as mainPageShortcuts from './mainPageShortcuts.js';
 import * as modals from './modals.js';
 import * as routing from './routing.js';
@@ -29,14 +28,18 @@ const MODAL_TEXT_IDS = [
     'appInfoContactTitle',
     'appInfoNewSpotTitle',
     'appInfoCollaborationTitle',
-    'appInfoDevTitle'
+    'appInfoDevTitle',
+    'appInfoAuthorTitle',
+    'appInfoPrivacyTitle'
 ];
 
 const MODAL_HTML_IDS = [
     'appInfoContactText',
     'appInfoNewSpotText',
     'appInfoCollaborationText',
-    'appInfoDevText'
+    'appInfoDevText',
+    'appInfoAuthorText',
+    'appInfoPrivacyText'
 ];
 
 // Copy each page renders itself (status readouts, source rows, copy buttons)
@@ -75,7 +78,6 @@ function updateTranslations() {
 
     sideMenu.updateTranslations(t);
     calculator.updateTranslations(t);
-    footer.updateFooter(t);
 
     const langCode = document.getElementById('langCode');
     if (langCode) {

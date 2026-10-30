@@ -202,20 +202,22 @@ class StatusPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should have sources, mcp and cli links in the footer")
-    void shouldHaveSourcesMcpAndCliLinksInTheFooter() {
+    @DisplayName("Should have author, cli and privacy links in the info modal")
+    void shouldHaveAuthorCliAndPrivacyLinksInTheInfoModal() {
         navigateToStatusPage();
 
-        Locator sourcesFooterLink = page.locator(".footer-content a[href='/sources']");
-        Locator mcpFooterLink = page.locator(".footer-content a[href='/mcp']");
-        Locator cliFooterLink = page.locator(".footer-content a[href='/cli']");
-        sourcesFooterLink.waitFor(new Locator.WaitForOptions()
+        page.locator("#infoToggle").click();
+
+        Locator cliLink = page.locator("#appInfoDevText a[href='/cli']");
+        Locator authorLink = page.locator("#appInfoAuthorText a[href='https://wittchen.io']");
+        Locator privacyLink = page.locator("#appInfoPrivacyText a[href='/privacy']");
+        cliLink.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
 
-        assertThat(sourcesFooterLink.isVisible()).isTrue();
-        assertThat(mcpFooterLink.isVisible()).isTrue();
-        assertThat(cliFooterLink.isVisible()).isTrue();
+        assertThat(cliLink.isVisible()).isTrue();
+        assertThat(authorLink.isVisible()).isTrue();
+        assertThat(privacyLink.isVisible()).isTrue();
     }
 
     @Test

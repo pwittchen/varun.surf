@@ -19,20 +19,19 @@
    13. Spot Info & AI Analysis
    14. External Links
    15. Loading & Error States
-   16. Footer
-   17. Kite Size Calculator
-   18. Sponsors
-   19. Single Spot View
-   20. Current Conditions Card
-   21. Forecast Tabs & Views
-   22. Windguru View
-   23. Chart View
-   24. List View
-   25. Status Page
-   26. Embed Modal
-   27. Map View
-   28. Animations
-   29. Media Queries / Responsive
+   16. Kite Size Calculator
+   17. Sponsors
+   18. Single Spot View
+   19. Current Conditions Card
+   20. Forecast Tabs & Views
+   21. Windguru View
+   22. Chart View
+   23. List View
+   24. Status Page
+   25. Embed Modal
+   26. Map View
+   27. Animations
+   28. Media Queries / Responsive
    ============================================================================ */
 
 
@@ -3093,95 +3092,7 @@ body.forecasts-loading .skeleton-text {
 
 
 /* ============================================================================
-   16. FOOTER
-   ============================================================================ */
-
-.footer {
-    margin-top: 60px;
-    padding: 30px 0;
-    border-top: 1px solid var(--border-primary);
-    text-align: center;
-}
-
-.footer-content {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.footer-content p {
-    color: var(--text-secondary);
-    font-size: .875rem;
-    margin-bottom: 8px;
-}
-
-[data-theme="light"] .footer-content p {
-    color: var(--text-secondary);
-}
-
-.footer-content p:last-child {
-    margin-bottom: 0;
-}
-
-.footer-disclaimer {
-    font-size: .75rem;
-    opacity: .8;
-}
-
-.footer-link {
-    font-size: .75rem;
-    margin-top: 12px;
-}
-
-.footer-disclaimer a,
-.footer-link a {
-    color: var(--accent-primary);
-    text-decoration: none;
-    transition: color .2s ease;
-}
-
-.footer-disclaimer a:hover,
-.footer-link a:hover {
-    color: var(--text-white);
-    text-decoration: underline;
-}
-
-[data-theme="light"] .footer-disclaimer a,
-[data-theme="light"] .footer-link a {
-    color: var(--accent-primary);
-}
-
-[data-theme="light"] .footer-disclaimer a:hover,
-[data-theme="light"] .footer-link a:hover {
-    color: var(--text-black);
-}
-
-@media (max-width: 768px) {
-    .footer-link {
-        white-space: normal;
-        word-break: normal;
-        overflow-wrap: break-word;
-    }
-
-    .footer-link a,
-    .footer-link .footer-year,
-    .footer-link .footer-made-in {
-        white-space: nowrap;
-    }
-}
-
-@media (min-width: 769px) {
-    .footer-content {
-        max-width: none;
-    }
-
-    .footer-link {
-        white-space: nowrap;
-    }
-}
-
-
-/* ============================================================================
-   17. KITE SIZE CALCULATOR
+   16. KITE SIZE CALCULATOR
    ============================================================================ */
 
 .calc-input-group {
@@ -3300,7 +3211,7 @@ body.forecasts-loading .skeleton-text {
 
 
 /* ============================================================================
-   18. SPONSORS
+   17. SPONSORS
    ============================================================================ */
 
 .sponsors-container {
@@ -3371,7 +3282,7 @@ body.forecasts-loading .skeleton-text {
 
 
 /* ============================================================================
-   19. SINGLE SPOT VIEW
+   18. SINGLE SPOT VIEW
    ============================================================================ */
 
 /* Spot detail page two-column layout */
@@ -3768,7 +3679,7 @@ body.spot-page .error-description {
 
 
 /* ============================================================================
-   20. CURRENT CONDITIONS CARD
+   19. CURRENT CONDITIONS CARD
    ============================================================================ */
 
 .current-conditions-card {
@@ -3931,7 +3842,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   21. FORECAST TABS & VIEWS
+   20. FORECAST TABS & VIEWS
    ============================================================================ */
 
 .forecast-tabs-container {
@@ -4346,7 +4257,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   22. WINDGURU VIEW
+   21. WINDGURU VIEW
    ============================================================================ */
 
 .windguru-view {
@@ -4613,7 +4524,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* ============================================================================
-   23. CHART VIEW
+   22. CHART VIEW
    ============================================================================ */
 
 .chart-view {
@@ -4686,7 +4597,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   24. LIST VIEW STYLES
+   23. LIST VIEW STYLES
    ============================================================================ */
 
 .spots-list {
@@ -4984,7 +4895,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   25. STATUS PAGE STYLES
+   24. STATUS PAGE STYLES
    ============================================================================ */
 
 /* Shared by the status / sources / MCP / logs / metrics pages. Their chrome is
@@ -5815,7 +5726,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   26. EMBED MODAL STYLES
+   25. EMBED MODAL STYLES
    ============================================================================ */
 
 /* The embed dialog is sized to the viewport rather than to its contents: the
@@ -5981,7 +5892,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   27. MAP VIEW STYLES
+   26. MAP VIEW STYLES
    ============================================================================ */
 
 /* Desktop-only visibility */
@@ -7070,7 +6981,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   28. HERO SECTION
+   27. HERO SECTION
    ============================================================================ */
 
 .hero-section {
@@ -7181,7 +7092,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   29. ANIMATIONS
+   28. ANIMATIONS
    ============================================================================ */
 
 @keyframes spin {
@@ -7265,7 +7176,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 
 
 /* ============================================================================
-   29. MEDIA QUERIES / RESPONSIVE
+   28. MEDIA QUERIES / RESPONSIVE
    ============================================================================ */
 
 /* Mobile drawer layout (max-width: 929px) */
@@ -7834,7 +7745,7 @@ body.spot-page .weather-table tbody tr:has(.live-indicator) {
 }
 
 /* ============================================================================
-   30. LOGS PAGE
+   29. LOGS PAGE
    ============================================================================ */
 
 /* Logs Filter Controls */

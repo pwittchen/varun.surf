@@ -1,6 +1,5 @@
 import * as flags from '../common/flags.js';
 import * as translations from '../common/translations.js';
-import * as footer from '../common/footer.js';
 import * as weather from '../common/weather.js';
 import * as constants from '../common/constants.js';
 import * as date from '../common/date.js';
@@ -478,9 +477,6 @@ function initLanguage() {
 
         appShell.updateLanguageSwitch(state.getLanguage());
 
-        // Update footer
-        footer.updateFooter(translations.t);
-
         // Update "All" in the dropdown if selected
         if (globalWeatherData.length > 0) {
             populateCountryDropdown(globalWeatherData);
@@ -559,6 +555,26 @@ function initLanguage() {
         const appInfoDevText = document.getElementById('appInfoDevText');
         if (appInfoDevText) {
             appInfoDevText.innerHTML = translations.t('appInfoDevText');
+        }
+
+        const appInfoAuthorTitle = document.getElementById('appInfoAuthorTitle');
+        if (appInfoAuthorTitle) {
+            appInfoAuthorTitle.textContent = translations.t('appInfoAuthorTitle');
+        }
+
+        const appInfoAuthorText = document.getElementById('appInfoAuthorText');
+        if (appInfoAuthorText) {
+            appInfoAuthorText.innerHTML = translations.t('appInfoAuthorText');
+        }
+
+        const appInfoPrivacyTitle = document.getElementById('appInfoPrivacyTitle');
+        if (appInfoPrivacyTitle) {
+            appInfoPrivacyTitle.textContent = translations.t('appInfoPrivacyTitle');
+        }
+
+        const appInfoPrivacyText = document.getElementById('appInfoPrivacyText');
+        if (appInfoPrivacyText) {
+            appInfoPrivacyText.innerHTML = translations.t('appInfoPrivacyText');
         }
 
         // Update kite size calculator modal content

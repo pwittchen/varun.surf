@@ -51,12 +51,14 @@ class PrivacyPageE2eTest extends BaseE2eTest {
     }
 
     @Test
-    @DisplayName("Should link privacy page from footer")
-    void shouldLinkPrivacyPageFromFooter() {
+    @DisplayName("Should link privacy page from info modal")
+    void shouldLinkPrivacyPageFromInfoModal() {
         page.navigate(BASE_URL + "/mcp");
         waitForPageLoad();
 
-        Locator link = page.locator(".footer a[href='/privacy']");
+        page.locator("#infoToggle").click();
+
+        Locator link = page.locator("#appInfoModal a[href='/privacy']");
         link.waitFor(new Locator.WaitForOptions()
             .setState(WaitForSelectorState.VISIBLE)
             .setTimeout(DEFAULT_TIMEOUT));
