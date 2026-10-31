@@ -18,7 +18,7 @@
 | platform | link |
 |----------|------|
 | web | **[https://varun.surf](https://varun.surf)** |
-| android | **[https://play.google.com/store/apps/details?id=surf.varun.app](https://play.google.com/store/apps/details?id=surf.varun.app)** |
+| android | **[https://varun.surf/android](https://varun.surf/android)** |
 | mcp | **[https://varun.surf/mcp](https://varun.surf/mcp)** |
 | cli | **[https://varun.surf/cli](https://varun.surf/cli)** |
 
