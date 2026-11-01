@@ -1,9 +1,9 @@
 [versions]
 kotlin = "2.4.21"
 agp = "9.5.0"
-ksp = "2.3.12"
+ksp = "2.3.13"
 hilt = "2.60.1"
-versionsPlugin = "0.66.0"
+versionsPlugin = "0.67.0"
 
 compileSdk = "37"
 minSdk = "28"
