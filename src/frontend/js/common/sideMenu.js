@@ -6,7 +6,7 @@
 // At mobile widths (<=929px) the sidebar steps aside. Where the page has a
 // drawer (main page, single spot page) its entries move into #headerIcons
 // (inside .header-controls) and the brand into the header; on the pages with no
-// drawer (status / sources / MCP / logs / metrics) only the brand moves, and the
+// drawer (status / sources / MCP / metrics) only the brand moves, and the
 // header — wordmark plus language switch — is the whole chrome.
 // ============================================================================
 
@@ -41,7 +41,6 @@ const TOOLTIP_KEYS = {
     mcpLink: 'mcpLinkTooltip',
     cliLink: 'cliLinkTooltip',
     githubLink: 'githubLinkTooltip',
-    logsLink: 'logsLinkTooltip',
     metricsLink: 'metricsLinkTooltip'
 };
 
@@ -66,7 +65,6 @@ const SIDEBAR_LABEL_KEYS = {
     mcpLinkSidebarLabel: 'sidebarMcp',
     cliLinkSidebarLabel: 'sidebarCli',
     githubLinkSidebarLabel: 'sidebarGithub',
-    logsLinkSidebarLabel: 'sidebarLogs',
     metricsLinkSidebarLabel: 'sidebarMetrics',
     sidebarSectionAppearance: 'sidebarSectionAppearance',
     sidebarSectionView: 'sidebarSectionView',
@@ -314,7 +312,7 @@ export function setup() {
         return;
     }
 
-    // Pages without a drawer (status / sources / MCP / logs / metrics) hand over
+    // Pages without a drawer (status / sources / MCP / metrics) hand over
     // the wordmark only: at mobile widths their header is the whole chrome.
     const headerIcons = document.getElementById('headerIcons');
     const brand = document.getElementById('sidebarBrand');

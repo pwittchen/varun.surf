@@ -161,8 +161,7 @@ as a free backend by someone else's app.
 
 - **rate limiting** (`nginx/nginx.conf`): 10 r/s per IP across `/api/v1/**` with a burst
   of 30 (a page load fires several calls at once), and a stricter 1 r/s for the endpoints
-  that cost real work or real bytes - `/api/v1/wind`, `/llms/**`, `/mcp/**` and
-  `/api/v1/logs`, where the trickle is also what stops a brute force on the basic auth.
+  that cost real work or real bytes - `/api/v1/wind`, `/llms/**` and `/mcp/**`.
   The two on-demand generation endpoints (`/api/v1/spots/{id}/analysis` and
   `/api/v1/spots/{id}/icm`) get their own 20 r/m: the analysis is the only request that
   spends money, and at the general api rate one client could walk the whole spot list and
@@ -179,8 +178,6 @@ as a free backend by someone else's app.
   `GET /api/v1/session`, which answers 204 and sets the same cookie. It costs a scraper
   one extra request and nothing more - `/llms/**` and `/mcp/**` serve the same data
   without it, by design.
-- **fail-closed logs**: with no `ANALYTICS_PASSWORD` set, `/api/v1/logs` is denied rather
-  than opened to everyone holding a cookie. Set the variable or the logs page stays dark.
 - **security headers**: `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`
   and HSTS are set by nginx. The CSP is deliberately `Content-Security-Policy-Report-Only`
   - the frontend carries inline styles and scripts, so enforcing it as-is would break
@@ -274,24 +271,10 @@ The app includes a custom metrics dashboard at [/metrics](https://varun.surf/met
 
 The metrics dashboard needs no password: it is open to any visitor of the site.
 
-### built-in logs dashboard
+### logs
 
-The app includes a logs dashboard at [/logs](https://varun.surf/logs) that displays:
-
-- **Real-time application logs** with auto-refresh every 5 seconds
-- **Level filtering**: filter by ERROR, WARN, INFO, DEBUG, or TRACE
-- **Text search**: search through log messages, logger names, and thread names
-- **Wide/narrow view toggle**: expand to full width for better readability
-- **In-memory buffer**: stores the last 1000 log entries (oldest logs are evicted when buffer is full)
-
-Note: Logs are stored in memory only and are lost on application restart.
-
-**Configuration:**
-
-The logs dashboard is the only password-protected one. Set your password in the `.env` file:
-```
-ANALYTICS_PASSWORD=your-secure-password
-```
+The web app does not show application logs. They go to the console only, so on the server
+read them with `docker logs <container>`.
 
 ## ai forecast analysis
 

@@ -33,8 +33,7 @@ const threadsHistory = {
 // API
 // ============================================================================
 
-// The metrics endpoints are open to anyone holding a session cookie: only the
-// logs are password-protected.
+// The metrics endpoints are open to anyone holding a session cookie.
 async function fetchMetrics() {
     const response = await fetch('/api/v1/metrics', { credentials: 'same-origin' });
     if (!response.ok) {

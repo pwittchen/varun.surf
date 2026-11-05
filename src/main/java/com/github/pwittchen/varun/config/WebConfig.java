@@ -223,27 +223,4 @@ public class WebConfig implements WebFluxConfigurer {
                 }
         );
     }
-
-    @Bean
-    public RouterFunction<ServerResponse> logsRouter() {
-        return RouterFunctions.route(
-                GET("/logs"),
-                _ -> {
-                    Resource logsHtml = new ClassPathResource("static/logs.html");
-                    return ServerResponse
-                            .ok()
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(logsHtml);
-                }
-        ).andRoute(
-                GET("/logs/"),
-                _ -> {
-                    Resource logsHtml = new ClassPathResource("static/logs.html");
-                    return ServerResponse
-                            .ok()
-                            .contentType(MediaType.TEXT_HTML)
-                            .bodyValue(logsHtml);
-                }
-        );
-    }
 }

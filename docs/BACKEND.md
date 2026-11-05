@@ -719,16 +719,14 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── NettyConfig.java                  # Netty HTTP client tuning
 │   ├── OkHttpClientConfig.java           # OkHttpClient beans (default, Windguru, live stations)
 │   ├── OxylabsProxy.java                 # optional Oxylabs residential proxy, per target
-│   ├── SecurityConfig.java               # Spring Security (HTTP Basic + session filter)
+│   ├── SecurityConfig.java               # Spring Security (session filter, no login)
 │   ├── SessionTokenService.java          # signed stateless SESSION cookie token
 │   ├── SessionAuthenticationFilter.java  # Session-based API access gating
 │   ├── CacheControlFilter.java           # Cache-Control headers (cache busting)
-│   ├── LogAppenderConfig.java            # In-memory log appender
 │   ├── McpConfig.java                    # MCP tool callback provider
 │   └── WebConfig.java                    # Web MVC configuration
 ├── controller/                           # REST controllers
 │   ├── LlmController.java                # /llms/*.md (public Markdown for LLMs)
-│   ├── LogsController.java               # /api/v1/logs/*
 │   ├── MetricsController.java            # /api/v1/metrics/*
 │   ├── SeoController.java                # /spot/{id}, /country/{name}, /sitemap.xml
 │   ├── SessionController.java            # /api/v1/session (hands out the SESSION cookie)
@@ -814,10 +812,6 @@ src/main/java/com/github/pwittchen/varun/
     │   └── SeoService.java               # Server-rendered pages, sitemap
     ├── metrics/
     │   └── MetricsHistoryService.java    # Metrics history (60 points, every 5s)
-    ├── logs/
-    │   ├── LogsService.java              # In-memory log buffer (1000 entries)
-    │   ├── InMemoryLogAppender.java      # Logback appender
-    │   └── LogEntry.java                 # Log entry record
     ├── health/
     │   ├── HealthHistoryService.java     # Health history (90 points, every minute)
     │   └── HealthCheckResult.java        # Health check record

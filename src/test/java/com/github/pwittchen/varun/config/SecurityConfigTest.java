@@ -5,16 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseCookie;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.Base64;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "30s")
-@TestPropertySource(properties = {"app.analytics.password=testpassword123"})
 public class SecurityConfigTest {
 
     @Autowired
@@ -72,54 +68,34 @@ public class SecurityConfigTest {
                 .expectStatus().isOk();
     }
 
+    // The logs dashboard is gone: there is no endpoint left to authenticate against,
+    // with or without a password.
     @Test
-    void shouldRequireAuthenticationForLogsEndpoint() {
+    void shouldNotServeLogs() {
         String sessionCookie = getSessionCookie();
 
         webTestClient.get()
                 .uri("/api/v1/logs")
                 .cookie("SESSION", sessionCookie)
                 .exchange()
-                .expectStatus().isUnauthorized();
+                .expectStatus().isNotFound();
     }
 
     @Test
-    void shouldAllowAccessToLogsWithValidCredentials() {
-        String sessionCookie = getSessionCookie();
-        String credentials = Base64.getEncoder().encodeToString("admin:testpassword123".getBytes());
-
+    void shouldNotServeLogsPage() {
         webTestClient.get()
-                .uri("/api/v1/logs")
-                .cookie("SESSION", sessionCookie)
-                .header("Authorization", "Basic " + credentials)
+                .uri("/logs")
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isNotFound();
     }
 
     @Test
-    void shouldRejectLogsAccessWithInvalidCredentials() {
-        String sessionCookie = getSessionCookie();
-        String credentials = Base64.getEncoder().encodeToString("admin:wrongpassword".getBytes());
-
+    void shouldNotAskForBasicAuth() {
         webTestClient.get()
-                .uri("/api/v1/logs")
-                .cookie("SESSION", sessionCookie)
-                .header("Authorization", "Basic " + credentials)
+                .uri("/api/v1/spots")
                 .exchange()
-                .expectStatus().isUnauthorized();
-    }
-
-    @Test
-    void shouldRejectLogsAccessWithInvalidUsername() {
-        String sessionCookie = getSessionCookie();
-        String credentials = Base64.getEncoder().encodeToString("wronguser:testpassword123".getBytes());
-
-        webTestClient.get()
-                .uri("/api/v1/logs")
-                .cookie("SESSION", sessionCookie)
-                .header("Authorization", "Basic " + credentials)
-                .exchange()
-                .expectStatus().isUnauthorized();
+                .expectStatus().isUnauthorized()
+                .expectHeader().doesNotExist("WWW-Authenticate");
     }
 
     @Test
@@ -134,14 +110,6 @@ public class SecurityConfigTest {
     void shouldRejectMetricsWithoutSession() {
         webTestClient.get()
                 .uri("/api/v1/metrics")
-                .exchange()
-                .expectStatus().isUnauthorized();
-    }
-
-    @Test
-    void shouldRejectLogsWithoutSession() {
-        webTestClient.get()
-                .uri("/api/v1/logs")
                 .exchange()
                 .expectStatus().isUnauthorized();
     }

@@ -51,8 +51,6 @@ app:
       forecast:
         analysis:
           enabled: false
-  analytics:
-    password: "\${ANALYTICS_PASSWORD:}"
   session:
     max-age-seconds: 86400
     # Signs the SESSION cookie. Left empty a random one is generated at startup,

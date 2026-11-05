@@ -7,7 +7,7 @@
 // the banner is, and only come back in the views that carry a list to filter.
 // Every mode entry still shows its switch, set to what the spots list has stored:
 // greyed out says "not from here", not "off".
-// Shared by the single spot page and the status / sources / MCP / logs /
+// Shared by the single spot page and the status / sources / MCP /
 // metrics pages.
 // ============================================================================
 

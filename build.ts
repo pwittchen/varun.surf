@@ -16,7 +16,6 @@ const HTML_ENTRIES = [
   { name: "cli", path: join(FRONTEND_DIR, "html/cli.html") },
   { name: "privacy", path: join(FRONTEND_DIR, "html/privacy.html") },
   { name: "metrics", path: join(FRONTEND_DIR, "html/metrics.html") },
-  { name: "logs", path: join(FRONTEND_DIR, "html/logs.html") },
   { name: "embed", path: join(FRONTEND_DIR, "html/embed.html") },
   { name: "tv", path: join(FRONTEND_DIR, "html/tv.html") },
 ];
@@ -84,7 +83,6 @@ async function bundleJavaScript(): Promise<Map<string, string>> {
     join(FRONTEND_DIR, "js/page/cli.js"),
     join(FRONTEND_DIR, "js/page/privacy.js"),
     join(FRONTEND_DIR, "js/page/metrics.js"),
-    join(FRONTEND_DIR, "js/page/logs.js"),
     join(FRONTEND_DIR, "js/page/embed.js"),
     join(FRONTEND_DIR, "js/page/tv.js"),
   ];
@@ -253,10 +251,6 @@ async function processHTML(
     html = html.replace(
       /src="\.\.\/js\/page\/metrics\.js"/g,
       `src="${jsMap.get("metrics") || "/assets/metrics.js"}"`
-    );
-    html = html.replace(
-      /src="\.\.\/js\/page\/logs\.js"/g,
-      `src="${jsMap.get("logs") || "/assets/logs.js"}"`
     );
     html = html.replace(
       /src="\.\.\/js\/page\/embed\.js"/g,

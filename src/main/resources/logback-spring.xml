@@ -12,11 +12,8 @@
         </encoder>
     </appender>
 
-    <appender name="IN_MEMORY" class="com.github.pwittchen.varun.service.logs.InMemoryLogAppender"/>
-
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="IN_MEMORY"/>
     </root>
 
     <springProfile name="blue, green">

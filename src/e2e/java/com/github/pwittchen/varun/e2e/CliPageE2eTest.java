@@ -66,7 +66,7 @@ class CliPageE2eTest extends BaseE2eTest {
 
         assertThat(links.evaluateAll("nodes => nodes.map(n => n.getAttribute('href'))"))
             .isEqualTo(List.of("https://play.google.com/store/apps/details?id=surf.varun.app",
-                "/status", "/metrics", "/sources", "/mcp", "/cli", "/logs",
+                "/status", "/metrics", "/sources", "/mcp", "/cli",
                 "https://github.com/pwittchen/varun.surf"));
 
         Locator active = page.locator("#sideMenu [aria-current='page']");

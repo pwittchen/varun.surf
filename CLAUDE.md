@@ -14,7 +14,7 @@
 - **Frontend Build**: Bun (replaces npm for faster builds)
 - **Dependencies**:
   - Spring WebFlux (reactive, non-blocking)
-  - Spring Security (authentication for protected endpoints)
+  - Spring Security (session cookie gating and security headers)
   - Spring AI 1.0.2 (OpenAI integration for forecast analysis)
   - Spring AI MCP server (WebFlux SSE transport)
   - Spring Actuator with Micrometer/Prometheus metrics
@@ -22,7 +22,7 @@
   - OkHttp 4.12.0 (HTTP client)
   - Gson 2.14.0 (JSON serialization)
   - JavaTuples 1.2
-  - Guava 33.7.1-jre (EvictingQueue for metrics/logs history)
+  - Guava 33.7.1-jre (EvictingQueue for metrics and health history)
   - spring-dotenv 4.0.0 (environment variable loading)
 - **Containerization**: Docker with GHCR deployment
 - **Frontend**: Vanilla JavaScript (static/index.html)
@@ -49,7 +49,6 @@ Spring Boot Backend API (/api/v1/*)
     ├─→ /api/v1/status/sources (forecast, live station and spots data sources)
     ├─→ /api/v1/status/forecast (how far the running forecast sweep got)
     ├─→ /api/v1/metrics (application metrics)
-    ├─→ /api/v1/logs (application logs, password-protected)
     ├─→ /api/v1/health (health check)
     ├─→ /api/v1/session (hands out the SESSION cookie the rest of the API needs)
     └─→ /llms/*.md (LLM-friendly Markdown for spots, countries and wind)
@@ -60,7 +59,6 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
     ├─→ GoogleMapsService → Google Maps (URL resolver, coordinates)
     ├─→ AiServiceEn/AiServicePl → LLM (OpenAI, language-specific)
     ├─→ MetricsHistoryService → Prometheus metrics with history
-    ├─→ LogsService → In-memory log buffer (last 1000 entries)
     └─→ HealthHistoryService → Health check history (90 data points)
 ```
 
@@ -227,14 +225,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      - `GET /api/v1/metrics/history` - metrics history over time (60 points, sampled every 5s)
    - Exposes gauges, counters, timers, JVM metrics, HTTP client metrics
 
-9. **LogsController** (`controller/LogsController.java`)
-   - REST API endpoints:
-     - `GET /api/v1/logs` - application logs (password-protected)
-     - `GET /api/v1/logs?level={level}` - filter logs by level (ERROR, WARN, INFO, DEBUG, TRACE)
-   - Returns last 1000 log entries from in-memory buffer
-   - Auto-refresh every 5 seconds in frontend dashboard
-
-10. **SessionAuthenticationFilter** (`config/SessionAuthenticationFilter.java`)
+9. **SessionAuthenticationFilter** (`config/SessionAuthenticationFilter.java`)
     - `WebFilter` registered in Spring Security filter chain (before authentication)
     - Gates API access behind the `SESSION` cookie:
       - **Exempt paths** (no cookie required): `/api/v1/health`, `/actuator/**`, `/llms/**`, `/mcp/**`, static assets
@@ -249,7 +240,7 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
       says the visitor is on https (a Secure cookie over plain http is dropped, which
       would break local runs and the e2e suite)
 
-11. **SessionTokenService** (`config/SessionTokenService.java`)
+10. **SessionTokenService** (`config/SessionTokenService.java`)
     - Mints and verifies the cookie value: `<expiry epoch second>.<base64url HMAC-SHA256>`
     - Stateless by design, which fixes two things the in-memory `WebSession` had:
       the store capped at 10 000 sessions and then failed every further page visit
@@ -263,12 +254,12 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
       defaults reach for a `WebSession` on every request, read our token as an
       unknown session id and answer with a cookie-clearing `Set-Cookie`
 
-12. **SponsorsController** (`controller/SponsorsController.java`)
+11. **SponsorsController** (`controller/SponsorsController.java`)
    - REST API endpoints:
      - `GET /api/v1/sponsors` - main sponsors only (isMain=true)
    - Loads from sponsors.json at startup
 
-13. **LlmController** (`controller/LlmController.java`)
+12. **LlmController** (`controller/LlmController.java`)
    - Serves LLM-friendly Markdown (`text/markdown`) under `/llms`:
      - `GET /llms/spots.md` - all spots with live conditions and forecast summary
      - `GET /llms/spots/{id}.md` - single spot with full hourly forecast
@@ -282,13 +273,13 @@ AggregatorService (core orchestrator with Java 25 StructuredTaskScope)
      here, over the same grid `/api/v1/forecast/{wgId}` and `/api/v1/wind` serve
    - Rendered from the AggregatorService caches, no session cookie required
 
-14. **SeoController** (`controller/SeoController.java`)
+13. **SeoController** (`controller/SeoController.java`)
    - Server-rendered entry points for crawlers and link previews:
      - `GET /spot/{id}` - single spot page with meta tags
      - `GET /country/{countryName}` - country page with meta tags
      - `GET /sitemap.xml` - sitemap covering all spots and countries
 
-15. **McpToolService** (`service/mcp/McpToolService.java`, `config/McpConfig.java`)
+14. **McpToolService** (`service/mcp/McpToolService.java`, `config/McpConfig.java`)
    - Exposes the spot data as MCP tools: `list_spots`, `get_spot`, `get_wind_forecast`,
      `find_spot_by_name`, `find_windy_spots`, `list_countries`, `get_spots_by_country`,
      `get_status`
@@ -386,8 +377,6 @@ app:
       forecast:
         analysis:
           enabled: false        # AI analysis disabled by default
-  analytics:
-    password: ${ANALYTICS_PASSWORD:}  # Optional password for /api/v1/logs
   session:
     max-age-seconds: 86400      # SESSION cookie max age (24 hours)
     secret: ${APP_SESSION_SECRET:}        # signs the SESSION cookie; random if unset
@@ -498,11 +487,10 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── OxylabsProxy.java      # optional Oxylabs residential proxy, per target
 │   ├── CorsConfig.java
 │   ├── WebConfig.java
-│   ├── SecurityConfig.java    # Spring Security (HTTP Basic Auth + session filter)
+│   ├── SecurityConfig.java    # Spring Security (session filter, no login)
 │   ├── SessionTokenService.java # signed stateless SESSION cookie token
 │   ├── SessionAuthenticationFilter.java # Session-based API access gating
 │   ├── CacheControlFilter.java # Cache-Control headers (cache busting)
-│   ├── LogAppenderConfig.java # In-memory log appender
 │   ├── McpConfig.java         # MCP tool callback provider
 │   └── LoggingFilter.java
 ├── controller/                # REST controllers
@@ -510,7 +498,6 @@ src/main/java/com/github/pwittchen/varun/
 │   ├── SponsorsController.java
 │   ├── StatusController.java
 │   ├── MetricsController.java
-│   ├── LogsController.java
 │   ├── LlmController.java     # /llms/*.md Markdown for LLMs
 │   └── SeoController.java     # /spot/{id}, /country/{name}, /sitemap.xml
 ├── data/                      # Data providers
@@ -544,7 +531,6 @@ src/main/java/com/github/pwittchen/varun/
     ├── seo/                   # SeoService (server-rendered pages, sitemap)
     ├── sponsors/              # SponsorsService
     ├── metrics/               # MetricsHistoryService
-    ├── logs/                  # LogsService, InMemoryLogAppender, LogEntry
     └── health/                # HealthHistoryService, HealthCheckResult
 ```
 
@@ -609,7 +595,6 @@ src/main/java/com/github/pwittchen/varun/
       state of each shown on the /metrics page
 - [x] Prometheus metrics export (/actuator/prometheus)
 - [x] Custom metrics dashboard (/api/v1/metrics)
-- [x] Custom logs dashboard (/api/v1/logs) with level filtering and search
 - [x] Status page with uptime and stats
 - [x] Sources page (/sources) with spots, forecast and live station data sources
 - [x] MCP page (/mcp, "MCP" in the sidebar) with the MCP endpoint, install command and
@@ -625,7 +610,7 @@ src/main/java/com/github/pwittchen/varun/
       sidebar button bringing it back
 - [x] Dynamic multi-model forecast support (40+ Windguru models)
 - [x] Automatic language detection from browser settings
-- [x] EN/PL translations across every page, the status, sources, MCP, logs and
+- [x] EN/PL translations across every page, the status, sources, MCP, CLI and
       metrics pages included (markup copy via `data-i18n`, rendered copy via
       the `toolsPage.setup({onLanguageChange})` callback)
 - [x] Stale live conditions indicators (yellow for outdated data)
@@ -762,7 +747,6 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
 13. **Metrics & Monitoring**:
     - Prometheus metrics export at `/actuator/prometheus`
     - Custom metrics endpoint at `/api/v1/metrics` (no password, session cookie only)
-    - Logs endpoint at `/api/v1/logs` (password-protected via `ANALYTICS_PASSWORD`)
     - Metrics history with rolling window via `MetricsHistoryService`
     - Custom metrics classes: `AggregatorServiceMetrics`, `SpotsControllerMetrics`, `HttpClientMetricsEventListener`
     - On-demand generation is counted apart from the scheduled fetches, under
@@ -772,11 +756,11 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
       `varun.api.analysis.requests` counts the button presses - the gap between the
       two is what the 24h cache saved
 
-14. **Logs System**:
-    - In-memory log buffer via `LogsService` (last 1000 entries)
-    - `InMemoryLogAppender` captures application logs
-    - Level filtering: ERROR, WARN, INFO, DEBUG, TRACE
-    - Logs are lost on application restart (intentional)
+14. **Logs**:
+    - Console only (`logback-spring.xml`), read with `docker logs` on the server
+    - There is no logs page or endpoint: the web app cannot show them, so nothing
+      needs a password and Spring Security has no login (`httpBasic`/`formLogin`
+      disabled, `ReactiveUserDetailsServiceAutoConfiguration` excluded in `Application`)
 
 15. **Health History**:
     - `HealthHistoryService` tracks health check results
@@ -793,12 +777,10 @@ Lower `AiService.DETAILED_HOURS`, raise `COARSE_STRIDE`, or narrow the
     - Requests without a valid token receive HTTP 401 with an empty body
     - Exempt paths: `/api/v1/health`, `/actuator/**`, `/llms/**`, `/mcp/**`, static assets
     - The cookie is a stateless signed token, not a session id - see `SessionTokenService`
-    - Runs as a `WebFilter` before Spring Security authentication (the logs still require HTTP Basic on top)
+    - Runs as a `WebFilter` before Spring Security authentication
     - This is a speed bump, not a wall: two requests get anyone a cookie, and
       `/llms/**` and `/mcp/**` serve the same data without one. What actually limits
       abuse is the rate limiting in `nginx/nginx.conf`
-    - The logs are **fail-closed**: with no `ANALYTICS_PASSWORD` set, `/api/v1/logs`
-      is denied outright rather than falling open to everyone holding a cookie
 
 17. **Cache Busting** (updates visible without waiting for the Cloudflare cache):
     - CSS, JS and the logo are content-hashed at build time into `/assets/<name>.<hash>.<ext>` (`build.ts`)

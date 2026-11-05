@@ -45,7 +45,6 @@ export const translations = {
         mcpLinkTooltip: "MCP server for AI assistants",
         cliLinkTooltip: "Command-line client",
         githubLinkTooltip: "Source code on GitHub",
-        logsLinkTooltip: "Application logs",
         metricsLinkTooltip: "Application metrics",
 
         // Sidebar (section headings + short row labels; the full sentence
@@ -73,7 +72,6 @@ export const translations = {
         sidebarMcp: "MCP",
         sidebarCli: "CLI",
         sidebarGithub: "GitHub",
-        sidebarLogs: "Logs",
         sidebarMetrics: "Metrics",
         sidebarCollapse: "Collapse",
         sidebarExpand: "Expand",
@@ -211,30 +209,11 @@ export const translations = {
         mcpLlmsCountriesDescription: "Index of all countries with the number of spots in each.",
         mcpLlmsCountryDescription: "Spots in a single country, where the slug is the lowercased country name with spaces replaced by hyphens, e.g. <code>poland</code> or <code>czech-republic</code>.",
 
-        // Shared by the logs and metrics dashboards
+        // Metrics dashboard auto-refresh
         toolsAutoRefreshInterval: "Auto-refresh: 5s",
         toolsAutoRefreshPaused: "Auto-refresh: paused",
         toolsPauseAutoRefresh: "Pause Auto-Refresh",
         toolsResumeAutoRefresh: "Resume Auto-Refresh",
-        toolsAuthRequired: "Authentication Required",
-        toolsPasswordLabel: "Password",
-        toolsLoginButton: "Login",
-        toolsInvalidPassword: "Invalid password",
-        toolsAuthFailed: "Authentication failed",
-
-        // Logs page
-        logsPageTitle: "Logs - VARUN.SURF",
-        logsLevelLabel: "Level:",
-        logsAllLevels: "ALL",
-        logsSearchLabel: "Search:",
-        logsSearchPlaceholder: "Filter logs...",
-        logsCountLabelOne: "log",
-        logsCountLabel: "logs",
-        logsTimeHeader: "Time",
-        logsLevelHeader: "Level",
-        logsLoggerHeader: "Logger",
-        logsMessageHeader: "Message",
-        logsEmpty: "No logs to display",
 
         // Metrics page
         metricsPageTitle: "Metrics - VARUN.SURF",
@@ -636,7 +615,6 @@ export const translations = {
         mcpLinkTooltip: "Serwer MCP dla asystentów AI",
         cliLinkTooltip: "Klient wiersza poleceń",
         githubLinkTooltip: "Kod źródłowy na GitHubie",
-        logsLinkTooltip: "Logi aplikacji",
         metricsLinkTooltip: "Metryki aplikacji",
 
         // Sidebar (section headings + short row labels; the full sentence
@@ -664,7 +642,6 @@ export const translations = {
         sidebarMcp: "MCP",
         sidebarCli: "CLI",
         sidebarGithub: "GitHub",
-        sidebarLogs: "Logi",
         sidebarMetrics: "Metryki",
         sidebarCollapse: "Zwiń",
         sidebarExpand: "Rozwiń",
@@ -806,31 +783,11 @@ export const translations = {
         mcpLlmsCountriesDescription: "Spis wszystkich krajów wraz z liczbą spotów w każdym z nich.",
         mcpLlmsCountryDescription: "Spoty w jednym kraju, gdzie slug to nazwa kraju małymi literami ze spacjami zamienionymi na myślniki, np. <code>poland</code> lub <code>czech-republic</code>.",
 
-        // Shared by the logs and metrics dashboards
+        // Metrics dashboard auto-refresh
         toolsAutoRefreshInterval: "Auto-odświeżanie: 5 s",
         toolsAutoRefreshPaused: "Auto-odświeżanie: wstrzymane",
         toolsPauseAutoRefresh: "Wstrzymaj odświeżanie",
         toolsResumeAutoRefresh: "Wznów odświeżanie",
-        toolsAuthRequired: "Wymagane uwierzytelnienie",
-        toolsPasswordLabel: "Hasło",
-        toolsLoginButton: "Zaloguj",
-        toolsInvalidPassword: "Nieprawidłowe hasło",
-        toolsAuthFailed: "Uwierzytelnianie nie powiodło się",
-
-        // Logs page
-        logsPageTitle: "Logi - VARUN.SURF",
-        logsLevelLabel: "Poziom:",
-        logsAllLevels: "WSZYSTKIE",
-        logsSearchLabel: "Szukaj:",
-        logsSearchPlaceholder: "Filtruj logi...",
-        logsCountLabelOne: "log",
-        logsCountLabelFew: "logi",
-        logsCountLabel: "logów",
-        logsTimeHeader: "Czas",
-        logsLevelHeader: "Poziom",
-        logsLoggerHeader: "Logger",
-        logsMessageHeader: "Wiadomość",
-        logsEmpty: "Brak logów do wyświetlenia",
 
         // Metrics page
         metricsPageTitle: "Metryki - VARUN.SURF",
