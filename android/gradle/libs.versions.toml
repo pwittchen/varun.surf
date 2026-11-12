@@ -28,7 +28,7 @@ profileinstaller = "1.4.1"
 uiautomator = "2.4.1"
 
 coroutines = "1.11.0"
-serialization = "1.12.0"
+serialization = "1.13.0"
 immutableCollections = "0.5.2"
 retrofit = "3.0.0"
 okhttp = "5.5.1"
