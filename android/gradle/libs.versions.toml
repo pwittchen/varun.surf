@@ -6,10 +6,12 @@ hilt = "2.60.1"
 versionsPlugin = "0.67.0"
 
 compileSdk = "37"
+# Compose 1.13 (BOM 2026.11) requires compiling against API 37.1
+compileSdkMinor = "1"
 minSdk = "28"
 targetSdk = "36"
 
-composeBom = "2026.09.00"
+composeBom = "2026.11.01"
 activityCompose = "1.13.0"
 coreKtx = "1.19.1"
 lifecycle = "2.11.0"
